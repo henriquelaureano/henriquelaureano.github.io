@@ -8,6 +8,8 @@
 
 + [Regularization](http://mynameislaure.github.io/regularization/)
 
++ [Resampling methods](http://mynameislaure.github.io/resampling_methods/)
+
 ***
 
 [**ce064 - Markovian Models**](https://github.com/mynameislaure/ce064mm)
