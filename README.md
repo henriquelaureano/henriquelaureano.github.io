@@ -19,3 +19,11 @@
 ***
 
 * [List 1](http://mynameislaure.github.io/ce064mm-list_1/master.pdf)
+
+***
+
+[**IC - Scientific Initiation**](https://github.com/mynameislaure/IC)
+
+***
+
+* [Partial report](http://mynameislaure.github.io/ic-partial_report/master.pdf)
