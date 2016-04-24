@@ -10,6 +10,8 @@
 
 + [Resampling methods](http://mynameislaure.github.io/resampling_methods/)
 
++ [Kobe Bryant Shot Selection](http://mynameislaure.github.io/Kobe_Bryant_Shot_Selection/)
+
 ***
 
 [**ce064 - Markovian Models**](https://github.com/mynameislaure/ce064mm)
