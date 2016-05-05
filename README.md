@@ -10,6 +10,8 @@
 
 + [Resampling methods](http://mynameislaure.github.io/resampling_methods/)
 
++ [Supervisioned classification methods](http://mynameislaure.github.io/supervisioned_classification_methods/)
+
 + [Kobe Bryant Shot Selection](http://mynameislaure.github.io/Kobe_Bryant_Shot_Selection/)
 
 ***
