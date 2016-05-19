@@ -12,7 +12,7 @@
 
 + [Supervisioned classification methods](http://mynameislaure.github.io/supervisioned_classification_methods/)
 
-+ [Support Vector Machine](http://mynameislaure.github.io/Support_Vector_Machine/)
++ [Support Vector Machine](http://mynameislaure.github.io/support_vector_machine/)
 
 + [Kobe Bryant Shot Selection](http://mynameislaure.github.io/Kobe_Bryant_Shot_Selection/)
 
