@@ -16,6 +16,8 @@
 
 + [Tree based methods](http://mynameislaure.github.io/tree_based_methods/)
 
++ [Text mining](http://mynameislaure.github.io/text_mining/)
+
 + [Kobe Bryant Shot Selection](http://mynameislaure.github.io/Kobe_Bryant_Shot_Selection/)
 
 ***
