@@ -37,3 +37,11 @@
 ***
 
 * [Partial report](http://mynameislaure.github.io/ic-partial_report/master.pdf)
+
+***
+
+[**Machine Learning - Postgraduate in Statistics UFMG**](https://github.com/mynameislaure/ML-UFMG)
+
+***
+
+* [List 1](http://mynameislaure.github.io/ml-ufmg-list_1/master.pdf)
