@@ -50,6 +50,6 @@
 
 ***
 
-[**Application of Multistate Markovian Models in Survival Analysis**](https://github.com/mynameislaure/multistate_markovian_models/master.pdf)
+[**Application of Multistate Markovian Models in Survival Analysis**](https://mynameislaure.github.io/multistate_markovian_models/master.pdf)
 
 ***
