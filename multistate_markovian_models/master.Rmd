@@ -1,0 +1,439 @@
+---
+title: Aplicações de Modelos Multiestados em Análise de Sobrevivência
+author: Henrique Aparecido Laureano
+date: 05 de outubro de 2016
+header-includes:
+   - \institute[ce063]{ce063 - Tópicos em Análise de Sobrevivência \\
+                       Graduação em Estatística \\
+                       UFPR - Universidade Federal do Paraná}
+   - \setbeamertemplate{navigation symbols}{}
+   - \usepackage{bm}
+   - \usepackage{multicol}
+output: 
+  beamer_presentation:
+    theme: Szeged
+    colortheme: rose
+    fonttheme: structurebold
+    highlight: kate
+    slide_level: 3
+    keep_tex: yes
+    fig_caption: no
+---
+
+### Roteiro
+
+\tableofcontents
+
+# Contextualizando
+
+## Representações por estados
+
+***
+
+\begin{itemize}
+ \pause \item
+  \begin{columns}
+   \begin{column}{.4\textwidth}
+    \begin{center}
+     Representação usual de um dado de sobrevivência:
+    \end{center}
+   \end{column}
+   \begin{column}{.6\textwidth}
+    \begin{center}
+     \includegraphics*[height = .75cm, width = 6cm]{surv.png}
+    \end{center}
+   \end{column}
+  \end{columns}
+\end{itemize}
+
+\vspace{.5cm}
+\pause \textbf{Abordagens multiestados:}
+
+\begin{itemize}
+ \pause \item
+  \begin{columns}
+   \begin{column}{.3\textwidth}
+    \begin{center}
+     Riscos competitivos:
+    \end{center}
+   \end{column}
+   \begin{column}{.7\textwidth}
+    \begin{center}
+     \includegraphics*[height = 2cm, width = 7cm]{rc.png}
+    \end{center}
+   \end{column}
+  \end{columns}
+\vspace{.25cm}
+ \pause \item
+  \begin{columns}
+   \begin{column}{.2\textwidth}
+    \begin{center}
+     Multiestados:
+    \end{center}
+   \end{column}
+   \begin{column}{.8\textwidth}
+    \begin{center}
+     \includegraphics*[height = 2.25cm, width = 8cm]{multi.png}
+    \end{center}
+   \end{column}
+  \end{columns}
+\end{itemize}
+
+# Conceitos e definições
+
+## Modelos multiestados de sobrevivência markovianos
+
+***
+
+\begin{block}{Modelo usual}
+ \pause \[q_{rs}(\mathbf{Z}) =
+          q_{rs}^{0}{\rm exp}(\bm{\beta}^{\top}\mathbf{Z})\]
+ \begin{itemize}
+  \pause \item \(\mathbf{Z}\) é um vetor de covariáveis em que é assumido
+               efeito comum a todas as transições
+\vspace{.3cm}
+  \pause \item \(q_{rs}^{0}\) é a intensidade de transição ou taxa de falha
+               de base para a transição do estado \(r\) para o estado \(s\),
+ \end{itemize}
+ \vspace{.3cm} \pause
+ \[q_{rs}(t) = \lim_{\delta t \to 0}
+               \frac{P(X(t + \delta t) = s | X(t) = r)}{\delta t}\]
+\end{block}
+
+***
+
+\begin{block}{Um modelo multiestado pode ser:}
+\vspace{-.15cm}
+ \begin{multicols}{3}
+ \small
+  \begin{itemize}
+   \pause \item Não markoviano
+   \pause \item Semimarkoviano
+   \pause \item \textbf{Markoviano}
+  \end{itemize}
+ \end{multicols}
+\end{block}
+
+\vspace{.3cm} \pause
+\begin{block}{Pressuposto markoviano:}
+ \pause Uma futura transição depende apenas do estado atual
+\end{block}
+
+\vspace{.3cm} \pause
+\begin{block}{Um modelo multiestado markoviano pode ser de três tipos:}
+\vspace{-.15cm}
+ \begin{multicols}{3}
+ \small
+  \begin{itemize}
+   \pause \item Paramétrico
+   \pause \item Não paramétrico
+   \pause \item Semiparamétrico
+  \end{itemize}
+ \end{multicols}
+\end{block}
+
+***
+
+\begin{block}{Modelo paramétrico (\textit{package} msm do R)}
+ \begin{itemize}
+  \pause \item Distribuição de probabilidade assumida para o tempo médio de
+               permanência em cada estado transiente \(r\), comumente
+               exponencial
+ \end{itemize}
+\pause \textbf{Dois tipos:} \\
+\vspace{.25cm}
+\pause \textit{Tempo homogêneo}:
+       intensidades de transição constantes ao longo \\
+       \hskip 3.3cm do tempo (independentes de \(t\)) \\
+\vspace{.25cm}
+\pause \textit{Tempo não homogêneo}:
+       intensidades de transição variáveis ao longo \\
+       \hskip 3.9cm do tempo, constantes sob segmentos
+\end{block}
+
+***
+
+\begin{block}{Modelo (não e) semiparamétrico (\textit{package} mstate do R)}
+ \begin{itemize}
+  \pause \item Modelo de Cox estratificado por transição
+  \vspace{.15cm}
+  \pause \item Na ausência de covariáveis temos um modelo não paramétrico
+ \end{itemize}
+\vspace{.2cm} \pause Além do modelo usual, permite a especificação de
+                     modelos mais elaborados com:
+ \begin{itemize}
+  \vspace{.2cm}
+  \pause \item Diferentes efeitos das covariáveis em cada transição
+  \vspace{.15cm}
+  \pause \item Intensidades de transição proporcionais
+  \vspace{.15cm}
+  \pause \item Covariáveis que aparecem apenas em algumas transições
+ \end{itemize}
+\end{block}
+
+***
+
+\begin{block}{Inferências}
+ \begin{itemize}
+  \pause \item Probabilidades de transição e de sobrevivência
+\vspace{.15cm}
+  \pause \item Tempos médios esperados de permanência em estados e para
+               transição entre estados
+ \end{itemize}
+\end{block}
+\vspace{.2cm} \pause
+\begin{block}{Qualidade do ajuste}
+ \pause \textit{Modelo paramétrico}: métodos formais e informais \\
+\vspace{.15cm}
+ \pause \textit{Modelo (não e) semiparamétrico}: verificação usual
+ \begin{itemize}
+  \pause \item Análise gráfica de resíduos e verificação da suposição de
+               taxas de falha proporcionais (na presença de covariáveis)
+ \end{itemize}
+\end{block}
+
+# Aplicações
+
+## MASS II
+
+***
+
+\scriptsize
+\begin{block}{MASS II}
+ Pacientes com doença arterial coronariana multiarterial, angina estável e 
+ função ventricular preservada
+\end{block}
+
+\pause \vspace{-.65cm}
+\begin{center}
+ \includegraphics*[width = 11.25cm]{mass.png}
+\end{center}
+
+***
+
+\vspace{-.2cm}
+\begin{center}
+ \includegraphics*[height = 7.5cm, width = 8cm]{mass_times.png}
+\end{center}
+
+***
+
+\begin{block}{Modelo multiestado markoviano paramétrico}
+\small \pause As covariáveis grupo de risco e histórico de IAM não são
+              significativas
+\end{block}
+
+\vspace{.5cm} \pause
+\begin{center}
+ \includegraphics*[width = 10.75cm]{times_msm_mass.png}
+\end{center}
+
+***
+
+\begin{block}{Modelo multiestado markoviano paramétrico}
+\small As covariáveis grupo de risco e histórico de IAM não são 
+       significativas
+\end{block}
+
+\begin{center}
+ \includegraphics*[width = 10.75cm]{probs_mass_msm.png}
+\end{center}
+
+***
+
+\vspace{-.2cm}
+\begin{center}
+ \includegraphics*[height = 7cm]{mass_msm.png}
+\end{center}
+
+\vspace{-.6cm} \tiny
+\begin{multicols}{4}
+ \begin{itemize}
+  \item 1 - TM
+  \item 2 - ICP
+  \item 3 - CRM
+  \item 4 - CRM
+  \item 5 - ICP
+  \item 6 - IAM
+  \item 7 - AVC
+ \end{itemize}
+\end{multicols}
+
+***
+
+\begin{block}{Modelo multiestado markoviano (não e) semiparamétrico}
+\small As covariáveis grupo de risco e histórico de IAM não são 
+       significativas
+\end{block}
+
+\vspace{.5cm}
+\begin{center}
+ \includegraphics*[height=3.5cm, width=10.75cm]{times_mass_mstate.png}
+\end{center}
+
+***
+
+\begin{block}{Modelo multiestado markoviano (não e) semiparamétrico}
+ \small As covariáveis grupo de risco e histórico de IAM não são 
+        significativas
+\end{block}
+
+\vspace{-.9cm}
+\begin{columns}
+ \begin{column}{.75\textwidth}
+  \begin{center}
+   \includegraphics*[height = 6.2cm]{mass_probtrans_mstate.png}
+  \end{center}
+ \end{column}
+ \scriptsize
+ \begin{column}{.25\textwidth}
+  \begin{center}
+   \begin{itemize}
+    \item 1 - TM
+    \item 2 - ICP
+    \item 4 - CRM
+    \item 5 - ICP
+    \item 6 - IAM
+    \item 7 - AVC
+    \item 9 - MORTE
+   \end{itemize}
+  \end{center}
+ \end{column}
+\end{columns}
+
+***
+
+\vspace{-.35cm}
+\begin{columns}
+ \begin{column}{.9\textwidth}
+  \begin{center}
+   \includegraphics*[height = 7.5cm]{mass_mstate.png}
+  \end{center}
+ \end{column}
+ \tiny
+ \begin{column}{.25\textwidth}
+  \begin{center}
+   \begin{itemize}
+    \item 1 - TM
+    \item 2 - ICP
+    \item 3 - CRM
+    \item 4 - CRM
+    \item 5 - ICP
+    \item 6 - IAM
+    \item 7 - AVC
+    \item 8 - ANGINA
+    \item 9 - MORTE
+   \end{itemize}
+  \end{center}
+ \end{column}
+\end{columns}
+
+## Inoculação em frutos
+
+***
+
+\pause
+\begin{block}{Objetivo}
+ Verificar possíveis diferenças entre gêneros de \textit{Colletotrichum}
+ em relação ao tempo com que a lesão progride nos frutos de maçã, e se
+ existe diferença entre frutos com e sem ferimento
+\end{block}
+
+\vspace{.5cm} \pause \textit{Colletotrichum?}
+
+\vspace{.5cm} \pause
+\begin{itemize}
+ \item O fungo Colletotrichum é o principal causador da doença Mancha
+       Foliar de Glomerella (MFG), muito severa em pomares de macieira
+       do estado do Paraná
+\end{itemize}
+
+***
+
+Representação dos estados
+
+\vspace{.3cm}
+\begin{center}
+ \includegraphics*[width = 11cm]{ic.png}
+\end{center}
+
+***
+
+\begin{block}{Modelo multiestado markoviano paramétrico}
+ \begin{itemize}
+  \item Diferença significativa entre frutos com e sem ferimento
+  \item Sem diferença significativa entre os gêneros de
+        \textit{Colletotrichum}
+ \end{itemize}
+\end{block}
+
+\vspace{-.7cm} \pause
+\begin{center}
+ \includegraphics*[height = 5cm, width = 11cm]{ic_msm.png}
+\end{center}
+
+***
+
+\begin{block}{Modelo multiestado markoviano paramétrico}
+ \begin{itemize}
+  \item Diferença significativa entre frutos com e sem ferimento
+  \item Sem diferença significativa entre os gêneros de
+        \textit{Colletotrichum}
+ \end{itemize}
+\end{block}
+
+\begin{center}
+ \includegraphics*[width = 10.75cm]{ic-table_msm.png}
+\end{center}
+
+***
+
+\begin{block}{Modelo multiestado markoviano (não e) semiparamétrico}
+ \begin{itemize}
+  \item Diferença significativa entre frutos com e sem ferimento
+  \item Sem diferença significativa entre os gêneros de
+        \textit{Colletotrichum}
+ \end{itemize}
+\end{block}
+
+\pause
+\begin{center}
+ \includegraphics*[height = 3.5cm, width = 10.75cm]{ic-table_mstate.png}
+\end{center}
+
+***
+
+\begin{block}{Modelo multiestado markoviano (não e) semiparamétrico}
+ \begin{itemize}
+  \item Diferença significativa entre frutos com e sem ferimento
+  \item Sem diferença significativa entre os gêneros de
+        \textit{Colletotrichum}
+ \end{itemize}
+\end{block}
+
+\vspace{-.7cm}
+\begin{center}
+ \includegraphics*[height = 5cm, width = 11cm]{ic_mstate.png}
+\end{center}
+
+# Considerações finais
+
+***
+
+\begin{block}{Considerações finais}
+ \begin{itemize}
+  \pause \item Ambos os modelos geraram inferências muito similares
+  \vspace{.2cm}
+  \pause \item Modelo (não e) semiparamétrico se mostrou mais robusto
+  \vspace{.2cm}
+  \pause \item Ambos os modelos se mostraram altamente dependentes do
+               tamanho amostral \\
+  \vspace{.3cm}
+  \pause \hskip 1cm \(\bigcirc\) Grande amostra \vspace{.5cm} \\
+         \hskip 1cm \(\bigotimes\) Grande amostra em cada transição
+ \end{itemize}
+\end{block}
+
+***
+
+\LARGE \centering Obrigado por seu tempo!
