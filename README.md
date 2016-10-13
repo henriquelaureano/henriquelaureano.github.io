@@ -48,6 +48,8 @@
 
 * [List 2](http://mynameislaure.github.io/ml-ufmg-list_2/master.pdf)
 
+* [List 3](http://mynameislaure.github.io/ml-ufmg-list_3/master.pdf)
+
 ***
 
 [**Application of Multistate Markovian Models in Survival Analysis**](http://mynameislaure.github.io/multistate_markovian_models/master.pdf)
