@@ -54,6 +54,8 @@
 
 * [Article presentation](http://mynameislaure.github.io/ml-ufmg-article/master.pdf)
 
+* [Poster](http://mynameislaure.github.io/ml-ufmg-poster/master.pdf)
+
 ***
 
 [**Application of Multistate Markovian Models in Survival Analysis**](http://mynameislaure.github.io/multistate_markovian_models/master.pdf)
