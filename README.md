@@ -61,3 +61,7 @@
 [**Application of Multistate Markovian Models in Survival Analysis**](http://mynameislaure.github.io/multistate_markovian_models/master.pdf)
 
 ***
+
+[**Curse Words and Deaths in Quentin Tarantino's Films**](http://mynameislaure.github.io/tarantino/)
+
+***
