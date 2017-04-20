@@ -40,7 +40,7 @@
 
 ***
 
-[**Machine Learning - Postgraduate in Statistics UFMG**](https://github.com/mynameislaure/ML-UFMG)
+[**Machine Learning - Graduate in Statistics UFMG**](https://github.com/mynameislaure/ML-UFMG)
 
 ***
 
@@ -63,5 +63,9 @@
 ***
 
 [**Curse Words and Deaths in Quentin Tarantino's Films**](http://mynameislaure.github.io/tarantino/)
+
+***
+
+[**Assignment for test 1 - mi404 - Statistical Methods (Master's in Statistics - UNICAMP)**](http://mynameislaure.github.io/mi404/p1.pdf)
 
 ***
