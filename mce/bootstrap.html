@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Computational Methods in Statistics</title>
+  <meta name="description" content="Computational Methods in Statistics">
+  <meta name="generator" content="bookdown 0.3.18 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Computational Methods in Statistics" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Computational Methods in Statistics" />
+  
+  
+  
+
+<meta name="author" content="Henrique Aparecido Laureano">
+
+
+<meta name="date" content="2017-04-25">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="permutation-tests.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Computational Methods in Statistics</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>README</a></li>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html"><i class="fa fa-check"></i>Bootstrap</a><ul>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#standard-error-boostrap-estimate"><i class="fa fa-check"></i>Standard error boostrap estimate</a></li>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bias-bootstrap-estimate"><i class="fa fa-check"></i>Bias bootstrap estimate</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html"><i class="fa fa-check"></i>Permutation tests</a></li>
+<li class="divider"></li>
+<li></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Computational Methods in Statistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bootstrap" class="section level1 unnumbered">
+<h1>Bootstrap</h1>
+<hr />
+
+<div class="definition">
+<span id="def:unnamed-chunk-1" class="definition"><strong>Definition 1 </strong></span>Bootstrap strategies compose a class of non-parametric Monte Carlo methods that estimate the distribution of a population by means of resampling.
+</div>
+
+<blockquote>
+<p>Resampling methods treat samples as a finite population, from which samples are taken to estimate features and make inferences about this population.</p>
+</blockquote>
+<p>To generate a random bootstrap sample by <span class="math inline">\(x\)</span> resampling, generate <span class="math inline">\(n\)</span> evenly distributed random integers in the set <span class="math inline">\(1, ..., n{}\)</span> and select the bootstrap sample as <span class="math inline">\(x^{*} = (x_{i_{1}}, ..., x_{i_{n}})\)</span>.</p>
+
+<div class="example">
+<p><span id="ex:unnamed-chunk-2" class="example"><strong>Example 1 </strong></span>Suppose we observe the following data:</p>
+<p><span class="math inline">\(x = {2, 2, 1, 1, 5, 4, 4, 3, 1, 2}\)</span>.</p>
+<p>Resampling from <span class="math inline">\(x\)</span>, we select <span class="math inline">\(\{1, 2, 3, 4, 5\}\)</span> with probabilities <span class="math inline">\(\{0.3, 0.3, 0.1, 0.2, 0.1\}\)</span>. The <span class="math inline">\(F_{X^{*}}(x)\)</span> distribution of a sample taken at random is exactly the function <span class="math inline">\(F_{n}\)</span>:</p>
+<span class="math display">\[ F_{X^{*}}(x) = F_{n}(x) = \begin{cases}
+                              0.0 &amp; x &lt; 1; \\ 
+                              0.3 &amp; 1 \leq x &lt; 2; \\ 
+                              0.6 &amp; 2 \leq x &lt; 3; \\ 
+                              0.7 &amp; 3 \leq x &lt; 4; \\ 
+                              0.9 &amp; 4 \leq x &lt; 5; \\
+                              1.0 &amp; x \geq 5.
+                             \end{cases}
+\]</span>
+</div>
+
+<div id="standard-error-boostrap-estimate" class="section level2 unnumbered">
+<h2>Standard error boostrap estimate</h2>
+<p>The bootstrap estimate of the standard error of an estimator <span class="math inline">\(\hat{\theta}\)</span> is the sample standard error of the bootstrap replicates <span class="math inline">\(\hat{\theta}^{(1)}, ..., \hat{\theta}^{(B)}\)</span>:</p>
+<p><span class="math display">\[ \text{se}(\hat{\theta}^{*}) =
+   \sqrt{\frac{1}{B - 1}
+         \sum_{b = 1}^{B} (\hat{\theta}^{(b)} - \bar{\theta}^{*})^{2}},
+         \\
+   \bar{\theta}^{*} = \frac{1}{B} \sum_{b = 1}^{B} \hat{\theta}^{(b)}.
+\]</span></p>
+<p>Where <span class="math inline">\(B\)</span> is the number of replicates.</p>
+
+<div class="example">
+<span id="ex:unnamed-chunk-3" class="example"><strong>Example 2  (Correlation)  </strong></span>
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lattice<span class="op">::</span><span class="kw">xyplot</span>(dist <span class="op">~</span><span class="st"> </span>speed, cars, <span class="dt">pch =</span> <span class="dv">16</span>, <span class="dt">ylab =</span> <span class="kw">list</span>(<span class="dt">rot =</span> <span class="dv">0</span>))</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-4"></span>
+<img src="mce_files/figure-html/unnamed-chunk-4-1.png" alt="A scatterplot of the speed and dist variables of the cars dataframe." width="672" />
+<p class="caption">
+Figure 1: A scatterplot of the <code>speed</code> and <code>dist</code> variables of the <code>cars</code> dataframe.
+</p>
+</div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1</span>)
+B &lt;-<span class="st"> </span><span class="fl">10e3</span>
+boot.corr &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&#39;numeric&#39;</span>, B)
+<span class="cf">for</span> (b <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>B){
+  ind &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">nrow</span>(cars), <span class="dt">replace =</span> <span class="ot">TRUE</span>)
+  boot.corr[b] &lt;-<span class="st"> </span><span class="kw">with</span>(cars[ind, ], <span class="kw">cor</span>(dist, speed))
+}
+(theta.star &lt;-<span class="st"> </span><span class="kw">mean</span>(boot.corr))</code></pre></div>
+<pre><code>[1] 0.8062458</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(se.theta.star &lt;-<span class="st"> </span><span class="kw">sd</span>(boot.corr))</code></pre></div>
+<pre><code>[1] 0.04782856</code></pre>
+</div>
+<div id="bias-bootstrap-estimate" class="section level2 unnumbered">
+<h2>Bias bootstrap estimate</h2>
+<p>The definition of bias is given by:</p>
+<p><span class="math display">\[ B(\hat{\theta}) = E(\hat{\theta}) - \theta. \]</span></p>
+<p>Thus, the bias bootsrap estimate is:</p>
+<p><span class="math display">\[ \hat{B(\hat{\theta})} = \bar{\hat{\theta}^{*}} - \theta, \]</span></p>
+<p>expression in which <span class="math inline">\(\bar{\hat{\theta}^{*}} = \frac{1}{B} \sum_{b = 1}^{B} \hat{\theta}^{(b)}\)</span> and <span class="math inline">\(\hat{\theta}\)</span> is the estimate calculated using the original sample.</p>
+
+<div class="example">
+<span id="ex:unnamed-chunk-5" class="example"><strong>Example 3  (Correlation)  </strong></span>
+</div>
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">theta.star <span class="op">-</span><span class="st"> </span><span class="kw">with</span>(cars, <span class="kw">cor</span>(dist, speed))</code></pre></div>
+<pre><code>[1] -0.0006490941</code></pre>
+<hr />
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="permutation-tests.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/01-bootstrap.Rmd",
+"text": "Edit"
+},
+"download": ["mce.pdf", "mce.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
