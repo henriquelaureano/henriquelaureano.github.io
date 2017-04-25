@@ -69,3 +69,7 @@
 [**Assignment for test 1 - mi404 - Statistical Methods (Master's in Statistics - UNICAMP)**](http://mynameislaure.github.io/mi404/p1.pdf)
 
 ***
+
+[**Computational Methods in Statistics (CMS) - Master's in Statistics, UNICAMP)**](http://mynameislaure.github.io/cms/)
+
+***
