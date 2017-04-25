@@ -140,7 +140,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <blockquote>
 <p>Resampling methods treat samples as a finite population, from which samples are taken to estimate features and make inferences about this population.</p>
 </blockquote>
-<p>To generate a random bootstrap sample by <span class="math inline">\(x\)</span> resampling, generate <span class="math inline">\(n\)</span> evenly distributed random integers in the set <span class="math inline">\(1, ..., n{}\)</span> and select the bootstrap sample as <span class="math inline">\(x^{*} = (x_{i_{1}}, ..., x_{i_{n}})\)</span>.</p>
+<p>To generate a random bootstrap sample by <span class="math inline">\(x\)</span> resampling, generate <span class="math inline">\(n\)</span> uniformly distributed random integers in the set <span class="math inline">\(1, ..., n{}\)</span> and select the bootstrap sample as <span class="math inline">\(x^{*} = (x_{i_{1}}, ..., x_{i_{n}})\)</span>.</p>
+<p><span class="math display">\[ F \rightarrow X \rightarrow F_{n} \\
+   F_{n} \rightarrow X^{*} \rightarrow F_{n}^{*}. \]</span></p>
 
 <div class="example">
 <p><span id="ex:unnamed-chunk-2" class="example"><strong>Example 1 </strong></span>Suppose we observe the following data:</p>
