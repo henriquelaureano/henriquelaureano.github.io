@@ -70,6 +70,6 @@
 
 ***
 
-[**Computational Methods in Statistics (CMS) - Master's in Statistics, UNICAMP)**](http://mynameislaure.github.io/cms/)
+[**Computational Methods in Statistics (CMS) - Master's in Statistics, UNICAMP**](http://mynameislaure.github.io/cms/)
 
 ***
