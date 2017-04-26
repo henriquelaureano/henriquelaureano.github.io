@@ -105,8 +105,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>README</a></li>
 <li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html"><i class="fa fa-check"></i>Bootstrap</a><ul>
-<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#standard-error-boostrap-estimate"><i class="fa fa-check"></i>Standard error boostrap estimate</a></li>
-<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bias-bootstrap-estimate"><i class="fa fa-check"></i>Bias bootstrap estimate</a></li>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bootstrap-estimation-of-standard-error"><i class="fa fa-check"></i>Bootstrap estimation of standard error</a></li>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bootstrap-estimation-of-bias"><i class="fa fa-check"></i>Bootstrap estimation of bias</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html"><i class="fa fa-check"></i>Permutation tests</a></li>
 <li class="divider"></li>
@@ -159,8 +159,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 \]</span>
 </div>
 
-<div id="standard-error-boostrap-estimate" class="section level2 unnumbered">
-<h2>Standard error boostrap estimate</h2>
+<div id="bootstrap-estimation-of-standard-error" class="section level2 unnumbered">
+<h2>Bootstrap estimation of standard error</h2>
 <p>The bootstrap estimate of the standard error of an estimator <span class="math inline">\(\hat{\theta}\)</span> is the sample standard error of the bootstrap replicates <span class="math inline">\(\hat{\theta}^{(1)}, ..., \hat{\theta}^{(B)}\)</span>:</p>
 <p><span class="math display">\[ \text{se}(\hat{\theta}^{*}) =
    \sqrt{\frac{1}{B - 1}
@@ -194,13 +194,19 @@ boot.corr &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(se.theta.star &lt;-<span class="st"> </span><span class="kw">sd</span>(boot.corr))</code></pre></div>
 <pre><code>[1] 0.04782856</code></pre>
 </div>
-<div id="bias-bootstrap-estimate" class="section level2 unnumbered">
-<h2>Bias bootstrap estimate</h2>
+<div id="bootstrap-estimation-of-bias" class="section level2 unnumbered">
+<h2>Bootstrap estimation of bias</h2>
 <p>The definition of bias is given by:</p>
 <p><span class="math display">\[ B(\hat{\theta}) = E(\hat{\theta}) - \theta. \]</span></p>
-<p>Thus, the bias bootsrap estimate is:</p>
+<p>Thus, the bootsrap estimate of bias is:</p>
 <p><span class="math display">\[ \hat{B(\hat{\theta})} = \bar{\hat{\theta}^{*}} - \theta, \]</span></p>
 <p>expression in which <span class="math inline">\(\bar{\hat{\theta}^{*}} = \frac{1}{B} \sum_{b = 1}^{B} \hat{\theta}^{(b)}\)</span> and <span class="math inline">\(\hat{\theta}\)</span> is the estimate calculated using the original sample.</p>
+<blockquote>
+<p>Every statistic is an unbiased estimator of its expected value, and in particular, the sample mean of a random sample is an unbiased estimator of the mean of the distribution. An example of a biased estimator is the maximum likelihood estimator of variance, <span class="math inline">\(\hat{\sigma}^{2} = \frac{1}{n} \sum_{i = 1}^{n} (X_{i} - \bar{X})^{2}\)</span>, which has expected value <span class="math inline">\((1 - 1/n) \sigma^{2}\)</span>. Thus, <span class="math inline">\(\hat{\sigma}^{2}\)</span> underestimates <span class="math inline">\(\sigma^{2}\)</span>, and the bias is <span class="math inline">\(-\sigma^{2}/n\)</span>.</p>
+</blockquote>
+<blockquote>
+<p>In bootstrap <span class="math inline">\(F_{n}\)</span> is sampled in place of <span class="math inline">\(F_{X}\)</span>, so we replace <span class="math inline">\(\theta\)</span> with <span class="math inline">\(\hat{\theta}\)</span> to estimate the bias. Positive bias indicates that <span class="math inline">\(\hat{\theta}\)</span> on average tends to overestimate <span class="math inline">\(\theta\)</span>.</p>
+</blockquote>
 
 <div class="example">
 <span id="ex:unnamed-chunk-5" class="example"><strong>Example 3  (Correlation)  </strong></span>
