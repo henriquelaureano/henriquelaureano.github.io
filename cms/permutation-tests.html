@@ -25,7 +25,7 @@
 <meta name="author" content="Henrique Aparecido Laureano">
 
 
-<meta name="date" content="2017-04-25">
+<meta name="date" content="2017-04-26">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,7 +108,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bootstrap-estimation-of-standard-error"><i class="fa fa-check"></i>Bootstrap estimation of standard error</a></li>
 <li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bootstrap-estimation-of-bias"><i class="fa fa-check"></i>Bootstrap estimation of bias</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html"><i class="fa fa-check"></i>Permutation tests</a></li>
+<li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html"><i class="fa fa-check"></i>Permutation tests</a><ul>
+<li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html#approximate-permutation-test-procedure"><i class="fa fa-check"></i>Approximate permutation test procedure</a></li>
+</ul></li>
 <li class="divider"></li>
 <li></li>
 
@@ -147,6 +149,53 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Let <span class="math inline">\(Z\)</span> be the ordered set <span class="math inline">\(\{X_{1}, ..., X_{n}, Y_{1}, ..., Y_{m}\}\)</span> indexed by the indices <span class="math inline">\(\nu = \{1, ..., n, n + 1, ..., n + m\} = \{1, ..., N\}\)</span>.</p>
 <p>Under <span class="math inline">\(H_{0}\)</span>, the chance to select <span class="math inline">\(n\)</span> elements of <span class="math inline">\(Z\)</span> is</p>
 <p><span class="math display">\[ \frac{1}{\binom{N}{n}} = \frac{n! m!}{N!}. \]</span></p>
+<p>If <span class="math inline">\(\hat{\theta}(X, Y) = \hat{\theta}(Z, \nu)\)</span> is a statistic, then the <em>permutation distribution</em> of <span class="math inline">\(\hat{\theta}^{*}\)</span> is the distribution of the replicates</p>
+<span class="math display">\[\begin{align}
+ \left\{ \hat{\theta}^{*} \right\} &amp;= \left\{
+ \hat{\theta}(Z, \pi_{j}(\nu)), j = 1, ..., \binom{N}{n}
+                          \right\} \\
+                    &amp; = \left\{ \hat{\theta}^{(j)} | \pi_{j}(\nu)
+                                \text{ is a permutation of } \nu
+                        \right\}.
+\end{align}\]</span>
+<p>The cdf of <span class="math inline">\(\hat{\theta}^{*}\)</span> is given by</p>
+<p><span class="math display">\[ F_{\theta^{*}}(t) = P(\hat{\theta}^{*} \leq t) =
+   \binom{N}{n}^{-1} \sum_{j = 1}^{N} I\left(
+                                       \hat{\theta}^{(j)} \leq t
+                                       \right).
+\]</span></p>
+<p>Thus, if <span class="math inline">\(\hat{\theta}\)</span> is applied to test a hypothesis and large values of <span class="math inline">\(\hat{\theta}\)</span> are significant, then the permutation test rejects the null hypothesis when <span class="math inline">\(\hat{\theta}\)</span> is large relative to the distribution of the permutation replicates. The achieved significance level (ASL) of the observed statistic <span class="math inline">\(\hat{\theta}\)</span> is the probability</p>
+<p><span class="math display">\[ P(\hat{\theta}^{*} \geq \hat{\theta}) =
+   \binom{N}{n}^{-1} \sum_{j = 1}^{N} I\left(
+                                       \hat{\theta}^{(j)} \geq t
+                                       \right),
+\]</span></p>
+<p>where <span class="math inline">\(\hat{\theta} = \hat{\theta}(Z, \nu)\)</span> is the statistic computed on the observed sample. The ASL for a lower-tail or two-tail test based on <span class="math inline">\(\hat{\theta}\)</span> is computed in a similar way.</p>
+<p>In practice, unless the sample size is very small, evaluating the test statistic for all of the <span class="math inline">\(\binom{N}{n}\)</span> permutations is computationally excessive. An approximate permutation test is implemented by randomly drawing a large number of samples without replacement.</p>
+<div id="approximate-permutation-test-procedure" class="section level2 unnumbered">
+<h2>Approximate permutation test procedure</h2>
+<ol style="list-style-type: decimal">
+<li><p>Compute the observed test statistic <span class="math inline">\(\hat{\theta}(X, Y) = \hat{\theta}(Z, \nu)\)</span>ν).</p></li>
+<li><p>For each replicate, indexed <span class="math inline">\(b = 1, ..., B\)</span>:</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>Generate a random permutation <span class="math inline">\(\pi_{b} = \pi(\nu)\)</span>.</p></li>
+<li><p>Compute the statistic <span class="math inline">\(\hat{\theta}^{(b)} = \hat{\theta}^{*}(Z, \pi_{b})\)</span>.</p></li>
+</ol></li>
+<li><p>If large values of <span class="math inline">\(\hat{\theta}\)</span> support the alternative, compute the ASL (the em- pirical p-value) by</p></li>
+</ol>
+<p><span class="math display">\[ \hat{p} =
+      \frac{1 + \#\left\{
+                   \hat{\theta}^{(b)} \geq \hat{\theta}
+                  \right\}}{B + 1} = \frac{
+      \left\{
+       1 + \sum_{b = 1}^{B} I\left(
+                             \hat{\theta}^{(b)} \geq \hat{\theta}
+                             \right)
+      \right\}}{B + 1}.
+   \]</span></p>
+<ol start="4" style="list-style-type: decimal">
+<li>Reject <span class="math inline">\(H_{0}\)</span> at significance level <span class="math inline">\(\alpha\)</span> if <span class="math inline">\(\hat{p} \leq \alpha\)</span>.</li>
+</ol>
 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;iBagens/permutation.png&quot;</span>)</code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-7"></span>
@@ -179,6 +228,7 @@ t =<span class="st"> </span><span class="kw">t.test</span>(x, y)<span class="op"
 <pre><code>[1] 0.1188119</code></pre>
 <hr />
 
+</div>
 </div>
             </section>
 
