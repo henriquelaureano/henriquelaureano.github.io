@@ -166,10 +166,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;chickwts&quot;</span>)
 
 ## Packages
-<span class="kw">library</span>(latticeExtra)</code></pre></div>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## Loading required package: RColorBrewer</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## function: two-sample Cramér-von Mises test for equal distributions
+<span class="kw">library</span>(latticeExtra)
+
+## function: two-sample Cramér-von Mises test for equal distributions
 cvm &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, data){
   r &lt;-<span class="st"> </span><span class="dv">10000</span> <span class="co"># Permutation samples</span>
   reps &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, r)
@@ -246,20 +245,16 @@ x &lt;-<span class="st"> </span>(z[ , <span class="dv">1</span><span class="op">
 y &lt;-<span class="st"> </span>(z[ , <span class="dv">3</span><span class="op">:</span><span class="dv">4</span>])
 
 <span class="kw">cor</span>(x,y, <span class="dt">method =</span> <span class="st">&quot;spearman&quot;</span>)</code></pre></div>
-<pre><code>##              Petal.Length Petal.Width
-## Sepal.Length    0.2788849   0.2994989
-## Sepal.Width     0.1799110   0.2865359</code></pre>
+<pre><code>             Petal.Length Petal.Width
+Sepal.Length    0.2788849   0.2994989
+Sepal.Width     0.1799110   0.2865359</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor.test</span>(x, y, <span class="dt">method =</span> <span class="st">&quot;spearman&quot;</span>, <span class="dt">exact =</span> <span class="ot">FALSE</span>)<span class="op">$</span>estimate</code></pre></div>
-<pre><code>##       rho 
-## 0.8292811</code></pre>
+<pre><code>      rho 
+0.8292811 </code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Packages
-<span class="kw">library</span>(boot)</code></pre></div>
-<pre><code>## 
-## Attaching package: &#39;boot&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:lattice&#39;:
-## 
-##     melanoma</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## function: bivariate Spearman rank correlation test for independence
+<span class="kw">library</span>(boot)
+
+## function: bivariate Spearman rank correlation test for independence
 spear.cor &lt;-<span class="st"> </span><span class="cf">function</span>(z) {
   rho.est &lt;-<span class="st"> </span><span class="cf">function</span>(z, i) { <span class="co"># Test statistic</span>
     x &lt;-<span class="st"> </span>z[ , <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] 
