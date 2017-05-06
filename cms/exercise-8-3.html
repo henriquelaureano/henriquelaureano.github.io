@@ -33,8 +33,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="bootstrap.html">
+<link rel="prev" href="exercise-8-2.html">
+<link rel="next" href="exercise-8-4.html">
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -112,12 +112,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html"><i class="fa fa-check"></i>Permutation tests</a><ul>
 <li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html#approximate-permutation-test-procedure"><i class="fa fa-check"></i>Approximate permutation test procedure</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html"><i class="fa fa-check"></i>Exercises - Chapter 8: Permutation Tests</a><ul>
-<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.1"><i class="fa fa-check"></i>Exercise 8.1</a></li>
-<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.2"><i class="fa fa-check"></i>Exercise 8.2</a></li>
-<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.3"><i class="fa fa-check"></i>Exercise 8.3</a></li>
-<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.4"><i class="fa fa-check"></i>Exercise 8.4</a></li>
-</ul></li>
+<li class="chapter" data-level="1" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html"><i class="fa fa-check"></i><b>1</b> Exercises - Chapter 8: Permutation Tests</a></li>
+<li class="chapter" data-level="2" data-path="exercise-8-1.html"><a href="exercise-8-1.html"><i class="fa fa-check"></i><b>2</b> Exercise 8.1</a></li>
+<li class="chapter" data-level="3" data-path="exercise-8-2.html"><a href="exercise-8-2.html"><i class="fa fa-check"></i><b>3</b> Exercise 8.2</a></li>
+<li class="chapter" data-level="4" data-path="exercise-8-3.html"><a href="exercise-8-3.html"><i class="fa fa-check"></i><b>4</b> Exercise 8.3</a></li>
+<li class="chapter" data-level="5" data-path="exercise-8-4.html"><a href="exercise-8-4.html"><i class="fa fa-check"></i><b>5</b> Exercise 8.4</a></li>
 <li class="divider"></li>
 <li></li>
 
@@ -138,32 +137,67 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Computational Methods in Statistics</h1>
-<h4 class="author"><em>Henrique Aparecido Laureano</em></h4>
-<h4 class="date"><em>2017-05-06</em></h4>
-</div>
-<div id="readme" class="section level1 unnumbered">
-<h1>README</h1>
+<div id="exercise-8.3" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> Exercise 8.3</h1>
 <hr />
-<p><strong>Summaries and study notes of the discipline: <a href="http://estatcomp.github.io/">Computational Methods in Statistics</a></strong></p>
-<p>Summaries and study notes taken from the book:</p>
-<blockquote>
-<p>Maria L. Rizzo, 2008. <em>Statistical Computing with R</em>, Chapman &amp; Hall/CRC, ISBN 1-58488-545-9, 393 pages.</p>
-</blockquote>
+<p><strong>The Count 5 test for equal variances in Section 6.4 is based on the maximum number of extreme points. Example 6.15 shows that the Count 5 criterion is not applicable for unequal sample sizes. Implement a permutation test for equal variance based on the maximum number of extreme points that applies when sample sizes are not necessarily equal.</strong></p>
 <hr />
-<p>Program: <a href="https://www.ime.unicamp.br/pos-graduacao/estatistica">Master’s degree in Statistics</a></p>
-<p>University: <a href="http://www.unicamp.br/unicamp/">Unicamp</a> (State University of Campinas)</p>
-<hr />
+<p>Solution:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Dataset
+n_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="dv">20</span> <span class="co"># Defining the sample sizes</span>
+n_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="dv">30</span>
+x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n_<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">5</span>)
+y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n_<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">5</span>)
 
+## function: permutation test for equal variance based
+##           on the maximum number of extreme points
+count5 &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {
+  count5test &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) { <span class="co"># Test statistic</span>
+    X &lt;-<span class="st"> </span>x <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(x)
+    Y &lt;-<span class="st"> </span>y <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(y)
+    outx &lt;-<span class="st"> </span><span class="kw">sum</span>(X <span class="op">&gt;</span><span class="st"> </span><span class="kw">max</span>(Y)) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(X <span class="op">&lt;</span><span class="st"> </span><span class="kw">min</span>(Y))
+    outy &lt;-<span class="st"> </span><span class="kw">sum</span>(Y <span class="op">&gt;</span><span class="st"> </span><span class="kw">max</span>(X)) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(Y <span class="op">&lt;</span><span class="st"> </span><span class="kw">min</span>(X))
+    <span class="co"># Return 1 (reject) or 0 (do not reject H_{0})</span>
+    <span class="kw">return</span>( <span class="kw">as.integer</span>( <span class="kw">max</span>(<span class="kw">c</span>(outx, outy) ) <span class="op">&gt;</span><span class="st"> </span><span class="dv">5</span>) )
+  }
+  r &lt;-<span class="st"> </span><span class="dv">10000</span> <span class="co"># Permutation samples</span>
+  z &lt;-<span class="st"> </span><span class="kw">c</span>(x, y)
+  n &lt;-<span class="st"> </span><span class="kw">length</span>(z)
+  reps &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, r)
+  t0 &lt;-<span class="st"> </span><span class="kw">count5test</span>(x, y)
+  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>r){ <span class="co"># Permutation test</span>
+    k =<span class="st"> </span><span class="kw">sample</span>(n, <span class="dt">size =</span> <span class="kw">length</span>(x), <span class="dt">replace =</span> <span class="ot">FALSE</span>)
+    reps[i] =<span class="st"> </span><span class="kw">count5test</span>(z[k], z[<span class="op">-</span>k])
+  }
+  p &lt;-
+<span class="st">    </span><span class="kw">ifelse</span>(t0 <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="kw">mean</span>( <span class="kw">c</span>(t0, reps) <span class="op">&gt;</span><span class="st"> </span>t0 ), <span class="kw">mean</span>( <span class="kw">c</span>(t0, reps) <span class="op">&gt;=</span><span class="st"> </span>t0 ))
+  <span class="kw">return</span>(
+    <span class="kw">histogram</span>(<span class="kw">c</span>(t0, reps) <span class="co"># Histogram</span>
+              , <span class="dt">type =</span> <span class="st">&quot;density&quot;</span>
+              , <span class="dt">col =</span> <span class="st">&quot;#0080ff&quot;</span>
+              , <span class="dt">xlab =</span> <span class="st">&quot;Replicates of the Count 5 test&quot;</span>
+              , <span class="dt">ylab =</span> <span class="kw">list</span>(<span class="dt">rot =</span> <span class="dv">0</span>)
+              , <span class="dt">main =</span> <span class="st">&quot;Permutation distribution of the Count 5 test&quot;</span>
+              , <span class="dt">sub =</span> <span class="kw">list</span>(<span class="kw">substitute</span>(<span class="kw">paste</span>(<span class="kw">hat</span>(p), <span class="st">&quot; = &quot;</span>,pvalue)
+                                      , <span class="kw">list</span>(<span class="dt">pvalue =</span> p))
+                           , <span class="dt">col =</span> <span class="dv">2</span>)
+              , <span class="dt">panel =</span> <span class="cf">function</span>(...){
+                <span class="kw">panel.histogram</span>(...)
+                <span class="kw">panel.abline</span>(<span class="dt">v =</span> t0, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)
+              })
+  )
+}
+<span class="kw">count5</span>(x, y)</code></pre></div>
+<p><img src="mce_files/figure-html/unnamed-chunk-12-1.png" width="960" /></p>
+<hr />
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="bootstrap.html" class="navigation navigation-next navigation-unique" aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+<a href="exercise-8-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="exercise-8-4.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
 
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
@@ -191,7 +225,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/index.Rmd",
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/03-exer_chap8.Rmd",
 "text": "Edit"
 },
 "download": ["mce.pdf", "mce.epub"],

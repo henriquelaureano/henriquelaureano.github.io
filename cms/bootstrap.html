@@ -6,8 +6,9 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Computational Methods in Statistics</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <meta name="description" content="Computational Methods in Statistics">
-  <meta name="generator" content="bookdown 0.3.18 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
 
   <meta property="og:title" content="Computational Methods in Statistics" />
   <meta property="og:type" content="book" />
@@ -25,7 +26,7 @@
 <meta name="author" content="Henrique Aparecido Laureano">
 
 
-<meta name="date" content="2017-04-26">
+<meta name="date" content="2017-05-06">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,6 +35,7 @@
   
 <link rel="prev" href="index.html">
 <link rel="next" href="permutation-tests.html">
+
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -93,7 +95,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <body>
 
 
-
   <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
 
     <div class="book-summary">
@@ -110,6 +111,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html"><i class="fa fa-check"></i>Permutation tests</a><ul>
 <li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html#approximate-permutation-test-procedure"><i class="fa fa-check"></i>Approximate permutation test procedure</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html"><i class="fa fa-check"></i>Exercises - Chapter 8: Permutation Tests</a><ul>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.1"><i class="fa fa-check"></i>Exercise 8.1</a></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.2"><i class="fa fa-check"></i>Exercise 8.2</a></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.3"><i class="fa fa-check"></i>Exercise 8.3</a></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.4"><i class="fa fa-check"></i>Exercise 8.4</a></li>
 </ul></li>
 <li class="divider"></li>
 <li></li>
@@ -171,11 +178,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
    \bar{\theta}^{*} = \frac{1}{B} \sum_{b = 1}^{B} \hat{\theta}^{(b)}.
 \]</span></p>
 <p>Where <span class="math inline">\(B\)</span> is the number of replicates.</p>
-
-<div class="example">
-<span id="ex:unnamed-chunk-3" class="example"><strong>Example 2  (Correlation)  </strong></span>
-</div>
-
+<p>Example 2  (Correlation) </p>
 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lattice<span class="op">::</span><span class="kw">xyplot</span>(dist <span class="op">~</span><span class="st"> </span>speed, cars, <span class="dt">pch =</span> <span class="dv">16</span>, <span class="dt">ylab =</span> <span class="kw">list</span>(<span class="dt">rot =</span> <span class="dv">0</span>))</code></pre></div>
 <div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-4"></span>
@@ -209,11 +212,7 @@ boot.corr &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
 <blockquote>
 <p>In bootstrap <span class="math inline">\(F_{n}\)</span> is sampled in place of <span class="math inline">\(F_{X}\)</span>, so we replace <span class="math inline">\(\theta\)</span> with <span class="math inline">\(\hat{\theta}\)</span> to estimate the bias. Positive bias indicates that <span class="math inline">\(\hat{\theta}\)</span> on average tends to overestimate <span class="math inline">\(\theta\)</span>.</p>
 </blockquote>
-
-<div class="example">
-<span id="ex:unnamed-chunk-5" class="example"><strong>Example 3  (Correlation)  </strong></span>
-</div>
-
+<p>Example 3  (Correlation) </p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">theta.star <span class="op">-</span><span class="st"> </span><span class="kw">with</span>(cars, <span class="kw">cor</span>(dist, speed))</code></pre></div>
 <pre><code>[1] -0.0006490941</code></pre>
 <hr />
@@ -226,9 +225,8 @@ boot.corr &lt;-<span class="st"> </span><span class="kw">vector</span>(<span cla
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="permutation-tests.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
-    </div>
-  </div>
+<a href="permutation-tests.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
