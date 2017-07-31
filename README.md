@@ -75,3 +75,7 @@
 [**Computational Methods in Statistics (CMS) - Master's in Statistics, UNICAMP**](http://mynameislaure.github.io/cms/)
 
 ***
+
+[**Asking for help in GMRF book algorithm**](http://mynameislaure.github.io/provisory/helpmepls.html)
+
+***
