@@ -79,3 +79,31 @@
 [**Asking for help in GMRF book algorithm**](http://mynameislaure.github.io/provisory/helpmepls.html)
 
 ***
+
+[**ce092 - Extensions of Regression Models**](https://github.com/mynameislaure/emr15)
+
+***
+
++ Piecewise Regression
+  - [Henrique](http://mynameislaure.github.io/emr15/piece-reg/)
+  - [Eduardo](http://mynameislaure.github.io/emr15/piece-reg/piecewise.html)
+
++ [Non-linear Models](http://mynameislaure.github.io/emr15/nlm/)
+
++ Transformed likelihood
+  - Henrique
+    * [Theory](http://mynameislaure.github.io/emr15/translikeli/theory.html)
+    * [Application](http://mynameislaure.github.io/emr15/translikeli/application.html)
+  - [Eduardo](http://mynameislaure.github.io/emr15/translikeli/application-eduardojr.html)
+
++ Mixed Effects Models
+  - [Poisson](http://mynameislaure.github.io/emr15/mem/mixed_poisson_model.html)
+  - [Piecewise](http://mynameislaure.github.io/emr15/mem/piecewise_mixed_model.html)
+
++ [Nonparametric Regression](http://mynameislaure.github.io/emr15/nonp-reg/)
+
++ Heteroscedastic Regression Models
+  - [Theory](http://mynameislaure.github.io/emr15/het-regm/theory.html)
+  - [Application](http://mynameislaure.github.io/emr15/het-regm/application.html)
+
+***
