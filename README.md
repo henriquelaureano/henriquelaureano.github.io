@@ -76,7 +76,11 @@
 
 ***
 
-[**Asking for help in GMRF book algorithm**](http://mynameislaure.github.io/provisory/helpmepls.html)
+[**Gaussian Markov Random Fields**](http://github.com/mynameislaure/GMRF/)
+
+***
+
+* [Algorithm 2.10](http://mynameislaure.github.io/GMRF/helpmepls.html)
 
 ***
 
