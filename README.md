@@ -111,3 +111,9 @@
   - [Application](http://mynameislaure.github.io/emr15/het-regm/application.html)
 
 ***
+
+[**amcs210 - Applied Statistics and Data Analysis**](https://github.com/mynameislaure/amcs210)
+
+* [Homework I](https://mynameislaure.github.io/amcs210/hw1.pdf)
+
+***
