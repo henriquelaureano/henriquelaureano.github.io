@@ -118,4 +118,6 @@
 
 * [Homework I](https://mynameislaure.github.io/amcs210/hw1.pdf)
 
+* [Homework II](https://mynameislaure.github.io/amcs210/hw2.pdf)
+
 ***
