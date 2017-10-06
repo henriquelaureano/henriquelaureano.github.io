@@ -120,4 +120,6 @@
 
 * [Homework II](https://mynameislaure.github.io/amcs210/hw2.pdf)
 
+* [Homework III](https://mynameislaure.github.io/amcs210/hw3.pdf)
+
 ***
