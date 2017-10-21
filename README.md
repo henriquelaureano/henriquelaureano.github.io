@@ -122,4 +122,6 @@
 
 * [Homework III](https://mynameislaure.github.io/amcs210/hw3.pdf)
 
+* [Midterm I: Take-Home Part](https://mynameislaure.github.io/amcs210/md1-thp.pdf)
+
 ***
