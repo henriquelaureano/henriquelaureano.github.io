@@ -124,4 +124,6 @@
 
 * [Midterm I: Take-Home Part](https://mynameislaure.github.io/amcs210/md1-thp.pdf)
 
+* [Project](https://mynameislaure.github.io/amcs210/project.pdf)
+
 ***
