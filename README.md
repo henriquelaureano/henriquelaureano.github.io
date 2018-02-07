@@ -128,6 +128,6 @@
 
 ***
 
-[**Applied Mathematics II - Homework I**](http://mynameislaure.github.io/academic_courses/amcs202/hw1.pdf) ([Rnw](http://mynameislaure.github.io/academic_courses/amcs202/hw1.Rnw))
+[**Applied Mathematics II - Homework I**](http://mynameislaure.github.io/academic_courses/applied_math_ii/hw1.pdf) ([Rnw](http://mynameislaure.github.io/academic_courses/applied_math_ii/hw1.Rnw))
 
 ***
