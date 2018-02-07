@@ -127,3 +127,7 @@
 * [Project](https://mynameislaure.github.io/amcs210/project.pdf)
 
 ***
+
+[**Applied Mathematics II - Homework I**](http://mynameislaure.github.io/academic_courses/amcs202/hw1.pdf)([Rnw](http://mynameislaure.github.io/academic_courses/amcs202/hw1.Rnw))
+
+***
