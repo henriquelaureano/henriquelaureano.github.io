@@ -185,15 +185,29 @@ Therefore,
 
 \subsection*{Q1.3}
 
-\horrule{.5pt}
+\horrule{.5pt} \\
 
-\textbf{
- \begin{itemize}
-  \item What does mean \(\mathbb{V} \hat{\beta}_{1} \neq 0\)?
-  \item What is the source of randomness in \(\hat{\beta}_{1}\)?
-  \item How can you reduce \(\mathbb{V} \hat{\beta}_{1}\)?
- \end{itemize}
-}
+\textbf{What does mean} \(\mathbb{V} \hat{\beta}_{1} \neq 0\) ? \\
+
+\underline{Solution:} \\
+
+\fbox{\begin{minipage}{.98\textwidth}
+       We don't know the real slope, \(\beta_{1}\), so \(\hat{\beta}_{1}\) is an
+       estimative with mean \(\beta_{1}\) and with a respective variance. If the
+       variance of \(\hat{\beta}_{1}\) is zero this means that, is this case,
+       \(\hat{\beta}_{1}\) is exactly equal to \(\beta_{1}\).
+      \end{minipage}
+     } \\
+
+\hfill \(\square\)
+
+\textbf{What is the source of randomness in} \(\hat{\beta}_{1}\) ? \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\textbf{How can you reduce} \(\mathbb{V} \hat{\beta}_{1}\) ? \\
 
 \underline{Solution:}
 
