@@ -205,11 +205,34 @@ Therefore,
 
 \underline{Solution:}
 
+\[ \hat{\beta}_{1} =
+   \frac{\sum_{i=1}^{n} y_{i}(x_{i}-\bar{x})}{\sum_{i=1}^{n} (x_{i}-\bar{x})^{2}}.
+\]
+
+\fbox{\begin{minipage}{.98\textwidth}
+       The source of randomness is the data itself. In the numerator and
+       denominator of the estimator we have the difference of each observation
+       of the independent variable with its mean. This we can't control, depends
+       from the data. This is the source of randomness.
+      \end{minipage}
+     } \\
+
 \hfill \(\square\)
 
 \textbf{How can you reduce} \(\mathbb{V} \hat{\beta}_{1}\) ? \\
 
 \underline{Solution:}
+
+\[ \mathbb{V} \hat{\beta}_{1}
+   = \frac{\sigma^{2}}{S_{xx}}
+    = \frac{\sigma^{2}}{\sum_{i=1}^{n} (x_{i}-\bar{x})^{2}}.
+\]
+
+\fbox{\begin{minipage}{.98\textwidth}
+       Collecting more data. With a bigger sample size the component \(S_{xx}\) is
+       bigger and consequently the variance is smaller.
+      \end{minipage}
+     } \\
 
 \hfill \(\square\)
 
