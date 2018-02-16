@@ -416,7 +416,39 @@ because present a small variance between the coefficients.
    \underbrace{{\rm RSS}}_{\text{Variations in } Y \text{ unexplained by model}}
 \]
 
-\underline{Solution:}
+\underline{Solution:} \\
+
+Notation:
+
+\begin{align*}
+ {\rm TSS} & = \sum_{i=1}^{n} (y_{i} - \bar{y})^{2}, \qquad
+               \text{Total sum of squares} \\
+ {\rm RSS} & = \sum_{i=1}^{n} (y_{i} - \hat{y})^{2}, \qquad
+               \text{Residual sum of squares} \\
+ {\rm SS}_{reg} & = \sum_{i=1}^{n} (\hat{y}_{i} - \bar{y})^{2}, \qquad
+                    \text{Sum of squares in regression}
+\end{align*}
+
+with \(\hat{y} = \hat{\beta}_{0} + \hat{\beta}_{1} x_{i}\). \\
+
+Proof:
+
+\begin{align*}
+ y_{i} - \bar{y} & = \hat{y}_{i} - \bar{y} + y_{i} - \hat{y}_{i} \\
+ y_{i} - \bar{y} & = (\hat{y}_{i} - \bar{y}) + (y_{i} - \hat{y}_{i}) \\
+ \sum_{i=1}^{n} (y_{i} - \bar{y})^{2} & =
+ \sum_{i=1}^{n} \Big[(\hat{y}_{i} - \bar{y}) + (y_{i} - \hat{y}_{i})\Big]^{2} \\
+ \sum_{i=1}^{n} (y_{i} - \bar{y})^{2} & =
+ \sum_{i=1}^{n} \Big[(\hat{y}_{i} - \bar{y})^{2} + (y_{i} - \hat{y}_{i})^{2} +
+                     2 (\hat{y}_{i} - \bar{y}) (y_{i} - \hat{y}_{i})
+                \Big] \\
+ \sum_{i=1}^{n} (y_{i} - \bar{y})^{2} & =
+ \sum_{i=1}^{n} (\hat{y}_{i} - \bar{y})^{2} +
+ \sum_{i=1}^{n} (y_{i} - \hat{y}_{i})^{2} +
+ 2 \sum_{i=1}^{n} (\hat{y}_{i} - \bar{y}) (y_{i} - \hat{y}_{i}),
+\end{align*}
+
+but
 
 \hfill \(\square\)
 
