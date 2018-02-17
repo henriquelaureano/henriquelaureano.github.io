@@ -508,7 +508,45 @@ Therefore,
          \sum_{i=1}^{n} (x_{i}-\bar{x})^{2} \sum_{i=1}^{n} (y_{i}-\bar{y})^{2}}.
 \]
 
-\underline{Solution:}
+\underline{Solution:} \\
+
+First,
+
+\[ \text{we know that }  \quad
+   R^{2} = \frac{{\rm SS}_{\rm reg}}{TSS}
+         = \frac{\sum_{i=1}^{n} (\hat{y}_{i}-\bar{y})^{2}}{
+                 \sum_{i=1}^{n} (y_{i}-\bar{y})^{2}}, \quad
+  \hat{\beta}_{0} = \bar{y} - \hat{\beta}_{1} \bar{x} \quad {\rm and} \quad
+  \hat{\beta}_{1} = \frac{\sum_{i=1}^{n} (x_{i}-\bar{x})(y_{i}-\bar{y})}{
+                          \sum_{i=1}^{n} (x_{i}-\bar{x})^{2}}.
+\]
+
+So
+
+\begin{align*}
+ {\rm SS}_{\rm reg} = \sum_{i=1}^{n} (\hat{y}_{i}-\bar{y})^{2} & =
+ \sum_{i=1}^{n} (\hat{\beta}_{0} + \hat{\beta}_{1} x_{i} - \bar{y})^{2} \\ & =
+ \sum_{i=1}^{n}
+ (\bar{y} - \hat{\beta}_{1} \bar{x} + \hat{\beta}_{1} x_{i} - \bar{y})^{2} \\ & =
+ \hat{\beta}_{1}^{2} \sum_{i=1}^{n} (x_{i} - \bar{x})^{2} \\ & =
+ \frac{\Big(\sum_{i=1}^{n} (x_{i}-\bar{x})(y_{i}-\bar{y})\Big)^{2}}{
+       \Big(\sum_{i=1}^{n} (x_{i}-\bar{x})^{2}\Big)^{2}}
+ \sum_{i=1}^{n} (x_{i} - \bar{x})^{2} \\ & =
+ \frac{\Big(\sum_{i=1}^{n} (x_{i}-\bar{x})(y_{i}-\bar{y})\Big)^{2}}{
+       \sum_{i=1}^{n} (x_{i}-\bar{x})^{2}}.
+\end{align*}
+
+Therefore,
+
+\[ \boxed{
+    R^{2} = \frac{{\rm SS}_{\rm reg}}{TSS}
+          = \frac{\sum_{i=1}^{n} (\hat{y}_{i}-\bar{y})^{2}}{
+                  \sum_{i=1}^{n} (y_{i}-\bar{y})^{2}} =
+    \frac{\Big(\sum_{i=1}^{n} (x_{i}-\bar{x})(y_{i}-\bar{y})\Big)^{2}}{
+          \sum_{i=1}^{n} (x_{i}-\bar{x})^{2} \sum_{i=1}^{n} (y_{i}-\bar{y})^{2}}
+          = r^{2}.
+         }
+\]
 
 \hfill \(\square\)
 
