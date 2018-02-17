@@ -408,11 +408,11 @@ because present a small variance between the coefficients.
 
 \textbf{Question Q3 on page 19 of Topic 2.} \\
 
-\textbf{Proof the following ANOVA Decomposition:}
+\textbf{Prove the following ANOVA Decomposition:}
 
 \[ \underbrace{{\rm TSS}}_{\text{Total variations in } Y} =
-   \underbrace{{\rm SS}_{{\rm reg}}}_{\text{Variations in } Y
-                                      \text{ explained by model}} +
+   \underbrace{{\rm SS}_{\rm reg}}_{\text{Variations in } Y
+                                    \text{ explained by model}} +
    \underbrace{{\rm RSS}}_{\text{Variations in } Y \text{ unexplained by model}}
 \]
 
@@ -450,6 +450,48 @@ Proof:
 
 but
 
+\begin{align*}
+ \sum_{i=1}^{n} (\hat{y}_{i} - \bar{y}) (y_{i} - \hat{y}_{i}) & =
+ \sum_{i=1}^{n} \Big[\hat{y}_{i} y_{i} - \hat{y}_{i}^{2} - \bar{y} y_{i} +
+                     \bar{y} \hat{y}_{i}
+                \Big] \\ & =
+ \sum_{i=1}^{n} \hat{y}_{i} y_{i} - \sum_{i=1}^{n} \hat{y}_{i}^{2} -
+ \bar{y} \sum_{i=1}^{n} y_{i} + \bar{y} \sum_{i=1}^{n} \hat{y}_{i} \\ & =
+ \sum_{i=1}^{n} \hat{y}_{i} (y_{i} - \hat{y}_{i}) -
+ \bar{y} \sum_{i=1}^{n} (y_{i} - \hat{y}_{i}) \\ & = 0,
+\end{align*}
+
+because
+
+\begin{align*}
+ i^{\rm th} \text{ residual } \qquad \Rightarrow \qquad
+ e_{i} & = y_{i} - \hat{y}_{i} \\
+ \sum_{i=1}^{n} e_{i} & = \sum_{i=1}^{n} (y_{i} - \hat{y}_{i}) \\
+ & = \sum_{i=1}^{n} (y_{i} - \hat{\beta}_{0} - \hat{\beta}_{1} x_{i}) \\
+ & = \sum_{i=1}^{n} y_{i} - n \hat{\beta}_{0}
+                          - \hat{\beta}_{1} \sum_{i=1}^{n} x_{i} \\
+ & = \sum_{i=1}^{n} y_{i} -
+     n \bigg(\bar{y} - \hat{\beta}_{1} \sum_{i=1}^{n} \frac{x_{i}}{n}\bigg) -
+     \hat{\beta}_{1} \sum_{i=1}^{n} x_{i} \\
+ & = \sum_{i=1}^{n} y_{i} - \sum_{i=1}^{n} y_{i}
+     + \hat{\beta}_{1} \sum_{i=1}^{n} x_{i} - \hat{\beta}_{1} \sum_{i=1}^{n} x_{i}
+ \\ & = 0.
+\end{align*}
+
+Therefore,
+
+\begin{align*}
+ \sum_{i=1}^{n} (y_{i} - \bar{y})^{2} & =
+ \sum_{i=1}^{n} (\hat{y}_{i} - \bar{y})^{2} +
+ \sum_{i=1}^{n} (y_{i} - \hat{y}_{i})^{2} +
+ 2 \sum_{i=1}^{n} (\hat{y}_{i} - \bar{y}) (y_{i} - \hat{y}_{i}) \\
+ & = \sum_{i=1}^{n} (\hat{y}_{i} - \bar{y})^{2} +
+ \sum_{i=1}^{n} (y_{i} - \hat{y}_{i})^{2} + 0 \\
+ \underbrace{\sum_{i=1}^{n} (y_{i} - \bar{y})^{2}}_{\rm TSS} & =
+ \underbrace{\sum_{i=1}^{n} (\hat{y}_{i} - \bar{y})^{2}}_{{\rm SS}_{\rm reg}} +
+ \underbrace{\sum_{i=1}^{n} (y_{i} - \hat{y}_{i})^{2}}_{\rm RSS}.
+\end{align*}
+
 \hfill \(\square\)
 
 \section*{Problem 4} \addcontentsline{toc}{section}{Problem 4}
@@ -457,6 +499,14 @@ but
 \horrule{1pt} \\
 
 \textbf{Question Q4 on page 20 of Topic 2.} \\
+
+\textbf{Prove that for simple linear regression, \(R^{2}\) equals to \(r^{2}\),
+        the sample correlation between \(X\) and \(Y\)}
+
+\[ R^{2} = r^{2} =
+   \frac{\Big(\sum_{i=1}^{n} (x_{i}-\bar{x}) (y_{i}-\bar{y})\Big)^{2}}{
+         \sum_{i=1}^{n} (x_{i}-\bar{x})^{2} \sum_{i=1}^{n} (y_{i}-\bar{y})^{2}}.
+\]
 
 \underline{Solution:}
 
