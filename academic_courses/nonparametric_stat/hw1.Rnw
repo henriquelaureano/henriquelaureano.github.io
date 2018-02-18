@@ -559,7 +559,143 @@ Therefore,
         Must be able to compare two nested models. Replicate results on slides 14, 
         17, 18, 21 and 22 about the \texttt{gala} data set.} \\
 
-\underline{Solution:}
+\underline{Solution:} \\
+
+Slide 14.
+
+\begin{align*}
+ \text{Small model}: \quad {\rm Species} & = \beta_{0} + \varepsilon \\
+ \text{Bigger model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Area} + \beta_{2} {\rm Elevation} +
+                   \beta_{3} {\rm Nearest} + \beta_{4} {\rm Scruz} +
+                   \beta_{5} {\rm Adjacant} + \varepsilon
+\end{align*}
+
+<<>>=
+# <code r> ===================================================================== #
+library(faraway) ; data(gala)                        # loading package and dataset
+myanova <- function(y, small, bigger) {                     # y: response variable
+  # small: covariables in the small model; bigger: covariables in the bigger model
+  n = nrow(gala)                                                     # sample size
+  id = rep(1, n)                                         # vector of 1s, intercept
+  ybar = (1/n) * id %*% t(id) %*% y                    # \bar{y} in matricial form
+  ysum = t(y) %*% y                                      # sum_{i=1}^{n} y_{i}^{2}
+  # computations for the small model (1)
+  x1 = as.matrix(cbind(id, small))           # creating matrix x, the model matrix
+  inv1 = solve(t(x1) %*% x1)                                   # (x^{\top} x)^{-1}
+  h1 = x1 %*% inv1 %*% t(x1)                                   # creating h matrix
+  y1hat = h1 %*% y                                     # \bar{y} in matricial form
+  ss1 = t(y1hat - ybar) %*% (y1hat - ybar)          # sum of squares in regression
+  rss1 = ysum - t(y) %*% y1hat                           # residual sum of squares
+  df1 = n - ncol(x1)                    # degrees of freedom (n - # of parameters)
+  # computations for the bigger model (2)
+  x2 = as.matrix(cbind(id, bigger))          # creating matrix x, the model matrix
+  inv2 = solve(t(x2) %*% x2)                                   # (x^{\top} x)^{-1}
+  h2 = x2 %*% inv2 %*% t(x2)                                   # creating h matrix
+  y2hat = h2 %*% y                                     # \bar{y} in matricial form
+  ss2 = t(y2hat - ybar) %*% (y2hat - ybar)          # sum of squares in regression
+  rss2 = ysum - t(y) %*% y2hat                           # residual sum of squares
+  df2 = n - ncol(x2)                    # degrees of freedom (n - # of parameters)
+  tss = t(y - ybar) %*% (y - ybar)                          # total sum of squares
+  f = ((rss1 - rss2)/(df1 - df2)) / (rss2/df2)                  # f-test statistic
+  # results to be outputted
+  cat("Small model:", "\n", "RSS:", rss1, ", df:", df1, "\n")
+  cat("Bigger model:", "\n", "RSS:", rss2, ", df:", df2, "\n")
+  cat("F Statistic:", f, ", p-value", pf(f, df1-df2, df2, lower.tail = FALSE))
+}
+myanova(y = gala$Species, small = NULL,
+        bigger = gala[ , c("Area", "Elevation", "Nearest", "Scruz", "Adjacent")])
+# </code r> ==================================================================== #
+@
+
+Slide 17.
+
+\begin{align*}
+ \text{Small model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Elevation} + \beta_{2} {\rm Nearest}
+                             + \beta_{3} {\rm Scruz} + \beta_{4} {\rm Adjacant}
+                             +\varepsilon \\
+ \text{Bigger model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Area} + \beta_{2} {\rm Elevation} +
+                   \beta_{3} {\rm Nearest} + \beta_{4} {\rm Scruz} +
+                   \beta_{5} {\rm Adjacant} + \varepsilon
+\end{align*}
+
+<<>>=
+# <code r> ===================================================================== #
+myanova(y = gala$Species,
+        small = gala[ , c("Elevation", "Nearest", "Scruz", "Adjacent")],
+        bigger = gala[ , c("Area", "Elevation", "Nearest", "Scruz", "Adjacent")]
+)
+# </code r> ==================================================================== #
+@
+
+Slide 18.
+
+\begin{align*}
+ \text{Small model}: \quad
+ {\rm Species} & = \beta_{0} + 0.5 {\rm Area} + \beta_{2} {\rm Elevation} +
+                   \beta_{3} {\rm Nearest} + \beta_{4} {\rm Scruz} +
+                   \beta_{5} {\rm Adjacant} + \varepsilon \\
+ \text{Bigger model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Area} + \beta_{2} {\rm Elevation} +
+                   \beta_{3} {\rm Nearest} + \beta_{4} {\rm Scruz} +
+                   \beta_{5} {\rm Adjacant} + \varepsilon
+\end{align*}
+
+<<>>=
+# <code r> ===================================================================== #
+myanova(y = gala$Species - .5 * gala$Area,
+        small = gala[ , c("Elevation", "Nearest", "Scruz", "Adjacent")],
+        bigger = gala[ , c("Area", "Elevation", "Nearest", "Scruz", "Adjacent")]
+)
+# </code r> ==================================================================== #
+@
+
+Slide 21.
+
+\begin{align*}
+ \text{Small model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Elevation} + \beta_{2} {\rm Nearest}
+                             + \beta_{3} {\rm Scruz} + \varepsilon \\
+ \text{Bigger model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Area} + \beta_{2} {\rm Elevation} +
+                   \beta_{3} {\rm Nearest} + \beta_{4} {\rm Scruz} +
+                   \beta_{5} {\rm Adjacant} + \varepsilon
+\end{align*}
+
+<<>>=
+# <code r> ===================================================================== #
+myanova(y = gala$Species,
+        small = gala[ , c("Elevation", "Nearest", "Scruz")],
+        bigger = gala[ , c("Area", "Elevation", "Nearest", "Scruz", "Adjacent")]
+)
+# </code r> ==================================================================== #
+@
+
+Slide 22.
+
+\begin{align*}
+ \text{Small model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Elevation} + \beta_{2} {\rm Nearest}
+                             + \beta_{3} {\rm Scruz}
+                             + \beta_{4} ({\rm Area} + {\rm Adjacent})
+                             + \varepsilon \\
+ \text{Bigger model}: \quad
+ {\rm Species} & = \beta_{0} + \beta_{1} {\rm Area} + \beta_{2} {\rm Elevation} +
+                   \beta_{3} {\rm Nearest} + \beta_{4} {\rm Scruz} +
+                   \beta_{5} {\rm Adjacant} + \varepsilon
+\end{align*}
+
+<<>>=
+# <code r> ===================================================================== #
+myanova(y = gala$Species,
+        small = cbind(gala[ , c("Elevation", "Nearest", "Scruz")],
+                      gala[ , "Area"] + gala[ , "Adjacent"]),
+        bigger = gala[ , c("Area", "Elevation", "Nearest", "Scruz", "Adjacent")]
+)
+# </code r> ==================================================================== #
+@
 
 \hfill \(\square\)
 
