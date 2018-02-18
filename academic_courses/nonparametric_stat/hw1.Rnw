@@ -711,12 +711,39 @@ myanova(y = gala$Species,
 
 \underline{Solution:}
 
+<<fig.height=4.2>>=
+# <code r> ===================================================================== #
+data("savings")                                                 # loading the data
+poly.reg <- function(y, x) {
+  resp = as.matrix(y)               # converting the response to a vector (matrix)
+  n = length(resp)                 # computing the number of elements, sample size
+  mm = cbind(x)            # creating the matrix that will receive the polynomials
+  p = 1                                       # initializing the polynomial degree
+  sig = 0  # initializing the p-value limit (creating the obj with a random value)
+  while (sig < .05) {                                   # p-value limit: 0.05 (5%)
+    model = lm(resp ~ mm)                                      # fitting the model
+    sig = summary(model)$coef[ncol(mm)+1, 4]                 # storing the p-value
+    if (sig < .05) {                           # if the p-value is less than 0.05:
+      p = p + 1                              # increase by 1 the polynomial degree
+      mm = cbind(mm, x**p)  # compute the new degree and store in the model matrix
+    } 
+  }
+  p = p - 1                                  # taking the picked polynomial degree
+  model = lm(resp ~ mm[ , 1:p])          # fiting the model with the picked degree
+  plot(resp ~ x, pch = 16, las = 1, xlab = "ddpi", ylab = "sr"          # plotting
+       , main = paste("Chosen order: polynomium of degree", p))
+  lines(sort(x), fitted(model)[order(x)], col = "#0080ff", lwd = 3)
+}
+poly.reg(y = savings$sr, x = savings$ddpi)
+# </code r> ==================================================================== #
+@
+
 \hfill \(\blacksquare\)
 
 \horrule{.5pt}
 
 \vspace{\fill}
 
-\horrule{1pt} \\
+\horrule{1pt} % \\
 
 \end{document}
