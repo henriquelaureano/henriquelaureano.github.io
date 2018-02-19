@@ -1,0 +1,401 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+\title{  
+ \normalfont \normalsize 
+ \textsc{AMCS 202 - Applied Mathematics II} \\
+ Maria Alexandra Aguiar Gomes \\
+ Applied Mathematics and Computer Science (AMCS)/Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\ [.4cm]
+ \LARGE HOMEWORK \\
+  II
+ \horrule{2pt} \\[ .5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <code r> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold')
+# </code r> ==================================================================== #
+@
+
+\section*{Problem 1} \addcontentsline{toc}{section}{Problem 1}
+
+\horrule{1pt} \\
+
+\subsection*{1.} \addcontentsline{toc}{subsection}{1}
+
+\horrule{.5pt} \\
+
+\textbf{Describe the range of \(f(z) = x^{2} + 2i\) defined on \(|z| \leq 1\).} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{2.} \addcontentsline{toc}{subsection}{2}
+
+\horrule{.5pt} \\
+
+\textbf{Describe the range of \(f(z) = z^{3}\) in the semidisk given by
+        \(|z| \leq 2\), \({\rm Im}(z) \geq 0\).} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{3.} \addcontentsline{toc}{subsection}{3}
+
+\horrule{.5pt} \\
+
+\textbf{Show that the inversion mapping \(w = f(z) = 1/z\) maps}
+
+\subsubsection*{a)} \addcontentsline{toc}{subsubsection}{a)}
+
+\horrule{.25pt} \\
+
+\textbf{The circle \(z = r\) onto the circle \(|w| = 1/r\).} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsubsection*{b)} \addcontentsline{toc}{subsubsection}{b)}
+
+\horrule{.25pt} \\
+
+\textbf{The ray} \(\text{Arg } z = \theta_{0}\), \(-\pi < \theta_{0} < \pi\)
+\textbf{onto the ray} \(\text{Arg } w = -\theta_{0}\)\textbf{.} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\section*{Problem 2} \addcontentsline{toc}{section}{Problem 2}
+
+\horrule{1pt} \\
+
+\subsection*{1.}
+
+\horrule{.5pt} \\
+
+\textbf{Using methods familiar from elementary calculus, find the limit (it it
+        exists) of the following sequences of complex numbers:}
+
+\subsubsection*{a)} \addcontentsline{toc}{subsubsection}{a)}
+
+\horrule{.25pt} \\
+
+\textbf{\(z_{n} = (i/3)^{n}\), start looking at \(|z_{n}|\).} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsubsection*{b)} \addcontentsline{toc}{subsubsection}{b)}
+
+\horrule{.25pt} \\
+
+\(z_{n} = (2 + in)/(1 + 3n)\). \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsubsection*{c)} \addcontentsline{toc}{subsubsection}{c)}
+
+\horrule{.25pt} \\
+
+\(z_{n} = i^{n}\). \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{2.} \addcontentsline{toc}{subsection}{2}
+
+\horrule{.5pt} \\
+
+\textbf{Consider the following complex functions:}
+
+\[ f_{1}(z) = z^{2} - 2z + 1, \qquad
+   f_{2}(z) = \frac{z + 2i}{z}, \qquad
+   f_{3}(z) = \frac{z^{2} + 4}{z(z - 2i)}.
+\]
+
+\subsubsection*{a)} \addcontentsline{toc}{subsubsection}{a)}
+
+\horrule{.25pt} \\
+
+\textbf{Find the domain of these functions and justify their continuity in the
+        domain.} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsubsection*{b)} \addcontentsline{toc}{subsubsection}{b)}
+
+\horrule{.25pt} \\
+
+\textbf{Calculate the limits of these functions as \(z \rightarrow 2i\).} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsubsection*{c)} \addcontentsline{toc}{subsubsection}{c)}
+
+\horrule{.25pt} \\
+
+\textbf{Redefine \(f_{3}\) so that it becomes a continuous function at
+        \(z = 2i\).} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\section*{Problem 3} \addcontentsline{toc}{section}{Problem 3}
+
+\horrule{1pt} \\
+
+\subsection*{1.} \addcontentsline{toc}{subsection}{1}
+
+\horrule{.5pt} \\
+
+\textbf{Show that \({\rm Re}(z)\) and \({\rm Im}(z)\) are nowhere differentiable.
+        Hint: try the approach use in class to get the Cauchy-Riemann equations.}
+\\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{2.} \addcontentsline{toc}{subsection}{2}
+
+\horrule{.5pt} \\
+
+\textbf{Find the derivatives of}
+
+\[ f(z) = \Big(\frac{z^{2} - 1}{z^{2} + 1}\Big)^{100}, \qquad
+   g(z) = \frac{(z + 2)^{3}}{(z^{2} + iz + 1)^{4}}.
+\]
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{3.} \addcontentsline{toc}{subsection}{3}
+
+\horrule{.5pt} \\
+
+\textbf{Let \(f(z) = z^{3} + 1\) and let}
+
+\[ z_{1} = \frac{-1 + \sqrt{3}i}{2}, \qquad
+   z_{1} = \frac{-1 - \sqrt{3}i}{2}.
+\]
+
+\textbf{Show that there is no point \(w\) on the line segment between \(z_{1}\)
+        and \(z_{2}\) such that}
+
+\[ f(z_{2}) - f(z_{1}) = {f}'(w) (z_{2} - z_{1}), \]
+
+\textbf{meaning that the mean-value theorem of calculus does not extend to complex
+        functions.} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\section*{Problem 4} \addcontentsline{toc}{section}{Problem 4}
+
+\horrule{1pt} \\
+
+\subsection*{1.} \addcontentsline{toc}{subsection}{1}
+
+\horrule{.5pt} \\
+
+\textbf{Show that}
+
+\[ f(z) = (x^{2} + y) + i(y^{2} - x) \]
+
+\textbf{is not analytic at any point of the complex plane}. \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{2.} \addcontentsline{toc}{subsection}{2}
+
+\horrule{.5pt} \\
+
+\textbf{Use the Cauchy-Riemann equations to show that the following functions are
+        not differentiable:}
+
+\subsubsection*{a)} \addcontentsline{toc}{subsubsection}{a)}
+
+\horrule{.25pt} \\
+
+\(f(z) = \bar{z}\). \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsubsection*{b)} \addcontentsline{toc}{subsubsection}{b)}
+
+\horrule{.25pt} \\
+
+\(f(z) = {\rm Re}(z)\). \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsubsection*{c)} \addcontentsline{toc}{subsubsection}{c)}
+
+\horrule{.25pt} \\
+
+\(f(z) = 2y - ix\). \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{3.} \addcontentsline{toc}{subsection}{3}
+
+\horrule{.5pt} \\
+
+\textbf{Construct an analytic function whose real part is
+        \(u(x, y) = x^{3} - 3xy^{2} + y\).} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{4.} \addcontentsline{toc}{subsection}{4}
+
+\horrule{.5pt} \\
+
+\textbf{Show that if \(\phi(x, y)\) is harmonic, then \(\phi_{x} - i\phi_{y}\) is
+        analytic. You may assume that \(\phi\) has continuous partial derivatives
+        of all orders.} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\section*{Problem 5} \addcontentsline{toc}{section}{Problem 5}
+
+\horrule{1pt} \\
+
+\subsection*{1.} \addcontentsline{toc}{subsection}{1}
+
+\horrule{.5pt} \\
+
+\textbf{Show that}
+
+\[ \cos(x + iy) = \cos x \cosh y - i\sin x \sinh y. \]
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{2.} \addcontentsline{toc}{subsection}{2}
+
+\horrule{.5pt} \\
+
+\textbf{Prove that \(\cos z = 0\) if and only if \(z = \pi/2 + k\pi\), where
+        \(k\) is an integer.} \\
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{3.} \addcontentsline{toc}{subsection}{3}
+
+\horrule{.5pt} \\
+
+\textbf{Using the fact that
+        \({f}'(0) = \lim_{z \rightarrow 0} [f(z) - f(0)]/z\), calculate}
+
+\[ \lim_{z \rightarrow 0} \frac{\sin z}{z}. \]
+
+\underline{Solution:}
+
+\hfill \(\square\)
+
+\subsection*{4.} \addcontentsline{toc}{subsection}{4}
+
+\horrule{.5pt} \\
+
+\textbf{Using the chain rule, determine the domain of analyticity for
+        \(f(z) = {\rm Ln}(3z - 1)\) and compute \({f}'(z)\).} \\
+
+\underline{Solution:}
+
+\hfill \(\blacksquare\)
+
+\horrule{.5pt}
+
+\vspace{\fill}
+
+\horrule{1pt} \\
+
+\end{document}
