@@ -128,7 +128,7 @@
 
 ***
 
-[**Applied Mathematics II**]
+**Applied Mathematics II**
 
 ***
 
