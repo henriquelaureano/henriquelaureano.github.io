@@ -128,16 +128,6 @@
 
 ***
 
-**Applied Mathematics II**
-
-***
-
-* [**Homework I**](http://mynameislaure.github.io/academic_courses/applied_math_ii/hw1.pdf) ([Rnw](http://mynameislaure.github.io/academic_courses/applied_math_ii/hw1.Rnw))
-
-* [**Homework II**](http://mynameislaure.github.io/academic_courses/applied_math_ii/hw2.pdf) ([Rnw](http://mynameislaure.github.io/academic_courses/applied_math_ii/hw2.Rnw))
-
-***
-
 [**Nonparametric Statistics - Homework I**](http://mynameislaure.github.io/academic_courses/nonparametric_stat/hw1.pdf) ([Rnw](http://mynameislaure.github.io/academic_courses/nonparametric_stat/hw1.Rnw))
 
 ***
