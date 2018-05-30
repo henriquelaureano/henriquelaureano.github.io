@@ -1,0 +1,397 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+\title{  
+ \normalfont \normalsize 
+ \textsc{CS 229 - Machine Learning} \\
+ Xiangliang Zhang \\
+ Computer Science (CS)/Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\ [.4cm]
+ \LARGE HOMEWORK \\
+  III
+ \horrule{2pt} \\[ .5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+%\newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold')
+# </r code> ==================================================================== #
+@
+
+\section*{Question 1} \addcontentsline{toc}{section}{Question 1}
+
+\horrule{1pt} \\
+
+\textbf{Show the derivation of negative log-likelihood of logistic regression
+        problem.}
+
+\[ {\rm NLL}(w) =
+   -\sum_{i=1}^{N} \Big[ t_{i} \ln \mu_{i} + (1 - t_{i}) \ln (1 - \mu_{i}) \Big]
+\]
+
+\underline{Solution:} \\
+
+Target variable \(t \in \{0, 1\}\):
+
+\[ p(t | x, w) = {\rm Bernoulli}(t | \mu(x)), \]
+
+with \(\mu(x)\) representing the parameter of the Bernoulli distribution
+\(p(t = 1 | x)\).
+
+\[ \mu(x) = {\rm sigm}(w^{\top} x) = \frac{1}{1 + \exp\{-w^{\top} x\}} \quad
+   \Rightarrow \quad p(t | x, w) = {\rm Bernoulli}(t | {\rm sigm}(w^{\top} x)).
+\]
+
+\begin{align*}
+ \text{Likelihood function} & = \text{product of Bernoulli's} =
+ \prod_{i=1}^{N} \mu_{i}^{t_{i}} (1 - \mu_{i})^{1 - t_{i}}. \\
+ \text{Negative Log-Likelihood (NLL)} & =
+ -\sum_{i=1}^{N} \Big[ t_{i} \ln \mu_{i} + (1 - t_{i}) \ln (1 - \mu_{i}) \Big].
+\end{align*}
+
+Derivative of NLL on \(w\):
+
+\[ \frac{{\rm d} {\rm NLL}(w)}{{\rm d} w} = -\sum_{i=1}^{N}
+   \bigg[ \frac{t_{i}}{\mu_{i}} + \frac{t_{i} - 1}{1 - \mu_{i}} \bigg]
+   \frac{{\rm d} \mu_{i}}{{\rm d} w} =
+   -\sum_{i=1}^{N} \bigg[ \frac{t_{i} - \mu_{i}}{\mu_{i}(1 - \mu_{i})} \bigg]
+   \frac{{\rm d} \mu_{i}}{{\rm d} w} =
+   \sum_{i=1}^{N} \bigg[ \frac{\mu_{i} - t_{i}}{\mu_{i}(1 - \mu_{i})} \bigg]
+   \frac{{\rm d} \mu_{i}}{{\rm d} w},
+\]
+
+with
+
+\begin{align*}
+ \frac{{\rm d} \mu_{i}}{{\rm d} w} =
+ \frac{{\rm d} (1 + \exp\{-w^{\top} x_{i}\})^{-1}}{{\rm d} w} & =
+ -(1 + \exp\{-w^{\top} x_{i}\})^{-2} \exp\{-w^{\top} x_{i}\} (-x_{i}) \\
+ & = \frac{\exp\{-w^{\top} x_{i}\}}{(1 + \exp\{-w^{\top} x_{i}\})^{2}} x_{i} \\
+ & = \frac{1}{1 + \exp\{-w^{\top} x_{i}\}}
+     \bigg( 1 - \frac{1}{1 + \exp\{-w^{\top} x_{i}\}} \bigg) x \\
+ & = \mu_{i} (1 - \mu_{i}) x_{i}.
+\end{align*}
+
+Then,
+
+\[ \frac{{\rm d} {\rm NLL}(w)}{{\rm d} w} =
+   \sum_{i=1}^{N} \frac{\mu_{i} - t_{i}}{\mu_{i}(1 - \mu_{i})}
+                  \mu_{i} (1 - \mu_{i}) x_{i} =
+   \sum_{i=1}^{N} (\mu_{i} - t_{i}) x_{i}.
+\]
+
+\hfill \(\square\)
+
+\section*{Question 2} \addcontentsline{toc}{section}{Question 2}
+
+\horrule{1pt} \\
+
+\textbf{Show how to maximize \({\rm NLL}(w)\) and find \(w^{\star}\) by gradient
+        descent. Or other difference solutions (you can get a bonus of 20 points
+        if you find a different solution)} \\
+
+\underline{Solution:} \\
+
+We already have the gradient of \({\rm NLL}(w)\) by the \textbf{Question 1}:
+
+\[
+ \frac{{\rm d} {\rm NLL}(w)}{{\rm d} w} = \sum_{i=1}^{N} (\mu_{i} - t_{i}) x_{i}.
+\]
+
+We want maximize the \textbf{negative} log-likelihood (\textbf{N}LL), so we
+need to find the minimum of the function (in the best scenario, the unique global
+minimum). \\
+
+The Hessian of \({\rm NLL}(w)\) is given by:
+
+\begin{align*}
+ H & = \frac{{\rm d}^{2} {\rm NLL}(w)}{{\rm d} w^{2}}
+     = \frac{{\rm d} \sum_{i=1}^{N} (\mu_{i} - t_{i}) x_{i}}{{\rm d} w} \\
+   & = \sum_{i=1}^{N} \frac{{\rm d} \mu_{i}}{{\rm d} w} x_{i}^{\top}
+       \quad (\text{we calculated this in \textbf{Question 1}}) \\
+   & = \sum_{i=1}^{N} \mu_{i} (1 - \mu_{i}) x_{i} x_{i}^{\top} \\
+   & = X^{\top} S X, \quad \text{ with } \quad
+       S = \begin{bmatrix}
+            \mu_{i} (1 - \mu_{i}) & \cdots & 0 \\
+            \cdots & \ddots & \cdots \\
+            0 & \cdots & \mu_{i} (1 - \mu_{i}).
+           \end{bmatrix}
+\end{align*}
+
+\(\mu_{i}\) is all positive. Therefore, \(H\) is positive definite. \\
+
+Thus (\textbf{N}LL) is convex, and has a unique global minimum. \\
+
+The gradient descent algorithm is given by searching \(w^{\star}\) by
+
+\[ w^{k+1} = w^{k} - \eta g^{k}, \quad \text{ with } \quad
+   g^{k} = \frac{{\rm d} {\rm NLL}(w^{k})}{{\rm d} w^{k}}
+         = \sum_{i=1}^{N} (\mu_{i} - t_{i}) x_{i}. 
+\]
+
+\textbf{Other solution} for the task of find \(w^{\star}\)
+\textbf{is the use IRLS} (\textbf{I}teratively \textbf{R}eweighted \textbf{L}east
+\textbf{S}quares), a special case of Newton's algorithm. \\
+
+IRLS uses the second derivative and has the form
+
+\[ w^{k+1} = w^{k} - H^{-1} g^{k}, \quad \text{ with } \quad
+   g^{k} = \sum_{i=1}^{N} (\mu_{i} - t_{i}) x_{i} \quad \text{ and } \quad
+   H = X^{\top} S^{k} X.
+\]
+
+\hfill \(\square\)
+
+\section*{Implementation Task} \addcontentsline{toc}{section}{Implementation Task}
+
+\horrule{1pt} %\\
+
+\begin{description}
+ \item[\textit{Data}:] \hfill \\
+  \textbf{Please download data \texttt{logreg_data_binary.txt}. It includes four
+          columns.} \\
+  \textbf{The \underline{first column} coded the \underline{target variable} of
+          "apply to graduate school", unlikely (0), or  likely (1).} \\
+  \textbf{The \underline{other three columns} are three variables as follows:}
+  \begin{enumerate}
+   \item \textbf{\underline{parent}, which is a 0/1 variable indicating
+                 whether at least one parent has a graduate degree,}
+   \item \textbf{\underline{public}, which is a 0/1 variable where 1 indicates
+                 that the undergraduate institution is a public university and 0
+                 indicates that it is a private university,}
+   \item \textbf{\underline{gpa}, which is the student's grade point average.}
+  \end{enumerate}
+<<>>=
+# <r code> ===================================================================== #
+path <- "~/Dropbox/KAUST/machine_learning/hw3/"                        # file path
+train <- read.table(paste0(path, "logreg_data_binary.txt"))         # loading data
+names(train) <- c("target", "parent", "public", "gpa")   # creating variable names
+# </r code> ==================================================================== #
+@
+  \textbf{In other words, each undergraduate student is described by
+          \(\mathbf{x}\), which is a 3-dim vector. Can we make a prediction of
+          his/her target \(\mathbf{t} = ?\)}
+ \item[\textit{Learning method}:] \hfill \\ \textbf{You can use gradient descent.}
+ \item[\textit{NOTE}:] \hfill %\\
+  \begin{enumerate}
+   \item \textbf{Data should be standardized, e.g., for one variable \(x\) using
+                 \(x^{'} = (x - \text{mean}(x))/\text{std}(x)\) so that \(x^{'}\)
+                 has \(\text{mean}(x^{'}) = 0\) and \(\text{std}(x^{'}) = 1\).} \\
+         \textbf{Standardization should be down for all three variables.}
+<<>>=
+# <r code> ===================================================================== #
+std.train <- train                                               # standardization
+for (i in 2:4)
+  std.train[ , i] <- (std.train[ , i] - mean(train[ , i])) / sd(train[ , i])
+# </r code> ==================================================================== #
+@
+         \textbf{The testing data should be standardized by the mean and std
+                 obtained from the variable values in training data.}
+<<>>=
+# <r code> ===================================================================== #
+test <- read.table(paste0(path, "test_data_binary.txt"))            # loading data
+names(test) <- c("target", "parent", "public", "gpa")    # creating variable names
+std.test <- test                                                 # standardization
+for (i in 2:4)
+  std.test[ , i] <- (std.test[ , i] - mean(train[ , i])) / sd(train[ , i])
+# </r code> ==================================================================== #
+@
+   \item \textbf{One more dimension with value 1 should be added to each example.}
+<<>>=
+# <r code> ===================================================================== #
+               # adding one more dimension with value 1 to train and test datasets
+x.stdtrain <- as.matrix(cbind(intercept = 1, std.train[ , 2:4]))
+x.stdtest  <- as.matrix(cbind(intercept = 1,  std.test[ , 2:4]))
+# </r code> ==================================================================== #
+@
+  \end{enumerate}
+\end{description}
+
+\subsection*{Task: Logistic Regression with Binary target}
+\addcontentsline{toc}{subsection}{Task}
+
+\horrule{.5pt} \\
+
+\textbf{Implement the logistic regression algorithm for this binary
+        classification problem.}
+
+\begin{description}
+ \item[\underline{Solution:}] \hfill
+<<>>=
+# <r code> ===================================================================== #
+gd <- function(x, target) {                                 # gd: gradient descent
+  w = w.new = matrix(numeric(4))             # coefficient matrix, dimension 4 x 1
+  eta = .1                                                               # costant
+  nll = numeric(1)               # object to keep the nll values at each iteration
+  n = length(target)                                                 # sample size
+  for (i in 1:500) {                      # fixing the number of iterations in 500
+    mu = 1 / ( 1 + exp(-x %*% w) )                                 # computing \mu
+    grad = (1 / n) * t(mu - target) %*% x                 # computing the gradient
+    w.new = t(w) - eta * grad     # computing the new values of the coefficients w
+    mu.new = 1 / ( 1 + exp(-x %*% t(w.new)) )       # computing \mu with the new w
+       # computing and keeping the nll (negative log-likelihood) at each iteration
+    nll[i] = - sum( target * log(mu.new) + (1 - target) * log(1 - mu.new) )
+    # convergence criterion: diference in w between iterations smaller than 0.0001
+    if (i > 2) if (all( abs(w.new - t(w)) < 1e-4 )) break
+    w = t(w.new)                                    # the new w became the older w
+  }            # returning the estimate w, the number of iterations and nll values
+  return(list(w = w.new, i = i, nll = nll))
+}                                   # Gradient Descent for the Logistic Regression
+gd.lr <- gd(x = x.stdtrain, target = std.train[ , 1]) 
+# </r code> ==================================================================== #
+@
+\end{description}
+
+\hfill \(\square\)
+
+\subsubsection*{1)} \addcontentsline{toc}{subsubsection}{1)}
+
+\horrule{.25pt} \\
+
+\textbf{Show the decreasing of \(NLL\) (negative log-likelihood) function with the
+        increasing of iteration numbers.}
+
+\begin{description}
+ \item[\underline{Solution:}] \hfill
+<<fig.height=4.5>>=
+# <r code> ===================================================================== #
+par(mar = c(4, 4, 3, 1) + .1)                              # graphical definitions
+plot(gd.lr$nll, type = "l", lwd = 3, col = "#0080ff"     # plotting the nll values
+     , xlab = "Iterations", ylab = "NLL"
+     , main = paste0("Minimum NLL: ", round(min(gd.lr$nll), 5)
+                    , ", at iteration ", gd.lr$i
+                    , "\ngiven a convergence criterion of 0.0001"))
+# </r code> ==================================================================== #
+@
+\end{description}
+
+\hfill \(\square\)
+
+\subsubsection*{2)} \addcontentsline{toc}{subsubsection}{2)}
+
+\horrule{.25pt} \\
+
+\textbf{Give the results of obtained coefficient, \(\mathbf{w}\).}
+
+\begin{description}
+ \item[\underline{Solution:}] \hfill
+<<>>=
+# <r code> ===================================================================== #
+gd.lr$w                                                 # obtained coefficients, w
+# </r code> ==================================================================== #
+@
+<<fig.height=4, fig.width=4.5>>=
+# <r code> ===================================================================== #
+                                   # function to compute \mu, the sigmoid function
+mu <- function(x, w) 1 / ( 1 + exp(-x %*% t(w)) )
+mu.train <- mu(x = x.stdtrain, w = gd.lr$w)   # computing mu for the train dataset
+par(mar = c(4, 4, 1, 1) + .1)                              # graphical definitions
+plot(sort(mu.train) ~ sort(std.train[ , 4])         # plotting the estimated curve
+     , col = 2, ylim = c(0, 1), xlab = "gpa", ylab = expression(mu))
+                                            # plotting corresponding target points
+points(target ~ gpa, std.train, pch = 8, col = "#0080ff")
+# </r code> ==================================================================== #
+@
+\end{description}
+
+\hfill \(\square\)
+
+\subsubsection*{3)} \addcontentsline{toc}{subsubsection}{3)}
+
+\horrule{.25pt} \\
+
+\textbf{Download test data at \texttt{test_data_binary.txt}. How many target
+        labels of test data are correctly predicted by the learned \(w\)?}
+
+\begin{description}
+ \item[\underline{Solution:}] \hfill
+<<>>=
+# <r code> ===================================================================== #
+mu.test <- mu(x = x.stdtest, w = gd.lr$w)      # computing mu for the test dataset
+                                  # if \mu > 0.5 => target = 1, else => target = 0
+target.pred <- ifelse(mu.test > .5, 1, 0)
+                             # comparing the predicted labels with the real labels
+table(target.pred == std.test[ , 1])
+# </r code> ==================================================================== #
+@
+  \(\Rightarrow\)
+  \underline{49 of 70 are predicted correctly.
+             Hit rate: \Sexpr{round(49/70*100, 2)}\% correct.
+            }
+<<fig.height=4, fig.width=4.5>>=
+# <r code> ===================================================================== #
+par(mar = c(4, 4, 1, 1) + .1)                              # graphical definitions
+plot(sort(mu.test) ~ sort(std.test[ , 4])           # plotting the estimated curve
+     , col = 2, ylim = c(0, 1), xlab = "gpa", ylab = expression(mu))
+                                            # plotting corresponding target points
+points(target ~ gpa, std.test, pch = 8, col = "#0080ff")
+# </r code> ==================================================================== #
+@
+\end{description}
+
+\hfill \(\blacksquare\)
+
+\horrule{.5pt}
+
+\vspace{\fill}
+
+\horrule{1pt} \\
+
+\end{document}

@@ -1,0 +1,506 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+\title{  
+ \normalfont \normalsize 
+ \textsc{CS 229 - Machine Learning} \\
+ Xiangliang Zhang \\
+ Computer Science (CS)/Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\ [.4cm]
+ \LARGE HOMEWORK \\
+  II
+ \horrule{2pt} \\[ .5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+%\newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold'
+               , eval=FALSE)
+# </r code> ==================================================================== #
+@
+
+\textbf{Figure \ref{fig:1} gives an illustration of \textit{sequential Bayesian
+        learning} of a simple linear model of the form
+        \(y(\mathbf{x}, \mathbf{w}) = w_{0} + w_{1} \mathbf{x}.\)}
+
+\begin{figure}[H]
+ \centering
+  \includegraphics[width=.9\textwidth]{fig1.png}
+ \caption{Illustration of sequential Bayesian learning of a simple linear model of
+          the form \(y(\mathbf{x}, \mathbf{w}) = w_{0} + w_{1} \mathbf{x}\).}
+  \label{fig:1}        
+\end{figure}
+
+\section*{(1)} \addcontentsline{toc}{section}{(1)}
+
+\horrule{1pt} \\
+
+\textbf{Design a set of data samples in the linear model, with random noise.} \\
+
+\underline{Solution:}
+
+\begin{align*}
+ \mathbf{t} & = w_{0} + w_{1} \mathbf{x} + \textbf{noise} \\
+ \mathbf{x} & \sim {\rm Uniform} (-1, 1) \\
+ \textbf{noise} & \sim {\rm Normal} (0, 0.2^{2}) \\
+ \mathbf{w} & = [w_{0} \quad w_{1}]^{\top} = [-0.3 \quad 0.5]^{\top}
+\end{align*}
+
+\hfill \(\square\)
+
+\section*{(2)} \addcontentsline{toc}{section}{(2)}
+
+\horrule{1pt} \\
+
+\textbf{Implement \textit{sequential Bayesian learning}; show the results of
+        \textit{likelihood, prior/posterior, and examples in data space} in the
+        same way as Figure 1.} \\
+
+\underline{Solution:} \\
+
+(\textit{The results, graphs, are show in the end})
+
+\begin{align*}
+ \text{Prior}: \quad
+ p(\mathbf{w} | \alpha) & \sim {\rm Normal} (\mathbf{0}, \alpha^{-1} \mathbf{I})
+ \\ \alpha & = 2
+\end{align*}
+
+Plotting the prior (for now no data, so this is equivalent to the posterior):
+
+<<>>=
+# <r code> ===================================================================== #
+alpha <- 2
+
+prior <- Vectorize(                           # computing the prior normal density
+  FUN = function(w0, w1) {                    # two "observations" w_{0} and w_{1}
+    theta = list(w0 = w1, w1 = w1)
+    w <- matrix(c(w0, w1), ncol = 1)
+    exp( 1/alpha * t(w) %*% (1/alpha * diag(1, 2)) %*% w )
+  },
+  c("w0", "w1")
+)
+w0 <- seq(-1, 1, length.out = 150)           # grid of 150 values between -1 and 1
+w1 <- seq(-1, 1, length.out = 150)           # grid of 150 values between -1 and 1
+
+prior.w <- outer(w0, w1, prior)                  # applying the grids in the prior
+
+par(mfrow = c(4, 3), mar = c(4, 4, 2, 1) + .1) ; plot.new()      # graphical setup
+                                                              # plotting the prior
+image(w0, w1, prior.w, asp = 1, main = "prior/posterior", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+contour(w0, w1, prior.w, col = "#0080ff", drawlabels = FALSE, add = TRUE)
+# </r code> ==================================================================== #
+@
+
+Six samples from the prior (posterior):
+
+<<>>=
+# <r code> ===================================================================== #
+library(MASS)             # function mvrnorm: to sample from a multivariate normal
+sampling <- mvrnorm(6, c(0, 0), 1/alpha * diag(1, 2))      # each line is a sample
+                 # plotting the samples (each sample (two points) describe a line)
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1), xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2)
+     , xlab = "x", ylab = "y", main = "data space")
+for (i in 1:6) abline(sampling[i, ], col = 2, lwd = 3)
+# </r code> ==================================================================== #
+@
+
+\begin{align*}
+ \text{Likelihood}: \quad
+ p(\mathbf{t} | \mathbf{x}, \mathbf{w}, \beta) & \sim
+ {\rm Normal} (\mathbf{w}^{\top} \bm{\phi}(\mathbf{x}_{n}), \beta^{-1}) \\
+ & \propto \exp \Big( -\frac{\beta}{2} (\mathbf{t} - \bm{\Phi} \mathbf{w})^{\top}
+                                       (\mathbf{t} - \bm{\Phi} \mathbf{w})
+              \Big) \\
+ \beta & = (1 / 0.2)^{2} = 25
+\end{align*}
+
+Generating data and plotting the likelihood \\
+(the white cross represent the real - used - coefficients):
+
+<<>>=
+# <r code> ===================================================================== #
+                   # generating from a uniform distribution of parameters -1 and 1
+x1 <- runif(1, -1, 1)
+noise <- rnorm(1, 0, .2)        # normal with mean zero and standard deviation 0.2
+t1 <- -.3 + .5 * x1 + noise                           # w_{0}: -0.3 and w_{1}: 0.5
+
+beta <- 25
+
+like <- Vectorize(                              # computing the likelihood density
+  FUN = function(t, x, w0, w1) {
+    theta = list(w0 = w1, w1 = w1)
+    w = matrix(c(w0, w1), ncol = 1)
+                                    #          building the model matrix (1 in the
+    phi = matrix(c(1, x), ncol = 2) # first column corresponding to the intercept)
+    math = t - phi %*% w
+    exp( - beta/2 * t(math) %*% (math) )
+  },
+  c("w0", "w1")
+)                                           # applying the grids in the likelihood
+like.w <- outer(w0, w1, like, t = t1, x = x1)
+                                                         # plotting the likelihood
+image(w0, w1, like.w, asp = 1, main = "likelihood", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+# </r code> ==================================================================== #
+@
+
+\begin{align*}
+ \text{Posterior}: \quad
+ p(\mathbf{w} | \mathbf{t}) & \sim
+ {\rm Normal} (\mathbf{m}_{N}, \mathbf{S}_{N}) \\
+ & \propto \exp \Big( -\frac{\beta}{2} (\mathbf{t} - \bm{\Phi} \mathbf{w})^{\top}
+                                       (\mathbf{t} - \bm{\Phi} \mathbf{w})
+              \Big) \times
+           \exp \Big( -\frac{1}{2} (\mathbf{w} - \mathbf{0})^{\top}
+            \alpha^{-1} \mathbf{I} (\mathbf{w} - \mathbf{0})
+                \Big)  \\
+ \mathbf{m}_{N} & = \beta \mathbf{S}_{N} \bm{\Phi}^{\top} \mathbf{t} \\
+ \mathbf{S}_{N}^{-1} & = \alpha \mathbf{I} + \beta \bm{\Phi}^{\top} \bm{\Phi}
+\end{align*}
+
+Computing and plotting the posterior \\
+(the white cross represent the real - used - coefficients):
+
+<<>>=
+# <r code> ===================================================================== #
+post <- Vectorize(                               # computing the posterior density
+  FUN = function(t, x, w0, w1) {
+    theta = list(w0 = w1, w1 = w1)
+    w = matrix(c(w0, w1), ncol = 1)
+    phi = matrix(c(rep(1, length(x)), x), ncol = 2)    # building the model matrix
+    math = t - phi %*% w
+    - beta/2 * t(math) %*% (math) - alpha/2 * t(w) %*% w
+  },
+  c("w0", "w1")
+)                                            # applying the grids in the posterior
+post.w <- outer(w0, w1, post, t = t1, x = x1)
+
+image(w0, w1, post.w, asp = 1, col = topo.colors(15)      # plotting the posterior
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+contour(w0, w1, post.w                                     # plotting the contours
+        , col = "#0080ff", drawlabels = FALSE, add = TRUE, nlevels = 18)
+# </r code> ==================================================================== #
+@
+
+Six samples from the posterior:
+
+<<>>=
+# <r code> ===================================================================== #
+sampling <- function(x, t) {                         # sampling from the posterior
+  phi = matrix(c(rep(1, length(x)), x), ncol = 2)                           # \Phi
+  sn = solve( alpha * diag(1, 2) + beta * t(phi) %*% phi )                 # S_{n}
+  mn = beta * sn %*% t(phi) %*% t                                          # m_{N}
+  mvrnorm(6, mn, sn)
+}                            # sampling (each sample (two points) describe a line)
+samps <- sampling(x = x1, t = t1)
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1)                   # plotting the samples
+     , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2), xlab = "x", ylab = "y")
+for (i in 1:6) abline(samps[i, ], col = 2, lwd = 3)
+points(x1, t1, col = "#0080ff", lwd = 3)                              # data point
+# </r code> ==================================================================== #
+@
+
+Generating another data and plotting the likelihood:
+
+<<>>=
+# <r code> ===================================================================== #
+x2 <- runif(1, -1, 1) ; t2 <- -.3 + .5 * x2 + noise      # generating another data
+
+like.w <- outer(w0, w1, like, t = t2, x = x2)                 # applying the grids
+                                                         # plotting the likelihood
+image(w0, w1, like.w, asp = 1, main = "likelihood", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+# </r code> ==================================================================== #
+@
+
+Computing and plotting the posterior:
+
+<<>>=
+# <r code> ===================================================================== #
+post.w <- outer(w0, w1, post, t = c(t1, t2), x = c(x1, x2))   # applying the grids
+
+image(w0, w1, post.w, asp = 1, col = topo.colors(15)      # plotting the posterior
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+contour(w0, w1, post.w                                         # plotting contours
+        , col = "#0080ff", drawlabels = FALSE, add = TRUE, nlevels = 18)
+# </r code> ==================================================================== #
+@
+
+More six samples from the posterior:
+
+<<>>=
+# <r code> ===================================================================== #
+samps <- sampling(x = c(x1, x2), t = c(t1, t2))                         # sampling
+
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1)                   # plotting the samples
+     , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2), xlab = "x", ylab = "y")
+for (i in 1:6) abline(samps[i, ], col = 2, lwd = 3)
+points(c(x1, x2), c(t1, t2), col = "#0080ff", lwd = 3)               # data points
+# </r code> ==================================================================== #
+@
+
+Generating 20 data points and showing the likelihood for the last one:
+
+<<>>=
+# <r code> ===================================================================== #
+x <- c(x1, x2, runif(18, -1, 1))                                 # generating data
+t <- c(t1, t2, -.3 + .5 * x[3:20] + noise)                       # generating data
+
+like.w <- outer(w0, w1, like, t = t[20], x = x[20])           # applying the grids
+                                                         # plotting the likelihood
+image(w0, w1, like.w, asp = 1, main = "likelihood", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+# </r code> ==================================================================== #
+@
+
+Computing and plotting the posterior:
+
+<<>>=
+# <r code> ===================================================================== #
+post.w <- outer(w0, w1, post, t = t, x = x)                   # applying the grids
+
+image(w0, w1, post.w, asp = 1, col = topo.colors(15)      # plotting the posterior
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+contour(w0, w1, post.w                                         # plotting contours
+        , col = "#0080ff", drawlabels = FALSE, add = TRUE, nlevels = 18)
+# </r code> ==================================================================== #
+@
+
+Six samples from the posterior:
+
+<<>>=
+# <r code> ===================================================================== #
+samps <- sampling(x = c(x1, x2), t = c(t1, t2))                         # sampling
+
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1)                   # plotting the samples
+     , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2), xlab = "x", ylab = "y")
+for (i in 1:6) abline(samps[i, ], col = 2, lwd = 3)
+points(x, t, col = "#0080ff", lwd = 3)                               # data points
+# </r code> ==================================================================== #
+@
+
+\vfill
+
+\hfill \(\Rightarrow\)
+
+<<fig.height=8.3, fig.width=6, fig.cap="Illustration of sequential Bayesian learning of a simple linear model of the form $y(\\mathbf{x}, \\mathbf{w}) = w_{0} + w_{1} \\mathbf{x}$.", eval=TRUE, echo=FALSE>>=
+# <r code> ===================================================================== #
+alpha <- 2
+
+prior <- Vectorize(                           # computing the prior normal density
+  FUN = function(w0, w1) {                    # two "observations" w_{0} and w_{1}
+    theta = list(w0 = w1, w1 = w1)
+    w <- matrix(c(w0, w1), ncol = 1)
+    exp( 1/alpha * t(w) %*% (1/alpha * diag(1, 2)) %*% w )
+  },
+  c("w0", "w1")
+)
+w0 <- seq(-1, 1, length.out = 150)           # grid of 150 values between -1 and 1
+w1 <- seq(-1, 1, length.out = 150)           # grid of 150 values between -1 and 1
+
+prior.w <- outer(w0, w1, prior)                  # applying the grids in the prior
+
+par(mfrow = c(4, 3), mar = c(4, 4, 2, 1) + .1) ; plot.new()      # graphical setup
+                                                              # plotting the prior
+image(w0, w1, prior.w, asp = 1, main = "prior/posterior", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+contour(w0, w1, prior.w, col = "#0080ff", drawlabels = FALSE, add = TRUE)
+
+library(MASS)             # function mvrnorm: to sample from a multivariate normal
+sampling <- mvrnorm(6, c(0, 0), 1/alpha * diag(1, 2))      # each line is a sample
+                 # plotting the samples (each sample (two points) describe a line)
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1), xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2)
+     , xlab = "x", ylab = "y", main = "data space")
+for (i in 1:6) abline(sampling[i, ], col = 2, lwd = 3)
+
+                   # generating from a uniform distribution of parameters -1 and 1
+x1 <- runif(1, -1, 1)
+noise <- rnorm(1, 0, .2)        # normal with mean zero and standard deviation 0.2
+t1 <- -.3 + .5 * x1 + noise                           # w_{0}: -0.3 and w_{1}: 0.5
+
+beta <- 25
+
+like <- Vectorize(                              # computing the likelihood density
+  FUN = function(t, x, w0, w1) {
+    theta = list(w0 = w1, w1 = w1)
+    w = matrix(c(w0, w1), ncol = 1)
+                                    #          building the model matrix (1 in the
+    phi = matrix(c(1, x), ncol = 2) # first column corresponding to the intercept)
+    math = t - phi %*% w
+    exp( - beta/2 * t(math) %*% (math) )
+  },
+  c("w0", "w1")
+)                                           # applying the grids in the likelihood
+like.w <- outer(w0, w1, like, t = t1, x = x1)
+                                                         # plotting the likelihood
+image(w0, w1, like.w, asp = 1, main = "likelihood", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+
+post <- Vectorize(                               # computing the posterior density
+  FUN = function(t, x, w0, w1) {
+    theta = list(w0 = w1, w1 = w1)
+    w = matrix(c(w0, w1), ncol = 1)
+    phi = matrix(c(rep(1, length(x)), x), ncol = 2)    # building the model matrix
+    math = t - phi %*% w
+    - beta/2 * t(math) %*% (math) - alpha/2 * t(w) %*% w
+  },
+  c("w0", "w1")
+)                                            # applying the grids in the posterior
+post.w <- outer(w0, w1, post, t = t1, x = x1)
+
+image(w0, w1, post.w, asp = 1, col = topo.colors(15)      # plotting the posterior
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+contour(w0, w1, post.w                                     # plotting the contours
+        , col = "#0080ff", drawlabels = FALSE, add = TRUE, nlevels = 18)
+
+sampling <- function(x, t) {                         # sampling from the posterior
+  phi = matrix(c(rep(1, length(x)), x), ncol = 2)                           # \Phi
+  sn = solve( alpha * diag(1, 2) + beta * t(phi) %*% phi )                 # S_{n}
+  mn = beta * sn %*% t(phi) %*% t                                          # m_{N}
+  mvrnorm(6, mn, sn)
+}                            # sampling (each sample (two points) describe a line)
+samps <- sampling(x = x1, t = t1)
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1)                   # plotting the samples
+     , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2), xlab = "x", ylab = "y")
+for (i in 1:6) abline(samps[i, ], col = 2, lwd = 3)
+points(x1, t1, col = "#0080ff", lwd = 3)                              # data point
+
+x2 <- runif(1, -1, 1) ; t2 <- -.3 + .5 * x2 + noise      # generating another data
+
+like.w <- outer(w0, w1, like, t = t2, x = x2)                 # applying the grids
+                                                         # plotting the likelihood
+image(w0, w1, like.w, asp = 1, main = "likelihood", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+
+post.w <- outer(w0, w1, post, t = c(t1, t2), x = c(x1, x2))   # applying the grids
+
+image(w0, w1, post.w, asp = 1, col = topo.colors(15)      # plotting the posterior
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+contour(w0, w1, post.w                                         # plotting contours
+        , col = "#0080ff", drawlabels = FALSE, add = TRUE, nlevels = 18)
+
+samps <- sampling(x = c(x1, x2), t = c(t1, t2))                         # sampling
+
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1)                   # plotting the samples
+     , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2), xlab = "x", ylab = "y")
+for (i in 1:6) abline(samps[i, ], col = 2, lwd = 3)
+points(c(x1, x2), c(t1, t2), col = "#0080ff", lwd = 3)               # data points
+
+x <- c(x1, x2, runif(18, -1, 1))                                 # generating data
+t <- c(t1, t2, -.3 + .5 * x[3:20] + noise)                       # generating data
+
+like.w <- outer(w0, w1, like, t = t[20], x = x[20])           # applying the grids
+                                                         # plotting the likelihood
+image(w0, w1, like.w, asp = 1, main = "likelihood", col = topo.colors(15)
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+
+post.w <- outer(w0, w1, post, t = t, x = x)                   # applying the grids
+
+image(w0, w1, post.w, asp = 1, col = topo.colors(15)      # plotting the posterior
+      , xlab = expression(w[0]), ylab = expression(w[1])
+      , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2))
+points(-.3, .5, col = "white", pch = 3, lwd = 3)                     # white cross
+contour(w0, w1, post.w                                         # plotting contours
+        , col = "#0080ff", drawlabels = FALSE, add = TRUE, nlevels = 18)
+
+samps <- sampling(x = c(x1, x2), t = c(t1, t2))                         # sampling
+
+plot(NA, xlim = c(-1, 1), ylim = c(-1, 1)                   # plotting the samples
+     , xaxp = c(-1, 1, 2), yaxp = c(-1, 1, 2), xlab = "x", ylab = "y")
+for (i in 1:6) abline(samps[i, ], col = 2, lwd = 3)
+points(x, t, col = "#0080ff", lwd = 3)                               # data points
+# </r code> ==================================================================== #
+@
+
+\hfill \(\blacksquare\)
+
+%\horrule{.5pt}
+
+%\vspace{\fill}
+
+\horrule{1pt} %\\
+
+\end{document}

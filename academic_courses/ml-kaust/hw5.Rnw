@@ -1,0 +1,590 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{xcolor}
+\usepackage{cancel}
+\usepackage{mathtools}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\nPerp}{\cancel{\perp \! \! \! \perp}}
+
+\title{  
+ \normalfont \normalsize 
+ \textsc{CS 229 - Machine Learning} \\
+ Xiangliang Zhang \\
+ Computer Science (CS)/Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\ [.4cm]
+ \LARGE HOMEWORK \\
+  V
+ \horrule{2pt} \\[ .5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+%\newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold')
+# </r code> ==================================================================== #
+@
+
+\section*{Question 1} \addcontentsline{toc}{section}{Question 1}
+
+\horrule{1pt} \\
+
+\textbf{Consider the training data shown in Table \ref{tab:table1}:}
+
+\begin{table}[H]
+ \caption{Data set for decision tree classification.}
+ \label{tab:table1}
+ \begin{center}
+  \begin{tabular}{ | c | c | c | c | c |}
+  \hline
+   Customer ID & Gender & Car Type & Shirt Size & Class \\
+  \hline
+   1 & M & Family & Small & C0 \\
+   2 & M & Sports & Medium & C0 \\
+   3 & M & Sports & Medium & C0 \\
+   4 & M & Sports & Large & C0 \\
+   5 & M & Sports & Extra Large & C0 \\
+   6 & M & Sports & Extra Large & C0 \\
+   7 & F & Sports & Small & C0 \\
+   8 & F & Sports & Small & C0 \\
+   9 & F & Sports & Medium & C0 \\
+   10 & F & Luxury & Large & C0 \\
+   11 & M & Family & Large & C1 \\
+   12 & M & Family & Extra Large & C1 \\
+   13 & M & Family & Medium & C1 \\
+   14 & M & Luxury & Extra Large & C1 \\
+   15 & F & Luxury & Small & C1 \\
+   16 & F & Luxury & Small & C1 \\
+   17 & F & Luxury & Medium & C1 \\
+   18 & F & Luxury & Medium & C1 \\
+   19 & F & Luxury & Medium & C1 \\
+   20 & F & Luxury & Large & C1 \\
+  \hline
+  \end{tabular}
+ \end{center}
+\end{table}
+
+\textbf{Construct a decision tree by splitting based on the gain in the
+        \textit{Gini index} or \textit{Gain Ratio} (Hint: if meeting an outlier
+        sample when constructing the tree, you can stop splitting if the splitting
+        is not helpful to reach pure class at children nodes. You can make the
+        parent node as a leaf node, whose class label is the majority class of all
+        samples there.)} \\
+
+\underline{Solution:} \\
+
+Gini index:
+
+\[
+ {\rm GINI}(t) = 1 - \sum_{j} p(j \mid t)^{2},  \quad p(j \mid t)
+ \text{ is the relative frequency of class \(j\) at node \(t\)}.
+\]
+
+
+For Class we have
+
+\[
+ {\rm GINI}({\rm Class}) = 1 - (10/20)^{2} - (10/20)^{2} = 0.5.
+\]
+
+To select the root node we compute the GAIN for the three nodes
+
+\[
+ {\rm GAIN} =
+ {\rm GINI}({\rm node}) - \sum_{i = 1}^{k} \frac{n_{i}}{n} {\rm GINI}(i).
+\]
+
+Gender:
+
+\begin{align*}
+ {\rm GAIN} & = 0.5 - \frac{10}{20} (1 - (4/10)^{2} - (6/10)^{2})
+                    - \frac{10}{20} (1 - (6/10)^{2} - (4/10)^{2}) \\
+            & = 0.5 - \frac{20}{20} (1 - (4/10)^{2} - (6/10)^{2}) \\
+            & = 0.02
+\end{align*}
+
+Car Type:
+
+\begin{align*}
+ {\rm GAIN} & = 0.5 - \frac{4}{20} (1 - (1/4)^{2} - (3/4)^{2})
+                    - \frac{8}{20} (1 - (1/8)^{2} - (7/8)^{2})
+                    - \frac{8}{20} (1 - (8/8)^{2} - (0/8)^{2}) \\
+            & = 0.3375
+\end{align*}
+
+Shirt Size:
+
+\begin{align*}
+ {\rm GAIN} & = 0.5 - \frac{4}{20} (1 - (2/4)^{2} - (2/4)^{2})
+                    - \frac{4}{20} (1 - (2/4)^{2} - (2/4)^{2}) \\
+   & \hspace{1.1cm} - \frac{7}{20} (1 - (3/7)^{2} - (4/7)^{2})
+                    - \frac{5}{20} (1 - (3/5)^{2} - (2/5)^{2}) \\
+            & = 0.008571429
+\end{align*}
+
+The biggest GAIN is obtained with Car Type, so this is selected as the root node.
+See Figure \ref{fig:1}.
+
+\begin{figure}[H]
+ \centering \includegraphics[width=.8\textwidth]{tree1_1.png}
+ \caption{Decision tree root node.} \label{fig:1}
+\end{figure}
+
+Now, to select the node connected to Car Type = Family we compute new GAIN's. \\
+
+For Car Type = Family we have
+
+\[
+ {\rm GINI}(\text{Car Type = Family}) = 1 - (1/4)^{2} - (3/4)^{2} = 0.375.
+\]
+
+Gender:
+
+\begin{align*}
+ {\rm GAIN} & = 0.375 - \frac{4}{4} (1 - (1/4)^{2} - (3/4)^{2}) \\
+            & = 0.375 - 0.375 \\
+            & = 0
+\end{align*}
+
+Shirt Size:
+
+\begin{align*}
+ {\rm GAIN} & = 0.375 - \frac{1}{4} (1 - (0/1)^{2} - (1/1)^{2})
+                      - \frac{1}{4} (1 - (0/1)^{2} - (1/1)^{2}) \\
+     & \hspace{1.5cm} - \frac{1}{4} (1 - (0/1)^{2} - (1/1)^{2})
+                    - \frac{1}{4} (1 - (1/1)^{2} - (0/1)^{2}) \\
+            & = 0.375
+\end{align*}
+
+The biggest GAIN is obtained with Shirt Size, so this is selected node.
+See Figure \ref{fig:2}.
+
+\begin{figure}[H]
+ \centering \includegraphics[width=1.05\textwidth]{tree1_2.png}
+ \caption{Decision tree updated with Shirt Size selected.} \label{fig:2}
+\end{figure}
+
+Splitting the Car Type = Luxury node and using the \textbf{Hint} in the problem
+statement we have the final decision tree presented in Figure \ref{fig:3}.
+
+\begin{figure}[H]
+ \centering \includegraphics[width=1.05\textwidth]{tree1_f.png}
+ \caption{Final decision tree.} \label{fig:3}
+\end{figure}
+
+For the Gender M in Car Type = Luxury we have only one sample, of class C1. For
+the Gender F we have 8 samples, only one is of class C0. So we made use of
+the statement \textbf{Hint} and considered the majority class of all samples,
+therefore the result is C1.
+
+\hfill \(\square\)
+
+\section*{Question 2} \addcontentsline{toc}{section}{Question 2}
+
+\horrule{1pt} \\
+
+\textbf{Table \ref{tab:table2} consists of training data from an employee
+        database:}
+
+\begin{table}[H]
+ \caption{Data set of an employee database.}
+ \label{tab:table2}
+ \begin{center}
+  \begin{tabular}{ | c | c | c | c | c |}
+  \hline
+   Department & Status & Age & Salary & Count \\
+  \hline
+   Sales & Senior & 31 \dots 35 & 46K-50K & 30 \\
+   Sales & Junior & 26 \dots 30 & 26K-30K & 40 \\
+   Sales & Junior & 31 \dots 35 & 31K-35K & 40 \\
+   Systems & Junior & 21 \dots 25 & 46K-50K & 20 \\
+   Systems & Senior & 31 \dots 35 & 66K-70K & 5 \\
+   Systems & Junior & 26 \dots 30 & 46K-50K & 3 \\
+   Systems & Senior & 41 \dots 45 & 66K-70K & 3 \\
+   Marketing & Senior & 36 \dots 40 & 46K-50K & 10 \\
+   Marketing & Junior & 31 \dots 35 & 41K-45K & 4 \\
+   Secretary & Senior & 46 \dots 50 & 36K-40K & 4 \\
+   Secretary & Junior & 26 \dots 30 & 26K-30K & 6 \\
+  \hline
+  \end{tabular}
+ \end{center}
+\end{table}
+
+\textbf{The data have been generalized. For a given row entry, \textit{count}
+        represents the number of data examples having the values for 
+        \textit{departments}, \textit{status}, \textit{age}, and \textit{salary}
+        given in that row. Let the \textit{status} be the class label attribute.}
+
+\subsection*{(1)} \addcontentsline{toc}{subsection}{(1)}
+
+\horrule{.5pt} \\
+
+\textbf{How to modify C4.5 algorithm to take into consideration the \textit{count}
+        of each generalized data tuple (i.e. of each row entry)?} \\
+
+\underline{Solution:} \\
+
+Integrating the count of each tuple into the calculation of the attribute 
+selection measure (such as GainRATIO). Taking the count into consideration
+to determine the most common class among the tuples.
+
+\hfill \(\square\)
+
+\subsection*{(2)} \addcontentsline{toc}{subsection}{(2)}
+
+\horrule{.5pt} \\
+
+\textbf{Construct a decision tree from the given data by using the modified C4.5
+        algorithm (Hint: \textit{Age} and \textit{Salary} have been discretized
+        into intervals. You can consider them like ordinal attributes. When trying
+        multi-splitting, you can merge values by their closeness. For example, if
+        you have a three-way split of age, you can have [26-30] at one branch,
+        [31 35] at one, and [36 40] [41 45] [46 50] at one. It is ok as long as
+        you try a number of reasonable splits.)} \\
+        
+\underline{Solution:} \\
+
+To choose the root node we have to run all the possible nodes and compute the
+GainRATIO
+
+\[
+ {\rm GainRATIO} = \frac{\rm GAIN}{\rm SplitINFO}, \quad \text{ with } \quad
+ {\rm SplitINFO} = -\sum_{i = 1}^{k} \frac{n_{i}}{n} \log \frac{n_{i}}{n}.
+\]
+
+\(n_{i}\) is the number of records in partition \(i\). \\
+
+For Department
+
+\begin{figure}[H]
+ \centering \includegraphics[width=.9\textwidth]{tree2_dep.png}
+ \caption{Simplified decision tree for Department.} \label{fig:tree2_dep}
+\end{figure}
+
+\begin{align*}
+ {\rm GainRATIO} & = \frac{\rm GAIN}{\rm SplitINFO} \\
+ {\rm GAIN} & =
+ \Big(1 - \Big(\frac{113}{165}\Big)^{2} - \Big(\frac{52}{165}\Big)^{2}\Big) \\
+ & \quad - \frac{110}{165}
+ \Big(1 - \Big(\frac{80}{110}\Big)^{2} - \Big(\frac{30}{110}\Big)^{2}\Big)
+ - \frac{31}{165}
+ \Big(1 - \Big(\frac{23}{31}\Big)^{2} - \Big(\frac{8}{31}\Big)^{2}\Big) \\
+ & \quad - \frac{14}{165}
+ \Big(1 - \Big(\frac{4}{14}\Big)^{2} - \Big(\frac{10}{14}\Big)^{2}\Big)
+ - \frac{10}{165}
+ \Big(1 - \Big(\frac{6}{10}\Big)^{2} - \Big(\frac{4}{10}\Big)^{2}\Big)
+ = 0.4316 - 0.4001 \\
+ & = 0.0315 \\
+ {\rm SplitINFO} & = - \Big(\frac{110}{165} \log \frac{110}{165} +
+                            \frac{31}{165} \log \frac{31}{165} +
+                            \frac{14}{165} \log \frac{14}{165} +
+                            \frac{10}{165} \log \frac{10}{165}
+                       \Big) = 0.9636 \\
+ {\rm GainRATIO} & = \frac{0.0315}{0.9636} = 0.0327.
+\end{align*}
+
+For Age
+
+\begin{figure}[H]
+ \centering \includegraphics[width=.8\textwidth]{tree2_age.png}
+ \caption{Simplified decision tree for Age.} \label{fig:tree2_age}
+\end{figure}
+
+\begin{align*}
+ {\rm GainRATIO} & = \frac{\rm GAIN}{\rm SplitINFO} \\
+ {\rm GAIN} & =
+ \Big(1 - \Big(\frac{113}{165}\Big)^{2} - \Big(\frac{52}{165}\Big)^{2}\Big) \\
+ & \quad - \frac{69}{165}
+ \Big(1 - \Big(\frac{69}{69}\Big)^{2} - \Big(\frac{0}{69}\Big)^{2}\Big)
+ - \frac{79}{165}
+ \Big(1 - \Big(\frac{44}{79}\Big)^{2} - \Big(\frac{35}{79}\Big)^{2}\Big) \\
+ & \quad - \frac{17}{165}
+ \Big(1 - \Big(\frac{0}{17}\Big)^{2} - \Big(\frac{17}{17}\Big)^{2}\Big)
+ = 0.4316 - 0.2363 \\
+ & = 0.1953 \\
+ {\rm SplitINFO} & = - \Big(\frac{69}{165} \log \frac{69}{165} +
+                            \frac{79}{165} \log \frac{79}{165} +
+                            \frac{17}{165} \log \frac{17}{165}
+                       \Big) = 0.9513 \\
+ {\rm GainRATIO} & = \frac{0.1953}{0.9513} = 0.2053.
+\end{align*}
+
+For Salary (merging values by their closeness, as mencioned in the \textbf{Hint},
+            and having so three branchs)
+
+\begin{figure}[H]
+ \centering \includegraphics[width=.8\textwidth]{tree2_sal.png}
+ \caption{Simplified decision tree for Salary.} \label{fig:tree2_sal}
+\end{figure}
+
+\begin{align*}
+ {\rm GAIN} & =
+ \Big(1 - \Big(\frac{113}{165}\Big)^{2} - \Big(\frac{52}{165}\Big)^{2}\Big) \\
+ & \quad - \frac{94}{165}
+ \Big(1 - \Big(\frac{90}{94}\Big)^{2} - \Big(\frac{4}{94}\Big)^{2}\Big)
+ - \frac{63}{165}
+ \Big(1 - \Big(\frac{23}{63}\Big)^{2} - \Big(\frac{40}{63}\Big)^{2}\Big) \\
+ & \quad - \frac{8}{165}
+ \Big(1 - \Big(\frac{0}{8}\Big)^{2} - \Big(\frac{8}{8}\Big)^{2}\Big)
+ = 0.4316 - 0.2234 \\
+ & = 0.2082 \\
+ {\rm SplitINFO} & = - \Big(\frac{94}{165} \log \frac{94}{165} +
+                            \frac{63}{165} \log \frac{63}{165} +
+                            \frac{8}{165} \log \frac{8}{165}
+                       \Big) = 0.8349 \\
+ {\rm GainRATIO} & = \frac{0.2082}{0.8349} = 0.2494.
+\end{align*}
+
+The biggest GainRATIO is obtained with Salary, therefore Salary is the root node.
+
+\begin{figure}[H]
+ \centering \includegraphics[width=.9\textwidth]{tree2_1.png}
+ \caption{Decision tree root node.} \label{fig:tree2_1}
+\end{figure}
+
+Now, to select the node connected to Salary = [26-45] we compute new GainRATIO's.
+\\
+
+For Department
+
+\begin{figure}[H]
+ \centering \includegraphics[width=.95\textwidth]{tree2_2dep.png}
+ \caption{Simplified updated decision tree for Department.} \label{fig:tree2_2dep}
+\end{figure}
+
+\begin{align*}
+ {\rm GAIN} & =
+ \Big(1 - \Big(\frac{90}{94}\Big)^{2} - \Big(\frac{4}{94}\Big)^{2}\Big) \\
+ & \quad - \frac{80}{94}
+ \Big(1 - \Big(\frac{80}{80}\Big)^{2} - \Big(\frac{0}{80}\Big)^{2}\Big)
+ - \frac{4}{94}
+ \Big(1 - \Big(\frac{4}{4}\Big)^{2} - \Big(\frac{0}{4}\Big)^{2}\Big) \\
+ & \quad - \frac{10}{94}
+ \Big(1 - \Big(\frac{6}{10}\Big)^{2} - \Big(\frac{4}{10}\Big)^{2}\Big)
+ = 0.0815 - 0.051 \\
+ & = 0.0305 \\
+ {\rm SplitINFO} & = - \Big(\frac{80}{94} \log \frac{80}{94} +
+                            \frac{4}{94} \log \frac{4}{94} +
+                            \frac{10}{94} \log \frac{10}{94}
+                       \Big) = 0.5099 \\
+ {\rm GainRATIO} & = \frac{0.0305}{0.5099} = 0.0598.
+\end{align*}
+
+For Age
+
+\begin{figure}[H]
+ \centering \includegraphics[width=.85\textwidth]{tree2_2age.png}
+ \caption{Simplified updated decision tree for Age.} \label{fig:tree2_2age}
+\end{figure}
+
+\begin{align*}
+ {\rm GAIN} & =
+ \Big(1 - \Big(\frac{90}{94}\Big)^{2} - \Big(\frac{4}{94}\Big)^{2}\Big) \\
+ & \quad - \frac{44}{94}
+ \Big(1 - \Big(\frac{40}{44}\Big)^{2} - \Big(\frac{4}{44}\Big)^{2}\Big)
+ - \frac{44}{94}
+ \Big(1 - \Big(\frac{44}{44}\Big)^{2} - \Big(\frac{0}{44}\Big)^{2}\Big) \\
+ & \quad - \frac{6}{94}
+ \Big(1 - \Big(\frac{6}{6}\Big)^{2} - \Big(\frac{0}{6}\Big)^{2}\Big)
+ = 0.0815 - 0.0773 \\
+ & = 0.0042 \\
+ {\rm SplitINFO} & = - \Big(\frac{44}{94} \log \frac{44}{94} +
+                            \frac{44}{94} \log \frac{44}{94} +
+                            \frac{6}{94} \log \frac{6}{94}
+                       \Big) = 0.8863 \\
+ {\rm GainRATIO} & = \frac{0.0042}{0.8863} = 0.0047.
+\end{align*}
+
+The biggest GainRATIO is obtained with Department, therefore Department is the
+connection with Salary = [26-45]. \textbf{Notes}: For this salary level we don't
+have samples for Department = Systems. For Department = Secretary the connections
+to two levels of Age are automatically, as show the Figure \ref{fig:tree2_2}.
+
+\begin{figure}[H]
+ \centering \includegraphics[width=1.025\textwidth]{tree2_2.png}
+ \caption{Updated decision tree.} \label{fig:tree2_2}
+\end{figure}
+
+When we connect the node Age in Salary = [46-50] we already arrive in leaf nodes
+for all the Age classes. Theferore, this is our final tree
+(Figure \ref{fig:tree2_f}).
+
+\begin{figure}[H]
+ \centering \includegraphics[width=1.025\textwidth]{tree2_f.png}
+ \caption{Final decision tree.} \label{fig:tree2_f}
+\end{figure}
+
+\hfill \(\square\)
+
+\subsection*{(3)} \addcontentsline{toc}{subsection}{(3)}
+
+\horrule{.5pt} \\
+
+\textbf{Use the tree you learned to classify a given example with the values
+        “system”, “26 \dots 30” and “46-50K” for the attributes
+        \textit{departments}, \textit{age}, and \textit{salary}. The
+        \textit{status} of this employee is?} \\
+
+\underline{Solution:}
+
+\[
+ {\rm Salary} \quad \xrightarrow{[46-50]} \quad 
+ {\rm Age} \quad \xrightarrow{[21-30]} \quad
+ \quad \Rightarrow \text{ status}: {\rm Junior}.
+\]
+
+Following the tree in Figure \ref{fig:tree2_f} we don't need the value “system”
+of the attribute \textit{departments} to classify an employee with the given
+characteristics (\textit{salary} and \textit{age}).
+
+\hfill \(\square\)
+
+\subsection*{(4)} \addcontentsline{toc}{subsection}{(4)}
+
+\horrule{.5pt} \\
+
+\textbf{Use the training data in Table \ref{tab:table2} to learn a Naive Bayes
+        classifier, and classify the same given example with the values “system”,
+        “26 \dots 30” and “46-50K” for the attributes \textit{departments},
+        \textit{age}, and \textit{salary}. The \textit{status} of this employee
+        is?} \\
+        
+\underline{Solution:}
+
+\[
+ X = (\text{Department} = \text{Systems}, \text{Age} = [26-30],
+      \text{Salary} = [46-50])
+\]
+
+(Using Laplace probability estimation to avoid the 0-probability problem)
+
+\begin{align*}
+ \mathbb{P}(X \mid \text{Status} = \text{Junior}) & =
+ \mathbb{P}(\text{Department} = \text{Systems} \mid
+            \text{Status} = \text{Junior}) \times \\
+ & \hspace{.55cm} \mathbb{P}(\text{Age} = [26-30] \mid
+                             \text{Status} = \text{Junior}) \times \\
+ & \hspace{.55cm} \mathbb{P}(\text{Salary} = [46-50] \mid
+                             \text{Status} = \text{Junior}) \\
+ & = \frac{23 + 1}{113 + 4} \times \frac{49 + 1}{113 + 6} \times
+     \frac{23 + 1}{113 + 6} \\
+ & = 0.0174 \\
+ \mathbb{P}(X \mid \text{Status} = \text{Senior}) & =
+ \mathbb{P}(\text{Department} = \text{Systems} \mid
+            \text{Status} = \text{Senior}) \times \\
+ & \hspace{.55cm} \mathbb{P}(\text{Age} = [26-30] \mid
+                             \text{Status} = \text{Senior}) \times \\
+ & \hspace{.55cm} \mathbb{P}(\text{Salary} = [46-50] \mid
+                             \text{Status} = \text{Senior}) \\
+ & = \frac{8 + 1}{52 + 4} \times \frac{0 + 1}{52 + 6} \times
+     \frac{40 + 1}{52 + 6} \\
+ & = 0.0019
+\end{align*}
+
+\begin{align*}
+ \mathbb{P}(X \mid \text{Status} = \text{Junior}) \times
+ \mathbb{P}(\text{Status} = \text{Junior}) & >
+ \mathbb{P}(X \mid \text{Status} = \text{Senior}) \times
+ \mathbb{P}(\text{Status} = \text{Senior}) \\
+ 0.0174 \times \frac{113}{165} & > 0.0019 \times \frac{52}{165} \\
+ 0.0119 & > 0.0006
+\end{align*}
+
+Therefore,
+
+\[
+ \boxed{\mathbb{P}(\text{Status} = \text{Junior} \mid X) >
+        \mathbb{P}(\text{Status} = \text{Senior} \mid X)
+        \quad \Rightarrow \quad \text{ Employee \textit{status}} = \text{Junior}.
+       }
+\]
+
+\hfill \(\square\)
+
+\section*{Question 3} \addcontentsline{toc}{section}{Question 3}
+
+\horrule{1pt} \\
+
+\textbf{Why is \textit{tree pruning} useful in decision tree induction? What are
+        the pros and cons of using a separate set of samples to evaluate pruning?}
+        \\
+
+\underline{Solution:} \\
+
+A \textit{tree pruning} is useful in decision tree induction because induced trees
+may overfit the training data. With too many branchs, e.g., some may reflect
+anomalies due to noise or outliers, or, also e.g., poor accucary for unseen samples may happen.
+
+\begin{description}
+ \item{Pros of using a separate set of samples to evaluate pruning} \\
+  Reduces overfit and error pruning for using different samples that may have
+  different characteristics and patterns.
+ \item{Cons of using a separate set of samples to evaluate pruning} \\
+  May overprune the decision tree, deleting relevant parts from it. Less data is
+  available for training.
+\end{description}
+
+\hfill \(\blacksquare\)
+
+\horrule{.5pt}
+
+\vspace{\fill}
+
+\horrule{1pt} \\
+
+\end{document}
