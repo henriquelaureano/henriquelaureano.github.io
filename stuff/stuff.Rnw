@@ -1,0 +1,163 @@
+\documentclass[12pt]{article}
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry}
+\usepackage{listings}
+\usepackage{color} % red, green, blue, yellow, cyan, magenta, black, white
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage[hidelinks]{hyperref}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{bbding} % checkmarks
+\usepackage{fancyhdr} % change the position of page number
+\usepackage[flushleft]{threeparttable} % footnote in tables
+\usepackage{caption}
+\captionsetup{format = hang}
+\usepackage{color, colortbl} % coloring rows or columns in tables
+\definecolor{Gray}{gray}{.9} % coloring rows or columns in tables
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{darkred}{RGB}{100,0,0}
+\usepackage{listings}
+\lstset{ 
+ language = R, % the language of the code
+ numbers = left, % where to put the line-numbers
+ numbersep = 6pt, % how far the line-numbers are from the code
+ backgroundcolor = \color{white}, % choose the background color. You must add
+                                  % \usepackage{color}
+ showspaces = false, % show spaces adding particular underscores
+ showstringspaces = false, % underline spaces within strings
+ showtabs = false, % show tabs within strings adding particular underscores
+ frame = single, % adds a frame around the code
+ rulecolor = \color{black}, % if not set, the frame-color may be changed on
+                            % line-breaks within not-black text
+ tabsize = 2, % sets default tabsize to 2 spaces
+ captionpos = b, % sets the caption-position to bottom
+ breaklines = true, % sets automatic line breaking
+ breakatwhitespace = false, % sets if automatic breaks should only happen at
+                            % whitespace
+ keywordstyle = \color{black}, % keyword style
+ commentstyle = \color{darkgreen}, % comment style
+ stringstyle = \color{darkred}, % string literal style
+ basicstyle = \small\ttfamily,
+}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\fancyhf{} % clear all header and footers
+\renewcommand{\headrulewidth}{0pt} % remove the header rule
+\rfoot{\thepage} % puts the page number on the right side
+\pagestyle{fancy}
+\title{\textbf{Template(?) for a \texttt{pairs()} option in \texttt{ggplot2}}\\
+       ...also showing a good choice for\\
+       \texttt{knit\_theme} and \texttt{\(\backslash\)lslset} definitions}
+\date{Summer Semester\\ 2018}
+\author{Henrique Ap. Laureano\\
+        \texttt{henrique.laureano@kaust.edu.sa} \(\wedge\)
+        \texttt{http://mynameislaure.github.io/} \vspace{.25cm}\\
+        \texttt{/KAUST/CEMSE/STAT}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+%\vfill
+\noindent \horrule{.5pt} \vspace{-.95cm} \tableofcontents \noindent \horrule{.5pt}
+
+<<setup, include=FALSE>>=
+# <r code> -----
+library(knitr)
+
+tema <- knit_theme$get("clarity") # acid
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , results='hold'
+               , fig.show='hold')
+# </r code> -----
+@
+
+\section*{Code \(\wedge\) graph}
+\addcontentsline{toc}{section}{Code \(\wedge\) graph}
+
+%\begin{figure}[p]
+<<pairs, fig.cap="Descriptive analysis of the quantitative features. upper triangular matrix: scatterplots; lower triangular matrix: correlations.">>=
+# <r code> -----
+# other option for the function pairs()
+library(brinla) ; data(usair, package = "brinla")
+
+library(ggplot2); library(GGally)
+
+ggpairs(usair
+        , lower = list(continuous = "cor")
+        , upper = list(continuous = "points")
+        , axisLabels = "none") +
+  theme_bw()
+# </r code> -----
+@
+%\end{figure}
+
+<<rw1, fig.height=4.45, fig.cap="Posterior mean and 95\\% credible interval of a random walk 1 model for smoothing splines without intercept.">>=
+# <r code> -----
+library(INLA)
+# simulating data, 100 points
+n <- 100 ; x <- seq(0, 1, length.out = n)
+
+f.true <- (sin(2*pi*x**3))**3 ; y <- f.true + rnorm(n, sd = .2)
+
+data.inla <- list(y = y, x = x)
+
+# fitting the random walk 1 model for smoothing splines,
+# without the intercept
+formula <- y ~ -1 + f(x, model = "rw1", constr = FALSE)
+result <- inla(formula, data = data.inla)
+
+f.hat <- result$summary.random$x$mean # posterior mean
+f.lb <- result$summary.random$x$'0.025quant' # 2.5% percentile
+f.ub <- result$summary.random$x$'0.975quant' # 97.5% percentile
+
+data.plot <- data.frame(y = y, x = x,
+                        f.true = f.true, f.hat = f.hat,
+                        f.lb = f.lb, f.ub = f.ub)
+ggplot(data.plot, aes(x = x, y = y)) +
+  geom_line(aes(y = f.hat), col = "#0080ff", size = .75) +
+  geom_line(aes(y = f.true), linetype = 2, size = .75) +
+  geom_ribbon(aes(ymin = f.lb, ymax = f.ub),
+              alpha = .25, fill = "orange", col = "#0080ff") +
+  geom_point(aes(y = y)) +
+  theme_minimal() +
+  labs(title = "Random walk 1 model for smoothing splines")
+# </r code> -----
+@
+
+<<eval=FALSE, include=FALSE>>=
+# <r code> -----
+# extracting R code to insert after with \lstinputlisting{}
+purl("~/Dropbox/stuff.Rnw", documentation = 0)
+# kl-17766:~ laureaha$ mv stuff.R ~/Dropbox/
+# </r code> -----
+@
+
+% \begin{lstlisting}
+% 
+% \end{lstlisting}
+
+\section*{lstlisting}\addcontentsline{toc}{section}{lstlisting}
+
+\lstinputlisting{stuff.R}
+
+\end{document}
