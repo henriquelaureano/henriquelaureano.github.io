@@ -17,6 +17,7 @@
 \usepackage{bbding} % checkmarks
 \usepackage{fancyhdr} % change the position of page number
 \usepackage[flushleft]{threeparttable} % footnote in tables
+\usepackage{lipsum}
 \usepackage{caption}
 \captionsetup{format = hang}
 \usepackage{color, colortbl} % coloring rows or columns in tables
@@ -44,7 +45,7 @@
  keywordstyle = \color{black}, % keyword style
  commentstyle = \color{darkgreen}, % comment style
  stringstyle = \color{darkred}, % string literal style
- basicstyle = \small\ttfamily,
+ basicstyle = \footnotesize\ttfamily,
 }
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
 \fancyhf{} % clear all header and footers
@@ -94,6 +95,10 @@ opts_chunk$set(size='small'
 \section*{Code \(\wedge\) graph}
 \addcontentsline{toc}{section}{Code \(\wedge\) graph}
 
+\begin{multicols}{2}
+\lipsum[3]
+\end{multicols}
+
 %\begin{figure}[p]
 <<pairs, fig.cap="Descriptive analysis of the quantitative features. upper triangular matrix: scatterplots; lower triangular matrix: correlations.">>=
 # <r code> -----
@@ -110,6 +115,10 @@ ggpairs(usair
 # </r code> -----
 @
 %\end{figure}
+
+\begin{multicols}{2}
+\lipsum[3-4]
+\end{multicols}
 
 <<rw1, fig.height=4.45, fig.cap="Posterior mean and 95\\% credible interval of a random walk 1 model for smoothing splines without intercept.">>=
 # <r code> -----
