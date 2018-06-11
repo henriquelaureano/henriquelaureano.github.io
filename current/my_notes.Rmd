@@ -1,0 +1,66 @@
+---
+title: "[class notes] CS 207 Programming Methodology and Abstractions"
+subtitle: "(Instructor: Malek Smaoui)"
+author: "Henrique Aparecido Laureano"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: leonids # or ayman (default) or tactile or architect
+    highlight: github # or vignette (used by html_vignette)
+    toc: yes
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+***
+
+## 2018-06-11
+
+*Sparse stuff:*
+
+* Each processor has a specific set of instructions, called
+  **I**nstruction **S**et **A**rchitecture (**ISA**)
+  
+* Bit: transistor/switch (on or off)
+
+### Assembly language
+
+> **def.** a low-level symbolic code converted by an assembler
+
+ex.
+
+    > mov a1, 061h :
+      load in register a1 the content of memory location of adress 061h
+
+easier to write but codes are extremely long and hard to read and understand
+
+<div style="float: center; width: 60%;">
+ <ul>
+  <img src="photo1.jpg">
+ </ul>
+</div>
+
+1972: Dennis Ritchie at Bell telephone Labs develops the C language
+
+1979: Bjarne Stroustrup at Bell Labs design and implement C++ (C with classes)
+
+<div style="float: left; width: 50%;">
+ <ul>
+  <img src="dennis_ritchie.png">
+ </ul>
+</div>
+
+<div style="float: right; width: 50%;">
+ <ul>
+  <img src="bjarne_stroustrup.png">
+ </ul>
+</div>
+
+*compiler:* **g++**
+
+*command line debugger:* **gdb**
+
+* not really practical to use
