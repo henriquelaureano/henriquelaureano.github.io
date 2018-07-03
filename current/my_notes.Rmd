@@ -210,6 +210,10 @@ declaration
 
 * to access an element use the subscript operator `[]` or through a pointer
 
+> **boundary checking:** C/C++ compiler does no boundary check.
+                         Using out of range indexes is not detected by compiler
+                         and results in computation errors
+
 ```{r}
 Sys.time()
 ```
