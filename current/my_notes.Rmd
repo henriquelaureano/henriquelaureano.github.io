@@ -188,6 +188,28 @@ exs.
 
 * the size of pointer doesn't depend on its type
 
+### arrays
+
+what Stroustroup says about:
+
+<div style="width: 65%;">
+ <ul>
+  <img src="arrays-stroustroup.PNG">
+ </ul>
+</div>
+
+declaration
+
+<div style="width: 35%;">
+ <ul>
+  <img src="array-declaration.PNG">
+ </ul>
+</div>
+
+* indexes range from 0 to `size` -1
+
+* to access an element use the subscript operator `[]` or through a pointer
+
 ```{r}
 Sys.time()
 ```
