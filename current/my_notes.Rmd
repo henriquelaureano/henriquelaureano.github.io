@@ -149,6 +149,15 @@ ex.
  </ul>
 </div>
 
+### pointer
+
+> a **pointer** is a variable that stores the address of another object
+
+* always initialize a pointer, *, with the value **zero**
+
+* pointers can be assigned addresses of other variables via the address-of 
+  operator (ampersand) & - the types of the variable and the pointer have to match
+
 ```{r}
 Sys.time()
 ```
