@@ -214,6 +214,24 @@ declaration
                          Using out of range indexes is not detected by compiler
                          and results in computation errors
 
+#### array list initialization
+
+<div style="width: 70%;">
+ <ul>
+  <img src="array_list_initialization.PNG">
+ </ul>
+</div>
+
+#### `sizeof` an array
+
+returns the number of bytes allocated for the entire array
+
+<div style="width: 75%;">
+ <ul>
+  <img src="sizeof_an_array.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
