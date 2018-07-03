@@ -232,6 +232,17 @@ returns the number of bytes allocated for the entire array
  </ul>
 </div>
 
+#### multidimensional arrays
+
+for readability, use nested curly brackets
+
+<div style="width: 50%;">
+ <ul>
+  <img src="multidim_arrays.PNG">
+ </ul>
+</div>
+
+
 ```{r}
 Sys.time()
 ```
