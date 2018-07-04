@@ -250,6 +250,8 @@ for readability, use nested curly brackets
  </ul>
 </div>
 
+* number of elements should be constant and could not be changed later
+
 ```{r}
 Sys.time()
 ```
