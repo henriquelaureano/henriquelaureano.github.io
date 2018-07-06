@@ -244,13 +244,23 @@ for readability, use nested curly brackets
 
 #### pointer arithmetic (with an ex)
 
-<div style="width: 55%;">
+<div style="width: 50%;">
  <ul>
   <img src="pointer_arithmetic-ex.PNG">
  </ul>
 </div>
 
 * number of elements should be constant and could not be changed later
+
+### dynamic memory allocation
+
+ex.
+
+<div style="width: 50%;">
+ <ul>
+  <img src="dynamic_memory_allocation-ex1.PNG">
+ </ul>
+</div>
 
 ```{r}
 Sys.time()
