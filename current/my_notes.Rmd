@@ -274,6 +274,24 @@ ex.
  </ul>
 </div>
 
+### program memory
+
+a programs memory is divided into
+
+* code area: compiled program (executable)
+
+* globals area: global variables
+
+* heap: dynamically allocated memory
+
+* stack: parameters and local variables
+
+<div style="width: 70%;">
+ <ul>
+  <img src="program_memory.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
