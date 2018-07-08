@@ -316,6 +316,8 @@ string str = "Hello";
  </ul>
 </div>
 
+> index range is 0 to `str.length()`-1
+
 ```{r}
 Sys.time()
 ```
