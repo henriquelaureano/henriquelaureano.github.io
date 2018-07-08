@@ -306,7 +306,7 @@ c++ 11 doesn't allow string literals to be assigned to non-const char *
 
 #### string concatenation 
 
-```{rcpp}
+```
 std::string // string class (data type)
 
 string str = "Hello";
@@ -335,6 +335,18 @@ string str = "Hello";
   <img src="cctype-character_manipulation.PNG">
  </ul>
 </div>
+
+### user-defined types
+
+* `struct`: sequence of elements (called members) of arbitrary types
+
+* `union`: a `struct` that holds the value of just one of its elements at any
+   one time
+
+* `enum`: a type with a set of named constants (called enumerators)
+
+> `array` aggregate data of the same type,
+  `struct` aggregate data of arbitrary type
 
 ```{r}
 Sys.time()
