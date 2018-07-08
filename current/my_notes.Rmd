@@ -348,6 +348,12 @@ string str = "Hello";
 > `array` aggregate data of the same type,
   `struct` aggregate data of arbitrary type
 
+#### structure
+
+* elements of a `struct` are called members or fields
+
+* member selection operator is the `.`
+
 ```{r}
 Sys.time()
 ```
