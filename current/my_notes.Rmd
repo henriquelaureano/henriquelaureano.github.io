@@ -302,6 +302,20 @@ c++ 11 doesn't allow string literals to be assigned to non-const char *
  </ul>
 </div>
 
+#### string concatenation 
+
+```{rcpp}
+std::string // string class (data type)
+
+string str = "Hello";
+```
+
+<div style="width: 35%;">
+ <ul>
+  <img src="string-concatenation.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
