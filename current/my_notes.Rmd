@@ -292,6 +292,16 @@ a programs memory is divided into
  </ul>
 </div>
 
+### strings
+
+c++ 11 doesn't allow string literals to be assigned to non-const char *
+
+<div style="width: 45%;">
+ <ul>
+  <img src="string-ex1.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
