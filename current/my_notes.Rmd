@@ -354,6 +354,9 @@ string str = "Hello";
 
 * member selection operator is the `.`
 
+* selecting a `struct` field from a dereferenced pointer to the `struct` uses
+  different operator: `->`
+
 ```{r}
 Sys.time()
 ```
