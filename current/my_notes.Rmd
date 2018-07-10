@@ -373,6 +373,29 @@ exs.
  </ul>
 </div>
 
+## 2018-07-04
+
+### passing arguments by reference
+
+What if I want to return more than one result with just one function?
+
+Allow the function to modify the values of an argument: pass parameters by
+reference
+
+exs.
+
+<div style="width: 70%;">
+ <ul>
+  <img src="pass_by_ref-ex1.PNG">
+ </ul>
+</div>
+
+<div style="width: 75%;">
+ <ul>
+  <img src="pass_by_ref-ex2.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
