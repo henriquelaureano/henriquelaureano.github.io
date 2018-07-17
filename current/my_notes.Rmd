@@ -406,6 +406,42 @@ ex.
  </ul>
 </div>
 
+## 2018-07-16
+
+> I/O stream library, `<iostream>`, in order to display output to the standard
+  output device (generally the screen) and get input from standard input device
+  (generally the keyboard)
+
+> `<fstream>` extends `<iostream>` with additional features that make it possible
+  to read from and write to (text and binary) files
+
+> A `stream` can be thought of as a sequence of bytes of infinite length that is
+  used as a buffer to hold data that is waiting to be processed
+
+declare a stream variable
+
+<div style="width: 70%;">
+ <ul>
+  <img src="stream_variable.PNG">
+ </ul>
+</div>
+
+open a file...
+
+<div style="width: 80%;">
+ <ul>
+  <img src="open_a_file.PNG">
+ </ul>
+</div>
+
+partial list of I/O manipulators
+
+<div style="width: 85%;">
+ <ul>
+  <img src="io_manipulators.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
