@@ -442,6 +442,26 @@ partial list of I/O manipulators
  </ul>
 </div>
 
+### formatted stream input
+
+> extraction operation stops at white spaces
+
+ex.
+
+<div style="width: 50%;">
+ <ul>
+  <img src="formatted_stream_input-ex1.PNG">
+ </ul>
+</div>
+
+test if extraction/insertion has succeeded using the `fail()` method
+
+<div style="width: 35%;">
+ <ul>
+  <img src="formatted_stream_input-ex2.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
