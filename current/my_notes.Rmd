@@ -478,6 +478,19 @@ test if extraction/insertion has succeeded using the `fail()` method
  </ul>
 </div>
 
+## 2018-07-18
+
+### custom data types
+
+> a type is a concrete representation of a concept; e.g. float is a representation
+  of real numbers
+
+> we design a new type to provide a definition of a concept that has no direct
+  counterpart among the built-in types
+
+> the `class` construct allows to define C++ classes, a tool for creating new
+  types that can be used as conveniently similarly to the built-in types
+
 ```{r}
 Sys.time()
 ```
