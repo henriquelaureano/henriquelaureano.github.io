@@ -503,6 +503,16 @@ test if extraction/insertion has succeeded using the `fail()` method
   
 > a `struct` is a `class` where members are by default **public**
 
+> by default, if you don't specify, everything in the `class` is  **private**
+
+ex.
+
+<div style="width: 85%;">
+ <ul>
+  <img src="class-ex1.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
