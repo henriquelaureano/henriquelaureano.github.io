@@ -539,6 +539,14 @@ ex.
   data members; both access specifiers can be used many times within the same
   class definition
 
+#### advantages
+
+> any error/bug in manipulating the data members is now known to be in some member
+  function => speeds up debugging
+
+> user (programmer) need only to examine the **public** interface (member function
+  definitions) to learn how to use the data type
+
 ```{r}
 Sys.time()
 ```
