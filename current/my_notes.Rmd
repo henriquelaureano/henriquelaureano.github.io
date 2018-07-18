@@ -521,6 +521,14 @@ ex.
 
 > a header file for the class / struct definition
 
+### access control
+
+> "user code": code that uses the data type. "user" here doesn't designate the
+  application user
+
+> to restrict manipulation of the data members, use a `class` instead of a
+  `struct`
+
 ```{r}
 Sys.time()
 ```
