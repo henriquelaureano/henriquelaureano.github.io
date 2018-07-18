@@ -529,15 +529,15 @@ ex.
 > to restrict manipulation of the data members, use a `class` instead of a
   `struct`
 
-> in a `class`, by default, the members are private i.e. accessible only by member
-  functions
+> in a `class`, by default, the members are **private** i.e. accessible only by
+  member functions
 
 > by restricting access to data members, a need for an initialization function
   arises e.g. Date::init
 
-> the private access specifier can be also used to emphasize the privacy of data
-  members; both access specifiers can be used many times within the same class
-  definition
+> the **private** access specifier can be also used to emphasize the privacy of
+  data members; both access specifiers can be used many times within the same
+  class definition
 
 ```{r}
 Sys.time()
