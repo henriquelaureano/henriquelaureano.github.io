@@ -675,6 +675,15 @@ exs.
  </ul>
 </div>
 
+* "friend" functions are not member functions yet they have access to private
+  members
+
+* if operands not of the same type and **operator** is commutative then need to
+  implement two versions of **operator** overload with different parameter order
+
+* need to be careful with return type: "`this`" returns a reference to a `class`
+  object
+
 ```{r}
 Sys.time()
 ```
