@@ -549,8 +549,27 @@ ex.
 
 ### constructors
 
-> constructors are special member functions with the explicit purpose of
-  initializing objects
+> special member function executed when an object of a `class` is instantiated
+
+* when a `class` has a **constructor**, all objects of that `class` will be
+  initialized by a **constructor** call
+
+* **constructors** typically used to initialize member variables to appropriate
+  default values, or allow user to easily initialize member variables to his
+  desired values
+
+* arguments with default values can also reduce the number of **constructors**
+  needed
+
+* if the **constructor** requires arguments, they must be supplied
+
+* a **constructor** has the same name as the class and no return type (not `void`)
+
+* a `class` can have multiple **constructors** with respect to function
+  overloading
+
+* instantiating a `class` that doesn`t have a **constructor** means that the
+  members of the resulting object will be uninitialized
 
 ex.
 
@@ -559,15 +578,6 @@ ex.
   <img src="constructor-ex1.PNG">
  </ul>
 </div>
-
-> when a `class` has a constructor, all objects of that `class` will be
-  initialized by a constructor call
-
-> if the constructor requires arguments, they must be supplied
-
-> arguments with default values can also reduce the number of constructors needed
-
-> a constructor has the same name as the class and no return type (not `void`)
 
 ### shallow vs. deep copy
 
