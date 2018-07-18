@@ -560,6 +560,15 @@ ex.
  </ul>
 </div>
 
+> when a `class` has a constructor, all objects of that `class` will be
+  initialized by a constructor call
+
+> if the constructor requires arguments, they must be supplied
+
+> arguments with default values can also reduce the number of constructors needed
+
+> a constructor has the same name as the class and no return type (not `void`)
+
 ```{r}
 Sys.time()
 ```
