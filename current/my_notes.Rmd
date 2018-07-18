@@ -684,6 +684,38 @@ exs.
 * need to be careful with return type: "`this`" returns a reference to a `class`
   object
 
+### increment and decrement operators
+
+* tThe increment and decrement operators modify the object they are called on
+
+* they have different behaviors when used in prefix or in postfix
+
+    * need a different implementation of operator++ or operator-- for prefix and
+      postfix usage
+
+    * to overload the function twice for the same type, one needs a different
+      function signature => a dummy int argument is allowed for implementing
+      postfix version
+
+* prefix: the modification has to be reflected in the object before it is used in
+  an expression
+
+    * the prefix implementation requires returning the object by reference for
+      the modification to take effect in the expression evaluation
+
+* postfix: the modification is reflected only after expression is evaluated
+
+    * the prefix implementation needs to modify the object but return a copy of
+      the old value to be used in the expression
+
+ex.
+
+<div style="width: 60%;">
+ <ul>
+  <img src="increment_operator-ex.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
