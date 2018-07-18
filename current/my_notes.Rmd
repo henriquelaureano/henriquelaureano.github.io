@@ -724,6 +724,36 @@ ex.
  </ul>
 </div>
 
+### overloading assignment operator and the copy constructor
+
+* **assignment overload** function must be a member function
+
+* **copy constructor** must take a parameter of the same type passed by reference
+  or const reference but NOT by value
+
+    * this allows to check for self assignment
+
+**assignment operator** vs. **copy constructor**:
+
+* same behavior: copy data from one object to the other
+
+* difference: **assignment** is used when first operand already exist (previously
+  instantiated)
+
+<div style="width: 100%;">
+ <ul>
+  <img src="oa_vs_cc.PNG">
+ </ul>
+</div>
+
+> for more operator overloading exs, see
+
+<div style="width: 65%;">
+ <ul>
+  <img src="more_overloading-refs.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
