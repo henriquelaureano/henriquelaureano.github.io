@@ -513,6 +513,14 @@ ex.
  </ul>
 </div>
 
+> the function implementation can be included in the class definition or outside.
+  generally, code is textually separated into two files with the same name as the
+  class / struct and different extensions
+
+> an implementation file .cpp for most member function implementations
+
+> a header file for the class / struct definition
+
 ```{r}
 Sys.time()
 ```
