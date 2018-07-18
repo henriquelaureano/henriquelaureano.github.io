@@ -569,6 +569,23 @@ ex.
 
 > a constructor has the same name as the class and no return type (not `void`)
 
+### shallow vs. deep copy
+
+> if a member is a pointer and the source object member points to dynamically
+  allocated object or array, then the copy member will get the same address thus
+  pointing to the same dynamically allocated object or array
+
+> if this is not the wanted behavior, you need to define the copy behavior via a
+  copy constructor and an assignment operator
+
+ex.
+
+<div style="width: 75%;">
+ <ul>
+  <img src="copy_constructor.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
