@@ -579,6 +579,31 @@ ex.
  </ul>
 </div>
 
+### destructors
+
+> special member function called when an object goes out of scope or explicitly
+  destroyed
+
+* used to free dynamically allocated memory or do some cleanup like closing files,
+  release a lock, ...
+
+* the **destructor** must have the same name as the class, preceded by a tilde
+  (~)
+
+* the **destructor** can`t take arguments
+
+* the **destructor** has no return type
+
+* only one **destructor** per class
+
+ex.
+
+<div style="width: 100%;">
+ <ul>
+  <img src="destructor-ex1.PNG">
+ </ul>
+</div>
+
 ### shallow vs. deep copy
 
 > if a member is a pointer and the source object member points to dynamically
