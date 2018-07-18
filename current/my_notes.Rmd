@@ -547,6 +547,11 @@ ex.
 > user (programmer) need only to examine the **public** interface (member function
   definitions) to learn how to use the data type
 
+### constructors
+
+> constructors are special member functions with the explicit purpose of
+  initializing objects
+
 ```{r}
 Sys.time()
 ```
