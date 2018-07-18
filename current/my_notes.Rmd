@@ -640,6 +640,41 @@ ex.
  </ul>
 </div>
 
+### **operator** overloading
+
+* declaring and implementing functions to define the behavior of **operator**s for
+  some specific data type
+
+* for example, the addition **operator**+:
+
+    * has been overloaded to do concatenation for strings
+
+    * can be overloaded to do complex number arithmetic for a `class` representing
+      complex numbers
+
+functions have names in the format "operator@" where @ is one of the following
+**operator**s:
+
+<div style="width: 60%;">
+ <ul>
+  <img src="operator_overloading.PNG">
+ </ul>
+</div>
+
+exs.
+
+<div style="width: 100%;">
+ <ul>
+  <img src="operator_overloading-ex1.PNG">
+ </ul>
+</div>
+
+<div style="width: 100%;">
+ <ul>
+  <img src="operator_overloading-ex2.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
