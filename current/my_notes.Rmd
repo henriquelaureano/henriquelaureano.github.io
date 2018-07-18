@@ -621,6 +621,25 @@ ex.
  </ul>
 </div>
 
+### "`this`" hidden pointer
+
+* each `class` member function has a default hidden pointer to the object it
+  operates on
+  
+* all C++ code is actually converted to C code. "`this`"" is one of the mechanisms
+  that allows that
+
+* "`this`"" is useful when member functions modify the object and return it, to
+  allow for "chainable"" functions
+
+ex.
+
+<div style="width: 100%;">
+ <ul>
+  <img src="this-ex1.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
