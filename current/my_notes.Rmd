@@ -491,6 +491,18 @@ test if extraction/insertion has succeeded using the `fail()` method
 > the `class` construct allows to define C++ classes, a tool for creating new
   types that can be used as conveniently similarly to the built-in types
 
+### classes main features
+
+> a `class` is a user-defined type
+
+> member functions can define the meaning of initialization (creation), copy,
+  move, and cleanup (destruction)
+
+> the **public** members provide the `class`’s interface and the `private` members
+  provide implementation details: encapsulation
+  
+> a `struct` is a `class` where members are by default **public**
+
 ```{r}
 Sys.time()
 ```
