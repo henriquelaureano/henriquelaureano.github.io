@@ -626,11 +626,11 @@ ex.
 * each `class` member function has a default hidden pointer to the object it
   operates on
   
-* all C++ code is actually converted to C code. "`this`"" is one of the mechanisms
+* all C++ code is actually converted to C code. "`this`" is one of the mechanisms
   that allows that
 
-* "`this`"" is useful when member functions modify the object and return it, to
-  allow for "chainable"" functions
+* "`this`" is useful when member functions modify the object and return it, to
+  allow for "chainable" functions
 
 ex.
 
