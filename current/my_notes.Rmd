@@ -839,6 +839,18 @@ exs. (the second one is a inheritance chain)
 in other words, a protected member from a base class can be accessed by a derived
 class by still cannot be accessed from other parts of the program
 
+<div style="width: 70%;">
+ <ul>
+  <img src="inheritance_access.PNG">
+ </ul>
+</div>
+
+<div style="width: 100%;">
+ <ul>
+  <img src="inheritance_access-ex.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
