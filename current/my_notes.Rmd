@@ -780,6 +780,37 @@ aggregation ex.
  </ul>
 </div>
 
+### inheritance
+
+> one of the most powerful and rich features in OOP
+
+> involves creating new objects by directly acquiring the attributes and behaviors
+  of other objects and then extending or specializing them
+
+the object being inherited from is called the **parent** or **base**, and the
+object doing the inheriting is called the **child** or **derived** object
+
+> `inheritance` is the sharing of features (attributes and operations) among
+  classes based on a hierarchical relationship
+
+a **superclass** (also parent or base) has general features that **sublcasses**
+(child or derived) refine and elaborate
+
+each subclass **inherits** all the features of its superclass but can redefine
+them, add more or hide some
+
+#### bebefits
+
+`inheritance` helps building software incrementally
+
+* first build classes to cope with the most straightforward (or general) case
+
+* second build the special cases that inherit from the general base class. these
+  new classes will have the same features of the base class plus their own
+  
+> `inheritance` promotes code reuse: when you have a class that does only part or
+  a slightly different work from the one you need, just design a derived one
+
 ```{r}
 Sys.time()
 ```
