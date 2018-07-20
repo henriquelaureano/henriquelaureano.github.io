@@ -811,6 +811,34 @@ them, add more or hide some
 > `inheritance` promotes code reuse: when you have a class that does only part or
   a slightly different work from the one you need, just design a derived one
 
+exs. (the second one is a inheritance chain)
+
+<div style="width: 100%;">
+ <ul>
+  <img src="inheritance-ex1.PNG">
+ </ul>
+</div>
+
+<div style="width: 100%;">
+ <ul>
+  <img src="inheritance-ex2.PNG">
+ </ul>
+</div>
+
+<div style="width: 100%;">
+ <ul>
+  <img src="inheritance-ex3.PNG">
+ </ul>
+</div>
+
+### access specifiers
+
+> **protected** access specifier is used to allow base member access to derived
+  classes while preventing public access
+
+in other words, a protected member from a base class can be accessed by a derived
+class by still cannot be accessed from other parts of the program
+
 ```{r}
 Sys.time()
 ```
