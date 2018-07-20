@@ -883,6 +883,41 @@ class by still cannot be accessed from other parts of the program
  </ul>
 </div>
 
+### multiple inheritance
+
+<div style="width: 100%;">
+ <ul>
+  <img src="multiple_inheritance-ex.PNG">
+ </ul>
+</div>
+
+### virtual function
+
+> function that resolves to the most-derived version of the function with the same
+  signature (return type must match)
+
+* use "virtual" keyword before the function declaration
+
+<div style="width: 100%;">
+ <ul>
+  <img src="virtual_function-ex1.PNG">
+ </ul>
+</div>
+
+<div style="width: 100%;">
+ <ul>
+  <img src="virtual_function-ex2.PNG">
+ </ul>
+</div>
+
+more info ...
+
+<div style="width: 55%;">
+ <ul>
+  <img src="virtual_function-refs.PNG">
+ </ul>
+</div>
+
 ```{r}
 Sys.time()
 ```
