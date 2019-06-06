@@ -1,0 +1,372 @@
+\documentclass[12pt]{article}
+\usepackage[top = 2.5cm, bottom = 2.5cm, left = 2.5cm, right = 2.5cm]{geometry}
+\usepackage{listings}
+\usepackage{color} % red, green, blue, yellow, cyan, magenta, black, white
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage[hidelinks]{hyperref}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{bbding} % checkmarks
+\usepackage{fancyhdr} % change the position of page number
+\usepackage[flushleft]{threeparttable} % footnote in tables
+\usepackage{lipsum}
+\usepackage{caption}
+\captionsetup{format = hang}
+\usepackage{color, colortbl} % coloring rows or columns in tables
+\definecolor{Gray}{gray}{.9} % coloring rows or columns in tables
+\definecolor{darkgreen}{RGB}{0,100,0}
+\definecolor{darkred}{RGB}{100,0,0}
+\usepackage{listings}
+\lstset{ 
+ language = R, % the language of the code
+ numbers = left, % where to put the line-numbers
+ numbersep = 6pt, % how far the line-numbers are from the code
+ backgroundcolor = \color{white}, % choose the background color. You must add
+                                  % \usepackage{color}
+ showspaces = false, % show spaces adding particular underscores
+ showstringspaces = false, % underline spaces within strings
+ showtabs = false, % show tabs within strings adding particular underscores
+ frame = single, % adds a frame around the code
+ rulecolor = \color{black}, % if not set, the frame-color may be changed on
+                            % line-breaks within not-black text
+ tabsize = 2, % sets default tabsize to 2 spaces
+ captionpos = b, % sets the caption-position to bottom
+ breaklines = true, % sets automatic line breaking
+ breakatwhitespace = false, % sets if automatic breaks should only happen at
+                            % whitespace
+ keywordstyle = \color{black}, % keyword style
+ commentstyle = \color{darkgreen}, % comment style
+ stringstyle = \color{darkred}, % string literal style
+ basicstyle = \footnotesize\ttfamily,
+}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\fancyhf{} % clear all header and footers
+\renewcommand{\headrulewidth}{0pt} % remove the header rule
+% changing the description label from bold to italic
+\renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\textit{#1}}
+\rfoot{\thepage} % puts the page number on the right side
+\pagestyle{fancy}
+\title{Exerc\'{i}cios sobre Verossimilhan\c{c}a - VI}
+\date{Junho de 2019}
+\author{Henrique Ap. Laureano\\
+        \texttt{henriquelaureano@outlook.com} \(\wedge\)
+        \texttt{http://mynameislaure.github.io/} \vspace{.25cm}\\
+        \texttt{/UFPR/DEST/LEG/}\\
+        \includegraphics[width=.225\textwidth]{logo_leg.jpg}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+%\vfill
+%\noindent \horrule{.5pt} \vspace{-.95cm} \tableofcontents \noindent \horrule{.5pt}
+\noindent \horrule{.5pt}
+
+<<setup, include=FALSE>>=
+# <r code> -----
+library(knitr)
+
+tema <- knit_theme$get("clarity") # acid
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , results='hold'
+               , fig.show='hold')
+# </r code> -----
+@
+
+\begin{enumerate}
+ \item Seja \(X\) uma v.a. com distribui\c{c}\~{a}o uniforme
+       \(X \sim U(0, \theta)\).\\
+       Uma amostra aleat\'{o}ria forneceu os seguintes valores:
+       5,5; 3,2; 4;8, 5,3; 3,8 e 5,0. Obtenha a fun\c{c}\~{a}o de
+       verossimilhan\c{c}a e um (ou mais) intervalo(s) adequado(s) especificando
+       a forma de obten\c{c}\~{a}o.
+<<>>=
+# <r code> -----
+data <- c(5.5, 3.2, 4.8, 5.3, 3.8, 5)
+# </r code> -----
+@
+
+      Solution:
+      
+      The likelihood of a \({\rm Uniform}(0, \theta)\) is
+      
+      \begin{align*}
+       L(\theta) &= \theta^{-n}, \quad \text{for } x_{i} < \theta
+                                       \text{ for all } i\\
+                 &= \theta^{-n}, \quad \text{for } \theta > x_{(n)},
+      \end{align*}
+
+      and equal to zero otherwise.\\
+      Given the data above, we get \(x_{(n)} = \Sexpr{max(data)}\) and the
+      likelihood is shown in Figure~\ref{fig:uniform}, together with some
+      intervals.
+
+<<uniform, fig.height=3.5, fig.cap=paste0("Likelihood function of \\(\\theta\\) in Uniform(0, \\(\\theta\\)) based on \\(x_{(6)}\\) = ", max(data), ". In the left, likelihood intervals at 15\\% (dashed line) and 4\\% (dotted line) cutoff. In the right, likelihood intervals at 5\\% (dashed line) and 1\\% (dotted line) cutoff. These cutoffs correspond, in both sides, to a 95\\% and 99\\% confidence interval, respectively.")>>=
+# <r code> -----
+lkl.unif <- function(theta, data) {
+  n <- length(data) ; xn <- max(data)
+  # this next step, in the way presented, isn't very efficient, since I'll
+  # compute the likelihood for all theta's and then, if necessary, convert to
+  # zero. however, since we have here a very simple likelihood (and this
+  # notation is extremely clear, btw), I keep in this way
+  lkl = theta**(-n)*{theta >= xn}
+  return(lkl)
+}
+theta.seq <- seq(4, 12, length.out = 100)
+lklseq.unif <- lkl.unif(theta.seq, data)
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
+# plotting the normalized likelihood function to have unit maximum 
+plot(theta.seq, lklseq.unif/max(lklseq.unif), type = "l",
+     xlab = expression(theta), ylab = "Likelihood")
+
+# probability-based interval ------------------------------------------------
+# cutoff's corresponding to a 95\% and 99\% confidence interval for the mean 
+cuts <- c(.15, .04) * lkl.unif(max(data), data) / max(lklseq.unif)
+abline(h = cuts, lty = 2:3)
+
+# uniroot.all finds the zeros, so we need to subtract the cutoff point from
+# the likelihood to be able to find the points where the likelihood is cut
+ic.lkl.unif <- function(theta, cut, ...) {
+  lkl.unif(theta, ...)/max(lklseq.unif) - cut
+}
+ic.95.prob <- rootSolve::uniroot.all(ic.lkl.unif, range(theta.seq),
+                                     data = data, cut = cuts[1])
+ic.99.prob <- rootSolve::uniroot.all(ic.lkl.unif, range(theta.seq),
+                                     data = data, cut = cuts[2])
+abline(v = ic.95.prob, lty = 2) ; abline(v = ic.99.prob, lty = 3)
+
+plot(theta.seq, lklseq.unif/max(lklseq.unif), type = "l",
+     xlab = expression(theta), ylab = "Likelihood")
+# pure likelihood interval --------------------------------------------------
+# cutoff's corresponding to a 95\% and 99\% confidence interval for the mean 
+cuts <- c(.05, .01) * lkl.unif(max(data), data) / max(lklseq.unif)
+abline(h = cuts, lty = 2:3)
+
+ic.95.pure <- rootSolve::uniroot.all(ic.lkl.unif, range(theta.seq),
+                                     data = data, cut = cuts[1])
+ic.99.pure <- rootSolve::uniroot.all(ic.lkl.unif, range(theta.seq),
+                                     data = data, cut = cuts[2])
+abline(v = ic.95.pure, lty = 2) ; abline(v = ic.99.pure, lty = 3)
+# </r code> -----
+@
+
+      In both graphs of Figure~\ref{fig:uniform} we have two confidence
+      intervals for \(\theta\), one corresponding to a 95\% confidence interval
+      (dashed line) and one corresponding to a 99\% confidence interval for the
+      mean (dotted line). In the left we have a probability-based likelihood
+      interval, in the right we have a pure likelihood interval.
+      
+      The left ones are bad intervals, since they're based in a large-sample
+      theory that results in an exact interval for the Gaussian case, in a good
+      approximation for a reasonably regular case, and as we can see by the
+      figure... here we doesn't have a regular likelihood (the likelihood isn't
+      well approximated by a quadratic function), thus, here this interval
+      should not be so good.
+      
+      \begin{description}
+       \item[Explaining better how we arrived in these intervals:]
+       \hfill\\
+       For a normalized likelihood, \(L(\theta)/L(\hat{\theta})\), we have the
+       following Wilk's likelihood ratio statistic, defined as \(W\)
+
+       \[
+        W \equiv 2 \log \frac{L(\hat{\theta})}{L(\theta)} \sim \chi_{1}^{2}.
+       \]
+       Its \(\chi^{2}\) distribution is exact only in the normal mean model,
+       and approximately true when the likelihood is reasonably regular.
+       
+       Based in this Wilk's statistic we are able to find the probability that
+       the likelihood interval covers \(\theta\),
+
+       \[
+        {\rm Pr}\left\{\frac{L(\theta)}{L(\hat{\theta})} > c\right\} =
+        {\rm Pr}\left\{2 \log \frac{L(\theta)}{L(\hat{\theta})} < -2 \log c
+               \right\} = {\rm Pr}\{\chi_{1}^{2} < -2 \log c\}.
+       \]
+
+       So, if for some \(0 < \alpha < 1\) we choose a cutoff
+      
+       \[ c = e^{-\frac{1}{2} \chi_{1, (1-\alpha)}^{2}}, \]
+      
+       where \(\chi_{1, (1-\alpha)}^{2}\) is the \(100 (1-\alpha)\) percentile
+       of \(\chi_{1}^{2}\).\\
+       For \(\alpha = 0.05\) and \(0.01\) we have a cutoff \(c = 0.15\) and
+       \(0.04\), that corresponds to a 95\% and 99\% confidence interval,
+       respectively. \hfill \(\square\)
+      \end{description}
+
+      Having the cutoff values we need now to find the interval values,
+      i.e., in which points the cutoff horizontal line cuts the likelihood.
+      For this purpose we use the function \texttt{rootSolve::uniroot.all}.\\
+      A likelihood interval at 15\% and 4\% cutoff for \(\theta\) are
+      (\Sexpr{paste(round(ic.95.prob, 3), collapse = ", ")}) and
+      (\Sexpr{paste(round(ic.99.prob, 3), collapse = ", ")}).
+    
+      Already on the right side of Figure~\ref{fig:uniform} we have a more
+      coherent, let's say, confidence interval for the Uniform likelihood.
+      While the likelihood isn't regular, it is still possible to provide an
+      exact theoretical justification for a confidence interval interpretation.
+      Now
+      
+      \[
+       {\rm Pr}\left\{\frac{L(\theta)}{L(\hat{\theta})} > c\right\} =
+       {\rm Pr}\left\{\frac{X_{(n)}}{\theta} > c^{1/n}\right\} =
+       1 - {\rm Pr}\left\{\frac{X_{(n)}}{\theta} < c^{1/n}\right\} =
+       1 - (c^{1/n})^{n} = 1 - c.
+      \]
+      So the likelihood interval with cutoff \(c\) is a \(100 (1-c)\)\%
+      confidence interval.\\
+      A likelihood interval at 15\% and 4\% cutoff for \(\theta\) are
+      (\Sexpr{paste(round(ic.95.pure, 3), collapse = ", ")}) and
+      (\Sexpr{paste(round(ic.99.pure, 3), collapse = ", ")}). \\
+      
+      Comparing the obtained intervals we see a broader range with the pure
+      likelihood intervals, in other words, we see a higher uncertainty.\\
+\horrule{.5pt}
+ 
+ \item Seja \(X\) uma v.a. de uma distribui\c{c}\~{a}o de Poisson
+       (\(X \sim P(\lambda))\)) para a qual foi obtida a seguinte amostra
+       aleat\'{o}ria: (3, 1, 0, 2, 1, 1, 0, 0).
+<<>>=
+# <r code> -----
+data <- c(3, 1, 0, 2, 1, 1, 0, 0)
+# </r code> -----
+@
+  \begin{enumerate}[(a)]
+   \item Obtenha a fun\c{c}\~{a}o de verossimilhan\c{c}a, sua
+         aproxima\c{c}\~{a}o quadr\'{a}tica e intervalos para \(\lambda\).
+   \item Repita a quest\~{a}o anterior para a reparametriza\c{c}\~{a}o
+         \(\theta = \log (\lambda)\).
+   \item Obtenha ainda (por pelo menos dois m\'{e}todos diferentes) intervalos
+         de confian\c{c}a para o par\^{a}metro \(\lambda\) a partir da
+         fun\c{c}\~{a}o de verossimilhan\c{c}a (aproximada ou n\~{a}o) de
+         \(\theta\).
+  \end{enumerate}
+ 
+ \item A fim de se obter uma estimativa do p\'{u}blico de um jogo sem utilizar
+       dados de venda de ingressos ou registros das roletas do est\'{a}dio,
+       foram distribu\'{i}das camisas especiais para 300 torcedores sob
+       condi\c{c}\~{a}o que estes a utilizassem durante um jogo. Durante o jogo
+       foram selecionados ao acaso 250 torcedores verificando-se 12 destes
+       possuiam a camisa.
+  \begin{enumerate}[a)]
+   \item Obtenha a fun\c{c}\~{a}o de verossimilhan\c{c}a para o n\'{u}mero total
+         de torcedores.
+   \item Obtenha a estimativa pontual e a intervalar, esta \'{u}ltima por pelo
+         menos dois m\'{e}todos diferentes.
+   \item Repita e compare os resultados caso fossem 500 camisas e 20 com camisas
+         dentre os 250.
+  \end{enumerate}
+ 
+ \item Foram tomadas as seguintes observa\c{c}\~{o}es independentes de uma v.a.
+       \(X \sim N(\mu, \sigma^{2})\).
+  \begin{itemize}
+   \item
+<<echo=FALSE>>=
+# <r code> -----
+(data <- c(56.4, 54.2, 65.3, 49.2, 50.1, 56.9, 58.9, 62.5, 70, 61))
+# </r code> -----
+@  
+   \item sabe-se que outras 5 observa\c{c}\~{o}es s\~{a}o menores que 50.
+   \item sabe-se que outras 3 observa\c{c}\~{o}es s\~{a}o maiores que 65.
+  \end{itemize}
+  
+  \begin{enumerate}[(a)]
+   \item Escrever a fun\c{c}\~{a}o de verossimilhan\c{c}a.
+   \item Obter as estimativas de m\'{a}xima verossimilhan\c{c}a.
+   \item Obter as verossimilhan\c{c}as perfilhadas.
+   \item Obter os erro-padr\~{a}o das estimativas.
+  \end{enumerate}
+  
+ \item Considere os dados da tabela a seguir (adaptados/modificados de
+       Montgomery \& Runger, 1994) aos quais deseja-se ajustar um modelo de
+       regress\~{a}o linear simples relacionando a vari\'{a}vel resposta \(Y\)
+       (pureza em \%) a uma vari\'{a}vel explicativa \(X\) (n\'{i}vel de
+       hidrocarbonetos).
+       
+       \begin{center}
+        \begin{tabular}[H]{c|*{10}{c}}
+         \hline
+         X & 0.99 & 1.02 & 1.15 & 1.29 & 1.46 & 1.36 & 0.87 & 1.23 & 1.55 & 1.40\\
+         \hline
+         Y & 99.01 & 89.05 & 91.43 & 93.74 & 96.73 & 94.45 & 87.59 & 91.77 & 99.42 & 93.65\\
+         \hline \hline
+         X & 1.19 & 1.15 & 0.98 & 1.01 & 1.11 & 1.20 & 1.26 & 1.32 & 1.43 & 0.95\\
+         \hline
+         Y & 93.54 & 92.52 & 90.56 & 89.54 & 89.85 & 90.39 & 93.25 & 93.41 & 94.98 & 87.33\\
+         \hline
+        \end{tabular}
+       \end{center}
+  \begin{enumerate}[(a)]
+   \item Encontre a fun\c{c}\~{a}o de verossimilhan\c{c}a.
+   \item Encontre as estimativas de m\'{a}xima verossimilhan\c{c}a.
+   \item Obtenha a verossimilhan\c{c}a conjunta para os par\^{a}metros
+         \(\beta_{0}\) e \(\beta_{1}\):
+    \begin{enumerate}[i.]
+     \item considerando \(\sigma\) fixo com valor igual \`{a} sua estimativa.
+     \item obtendo a verossimilhan\c{c}a (conjunta - 2D) perfilhada em
+           rela\c{c}\~{a}o a \(\sigma\).
+    \end{enumerate}
+   \item Obtenha a verossimilhan\c{c}a perfilhada para os par\^{a}metros
+         \(\beta_{0}\) e \(\beta_{1}\) individualmente.
+  \end{enumerate}
+  
+ \item Considere uma amostra de uma v.a. \(Y\) em que assume-se que
+       \(Y_{i} \sim P(\lambda_{i})\) em que o parâmetro \(\lambda_{i}\) \'{e}
+       descrito por uma fun\c{c}\~{a}o de uma vari\'{a}vel explicativa
+       \(\log (\lambda_{i}) = \beta_{0} + \beta_{1} x_{i}\) com valores
+       conhecidos de \(x_{i}\).\\
+       Dados simulados com (\(\beta_{0} = 2, \beta_{1} = 0.5\)) s\~{a}o
+       mostrados a seguir.
+       
+       \begin{center}
+        \begin{tabular}[H]{c|*{10}{c}}
+         Y & 10 & 15 & 11 & 37 & 70 & 19 & 12 & 12 & 13 & 88\\
+         \hline
+         X & 1.7 & 1.5 & 0.5 & 2.8 & 4.4 & 1.8 & 0.4 & 0.7 & 1.3 & 5.1\\
+        \end{tabular}
+       \end{center}
+  \begin{enumerate}[(a)]
+   \item Obtenha o gr\'{a}fico da fun\c{c}\~{a}o de verossimilhan\c{c}a
+         indicando a posi\c{c}\~{a}o dos valores verdadeiros dos
+         par\^{a}metros.
+   \item Obtenha os perfis de verossimilhan\c{c}a dos par\^{a}metros.
+   \item Obtenha estimativas.
+   \item Obtenha intervalos (use diferentes m\'{e}todos).
+   \item Compare os resultados anteriores com os fornecidos pela função
+         \texttt{glm()} e discuta os achados.
+  \end{enumerate}
+\end{enumerate}
+
+\vfill
+\textit{last modification on ...}
+
+<<cache=FALSE, echo=FALSE>>=
+# <r code> -----
+Sys.time()
+# </r code> -----
+@ 
+
+\end{document}
