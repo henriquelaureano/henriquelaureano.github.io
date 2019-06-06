@@ -243,9 +243,24 @@ abline(v = ic.95.pure, lty = 2) ; abline(v = ic.99.pure, lty = 3)
       (\Sexpr{paste(round(ic.99.pure, 3), collapse = ", ")}). \\
       
       Comparing the obtained intervals we see a broader range with the pure
-      likelihood intervals, in other words, we see a higher uncertainty.\\
-\horrule{.5pt}
- 
+      likelihood intervals. In other words, with the pure likelihood intervals
+      we see a higher uncertainty than with the (not so recommended here)
+      probability-based likelihood intervals.
+      
+      \vfill
+      \textit{For doing this exercise I read and used it Pawitan's book:}
+<<eval=FALSE>>=
+@book{pawitan,
+  author    = {Yudi Pawitan},
+  title     = {In All Likelihood:
+               Statistical Modelling and Inference Using Likelihood},
+  year      = {1991},
+  publisher = {Oxford University Press},
+  address   = {Great Clarendon Street, Oxford OX2 6DP},
+}
+@
+\newpage
+
  \item Seja \(X\) uma v.a. de uma distribui\c{c}\~{a}o de Poisson
        (\(X \sim P(\lambda))\)) para a qual foi obtida a seguinte amostra
        aleat\'{o}ria: (3, 1, 0, 2, 1, 1, 0, 0).
