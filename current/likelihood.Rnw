@@ -3,6 +3,7 @@
 \usepackage{listings}
 \usepackage{color} % red, green, blue, yellow, cyan, magenta, black, white
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{bm}
 \usepackage{enumerate}
@@ -272,6 +273,166 @@ data <- c(3, 1, 0, 2, 1, 1, 0, 0)
   \begin{enumerate}[(a)]
    \item Obtenha a fun\c{c}\~{a}o de verossimilhan\c{c}a, sua
          aproxima\c{c}\~{a}o quadr\'{a}tica e intervalos para \(\lambda\).
+         
+         Solution:
+         
+         The likelihood and the log-Likelihood of a Poisson(\(\lambda\)) is
+         
+         \[
+          L(\lambda) = \prod_{i=1}^{n}
+                       \frac{e^{-\lambda} \lambda^{x_{i}}}{x_{i}!}
+                       \quad \text{and} \quad
+          \log L(\lambda) =
+          l(\lambda) =
+          -n \lambda + \log \lambda \sum_{i=1}^{n} x_{i}
+                     - \sum_{i=1}^{n} \log x_{i}!.
+         \]
+         
+         \textit{We work here with the log-likelihood to make our life easier,\\
+                 since the computations are much simpler in the log scale.}
+         
+         Computing the Score (derivative of \(l(\lambda)\) wrt to \(\lambda\))
+         and making it equal to zero, we find the MLE
+         \(\hat{\lambda} = \bar{y}\).\\
+         Computing the second derivative we find the observed information
+         
+         \[
+          I_{O}(\lambda) = \frac{n \bar{y}}{\lambda^{2}}
+          \quad \rightarrow \quad
+          I_{O}(\hat{\lambda}) = \frac{n}{\bar{y}}.
+         \]
+         
+         The Poisson log-likelihood graph is provided in black in the
+         Figure~\ref{fig:poisson}.
+         
+         Doing a quadratic approximation (Taylor expansion of second order) in
+         \(l(\lambda)\) around \(\hat{\lambda}\) we have
+         
+         \begin{align*}
+          l(\lambda) &\approx l(\hat{\lambda})
+                     + (\lambda - \hat{\lambda}) {l}'(\hat{\lambda})
+                     + \frac{1}{2} (\lambda - \hat{\lambda})^{2}
+                                   {l}''(\hat{\lambda})\\
+                     &\quad(\text{the Score is zero at the MLE})\\
+                     &= l(\hat{\lambda})
+                     + \frac{1}{2} (\lambda - \hat{\lambda})^{2}
+                                   {l}''(\hat{\lambda})
+                     = l(\hat{\lambda})
+                     + \frac{1}{2} (\lambda - \hat{\lambda})^{2}
+                                   I_{O}(\hat{\lambda}).
+         \end{align*}
+         
+         A graph of the quadratic approximation of the Poisson log-likelihood
+         is provided in red in the Figure~\ref{fig:poisson}. There we can see
+         how good is the approximation around the maximum likelihood estimator
+         (MLE). Here the sample size is very small, the idea is that as the
+         sample size increase the quality, in this case the range, of the
+         approximation also increase.
+         
+         In the topright graph of Figure~\ref{fig:poisson} we have two
+         intervals.
+         
+<<poisson, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(\\lambda\\) in Poisson(\\(\\lambda\\)) based on \\texttt{data}. In the topleft, quadratic approximation in red. In the topright, two intervals for \\(\\lambda\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom a better look into the quadratic approximation.">>=
+# <r code> -----
+# likelihood -------------------------------------------------------------
+lkl.poi <- function(lambda, data) {
+  n <- length(data)
+  # log-likelihood ignoring irrelevant constant terms
+  lkl = -n * lambda + sum(data) * log(lambda)
+  return(lkl)
+}
+lambda.seq <- seq(0, 4.5, length.out = 100)
+lklseq.poi <- lkl.poi(lambda.seq, data)
+
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+layout(matrix(c(1, 3, 2, 3), 2, 2), heights = c(1.5, 1)) # more cosmetics
+plot(lambda.seq, lklseq.poi, type = "l",
+     xlab = expression(lambda), ylab = "log-likelihood")
+lambda.est <- mean(data) # MLE
+abline(v = lambda.est, lty = 3, col = 4)
+# quadratic approximation ------------------------------------------------
+quadprox.poi <- function(lambda, lambda.est, data) {
+  n <- length(data)
+  obs.info <- n / lambda.est # observed information
+  lkl.poi(lambda.est, data) - .5 * obs.info * (lambda - lambda.est)**2
+}
+curve(quadprox.poi(x, lambda.est, data), col = 2, add = TRUE)
+legend(2.4, -6.25, c("log-like", "Quadratic\napprox.", "MLE"),
+       col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
+# intervals for lambda ---------------------------------------------------
+plot(lambda.seq, lklseq.poi, type = "l",
+     xlab = expression(lambda), ylab = "log-likelihood")
+curve(quadprox.poi(x, lambda.est, data), col = 2, add = TRUE)
+abline(v = lambda.est, col = 4, lty = 3)
+## probability-based interval --------------------------------------------
+# cutoff's corresponding to a 95\% confidence interval for the mean
+cut <- log(.15) + lkl.poi(lambda.est, data) ; abline(h = cut, lty = 2)
+
+ic.lkl.poi <- function(lambda, cut, ...) {
+lkl.poi(lambda, ...) - cut
+}
+ic.95.prob <- rootSolve::uniroot.all(ic.lkl.poi, range(lambda.seq),
+                                     data = data, cut = cut)
+arrows(x0 = ic.95.prob, y0 = rep(cut, 2),
+       x1 = ic.95.prob, y1 = rep(-25, 2), lty = 2, length = .1)
+## wald confidence interval  ---------------------------------------------
+cut <- log(.15) + quadprox.poi(lambda.est, lambda.est, data)
+abline(h = cut, lty = 2, col = 2)
+
+se.lambda.est <- sqrt(lambda.est / length(data))
+wald.95 <- lambda.est + qnorm(c(.025, .975)) * se.lambda.est
+arrows(x0 = wald.95, y0 = rep(cut, 2),
+       x1 = wald.95, y1 = rep(-25, 2), lty = 2, length = .1, col = 2)
+# a better look in the approximation around the MLE ----------------------
+lambda.seq <- seq(.8, 1.2, length.out = 25)
+plot(lambda.seq, lkl.poi(lambda.seq, data), type = "l",
+     xlab = expression(lambda), ylab = "log-likelihood")
+curve(quadprox.poi(x, lambda.est, data), col = 2, add = TRUE)
+abline(v = lambda.est, lty = 3, col = 4)
+# </r code> -----
+@
+
+         In the topright, in black we have a interval based in the likelihood,
+         \(\lambda \in (\Sexpr{paste(round(ic.95.prob, 3), collapse = ", ")})\),
+         but following a cutoff criterion based in a \(\chi^{2}\) distribution.
+         Thus, to have a 95\% confidence interval we use a cutoff \(c = 15\%\).
+         As we saw before, this interval is based in a large-sample theory that
+         here is a good approximation, since we're dealing with a reasonable
+         regular case.
+         
+         In red we have a interval based in the quadratic approximation of the
+         log-likelihood,
+         \(\lambda \in (\Sexpr{paste(round(wald.95, 3), collapse = ", ")})\).
+         From the quadratic approximation we get
+         
+         \[
+          \log \frac{L(\lambda)}{L(\hat{\lambda})} \approx
+          -\frac{1}{2} I_{O}(\hat{\lambda}) (\lambda - \hat{\lambda})^{2},
+         \]
+         
+         that also follows a \(\chi^{2}\) distribution, since we have a r.v.
+         \(\hat{\lambda}\) normalized (with its expected value subtracted and
+         divided by its variance) and squared.
+         
+         From this we get the following exact (in the normal case) 95\%
+         confidence interval
+         
+         \[
+          \hat{\lambda} \pm 1.96~I_{O}(\hat{\lambda})^{-1/2}
+          \qquad (\hat{\lambda} \pm 1.96~\text{se}(\hat{\lambda})).
+         \]
+         
+         In the nonnormal cases this is an approximate 95\% CI.
+         
+         \textit{The actual variance is} \(I_{E}(\hat{\lambda})^{-1/2}\),
+         \textit{but for the Poisson case the Fisher (expected) information is
+                 equal to the observed one}, \(I_{O}(\hat{\lambda})^{-1/2}\).
+                 
+         A very nice thing that we can see from this intervals is that a Wald
+         interval (a \(\pm\) interval) is a cut in the quadratic approximation
+         exactly in the same point that the probability-based interval cuts the
+         (log-)likelihood.
+                 
    \item Repita a quest\~{a}o anterior para a reparametriza\c{c}\~{a}o
          \(\theta = \log (\lambda)\).
    \item Obtenha ainda (por pelo menos dois m\'{e}todos diferentes) intervalos
