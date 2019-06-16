@@ -293,13 +293,13 @@ data <- c(3, 1, 0, 2, 1, 1, 0, 0)
          
          By computing the Score (derivative of \(l(\lambda)\) wrt to
          \(\lambda\)) and making it equal to zero, we find the MLE
-         \(\hat{\lambda} = \bar{y}\).
+         \(\hat{\lambda} = \bar{x}\).
          Computing the second derivative we find the observed information
          
          \[
-          I_{O}(\lambda) = \frac{n \bar{y}}{\lambda^{2}}
+          I_{O}(\lambda) = \frac{n \bar{x}}{\lambda^{2}}
           \quad \rightarrow \quad
-          I_{O}(\hat{\lambda}) = \frac{n}{\bar{y}}.
+          I_{O}(\hat{\lambda}) = \frac{n}{\bar{x}}.
          \]
          
          A graph of the Poisson log-likelihood is provided in black in
@@ -433,6 +433,109 @@ abline(v = lambda.est, lty = 3, col = 4)
                  
    \item Repita a quest\~{a}o anterior para a reparametriza\c{c}\~{a}o
          \(\theta = \log (\lambda)\).
+         
+         Solution:
+         
+         By the invariance property of the MLE we have
+         
+         \[
+          \hat{\lambda} = \bar{x} \quad \Rightarrow \quad
+          g(\hat{\lambda}) = \log \hat{\lambda} = \hat{\theta}
+                           = \log \bar{x} = g(\bar{x}).
+         \]
+         
+         i.e., the MLE of \(\hat{\theta}\) is \(\log \bar{x}\).
+         
+         By the Delta Method we compute the variance of \(\hat{\theta}\),
+         
+         \[
+          V[\theta] = V[g(\lambda)]
+                    = \left[\frac{\partial}{\partial \lambda} g(\lambda)
+                      \right]^{2} V[\lambda]
+                    = \left[\frac{1}{\lambda}\right]^{2} \frac{\lambda}{n}
+                    = \frac{1}{\lambda~n}
+                    \quad \rightarrow \quad
+          V[\hat{\theta}] = \frac{1}{\bar{x}~n}.
+         \]
+         
+         From this we can take the observed information for the
+         reparametrization
+         
+         \[ V[\hat{\theta}] = I_{O}^{-1}(\hat{\theta}) = (\bar{x}~n)^{-1}. \]
+         
+         \textit{Now we do, in the same manner, everything that we did in the
+                 previous letter.}
+         
+ <<poisson-reparametrization, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(\\theta\\) in Poisson(\\(\\lambda = e^{\\theta}\\)) based on \\texttt{data}. In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(\\theta\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
+# <r code> -----
+# likelihood -------------------------------------------------------------
+## we can still use the lkl.poi function, but now we do
+## lambda = exp(theta),
+## with theta being a real rate (positive or negative)
+theta.seq <- seq(-2, 2, length.out = 100)
+lklseq.poi <- lkl.poi(exp(theta.seq), data)
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+layout(matrix(c(1, 3, 2, 3), 2, 2), heights = c(1.5, 1)) # more cosmetics
+plot(theta.seq, lklseq.poi, type = "l",
+     xlab = expression(theta), ylab = "log-likelihood")
+theta.est <- log(mean(data)) # MLE
+abline(v = theta.est, lty = 3, col = 4)
+# quadratic approximation for the reparametrization ----------------------
+quadprox.poi.repa <- function(theta, theta.est, data) {
+  obs.info <- sum(data) # observed information
+  lkl.poi(exp(theta.est), data) - .5 * obs.info * (theta - theta.est)**2
+}
+curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
+
+legend(-2.15, -27.5, c("log-like", "Quadratic\napprox.", "MLE"),
+       col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
+# intervals for lambda ---------------------------------------------------
+plot(theta.seq, lklseq.poi, type = "l",
+     xlab = expression(theta), ylab = "log-likelihood")
+curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
+abline(v = theta.est, col = 4, lty = 3)
+## probability-based interval --------------------------------------------
+# cutoff's corresponding to a 95\% confidence interval for the mean
+cut <- log(.15) + lkl.poi(exp(theta.est), data) ; abline(h = cut, lty = 2)
+ic.lkl.poi <- function(theta, cut, ...) {
+  lambda <- exp(theta)
+  lkl.poi(lambda, ...) - cut
+}
+ic.95.prob <- rootSolve::uniroot.all(ic.lkl.poi, range(theta.seq),
+                                     data = data, cut = cut)
+arrows(x0 = ic.95.prob, y0 = rep(cut, 2),
+       x1 = ic.95.prob, y1 = rep(-43, 2), lty = 2, length = .1)
+## wald confidence interval  ---------------------------------------------
+cut <- log(.15) + quadprox.poi.repa(theta.est, theta.est, data)
+abline(h = cut, lty = 2, col = 2)
+
+se.theta.est <- sqrt(1 / sum(data))
+wald.95 <- theta.est + qnorm(c(.025, .975)) * se.theta.est
+
+arrows(x0 = wald.95, y0 = rep(cut, 2),
+       x1 = wald.95, y1 = rep(-43, 2), lty = 2, length = .1, col = 2)
+# a better look in the approximation around the MLE ----------------------
+theta.seq <- seq(-.75, .75, length.out = 25)
+plot(theta.seq, lkl.poi(exp(theta.seq), data), type = "l",
+     xlab = expression(theta), ylab = "log-likelihood")
+curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
+abline(v = theta.est, lty = 3, col = 4)
+# </r code> -----
+@        
+         
+         We obtained here two intervals for \(\theta\). One based in a cut in
+         the likelihood,
+         \(\theta \in (\Sexpr{paste(round(ic.95.prob, 3), collapse = ", ")})\) -
+         in black on the topright of Figure~\ref{fig:poisson-reparametrization},
+         and one based in a cut in the quadratic approximation of the
+         likelihood,
+         \(\theta \in (\Sexpr{paste(round(wald.95, 3), collapse = ", ")})\) - in
+         red on the topright of Figure~\ref{fig:poisson-reparametrization}.
+         
+         With the parametrization \(\theta = \log \lambda\) the two intervals
+         are closer than the ones obtained for \(\lambda\). i.e., for \(\theta\)
+         (with the use of the \(\log\)) we get a more regular likelihood.
+         
    \item Obtenha ainda (por pelo menos dois m\'{e}todos diferentes) intervalos
          de confian\c{c}a para o par\^{a}metro \(\lambda\) a partir da
          fun\c{c}\~{a}o de verossimilhan\c{c}a (aproximada ou n\~{a}o) de
