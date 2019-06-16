@@ -466,7 +466,7 @@ abline(v = lambda.est, lty = 3, col = 4)
          \textit{Now we do, in the same manner, everything that we did in the
                  previous letter.}
          
- <<poisson-reparametrization, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(\\theta\\) in Poisson(\\(\\lambda = e^{\\theta}\\)) based on \\texttt{data}. In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(\\theta\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
+<<poisson-reparametrization, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(\\theta\\) in Poisson(\\(\\lambda = e^{\\theta}\\)) based on \\texttt{data}. In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(\\theta\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
 # <r code> -----
 # likelihood -------------------------------------------------------------
 ## we can still use the lkl.poi function, but now we do
@@ -540,6 +540,48 @@ abline(v = theta.est, lty = 3, col = 4)
          de confian\c{c}a para o par\^{a}metro \(\lambda\) a partir da
          fun\c{c}\~{a}o de verossimilhan\c{c}a (aproximada ou n\~{a}o) de
          \(\theta\).
+         
+         Solution:
+         
+         Since the MLE has the invariance property, a very simple idea is: take
+         the obtained interval for \(\theta\) and apply a transformation,
+         \(\lambda = e^{\theta}\). This simple idea is true for the interval
+         obtained via likelihood function, as we can see in
+         Figure~\ref{fig:poisson-c}. The obtained interval is the same that the
+         one in letter \texttt{a)}
+         
+         However, this idea doesn't work for the interval based in the
+         quadratic approximation.
+         
+<<poisson-c, fig.height=3.5, fig.width=5, fig.cap="log-likelihood function and quadratic approximation of \\(\\theta\\), and MLE of \\(\\lambda\\) in Poisson(\\(\\lambda = e^{\\theta}\\)) based on \\texttt{data}. In dashed, 95\\% confidence intervals for \\(\\lambda\\).">>=
+# <r code> -----
+# likelihood -------------------------------------------------------------
+theta.seq <- seq(-2, 2, length.out = 100)
+lklseq.poi <- lkl.poi(exp(theta.seq), data)
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+plot(theta.seq, lklseq.poi, type = "l",
+     xlab = expression(theta), ylab = "log-likelihood")
+abline(v = lambda.est, lty = 3, col = 4)
+# quadratic approximation for the reparametrization ----------------------
+curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
+legend(-2.15, -25, c("log-like", "Quadratic\napprox.", "MLE"),
+       col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
+# intervals for lambda ---------------------------------------------------
+## probability-based interval --------------------------------------------
+arrows(x0 = exp(ic.95.prob), y0 = c(-9, -36.5),
+       x1 = exp(ic.95.prob), y1 = rep(-43, 2), lty = 2, length = .1)
+## wald confidence interval  ---------------------------------------------
+arrows(x0 = exp(wald.95), y0 = c(-9, -24),
+       x1 = exp(wald.95), y1 = rep(-43, 2), lty = 2, length = .1, col = 2)
+# </r code> -----
+@
+
+         In the letter \texttt{a)}, via the quadratic approximation we got
+         \(\lambda \in (0.307, 1.693)\). Here, applying the relation
+         \(\lambda = e^{\theta}\) we get
+         \(\lambda \in (\Sexpr{paste(round(exp(wald.95), 3), collapse = ", ")})
+         \). i.e., this shows that the invariance property applies to the
+         likelihood, not to the quadratic approximation of the likelihood.
   \end{enumerate}
  
  \item A fim de se obter uma estimativa do p\'{u}blico de um jogo sem utilizar
