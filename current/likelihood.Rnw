@@ -619,24 +619,40 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
           &= \text{constant} \times \frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
          \end{align*}
          
-         The likelihood for the total number of fans is the product from 1 to
-         \(n = 250\),
+         Since we already have a \(k\), the likelihood is equal
+         \(\text{Pr}[X = k]\).
          
          \begin{align*}
-          L(N) &= \prod_{i=1}^{250}
+          L(N) &= \text{Pr}[X = 12] =
                   \text{constant} \frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
-          L(N) &= \text{constant}^{250}
-                  \left[\frac{(N-300)!~(N-250)!}{(N-538)!~N!}\right]^{250}\\
-          l(N) = \log L(N) &= 250\log~\text{constant} +
-                              250\log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
+          l(N) = \log L(N) &= \log~\text{constant} +
+                              \log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
                            &\approx
-                           250\log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
+                           \log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
          \end{align*}
 
-<<hypergeo>>=
+<<hypergeo, fig.height=3.5, fig.width=5>>=
 # <r code> -----
 # likelihood -------------------------------------------------------------
-
+lkl.hypergeo <- function(N = 539, M) {
+  size <- M - N
+  n1 <- numeric(size)
+  for (i in 1:size) {
+    n1[i] = log(N - 538)
+    N = N + 1
+  }
+  lkl <- sum(n1)
+  return(lkl)
+}
+m.grid <- 541:1000
+size.grid <- length(m.grid)
+lkl.grid <- numeric(size.grid)
+i = 1
+for (j in m.grid) {
+  lkl.grid[i] = lkl.hypergeo(M = j)
+  i = i + 1
+}
+plot(lkl.grid, type = "l")
 # </r code> -----
 @
 
@@ -718,7 +734,7 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
    \item Obtenha o gr\'{a}fico da fun\c{c}\~{a}o de verossimilhan\c{c}a
          indicando a posi\c{c}\~{a}o dos valores verdadeiros dos
          par\^{a}metros.
-   \item Obtenha os perfis de verossimilhan\c{c}a dos par\^{a}metros.
+  text \item Obtenha os perfis de verossimilhan\c{c}a dos par\^{a}metros.
    \item Obtenha estimativas.
    \item Obtenha intervalos (use diferentes m\'{e}todos).
    \item Compare os resultados anteriores com os fornecidos pela função
