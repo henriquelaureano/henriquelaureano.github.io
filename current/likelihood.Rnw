@@ -593,6 +593,53 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
   \begin{enumerate}[a)]
    \item Obtenha a fun\c{c}\~{a}o de verossimilhan\c{c}a para o n\'{u}mero total
          de torcedores.
+         
+         Solution:
+         
+         We have here a random variable, let's say, \(X\), represeting the
+         number of observed successes, \(k\). Here an observed success is select
+         a fan using a special shirt. So, we have
+         
+         \[ X \sim \text{Hypergeometric}(N, K = 300, n = 250), \]
+         
+         with probability \(p = K/N\).
+         
+         \(N\) is the population size, that we want estimate. \(K\) is the
+         unknown number of fans using a special shirt, and \(n\) is the number
+         of, randomly, selected fans.
+         
+         \begin{align*}
+          \text{Pr}[X = k] =
+          \frac{\binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}
+          \quad \rightarrow \quad
+          \text{Pr}[X = 12] &=
+          \frac{\binom{300}{12} \binom{N-300}{250-12}}{\binom{N}{250}}\\
+          &= \frac{300!~250!}{288!~238!~12!}
+             \frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
+          &= \text{constant} \times \frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
+         \end{align*}
+         
+         The likelihood for the total number of fans is the product from 1 to
+         \(n = 250\),
+         
+         \begin{align*}
+          L(N) &= \prod_{i=1}^{250}
+                  \text{constant} \frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
+          L(N) &= \text{constant}^{250}
+                  \left[\frac{(N-300)!~(N-250)!}{(N-538)!~N!}\right]^{250}\\
+          l(N) = \log L(N) &= 250\log~\text{constant} +
+                              250\log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
+                           &\approx
+                           250\log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
+         \end{align*}
+
+<<hypergeo>>=
+# <r code> -----
+# likelihood -------------------------------------------------------------
+
+# </r code> -----
+@
+
    \item Obtenha a estimativa pontual e a intervalar, esta \'{u}ltima por pelo
          menos dois m\'{e}todos diferentes.
    \item Repita e compare os resultados caso fossem 500 camisas e 20 com camisas
