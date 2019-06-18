@@ -631,28 +631,44 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
                            \log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
          \end{align*}
 
-<<hypergeo, fig.height=3.5, fig.width=5>>=
+<<hypergeo, fig.height=6.75, fig.cap="Hypergeometric likelihood.">>=
 # <r code> -----
 # likelihood -------------------------------------------------------------
 lkl.hypergeo <- function(N = 539, M) {
   size <- M - N
-  n1 <- numeric(size)
+  n1 <- n2 <- n3 <- n4 <- numeric(size)
   for (i in 1:size) {
-    n1[i] = log(N - 538)
+    n1[i] = log(N - 300)
+    n2[i] = log(N - 250)
+    n3[i] = log(N - 538)
+    n4[i] = log(N)
     N = N + 1
   }
-  lkl <- sum(n1)
+  lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
   return(lkl)
 }
-m.grid <- 541:1000
-size.grid <- length(m.grid)
-lkl.grid <- numeric(size.grid)
-i = 1
-for (j in m.grid) {
-  lkl.grid[i] = lkl.hypergeo(M = j)
-  i = i + 1
+compute.lkl <- function(grid, ...) {
+  size.grid = length(grid)
+  lkl.grid = numeric(size.grid)
+  i = 1
+  for (j in grid) {
+    lkl.grid[i] = lkl.hypergeo(M = j)
+    i = i + 1
+  }
+  return(lkl.grid)
 }
-plot(lkl.grid, type = "l")
+par(mar = c(4, 4, 2, 2) + .1)
+layout(matrix(c(0, 1, 1, 0,
+                2, 2, 3, 3), nrow = 2, byrow = TRUE))
+m.grid <- seq(3000, 17000, by = 20)
+plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
+abline(v = 6250, lty = 2)
+m.grid <- seq(539, 1e4, by = 20)
+plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
+abline(v = 6250, lty = 2)
+m.grid <- seq(5000, 8000, by = 10)
+plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
+abline(v = 6250, lty = 2)
 # </r code> -----
 @
 
