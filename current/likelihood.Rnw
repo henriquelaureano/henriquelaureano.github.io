@@ -636,9 +636,11 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
 # <r code> -----
 # likelihood -------------------------------------------------------------
 # always starting from N = 539
-lkl.hypergeo <- function(N = 539, M) {
-  size <- M - N
+lkl.hypergeo <- function(N) {
+  N.init <- 539
+  size <- N - N.init
   n1 <- n2 <- n3 <- n4 <- numeric(size)
+  N <- N.init
   for (i in 1:size) {
     n1[i] = log(N - 300)
     n2[i] = log(N - 250)
@@ -655,7 +657,7 @@ compute.lkl <- function(grid, ...) {
   lkl.grid = numeric(size.grid)
   i = 1
   for (j in grid) {
-    lkl.grid[i] = lkl.hypergeo(M = j)
+    lkl.grid[i] = lkl.hypergeo(N = j)
     i = i + 1
   }
   return(lkl.grid)
@@ -666,16 +668,16 @@ par(mar = c(4, 4, 2, 2) + .1) # cosmetics
 layout(matrix(c(0, 1, 1, 0, # more cosmetics
                 2, 2, 3, 3), nrow = 2, byrow = TRUE))
 
-m.grid <- seq(3000, 17000, by = 20)
-plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
+n.grid <- seq(3000, 17000, by = 20)
+plot(n.grid, compute.lkl(n.grid), "l", xlab = "N", ylab = "log-like")
 abline(v = 6250, lty = 2)
 
-m.grid <- seq(539, 1e4, by = 20)
-plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
+n.grid <- seq(539, 1e4, by = 20)
+plot(n.grid, compute.lkl(n.grid), "l", xlab = "N", ylab = "log-like")
 abline(v = 6250, lty = 2)
 
-m.grid <- seq(5000, 8000, by = 10)
-plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
+n.grid <- seq(5000, 8000, by = 10)
+plot(n.grid, compute.lkl(n.grid), "l", xlab = "N", ylab = "log-like")
 abline(v = 6250, lty = 2)
 # </r code> -----
 @
@@ -696,6 +698,16 @@ abline(v = 6250, lty = 2)
 
    \item Obtenha a estimativa pontual e a intervalar, esta \'{u}ltima por pelo
          menos dois m\'{e}todos diferentes.
+         
+<<>>=
+# <r code> -----
+# point estimate ---------------------------------------------------------
+optimize(lkl.hypergeo, lower = 539, upper = 2e4, maximum = TRUE)
+# hessian ----------------------------------------------------------------
+numDeriv:::hessian(lkl.hypergeo, x = 6250)
+# </r code> -----
+@
+
    \item Repita e compare os resultados caso fossem 500 camisas e 20 com camisas
          dentre os 250.
   \end{enumerate}
