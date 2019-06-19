@@ -596,7 +596,7 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
          
          Solution:
          
-         We have here a random variable, let's say, \(X\), represeting the
+         We have here a random variable, let's say, \(X\), representing the
          number of observed successes, \(k\). Here an observed success is select
          a fan using a special shirt. So, we have
          
@@ -609,9 +609,8 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
          of, randomly, selected fans.
          
          \begin{align*}
-          \text{Pr}[X = k] =
-          \frac{\binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}
-          \quad \rightarrow \quad
+          \text{Pr}[X = k] &=
+          \frac{\binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}\\
           \text{Pr}[X = 12] &=
           \frac{\binom{300}{12} \binom{N-300}{250-12}}{\binom{N}{250}}\\
           &= \frac{300!~250!}{288!~238!~12!}
@@ -619,21 +618,24 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
           &= \text{constant} \times \frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
          \end{align*}
          
-         Since we already have a \(k\), the likelihood is equal
+         Since we already have a \(k\), the likelihood is equal to
          \(\text{Pr}[X = k]\).
          
          \begin{align*}
-          L(N) &= \text{Pr}[X = 12] =
-                  \text{constant} \frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
+          L(N) &= \text{Pr}[X = 12]\\
+               &= \text{constant} \frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
           l(N) = \log L(N) &= \log~\text{constant} +
                               \log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}\\
                            &\approx
                            \log~\frac{(N-300)!~(N-250)!}{(N-538)!~N!}.
          \end{align*}
+         
+         A plot of the likelihood is provided in Figure~\ref{fig:hypergeo-lkl}.
 
-<<hypergeo, fig.height=6.75, fig.cap="Hypergeometric likelihood.">>=
+<<hypergeo-lkl, fig.height=6.75, fig.cap="log-likelihood of \\(N\\) in Hypergeometric(N, K = 300, n = 250) based on \\(k = 12\\). In dashed, the MLE. Different ranges of \\(N\\) to have a better understanding of the likelihood behaviour.">>=
 # <r code> -----
 # likelihood -------------------------------------------------------------
+# always starting from N = 539
 lkl.hypergeo <- function(N = 539, M) {
   size <- M - N
   n1 <- n2 <- n3 <- n4 <- numeric(size)
@@ -647,6 +649,7 @@ lkl.hypergeo <- function(N = 539, M) {
   lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
   return(lkl)
 }
+
 compute.lkl <- function(grid, ...) {
   size.grid = length(grid)
   lkl.grid = numeric(size.grid)
@@ -657,20 +660,39 @@ compute.lkl <- function(grid, ...) {
   }
   return(lkl.grid)
 }
-par(mar = c(4, 4, 2, 2) + .1)
-layout(matrix(c(0, 1, 1, 0,
+
+# plotting
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+layout(matrix(c(0, 1, 1, 0, # more cosmetics
                 2, 2, 3, 3), nrow = 2, byrow = TRUE))
+
 m.grid <- seq(3000, 17000, by = 20)
 plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
 abline(v = 6250, lty = 2)
+
 m.grid <- seq(539, 1e4, by = 20)
 plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
 abline(v = 6250, lty = 2)
+
 m.grid <- seq(5000, 8000, by = 10)
 plot(m.grid, compute.lkl(m.grid), "l", xlab = "N", ylab = "log-like")
 abline(v = 6250, lty = 2)
 # </r code> -----
 @
+
+         The MLE here is given by
+         \(\hat{N} = \left\lfloor Kn/k \right\rfloor = 6250\).
+         
+         Figure~\ref{fig:hypergeo-lkl} present some very interesting behaviours.
+         \\
+         In the top, going from \(N = 3000\) to \(N = 17000\) we can see clearly
+         the likelihood asymmetry. In the bottomleft, starting from the first
+         valid possible value, 539, we see basically nothing. i.e., we don't see
+         any possible curvature in the likelihood. In the bottomright we focus
+         around the MLE to see better the curvature. Around that point we see
+         a very small variation in the likelihood, \(0.3\), for a range of
+         \(3000\) in \(N\). This shows how smooth is the curvature around the
+         MLE in a large region.
 
    \item Obtenha a estimativa pontual e a intervalar, esta \'{u}ltima por pelo
          menos dois m\'{e}todos diferentes.
