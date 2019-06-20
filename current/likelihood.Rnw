@@ -699,17 +699,121 @@ abline(v = 6250, lty = 2)
    \item Obtenha a estimativa pontual e a intervalar, esta \'{u}ltima por pelo
          menos dois m\'{e}todos diferentes.
          
+         Solution:
+         
 <<>>=
 # <r code> -----
 # point estimate ---------------------------------------------------------
 optimize(lkl.hypergeo, lower = 539, upper = 2e4, maximum = TRUE)
-# hessian ----------------------------------------------------------------
-numDeriv:::hessian(lkl.hypergeo, x = 6250)
 # </r code> -----
 @
+         
+         Using the \texttt{optimize} routine to do the optimization we obtain
+         \(\hat{N} = 6251\), and a log-likelihood of 317.85. This value for
+         \(\hat{N}\) is practically equal to what the ML theory says,
+         \(\hat{N} = \left\lfloor Kn/k \right\rfloor = 6250\).
+         
+         Next, we compute a quadratic approximation for the hypergeometric
+         (log-)likelihood followed by two intervals, one based in the
+         likelihood, and a wald interval based in the quadratic approximation.
+         All this is presented in Figure~\ref{fig:hypergeo-intervals}.
+         
+<<hypergeo-intervals, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(N\\) in Hypergeometric(N, K = 300, n = 250) based on \\(k = 12\\). In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(N\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
+# <r code> -----
+# quadratic approximation of the likelihood ------------------------------
+hess <- numDeriv:::hessian(lkl.hypergeo, x = 6250)
 
+# quadratic approx.
+quadprox.hypergeo <- function(N, N.est = 6250) {
+  obs.info <- as.vector(-hess) # observed information
+  lkl.hypergeo(N.est) - .5 * obs.info * (N - N.est)**2
+}
+
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+layout(matrix(c(1, 2,
+                3, 3), nrow = 2, byrow = TRUE),
+       heights = c(1.5, 1)) # more cosmetics
+
+# likelihood plot
+n.grid <- seq(3000, 17000, by = 20)
+plot(n.grid, compute.lkl(n.grid), "l",
+     xlab = "N", ylab = "log-likelihood")
+abline(v = 6250, lty = 3, col = 4)
+
+# quadratic approximation plot
+curve(quadprox.hypergeo(x), col = 2, add = TRUE)
+
+legend(10500, 318.25,
+       c("log-like", "Quadratic\napprox.", "MLE"),
+       col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
+
+# intervals for N --------------------------------------------------------
+# first, we plot again the likelihood and the quadratic approx.
+n.grid <- seq(2500, 12000, by = 20)
+
+plot(n.grid, compute.lkl(n.grid), "l",
+     xlab = "N", ylab = "log-likelihood")
+
+abline(v = 6250, lty = 3, col = 4)
+
+curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
+
+## probability-based interval --------------------------------------------
+# cutoff's corresponding to a 95\% confidence interval for N
+cut <- log(.15) + lkl.hypergeo(6250)
+
+abline(h = cut, lty = 2)
+
+ic.lkl.hypergeo <- function(grid) {
+  compute.lkl(grid) - cut
+}
+ic.95.prob <- rootSolve::uniroot.all(ic.lkl.hypergeo, range(n.grid))
+
+arrows(x0 = ic.95.prob, y0 = rep(cut, 2),
+       x1 = ic.95.prob, y1 = rep(309.5, 2), lty = 2, length = .1)
+
+## wald confidence interval ---------------------------------------------
+cut <- log(.15) + quadprox.hypergeo(N = 6250)
+
+abline(h = cut, lty = 2, col = 2)
+
+se.n.est <- sqrt(as.vector(-1 / hess))
+wald.95 <- 6250 + qnorm(c(.025, .975)) * se.n.est
+
+arrows(x0 = wald.95, y0 = rep(cut, 2),
+       x1 = wald.95, y1 = rep(309.5, 2), lty = 2, length = .1, col = 2)
+
+# a better look in the approximation around the MLE ----------------------
+n.grid <- seq(5000, 8000, by = 10)
+
+plot(n.grid, compute.lkl(n.grid), "l",
+     xlab = "N", ylab = "log-likelihood")
+
+abline(v = 6250, lty = 3, col = 4)
+
+curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
+# </r code> -----
+@
+         The quadratic approximation and the intervals were obtained in the same
+         way that in the exercises before, with the only difference that here
+         the hessian was obtained numerically, just for simplicity.
+         
+         Based in a cut in the likelihood, we obtain
+         \((\Sexpr{paste(round(ic.95.prob, 0))})\) as a 95\% interval for the
+         total number of fans in the game.
+         With the wald interval (quadratic approximation) we obtain
+         \((\Sexpr{paste(round(wald.95, 0))})\) as a 95\% interval.
+         \textit{A considerable difference}.
+         
    \item Repita e compare os resultados caso fossem 500 camisas e 20 com camisas
          dentre os 250.
+         
+         Solution:
+         
+         The procedure here is exactly the same.
+         
+         TO DO.
+         
   \end{enumerate}
  
  \item Foram tomadas as seguintes observa\c{c}\~{o}es independentes de uma v.a.
