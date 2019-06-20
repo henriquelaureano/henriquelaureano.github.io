@@ -790,7 +790,6 @@ plot(n.grid, compute.lkl(n.grid), "l",
      xlab = "N", ylab = "log-likelihood")
 
 abline(v = 6250, lty = 3, col = 4)
-
 curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
 # </r code> -----
 @
@@ -812,8 +811,61 @@ curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
          
          The procedure here is exactly the same.
          
-         TO DO.
+         We have
          
+          \begin{align*}
+          \text{Pr}[X = k] =
+          \frac{\binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}, \qquad
+          \text{Pr}[X = 20] &=
+          \frac{\binom{500}{20} \binom{N-500}{250-20}}{\binom{N}{250}}\\
+          &= \frac{500!~250!}{480!~230!~20!}
+             \frac{(N-500)!~(N-250)!}{(N-730)!~N!}\\
+          &= \text{constant} \times \frac{(N-500)!~(N-250)!}{(N-730)!~N!}.
+         \end{align*}
+         
+         With likelihood
+         
+         \begin{align*}
+          L(N) &= \text{Pr}[X = 20]\\
+               &= \text{constant} \frac{(N-500)!~(N-250)!}{(N-730)!~N!}\\
+          l(N) = \log L(N) &= \log~\text{constant} +
+                              \log~\frac{(N-500)!~(N-250)!}{(N-730)!~N!}\\
+                           &\approx
+                           \log~\frac{(N-500)!~(N-250)!}{(N-730)!~N!}.
+         \end{align*}
+         
+         .
+
+<<hypergeo-c, fig.height=5.5, fig.cap="log-likelihood of \\(N\\) in Hypergeometric(N, K = 300, n = 250) based on \\(k = 12\\). In dashed, the MLE. Different ranges of \\(N\\) to have a better understanding of the likelihood behaviour.">>=
+# <r code> -----
+# likelihood -------------------------------------------------------------
+# always starting from N = 731
+lkl.hypergeo <- function(N) {
+  N.init <- 731
+  size <- N - N.init
+  n1 <- n2 <- n3 <- n4 <- numeric(size)
+  N <- N.init
+  for (i in 1:size) {
+    n1[i] = log(N - 500)
+    n2[i] = log(N - 250)
+    n3[i] = log(N - 730)
+    n4[i] = log(N)
+    N = N + 1
+  }
+  lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
+  return(lkl)
+}
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+layout(matrix(c(1, 2,
+                3, 3), nrow = 2, byrow = TRUE),
+       heights = c(1.5, 1)) # more cosmetics
+
+n.grid <- seq(3000, 17000, by = 20)
+plot(n.grid, compute.lkl(n.grid), "l",
+     xlab = "N", ylab = "log-likelihood")
+abline(v = 6250, lty = 3, col = 4)
+# </r code> -----
+@
   \end{enumerate}
  
  \item Foram tomadas as seguintes observa\c{c}\~{o}es independentes de uma v.a.
