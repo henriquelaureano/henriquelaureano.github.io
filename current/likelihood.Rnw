@@ -910,6 +910,30 @@ abline(v = 6250, lty = 3, col = 4)
 curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
 # </r code> -----
 @
+         The MLE is exactly the same that the one in the previous scenario,
+         since
+         
+         \[ \hat{N} = \left\lfloor Kn/k \right\rfloor
+                    = \left\lfloor 300 \times 250~/~12 \right\rfloor
+                    = \left\lfloor 500 \times 250~/~20 \right\rfloor = 6250.
+         \]
+         
+         \begin{itemize}
+          \item Based in a cut in the likelihood, we obtain
+                \((\Sexpr{paste(round(ic.95.prob, 0))})\) as a 95\% interval for
+                the total number of fans in the game.
+          \item With the wald interval (quadratic approximation) we obtain
+                \((\Sexpr{paste(round(wald.95, 0))})\) as a 95\% interval for
+                the total number of fans.
+         \end{itemize}
+         \textit{A considerable difference}.
+         
+         Comparing with the previous scenario the intervals changed
+         considerably, even with MLE retain the same.
+         
+         The likelihood shape is the same that before, just with a
+         vertical increase. Before the maximum log-likelihood estimate was
+         around 318, now is around 382.
   \end{enumerate}
  
  \item Foram tomadas as seguintes observa\c{c}\~{o}es independentes de uma v.a.
