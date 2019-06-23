@@ -944,15 +944,142 @@ curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
 # <r code> -----
 (data <- c(56.4, 54.2, 65.3, 49.2, 50.1, 56.9, 58.9, 62.5, 70, 61))
 # </r code> -----
-@  
+@
    \item sabe-se que outras 5 observa\c{c}\~{o}es s\~{a}o menores que 50.
    \item sabe-se que outras 3 observa\c{c}\~{o}es s\~{a}o maiores que 65.
   \end{itemize}
   
   \begin{enumerate}[(a)]
    \item Escrever a fun\c{c}\~{a}o de verossimilhan\c{c}a.
+   
+         Solution:
+         
+         The likelihood can be expressed as
+         
+         \begin{align*}
+          L(\theta) &= \left( \prod_{i = 1}^{10} f(x_{i}) \right) \times
+                       (F(50))^{5} \times (1 - F(65))^{3}\\
+                    &= \left( \prod_{i = 1}^{10}
+                              \phi \left( \frac{y_{i} - \mu}{\sigma} \right)
+                                   \right) \times
+                       \left( \Phi \left( \frac{50 - \mu}{\sigma} \right)
+                       \right)^{5} \times
+                       \left( 1 - \Phi \left( \frac{65 - \mu}{\sigma} \right)
+                       \right)^{3}\\
+          l(\theta) &=
+          \sum_{i = 1}^{10} \log \phi \left( \frac{y_{i} - \mu}{\sigma} \right)
+          + 5~\log \Phi \left( \frac{50 - \mu}{\sigma} \right)
+          + 3~\log \left( 1 - \Phi \left( \frac{65 - \mu}{\sigma} \right)
+                   \right).
+         \end{align*}
+<<>>=
+# <r code> -----
+# likelihood -------------------------------------------------------------
+## if logsigma = TRUE, we do the parametrization using log(sigma)
+lkl.norm <- function(par, xs, less.than, more.than, logsigma = FALSE) {
+  if (logsigma) par[2] <- exp(par[2])
+  l1 <- sum(dnorm(xs, mean = par[1], sd = par[2], log = TRUE))
+  l2 <- 5 * log(pnorm(less.than, mean = par[1], sd = par[2]))
+  l3 <- 3 * log(1 - pnorm(more.than, mean = par[1], sd = par[2]))
+  lkl <- l1 + l2 + l3
+  # we return the negative of the log-likelihood,
+  # since the optim routine performs a minimization
+  return(-lkl)
+}
+# </r code> -----
+@
    \item Obter as estimativas de m\'{a}xima verossimilhan\c{c}a.
+   
+         Solution:
+<<>>=
+# <r code> -----
+# providing an initial guess based uniquely in the ten points sample
+init.guess <- c(mean(data), sd(data))
+# parameters estimation
+(par.est <- optim(init.guess, lkl.norm, logsigma = FALSE,
+                  xs = data, less.than = 65, more.than = 50)$par)
+# </r code> -----
+@
+         \[ \hat{\mu} = \Sexpr{round(par.est[1], 3)}, \quad
+            \hat{\sigma} = \Sexpr{round(par.est[2], 3)}.
+         \]
+         
+         FYI: In the ten points sample we have
+              \(\bar{x} = \Sexpr{round(mean(data), 3)}\) and
+              \(s^{2} = \Sexpr{round(sd(data), 3)}\).
+         
    \item Obter as verossimilhan\c{c}as perfilhadas.
+         
+         Solution:
+         
+         First, we do the graph of the likelihood surface in the deviance
+         scale, since this scale is much more convenient. This requires the
+         value of the likelihood evaluated in the parameter estimates.
+         
+         The deviance here is basically
+         
+         \[ D(\theta) = -2 (l(\theta) - l(\hat{\theta})), \]
+         
+         with \(\theta\) being the vector of parameters \(\mu\) and \(\sigma\).
+         
+         In Figure~\ref{fig:deviances-norm} we have the likelihood surfaces
+         for two parametrizations: \(\sigma\) and \(\log \sigma\).
+         
+<<deviances-norm, fig.height=3.5, fig.cap="Deviances of (\\(\\mu, \\sigma\\)) and (\\(\\mu, \\log \\sigma\\)) for a Gaussian sample made of interval data.">>=
+# <r code> -----
+# deviance ---------------------------------------------------------------
+dev.norm <- function(theta, est, ...) {
+  # remember: here we have the negative of the log-likelihoods,
+  # so the sign the different
+  return(2 * (lkl.norm(theta, ...) - lkl.norm(est, ...)))
+}
+dev.norm.surf <- Vectorize(function(x, y, ...) dev.norm(c(x, y), ...))
+
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
+## parametrization: sigma ------------------------------------------------
+mu.grid <- seq(52, 63.75, length.out = 100)
+sigma.grid <- seq(3.25, 12.5, length.out = 100)
+
+outer.grid <- outer(mu.grid, sigma.grid, FUN = dev.norm.surf,
+                    est = par.est, xs = data,
+                    less.than = 65, more.than = 50)
+
+contour.levels <- c(.99, .95, .9, .7, .5, .3, .1, .05)
+contour(mu.grid, sigma.grid, outer.grid,
+        levels = qchisq(contour.levels, df = 2),
+        labels = contour.levels,
+        xlab = expression(mu), ylab = expression(sigma))
+# converting par.est to a matricial object
+points(t(par.est), col = 2, pch = 19, cex = .75)
+## parametrization: log sigma --------------------------------------------
+mu.grid <- seq(52, 63.75, length.out = 100)
+sigma.grid <- seq(1.225, 2.5, length.out = 100)
+
+par.est <- optim(init.guess, lkl.norm, logsigma = TRUE,
+                 xs = data, less.than = 65, more.than = 50)$par
+
+outer.grid <- outer(mu.grid, sigma.grid, FUN = dev.norm.surf,
+                    est = par.est, xs = data,
+                    logsigma = TRUE, less.than = 65, more.than = 50)
+
+contour.levels <- c(.99, .95, .9, .7, .5, .3, .1, .05)
+contour(mu.grid, sigma.grid, outer.grid,
+        levels = qchisq(contour.levels, df = 2),
+        labels = contour.levels,
+        xlab = expression(mu), ylab = expression(log(sigma)))
+points(t(par.est), col = 2, pch = 19, cex = .75)
+# </r code> -----
+@
+         From Figure~\ref{fig:deviances-norm} two things are important to
+         mention. First, with interval data, the surface doesn't exhibit
+         orthogonally between the parameters. Second, in the log parametrization
+         of sigma we have better behavior in the surface.
+<<profiles-norm, fig.height=3.5, fig.cap="Deviances of (\\(\\mu, \\sigma\\)) and (\\(\\mu, \\log \\sigma\\)) for a Gaussian sample made of interval data.">>=
+# <r code> -----
+# profiles ---------------------------------------------------------------
+
+# </r code> -----
+@
    \item Obter os erro-padr\~{a}o das estimativas.
   \end{enumerate}
   
@@ -1017,6 +1144,7 @@ curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
 \end{enumerate}
 
 \vfill
+\noindent
 \textit{last modification on ...}
 
 <<cache=FALSE, echo=FALSE>>=
