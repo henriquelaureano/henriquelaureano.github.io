@@ -1183,7 +1183,72 @@ init.guess <- c(mean(data), sd(data)) # initial guess
        \end{center}
   \begin{enumerate}[(a)]
    \item Encontre a fun\c{c}\~{a}o de verossimilhan\c{c}a.
+   
+         Solution:
+<<norm_5-disp, fig.height=3.5, fig.width=5, fig.cap="Dispersion between level of hydrocarbonates \\(\\times\\) purity (\\%).">>=
+# <r code> -----
+data <- data.frame(
+  x = c(.99, 1.02, 1.15, 1.29, 1.46, 1.36, .87, 1.23, 1.55, 1.4,
+        1.19, 1.15, .98, 1.01, 1.11, 1.2, 1.26, 1.32, 1.43, .95),
+  y = c(99.01, 89.05, 91.43, 93.74, 96.73, 94.45, 87.59, 91.77, 99.42,
+        93.65, 93.54, 92.52, 90.56, 89.54, 89.85, 90.39, 93.25, 93.41,
+        94.98, 87.33)
+)
+par(mar = c(4, 4, 2, 2) + .1)
+plot(y ~ x, data,
+     xlab = "level of hydrocarbonates", ylab = expression("purity"~("%")))
+# </r code> -----
+@
+         Assuming a Normal distribution for \(Y | X\), we have the following
+         log-likelihood, in matricial form
+         
+         \begin{align*}
+          l(\theta; Y) &=
+          -\frac{n}{2} \log 2\pi
+          - n \log \sigma
+          - \frac{1}{2\sigma^{2}} \left \|  Y - X \beta \right \|^{2}\\
+          &= \text{constant} - n \log \sigma
+             - \frac{1}{2\sigma^{2}} \left \|  Y - X \beta \right \|^{2},
+         \end{align*}
+         
+         were \(\theta = [\beta_{0}~\beta_{1}~\sigma]^{\top}\),
+         \(\beta = [\beta_{0}~\beta_{1}]^{\top}\), and
+         \(\mu_{i} = \beta_{0} + \beta_{1} x_{i}\).
+
    \item Encontre as estimativas de m\'{a}xima verossimilhan\c{c}a.
+<<>>=
+# <r code> -----
+# likelihood -------------------------------------------------------------
+lkl.model.norm <- function(b0, b1, sigma, y, x, logsigma = FALSE) {
+  ## if logsigma = TRUE, we do the parametrization using log(sigma)
+  if (logsigma) sigma <- exp(sigma)
+  mu <- b0 + b1 * x
+  lkl <- sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))
+  # we return the negative of the log-likelihood,
+  # since the optim routine performs a minimization
+  return(-lkl)
+}
+(par.est <- bbmle::mle2(lkl.model.norm,
+                        start = list(b0 = min(data$y),
+                                     b1 = 1.5,
+                                     sigma = sd(data$y)),
+                        data = list(y = data$y, x = data$x),
+                        method = "BFGS"))
+# </r code> -----
+@
+         Just checking...
+<<results='markup'>>=
+# <r code> -----
+lm(y ~ x, data)$coef # beta_0 and beta_1
+
+# sigma^2
+par.est@coef[[3]]**2
+
+(summary(lm(y ~ x, data))$sigma**2) * (nrow(data) - 2) / nrow(data)
+# </r code> -----
+@
+         Checked, \(\checkmark\).
+         
    \item Obtenha a verossimilhan\c{c}a conjunta para os par\^{a}metros
          \(\beta_{0}\) e \(\beta_{1}\):
     \begin{enumerate}[i.]
