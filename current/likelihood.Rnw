@@ -126,13 +126,13 @@ data <- c(5.5, 3.2, 4.8, 5.3, 3.8, 5)
 <<uniform, fig.height=3.5, fig.cap=paste0("Likelihood function of \\(\\theta\\) in Uniform(0, \\(\\theta\\)) based on \\(x_{(6)}\\) = ", max(data), ". In the left, likelihood intervals at 15\\% (dashed line) and 4\\% (dotted line) cutoff. In the right, likelihood intervals at 5\\% (dashed line) and 1\\% (dotted line) cutoff. These cutoffs correspond, in both sides, to a 95\\% and 99\\% confidence interval, respectively.")>>=
 # <r code> -----
 lkl.unif <- function(theta, data) {
-  n <- length(data) ; xn <- max(data)
-  # this next step, in the way presented, isn't very efficient, since I'll
-  # compute the likelihood for all theta's and then, if necessary, convert to
-  # zero. however, since we have here a very simple likelihood (and this
-  # notation is extremely clear, btw), I keep in this way
-  lkl = theta**(-n)*{theta >= xn}
-  return(lkl)
+    n <- length(data) ; xn <- max(data)
+    # this next step, in the way presented, isn't very efficient, since I'll
+    # compute the likelihood for all theta's and then, if necessary, convert to
+    # zero. however, since we have here a very simple likelihood (and this
+    # notation is extremely clear, btw), I keep in this way
+    lkl = theta**(-n)*{theta >= xn}
+    return(lkl)
 }
 theta.seq <- seq(4, 12, length.out = 100)
 lklseq.unif <- lkl.unif(theta.seq, data)
@@ -150,7 +150,7 @@ abline(h = cuts, lty = 2:3)
 # uniroot.all finds the zeros, so we need to subtract the cutoff point from
 # the likelihood to be able to find the points where the likelihood is cut
 ic.lkl.unif <- function(theta, cut, ...) {
-  lkl.unif(theta, ...)/max(lklseq.unif) - cut
+    lkl.unif(theta, ...)/max(lklseq.unif) - cut
 }
 ic.95.prob <- rootSolve::uniroot.all(ic.lkl.unif, range(theta.seq),
                                      data = data, cut = cuts[1])
@@ -337,10 +337,10 @@ data <- c(3, 1, 0, 2, 1, 1, 0, 0)
 # <r code> -----
 # likelihood -------------------------------------------------------------
 lkl.poi <- function(lambda, data) {
-  n <- length(data)
-  # log-likelihood ignoring irrelevant constant terms
-  lkl = -n * lambda + sum(data) * log(lambda)
-  return(lkl)
+    n <- length(data)
+    # log-likelihood ignoring irrelevant constant terms
+    lkl = -n * lambda + sum(data) * log(lambda)
+    return(lkl)
 }
 lambda.seq <- seq(0, 4.5, length.out = 100)
 lklseq.poi <- lkl.poi(lambda.seq, data)
@@ -352,9 +352,9 @@ lambda.est <- mean(data) # MLE
 abline(v = lambda.est, lty = 3, col = 4)
 # quadratic approximation ------------------------------------------------
 quadprox.poi <- function(lambda, lambda.est, data) {
-  n <- length(data)
-  obs.info <- n / lambda.est # observed information
-  lkl.poi(lambda.est, data) - .5 * obs.info * (lambda - lambda.est)**2
+    n <- length(data)
+    obs.info <- n / lambda.est # observed information
+    lkl.poi(lambda.est, data) - .5 * obs.info * (lambda - lambda.est)**2
 }
 curve(quadprox.poi(x, lambda.est, data), col = 2, add = TRUE)
 legend(2.4, -6.25, c("log-like", "Quadratic\napprox.", "MLE"),
@@ -368,7 +368,7 @@ abline(v = lambda.est, col = 4, lty = 3)
 # cutoff's corresponding to a 95\% confidence interval for the mean
 cut <- log(.15) + lkl.poi(lambda.est, data) ; abline(h = cut, lty = 2)
 ic.lkl.poi <- function(lambda, cut, ...) {
-  lkl.poi(lambda, ...) - cut
+    lkl.poi(lambda, ...) - cut
 }
 ic.95.prob <- rootSolve::uniroot.all(ic.lkl.poi, range(lambda.seq),
                                      data = data, cut = cut)
@@ -482,8 +482,8 @@ theta.est <- log(mean(data)) # MLE
 abline(v = theta.est, lty = 3, col = 4)
 # quadratic approximation for the reparametrization ----------------------
 quadprox.poi.repa <- function(theta, theta.est, data) {
-  obs.info <- sum(data) # observed information
-  lkl.poi(exp(theta.est), data) - .5 * obs.info * (theta - theta.est)**2
+    obs.info <- sum(data) # observed information
+    lkl.poi(exp(theta.est), data) - .5 * obs.info * (theta - theta.est)**2
 }
 curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
 
@@ -498,8 +498,8 @@ abline(v = theta.est, col = 4, lty = 3)
 # cutoff's corresponding to a 95\% confidence interval for the mean
 cut <- log(.15) + lkl.poi(exp(theta.est), data) ; abline(h = cut, lty = 2)
 ic.lkl.poi <- function(theta, cut, ...) {
-  lambda <- exp(theta)
-  lkl.poi(lambda, ...) - cut
+    lambda <- exp(theta)
+    lkl.poi(lambda, ...) - cut
 }
 ic.95.prob <- rootSolve::uniroot.all(ic.lkl.poi, range(theta.seq),
                                      data = data, cut = cut)
@@ -637,30 +637,30 @@ arrows(x0 = exp(wald.95), y0 = c(-9, -24),
 # likelihood -------------------------------------------------------------
 # always starting from N = 539
 lkl.hypergeo <- function(N) {
-  N.init <- 539
-  size <- N - N.init
-  n1 <- n2 <- n3 <- n4 <- numeric(size)
-  N <- N.init
-  for (i in 1:size) {
-    n1[i] = log(N - 300)
-    n2[i] = log(N - 250)
-    n3[i] = log(N - 538)
-    n4[i] = log(N)
-    N = N + 1
-  }
-  lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
-  return(lkl)
+    N.init <- 539
+    size <- N - N.init
+    n1 <- n2 <- n3 <- n4 <- numeric(size)
+    N <- N.init
+    for (i in 1:size) {
+        n1[i] = log(N - 300)
+        n2[i] = log(N - 250)
+        n3[i] = log(N - 538)
+        n4[i] = log(N)
+        N = N + 1
+    }
+    lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
+    return(lkl)
 }
 
 compute.lkl <- function(grid, ...) {
-  size.grid = length(grid)
-  lkl.grid = numeric(size.grid)
-  i = 1
-  for (j in grid) {
-    lkl.grid[i] = lkl.hypergeo(N = j)
-    i = i + 1
-  }
-  return(lkl.grid)
+    size.grid = length(grid)
+    lkl.grid = numeric(size.grid)
+    i = 1
+    for (j in grid) {
+        lkl.grid[i] = lkl.hypergeo(N = j)
+        i = i + 1
+    }
+    return(lkl.grid)
 }
 
 # plotting
@@ -707,7 +707,7 @@ abline(v = 6250, lty = 2)
 optimize(lkl.hypergeo, lower = 539, upper = 2e4, maximum = TRUE)
 # </r code> -----
 @
-         
+
          Using the \texttt{optimize} routine to do the optimization we obtain
          \(\hat{N} = 6251\), and a log-likelihood of 317.85. This value for
          \(\hat{N}\) is practically equal to what the ML theory says,
@@ -725,8 +725,8 @@ hess <- numDeriv:::hessian(lkl.hypergeo, x = 6250)
 
 # quadratic approx.
 quadprox.hypergeo <- function(N, N.est = 6250) {
-  obs.info <- as.vector(-hess) # observed information
-  lkl.hypergeo(N.est) - .5 * obs.info * (N - N.est)**2
+    obs.info <- as.vector(-hess) # observed information
+    lkl.hypergeo(N.est) - .5 * obs.info * (N - N.est)**2
 }
 
 par(mar = c(4, 4, 2, 2) + .1) # cosmetics
@@ -765,7 +765,7 @@ cut <- log(.15) + lkl.hypergeo(6250)
 abline(h = cut, lty = 2)
 
 ic.lkl.hypergeo <- function(grid) {
-  compute.lkl(grid) - cut
+    compute.lkl(grid) - cut
 }
 ic.95.prob <- rootSolve::uniroot.all(ic.lkl.hypergeo, range(n.grid))
 
@@ -842,19 +842,19 @@ curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
 # likelihood -------------------------------------------------------------
 # always starting from N = 731
 lkl.hypergeo <- function(N) {
-  N.init <- 731
-  size <- N - N.init
-  n1 <- n2 <- n3 <- n4 <- numeric(size)
-  N <- N.init
-  for (i in 1:size) {
-    n1[i] = log(N - 500)
-    n2[i] = log(N - 250)
-    n3[i] = log(N - 730)
-    n4[i] = log(N)
-    N = N + 1
-  }
-  lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
-  return(lkl)
+    N.init <- 731
+    size <- N - N.init
+    n1 <- n2 <- n3 <- n4 <- numeric(size)
+    N <- N.init
+    for (i in 1:size) {
+        n1[i] = log(N - 500)
+        n2[i] = log(N - 250)
+        n3[i] = log(N - 730)
+        n4[i] = log(N)
+        N = N + 1
+    }
+    lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
+    return(lkl)
 }
 # plotting ---------------------------------------------------------------
 par(mar = c(4, 4, 2, 2) + .1) # cosmetics
@@ -977,14 +977,14 @@ curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
 # likelihood -------------------------------------------------------------
 ## if logsigma = TRUE, we do the parametrization using log(sigma)
 lkl.norm <- function(par, xs, less.than, more.than, logsigma = FALSE) {
-  if (logsigma) par[2] <- exp(par[2])
-  l1 <- sum(dnorm(xs, mean = par[1], sd = par[2], log = TRUE))
-  l2 <- 5 * log(pnorm(less.than, mean = par[1], sd = par[2]))
-  l3 <- 3 * log(1 - pnorm(more.than, mean = par[1], sd = par[2]))
-  lkl <- l1 + l2 + l3
-  # we return the negative of the log-likelihood,
-  # since the optim routine performs a minimization
-  return(-lkl)
+    if (logsigma) par[2] <- exp(par[2])
+    l1 <- sum(dnorm(xs, mean = par[1], sd = par[2], log = TRUE))
+    l2 <- 5 * log(pnorm(less.than, mean = par[1], sd = par[2]))
+    l3 <- 3 * log(1 - pnorm(more.than, mean = par[1], sd = par[2]))
+    lkl <- l1 + l2 + l3
+    # we return the negative of the log-likelihood,
+    # since the optim routine performs a minimization
+    return(-lkl)
 }
 # </r code> -----
 @
@@ -1029,9 +1029,9 @@ init.guess <- c(mean(data), sd(data))
 # <r code> -----
 # deviance ---------------------------------------------------------------
 dev.norm <- function(theta, est, ...) {
-  # remember: here we have the negative of the log-likelihoods,
-  # so the sign the different
-  return(2 * (lkl.norm(theta, ...) - lkl.norm(est, ...)))
+    # remember: here we have the negative of the log-likelihoods,
+    # so the sign the different
+    return(2 * (lkl.norm(theta, ...) - lkl.norm(est, ...)))
 }
 dev.norm.surf <- Vectorize(function(x, y, ...) dev.norm(c(x, y), ...))
 
@@ -1084,7 +1084,7 @@ points(t(par.est), col = 2, pch = 19, cex = .75)
          likelihood. We do this below for \(\mu\) and \(\sigma\), the results
          can be seen in Figure~\ref{fig:profiles-norm}.
          
-<<profiles-norm, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\mu\\) and \\(\\sigma\\) for a Gaussian sample made of interval data. In red, the respective MLEs.">>=
+<<profiles-norm, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\mu\\) and \\(\\sigma\\) for a Gaussian sample made of interval data. In red, the respective MLE's.">>=
 # <r code> -----
 # profiles ---------------------------------------------------------------
 ## likelihood ------------------------------------------------------------
@@ -1092,11 +1092,11 @@ points(t(par.est), col = 2, pch = 19, cex = .75)
 ## to use the optimize routine (single parameter optimization)
 ## we need to split the par argument in two
 lkl.norm.profiles <- function(mu, sigma, xs, less.than, more.than) {
-  l1 <- sum(dnorm(xs, mean = mu, sd = sigma, log = TRUE))
-  l2 <- 5 * log(pnorm(less.than, mean = mu, sd = sigma))
-  l3 <- 3 * log(1 - pnorm(more.than, mean = mu, sd = sigma))
-  lkl <- l1 + l2 + l3
-  return(lkl)
+    l1 <- sum(dnorm(xs, mean = mu, sd = sigma, log = TRUE))
+    l2 <- 5 * log(pnorm(less.than, mean = mu, sd = sigma))
+    l3 <- 3 * log(1 - pnorm(more.than, mean = mu, sd = sigma))
+    lkl <- l1 + l2 + l3
+    return(lkl)
 }
 par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
 ## mu --------------------------------------------------------------------
@@ -1107,12 +1107,12 @@ mu.grid <- seq(45, 69.25, length.out = 100)
 mu.perf <- matrix(0, nrow = length(mu.grid), ncol = 2)
 
 for (i in 1:length(mu.grid)) {
-  mu.perf[i, ] <- unlist(
-    optimize(lkl.norm.profiles, lower = 0, upper = 50,
-             mu = mu.grid[i],
-             xs = data, less.than = 65, more.than = 50, maximum = TRUE))
+    mu.perf[i, ] <- unlist(
+        optimize(lkl.norm.profiles, lower = 0, upper = 50,
+                 mu = mu.grid[i],
+                 xs = data, less.than = 65, more.than = 50,
+                 maximum = TRUE))
 }
-
 plot(mu.grid, mu.perf[ , 2], type = "l",
      xlab = expression(mu), ylab = expression(l(mu[sigma])))
 abline(v = par.est[1], col = 2)
@@ -1121,12 +1121,12 @@ sigma.grid <- seq(3.25, 13.75, length.out = 100)
 sigma.perf <- matrix(0, nrow = length(sigma.grid), ncol = 2)
 
 for (i in 1:length(sigma.grid)) {
-  sigma.perf[i, ] <- unlist(
-    optimize(lkl.norm.profiles, lower = 0, upper = 100,
-             sigma = sigma.grid[i],
-             xs = data, less.than = 65, more.than = 50, maximum = TRUE))
+    sigma.perf[i, ] <- unlist(
+        optimize(lkl.norm.profiles, lower = 0, upper = 100,
+                 sigma = sigma.grid[i],
+                 xs = data, less.than = 65, more.than = 50,
+                 maximum = TRUE))
 }
-
 plot(sigma.grid, sigma.perf[ , 2], type = "l",
      xlab = expression(sigma), ylab = expression(l(sigma[mu])))
 # we apply the exponential, since we did log sigma optimization by last
@@ -1188,11 +1188,11 @@ init.guess <- c(mean(data), sd(data)) # initial guess
 <<norm_5-disp, fig.height=3.5, fig.width=5, fig.cap="Dispersion between level of hydrocarbonates \\(\\times\\) purity (\\%).">>=
 # <r code> -----
 data <- data.frame(
-  x = c(.99, 1.02, 1.15, 1.29, 1.46, 1.36, .87, 1.23, 1.55, 1.4,
-        1.19, 1.15, .98, 1.01, 1.11, 1.2, 1.26, 1.32, 1.43, .95),
-  y = c(99.01, 89.05, 91.43, 93.74, 96.73, 94.45, 87.59, 91.77, 99.42,
-        93.65, 93.54, 92.52, 90.56, 89.54, 89.85, 90.39, 93.25, 93.41,
-        94.98, 87.33)
+    x = c(.99, 1.02, 1.15, 1.29, 1.46, 1.36, .87, 1.23, 1.55, 1.4,
+          1.19, 1.15, .98, 1.01, 1.11, 1.2, 1.26, 1.32, 1.43, .95),
+    y = c(99.01, 89.05, 91.43, 93.74, 96.73, 94.45, 87.59, 91.77, 99.42,
+          93.65, 93.54, 92.52, 90.56, 89.54, 89.85, 90.39, 93.25, 93.41,
+          94.98, 87.33)
 )
 par(mar = c(4, 4, 2, 2) + .1)
 plot(y ~ x, data,
@@ -1220,13 +1220,13 @@ plot(y ~ x, data,
 # <r code> -----
 # likelihood -------------------------------------------------------------
 lkl.model.norm <- function(b0, b1, sigma, y, x, logsigma = FALSE) {
-  ## if logsigma = TRUE, we do the parametrization using log(sigma)
-  if (logsigma) sigma <- exp(sigma)
-  mu <- b0 + b1 * x
-  lkl <- sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))
-  # we return the negative of the log-likelihood,
-  # since the optim routine performs a minimization
-  return(-lkl)
+    ## if logsigma = TRUE, we do the parametrization using log(sigma)
+    if (logsigma) sigma <- exp(sigma)
+    mu <- b0 + b1 * x
+    lkl <- sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))
+    # we return the negative of the log-likelihood,
+    # since the optim routine performs a minimization
+    return(-lkl)
 }
 (par.est <- bbmle::mle2(lkl.model.norm,
                         start = list(b0 = min(data$y),
@@ -1253,13 +1253,121 @@ par.est@coef[[3]]**2
          \(\beta_{0}\) e \(\beta_{1}\):
     \begin{enumerate}[i.]
      \item considerando \(\sigma\) fixo com valor igual \`{a} sua estimativa.
+<<dev.model.norm, fig.height=4, fig.width=6, fig.cap="Deviance of (\\(\\beta_{0}, \\beta_{1}\\)) with \\(\\sigma\\) fixed in it's estimative, for a Gaussian linear model.">>=
+# <r code> -----
+# deviance -----------------------------------------------------------
+dev.model.norm <- function(beta, theta.est, ...) {
+    b0 <- beta[1] ; b1 <- beta[2]
+    b0.est <- theta.est[[1]] ; b1.est <- theta.est[[2]]
+    sigma.est <- theta.est[[3]]
+    lkl.grid <- lkl.model.norm(b0, b1, sigma.est, ...)
+    lkl.est <- lkl.model.norm(b0.est, b1.est, sigma.est, ...)
+    lkl.diff <- lkl.grid - lkl.est
+    # remember: here we have the negative of the log-likelihoods,
+    # so the sign the different
+    return(2 * lkl.diff)
+}
+# deviance, vectorized version ---------------------------------------
+dev.model.norm.surf <- Vectorize(
+    function(a, b, ...) dev.model.norm(c(a, b), ...)
+)
+# deviance contour, plotting -----------------------------------------
+b0.grid <- seq(67.5, 88.5, length.out = 100)
+b1.grid <- seq(3.5, 21, length.out = 100)
+
+outer.grid <- outer(b0.grid, b1.grid, FUN = dev.model.norm.surf,
+                    theta.est = par.est@coef, y = data$y, x = data$x)
+
+contour.levels <- c(.99, .95, .9, .7, .5, .3, .1, .05)
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+contour(b0.grid, b1.grid, outer.grid,
+        levels = qchisq(contour.levels, df = 2),
+        labels = contour.levels,
+        xlab = expression(beta[0]), ylab = expression(beta[1]))
+# converting par.est@coef to a matricial object
+points(t(par.est@coef[1:2]), col = 2, pch = 19, cex = .75)
+# </r code> -----
+@
      \item obtendo a verossimilhan\c{c}a (conjunta - 2D) perfilhada em
            rela\c{c}\~{a}o a \(\sigma\).
+<<lkl.model.norm-profile, fig.height=3.5, fig.width=5, fig.cap="log-likelihood profile for \\(\\sigma\\), for a Gaussian linear model. In dashed, the respective MLE.">>=
+# <r code> -----
+# profile ------------------------------------------------------------
+sigma.grid <- seq(1.7, 3.5, length.out = 100)
+# with the optim routine we obtain three numbers: the estimates
+# of beta_0, beta_1, and the corresponding log-likelihood
+beta.perf <- matrix(0, nrow = length(sigma.grid), ncol = 3)
+library(bbmle)
+for (i in 1:length(sigma.grid)) {
+    beta.perf[i, ] <- unlist(
+        mle2(lkl.model.norm,
+             start = list(b0 = min(data$y), b1 = 1.5),
+             data = list(
+                 y = data$y, x = data$x, sigma = sigma.grid[i]),
+             method = "BFGS"
+        )@details[1:2]
+    )
+}
+par(mar = c(4, 4, 2, 2) + .1) # cosmetics
+plot(sigma.grid, -1 * beta.perf[ , 3], type = "l",
+     xlab = expression(sigma), ylab = "log-likelihood")
+abline(v = par.est@coef[[3]], lty = 2)
+# </r code> -----
+@
+           And how the \(\beta\)'s fluctuates across the grid of \(\sigma\)?
+<<results='markup'>>=
+# <r code> -----
+summary(beta.perf[ , 1]) # beta_0
+
+summary(beta.perf[ , 2]) # beta_1
+# </r code> -----
+@
+           Very few, as expected. Since the estimation of \(\beta\) doesn't
+           depend on \(\sigma\).
     \end{enumerate}
    \item Obtenha a verossimilhan\c{c}a perfilhada para os par\^{a}metros
          \(\beta_{0}\) e \(\beta_{1}\) individualmente.
+<<lkl.model.norm-beta.profiles, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) for a Gaussian linear model. In dashed, MLE's.">>=
+# <r code> -----
+par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
+# beta_0 profile ---------------------------------------------------------
+b0.grid <- seq(67.5, 88.5, length.out = 100)
+# with the optim routine we obtain two numbers:
+# the estimate of beta_1 and the log-likelihood
+b0.perf <- matrix(0, nrow = length(b0.grid), ncol = 2)
+for (i in 1:length(b0.grid)) {
+    b0.perf[i, ] <- unlist(
+        mle2(lkl.model.norm, start = list(b1 = 1.5),
+             data = list(
+                 y = data$y, x = data$x,
+                 b0 = b0.grid[i], sigma = par.est@coef[[3]]),
+             method = "BFGS"
+        )@details[1:2])
+}
+plot(b0.grid, -1 * b0.perf[ , 2], type = "l",
+     xlab = expression(beta[0]), ylab = "log-likelihood")
+abline(v = par.est@coef[[1]], lty = 2)
+# beta_1 profile ---------------------------------------------------------
+b1.grid <- seq(3.5, 21, length.out = 100)
+# with the optim routine we obtain two numbers:
+# the estimate of beta_0 and the log-likelihood
+b1.perf <- matrix(0, nrow = length(b1.grid), ncol = 2)
+for (i in 1:length(b1.grid)) {
+    b1.perf[i, ] <- unlist(
+        mle2(lkl.model.norm, start = list(b0 = min(data$y)),
+             data = list(
+                 y = data$y, x = data$x,
+                 b1 = b1.grid[i], sigma = par.est@coef[[3]]),
+             method = "BFGS"
+        )@details[1:2])
+}
+plot(b1.grid, -1 * b1.perf[ , 2], type = "l",
+     xlab = expression(beta[1]), ylab = "log-likelihood")
+abline(v = par.est@coef[[2]], lty = 2)
+# </r code> -----
+@        
   \end{enumerate}
-  
+  \newpage
  \item Considere uma amostra de uma v.a. \(Y\) em que assume-se que
        \(Y_{i} \sim P(\lambda_{i})\) em que o parâmetro \(\lambda_{i}\) \'{e}
        descrito por uma fun\c{c}\~{a}o de uma vari\'{a}vel explicativa
