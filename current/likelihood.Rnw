@@ -55,7 +55,7 @@
 \renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\textit{#1}}
 \rfoot{\thepage} % puts the page number on the right side
 \pagestyle{fancy}
-\title{Exercises about likelihood}
+\title{SOME EXERCISES ABOUT LIKELIHOOD}
 \date{June, 2019}
 \author{Henrique Ap. Laureano\\
         \texttt{henriquelaureano@outlook.com} \(\wedge\)
@@ -97,13 +97,11 @@ opts_chunk$set(size='small'
 
 \section{Uniform distribution}
 
-\textbf{Seja \(X\) uma v.a. com distribui\c{c}\~{a}o uniforme
-        \(X \sim U(0, \theta)\).\\
-        Uma amostra aleat\'{o}ria forneceu os seguintes valores:
-        5,5; 3,2; 4;8, 5,3; 3,8 e 5,0. Obtenha a fun\c{c}\~{a}o de
-        verossimilhan\c{c}a e um (ou mais) intervalo(s) adequado(s)
-        especificando a forma de obten\c{c}\~{a}o.
-       }
+\textbf{Let \(X\) be a r.v. with uniform distribution \(X \sim U(0, \theta)\).\\
+        A random sample gave the following values: 5.5; 3.2; 4, 8, 5.3; 3.8 and
+        5.0. Obtain the likelihood function and one or more appropriate
+        interval(s) specifying the form of obtaining.}
+
 <<>>=
 # <r code> -----
 data <- c(5.5, 3.2, 4.8, 5.3, 3.8, 5)
@@ -261,9 +259,10 @@ intervals.
 
 \section{Poisson distribution}
 
-\textbf{Seja \(X\) uma v.a. de uma distribui\c{c}\~{a}o de Poisson
-        (\(X \sim P(\lambda))\)) para a qual foi obtida a seguinte amostra
-        aleat\'{o}ria: (3, 1, 0, 2, 1, 1, 0, 0).}
+\textbf{Let \(X\) be a r.v. of a Poisson distribution (\(X \sim P(\lambda))\))
+        for which the following random sample was obtained:
+        (3, 1, 0, 2, 1, 1, 0, 0).}
+
 <<>>=
 # <r code> -----
 data <- c(3, 1, 0, 2, 1, 1, 0, 0)
@@ -271,9 +270,8 @@ data <- c(3, 1, 0, 2, 1, 1, 0, 0)
 @
 
 \begin{enumerate}[(a)]
- \item \textbf{Obtenha a fun\c{c}\~{a}o de verossimilhan\c{c}a, sua
-               aproxima\c{c}\~{a}o quadr\'{a}tica e intervalos para
-               \(\lambda\).}
+ \item \textbf{Obtain the likelihood function, its quadratic approximation and
+               intervals for \(\lambda\).}
 
 The likelihood and the log-likelihood of a Poisson(\(\lambda\)) is
 
@@ -418,7 +416,7 @@ in the same point that the probability-based interval cuts the (log-)likelihood.
 Thus, as more regular the likelihood, better will be the fit of the
 approximation and more reliable will be the Wald interval.
                  
-\item \textbf{Repita a quest\~{a}o anterior para a reparametriza\c{c}\~{a}o
+\item \textbf{Repeat the previous question for reparametrization
               \(\theta = \log (\lambda)\).}
          
 By the invariance property of the MLE we have
@@ -515,11 +513,10 @@ With the parametrization \(\theta = \log \lambda\) the two intervals are closer
 than the ones obtained for \(\lambda\). i.e., for \(\theta\) (with the use of
 the \(\log\)) we get a more regular likelihood.
 
-\item \textbf{Obtenha ainda (por pelo menos dois m\'{e}todos diferentes)
-              intervalos de confian\c{c}a para o par\^{a}metro \(\lambda\) a
-              partir da fun\c{c}\~{a}o de verossimilhan\c{c}a (aproximada ou
-              n\~{a}o) de \(\theta\).}
-         
+\item \textbf{Also obtain (by at least two different methods) confidence
+              intervals for the parameter \(\lambda\) from the likelihood
+              function (approximate or not) of \(\theta\).}
+
 <<poisson-c, fig.height=3.275, fig.width=5, fig.cap="log-likelihood function and quadratic approximation of \\(\\theta\\), and MLE of \\(\\lambda\\) in Poisson(\\(\\lambda = e^{\\theta}\\)) based on \\texttt{data}. In dashed, 95\\% confidence intervals for \\(\\lambda\\).">>=
 # <r code> -----
 # likelihood -------------------------------------------------------------
@@ -560,17 +557,15 @@ quadratic approximation of the likelihood.
 
 \section{Hypergeometric distribution}
 
-\textbf{A fim de se obter uma estimativa do p\'{u}blico de um jogo sem utilizar
-        dados de venda de ingressos ou registros das roletas do est\'{a}dio,
-        foram distribu\'{i}das camisas especiais para 300 torcedores sob
-        condi\c{c}\~{a}o que estes a utilizassem durante um jogo. Durante o jogo
-        foram selecionados ao acaso 250 torcedores verificando-se 12 destes
-        possuiam a camisa.}
+\textbf{In order to obtain an audience estimate of a game without using ticket
+        sales data or stadium roulette records, special shirts were distributed
+        to 300 supporters on condition that they were used during a game. During
+        the game 250 fans were randomly selected and 12 of them had the shirt.}
 
 \begin{enumerate}[a)]
- \item \textbf{Obtenha a fun\c{c}\~{a}o de verossimilhan\c{c}a para o n\'{u}mero
-               total de torcedores.}
-         
+ \item \textbf{Obtain the likelihood function for the total number of
+               supporters.}
+
 We have here a random variable, let's say, \(X\), representing the number of
 observed successes, \(k\). Here an observed success is select a fan using a
 special shirt. So, we have
@@ -663,8 +658,8 @@ curvature. Around that point we see a very small variation in the likelihood,
 \(0.3\), for a range of \(3000\) in \(N\). This shows how smooth is the
 curvature around the MLE in a large region.
 
-\item \textbf{Obtenha a estimativa pontual e a intervalar, esta \'{u}ltima por
-              pelo menos dois m\'{e}todos diferentes.}
+\item \textbf{Get the point estimate and the interval estimate, the latter by at
+              least two different methods.}
          
 <<>>=
 # <r code> -----
@@ -769,8 +764,8 @@ number of fans in the game. With the wald interval (quadratic approximation) we
 obtain \((\Sexpr{paste(round(wald.95, 0))})\) as a 95\% interval.
 \textit{A considerable difference}.
          
-\item \textbf{Repita e compare os resultados caso fossem 500 camisas e 20 com
-              camisas dentre os 250.}
+\item \textbf{Repeat and compare the results if there were 500 shirts and 20
+              with shirts out of the 250.}
          
 The procedure here is exactly the same.
          
@@ -896,9 +891,9 @@ The likelihood shape is the same that before, just with a vertical increase.
 Before the maximum log-likelihood estimate was around 318, now is around 382.
 \end{enumerate}
 
-\section{Normal distribution with interval data}
+\section{Gaussian distribution with interval data}
 
-\textbf{Foram tomadas as seguintes observa\c{c}\~{o}es independentes de uma v.a.
+\textbf{The following independent observations were taken from one r.v.
         \(X \sim N(\mu, \sigma^{2})\).}
 
 \begin{itemize}
@@ -908,12 +903,12 @@ Before the maximum log-likelihood estimate was around 318, now is around 382.
 (data <- c(56.4, 54.2, 65.3, 49.2, 50.1, 56.9, 58.9, 62.5, 70, 61))
 # </r code> -----
 @
- \item \textbf{sabe-se que outras 5 observa\c{c}\~{o}es s\~{a}o menores que 50.}
- \item \textbf{sabe-se que outras 3 observa\c{c}\~{o}es s\~{a}o maiores que 65.}
+ \item \textbf{another 5 observations are known to be less than 50.}
+ \item \textbf{it is known that 3 other observations are greater than 65.}
 \end{itemize}
   
 \begin{enumerate}[(a)]
- \item \textbf{Escrever a fun\c{c}\~{a}o de verossimilhan\c{c}a.}
+ \item \textbf{Write the likelihood function.}
          
 The likelihood can be expressed as
          
@@ -949,7 +944,7 @@ lkl.norm <- function(par, xs, less.than, more.than, logsigma = FALSE) {
 # </r code> -----
 @
 
-\item \textbf{Obter as estimativas de m\'{a}xima verossimilhan\c{c}a.}
+\item \textbf{Obtain estimates of maximum likelihood.}
 
 <<>>=
 # <r code> -----
@@ -967,7 +962,7 @@ init.guess <- c(mean(data), sd(data))
 FYI: In the ten points sample we have \(\bar{x} = \Sexpr{round(mean(data), 3)}\)
 and \(s^{2} = \Sexpr{round(sd(data), 3)}\).
          
-\item \textbf{Obter as verossimilhan\c{c}as perfilhadas.}
+\item \textbf{Obtain profiles of likelihood.}
          
 First, we do the graph of the likelihood surface in the deviance scale, since
 this scale is much more convenient. This requires the value of the likelihood
@@ -1092,7 +1087,7 @@ abline(v = exp(par.est[2]), col = 2)
 # </r code> -----
 @
 
-\item \textbf{Obter os erro-padr\~{a}o das estimativas.}
+\item \textbf{Obtain the standard error estimates.}
          
 With the \texttt{optim} routine we obtain the hessian.
 <<>>=
@@ -1125,14 +1120,13 @@ The standard errors, se, are
 \]
 \end{enumerate}
 
-\section{Normal regression}
+\section{Gaussian regression}
 
-\textbf{Considere os dados da tabela a seguir (adaptados/modificados de
-        Montgomery \& Runger, 1994) aos quais deseja-se ajustar um modelo de
-        regress\~{a}o linear simples relacionando a vari\'{a}vel resposta \(Y\)
-        (pureza em \%) a uma vari\'{a}vel explicativa \(X\) (n\'{i}vel de
-        hidrocarbonetos).}
-       
+\textbf{Consider the following data table (adapted/modified from Montgomery \&
+        Runger, 1994) to which we wish to fit a simple linear regression model
+        by relating the response variable \(Y\) (purity in \%) to an explanatory
+        variable \(X\) (hydrocarbon level).}
+
 \begin{center}
  \begin{tabular}[H]{c|*{10}{c}}
   \hline
@@ -1150,9 +1144,9 @@ The standard errors, se, are
 \newpage
 \begin{enumerate}[(a)]
 
-\item \textbf{Encontre a fun\c{c}\~{a}o de verossimilhan\c{c}a.}
+\item \textbf{Find the likelihood function.}
 
-<<norm_5-disp, fig.height=3.5, fig.width=5, fig.cap="Dispersion between level of hydrocarbonates \\(\\times\\) purity (\\%).">>=
+<<norm_5-disp, fig.height=3.5, fig.width=5, fig.cap="Dispersion between hydrocarbon level \\(\\times\\) purity (\\%).">>=
 # <r code> -----
 data <- data.frame(
     x = c(.99, 1.02, 1.15, 1.29, 1.46, 1.36, .87, 1.23, 1.55, 1.4,
@@ -1163,7 +1157,7 @@ data <- data.frame(
 )
 par(mar = c(4, 4, 2, 2) + .1)
 plot(y ~ x, data,
-     xlab = "level of hydrocarbonates", ylab = expression("purity"~("%")))
+     xlab = "hydrocarbon level", ylab = expression("purity"~("%")))
 # </r code> -----
 @
 
@@ -1181,7 +1175,7 @@ were \(\theta = [\beta_{0}~\beta_{1}~\sigma]^{\top}\),
 \(\beta = [\beta_{0}~\beta_{1}]^{\top}\), and
 \(\mu_{i} = \beta_{0} + \beta_{1} x_{i}\).
 
-\item \textbf{Encontre as estimativas de m\'{a}xima verossimilhan\c{c}a.}
+\item \textbf{Find the estimates of maximum likelihood.}
 
 <<>>=
 # <r code> -----
@@ -1220,13 +1214,12 @@ par.est@coef[[3]]**2
 
 Checked, \(\checkmark\).
          
-\item \textbf{Obtenha a verossimilhan\c{c}a conjunta para os par\^{a}metros
-              \(\beta_{0}\) e \(\beta_{1}\):}
+\item \textbf{Obtain the joint likelihood for the parameters \(\beta_{0}\) and
+              \(\beta_{1}\):}
 
 \begin{enumerate}[i.]
 
-\item \textbf{considerando \(\sigma\) fixo com valor igual \`{a} sua
-              estimativa.}
+\item \textbf{considering \(\sigma\) fixed with value equal to its estimate.}
 
 <<dev.model.norm, fig.height=4, fig.width=6, fig.cap="Deviance of (\\(\\beta_{0}, \\beta_{1}\\)) with \\(\\sigma\\) fixed in it's estimative, for a Gaussian regression.">>=
 # <r code> -----
@@ -1275,8 +1268,8 @@ points(t(par.est@coef[1:2]), col = 2, pch = 19, cex = .75)
 # </r code> -----
 @
 
-\item \textbf{obtendo a verossimilhan\c{c}a (conjunta - 2D) perfilhada em
-              rela\c{c}\~{a}o a \(\sigma\).}
+\item \textbf{obtaining the profile likelihood (joint - 2D) with respect to 
+              \(\sigma\).}
 
 <<lkl.model.norm-profile, fig.height=3.5, fig.width=5, fig.cap="log-likelihood profile for \\(\\sigma\\), for a Gaussian regression. In dashed, the respective MLE.">>=
 # <r code> -----
@@ -1314,9 +1307,10 @@ summary(beta.perf[ , 2]) # beta_1
 
 Very few, as expected. Since the estimation of \(\beta\) doesn't depend on
 \(\sigma\).
+\end{enumerate}
 
-\item \textbf{Obtenha a verossimilhan\c{c}a perfilhada para os par\^{a}metros
-              \(\beta_{0}\) e \(\beta_{1}\) individualmente.}
+\item \textbf{Obtain the profile likelihood for the parameters \(\beta_{0}\) and
+              \(\beta_{1}\) individually.}
 
 <<lkl.model.norm-beta.profiles, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) for a Gaussian regression. In dashed, MLE's.">>=
 # <r code> -----
@@ -1357,21 +1351,22 @@ abline(v = par.est@coef[[2]], lty = 2)
 
 \section{Poisson regression}
 
- \item Considere uma amostra de uma v.a. \(Y\) em que assume-se que
-       \(Y_{i} \sim P(\lambda_{i})\) em que o parâmetro \(\lambda_{i}\) \'{e}
-       descrito por uma fun\c{c}\~{a}o de uma vari\'{a}vel explicativa
-       \(\log (\lambda_{i}) = \beta_{0} + \beta_{1} x_{i}\) com valores
-       conhecidos de \(x_{i}\).\\
-       Dados simulados com (\(\beta_{0} = 2, \beta_{1} = 0.5\)) s\~{a}o
-       mostrados a seguir.
+\textbf{Consider a sample of a r.v. \(Y\) where it is assumed that
+        \(Y_{i} \sim P(\lambda_{i})\) where the parameter \(\lambda_{i}\) is
+        described by a function of an explanatory variable
+        \(\log (\lambda_{i}) = \beta_{0} + \beta_{1} x_{i}\) with values known
+        from \(x_{i}\).\\
+        Simulated data with (\(\beta_{0} = 2, \beta_{1} = 0.5\)) are shown
+        below.}
        
-       \begin{center}
-        \begin{tabular}[H]{c|*{10}{c}}
-         Y & 10 & 15 & 11 & 37 & 70 & 19 & 12 & 12 & 13 & 88\\
-         \hline
-         X & 1.7 & 1.5 & 0.5 & 2.8 & 4.4 & 1.8 & 0.4 & 0.7 & 1.3 & 5.1\\
-        \end{tabular}
-       \end{center}
+\begin{center}
+ \begin{tabular}[H]{c|*{10}{c}}
+  Y & 10 & 15 & 11 & 37 & 70 & 19 & 12 & 12 & 13 & 88\\
+  \hline
+  X & 1.7 & 1.5 & 0.5 & 2.8 & 4.4 & 1.8 & 0.4 & 0.7 & 1.3 & 5.1\\
+ \end{tabular}
+\end{center}
+
 <<model_poi-disp, fig.height=3.5, fig.width=5, fig.cap="Dispersion between the variables \\texttt{Y} and \\texttt{X}.">>=
 # <r code> -----
 data <- data.frame(y = c(10, 15, 11, 37, 70, 19, 12, 12, 13, 88),
@@ -1379,19 +1374,18 @@ data <- data.frame(y = c(10, 15, 11, 37, 70, 19, 12, 12, 13, 88),
 par(mar = c(4, 4, 2, 2) + .1) ; plot(y ~ x, data)
 # </r code> -----
 @
-  \begin{enumerate}[(a)]
-   \item Obtenha o gr\'{a}fico da fun\c{c}\~{a}o de verossimilhan\c{c}a
-         indicando a posi\c{c}\~{a}o dos valores verdadeiros dos
-         par\^{a}metros.
-         
-         Solution:
 
-         The log-likelihood is given by
+\begin{enumerate}[(a)]
 
-         \[ l(\lambda) = -n \lambda + \log \lambda \sum_{i=1}^{n} y_{i}
-                         - \sum_{i=1}^{n} \log y_{i}!~, \quad
-            \lambda_{i} = \exp \{\beta_{0} + \beta_{1} x_{i}\}.
-         \]
+\item \textbf{Obtain the graph of the likelihood function indicating the
+              position of the true values of the parameters.}
+
+The log-likelihood is given by
+
+\[ l(\lambda) = -n \lambda + \log \lambda \sum_{i=1}^{n} y_{i}
+                           - \sum_{i=1}^{n} \log y_{i}!~, \quad
+  \lambda_{i} = \exp \{\beta_{0} + \beta_{1} x_{i}\}.
+\]
 
 <<dev.model.poi, fig.height=4, fig.width=6, fig.cap="Deviance of (\\(\\beta_{0}, \\beta_{1}\\)) for a Poisson regression based on \\texttt{data}.">>=
 # <r code> -----
@@ -1442,9 +1436,8 @@ contour(b0.grid, b1.grid, outer.grid,
 points(c(2, .5), col = 2, pch = 19, cex = .75)
 # </r code> -----
 @
-   \item Obtenha os perfis de verossimilhan\c{c}a dos par\^{a}metros.
-   
-         Solution:
+
+\item \textbf{Obtain the likelihood profiles of the parameters.}
 
 <<lkl.model.poi-profiles, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) for a Poisson regression. In dashed, the MLE's.">>=
 # <r code> -----
@@ -1456,7 +1449,8 @@ pl.b0 <- function(grid) {
     n <- length(grid)
     p.lkl <- numeric(n)
     for (i in 1:n) {
-        p.lkl[i] <- mle2(lkl.model.poi, start = list(b1 = .5),
+        p.lkl[i] <- mle2(lkl.model.poi,
+                         start = list(b1 = .5),
                          data = list(data = data, b0 = grid[i]),
                          method = "BFGS"
         )@details[[2]]
@@ -1495,19 +1489,19 @@ plot(b1.grid[ind], p.b1[ind], type = "l",
 abline(v = .5, lty = 2)
 # </r code> -----
 @
-   \item Obtenha estimativas.
-   
-         Solution:
+
+\item \textbf{Get estimates.}
 
 <<>>=
 # <r code> -----
-(par.est <- mle2(lkl.model.poi, start = list(b0 = min(data$y), b1 = 0),
-                 data = list(data = data), method = "BFGS"))
+(par.est <- mle2(lkl.model.poi,
+                 start = list(b0 = min(data$y), b1 = 0),
+                 data = list(data = data),
+                 method = "BFGS"))
 # </r code> -----
 @
-   \item Obtenha intervalos (use diferentes m\'{e}todos).
-   
-         Solution:
+
+\item \textbf{Get intervals (use different methods).}
          
 <<lkl.model.poi-intervals, fig.height=5.5, fig.cap="log-likelihood profiles, in black, for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) for a Poisson regression with some intervals. In black dashed, the original parameter value. In red dashed, the MLE. The blue curve is a quadratic approximation for the log-likelihood profile, with the blue arrows corresponding to its 95\\% interval. The red arrows correspond to the 95\\% interval based in a cut in the likelihood. The green arrows correspond to the 95\\% interval based in the \\texttt{mle2} output.">>=
 # <r code> -----
@@ -1530,8 +1524,7 @@ ic.b0.poi <- function(grid, ...) {
     lkl.perf <- unlist(
         mle2(lkl.model.poi,
              start = list(b1 = 0),
-             data = list(data = data, b0 = grid),
-             method = "BFGS"
+             data = list(data = data, b0 = grid), method = "BFGS"
         )@details[2])
     -1 * lkl.perf - cut
 }
@@ -1593,8 +1586,7 @@ ic.b1.poi <- function(grid, ...) {
     lkl.perf <- unlist(
         mle2(lkl.model.poi,
              start = list(b0 = min(data$y)),
-             data = list(data = data, b1 = grid),
-             method = "BFGS"
+             data = list(data = data, b1 = grid), method = "BFGS"
         )@details[2])
     -1 * lkl.perf - cut
 }
@@ -1643,40 +1635,54 @@ arrows(x0 = mle2.95.b1, y0 = rep(cut, 2),
        lty = 2, length = .1, col = 3)
 # </r code> -----
 @
-         By the amount of code provided in this question, we can see that isn't
-         so straightforward to obtain intervals and quadratic approximations of
-         profiled likelihoods of parameters.
+
+By the amount of code provided in this question, we can see that isn't so
+straightforward to obtain intervals and quadratic approximations of profiled
+likelihoods of parameters.
          
-         A very nice and interesting thing that we can see in
-         Figure~\ref{fig:lkl.model.poi-intervals} is how all the three obtained
-         intervals match. A brief, but enough, description is already given
-         in the Figure caption, and for more details, we have the code above.
+A very nice and interesting thing that we can see in
+Figure~\ref{fig:lkl.model.poi-intervals} is how all the three obtained
+intervals match. A brief, but enough, description is already given in the Figure
+caption, and for more details, we have the code above.
          
-   \item Compare os resultados anteriores com os fornecidos pela função
-         \texttt{glm()} e discuta os achados.
-         
-         Solution:
+\item \textbf{Compare the previous results with those provided by the
+              \texttt{glm()} function and discuss the findings.}
          
 <<results='markup'>>=
 # <r code> -----
 # fitting the model via glm() --------------------------------------------
 model.glm <- glm(y ~ x, data, family = poisson)
 # parameter estimates ----------------------------------------------------
-model.glm$coef # at three decimal cases, the estimates are equal
+model.glm$coef
+# at three decimal cases, the estimates are equal
 round(model.glm$coef, 3) == round(par.est@coef, 3)
 # maximum log-likelihood -------------------------------------------------
-logLik(model.glm) # at eight decimal cases, the max. log-likes are equal
+logLik(model.glm)
+# at eight decimal cases, the max. log-likes are equal
 round(logLik(model.glm), 8) == round(par.est@details[[2]] * (-1), 8)
 # standard erros ---------------------------------------------------------
+summary(model.glm)$coef[ , 2]
 ## at six decimal cases, the standard errors are equal
 round(
   summary(model.glm)$coef[ , 2], 6) == round(
     summary(par.est)@coef[ , 2], 6)
 # </r code> -----
 @
-         
-  \end{enumerate}
 \end{enumerate}
+
+\noindent
+\textit{As a general reference guide for all this material,\\
+        I read and used (in portuguese):} \url{www.leg.ufpr.br/mcie}
+<<eval=FALSE>>=
+@conference{mcie,
+  author    = {Wagner Hugo Bonat and Paulo Justiniano RIbeiro Jr and
+               Elias Teixeira Krainski and Walmes Marques Zeviani},
+  title     = {Computational Methods in Statistical Inference},
+  year      = {2012},
+  publisher = {20th National Symposium on Probability and Statistics (SINAPE)},
+  address   = {Jo\~{a}o Pessoa - PB - Brazil},
+}
+@
 
 \vfill
 \noindent
