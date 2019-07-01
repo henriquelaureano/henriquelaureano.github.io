@@ -76,7 +76,7 @@
 # <r code> -----
 library(knitr)
 
-tema <- knit_theme$get("clarity") # acid
+tema <- knit_theme$get("edit-emacs") # acid or clarity
 
 knit_theme$set(tema)
 
@@ -116,8 +116,8 @@ The likelihood of a \({\rm Uniform}(0, \theta)\) is
 \end{align*}
 and equal to zero otherwise.
 
-Given the data above, we get \(x_{(n)} = \Sexpr{max(data)}\) and the likelihood
-is shown in Figure~\ref{fig:uniform}, together with some intervals.
+Given the data above, we get \(x_{(n)} = \Sexpr{max(data)}\) and the likelihood is
+shown in Figure~\ref{fig:uniform}, together with some intervals.
 
 <<uniform, fig.height=3.5, fig.cap=paste0("Likelihood function of \\(\\theta\\) in Uniform(0, \\(\\theta\\)) based on \\(x_{(6)}\\) = ", max(data), ". In the left, likelihood intervals at 15\\% (dashed line) and 4\\% (dotted line) cutoff. In the right, likelihood intervals at 5\\% (dashed line) and 1\\% (dotted line) cutoff. These cutoffs correspond, in both sides, to a 95\\% and 99\\% confidence interval, respectively.")>>=
 # <r code> -----
@@ -137,7 +137,7 @@ par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
 # plotting the normalized likelihood function to have unit maximum 
 plot(theta.seq, lklseq.unif/max(lklseq.unif), type = "l",
      xlab = expression(theta), ylab = "Likelihood")
-# probability-based interval ------------------------------------------------
+# probability-based interval -----------------------------------------------------
 # cutoff's corresponding to a 95\% and 99\% confidence interval for the mean 
 cuts <- c(.15, .04) * lkl.unif(max(data), data) / max(lklseq.unif)
 abline(h = cuts, lty = 2:3)
@@ -154,7 +154,7 @@ abline(v = ic.95.prob, lty = 2) ; abline(v = ic.99.prob, lty = 3)
 
 plot(theta.seq, lklseq.unif/max(lklseq.unif), type = "l",
      xlab = expression(theta), ylab = "Likelihood")
-# pure likelihood interval --------------------------------------------------
+# pure likelihood interval -------------------------------------------------------
 # cutoff's corresponding to a 95\% and 99\% confidence interval for the mean 
 cuts <- c(.05, .01) * lkl.unif(max(data), data) / max(lklseq.unif)
 abline(h = cuts, lty = 2:3)
@@ -168,16 +168,16 @@ abline(v = ic.95.pure, lty = 2) ; abline(v = ic.99.pure, lty = 3)
 @
 
 In both graphs of Figure~\ref{fig:uniform} we have two confidence intervals for
-\(\theta\), one corresponding to a 95\% confidence interval (dashed line) and
-one corresponding to a 99\% confidence interval for the mean (dotted line). In
-the left we have a probability-based likelihood interval, in the right we have a
-pure likelihood interval.
+\(\theta\), one corresponding to a 95\% confidence interval (dashed line) and one
+corresponding to a 99\% confidence interval for the mean (dotted line). In the
+left we have a probability-based likelihood interval, in the right we have a pure
+likelihood interval.
 
-The left ones are bad intervals, since they're based in a large-sample theor
-that results in an exact interval for the Gaussian case, in a good approximation
-for a reasonably regular case, and as we can see by the figure... here we
-doesn't have a regular likelihood (the likelihood isn't well approximated by a
-quadratic function), thus, here this interval should not be so good.
+The left ones are bad intervals, since they're based in a large-sample theory that
+results in an exact interval for the Gaussian case, in a good approximation for a
+reasonably regular case, and as we can see by the figure... here we doesn't have a
+regular likelihood (the likelihood isn't well approximated by a quadratic
+function), thus, here this interval should not be so good.
       
 \begin{description}
  \item[Explaining better how we arrived in these intervals:]
@@ -196,8 +196,8 @@ quadratic function), thus, here this interval should not be so good.
     
   \[
    {\rm Pr}\left\{\frac{L(\theta)}{L(\hat{\theta})} > c\right\} =
-   {\rm Pr}\left\{2 \log \frac{L(\theta)}{L(\hat{\theta})} < -2 \log c
-           \right\} = {\rm Pr}\{\chi_{1}^{2} < -2 \log c\}.
+   {\rm Pr}\left\{2 \log \frac{L(\theta)}{L(\hat{\theta})} < -2 \log c \right\}
+   = {\rm Pr}\{\chi_{1}^{2} < -2 \log c\}.
   \]
       
   So, if for some \(0 < \alpha < 1\) we choose a cutoff
@@ -212,8 +212,8 @@ quadratic function), thus, here this interval should not be so good.
 \end{description}
 
 Having the cutoff values we need now to find the interval values, i.e., in which
-points the cutoff horizontal line cuts the likelihood. For this purpose we use
-the function \texttt{rootSolve::uniroot.all}.
+points the cutoff horizontal line cuts the likelihood.\\
+For this purpose we use the function \texttt{rootSolve::uniroot.all}.
 
 A likelihood interval at 15\% and 4\% cutoff for \(\theta\) are
 (\Sexpr{paste(round(ic.95.prob, 3), collapse = ", ")}) and
@@ -313,18 +313,17 @@ Doing a quadratic approximation (Taylor expansion of second order) in
          
 A graph of the quadratic approximation of the Poisson log-likelihood is provided
 in red in Figure~\ref{fig:poisson}. There we can see how good is the
-approximation around the maximum likelihood estimator (MLE). Here the sample
-size is very small, the idea is that as the sample size increase the quality, in
-this case the range, of the approximation also increase. This should happen
-because as the sample size increase the Poisson likelihood should be more
-symmetric.
+approximation around the maximum likelihood estimator (MLE). Here the sample size
+is very small, the idea is that as the sample size increase the quality, in this
+case the range, of the approximation also increase. This should happen because as
+the sample size increase the Poisson likelihood should be more symmetric.
          
 In the topright graph of Figure~\ref{fig:poisson} we have two intervals for 
 \(\lambda\).
          
 <<poisson, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(\\lambda\\) in Poisson(\\(\\lambda\\)) based on \\texttt{data}. In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(\\lambda\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood -----------------------------------------------------------------
 lkl.poi <- function(lambda, data) {
     n <- length(data)
     # log-likelihood ignoring irrelevant constant terms
@@ -339,7 +338,7 @@ plot(lambda.seq, lklseq.poi, type = "l",
      xlab = expression(lambda), ylab = "log-likelihood")
 lambda.est <- mean(data) # MLE
 abline(v = lambda.est, lty = 3, col = 4)
-# quadratic approximation ------------------------------------------------
+# quadratic approximation ----------------------------------------------------
 quadprox.poi <- function(lambda, lambda.est, data) {
     n <- length(data)
     obs.info <- n / lambda.est # observed information
@@ -348,12 +347,12 @@ quadprox.poi <- function(lambda, lambda.est, data) {
 curve(quadprox.poi(x, lambda.est, data), col = 2, add = TRUE)
 legend(2.4, -6.25, c("log-like", "Quadratic\napprox.", "MLE"),
        col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
-# intervals for lambda ---------------------------------------------------
+# intervals for lambda -------------------------------------------------------
 plot(lambda.seq, lklseq.poi, type = "l",
      xlab = expression(lambda), ylab = "log-likelihood")
 curve(quadprox.poi(x, lambda.est, data), col = 2, add = TRUE)
 abline(v = lambda.est, col = 4, lty = 3)
-## probability-based interval --------------------------------------------
+## probability-based interval ------------------------------------------------
 # cutoff's corresponding to a 95\% confidence interval for the mean
 cut <- log(.15) + lkl.poi(lambda.est, data) ; abline(h = cut, lty = 2)
 ic.lkl.poi <- function(lambda, cut, ...) { lkl.poi(lambda, ...) - cut }
@@ -361,14 +360,14 @@ ic.95.prob <- rootSolve::uniroot.all(ic.lkl.poi, range(lambda.seq),
                                      data = data, cut = cut)
 arrows(x0 = ic.95.prob, y0 = rep(cut, 2),
        x1 = ic.95.prob, y1 = rep(-25, 2), lty = 2, length = .1)
-## wald confidence interval  ---------------------------------------------
+## wald confidence interval  -------------------------------------------------
 cut <- log(.15) + quadprox.poi(lambda.est, lambda.est, data)
 abline(h = cut, lty = 2, col = 2)
 se.lambda.est <- sqrt(lambda.est / length(data))
 wald.95 <- lambda.est + qnorm(c(.025, .975)) * se.lambda.est
 arrows(x0 = wald.95, y0 = rep(cut, 2),
        x1 = wald.95, y1 = rep(-25, 2), lty = 2, length = .1, col = 2)
-# a better look in the approximation around the MLE ----------------------
+# a better look in the approximation around the MLE --------------------------
 lambda.seq <- seq(.8, 1.2, length.out = 25)
 plot(lambda.seq, lkl.poi(lambda.seq, data), type = "l",
      xlab = expression(lambda), ylab = "log-likelihood")
@@ -446,7 +445,7 @@ From this we can take the observed information for the reparametrization
         letter.}
 <<poisson-reparametrization, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(\\theta\\) in Poisson(\\(\\lambda = e^{\\theta}\\)) based on \\texttt{data}. In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(\\theta\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood -----------------------------------------------------------------
 ## we can still use the lkl.poi function, but now we do
 ## lambda = exp(theta),
 ## with theta being a real rate (positive or negative)
@@ -458,7 +457,7 @@ plot(theta.seq, lklseq.poi, type = "l",
      xlab = expression(theta), ylab = "log-likelihood")
 theta.est <- log(mean(data)) # MLE
 abline(v = theta.est, lty = 3, col = 4)
-# quadratic approximation for the reparametrization ----------------------
+# quadratic approximation for the reparametrization --------------------------
 quadprox.poi.repa <- function(theta, theta.est, data) {
     obs.info <- sum(data) # observed information
     lkl.poi(exp(theta.est), data) - .5 * obs.info * (theta - theta.est)**2
@@ -467,12 +466,12 @@ curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
 
 legend(-2.15, -27.5, c("log-like", "Quadratic\napprox.", "MLE"),
        col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
-# intervals for lambda ---------------------------------------------------
+# intervals for lambda -------------------------------------------------------
 plot(theta.seq, lklseq.poi, type = "l",
      xlab = expression(theta), ylab = "log-likelihood")
 curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
 abline(v = theta.est, col = 4, lty = 3)
-## probability-based interval --------------------------------------------
+## probability-based interval ------------------------------------------------
 # cutoff's corresponding to a 95\% confidence interval for the mean
 cut <- log(.15) + lkl.poi(exp(theta.est), data) ; abline(h = cut, lty = 2)
 ic.lkl.poi <- function(theta, cut, ...) {
@@ -483,7 +482,7 @@ ic.95.prob <- rootSolve::uniroot.all(ic.lkl.poi, range(theta.seq),
                                      data = data, cut = cut)
 arrows(x0 = ic.95.prob, y0 = rep(cut, 2),
        x1 = ic.95.prob, y1 = rep(-43, 2), lty = 2, length = .1)
-## wald confidence interval  ---------------------------------------------
+## wald confidence interval  -------------------------------------------------
 cut <- log(.15) + quadprox.poi.repa(theta.est, theta.est, data)
 abline(h = cut, lty = 2, col = 2)
 
@@ -492,7 +491,7 @@ wald.95 <- theta.est + qnorm(c(.025, .975)) * se.theta.est
 
 arrows(x0 = wald.95, y0 = rep(cut, 2),
        x1 = wald.95, y1 = rep(-43, 2), lty = 2, length = .1, col = 2)
-# a better look in the approximation around the MLE ----------------------
+# a better look in the approximation around the MLE --------------------------
 theta.seq <- seq(-.75, .75, length.out = 25)
 plot(theta.seq, lkl.poi(exp(theta.seq), data), type = "l",
      xlab = expression(theta), ylab = "log-likelihood")
@@ -504,37 +503,37 @@ abline(v = theta.est, lty = 3, col = 4)
 We obtained here two intervals for \(\theta\). One based in a cut in the
 likelihood,
 \(\theta \in (\Sexpr{paste(round(ic.95.prob, 3), collapse = ", ")})\) - in black
-on the topright of Figure~\ref{fig:poisson-reparametrization}, and one based in
-a cut in the quadratic approximation of the likelihood,
-\(\theta \in (\Sexpr{paste(round(wald.95, 3), collapse = ", ")})\) - in red on
-the topright of Figure~\ref{fig:poisson-reparametrization}.
+on the topright of Figure~\ref{fig:poisson-reparametrization}, and one based in a
+cut in the quadratic approximation of the likelihood,
+\(\theta \in (\Sexpr{paste(round(wald.95, 3), collapse = ", ")})\) - in red on the
+topright of Figure~\ref{fig:poisson-reparametrization}.
 
 With the parametrization \(\theta = \log \lambda\) the two intervals are closer
-than the ones obtained for \(\lambda\). i.e., for \(\theta\) (with the use of
-the \(\log\)) we get a more regular likelihood.
+than the ones obtained for \(\lambda\). i.e., for \(\theta\) (with the use of the
+\(\log\)) we get a more regular likelihood.
 
-\item \textbf{Also obtain (by at least two different methods) confidence
-              intervals for the parameter \(\lambda\) from the likelihood
-              function (approximate or not) of \(\theta\).}
+\item \textbf{Also obtain (by at least two different methods) confidence intervals
+              for the parameter \(\lambda\) from the likelihood function
+              (approximate or not) of \(\theta\).}
 
 <<poisson-c, fig.height=3.275, fig.width=5, fig.cap="log-likelihood function and quadratic approximation of \\(\\theta\\), and MLE of \\(\\lambda\\) in Poisson(\\(\\lambda = e^{\\theta}\\)) based on \\texttt{data}. In dashed, 95\\% confidence intervals for \\(\\lambda\\).">>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood -----------------------------------------------------------------
 theta.seq <- seq(-2, 2, length.out = 100)
 lklseq.poi <- lkl.poi(exp(theta.seq), data)
 par(mar = c(4, 4, 2, 2) + .1) # cosmetics
 plot(theta.seq, lklseq.poi, type = "l",
      xlab = expression(theta), ylab = "log-likelihood")
 abline(v = lambda.est, lty = 3, col = 4)
-# quadratic approximation for the reparametrization ----------------------
+# quadratic approximation for the reparametrization --------------------------
 curve(quadprox.poi.repa(x, theta.est, data), col = 2, add = TRUE)
 legend(-2.15, -22.5, c("log-like", "Quadratic\napprox.", "MLE"),
        col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
-# intervals for lambda ---------------------------------------------------
-## probability-based interval --------------------------------------------
+# intervals for lambda -------------------------------------------------------
+## probability-based interval ------------------------------------------------
 arrows(x0 = exp(ic.95.prob), y0 = c(-9, -36.5),
        x1 = exp(ic.95.prob), y1 = rep(-43, 2), lty = 2, length = .1)
-## wald confidence interval  ---------------------------------------------
+## wald confidence interval  -------------------------------------------------
 arrows(x0 = exp(wald.95), y0 = c(-9, -24),
        x1 = exp(wald.95), y1 = rep(-43, 2), lty = 2, length = .1, col = 2)
 # </r code> -----
@@ -601,7 +600,7 @@ A plot of the likelihood is provided in Figure~\ref{fig:hypergeo-lkl}.
 
 <<hypergeo-lkl, fig.height=6.75, fig.cap="log-likelihood of \\(N\\) in Hypergeometric(N, K = 300, n = 250) based on \\(k = 12\\). In dashed, the MLE. Different ranges of \\(N\\) to have a better understanding of the likelihood behaviour.">>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood ------------------------------------------------------------------
 # always starting from N = 539
 lkl.hypergeo <- function(N) {
     N.init <- 539
@@ -663,7 +662,7 @@ curvature around the MLE in a large region.
          
 <<>>=
 # <r code> -----
-# point estimate ---------------------------------------------------------
+# point estimate --------------------------------------------------------------
 optimize(lkl.hypergeo, lower = 539, upper = 2e4, maximum = TRUE)
 # </r code> -----
 @
@@ -673,14 +672,14 @@ Using the \texttt{optimize} routine to do the optimization we obtain
 is practically equal to what the ML theory says,
 \(\hat{N} = \left\lfloor Kn/k \right\rfloor = 6250\).
          
-Next, we compute a quadratic approximation for the hypergeometric
-(log-)likelihood followed by two intervals, one based in the likelihood, and a
-wald interval based in the quadratic approximation. All this is presented in
+Next, we compute a quadratic approximation for the hypergeometric (log-)likelihood
+followed by two intervals, one based in the likelihood, and a wald interval based
+in the quadratic approximation. All this is presented in
 Figure~\ref{fig:hypergeo-intervals}.
          
 <<hypergeo-intervals, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(N\\) in Hypergeometric(N, K = 300, n = 250) based on \\(k = 12\\). In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(N\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
 # <r code> -----
-# quadratic approximation of the likelihood ------------------------------
+# quadratic approximation of the likelihood -----------------------------------
 hess <- numDeriv:::hessian(lkl.hypergeo, x = 6250)
 
 # quadratic approx.
@@ -707,7 +706,7 @@ legend(10500, 318.25,
        c("log-like", "Quadratic\napprox.", "MLE"),
        col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
 
-# intervals for N --------------------------------------------------------
+# intervals for N -------------------------------------------------------------
 # first, we plot again the likelihood and the quadratic approx.
 n.grid <- seq(2500, 12000, by = 20)
 
@@ -718,7 +717,7 @@ abline(v = 6250, lty = 3, col = 4)
 
 curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
 
-## probability-based interval --------------------------------------------
+## probability-based interval -------------------------------------------------
 # cutoff's corresponding to a 95\% confidence interval for N
 cut <- log(.15) + lkl.hypergeo(6250)
 
@@ -732,7 +731,7 @@ ic.95.prob <- rootSolve::uniroot.all(ic.lkl.hypergeo, range(n.grid))
 arrows(x0 = ic.95.prob, y0 = rep(cut, 2),
        x1 = ic.95.prob, y1 = rep(309.5, 2), lty = 2, length = .1)
 
-## wald confidence interval ---------------------------------------------
+## wald confidence interval --------------------------------------------------
 cut <- log(.15) + quadprox.hypergeo(N = 6250)
 
 abline(h = cut, lty = 2, col = 2)
@@ -743,7 +742,7 @@ wald.95 <- 6250 + qnorm(c(.025, .975)) * se.n.est
 arrows(x0 = wald.95, y0 = rep(cut, 2),
        x1 = wald.95, y1 = rep(309.5, 2), lty = 2, length = .1, col = 2)
 
-# a better look in the approximation around the MLE ----------------------
+# a better look in the approximation around the MLE ---------------------------
 n.grid <- seq(5000, 8000, by = 10)
 
 plot(n.grid, compute.lkl(n.grid), "l",
@@ -796,7 +795,7 @@ for \(N\).
 
 <<hypergeo-c, fig.height=5.5, fig.cap="log-likelihood function and MLE of \\(N\\) in Hypergeometric(N, K = 500, n = 250) based on \\(k = 20\\). In the topleft, a quadratic approximation in red. In the topright, two intervals for \\(N\\) - one based in the likelihood (in black) and one based in the quadratic approximation (in red). In the bottom we provide a better look in the quadratic approximation.">>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood ------------------------------------------------------------------
 # always starting from N = 731
 lkl.hypergeo <- function(N) {
     N.init <- 731
@@ -813,24 +812,24 @@ lkl.hypergeo <- function(N) {
     lkl <- sum(n1) + sum(n2) - sum(n3) - sum(n4)
     return(lkl)
 }
-# plotting ---------------------------------------------------------------
+# plotting --------------------------------------------------------------------
 par(mar = c(4, 4, 2, 2) + .1) # cosmetics
 
 layout(matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE),
        heights = c(1.5, 1)) # more cosmetics
-## likelihood ------------------------------------------------------------
+## likelihood -----------------------------------------------------------------
 n.grid <- seq(3000, 17000, by = 20)
 
 plot(n.grid, compute.lkl(n.grid), "l",
      xlab = "N", ylab = "log-likelihood")
 abline(v = 6250, lty = 3, col = 4)
-## quadratic approximation -----------------------------------------------
+## quadratic approximation ----------------------------------------------------
 hess <- numDeriv:::hessian(lkl.hypergeo, x = 6250)
 
 curve(quadprox.hypergeo(x), col = 2, add = TRUE)
 legend(10500, 382.5, c("log-like", "Quadratic\napprox.", "MLE"),
        col = c(1, 2, 4), lty = c(1, 1, 3), bty = "n")
-# intervals for N --------------------------------------------------------
+# intervals for N -------------------------------------------------------------
 # first, we plot again the likelihood and the quadratic approx.
 n.grid <- seq(2750, 11000, by = 20)
 
@@ -839,7 +838,7 @@ plot(n.grid, compute.lkl(n.grid), "l",
 abline(v = 6250, lty = 3, col = 4)
 
 curve(quadprox.hypergeo(N = x), col = 2, add = TRUE)
-## probability-based interval --------------------------------------------
+## probability-based interval -------------------------------------------------
 # cutoff's corresponding to a 95\% confidence interval for N
 cut <- log(.15) + lkl.hypergeo(6250)
 abline(h = cut, lty = 2)
@@ -848,7 +847,7 @@ ic.95.prob <- rootSolve::uniroot.all(ic.lkl.hypergeo, range(n.grid))
 
 arrows(x0 = ic.95.prob, y0 = rep(cut, 2),
        x1 = ic.95.prob, y1 = rep(370.25, 2), lty = 2, length = .1)
-## wald confidence interval ---------------------------------------------
+## wald confidence interval --------------------------------------------------
 cut <- log(.15) + quadprox.hypergeo(N = 6250)
 abline(h = cut, lty = 2, col = 2)
 
@@ -857,7 +856,7 @@ wald.95 <- 6250 + qnorm(c(.025, .975)) * se.n.est
 
 arrows(x0 = wald.95, y0 = rep(cut, 2),
        x1 = wald.95, y1 = rep(370.25, 2), lty = 2, length = .1, col = 2)
-# a better look in the approximation around the MLE ----------------------
+# a better look in the approximation around the MLE ---------------------------
 n.grid <- seq(5000, 7500, by = 10)
 
 plot(n.grid, compute.lkl(n.grid), "l",
@@ -876,8 +875,8 @@ The MLE is exactly the same that the one in the previous scenario, since
          
 \begin{itemize}
  \item Based in a cut in the likelihood, we obtain
-       \((\Sexpr{paste(round(ic.95.prob, 0))})\) as a 95\% interval for the
-       total number of fans in the game.
+       \((\Sexpr{paste(round(ic.95.prob, 0))})\) as a 95\% interval for the total
+       number of fans in the game.
 \item With the wald interval (quadratic approximation) we obtain
       \((\Sexpr{paste(round(wald.95, 0))})\) as a 95\% interval for the total
       number of fans.
@@ -929,7 +928,7 @@ The likelihood can be expressed as
 \end{align*}
 <<>>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood ------------------------------------------------------------------
 ## if logsigma = TRUE, we do the parametrization using log(sigma)
 lkl.norm <- function(par, xs, less.than, more.than, logsigma = FALSE) {
     if (logsigma) par[2] <- exp(par[2])
@@ -979,7 +978,7 @@ parametrizations: \(\sigma\) and \(\log \sigma\).
          
 <<deviances-norm, fig.height=3.5, fig.cap="Deviances of (\\(\\mu, \\sigma\\)) and (\\(\\mu, \\log \\sigma\\)) for a Gaussian sample made of interval data.">>=
 # <r code> -----
-# deviance ---------------------------------------------------------------
+# deviance --------------------------------------------------------------------
 dev.norm <- function(theta, est, ...) {
     # remember: here we have the negative of the log-likelihoods,
     # so the sign the different
@@ -988,7 +987,7 @@ dev.norm <- function(theta, est, ...) {
 dev.norm.surf <- Vectorize(function(x, y, ...) dev.norm(c(x, y), ...))
 
 par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
-## parametrization: sigma ------------------------------------------------
+## parametrization: sigma -----------------------------------------------------
 mu.grid <- seq(52, 63.75, length.out = 100)
 sigma.grid <- seq(3.25, 12.5, length.out = 100)
 
@@ -1005,7 +1004,7 @@ contour(mu.grid, sigma.grid, outer.grid,
 
 # converting par.est to a matricial object
 points(t(par.est), col = 2, pch = 19, cex = .75)
-## parametrization: log sigma --------------------------------------------
+## parametrization: log sigma -------------------------------------------------
 mu.grid <- seq(52, 63.75, length.out = 100)
 sigma.grid <- seq(1.225, 2.5, length.out = 100)
 
@@ -1029,22 +1028,21 @@ points(t(par.est), col = 2, pch = 19, cex = .75)
 
 From Figure~\ref{fig:deviances-norm} two things are important to mention. First,
 with interval data, the surface doesn't exhibit orthogonally between the
-parameters. Second, in the log parametrization of sigma we have better behavior
-in the surface.
+parameters. Second, in the log parametrization of sigma we have better behavior in
+the surface.
          
 Now, we obtain the likelihood profiles for each parameter. The profiles are
 presented in Figure~\ref{fig:profiles-norm}.
          
-To obtain the likelihood profile for \(\mu\), let's say, we need to create a
-grid of values of \(\mu\) and for each value of this grid find the value, let's
-say, \(\hat{\sigma}_{\mu}\) that maximizes the profile likelihood. We do this
-below for \(\mu\) and \(\sigma\), the results can be seen in
-Figure~\ref{fig:profiles-norm}.
+To obtain the likelihood profile for \(\mu\), let's say, we need to create a grid
+of values of \(\mu\) and for each value of this grid find the value, let's say,
+\(\hat{\sigma}_{\mu}\) that maximizes the profile likelihood. We do this below for
+\(\mu\) and \(\sigma\), the results can be seen in Figure~\ref{fig:profiles-norm}.
          
 <<profiles-norm, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\mu\\) and \\(\\sigma\\) for a Gaussian sample made of interval data. In red, the respective MLE's.">>=
 # <r code> -----
-# profiles ---------------------------------------------------------------
-## likelihood ------------------------------------------------------------
+# profiles --------------------------------------------------------------------
+## likelihood -----------------------------------------------------------------
 ## optimizing one parameter per time.
 ## to use the optimize routine (single parameter optimization)
 ## we need to split the par argument in two
@@ -1055,7 +1053,7 @@ lkl.norm.profiles <- function(mu, sigma, xs, less.than, more.than) {
     lkl <- l1 + l2 + l3
     return(lkl)}
 par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
-## mu --------------------------------------------------------------------
+## mu -------------------------------------------------------------------------
 mu.grid <- seq(45, 69.25, length.out = 100)
 # with the optimize routine we obtain two numbers:
 # the optimal sigma for the given value of mu.grid,
@@ -1070,7 +1068,7 @@ for (i in 1:length(mu.grid)) {
 plot(mu.grid, mu.perf[ , 2], type = "l",
      xlab = expression(mu), ylab = expression(l(mu[sigma])))
 abline(v = par.est[1], col = 2)
-## sigma -----------------------------------------------------------------
+## sigma ----------------------------------------------------------------------
 sigma.grid <- seq(3.25, 13.75, length.out = 100)
 sigma.perf <- matrix(0, nrow = length(sigma.grid), ncol = 2)
 
@@ -1123,8 +1121,8 @@ The standard errors, se, are
 \section{Gaussian regression}
 
 \textbf{Consider the following data table (adapted/modified from Montgomery \&
-        Runger, 1994) to which we wish to fit a simple linear regression model
-        by relating the response variable \(Y\) (purity in \%) to an explanatory
+        Runger, 1994) to which we wish to fit a simple linear regression model by
+        relating the response variable \(Y\) (purity in \%) to an explanatory
         variable \(X\) (hydrocarbon level).}
 
 \begin{center}
@@ -1179,7 +1177,7 @@ were \(\theta = [\beta_{0}~\beta_{1}~\sigma]^{\top}\),
 
 <<>>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood ------------------------------------------------------------------
 lkl.model.norm <- function(b0, b1, sigma, y, x, logsigma = FALSE) {
     ## if logsigma = TRUE, we do the parametrization using log(sigma)
     if (logsigma) sigma <- exp(sigma)
@@ -1223,7 +1221,7 @@ Checked, \(\checkmark\).
 
 <<dev.model.norm, fig.height=4, fig.width=6, fig.cap="Deviance of (\\(\\beta_{0}, \\beta_{1}\\)) with \\(\\sigma\\) fixed in it's estimative, for a Gaussian regression.">>=
 # <r code> -----
-# deviance -----------------------------------------------------------
+# deviance ----------------------------------------------------------------
 dev.model.norm <- function(beta, theta.est, ...) {
     b0 <- beta[1]
     b1 <- beta[2]
@@ -1238,12 +1236,12 @@ dev.model.norm <- function(beta, theta.est, ...) {
     return(2 * lkl.diff)
 }
 
-# deviance, vectorized version ---------------------------------------
+# deviance, vectorized version --------------------------------------------
 dev.model.norm.surf <- Vectorize(
     function(a, b, ...) dev.model.norm(c(a, b), ...)
 )
 
-# deviance contour, plotting -----------------------------------------
+# deviance contour, plotting ----------------------------------------------
 b0.grid <- seq(67.5, 88.5, length.out = 100)
 b1.grid <- seq(3.5, 21, length.out = 100)
 
@@ -1273,7 +1271,7 @@ points(t(par.est@coef[1:2]), col = 2, pch = 19, cex = .75)
 
 <<lkl.model.norm-profile, fig.height=3.5, fig.width=5, fig.cap="log-likelihood profile for \\(\\sigma\\), for a Gaussian regression. In dashed, the respective MLE.">>=
 # <r code> -----
-# profile ------------------------------------------------------------
+# profile -----------------------------------------------------------------
 sigma.grid <- seq(1.7, 3.5, length.out = 100)
 # with the optim routine we obtain three numbers: the estimates
 # of beta_0, beta_1, and the corresponding log-likelihood
@@ -1315,7 +1313,7 @@ Very few, as expected. Since the estimation of \(\beta\) doesn't depend on
 <<lkl.model.norm-beta.profiles, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) for a Gaussian regression. In dashed, MLE's.">>=
 # <r code> -----
 par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
-# beta_0 profile ---------------------------------------------------------
+# beta_0 profile --------------------------------------------------------------
 b0.grid <- seq(67.5, 88.5, length.out = 100)
 # with the optim routine we obtain two numbers:
 # the estimate of beta_1 and the log-likelihood
@@ -1330,7 +1328,7 @@ for (i in 1:length(b0.grid)) {
 plot(b0.grid, -1 * b0.perf[ , 2], type = "l",
      xlab = expression(beta[0]), ylab = "log-likelihood")
 abline(v = par.est@coef[[1]], lty = 2)
-# beta_1 profile ---------------------------------------------------------
+# beta_1 profile --------------------------------------------------------------
 b1.grid <- seq(3.5, 21, length.out = 100)
 # with the optim routine we obtain two numbers:
 # the estimate of beta_0 and the log-likelihood
@@ -1377,8 +1375,8 @@ par(mar = c(4, 4, 2, 2) + .1) ; plot(y ~ x, data)
 
 \begin{enumerate}[(a)]
 
-\item \textbf{Obtain the graph of the likelihood function indicating the
-              position of the true values of the parameters.}
+\item \textbf{Obtain the graph of the likelihood function indicating the position
+              of the true values of the parameters.}
 
 The log-likelihood is given by
 
@@ -1389,7 +1387,7 @@ The log-likelihood is given by
 
 <<dev.model.poi, fig.height=4, fig.width=6, fig.cap="Deviance of (\\(\\beta_{0}, \\beta_{1}\\)) for a Poisson regression based on \\texttt{data}.">>=
 # <r code> -----
-# likelihood -------------------------------------------------------------
+# likelihood -----------------------------------------------------------------
 lkl.model.poi <- function(b0, b1, data) {
     n <- nrow(data)
     lambda <- exp(b0 + b1 * data$x)
@@ -1398,7 +1396,7 @@ lkl.model.poi <- function(b0, b1, data) {
     # since the optim routine performs a minimization
     return(-lkl)
 }
-# deviance ---------------------------------------------------------------
+# deviance -------------------------------------------------------------------
 dev.model.poi <- function(beta, beta.est, ...) {
     b0 <- beta[1]
     b1 <- beta[2]
@@ -1411,11 +1409,11 @@ dev.model.poi <- function(beta, beta.est, ...) {
     # so the sign the different
     return(2 * lkl.diff)
 }
-# deviance, vectorized version -------------------------------------------
+# deviance, vectorized version -----------------------------------------------
 dev.model.poi.surf <- Vectorize(
     function(a, b, ...) dev.model.poi(c(a, b), ...)
 )
-# deviance contour, plotting ---------------------------------------------
+# deviance contour, plotting -------------------------------------------------
 b0.grid <- seq(1.625, 2.475, length.out = 100)
 b1.grid <- seq(.375, .6, length.out = 100)
 
@@ -1442,7 +1440,7 @@ points(c(2, .5), col = 2, pch = 19, cex = .75)
 <<lkl.model.poi-profiles, fig.height=3.5, fig.cap="log-likelihood profiles for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) for a Poisson regression. In dashed, the MLE's.">>=
 # <r code> -----
 par(mfrow = c(1, 2), mar = c(4, 4, 2, 2) + .1) # cosmetics
-# beta_0 profile ---------------------------------------------------------
+# beta_0 profile -------------------------------------------------------------
 b0.grid <- seq(1.25, 2.75, length.out = 100)
 # profiled likelihood of beta_0
 pl.b0 <- function(grid) {
@@ -1462,7 +1460,7 @@ p.b0 <- pl.b0(b0.grid)
 plot(b0.grid, p.b0, type = "l",
      xlab = expression(beta[0]), ylab = "log-likelihood")
 abline(v = 2, lty = 2)
-# beta_1 profile ---------------------------------------------------------
+# beta_1 profile -------------------------------------------------------------
 b1.grid <- seq(.3, .675, length.out = 100)
 # profiled likelihood of beta_1
 pl.b1 <- function(grid) {
@@ -1507,14 +1505,14 @@ abline(v = .5, lty = 2)
 # <r code> -----
 par(mfrow = c(2, 1), mar = c(4, 4, 2, 2) + .1) # cosmetics
 library(rootSolve) # function uniroot
-# beta_0 -----------------------------------------------------------------
-## first, plotting the profile with point estimates ----------------------
+# beta_0 ---------------------------------------------------------------------
+## first, plotting the profile with point estimates --------------------------
 plot(b0.grid, p.b0, type = "l",
      xlab = expression(beta[0]), ylab = "log-likelihood")
 abline(v = 2, lty = 2)
 abline(v = par.est@coef[1], lty = 2, col = 2)
-## intervals -------------------------------------------------------------
-### probability-based interval -------------------------------------------
+## intervals -----------------------------------------------------------------
+### probability-based interval -----------------------------------------------
 # cutoff's corresponding to a 95\% confidence interval for beta
 # minus, since lkl.model.poi return -lkl
 cut <- log(.15) - lkl.model.poi(par.est@coef[1], par.est@coef[2], data)
@@ -1536,7 +1534,7 @@ ic.95.prob.b0 <- c(uniroot(ic.b0.poi, c(1, par.est@coef[1]))$root,
 arrows(x0 = ic.95.prob.b0, y0 = rep(cut, 2),
        x1 = ic.95.prob.b0, y1 = rep(-43.5, 2),
        lty = 2, length = .1, col = 2)
-### wald confidence interval ---------------------------------------------
+### wald confidence interval -------------------------------------------------
 # quadratic approximation
 library(numDeriv) # hessian function
 quad.b0.poi <- function(grid) {
@@ -1565,21 +1563,21 @@ wald.95.b0 <- uniroot.all(ic.b0.quad.poi, range(b0.grid))
 arrows(x0 = wald.95.b0, y0 = rep(cut, 2),
        x1 = wald.95.b0, y1 = rep(-43.5, 2),
        lty = 2, length = .1, col = 4)
-### from the mle2 output we get the standard error of each parameter -----
+### from the mle2 output we get the standard error of each parameter ---------
 se.b0 <- summary(par.est)@coef[1, 2]
 mle2.95.b0 <- par.est@coef[1] + qnorm(c(.025, .975)) * se.b0
 
 arrows(x0 = mle2.95.b0, y0 = rep(cut, 2),
        x1 = mle2.95.b0, y1 = rep(-43.5, 2),
        lty = 2, length = .1, col = 3)
-# beta_1 -----------------------------------------------------------------
-## first, plotting the profile with point estimates ----------------------
+# beta_1 ---------------------------------------------------------------------
+## first, plotting the profile with point estimates --------------------------
 plot(b1.grid, p.b1, type = "l",
      xlab = expression(beta[1]), ylab = "log-likelihood")
 abline(v = .5, lty = 2)
 abline(v = par.est@coef[2], lty = 2, col = 2)
-## intervals -------------------------------------------------------------
-### probability-based interval -------------------------------------------
+## intervals -----------------------------------------------------------------
+### probability-based interval -----------------------------------------------
 abline(h = cut, col = 2) # remember, the cutoff is the same
 # finding the cutoff values
 ic.b1.poi <- function(grid, ...) {
@@ -1598,7 +1596,7 @@ ic.95.prob.b1 <- c(uniroot(ic.b1.poi, c(.2, par.est@coef[2]))$root,
 arrows(x0 = ic.95.prob.b1, y0 = rep(cut, 2),
        x1 = ic.95.prob.b1, y1 = rep(-42, 2),
        lty = 2, length = .1, col = 2)
-### wald confidence interval ---------------------------------------------
+### wald confidence interval -------------------------------------------------
 # quadratic approximation
 quad.b1.poi <- function(grid) {
     b0.hat <- par.est@coef[1] ; b1.hat <- par.est@coef[2]
@@ -1626,7 +1624,7 @@ wald.95.b1 <- uniroot.all(ic.b1.quad.poi, range(b1.grid))
 arrows(x0 = wald.95.b1, y0 = rep(cut, 2),
        x1 = wald.95.b1, y1 = rep(-42, 2),
        lty = 2, length = .1, col = 4)
-### from the mle2 output we get the standard error of each parameter -----
+### from the mle2 output we get the standard error of each parameter ---------
 se.b1 <- summary(par.est)@coef[2, 2]
 mle2.95.b1 <- par.est@coef[2] + qnorm(c(.025, .975)) * se.b1
 
@@ -1641,26 +1639,26 @@ straightforward to obtain intervals and quadratic approximations of profiled
 likelihoods of parameters.
          
 A very nice and interesting thing that we can see in
-Figure~\ref{fig:lkl.model.poi-intervals} is how all the three obtained
-intervals match. A brief, but enough, description is already given in the Figure
-caption, and for more details, we have the code above.
+Figure~\ref{fig:lkl.model.poi-intervals} is how all the three obtained intervals
+match. A brief, but enough, description is already given in the Figure caption,
+and for more details, we have the code above.
          
 \item \textbf{Compare the previous results with those provided by the
               \texttt{glm()} function and discuss the findings.}
          
 <<results='markup'>>=
 # <r code> -----
-# fitting the model via glm() --------------------------------------------
+# fitting the model via glm() ------------------------------------------------
 model.glm <- glm(y ~ x, data, family = poisson)
-# parameter estimates ----------------------------------------------------
+# parameter estimates --------------------------------------------------------
 model.glm$coef
 # at three decimal cases, the estimates are equal
 round(model.glm$coef, 3) == round(par.est@coef, 3)
-# maximum log-likelihood -------------------------------------------------
+# maximum log-likelihood -----------------------------------------------------
 logLik(model.glm)
 # at eight decimal cases, the max. log-likes are equal
 round(logLik(model.glm), 8) == round(par.est@details[[2]] * (-1), 8)
-# standard erros ---------------------------------------------------------
+# standard erros -------------------------------------------------------------
 summary(model.glm)$coef[ , 2]
 ## at six decimal cases, the standard errors are equal
 round(
