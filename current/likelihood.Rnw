@@ -1669,7 +1669,7 @@ round(
 \end{enumerate}
 
 \noindent
-\textit{As a general reference guide for all this material,\\
+\textit{As a general reference guide for questions 2 to 6,\\
         I read and used (in portuguese):} \url{www.leg.ufpr.br/mcie}
 <<eval=FALSE>>=
 @conference{mcie,
@@ -1680,6 +1680,42 @@ round(
   publisher = {20th National Symposium on Probability and Statistics (SINAPE)},
   address   = {Jo\~{a}o Pessoa - PB - Brazil},
 }
+@
+
+\section{Poisson regression (\textit{focus} on the profile likelihood)}
+
+In the previous exercise, we computed the profile likelihood for each parameter of
+a simple Poisson regression with just one covariate, i.e., an intercept,
+\(\beta_{0}\), and an angular coefficient, \(\beta_{1}\).
+
+Together with the profile and an interval based in a cut in this profile
+likelihood (let's say, a probability-based interval), we did a quadratic
+approximation in this profile likelihood. In the "real" world, with "real"
+problems, this isn't a very smart thing to do, but here, just as an exercise, I
+believe that is extremely valid.
+
+Using the same functions created before, we first show, in
+Figure~\ref{fig:poi_focus-context}, the profiles likelihood together with its
+respective quadratic approximations,  providing in this way a better
+contextualization to what we'll do next.
+
+<<poi_focus-context, fig.height=5.5, fig.cap="log-likelihood profiles, in black, for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) for a Poisson regression. In black dashed, the MLE. In red, the quadratic approximations of the profiles.">>=
+# <r code> -----
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 2) + .1) # cosmetics
+# beta_0 ---------------------------------------------------------------------
+## first, plotting the profiles with point estimate --------------------------
+plot(b0.grid, p.b0, type = "l",
+     xlab = expression(beta[0]), ylab = "log-likelihood")
+abline(v = par.est@coef[1], lty = 2)
+## now, the quadratic approximations of the profiles -------------------------
+lines(b0.grid, app2.b0.poi, col = 2)
+# beta_1 ---------------------------------------------------------------------
+plot(b1.grid, p.b1, type = "l",
+     xlab = expression(beta[1]), ylab = "log-likelihood")
+abline(v = par.est@coef[2], lty = 2)
+
+lines(b1.grid, app2.b1.poi, col = 2)
+# </r code> -----
 @
 
 \vfill
