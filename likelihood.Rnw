@@ -1514,7 +1514,7 @@ corresponding likelihoods. In the conditional one, as the name suggests, we fix
 the likelihoods.
 
 The conditional likelihood for each parameter and its correspondent quadratic
-approximation is computed and presented, in red, in
+approximation is computed and presented, in gray, in
 Figure~\ref{fig:poi_focus-likelihoods}.
 
 <<poi_focus-likelihoods, fig.height=7.5*.75, fig.width=7.5*3/5, fig.cap="Profile log-likelihoods and quadratic approximations, in black (solid and dashed, respectively), for \\(\\beta_{0}\\) and \\(\\beta_{1}\\) in a Poisson regression. In dotted, the MLE. Estimated (conditional) log-likelihoods and quadratic approximations, in gray (solid and dashed, respectively).">>=
