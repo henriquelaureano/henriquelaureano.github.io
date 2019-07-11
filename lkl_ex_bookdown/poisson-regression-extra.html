@@ -735,27 +735,27 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <hr />
 <p><strong>Poisson regression (<em>focus</em> on the profile likelihood)</strong></p>
 <hr />
-<p>In the previous exercise, we computed the profile likelihood for each parameter of
-a simple Poisson regression with just one covariate, i.e., an intercept,
-<span class="math inline">\(\beta_{0}\)</span>, and an angular coefficient, <span class="math inline">\(\beta_{1}\)</span>.</p>
+<p>In the previous exercise, we computed the profile likelihood for each
+parameter of a simple Poisson regression with just one covariate, i.e.,
+an intercept, <span class="math inline">\(\beta_{0}\)</span>, and an angular coefficient, <span class="math inline">\(\beta_{1}\)</span>.</p>
 <p>Together with the profile and an interval based in a cut in this profile
 likelihood (let’s say, a probability-based interval), we did a quadratic
-approximation in this profile likelihood. In the “real” world with “real”
-problems this isn’t a very smart thing to do, but here just as an exercise, I
-believe that is extremely valid.</p>
+approximation in this profile likelihood. In the “real” world with
+“real” problems this isn’t a very smart thing to do, but here just as an
+exercise, I believe that is extremely valid.</p>
 <p>Using the same functions created before, we first show, in black, in
-Figure <a href="poisson-regression-extra.html#fig:poi-focus-likelihoods">18</a>, the profiles likelihood together with its
-respective quadratic approximations.</p>
-<p>Now, something that we can look at is to the conditional, or estimated likelihood
-(as <span class="math inline">\(\texttt{Pawitan}\)</span> calls). In the profiled one, for <span class="math inline">\(\beta_{0}\)</span> let’s say,
-in a grid of <span class="math inline">\(\beta_{0}\)</span>’s, we estimate the <span class="math inline">\(\beta_{1}\)</span>’s and then get the
-corresponding likelihoods. In the conditional one, as the name suggests, we fix
-(conditionate) <span class="math inline">\(\beta_{1}\)</span> in a value, and in a grid of <span class="math inline">\(\beta_{0}\)</span>’s, we get
-the likelihoods.</p>
-<p>The conditional likelihood for each parameter and its correspondent quadratic
-approximation is computed and presented, in gray, in
-Figure <a href="poisson-regression-extra.html#fig:poi-focus-likelihoods">18</a>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lkl.est.poi: estimated (conditional) poisson likelihood ------------------------</span>
+Figure <a href="poisson-regression-extra.html#fig:poi-focus-likelihoods">18</a>, the profiles likelihood
+together with its respective quadratic approximations.</p>
+<p>Now, something that we can look at is to the estimated likelihood (as
+<span class="math inline">\(\texttt{Pawitan}\)</span> calls). In the profiled one, for <span class="math inline">\(\beta_{0}\)</span>
+let’s say, in a grid of <span class="math inline">\(\beta_{0}\)</span>’s, we estimate the <span class="math inline">\(\beta_{1}\)</span>’s
+and then get the corresponding likelihoods. In the estimated one, as the
+name suggests, we fix <span class="math inline">\(\beta_{1}\)</span> in it’s estimate, and in a grid of
+<span class="math inline">\(\beta_{0}\)</span>’s, we get the likelihoods.</p>
+<p>The estimated likelihood for each parameter and its correspondent
+quadratic approximation is computed and presented, in gray, in Figure
+<a href="poisson-regression-extra.html#fig:poi-focus-likelihoods">18</a>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lkl.est.poi: estimated  poisson likelihood -------------------------------------</span>
 lkl.est.poi &lt;-<span class="st"> </span><span class="cf">function</span>(grid, <span class="dt">coef =</span> <span class="kw">c</span>(<span class="st">&quot;b0&quot;</span>, <span class="st">&quot;b1&quot;</span>)) {
     coef.hat &lt;-<span class="st"> </span><span class="cf">switch</span>(coef, <span class="st">&quot;b0&quot;</span> =<span class="st"> </span>par.est<span class="op">@</span>coef[<span class="dv">2</span>], <span class="st">&quot;b1&quot;</span> =<span class="st"> </span>par.est<span class="op">@</span>coef[<span class="dv">1</span>])
     n &lt;-<span class="st"> </span><span class="kw">length</span>(grid)
@@ -798,7 +798,7 @@ b0.profile &lt;-<span class="st"> </span><span class="kw">coef.profile</span>(b0
 ## performing and plotting the conditional likelihood ----------------------------
 lkl.est.b0.poi &lt;-<span class="st"> </span><span class="kw">lkl.est.poi</span>(b0.grid, <span class="st">&quot;b0&quot;</span>)
 <span class="kw">lines</span>(b0.grid, lkl.est.b0.poi, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>)
-## performing and plotting the quadratic approx. of the cond. likelihood ---------
+## performing and plotting the quadratic approx. of the estimated likelihood -----
 qa.est.b0.poi &lt;-<span class="st"> </span><span class="kw">qa.est.poi</span>(b0.grid, <span class="st">&quot;b0&quot;</span>)
 <span class="kw">lines</span>(b0.grid, qa.est.b0.poi, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">lty =</span> <span class="dv">2</span>)
 <span class="co"># beta_1 -------------------------------------------------------------------------</span>
@@ -816,25 +816,27 @@ lkl.est.b1.poi &lt;-<span class="st"> </span><span class="kw">lkl.est.poi</span>
 qa.est.b1.poi &lt;-<span class="st"> </span><span class="kw">qa.est.poi</span>(b1.grid, <span class="st">&quot;b1&quot;</span>)
 <span class="kw">lines</span>(b1.grid, qa.est.b1.poi, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">lty =</span> <span class="dv">2</span>)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:poi-focus-likelihoods"></span>
-<img src="_main_files/figure-html/poi-focus-likelihoods-1.png" alt="Profile log-likelihoods and quadratic approximations, in black (solid and dashed, respectively), for \(\beta_{0}\) and \(\beta_{1}\) in a Poisson regression. In dotted, the MLE. Estimated (conditional) log-likelihoods and quadratic approximations, in gray (solid and dashed, respectively)." width="432" />
+<img src="_main_files/figure-html/poi-focus-likelihoods-1.png" alt="Profile log-likelihoods and quadratic approximations, in black (solid and dashed, respectively), for \(\beta_{0}\) and \(\beta_{1}\) in a Poisson regression. In dotted, the MLE. Estimated  log-likelihoods and quadratic approximations, in gray (solid and dashed, respectively)." width="432" />
 <p class="caption">
-Figure 18: Profile log-likelihoods and quadratic approximations, in black (solid and dashed, respectively), for <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span> in a Poisson regression. In dotted, the MLE. Estimated (conditional) log-likelihoods and quadratic approximations, in gray (solid and dashed, respectively).
+Figure 18: Profile log-likelihoods and quadratic approximations, in black (solid and dashed, respectively), for <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span> in a Poisson regression. In dotted, the MLE. Estimated log-likelihoods and quadratic approximations, in gray (solid and dashed, respectively).
 </p>
 </div>
-<p>The first and important note that we can take from
-Figure <a href="poisson-regression-extra.html#fig:poi-focus-likelihoods">18</a>, and that makes all the possible sense, is
-how the estimated likelihood is narrow (compared with the profiled one). The
-explanation for this is that in the estimated (conditional) situation it’s assumed
-as known one of the coefficients, fixing it at the MLE. In the other hand, the
-profile likelihood takes into account that one of the coefficients is unknown.
-Hence, it’s sensible that the profile is greater than the estimated.</p>
-<p>Another important point to mention is about the manner that we compute the profile
-likelihood. A function with this goal was made in the previous question,
-<span class="math inline">\(\texttt{qa.coef.poi}\)</span>. The important thing to note about these function is that
-the hessian there is computed from the profile likelihood. This is inefficient,
-and not necessary. Instead, we can just take the corresponding element in the
-variance-covariance matrix, invert, and use it. In other words, we don’t need to
-use the profile likelihood to compute a quadratic approximation to the profile
+<p>The first and important note that we can take from Figure
+<a href="poisson-regression-extra.html#fig:poi-focus-likelihoods">18</a>, and that makes all the possible sense,
+is how the estimated likelihood is narrow (compared with the profiled
+one). The explanation for this is that in the estimated situation it’s
+assumed as known one of the coefficients, fixing it at the MLE. In the
+other hand, the profile likelihood takes into account that one of the
+coefficients is unknown. Hence, it’s sensible that the profile is
+greater than the estimated.</p>
+<p>Another important point to mention is about the manner that we compute
+the profile likelihood. A function with this goal was made in the
+previous question, <span class="math inline">\(\texttt{qa.coef.poi}\)</span>. The important thing to note
+about these function is that the hessian there is computed from the
+profile likelihood. This is inefficient, and not necessary. Instead, we
+can just take the corresponding element in the variance-covariance
+matrix, invert, and use it. In other words, we don’t need to use the
+profile likelihood to compute a quadratic approximation to the profile
 likelihood. We implement this in <span class="math inline">\(\texttt{smart.qa.coef.poi}\)</span>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># qa: quadratic approximation ----------------------------------------------------</span>
 smart.qa.coef.poi &lt;-<span class="st"> </span><span class="cf">function</span>(model.mle2, <span class="dt">coef =</span> <span class="kw">c</span>(<span class="st">&quot;b0&quot;</span>, <span class="st">&quot;b1&quot;</span>), grid) {
@@ -887,17 +889,18 @@ compare.qas &lt;-<span class="st"> </span><span class="cf">function</span>(dp, <
 Figure 19: Profile log-likelihoods, solid line, for <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span> in a Poisson regression. In dotted, MLEs. Quadratic approx.’s of the profiles in black dashed and gray, with a matching percentage between them considering six different decimal places.
 </p>
 </div>
-<p>In Figure <a href="poisson-regression-extra.html#fig:matching">19</a> we see that the dashed matches with the gray line,
-i.e., the quadratic approximations are equal. To see better how equal they’re, the
-right graphs of Figure <a href="poisson-regression-extra.html#fig:matching">19</a> show the percentage of matching values
-(quadratic approximations of the profile log-likelihoods) considering different
-levels of rounding. As a conclusion statement, they’re quite equal. This completes
-and complement the last paragraph.</p>
+<p>In Figure <a href="poisson-regression-extra.html#fig:matching">19</a> we see that the dashed matches with the
+gray line, i.e., the quadratic approximations are equal. To see better
+how equal they’re, the right graphs of Figure <a href="poisson-regression-extra.html#fig:matching">19</a> show
+the percentage of matching values (quadratic approximations of the
+profile log-likelihoods) considering different levels of rounding. As a
+conclusion statement, they’re quite equal. This completes and complement
+the last paragraph.</p>
 <p>A third and last note is that to compute the quadratic approx. for the
-estimated/conditional likelihood we use the corresponding element of the
-information matrix. To compute the quadratic approx. for the profile likelihood we
-use the inverse of that element in the variance-covariance matrix, that is the
-inverse of the information matrix.</p>
+estimated likelihood we use the corresponding element of the information
+matrix. To compute the quadratic approx. for the profile likelihood we
+use the inverse of that element in the variance-covariance matrix, that
+is the inverse of the information matrix.</p>
 <p><em>The insights for this exercise was taken from <span class="math inline">\(\texttt{Pawitan}\)</span>’s book.</em></p>
 <hr />
 <p><img src="logos.png" style="display: block; margin: auto;" /></p>
