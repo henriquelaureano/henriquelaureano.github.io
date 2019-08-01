@@ -1,0 +1,44 @@
+---
+title: "Classification \\newline
+        \\normalsize chapter 4 of
+        \\textit{An Introduction to Statistical Learning} (ISL)"
+short-title: "Classification: ISL book chapter"
+author: "Henrique Laureano \\newline \\url{http://leg.ufpr.br/~henrique}"
+short-author: "leg.ufpr.br/~henrique"
+#email: "laureano\\@ufpr.br"
+#date: "August 12, 2019"
+#short-date:
+department: "Laboratory of Statistics and Geoinformation (LEG)"
+institute: "UFPR/DEST/LEG"
+#short-institute: "LEG"
+section-titles: true
+safe-columns: true # enables special latex macros for columns
+output:
+  legtheme::beamer_leg
+---
+
+\begincols
+ \column{.4\linewidth}
+  \begin{figure}
+   \centering
+   \includegraphics[width=.95\textwidth]{book.jpg}
+  \end{figure}
+ \column{.6\linewidth}
+  \begin{figure}
+   \centering
+   \includegraphics[width=\textwidth]{chap4.png}
+  \end{figure}
+\endcols
+
+# Classification
+
+## Some topic about classification
+
+### Classification
+
+### and...
+
+\begin{figure}
+\centering \includegraphics[width=.5\textwidth]{end.jpg}
+\end{figure}
+\hfill \small \href{mailto:laureano@ufpr.br}{laureano@ufpr.br}
