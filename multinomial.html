@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Henrique Ap. Laureano" />
@@ -1481,56 +1482,12 @@ summary {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 <style type="text/css">
 .code-folding-btn { margin-bottom: 4px; }
 </style>
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -1625,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
 <h4 class="author"><a href="www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-07-30 19:50:22</h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-04 20:46:42</h4>
 
 </div>
 
@@ -1990,16 +1947,74 @@ for(l in c(&quot;small&quot;, &quot;medium&quot;))
 </div>
 <div id="and-now-with-covariates" class="section level1">
 <h1>And now with covariates</h1>
-<p><em>log - likelihood</em>, behold</p>
+<p><em>log - likelihood</em>,</p>
 <p><span class="math display">\[
-l(\bm{\beta}) = \sum_{i=1}^{k} \log x_{i}!
-- \sum_{i=1}^{k} \sum_{j=1}^{J} \log x_{ij}!
-+ \sum_{i=1}^{k} \sum_{j=1}^{J} x_{ij} \log p_{ij},
+l(\bm{\beta}) = \log n! - \sum_{i=1}^{k} y_{i \cdot}!
++ \sum_{j=1}^{n} \sum_{i=1}^{k} y_{ij} \log p_{ij},
 \quad \text{with} \quad
 p_{ij} = \frac{
-  \exp\{\bm{x}_{i}^{\top} \beta_{j}\}}{
-  1+\sum_{k=1}^{J-1} \exp\{\bm{x}_{i}^{\top} \beta_{k}\}}.
+  \exp\{\bm{x}_{j}^{\top} \bm{\beta}_{i}\}}{
+  1 + \sum_{i=1}^{k-1} \exp\{\bm{x}_{j}^{\top} \bm{\beta}_{i}\}}.
 \]</span></p>
+<p><span class="math inline">\(y\)</span> represents the outcome, i.e., an indicator for which category the subject <span class="math inline">\(j\)</span> belongs. With <span class="math inline">\(i\)</span> representing the multinomial category/level. <span class="math inline">\(p_{ij}\)</span> is the probability of the subject <span class="math inline">\(j\)</span> be classified in the category <span class="math inline">\(i\)</span>.</p>
+<p><span class="math inline">\(\bm{\beta}_{i}\)</span> is the vector of coefficients for category <span class="math inline">\(i\)</span> and <span class="math inline">\(\bm{x}_{j}\)</span> is the row vector of covariates of the subject <span class="math inline">\(j\)</span>.</p>
+<pre class="r"><code># CODE IN DEVELOPMENT ==================================================
+probs &lt;- c(.3, .2, .5) # probabilities for each category k
+data_generator &lt;- function(n, k = 3, p) {
+    data &lt;- as.data.frame(t(rmultinom(n, 1, prob = p)))
+    names(data) &lt;- paste0(&quot;y&quot;, 1:k)
+    return(data)
+}
+set.seed(1993)
+data &lt;- data_generator(n = 100, p = probs)
+
+trace &lt;- c()
+linear_pred &lt;- c(y1 ~ 1, y2 ~ 1)
+
+initial_values &lt;- c(&quot;b01&quot; = .1, &quot;b02&quot; = .1)
+
+multi_lkl &lt;- function(initial_values, linear_pred, data) {
+    # building objects =================================================
+    betas &lt;- unlist(mget(c(ls(pattern = glob2rx(&quot;^b\\d&quot;)))))
+    trace &lt;&lt;- c(trace, betas)
+
+    n_resp &lt;- length(linear_pred)
+
+    linear_pred &lt;- as.list(linear_pred)
+    list_X &lt;- lapply(linear_pred, model.matrix, data = data)
+
+    list_model_frame &lt;- lapply(linear_pred, model.frame, data = data)
+    list_Y &lt;- lapply(list_model_frame, model.response)
+    y_vec &lt;- as.numeric(do.call(c, list_Y))
+
+    initial_values &lt;- as.list(initial_values)
+    # likelihood first term ============================================
+    n &lt;- nrow(data)
+    logs &lt;- numeric(n)
+    for (i in 1:n) logs[i] &lt;- log(i)
+    lkl_1 &lt;- sum(logs)
+    # second term ======================================================
+    y &lt;- colSums(data)
+    lkl_2 &lt;- numeric(length(y))
+    k &lt;- 1
+    for (i in sort(y)) {
+        lkl_1[k] &lt;- sum(logs[1:i])
+        k &lt;- k + 1
+    }
+    lkl_2 &lt;- sum(lkl_2)
+    # third term =======================================================
+    lkl_p &lt;- sum(xs[ , -k] %*% log(p)) + sum(xs[ , k] * log(1 - sum(p)))
+    # normalizing constant
+    n &lt;- nrow(xs)
+    nx &lt;- colSums(xs)
+    logs &lt;- numeric(n)
+    for (i in 1:n) logs[i] &lt;- log(i)
+    nx_log &lt;- numeric(k) ; j &lt;- 1
+    for (i in nx)
+        nx_log[j] &lt;- sum(logs[1:i]) ; j &lt;- j + 1
+    lkl &lt;- sum(logs) - sum(nx_log) + lkl_p
+    return(-lkl)
+}</code></pre>
 </div>
 
 
@@ -2020,6 +2035,54 @@ $(document).ready(function () {
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
