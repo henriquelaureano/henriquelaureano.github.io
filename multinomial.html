@@ -1581,8 +1581,8 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
-<h4 class="author"><a href="www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-08-04 20:46:42</h4>
+<h4 class="author"><a href>Henrique Ap. Laureano</a></h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-04 20:50:43</h4>
 
 </div>
 
@@ -1959,6 +1959,7 @@ p_{ij} = \frac{
 <p><span class="math inline">\(y\)</span> represents the outcome, i.e., an indicator for which category the subject <span class="math inline">\(j\)</span> belongs. With <span class="math inline">\(i\)</span> representing the multinomial category/level. <span class="math inline">\(p_{ij}\)</span> is the probability of the subject <span class="math inline">\(j\)</span> be classified in the category <span class="math inline">\(i\)</span>.</p>
 <p><span class="math inline">\(\bm{\beta}_{i}\)</span> is the vector of coefficients for category <span class="math inline">\(i\)</span> and <span class="math inline">\(\bm{x}_{j}\)</span> is the row vector of covariates of the subject <span class="math inline">\(j\)</span>.</p>
 <pre class="r"><code># CODE IN DEVELOPMENT ==================================================
+
 probs &lt;- c(.3, .2, .5) # probabilities for each category k
 data_generator &lt;- function(n, k = 3, p) {
     data &lt;- as.data.frame(t(rmultinom(n, 1, prob = p)))
