@@ -1582,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-08-04 20:53:20</h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-06 20:44:18</h4>
 
 </div>
 
@@ -1958,9 +1958,7 @@ p_{ij} = \frac{
 \]</span></p>
 <p><span class="math inline">\(y\)</span> represents the outcome, i.e., an indicator for which category the subject <span class="math inline">\(j\)</span> belongs. With <span class="math inline">\(i\)</span> representing the multinomial category/level. <span class="math inline">\(p_{ij}\)</span> is the probability of the subject <span class="math inline">\(j\)</span> be classified in the category <span class="math inline">\(i\)</span>.</p>
 <p><span class="math inline">\(\bm{\beta}_{i}\)</span> is the vector of coefficients for category <span class="math inline">\(i\)</span> and <span class="math inline">\(\bm{x}_{j}\)</span> is the row vector of covariates of the subject <span class="math inline">\(j\)</span>.</p>
-<pre class="r"><code># CODE IN DEVELOPMENT ==================================================
-
-probs &lt;- c(.3, .2, .5) # probabilities for each category k
+<pre class="r"><code>probs &lt;- c(.3, .2, .5) # probabilities for each category k
 data_generator &lt;- function(n, k = 3, p) {
     data &lt;- as.data.frame(t(rmultinom(n, 1, prob = p)))
     names(data) &lt;- paste0(&quot;y&quot;, 1:k)
@@ -1968,54 +1966,73 @@ data_generator &lt;- function(n, k = 3, p) {
 }
 set.seed(1993)
 data &lt;- data_generator(n = 100, p = probs)
+data$x1 &lt;- rnorm(100, mean = 5, sd = 1)
+data$x2 &lt;- rnorm(100, mean = 3, sd = 2)
 
-trace &lt;- c()
-linear_pred &lt;- c(y1 ~ 1, y2 ~ 1)
-
-initial_values &lt;- c(&quot;b01&quot; = .1, &quot;b02&quot; = .1)
+inv_logit &lt;- function(coefs, preds, data) {
+    ind_pred &lt;- seq(preds)
+    n_pred &lt;- length(preds)
+    n_coef &lt;- length(coefs)
+    betas &lt;- split(coefs, rep(ind_pred, each = n_coef/n_pred))
+    list_X &lt;- lapply(preds, model.matrix, data = data)
+    ## list_model_frame &lt;- lapply(linear_pred, model.frame, data = data)
+    ## list_Y &lt;- lapply(list_model_frame, model.response)
+    ## y_vec &lt;- as.numeric(do.call(c, list_Y))
+    exp_xb &lt;- sapply(seq(list_X),
+                     function(i) exp(list_X[[i]] %*% betas[[i]]))
+    link_denominator &lt;- 1 + rowSums(exp_xb)
+    ps &lt;- sapply(ind_pred, function(i) exp_xb[ , i]/link_denominator)
+    ps &lt;- as.data.frame(cbind(ps, 1 - rowSums(ps)))
+    colnames(ps) &lt;- paste0(&quot;p&quot;, 1:(n_pred + 1))
+    return(list(ps = ps,
+                ind_pred = ind_pred,
+                n_pred = n_pred,
+                link_denominator = link_denominator))
+}
+## trace &lt;- c()
+## linear_pred &lt;- list(y1 ~ x1, y2 ~ x1)
+linear_pred &lt;- list(y1 ~ x1 + x2, y2 ~ x1 + x2)
+## linear_pred &lt;- list(y1 ~ 1, y2 ~ 1)
+## initial_values &lt;- c(&quot;b01&quot; = .1, &quot;b11&quot; = 3, &quot;b02&quot; = .1, &quot;b12&quot; = 3)
+initial_values &lt;- c(&quot;b01&quot; = .1, &quot;b11&quot; = 3, &quot;b21&quot; = 1,
+                    &quot;b02&quot; = .1, &quot;b12&quot; = 3, &quot;b22&quot; = 1)
+## initial_values &lt;- c(&quot;b01&quot; = .1, &quot;b02&quot; = .1)
 
 multi_lkl &lt;- function(initial_values, linear_pred, data) {
-    # building objects =================================================
-    betas &lt;- unlist(mget(c(ls(pattern = glob2rx(&quot;^b\\d&quot;)))))
-    trace &lt;&lt;- c(trace, betas)
-
-    n_resp &lt;- length(linear_pred)
-
-    linear_pred &lt;- as.list(linear_pred)
-    list_X &lt;- lapply(linear_pred, model.matrix, data = data)
-
-    list_model_frame &lt;- lapply(linear_pred, model.frame, data = data)
-    list_Y &lt;- lapply(list_model_frame, model.response)
-    y_vec &lt;- as.numeric(do.call(c, list_Y))
-
-    initial_values &lt;- as.list(initial_values)
-    # likelihood first term ============================================
     n &lt;- nrow(data)
-    logs &lt;- numeric(n)
-    for (i in 1:n) logs[i] &lt;- log(i)
-    lkl_1 &lt;- sum(logs)
-    # second term ======================================================
-    y &lt;- colSums(data)
-    lkl_2 &lt;- numeric(length(y))
-    k &lt;- 1
-    for (i in sort(y)) {
-        lkl_1[k] &lt;- sum(logs[1:i])
-        k &lt;- k + 1
-    }
-    lkl_2 &lt;- sum(lkl_2)
-    # third term =======================================================
-    lkl_p &lt;- sum(xs[ , -k] %*% log(p)) + sum(xs[ , k] * log(1 - sum(p)))
-    # normalizing constant
-    n &lt;- nrow(xs)
-    nx &lt;- colSums(xs)
-    logs &lt;- numeric(n)
-    for (i in 1:n) logs[i] &lt;- log(i)
-    nx_log &lt;- numeric(k) ; j &lt;- 1
-    for (i in nx)
-        nx_log[j] &lt;- sum(logs[1:i]) ; j &lt;- j + 1
-    lkl &lt;- sum(logs) - sum(nx_log) + lkl_p
+    y &lt;- colSums(data[ , 1:3])
+    ## trace &lt;&lt;- c(trace, initial_values)
+    ilogit &lt;- inv_logit(coefs = initial_values, preds = linear_pred,
+                        data = data)
+    y_log_p &lt;-
+        with(ilogit,
+             sum(rowSums(sapply(ind_pred,
+                                function(i) y[i] * log(ps[ , i]))) +
+                 y[n_pred + 1] * log(1/link_denominator)))
+    lkl &lt;- lgamma(n + 1) - sum(lgamma(y + 1)) + y_log_p
     return(-lkl)
-}</code></pre>
+}
+parnames(multi_lkl) &lt;- names(initial_values)
+(fit2 &lt;- mle2(multi_lkl, start = initial_values,
+              data = list(linear_pred = linear_pred, data = data)))</code></pre>
+<pre><code>## 
+## Call:
+## mle2(minuslogl = multi_lkl, start = initial_values, data = list(linear_pred = linear_pred, 
+##     data = data))
+## 
+## Coefficients:
+##           b01           b11           b21           b02           b12           b22 
+## -6.359099e-01 -1.531246e-05 -1.111814e-06 -8.407003e-01 -1.529500e-05 -1.489626e-06 
+## 
+## Log-likelihood: -10202.04</code></pre>
+<pre class="r"><code>head(inv_logit(fit@coef, linear_pred, data)$ps)</code></pre>
+<pre><code>##          p1        p2        p3
+## 1 0.2699969 0.2199981 0.5100050
+## 2 0.2699999 0.2200002 0.5100000
+## 3 0.2699978 0.2199986 0.5100036
+## 4 0.2700020 0.2200026 0.5099953
+## 5 0.2700023 0.2200026 0.5099951
+## 6 0.2699976 0.2199988 0.5100036</code></pre>
 </div>
 
 
