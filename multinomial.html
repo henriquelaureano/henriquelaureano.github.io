@@ -1582,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-08-07 14:27:14</h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-07 15:38:00</h4>
 
 </div>
 
@@ -2028,12 +2028,17 @@ multi_lkl &lt;- function(initial_values, linear_pred, data) {
     ilogit &lt;- inv_logit(initial_values, preds = linear_pred, data = data)
     n &lt;- nrow(data)
     y &lt;- colSums(data[ , 1:(ilogit$n_pred + 1)])
-    y_log_p &lt;-
-        with(ilogit,
-             sum(rowSums(sapply(i_pred,
-                                function(i) y[i] * log(ps[ , i]))) +
-                 y[n_pred + 1] * log(1/link_denom)))
-    lkl &lt;- lgamma(n + 1) - sum(lgamma(y + 1)) + y_log_p
+    ## y_log_p &lt;-
+    ##     with(ilogit,
+    ##          sum(rowSums(sapply(i_pred,
+    ##                             function(i) y[i] * log(ps[ , i]))) +
+    ##              y[n_pred + 1] * log(1/link_denom)))
+    ## y_log_p &lt;- with(ilogit, sum(data[ , 1:(n_pred + 1)] * log(ps)))
+    ## lkl &lt;- lgamma(n + 1) - sum(lgamma(y + 1)) + y_log_p
+    ## lkl
+    lkl &lt;- sum(dmultinomial(as.matrix(data[ , 1:(ilogit$n_pred + 1)]),
+                            size = 1,
+                            prob = as.matrix(ilogit$ps), log = TRUE))
     return(-lkl)
 }
 # loading library ======================================================
@@ -2045,16 +2050,16 @@ fit &lt;- mle2(multi_lkl,
             data = list(linear_pred = linear_pred, data = data))
 round(fit@coef, 6) # estimated coefficients ----------------------------</code></pre>
 <pre><code>##       b01       b11       b21       b02       b12       b22 
-## -0.133425 -0.000016 -0.000025  1.475919  0.000002 -0.000026</code></pre>
+##  1.716098 -0.260766 -0.421261  0.058849  0.432741 -0.494201</code></pre>
 <pre class="r"><code># looking to the estimated probabilities ===============================
 head(inv_logit(fit@coef, linear_pred, data)$ps)</code></pre>
-<pre><code>##          p1        p2        p3
-## 1 0.1399984 0.6999826 0.1600190
-## 2 0.1399980 0.6999957 0.1600063
-## 3 0.1399998 0.6999991 0.1600011
-## 4 0.1400007 0.7000081 0.1599912
-## 5 0.1399995 0.6999967 0.1600037
-## 6 0.1400009 0.6999959 0.1600033</code></pre>
+<pre><code>##           p1        p2         p3
+## 1 0.07362905 0.2554734 0.67089756
+## 2 0.08184015 0.7122206 0.20593929
+## 3 0.11227949 0.7540724 0.13364814
+## 4 0.09294784 0.8717613 0.03529081
+## 5 0.11314446 0.7044381 0.18241740
+## 6 0.15454264 0.6415401 0.20391725</code></pre>
 <pre class="r"><code># ======================================================================
 # ======================================================================
 library(reshape2)
