@@ -1582,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-08-07 15:38:00</h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-07 20:09:33</h4>
 
 </div>
 
@@ -1965,8 +1965,8 @@ inv_logit &lt;- function(coefs, preds, data) {
     # building objects -------------------------------------------------
     ind_pred &lt;- seq(preds)
     n_pred &lt;- length(preds)
-    n_coef &lt;- length(coefs)
-    betas &lt;- split(coefs, rep(ind_pred, each = n_coef/n_pred))
+    k &lt;- n_pred + 1
+    betas &lt;- split(coefs, substr(names(coefs), start = 3, stop = 3))
     list_X &lt;- lapply(preds, model.matrix, data = data)
     # keeping here to maybe use in the short future --------------------
     ## list_model_frame &lt;- lapply(linear_pred, model.frame, data = data)
@@ -1977,11 +1977,10 @@ inv_logit &lt;- function(coefs, preds, data) {
                      function(i) exp(list_X[[i]] %*% betas[[i]]))
     link_denominator &lt;- 1 + rowSums(exp_xb)
     ps &lt;- sapply(ind_pred, function(i) exp_xb[ , i]/link_denominator)
-    ps &lt;- as.data.frame(cbind(ps, 1 - rowSums(ps)))
-    names(ps) &lt;- paste0(&quot;p&quot;, 1:(n_pred + 1))
+    ps &lt;- cbind(ps, 1 - rowSums(ps))
+    colnames(ps) &lt;- paste0(&quot;p&quot;, seq(k))
     # outputs ----------------------------------------------------------
-    return(list(ps = ps, i_pred = ind_pred, n_pred = n_pred,
-                link_denom = link_denominator))
+    return(list(y = data[ , seq(k)], ps = ps))
 }
 # defining sample size and number of categories ========================
 n &lt;- 100
@@ -2004,6 +2003,8 @@ data$x2 &lt;- rnorm(n, mean =  1, sd =  2)
 linear_pred &lt;- list(y1 ~ x1 + x2, y2 ~ x1 + x2)
 initial_values &lt;- c(&quot;b01&quot; = .4, &quot;b11&quot; = .1, &quot;b21&quot; = - .3,
                     &quot;b02&quot; = .2, &quot;b12&quot; = .5, &quot;b22&quot; = - .6)
+## initial_values &lt;- list(c(&quot;b01&quot; = .4, &quot;b11&quot; = .1, &quot;b21&quot; = - .3),
+##                        c(&quot;b02&quot; = .2, &quot;b12&quot; = .5, &quot;b22&quot; = - .6))
 # probs based in the covs to be used to generate the responses =========
 probs &lt;- inv_logit(initial_values, preds = linear_pred, data = data)$ps
 summary(probs)</code></pre>
@@ -2017,8 +2018,8 @@ summary(probs)</code></pre>
 <pre class="r"><code># loading library ======================================================
 library(mc2d) # vectorized versions of {r, d}multinom
 # finally, simulating the multinomial data =============================
-data[ , 1:k] &lt;- rmultinomial(n, 1, prob = probs)
-colSums(data[ , 1:k]) # as expected, close to the ``probs`` means</code></pre>
+data[ , seq(k)] &lt;- rmultinomial(n, 1, prob = probs)
+colSums(data[ , seq(k)]) # as expected, close to the ``probs`` means</code></pre>
 <pre><code>## y1 y2 y3 
 ## 14 70 16</code></pre>
 <pre class="r"><code># ======================================================================
@@ -2026,56 +2027,54 @@ colSums(data[ , 1:k]) # as expected, close to the ``probs`` means</code></pre>
 # ======================================================================
 multi_lkl &lt;- function(initial_values, linear_pred, data) {
     ilogit &lt;- inv_logit(initial_values, preds = linear_pred, data = data)
-    n &lt;- nrow(data)
-    y &lt;- colSums(data[ , 1:(ilogit$n_pred + 1)])
-    ## y_log_p &lt;-
-    ##     with(ilogit,
-    ##          sum(rowSums(sapply(i_pred,
-    ##                             function(i) y[i] * log(ps[ , i]))) +
-    ##              y[n_pred + 1] * log(1/link_denom)))
-    ## y_log_p &lt;- with(ilogit, sum(data[ , 1:(n_pred + 1)] * log(ps)))
-    ## lkl &lt;- lgamma(n + 1) - sum(lgamma(y + 1)) + y_log_p
-    ## lkl
-    lkl &lt;- sum(dmultinomial(as.matrix(data[ , 1:(ilogit$n_pred + 1)]),
-                            size = 1,
-                            prob = as.matrix(ilogit$ps), log = TRUE))
+    lkl &lt;- with(ilogit, sum(y * log(ps)))
+    ## lkl &lt;- with(ilogit,
+    ##             sum(dmultinomial(y, size = 1, prob = ps, log = TRUE)))
     return(-lkl)
 }
 # loading library ======================================================
 library(bbmle)
 parnames(multi_lkl) &lt;- names(initial_values) # mle2 exigency
 # model fitting ========================================================
-fit &lt;- mle2(multi_lkl,
-            start = initial_values,
-            data = list(linear_pred = linear_pred, data = data))
-round(fit@coef, 6) # estimated coefficients ----------------------------</code></pre>
-<pre><code>##       b01       b11       b21       b02       b12       b22 
-##  1.716098 -0.260766 -0.421261  0.058849  0.432741 -0.494201</code></pre>
-<pre class="r"><code># looking to the estimated probabilities ===============================
+(fit &lt;- mle2(multi_lkl, start = initial_values,
+             data = list(linear_pred = linear_pred, data = data)))</code></pre>
+<pre><code>## 
+## Call:
+## mle2(minuslogl = multi_lkl, start = initial_values, data = list(linear_pred = linear_pred, 
+##     data = data))
+## 
+## Coefficients:
+##         b01         b11         b21         b02         b12         b22 
+##  1.71609801 -0.26076624 -0.42126060  0.05884933  0.43274118 -0.49420132 
+## 
+## Log-likelihood: -72.97</code></pre>
+<pre class="r"><code># behold the estimated probabilities ===================================
 head(inv_logit(fit@coef, linear_pred, data)$ps)</code></pre>
-<pre><code>##           p1        p2         p3
-## 1 0.07362905 0.2554734 0.67089756
-## 2 0.08184015 0.7122206 0.20593929
-## 3 0.11227949 0.7540724 0.13364814
-## 4 0.09294784 0.8717613 0.03529081
-## 5 0.11314446 0.7044381 0.18241740
-## 6 0.15454264 0.6415401 0.20391725</code></pre>
+<pre><code>##              p1        p2         p3
+## [1,] 0.07362905 0.2554734 0.67089756
+## [2,] 0.08184015 0.7122206 0.20593929
+## [3,] 0.11227949 0.7540724 0.13364814
+## [4,] 0.09294784 0.8717613 0.03529081
+## [5,] 0.11314446 0.7044381 0.18241740
+## [6,] 0.15454264 0.6415401 0.20391725</code></pre>
 <pre class="r"><code># ======================================================================
+# checking the results with the existing r libraries ===================
 # ======================================================================
+# 4 these libs is better if we put the data in the long format =========
 library(reshape2)
-data2 &lt;- melt(data, measure.vars = 1:k, variable.name = &quot;y&quot;)
-data2 &lt;- data2[data2$value == 1, ]
-
-library(nnet)
-data2$y &lt;- relevel(data2$y, ref = k)
-(fit2 &lt;- multinom(y ~ x1 + x2, data2))</code></pre>
+data_long &lt;- melt(data, measure.vars = seq(k), variable.name = &quot;y&quot;)
+data_long &lt;- data_long[data_long$value == 1, ]
+library(nnet) # --------------------------------------------------------
+data_long$y &lt;- relevel(data_long$y, ref = k) # changing the ref. level
+# behold, the estimated coefficients are the same ----------------------
+(fit_nnet &lt;- multinom(y ~ x1 + x2, data_long))</code></pre>
 <pre><code>## # weights:  12 (6 variable)
 ## initial  value 109.861229 
 ## iter  10 value 72.972199
 ## final  value 72.971664 
 ## converged</code></pre>
 <pre><code>## Call:
-## multinom(formula = y ~ x1 + x2, data = data2)
+## multinom(formula = y ~ x1 + x2, data = data_long)
 ## 
 ## Coefficients:
 ##    (Intercept)         x1         x2
@@ -2084,7 +2083,7 @@ data2$y &lt;- relevel(data2$y, ref = k)
 ## 
 ## Residual Deviance: 145.9433 
 ## AIC: 157.9433</code></pre>
-<pre class="r"><code>head(fitted(fit2))</code></pre>
+<pre class="r"><code>head(fitted(fit_nnet)) # estimated probabilities, behold</code></pre>
 <pre><code>##            y3         y1        y2
 ## 4  0.03529560 0.09294889 0.8717555
 ## 5  0.18241968 0.11314438 0.7044359
@@ -2092,9 +2091,11 @@ data2$y &lt;- relevel(data2$y, ref = k)
 ## 12 0.13707584 0.24115786 0.6217663
 ## 16 0.08257656 0.09022618 0.8271973
 ## 24 0.37499417 0.13547364 0.4895322</code></pre>
-<pre class="r"><code>library(mlogit)
-fit3 &lt;- mlogit(y ~ 0 | x1 + x2, data2, shape = &quot;wide&quot;, reflevel = 3)
-matrix(fit3$coef, nrow = 2, ncol =  3)</code></pre>
+<pre class="r"><code>library(mlogit) # ------------------------------------------------------
+fit_mlogit &lt;- mlogit(y ~ 0 | x1 + x2, reflevel = 3,
+                     shape = &quot;wide&quot;, data_long)
+# behold, the estimated coefficients are the same ----------------------
+matrix(fit_mlogit$coef, nrow = 2, ncol = 3)</code></pre>
 <pre><code>##            [,1]       [,2]       [,3]
 ## [1,] 1.71603345 -0.2607527 -0.4212572
 ## [2,] 0.05885441  0.4327380 -0.4941973</code></pre>
