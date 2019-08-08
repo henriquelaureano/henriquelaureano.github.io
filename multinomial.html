@@ -1582,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-08-07 21:12:24</h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-08 17:32:01</h4>
 
 </div>
 
@@ -2059,14 +2059,26 @@ parnames(multi_lkl) &lt;- names(initial_values) # mle2 exigency
 ## 
 ## Log-likelihood: -72.97</code></pre>
 <pre class="r"><code># behold the estimated probabilities ===================================
-head(inv_logit(fit@coef, linear_pred, data)$ps)</code></pre>
-<pre><code>##              p1        p2         p3
-## [1,] 0.07362905 0.2554734 0.67089756
-## [2,] 0.08184015 0.7122206 0.20593929
-## [3,] 0.11227949 0.7540724 0.13364814
-## [4,] 0.09294784 0.8717613 0.03529081
-## [5,] 0.11314446 0.7044381 0.18241740
-## [6,] 0.15454264 0.6415401 0.20391725</code></pre>
+results &lt;- lapply(
+    seq(k),
+    function(i) cbind(inv_logit(fit@coef, linear_pred, data)$ps[ , i],
+                      probs[ , i]))
+results &lt;- do.call(cbind, results)
+colnames(results) &lt;- c(sapply(seq(k),
+                              function(i) c(paste0(&quot;p&quot;, i, &quot;_est&quot;),
+                                            paste0(&quot;p&quot;, i, &quot;_true&quot;))))
+head(results, 10)</code></pre>
+<pre><code>##           p1_est    p1_true    p2_est   p2_true     p3_est    p3_true
+##  [1,] 0.07362905 0.21727022 0.2554734 0.1858614 0.67089756 0.59686839
+##  [2,] 0.08184015 0.18000619 0.7122206 0.6689320 0.20593929 0.15106185
+##  [3,] 0.11227949 0.16062883 0.7540724 0.7474396 0.13364814 0.09193157
+##  [4,] 0.09294784 0.07730113 0.8717613 0.9040967 0.03529081 0.01860213
+##  [5,] 0.11314446 0.18527656 0.7044381 0.6819218 0.18241740 0.13280162
+##  [6,] 0.15454264 0.21134961 0.6415401 0.6329376 0.20391725 0.15571276
+##  [7,] 0.12081038 0.08890887 0.8393728 0.8891595 0.03981685 0.02193163
+##  [8,] 0.12135320 0.24683283 0.4764948 0.4165770 0.40215199 0.33659012
+##  [9,] 0.16782814 0.15426992 0.7362683 0.7808901 0.09590359 0.06483995
+## [10,] 0.12213469 0.11892142 0.8087069 0.8387032 0.06915837 0.04237537</code></pre>
 <pre class="r"><code># ======================================================================
 # checking the results with the existing r libraries ===================
 # ======================================================================
