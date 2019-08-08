@@ -1582,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-08-07 20:09:33</h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-07 21:12:24</h4>
 
 </div>
 
@@ -1949,15 +1949,25 @@ for(l in c(&quot;small&quot;, &quot;medium&quot;))
 <h1>And now with covariates</h1>
 <p><em>log - likelihood</em>,</p>
 <p><span class="math display">\[
-l(\bm{\beta}) = \log n! - \sum_{i=1}^{k} y_{i \cdot}!
+l(\bm{\beta}) = \sum_{j=1}^{n} \log y_{j}!
+- \sum_{j=1}^{n} \sum_{i=1}^{k} y_{ij}!
 + \sum_{j=1}^{n} \sum_{i=1}^{k} y_{ij} \log p_{ij},
 \quad \text{with} \quad
 p_{ij} = \frac{
   \exp\{\bm{x}_{j}^{\top} \bm{\beta}_{i}\}}{
   1 + \sum_{i=1}^{k-1} \exp\{\bm{x}_{j}^{\top} \bm{\beta}_{i}\}}.
 \]</span></p>
-<p>with <span class="math inline">\(y\)</span> representing the outcome, i.e., an indicator for which category the subject <span class="math inline">\(j\)</span> belongs. <span class="math inline">\(i\)</span> represents the multinomial category/level. <span class="math inline">\(p_{ij}\)</span> is the probability of the subject <span class="math inline">\(j\)</span> be classified in the category <span class="math inline">\(i\)</span>.</p>
-<p><span class="math inline">\(\bm{\beta}_{i}\)</span> is the vector of coefficients for category <span class="math inline">\(i\)</span> and <span class="math inline">\(\bm{x}_{j}\)</span> is the row vector of covariates of the subject <span class="math inline">\(j\)</span>.</p>
+<p>with</p>
+<ul>
+<li><p><span class="math inline">\(y\)</span> representing the outcome, i.e., an indicator for which category the subject <span class="math inline">\(j\)</span> belongs.</p></li>
+<li><p><span class="math inline">\(i\)</span> represents the multinomial category/level.</p></li>
+<li><p><span class="math inline">\(p_{ij}\)</span> is the probability of the subject <span class="math inline">\(j\)</span> be classified in the category <span class="math inline">\(i\)</span>.</p></li>
+<li><p><span class="math inline">\(\bm{\beta}_{i}\)</span> is the vector of coefficients for category <span class="math inline">\(i\)</span></p></li>
+<li><p>and <span class="math inline">\(\bm{x}_{j}\)</span> is the row vector of covariates of the subject <span class="math inline">\(j\)</span>.</p></li>
+</ul>
+<p><span class="math inline">\(y_{ij}\)</span> and <span class="math inline">\(y_{j}\)</span> are countings, expressing the observed quantities for the subject <span class="math inline">\(j\)</span> in the category <span class="math inline">\(i\)</span>.</p>
+<p>Here we’re simulating data in the fashion of a <em>multinomial bernoulli trial</em>, say.</p>
+<p>Thus, these countings will be always one. As consequence, <span class="math inline">\(\log 1! = 0\)</span>.</p>
 <pre class="r"><code># ======================================================================
 # inverse multinomial logit function (the heart of everything here) ====
 # ======================================================================
