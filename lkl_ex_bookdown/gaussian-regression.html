@@ -733,10 +733,10 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div id="gaussian-regression" class="section level1 unnumbered">
 <h1>Gaussian regression</h1>
 <hr />
-<p><strong>Consider the following data table (adapted/modified from Montgomery &amp; Runger,
-1994) to which we wish to fit a simple linear regression model by relating the
-response variable <span class="math inline">\(Y\)</span> (purity in %) to an explanatory variable <span class="math inline">\(X\)</span>
-(hydrocarbon level).</strong></p>
+<p><strong>Consider the following data table (adapted/modified from Montgomery &amp;
+Runger, 1994) to which we wish to fit a simple linear regression model
+by relating the response variable <span class="math inline">\(Y\)</span> (purity in %) to an
+explanatory variable <span class="math inline">\(X\)</span> (hydrocarbon level).</strong></p>
 <p><img src="gauss-reg_table.png" style="display: block; margin: auto;" /></p>
 <hr />
 <div id="likelihood-2" class="section level2 unnumbered">
@@ -762,9 +762,9 @@ Figure 10: Dispersion between hydrocarbon level <span class="math inline">\(\tim
 log-likelihood, in matricial form</p>
 <p><span class="math display">\[
 \begin{align*}
- l(\theta; Y) &amp;= - \frac{n}{2} \log 2\pi - n \log \sigma
+  l(\theta; Y) &amp;= - \frac{n}{2} \log 2\pi - n \log \sigma
                  - \frac{1}{2\sigma^{2}} \left \|  Y - X \beta \right \|^{2}\\
-              &amp;= \text{constant} - n \log \sigma
+               &amp;= \text{constant} - n \log \sigma
                  - \frac{1}{2\sigma^{2}} \left \|  Y - X \beta \right \|^{2},
 \end{align*}
 \]</span></p>
@@ -853,7 +853,8 @@ Figure 11: Deviance of (<span class="math inline">\(\beta_{0}, \beta_{1}\)</span
 <div id="profile-likelihood-wrt-sigma" class="section level3 unnumbered">
 <h3>Profile likelihood wrt <span class="math inline">\(\sigma\)</span></h3>
 <hr />
-<p><strong>obtaining the profile likelihood (joint - 2D) with respect to <span class="math inline">\(\sigma\)</span>.</strong></p>
+<p><strong>obtaining the profile likelihood (joint - 2D) with respect to
+<span class="math inline">\(\sigma\)</span>.</strong></p>
 <hr />
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># profile ------------------------------------------------------------------------</span>
 sigma.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="fl">1.7</span>, <span class="fl">3.5</span>, <span class="dt">length.out =</span> <span class="dv">100</span>)

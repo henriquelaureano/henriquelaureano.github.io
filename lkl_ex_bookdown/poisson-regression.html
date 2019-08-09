@@ -733,11 +733,9 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div id="poisson-regression" class="section level1 unnumbered">
 <h1>Poisson regression</h1>
 <hr />
-<p><strong>Consider a sample of a r.v. <span class="math inline">\(Y\)</span> where it is assumed that
-<span class="math inline">\(Y_{i} \sim P(\lambda_{i})\)</span> where the parameter <span class="math inline">\(\lambda_{i}\)</span> is described
-by a function of an explanatory variable
-<span class="math inline">\(\log (\lambda_{i}) = \beta_{0} + \beta_{1} x_{i}\)</span> with values known from
-<span class="math inline">\(x_{i}.\)</span><br />
+<p><strong>Consider a sample of a r.v. <span class="math inline">\(Y\)</span> where it is assumed that <span class="math inline">\(Y_{i}  \sim P(\lambda_{i})\)</span> where the parameter <span class="math inline">\(\lambda_{i}\)</span> is described
+by a function of an explanatory variable <span class="math inline">\(\log (\lambda_{i}) =  \beta_{0} + \beta_{1} x_{i}\)</span> with values known from
+<span class="math inline">\(x_{i}.\)</span>
 Simulated data with (<span class="math inline">\(\beta_{0} = 2, \beta_{1} = 0.5\)</span>) are shown below.</strong></p>
 <p><img src="poi-reg_table.png" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">11</span>, <span class="dv">37</span>, <span class="dv">70</span>, <span class="dv">19</span>, <span class="dv">12</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">88</span>),
@@ -753,8 +751,8 @@ Figure 14: Dispersion between the variables  and .
 <div id="likelihood-3" class="section level2 unnumbered">
 <h2>Likelihood</h2>
 <hr />
-<p><strong>Obtain the graph of the likelihood function indicating the position of the true
-values of the parameters.</strong></p>
+<p><strong>Obtain the graph of the likelihood function indicating the position of
+the true values of the parameters.</strong></p>
 <hr />
 <p>The log-likelihood is given by</p>
 <p><span class="math display">\[ l(\lambda) = -n \lambda + \log \lambda \sum_{i=1}^{n} y_{i}
@@ -901,7 +899,7 @@ qa.coef.poi &lt;-<span class="st"> </span><span class="cf">function</span>(grid,
     lkl.prof &lt;-<span class="st"> </span><span class="kw">coef.profile</span>(coef.hat, coef)
     hess &lt;-<span class="st"> </span><span class="kw">hessian</span>(coef.profile, <span class="dt">x =</span> coef.hat, <span class="dt">coef =</span> coef)
     n &lt;-<span class="st"> </span><span class="kw">length</span>(grid) ; qa &lt;-<span class="st"> </span><span class="kw">numeric</span>(n)
-    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n) qa[i] &lt;-<span class="st"> </span>lkl.prof <span class="op">+</span><span class="st"> </span><span class="fl">.5</span> <span class="op">*</span><span class="st"> </span>hess <span class="op">*</span><span class="st"> </span>(grid[i] <span class="op">-</span><span class="st"> </span>coef.hat)<span class="op">**</span><span class="dv">2</span> 
+    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n) qa[i] &lt;-<span class="st"> </span>lkl.prof <span class="op">+</span><span class="st"> </span><span class="fl">.5</span> <span class="op">*</span><span class="st"> </span>hess <span class="op">*</span><span class="st"> </span>(grid[i] <span class="op">-</span><span class="st"> </span>coef.hat)<span class="op">**</span><span class="dv">2</span>
     <span class="kw">return</span>(qa)}
 qa.b0.poi &lt;-<span class="st"> </span><span class="kw">qa.coef.poi</span>(b0.grid, <span class="st">&quot;b0&quot;</span>) ; <span class="kw">lines</span>(b0.grid, qa.b0.poi, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>)
 
@@ -952,19 +950,19 @@ mle2.<span class="fl">95.</span>b1 &lt;-<span class="st"> </span>par.est<span cl
 Figure 17: Profile log-likelihoods, in black, for <span class="math inline">\(\beta_{0}\)</span> and <span class="math inline">\(\beta_{1}\)</span> in a Poisson regression with some intervals. In black dotted, the original parameter value. In black dashed, the MLE. The gray curve is a quadratic approx. for the profile, with the gray dashed arrows corresponding to its 95% interval. The black dashed arrows correspond to the 95% interval based in a cut in the likelihood. The black dotted arrows correspond to the 95% interval based in the  output.
 </p>
 </div>
-<p>By the amount of code provided in this question, we can see that isn’t so
-straightforward to obtain intervals and quadratic approximations of profiled
-likelihoods of parameters.</p>
-<p>A very nice and interesting thing that we can see in
-Figure <a href="poisson-regression.html#fig:lkl-model-poi-intervals">17</a> is how all the three obtained intervals
-match. A brief, but enough, description is already given in the Figure caption,
-and for more details, you have the provided code.</p>
+<p>By the amount of code provided in this question, we can see that isn’t
+so straightforward to obtain intervals and quadratic approximations of
+profiled likelihoods of parameters.</p>
+<p>A very nice and interesting thing that we can see in Figure
+<a href="poisson-regression.html#fig:lkl-model-poi-intervals">17</a> is how all the three obtained
+intervals match. A brief, but enough, description is already given in
+the Figure caption, and for more details, you have the provided code.</p>
 </div>
 <div id="did-we-obtained-the-right-values" class="section level2 unnumbered">
 <h2>Did we obtained the right values?</h2>
 <hr />
-<p><strong>Compare the previous results with those provided by the <span class="math inline">\(\texttt{glm()}\)</span>
-function and discuss the findings.</strong></p>
+<p><strong>Compare the previous results with those provided by the
+<span class="math inline">\(\texttt{glm()}\)</span> function and discuss the findings.</strong></p>
 <hr />
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># fitting the model via glm() ----------------------------------------------------</span>
 model.glm &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>x, data, <span class="dt">family =</span> poisson)

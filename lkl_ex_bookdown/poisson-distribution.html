@@ -733,28 +733,28 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div id="poisson-distribution" class="section level1 unnumbered">
 <h1>Poisson distribution</h1>
 <hr />
-<p><strong>Let <span class="math inline">\(X\)</span> be a r.v. of a Poisson distribution (<span class="math inline">\(X \sim P(\lambda)\)</span>) for
-which the following random sample was obtained: (3, 1, 0, 2, 1, 1, 0, 0).</strong></p>
+<p><strong>Let <span class="math inline">\(X\)</span> be a r.v. of a Poisson distribution (<span class="math inline">\(X \sim P(\lambda)\)</span>)
+for which the following random sample was obtained: (3, 1, 0, 2, 1, 1,
+0, 0).</strong></p>
 <hr />
 <pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>)</code></pre>
 <div id="lkl-quad.-approx.-and-intervals" class="section level2 unnumbered">
 <h2>Lkl, quad. approx. and intervals</h2>
 <hr />
-<p><strong>Obtain the likelihood function, its quadratic approximation and intervals for
-<span class="math inline">\(\lambda\)</span>.</strong></p>
+<p><strong>Obtain the likelihood function, its quadratic approximation and
+intervals for <span class="math inline">\(\lambda\)</span>.</strong></p>
 <hr />
 <p>The likelihood and the log-likelihood of a Poisson(<span class="math inline">\(\lambda\)</span>) is</p>
 <p><span class="math display">\[
- L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{x_{i}}}{x_{i}!}
-              \quad \text{and} \quad
- \log L(\lambda) = l(\lambda) =
- -n \lambda + \log \lambda \sum_{i=1}^{n} x_{i} - \sum_{i=1}^{n} \log x_{i}!.
+L(\lambda) = \prod_{i=1}^{n} \frac{e^{-\lambda} \lambda^{x_{i}}}{x_{i}!}
+\quad \text{and} \quad \log L(\lambda) = l(\lambda) = -n \lambda + \log
+\lambda \sum_{i=1}^{n} x_{i} - \sum_{i=1}^{n} \log x_{i}!.
 \]</span></p>
 <p><em>We work here with the log-likelihood to make our life easier, since the
 computations are much simpler in the log scale.</em></p>
-<p>By computing the Score (derivative of <span class="math inline">\(l(\lambda)\)</span> wrt to <span class="math inline">\(\lambda\)</span>) and
-making it equal to zero, we find the MLE <span class="math inline">\(\hat{\lambda} = \bar{x}\)</span>. Computing
-the second derivative we find the observed information</p>
+<p>By computing the Score (derivative of <span class="math inline">\(l(\lambda)\)</span> wrt to <span class="math inline">\(\lambda\)</span>)
+and making it equal to zero, we find the MLE <span class="math inline">\(\hat{\lambda} = \bar{x}\)</span>. Computing the second derivative we find the observed
+information</p>
 <p><span class="math display">\[
  I_{O}(\lambda) = \frac{n \bar{x}}{\lambda^{2}}  \quad \rightarrow \quad
  I_{O}(\hat{\lambda}) = \frac{n}{\bar{x}}.
@@ -765,24 +765,25 @@ Figure <a href="poisson-distribution.html#fig:poisson">2</a>.</p>
 <span class="math inline">\(l(\lambda)\)</span> around <span class="math inline">\(\hat{\lambda}\)</span> we have</p>
 <p><span class="math display">\[
 \begin{align*}
- l(\lambda) &amp;\approx l(\hat{\lambda})
-            + (\lambda - \hat{\lambda}) {l}&#39;(\hat{\lambda})
-            + \frac{1}{2} (\lambda - \hat{\lambda})^{2} {l}&#39;&#39;(\hat{\lambda})\\
-            &amp;\quad(\text{the Score is zero at the MLE})\\
-            &amp;= l(\hat{\lambda})
-            + \frac{1}{2} (\lambda - \hat{\lambda})^{2} {l}&#39;&#39;(\hat{\lambda})
-            = l(\hat{\lambda})
-            + \frac{1}{2} (\lambda - \hat{\lambda})^{2} I_{O}(\hat{\lambda}).
+  l(\lambda) &amp;\approx l(\hat{\lambda})
+               + (\lambda - \hat{\lambda}) {l}&#39;(\hat{\lambda})
+               + \frac{1}{2} (\lambda - \hat{\lambda})^{2} {l}&#39;&#39;(\hat{\lambda})\\
+             &amp;\quad(\text{the Score is zero at the MLE})\\
+             &amp;= l(\hat{\lambda})
+               + \frac{1}{2} (\lambda - \hat{\lambda})^{2} {l}&#39;&#39;(\hat{\lambda})
+               = l(\hat{\lambda})
+               + \frac{1}{2} (\lambda - \hat{\lambda})^{2} I_{O}(\hat{\lambda}).
 \end{align*}
 \]</span></p>
-<p>A graph of the quadratic approximation of the Poisson log-likelihood is provided
-in gray in Figure <a href="poisson-distribution.html#fig:poisson">2</a>. There we can see how good is the
-approximation around the maximum likelihood estimator (MLE). Here the sample size
-is very small, the idea is that as the sample size increase the quality, in this
-case the range, of the approximation also increase. This should happen because as
-the sample size increase the Poisson likelihood should be more symmetric.</p>
-<p>In the topright graph of Figure <a href="poisson-distribution.html#fig:poisson">2</a> we have two intervals for
-<span class="math inline">\(\lambda\)</span>.</p>
+<p>A graph of the quadratic approximation of the Poisson log-likelihood is
+provided in gray in Figure <a href="poisson-distribution.html#fig:poisson">2</a>. There we can see how good
+is the approximation around the maximum likelihood estimator (MLE). Here
+the sample size is very small, the idea is that as the sample size
+increase the quality, in this case the range, of the approximation also
+increase. This should happen because as the sample size increase the
+Poisson likelihood should be more symmetric.</p>
+<p>In the topright graph of Figure <a href="poisson-distribution.html#fig:poisson">2</a> we have two intervals
+for <span class="math inline">\(\lambda\)</span>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># likelihood ---------------------------------------------------------------------</span>
 lkl.poi &lt;-<span class="st"> </span><span class="cf">function</span>(lambda, data) {
     n &lt;-<span class="st"> </span><span class="kw">length</span>(data)
@@ -841,36 +842,38 @@ Figure 2: log-likelihood function and MLE of <span class="math inline">\(\lambda
 </p>
 </div>
 <p>In the topright, in black, we have a interval based in the likelihood,
-<span class="math inline">\(\lambda \in (0.459, 1.855)\)</span>, but with
-a cutoff criterion based in a <span class="math inline">\(\chi^{2}\)</span> distribution. Thus, to have a nominal
-95% confidence interval we use a cutoff <span class="math inline">\(c = 15\%\)</span>. As we saw before, this
-interval is based in a large-sample theory. Since we’re dealing here with a
-reasonable regular case, this interval shows as a good approximation.</p>
-<p>Still in the topright of Figure <a href="poisson-distribution.html#fig:poisson">2</a>, in red we have a interval
-based in the quadratic approximation of the log-likelihood,
-<span class="math inline">\(\lambda \in (0.307, 1.693)\)</span>. From the
-quadratic approximation we get</p>
+<span class="math inline">\(\lambda \in (0.459, 1.855)\)</span>, but
+with a cutoff criterion based in a <span class="math inline">\(\chi^{2}\)</span> distribution. Thus, to
+have a nominal 95% confidence interval we use a cutoff <span class="math inline">\(c = 15\%\)</span>. As
+we saw before, this interval is based in a large-sample theory. Since
+we’re dealing here with a reasonable regular case, this interval shows
+as a good approximation.</p>
+<p>Still in the topright of Figure <a href="poisson-distribution.html#fig:poisson">2</a>, in red we have a
+interval based in the quadratic approximation of the log-likelihood,
+<span class="math inline">\(\lambda \in (0.307, 1.693)\)</span>. From
+the quadratic approximation we get</p>
 <p><span class="math display">\[
  \log \frac{L(\lambda)}{L(\hat{\lambda})} \approx
  -\frac{1}{2} I_{O}(\hat{\lambda}) (\lambda - \hat{\lambda})^{2},
 \]</span></p>
 <p>that also follows a <span class="math inline">\(\chi^{2}\)</span> distribution, since we have a r.v.
-<span class="math inline">\(\hat{\lambda}\)</span> normalized (with its expected value subtracted and divided by
-its variance) and squared. From this we get the following exact (in the normal
-case) 95% confidence interval</p>
+<span class="math inline">\(\hat{\lambda}\)</span> normalized (with its expected value subtracted and
+divided by its variance) and squared. From this we get the following
+exact (in the normal case) 95% confidence interval</p>
 <p><span class="math display">\[
  \hat{\lambda} \pm 1.96~I_{O}(\hat{\lambda})^{-1/2}
  \qquad (\hat{\lambda} \pm 1.96~\text{se}(\hat{\lambda})).
 \]</span></p>
 <p>In the nonnormal cases this is an approximate 95% CI.</p>
-<p><em>The actual variance is <span class="math inline">\(I_{E}(\hat{\lambda})^{-1/2}\)</span>, but for the Poisson
-case the Fisher (expected) information is equal to the observed one,
-<span class="math inline">\(I_{O}(\hat{\lambda})^{-1/2}\)</span></em>.</p>
-<p>A very nice thing that we can see from this intervals is that a Wald interval
-(a <span class="math inline">\(\pm\)</span> interval) corresponds to a cut in the quadratic approximation exactly
-in the same point that the probability-based interval cuts the (log-)likelihood.
-Thus, as more regular the likelihood, better will be the fit of the
-approximation and more reliable will be the Wald interval.</p>
+<p><em>The actual variance is <span class="math inline">\(I_{E}(\hat{\lambda})^{-1/2}\)</span>, but for the
+Poisson case the Fisher (expected) information is equal to the observed
+one, <span class="math inline">\(I_{O}(\hat{\lambda})^{-1/2}\)</span></em>.</p>
+<p>A very nice thing that we can see from this intervals is that a Wald
+interval (a <span class="math inline">\(\pm\)</span> interval) corresponds to a cut in the quadratic
+approximation exactly in the same point that the probability-based
+interval cuts the (log-)likelihood. Thus, as more regular the
+likelihood, better will be the fit of the approximation and more
+reliable will be the Wald interval.</p>
 </div>
 <div id="another-parametrization" class="section level2 unnumbered">
 <h2>Another parametrization</h2>
@@ -895,7 +898,8 @@ i.e., the MLE of <span class="math inline">\(\hat{\theta}\)</span> is <span clas
 \]</span>
 From this we can take the observed information for the reparametrization</p>
 <p><span class="math display">\[ V[\hat{\theta}] = I_{O}^{-1}(\hat{\theta}) = (\bar{x}~n)^{-1}. \]</span></p>
-<p><em>Now we do, in the same manner, everything that we did in the previous letter.</em></p>
+<p><em>Now we do, in the same manner, everything that we did in the previous
+letter.</em></p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># likelihood ---------------------------------------------------------------------</span>
 ## we can still use the lkl.poi function, but now we do
 ## lambda = exp(theta),
@@ -956,22 +960,20 @@ Figure 3: log-likelihood function and MLE of <span class="math inline">\(\theta\
 </p>
 </div>
 <p>We obtained here two intervals for <span class="math inline">\(\theta\)</span>. One based in a cut in the
-likelihood,
-<span class="math inline">\(\theta \in (-0.778, 0.618)\)</span> - in black on
-the topright of Figure <a href="poisson-distribution.html#fig:poisson-reparametrization">3</a>, and one based in a
-cut in the quadratic approximation of the likelihood,
-<span class="math inline">\(\theta \in (-0.693, 0.693)\)</span> - in gray on the
-topright of Figure <a href="poisson-distribution.html#fig:poisson-reparametrization">3</a>.</p>
-<p>With the parametrization <span class="math inline">\(\theta = \log \lambda\)</span> the two intervals are closer
-than the ones obtained for <span class="math inline">\(\lambda\)</span>. i.e., for <span class="math inline">\(\theta\)</span> (with the use of the
-<span class="math inline">\(\log\)</span>) we get a more regular likelihood.</p>
+likelihood, <span class="math inline">\(\theta \in (-0.778, 0.618)\)</span> - in black on the topright of Figure
+<a href="poisson-distribution.html#fig:poisson-reparametrization">3</a>, and one based in a cut in the
+quadratic approximation of the likelihood, <span class="math inline">\(\theta \in (`r paste(round(wald.95, 3), collapse = &quot;, &quot;)`)\)</span> - in gray on the topright
+of Figure <a href="poisson-distribution.html#fig:poisson-reparametrization">3</a>.</p>
+<p>With the parametrization <span class="math inline">\(\theta = \log \lambda\)</span> the two intervals are
+closer than the ones obtained for <span class="math inline">\(\lambda\)</span>. i.e., for <span class="math inline">\(\theta\)</span>
+(with the use of the <span class="math inline">\(\log\)</span>) we get a more regular likelihood.</p>
 </div>
 <div id="more-intervals" class="section level2 unnumbered">
 <h2>More intervals</h2>
 <hr />
-<p><strong>Also obtain (by at least two different methods) confidence intervals for the
-parameter <span class="math inline">\(\lambda\)</span> from the likelihood function (approximate or not) of
-<span class="math inline">\(\theta\)</span>.</strong></p>
+<p><strong>Also obtain (by at least two different methods) confidence intervals
+for the parameter <span class="math inline">\(\lambda\)</span> from the likelihood function
+(approximate or not) of <span class="math inline">\(\theta\)</span>.</strong></p>
 <hr />
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># likelihood ---------------------------------------------------------------------</span>
 theta.seq &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">length.out =</span> <span class="dv">100</span>)
@@ -998,18 +1000,17 @@ lklseq.poi &lt;-<span class="st"> </span><span class="kw">lkl.poi</span>(<span c
 Figure 4: log-likelihood function and quadratic approximation of <span class="math inline">\(\theta\)</span>, and MLE of <span class="math inline">\(\lambda\)</span> in Poisson(<span class="math inline">\(\lambda = e^{\theta}\)</span>) based on . In dashed, 95% confidence intervals for <span class="math inline">\(\lambda\)</span>.
 </p>
 </div>
-<p>Since the MLE has the invariance property, a very simple idea is: take the
-obtained interval for <span class="math inline">\(\theta\)</span> and apply a transformation,
-<span class="math inline">\(\lambda = e^{\theta}\)</span>. This simple idea is true for the interval obtained via
-likelihood function, as we can see in Figure <a href="poisson-distribution.html#fig:poisson-c">4</a>. The obtained
-interval is the same that the one in letter <span class="math inline">\(\texttt{a)}\)</span>. However, this idea
-doesn’t work for the interval based in the quadratic approximation.</p>
+<p>Since the MLE has the invariance property, a very simple idea is: take
+the obtained interval for <span class="math inline">\(\theta\)</span> and apply a transformation,
+<span class="math inline">\(\lambda = e^{\theta}\)</span>. This simple idea is true for the interval
+obtained via likelihood function, as we can see in Figure
+<a href="poisson-distribution.html#fig:poisson-c">4</a>. The obtained interval is the same that the one in
+letter <span class="math inline">\(\texttt{a)}\)</span>. However, this idea doesn’t work for the interval
+based in the quadratic approximation.</p>
 <p>In the letter <span class="math inline">\(\texttt{a)}\)</span>, via the quadratic approximation we got
-<span class="math inline">\(\lambda \in (0.307, 1.693)\)</span>. Here, applying the relation
-<span class="math inline">\(\lambda = e^{\theta}\)</span> we get
-<span class="math inline">\(\lambda \in (0.5, 2)\)</span>. i.e.,
-this shows that the invariance property applies to the likelihood, not to the
-quadratic approximation of the likelihood.</p>
+<span class="math inline">\(\lambda \in (0.307, 1.693)\)</span>. Here, applying the relation <span class="math inline">\(\lambda = e^{\theta}\)</span> we get <span class="math inline">\(\lambda \in (0.5, 2)\)</span>. i.e., this shows that the invariance property
+applies to the likelihood, not to the quadratic approximation of the
+likelihood.</p>
 <hr />
 <p><img src="logos.png" style="display: block; margin: auto;" /></p>
 

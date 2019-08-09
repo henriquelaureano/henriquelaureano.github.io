@@ -733,24 +733,25 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div id="hypergeometric-distribution" class="section level1 unnumbered">
 <h1>Hypergeometric distribution</h1>
 <hr />
-<p><strong>In order to obtain an audience estimate of a game without using ticket sales
-data or stadium roulette records, special shirts were distributed to 300
-supporters on condition that they were used during a game. During the game 250
-fans were randomly selected and 12 of them had the shirt.</strong></p>
+<p><strong>In order to obtain an audience estimate of a game without using ticket
+sales data or stadium roulette records, special shirts were
+distributed to 300 supporters on condition that they were used during
+a game. During the game 250 fans were randomly selected and 12 of them
+had the shirt.</strong></p>
 <hr />
 <div id="likelihood" class="section level2 unnumbered">
 <h2>Likelihood</h2>
 <hr />
 <p><strong>Obtain the likelihood function for the total number of supporters.</strong></p>
 <hr />
-<p>We have here a random variable, let’s say, <span class="math inline">\(X\)</span>, representing the number of
-observed successes, <span class="math inline">\(k\)</span>. Here an observed success is select a fan using a
-special shirt. So, we have</p>
+<p>We have here a random variable, let’s say, <span class="math inline">\(X\)</span>, representing the
+number of observed successes, <span class="math inline">\(k\)</span>. Here an observed success is select
+a fan using a special shirt. So, we have</p>
 <p><span class="math display">\[ X \sim \text{Hypergeometric}(N, K = 300, n = 250), \]</span>
 with probability <span class="math inline">\(p = K/N\)</span>.</p>
-<p><span class="math inline">\(N\)</span> is the population size, that we want estimate. <span class="math inline">\(K\)</span> is the unknown number
-of fans using a special shirt, and <span class="math inline">\(n\)</span> is the number of, randomly, selected
-fans.</p>
+<p><span class="math inline">\(N\)</span> is the population size, that we want estimate. <span class="math inline">\(K\)</span> is the
+unknown number of fans using a special shirt, and <span class="math inline">\(n\)</span> is the number
+of, randomly, selected fans.</p>
 <p><span class="math display">\[
 \begin{align*}
  \text{Pr}[X = k]  &amp;= \frac{\binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}\\
@@ -774,26 +775,20 @@ fans.</p>
 \]</span></p>
 <p>A plot of the likelihood is provided in Figure <a href="hypergeometric-distribution.html#fig:hypergeo-lkl">5</a>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># likelihood ---------------------------------------------------------------------</span>
-lkl.hypergeo &lt;-<span class="st"> </span><span class="cf">function</span>(N, N.init, n, K, k) {
-    size &lt;-<span class="st"> </span>N <span class="op">-</span><span class="st"> </span>N.init
-    n1 &lt;-<span class="st"> </span>n2 &lt;-<span class="st"> </span>n3 &lt;-<span class="st"> </span>n4 &lt;-<span class="st"> </span><span class="kw">numeric</span>(size)
-    N &lt;-<span class="st"> </span>N.init
-    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>size) {
-        n1[i] =<span class="st"> </span><span class="kw">log</span>(N <span class="op">-</span><span class="st"> </span>K)
-        n2[i] =<span class="st"> </span><span class="kw">log</span>(N <span class="op">-</span><span class="st"> </span>n)
-        n3[i] =<span class="st"> </span><span class="kw">log</span>(N <span class="op">-</span><span class="st"> </span>K <span class="op">-</span><span class="st"> </span>n <span class="op">+</span><span class="st"> </span>k)
-        n4[i] =<span class="st"> </span><span class="kw">log</span>(N)
-        N =<span class="st"> </span>N <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-    }
-    lkl &lt;-<span class="st"> </span><span class="kw">sum</span>(n1) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(n2) <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(n3) <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(n4)
+lkl.hypergeo &lt;-<span class="st"> </span><span class="cf">function</span>(N, n, K, k) {
+    l1 &lt;-<span class="st"> </span><span class="kw">lgamma</span>(N <span class="op">-</span><span class="st"> </span>K <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
+    l2 &lt;-<span class="st"> </span><span class="kw">lgamma</span>(N <span class="op">-</span><span class="st"> </span>n <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
+    l3 &lt;-<span class="st"> </span><span class="kw">lgamma</span>(N <span class="op">-</span><span class="st"> </span>K <span class="op">-</span><span class="st"> </span>n <span class="op">+</span><span class="st"> </span>k <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
+    l4 &lt;-<span class="st"> </span><span class="kw">lgamma</span>(N <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
+    lkl &lt;-<span class="st"> </span>l1 <span class="op">+</span><span class="st"> </span>l2 <span class="op">-</span><span class="st"> </span>l3 <span class="op">-</span><span class="st"> </span>l4
     <span class="kw">return</span>(lkl)
 }
-compute.lkl &lt;-<span class="st"> </span><span class="cf">function</span>(grid, N.init, n, K, k) {
+compute.lkl &lt;-<span class="st"> </span><span class="cf">function</span>(grid, n, K, k) {
     size.grid =<span class="st"> </span><span class="kw">length</span>(grid)
     lkl.grid =<span class="st"> </span><span class="kw">numeric</span>(size.grid)
     i =<span class="st"> </span><span class="dv">1</span>
     <span class="cf">for</span> (j <span class="cf">in</span> grid) {
-        lkl.grid[i] =<span class="st"> </span><span class="kw">lkl.hypergeo</span>(<span class="dt">N =</span> j, <span class="dt">N.init =</span> N.init, <span class="dt">n =</span> n, <span class="dt">K =</span> K, <span class="dt">k =</span> k)
+        lkl.grid[i] =<span class="st"> </span><span class="kw">lkl.hypergeo</span>(<span class="dt">N =</span> j, <span class="dt">n =</span> n, <span class="dt">K =</span> K, <span class="dt">k =</span> k)
         i =<span class="st"> </span>i <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
     }
     <span class="kw">return</span>(lkl.grid)
@@ -804,17 +799,17 @@ compute.lkl &lt;-<span class="st"> </span><span class="cf">function</span>(grid,
                 <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>), <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)) <span class="co"># plot window definition</span>
 
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">3000</span>, <span class="dv">17000</span>, <span class="dt">by =</span> <span class="dv">20</span>)
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">2</span>)
 
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">539</span>, <span class="fl">1e4</span>, <span class="dt">by =</span> <span class="dv">20</span>)
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">2</span>)
 
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">5000</span>, <span class="dv">8000</span>, <span class="dt">by =</span> <span class="dv">10</span>)
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">2</span>)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:hypergeo-lkl"></span>
@@ -823,45 +818,45 @@ n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv
 Figure 5: log-likelihood of <span class="math inline">\(N\)</span> in Hypergeometric(N, K = 300, n = 250) based on <span class="math inline">\(k = 12\)</span>. In dashed, the MLE. Different ranges of <span class="math inline">\(N\)</span> to have a better understanding of the likelihood behaviour.
 </p>
 </div>
-<p>The MLE here is given by <span class="math inline">\(\hat{N} = \left\lfloor Kn/k \right\rfloor = 6250\)</span>.</p>
+<p>The MLE here is given by <span class="math inline">\(\hat{N} = \left\lfloor Kn/k \right\rfloor =  6250\)</span>.</p>
 <p>Figure <a href="hypergeometric-distribution.html#fig:hypergeo-lkl">5</a> present some very interesting behaviours.</p>
-<p>In the top, going from <span class="math inline">\(N = 3000\)</span> to <span class="math inline">\(N = 17000\)</span> we can see clearly the
-likelihood asymmetry. In the bottomleft, starting from the first valid possible
-value, 539, we see basically nothing. i.e., we don’t see any possible curvature
-in the likelihood. In the bottomright we focus around the MLE to see better the
-curvature. Around that point we see a very small variation in the likelihood,
-<span class="math inline">\(0.3\)</span>, for a range of <span class="math inline">\(3000\)</span> in <span class="math inline">\(N\)</span>. This shows how smooth is the
-curvature around the MLE in a large region.</p>
+<p>In the top, going from <span class="math inline">\(N = 3000\)</span> to <span class="math inline">\(N = 17000\)</span> we can see clearly
+the likelihood asymmetry. In the bottomleft, starting from the first
+valid possible value, 539, we see basically nothing. i.e., we don’t see
+any possible curvature in the likelihood. In the bottomright we focus
+around the MLE to see better the curvature. Around that point we see a
+very small variation in the likelihood, <span class="math inline">\(0.3\)</span>, for a range of <span class="math inline">\(3000\)</span>
+in <span class="math inline">\(N\)</span>. This shows how smooth is the curvature around the MLE in a
+large region.</p>
 </div>
 <div id="mle-and-intervals" class="section level2 unnumbered">
 <h2>MLE and intervals</h2>
 <hr />
-<p><strong>Get the point estimate and the interval estimate, the latter by at least two
-different methods.</strong></p>
+<p><strong>Get the point estimate and the interval estimate, the latter by at
+least two different methods.</strong></p>
 <hr />
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># point estimate -----------------------------------------------------------------</span>
-<span class="kw">optimize</span>(lkl.hypergeo, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>,
+<span class="kw">optimize</span>(lkl.hypergeo, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>,
          <span class="dt">lower =</span> <span class="dv">539</span>, <span class="dt">upper =</span> <span class="fl">2e4</span>, <span class="dt">maximum =</span> <span class="ot">TRUE</span>)</code></pre>
 <pre><code>$maximum
-[1] 6251.045
+[1] 6249.502
 
 $objective
-[1] 317.8437</code></pre>
+[1] -116.3481</code></pre>
 <p>Using the  routine to do the optimization we obtain
-<span class="math inline">\(\hat{N} = 6251\)</span>, and a log-likelihood of 317.85. This value for <span class="math inline">\(\hat{N}\)</span>
-is practically equal to what the ML theory says,
-<span class="math inline">\(\hat{N} = \left\lfloor Kn/k \right\rfloor = 6250\)</span>.</p>
-<p>Next, we compute a quadratic approximation for the hypergeometric (log-)likelihood
-followed by two intervals, one based in the likelihood, and a wald interval based
-in the quadratic approximation. All this is presented in
-Figure <a href="hypergeometric-distribution.html#fig:hypergeo-intervals">6</a>.</p>
+<span class="math inline">\(\hat{N} = 6249.5\)</span>, and a log-likelihood of -116.35. This value for
+<span class="math inline">\(\hat{N}\)</span> is practically equal to what the ML theory says, <span class="math inline">\(\hat{N} = \left\lfloor Kn/k \right\rfloor = 6250\)</span>.</p>
+<p>Next, we compute a quadratic approximation for the hypergeometric
+(log-)likelihood followed by two intervals, one based in the likelihood,
+and a wald interval based in the quadratic approximation. All this is
+presented in Figure <a href="hypergeometric-distribution.html#fig:hypergeo-intervals">6</a>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># quadratic approximation of the likelihood --------------------------------------</span>
-hess &lt;-<span class="st"> </span>numDeriv<span class="op">:::</span><span class="kw">hessian</span>(lkl.hypergeo, <span class="dt">x =</span> <span class="dv">6250</span>,
-                           <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
+hess &lt;-<span class="st"> </span>numDeriv<span class="op">:::</span><span class="kw">hessian</span>(lkl.hypergeo,
+                           <span class="dt">x =</span> <span class="dv">6250</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
 <span class="co"># quadratic approx.</span>
-quadprox.hypergeo &lt;-<span class="st"> </span><span class="cf">function</span>(N, <span class="dt">N.est =</span> <span class="dv">6250</span>, N.init, n, K, k) {
+quadprox.hypergeo &lt;-<span class="st"> </span><span class="cf">function</span>(N, <span class="dt">N.est =</span> <span class="dv">6250</span>, n, K, k) {
     obs.info &lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="op">-</span>hess) <span class="co"># observed information</span>
-    lkl &lt;-<span class="st"> </span><span class="kw">lkl.hypergeo</span>(N.est, N.init, n, K, k)
+    lkl &lt;-<span class="st"> </span><span class="kw">lkl.hypergeo</span>(N.est, n, K, k)
     lkl <span class="op">-</span><span class="st"> </span><span class="fl">.5</span> <span class="op">*</span><span class="st"> </span>obs.info <span class="op">*</span><span class="st"> </span>(N <span class="op">-</span><span class="st"> </span>N.est)<span class="op">**</span><span class="dv">2</span>
 }
 <span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="fl">.1</span>)
@@ -869,12 +864,12 @@ quadprox.hypergeo &lt;-<span class="st"> </span><span class="cf">function</span>
        <span class="dt">heights =</span> <span class="kw">c</span>(<span class="fl">1.5</span>, <span class="dv">1</span>)) <span class="co"># plot window definition</span>
 <span class="co"># likelihood plot</span>
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">3000</span>, <span class="dv">17000</span>, <span class="dt">by =</span> <span class="dv">20</span>)
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">3</span>)
 
 <span class="co"># quadratic approximation plot</span>
-<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
       <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)
 
 <span class="kw">legend</span>(<span class="dv">10500</span>, <span class="fl">318.25</span>, <span class="kw">c</span>(<span class="st">&quot;log-like&quot;</span>, <span class="st">&quot;Quadratic</span><span class="ch">\n</span><span class="st">approx.&quot;</span>, <span class="st">&quot;MLE&quot;</span>),
@@ -883,26 +878,26 @@ n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv
 <span class="co"># first, we plot again the likelihood and the quadratic approx.</span>
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">2500</span>, <span class="dv">12000</span>, <span class="dt">by =</span> <span class="dv">20</span>)
 
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">3</span>)
 
-<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
       <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)
 ## probability-based interval ----------------------------------------------------
 <span class="co"># cutoff&#39;s corresponding to a 95\% confidence interval for N</span>
-cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">lkl.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
+cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">lkl.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
 <span class="kw">abline</span>(<span class="dt">h =</span> cut, <span class="dt">lty =</span> <span class="dv">2</span>)
 
-ic.lkl.hypergeo &lt;-<span class="st"> </span><span class="cf">function</span>(grid, N.init, <span class="dt">n =</span> <span class="dv">250</span>, K, k) {
-    <span class="kw">compute.lkl</span>(grid, N.init, n, K, k) <span class="op">-</span><span class="st"> </span>cut
+ic.lkl.hypergeo &lt;-<span class="st"> </span><span class="cf">function</span>(grid, <span class="dt">n =</span> <span class="dv">250</span>, K, k) {
+    <span class="kw">compute.lkl</span>(grid, n, K, k) <span class="op">-</span><span class="st"> </span>cut
 }
 ic.<span class="fl">95.</span>prob &lt;-<span class="st"> </span>rootSolve<span class="op">::</span><span class="kw">uniroot.all</span>(ic.lkl.hypergeo, <span class="kw">range</span>(n.grid),
-                                     <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
+                                     <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
 <span class="kw">arrows</span>(<span class="dt">x0 =</span> ic.<span class="fl">95.</span>prob, <span class="dt">y0 =</span> <span class="kw">rep</span>(cut, <span class="dv">2</span>),
        <span class="dt">x1 =</span> ic.<span class="fl">95.</span>prob, <span class="dt">y1 =</span> <span class="kw">rep</span>(<span class="fl">309.5</span>, <span class="dv">2</span>), <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">length =</span> <span class="fl">.1</span>)
 ## wald confidence interval ------------------------------------------------------
-cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">quadprox.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
+cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">quadprox.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>)
 <span class="kw">abline</span>(<span class="dt">h =</span> cut, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>)
 
 se.n.est &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">as.vector</span>(<span class="op">-</span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span>hess))
@@ -913,10 +908,10 @@ wald<span class="fl">.95</span> &lt;-<span class="st"> </span><span class="dv">6
 <span class="co"># a better look in the approximation around the MLE ------------------------------</span>
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">5000</span>, <span class="dv">8000</span>, <span class="dt">by =</span> <span class="dv">10</span>)
 
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">3</span>)
-<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">N.init =</span> <span class="dv">539</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
+<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">300</span>, <span class="dt">k =</span> <span class="dv">12</span>),
       <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:hypergeo-intervals"></span>
 <img src="_main_files/figure-html/hypergeo-intervals-1.png" alt="log-likelihood function and MLE of \(N\) in Hypergeometric(N, K = 300, n = 250) based on \(k = 12\). In the topleft, a quadratic approximation in gray. In the topright, two intervals for \(N\) - one based in the likelihood (in black) and one based in the quadratic approximation (in gray). In the bottom we provide a better look in the quadratic approximation." width="672" />
@@ -924,31 +919,30 @@ n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv
 Figure 6: log-likelihood function and MLE of <span class="math inline">\(N\)</span> in Hypergeometric(N, K = 300, n = 250) based on <span class="math inline">\(k = 12\)</span>. In the topleft, a quadratic approximation in gray. In the topright, two intervals for <span class="math inline">\(N\)</span> - one based in the likelihood (in black) and one based in the quadratic approximation (in gray). In the bottom we provide a better look in the quadratic approximation.
 </p>
 </div>
-<p>The quadratic approximation and the intervals were obtained in the same way that
-in the exercises before, with the only difference that here the hessian was
-obtained numerically, just for simplicity.</p>
-<p>Based in a cut in the likelihood, we obtain
-<span class="math inline">\((3850, 11387)\)</span> as a 95% interval for the total
-number of fans in the game. With the wald interval (quadratic approximation) we
-obtain <span class="math inline">\((2892, 9608)\)</span> as a 95% interval.
-<em>A considerable difference</em>.</p>
+<p>The quadratic approximation and the intervals were obtained in the same
+way that in the exercises before, with the only difference that here the
+hessian was obtained numerically, just for simplicity.</p>
+<p>Based in a cut in the likelihood, we obtain <span class="math inline">\((`r paste(round(ic.95.prob, 0))`)\)</span> as a 95% interval for the total number
+of fans in the game. With the wald interval (quadratic approximation) we
+obtain <span class="math inline">\((2869, 9631)\)</span> as a 95% interval. <em>A
+considerable difference</em>.</p>
 </div>
 <div id="again-but-different" class="section level2 unnumbered">
 <h2>Again but different</h2>
 <hr />
-<p><strong>Repeat and compare the results if there were 500 shirts and 20 with shirts out
-of the 250.</strong></p>
+<p><strong>Repeat and compare the results if there were 500 shirts and 20 with
+shirts out of the 250.</strong></p>
 <hr />
 <p>The procedure here is exactly the same.</p>
 <p>We have</p>
-<p><span class="math display">\[         
+<p><span class="math display">\[
 \begin{align*}
- \text{Pr}[X = k] = \frac{\binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}, \qquad
- \text{Pr}[X = 20] &amp;=
- \frac{\binom{500}{20} \binom{N-500}{250-20}}{\binom{N}{250}}\\
-                   &amp;= \frac{500!~250!}{480!~230!~20!}
+  \text{Pr}[X = k] = \frac{\binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}, \qquad
+  \text{Pr}[X = 20] &amp;=
+                      \frac{\binom{500}{20} \binom{N-500}{250-20}}{\binom{N}{250}}\\
+                    &amp;= \frac{500!~250!}{480!~230!~20!}
                       \frac{(N-500)!~(N-250)!}{(N-730)!~N!}\\
-                   &amp;= \text{constant} \times
+                    &amp;= \text{constant} \times
                       \frac{(N-500)!~(N-250)!}{(N-730)!~N!}.
 \end{align*}
 \]</span></p>
@@ -962,20 +956,18 @@ of the 250.</strong></p>
                    &amp;\approx \log~\frac{(N-500)!~(N-250)!}{(N-730)!~N!}.
 \end{align*}
 \]</span></p>
-<p>In Figure <a href="hypergeometric-distribution.html#fig:hypergeo-c">7</a> we provide the likelihood graphs and intervals for
-<span class="math inline">\(N\)</span>.</p>
+<p>In Figure <a href="hypergeometric-distribution.html#fig:hypergeo-c">7</a> we provide the likelihood graphs and
+intervals for <span class="math inline">\(N\)</span>.</p>
 <p>The MLE is exactly the same that the one in the previous scenario, since</p>
 <p><span class="math display">\[ \hat{N} = \left\lfloor Kn/k \right\rfloor
            = \left\lfloor 300 \times 250~/~12 \right\rfloor
            = \left\lfloor 500 \times 250~/~20 \right\rfloor = 6250.
 \]</span></p>
 <ul>
-<li>Based in a cut in the likelihood, we obtain
-<span class="math inline">\((3850, 11387)\)</span> as a 95% interval for the total number of
-fans in the game.</li>
-<li>With the wald interval (quadratic approximation) we obtain
-<span class="math inline">\((2892, 9608)\)</span> as a 95% interval for the total number of
-fans.</li>
+<li>Based in a cut in the likelihood, we obtain <span class="math inline">\((`r paste(round(ic.95.prob, 0))`)\)</span> as a 95% interval for the total
+number of fans in the game. + With the wald interval (quadratic
+approximation) we obtain <span class="math inline">\((2869, 9631)\)</span> as a 95%
+interval for the total number of fans.</li>
 </ul>
 <p><em>A considerable difference</em>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plotting -----------------------------------------------------------------------</span>
@@ -985,13 +977,13 @@ fans.</li>
 ## likelihood --------------------------------------------------------------------
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">3000</span>, <span class="dv">17000</span>, <span class="dt">by =</span> <span class="dv">20</span>)
 
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">3</span>)
 ## quadratic approximation -------------------------------------------------------
 hess &lt;-<span class="st"> </span>numDeriv<span class="op">:::</span><span class="kw">hessian</span>(lkl.hypergeo, <span class="dt">x =</span> <span class="dv">6250</span>,
-                           <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
-<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
+                           <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
+<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
       <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)
 <span class="kw">legend</span>(<span class="dv">10500</span>, <span class="fl">382.5</span>, <span class="kw">c</span>(<span class="st">&quot;log-like&quot;</span>, <span class="st">&quot;Quadratic</span><span class="ch">\n</span><span class="st">approx.&quot;</span>, <span class="st">&quot;MLE&quot;</span>),
        <span class="dt">col =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="st">&quot;darkgray&quot;</span>, <span class="dv">1</span>), <span class="dt">lty =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">bty =</span> <span class="st">&quot;n&quot;</span>)
@@ -999,23 +991,23 @@ hess &lt;-<span class="st"> </span>numDeriv<span class="op">:::</span><span clas
 <span class="co"># first, we plot again the likelihood and the quadratic approx.</span>
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">2750</span>, <span class="dv">11000</span>, <span class="dt">by =</span> <span class="dv">20</span>)
 
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">3</span>)
 
-<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(<span class="dt">N =</span> x, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
+<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(<span class="dt">N =</span> x, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
       <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)
 ## probability-based interval ----------------------------------------------------
 <span class="co"># cutoff&#39;s corresponding to a 95\% confidence interval for N</span>
-cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">lkl.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
+cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">lkl.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
 <span class="kw">abline</span>(<span class="dt">h =</span> cut, <span class="dt">lty =</span> <span class="dv">2</span>)
 
 ic.<span class="fl">95.</span>prob &lt;-<span class="st"> </span>rootSolve<span class="op">::</span><span class="kw">uniroot.all</span>(ic.lkl.hypergeo, <span class="kw">range</span>(n.grid),
-                                      <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
+                                     <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
 <span class="kw">arrows</span>(<span class="dt">x0 =</span> ic.<span class="fl">95.</span>prob, <span class="dt">y0 =</span> <span class="kw">rep</span>(cut, <span class="dv">2</span>),
        <span class="dt">x1 =</span> ic.<span class="fl">95.</span>prob, <span class="dt">y1 =</span> <span class="kw">rep</span>(<span class="fl">370.25</span>, <span class="dv">2</span>), <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">length =</span> <span class="fl">.1</span>)
 ## wald confidence interval ------------------------------------------------------
-cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">quadprox.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
+cut &lt;-<span class="st"> </span><span class="kw">log</span>(.<span class="dv">15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">quadprox.hypergeo</span>(<span class="dv">6250</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>)
 <span class="kw">abline</span>(<span class="dt">h =</span> cut, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>)
 
 se.n.est &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">as.vector</span>(<span class="op">-</span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span>hess))
@@ -1026,10 +1018,10 @@ wald<span class="fl">.95</span> &lt;-<span class="st"> </span><span class="dv">6
 <span class="co"># a better look in the approximation around the MLE ------------------------------</span>
 n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">5000</span>, <span class="dv">7500</span>, <span class="dt">by =</span> <span class="dv">10</span>)
 
-<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
+<span class="kw">plot</span>(n.grid, <span class="kw">compute.lkl</span>(n.grid, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
      <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;N&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;log-likelihood&quot;</span>)
 <span class="kw">abline</span>(<span class="dt">v =</span> <span class="dv">6250</span>, <span class="dt">lty =</span> <span class="dv">3</span>)
-<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">N.init =</span> <span class="dv">731</span>, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
+<span class="kw">curve</span>(<span class="kw">quadprox.hypergeo</span>(x, <span class="dt">n =</span> <span class="dv">250</span>, <span class="dt">K =</span> <span class="dv">500</span>, <span class="dt">k =</span> <span class="dv">20</span>),
       <span class="dt">col =</span> <span class="st">&quot;darkgray&quot;</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:hypergeo-c"></span>
 <img src="_main_files/figure-html/hypergeo-c-1.png" alt="log-likelihood function and MLE of \(N\) in Hypergeometric(N, K = 500, n = 250) based on \(k = 20\). In the topleft, a quadratic approximation in gray. In the topright, two intervals for \(N\) - one based in the likelihood (in black) and one based in the quadratic approximation (in gray). In the bottom we provide a better look in the quadratic approximation." width="672" />
@@ -1037,10 +1029,11 @@ n.grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv
 Figure 7: log-likelihood function and MLE of <span class="math inline">\(N\)</span> in Hypergeometric(N, K = 500, n = 250) based on <span class="math inline">\(k = 20\)</span>. In the topleft, a quadratic approximation in gray. In the topright, two intervals for <span class="math inline">\(N\)</span> - one based in the likelihood (in black) and one based in the quadratic approximation (in gray). In the bottom we provide a better look in the quadratic approximation.
 </p>
 </div>
-<p>Comparing with the previous scenario the intervals changed considerably, even
-with MLE retain the same.</p>
-<p>The likelihood shape is the same that before, just with a vertical increase.
-Before the maximum log-likelihood estimate was around 318, now is around 382.</p>
+<p>Comparing with the previous scenario the intervals changed considerably,
+even with MLE retain the same.</p>
+<p>The likelihood shape is the same that before, just with a vertical
+increase. Before the maximum log-likelihood estimate was around 318, now
+is around 382.</p>
 <hr />
 <p><img src="logos.png" style="display: block; margin: auto;" /></p>
 

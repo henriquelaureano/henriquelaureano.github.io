@@ -747,7 +747,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <p><strong>Write the likelihood function.</strong></p>
 <hr />
 <p>The likelihood can be expressed as</p>
-<p><span class="math display">\[         
+<p><span class="math display">\[
 \begin{align*}
  L(\theta) &amp;= \left( \prod_{i = 1}^{10} f(x_{i}) \right) \times
               (F(50))^{5} \times (1 - F(65))^{3}\\
@@ -791,17 +791,16 @@ init.guess &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="
 <p><span class="math display">\[ \hat{\mu} = 58.106, \quad
    \hat{\sigma} = 5.669.
 \]</span></p>
-<p>FYI: In the ten points sample we have <span class="math inline">\(\bar{x} = 58.45\)</span> and
-<span class="math inline">\(s^{2} = 6.527\)</span>.</p>
+<p>FYI: In the ten points sample we have <span class="math inline">\(\bar{x} = 58.45\)</span> and <span class="math inline">\(s^{2} = 6.527\)</span>.</p>
 </div>
 <div id="profile-likelihood" class="section level2 unnumbered">
 <h2>Profile likelihood</h2>
 <hr />
 <p><strong>Obtain profiles of likelihood.</strong></p>
 <hr />
-<p>First, we do the graph of the likelihood surface in the deviance scale, since
-this scale is much more convenient. This requires the value of the likelihood
-evaluated in the parameter estimates.</p>
+<p>First, we do the graph of the likelihood surface in the deviance scale,
+since this scale is much more convenient. This requires the value of the
+likelihood evaluated in the parameter estimates.</p>
 <p>The deviance here is basically</p>
 <p><span class="math display">\[ D(\theta) = -2 (l(\theta) - l(\hat{\theta})), \]</span></p>
 <p>with <span class="math inline">\(\theta\)</span> being the vector of parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>.</p>
@@ -848,17 +847,17 @@ contour.levels &lt;-<span class="st"> </span><span class="kw">c</span>(.<span cl
 Figure 8: Deviances of (<span class="math inline">\(\mu, \sigma\)</span>) and (<span class="math inline">\(\mu, \log \sigma\)</span>) for a Gaussian sample made of interval data.
 </p>
 </div>
-<p>From Figure <a href="gaussian-distribution-with-interval-data.html#fig:deviances-norm">8</a> two things are important to mention. First,
-with interval data, the surface doesn’t exhibit orthogonally between the
-parameters. Second, in the log parametrization of sigma we have better behavior in
-the surface.</p>
-<p>Now, we obtain the likelihood profiles for each parameter. The profiles are
-presented in Figure <a href="gaussian-distribution-with-interval-data.html#fig:profiles-norm">9</a>.</p>
-<p>To obtain the likelihood profile for <span class="math inline">\(\mu\)</span>, let’s say, we need to create a grid
-of values of <span class="math inline">\(\mu\)</span> and for each value of this grid find the value, let’s say,
-<span class="math inline">\(\hat{\sigma}_{\mu}\)</span> that maximizes the profile likelihood. We do this below for
-<span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, the results can be seen in Figure
-<a href="gaussian-distribution-with-interval-data.html#fig:profiles-norm">9</a>.</p>
+<p>From Figure <a href="gaussian-distribution-with-interval-data.html#fig:deviances-norm">8</a> two things are important to
+mention. First, with interval data, the surface doesn’t exhibit
+orthogonally between the parameters. Second, in the log parametrization
+of sigma we have better behavior in the surface.</p>
+<p>Now, we obtain the likelihood profiles for each parameter. The profiles
+are presented in Figure <a href="gaussian-distribution-with-interval-data.html#fig:profiles-norm">9</a>.</p>
+<p>To obtain the likelihood profile for <span class="math inline">\(\mu\)</span>, let’s say, we need to
+create a grid of values of <span class="math inline">\(\mu\)</span> and for each value of this grid find
+the value, let’s say, <span class="math inline">\(\hat{\sigma}_{\mu}\)</span> that maximizes the profile
+likelihood. We do this below for <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, the results can
+be seen in Figure <a href="gaussian-distribution-with-interval-data.html#fig:profiles-norm">9</a>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># profiles -----------------------------------------------------------------------</span>
 <span class="co"># optimizing one parameter per time (optimize routine: single par. optimization)</span>
 <span class="co"># we need to split the par argument in two</span>
@@ -912,9 +911,9 @@ Figure 9: Profile log-likelihoods for <span class="math inline">\(\mu\)</span> a
 <pre><code>           [,1]       [,2]
 [1,] 0.38190632 0.04403561
 [2,] 0.04403561 0.80092515</code></pre>
-<p>And we know that the hessian, <span class="math inline">\(H(\theta)\)</span>, is the negative of the observed
-information, <span class="math inline">\(I_{O}(\theta)\)</span>, and that asymptotically the variance of
-<span class="math inline">\(\hat{\theta}\)</span> is <span class="math inline">\(I_{O}(\theta)^{-1}\)</span>. Thus,</p>
+<p>And we know that the hessian, <span class="math inline">\(H(\theta)\)</span>, is the negative of the
+observed information, <span class="math inline">\(I_{O}(\theta)\)</span>, and that asymptotically the
+variance of <span class="math inline">\(\hat{\theta}\)</span> is <span class="math inline">\(I_{O}(\theta)^{-1}\)</span>. Thus,</p>
 <pre class="sourceCode r"><code class="sourceCode r">(se &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="kw">sqrt</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span>hess))) <span class="co"># standard error</span></code></pre>
 <pre><code>[1] 1.618160 1.117388</code></pre>
 <p>The standard errors, se, are</p>

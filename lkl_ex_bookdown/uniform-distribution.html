@@ -733,7 +733,7 @@ code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warni
 <div id="uniform-distribution" class="section level1 unnumbered">
 <h1>Uniform distribution</h1>
 <hr />
-<p><strong>Let <span class="math inline">\(X\)</span> be a r.v. with uniform distribution <span class="math inline">\(X \sim U(0, \theta)\)</span>.<br />
+<p><strong>Let <span class="math inline">\(X\)</span> be a r.v. with uniform distribution <span class="math inline">\(X \sim U(0, \theta)\)</span>.
 A random sample gave the following values: 5.5; 3.2; 4, 8, 5.3; 3.8 and
 5.0. Obtain the likelihood function and one or more appropriate
 interval(s) specifying the form of obtaining.</strong></p>
@@ -745,8 +745,9 @@ interval(s) specifying the form of obtaining.</strong></p>
            &amp;= \theta^{-n}, \quad \text{for } \theta &gt; x_{(n)},
 \end{align*}\]</span>
 and equal to zero otherwise.</p>
-<p>Given the data above, we get <span class="math inline">\(x_{(n)} = 5.5\)</span> and the likelihood is
-shown in Figure <a href="uniform-distribution.html#fig:uniform">1</a>, together with some intervals.</p>
+<p>Given the data above, we get <span class="math inline">\(x_{(n)} = 5.5\)</span> and the
+likelihood is shown in Figure <a href="uniform-distribution.html#fig:uniform">1</a>, together with some
+intervals.</p>
 <pre class="sourceCode r"><code class="sourceCode r">lkl.unif &lt;-<span class="st"> </span><span class="cf">function</span>(theta, data) {
     n &lt;-<span class="st"> </span><span class="kw">length</span>(data) ; xn &lt;-<span class="st"> </span><span class="kw">max</span>(data)
     <span class="co"># this next step, in the way presented, isn&#39;t very efficient, since I&#39;ll</span>
@@ -760,11 +761,11 @@ theta.seq &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class=
 lklseq.unif &lt;-<span class="st"> </span><span class="kw">lkl.unif</span>(theta.seq, data)
 
 <span class="kw">par</span>(<span class="dt">mfrow =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="kw">par</span>(<span class="dt">mar =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="fl">.1</span>)) <span class="co"># plot window definition</span>
-<span class="co"># plotting the normalized likelihood function to have unit maximum </span>
+<span class="co"># plotting the normalized likelihood function to have unit maximum</span>
 <span class="kw">plot</span>(theta.seq, lklseq.unif<span class="op">/</span><span class="kw">max</span>(lklseq.unif), <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>,
      <span class="dt">xlab =</span> <span class="kw">expression</span>(theta), <span class="dt">ylab =</span> <span class="st">&quot;Likelihood&quot;</span>)
 <span class="co"># probability-based interval -----------------------------------------------------</span>
-<span class="co"># cutoff&#39;s corresponding to a 95\% and 99\% confidence interval for the mean </span>
+<span class="co"># cutoff&#39;s corresponding to a 95\% and 99\% confidence interval for the mean</span>
 cuts &lt;-<span class="st"> </span><span class="kw">c</span>(.<span class="dv">15</span>, <span class="fl">.04</span>) <span class="op">*</span><span class="st"> </span><span class="kw">lkl.unif</span>(<span class="kw">max</span>(data), data) <span class="op">/</span><span class="st"> </span><span class="kw">max</span>(lklseq.unif)
 <span class="kw">abline</span>(<span class="dt">h =</span> cuts, <span class="dt">lty =</span> <span class="dv">2</span><span class="op">:</span><span class="dv">3</span>)
 <span class="co"># uniroot.all finds the zeros, so we need to subtract the cutoff point from</span>
@@ -781,7 +782,7 @@ ic.<span class="fl">99.</span>prob &lt;-<span class="st"> </span>rootSolve<span 
 <span class="kw">plot</span>(theta.seq, lklseq.unif<span class="op">/</span><span class="kw">max</span>(lklseq.unif), <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>,
      <span class="dt">xlab =</span> <span class="kw">expression</span>(theta), <span class="dt">ylab =</span> <span class="st">&quot;Likelihood&quot;</span>)
 <span class="co"># pure likelihood interval -------------------------------------------------------</span>
-<span class="co"># cutoff&#39;s corresponding to a 95\% and 99\% confidence interval for the mean </span>
+<span class="co"># cutoff&#39;s corresponding to a 95\% and 99\% confidence interval for the mean</span>
 cuts &lt;-<span class="st"> </span><span class="kw">c</span>(.<span class="dv">05</span>, <span class="fl">.01</span>) <span class="op">*</span><span class="st"> </span><span class="kw">lkl.unif</span>(<span class="kw">max</span>(data), data) <span class="op">/</span><span class="st"> </span><span class="kw">max</span>(lklseq.unif)
 <span class="kw">abline</span>(<span class="dt">h =</span> cuts, <span class="dt">lty =</span> <span class="dv">2</span><span class="op">:</span><span class="dv">3</span>)
 
@@ -796,16 +797,18 @@ ic.<span class="fl">99.</span>pure &lt;-<span class="st"> </span>rootSolve<span 
 Figure 1: Likelihood function of <span class="math inline">\(\theta\)</span> in Uniform(0, <span class="math inline">\(\theta\)</span>) based on <span class="math inline">\(x_{(6)}\)</span> = 5.5. In the left, likelihood intervals at 15% (dashed line) and 4% (dotted line) cutoff. In the right, likelihood intervals at 5% (dashed line) and 1% (dotted line) cutoff. These cutoffs correspond, in both sides, to a 95% and 99% confidence interval, respectively.
 </p>
 </div>
-<p>In both graphs of Figure <a href="uniform-distribution.html#fig:uniform">1</a> we have two confidence intervals for
-<span class="math inline">\(\theta\)</span>, one corresponding to a 95% confidence interval (dashed line) and one
-corresponding to a 99% confidence interval for the mean (dotted line). In the
-left we have a probability-based likelihood interval, in the right we have a pure
+<p>In both graphs of Figure <a href="uniform-distribution.html#fig:uniform">1</a> we have two confidence
+intervals for <span class="math inline">\(\theta\)</span>, one corresponding to a 95% confidence
+interval (dashed line) and one corresponding to a 99% confidence
+interval for the mean (dotted line). In the left we have a
+probability-based likelihood interval, in the right we have a pure
 likelihood interval.</p>
-<p>The left ones are bad intervals, since they’re based in a large-sample theory that
-results in an exact interval for the Gaussian case, in a good approximation for a
-reasonably regular case, and as we can see by the figure… here we doesn’t have a
-regular likelihood (the likelihood isn’t well approximated by a quadratic
-function), thus, here this interval should not be so good.</p>
+<p>The left ones are bad intervals, since they’re based in a large-sample
+theory that results in an exact interval for the Gaussian case, in a
+good approximation for a reasonably regular case, and as we can see by
+the figure… here we doesn’t have a regular likelihood (the likelihood
+isn’t well approximated by a quadratic function), thus, here this
+interval should not be so good.</p>
 <hr />
 <p><em>Explaining better how we arrived in these intervals:</em></p>
 <p>For a normalized likelihood, <span class="math inline">\(L(\theta)/L(\hat{\theta})\)</span>, we have the
@@ -819,42 +822,44 @@ approximately true when the likelihood is reasonably regular.</p>
 likelihood interval covers <span class="math inline">\(\theta\)</span>,</p>
 <p><span class="math display">\[
 {\rm Pr}\left\{\frac{L(\theta)}{L(\hat{\theta})} &gt; c\right\} =
-{\rm Pr}\left\{2 \log \frac{L(\theta)}{L(\hat{\theta})} &lt; -2 \log c \right\}
-= {\rm Pr}\{\chi_{1}^{2} &lt; -2 \log c\}.
+{\rm Pr}\left\{2 \log \frac{L(\theta)}{L(\hat{\theta})} &lt; -2 \log c
+\right\} = {\rm Pr}\{\chi_{1}^{2} &lt; -2 \log c\}.
 \]</span></p>
 <p>So, if for some <span class="math inline">\(0 &lt; \alpha &lt; 1\)</span> we choose a cutoff</p>
 <p><span class="math display">\[ c = e^{-\frac{1}{2} \chi_{1, (1-\alpha)}^{2}}, \]</span></p>
 <p>where <span class="math inline">\(\chi_{1, (1-\alpha)}^{2}\)</span> is the <span class="math inline">\(100 (1-\alpha)\)</span> percentile of
-<span class="math inline">\(\chi_{1}^{2}\)</span>.\
-For <span class="math inline">\(\alpha = 0.05\)</span> and <span class="math inline">\(0.01\)</span> we have a cutoff <span class="math inline">\(c = 0.15\)</span> and <span class="math inline">\(0.04\)</span>,
-that corresponds to a 95% and 99% confidence interval, respectively. </p>
+<span class="math inline">\(\chi_{1}^{2}\)</span>.\</p>
+<p>For <span class="math inline">\(\alpha = 0.05\)</span> and <span class="math inline">\(0.01\)</span> we have a cutoff <span class="math inline">\(c = 0.15\)</span> and
+<span class="math inline">\(0.04\)</span>, that corresponds to a 95% and 99% confidence interval,
+respectively. </p>
 <hr />
-<p>Having the cutoff values we need now to find the interval values, i.e., in which
-points the cutoff horizontal line cuts the likelihood.<br />
+<p>Having the cutoff values we need now to find the interval values, i.e.,
+in which
+points the cutoff horizontal line cuts the likelihood.
 For this purpose we use the function <span class="math inline">\(\texttt{rootSolve::uniroot.all}\)</span>.</p>
 <p>A likelihood interval at 15% and 4% cutoff for <span class="math inline">\(\theta\)</span> are
 (5.5, 7.545) and
 (5.5, 9.405).</p>
-<p>Already on the right side of Figure <a href="uniform-distribution.html#fig:uniform">1</a> we have a more coherent,
-let’s say, confidence interval for the Uniform likelihood. While the likelihood
-isn’t regular, it is still possible to provide an exact theoretical
-justification for a confidence interval interpretation.
-Now</p>
+<p>Already on the right side of Figure <a href="uniform-distribution.html#fig:uniform">1</a> we have a more
+coherent, let’s say, confidence interval for the Uniform likelihood.
+While the likelihood isn’t regular, it is still possible to provide an
+exact theoretical justification for a confidence interval
+interpretation. Now</p>
 <p><span class="math display">\[
  {\rm Pr}\left\{\frac{L(\theta)}{L(\hat{\theta})} &gt; c\right\} =
  {\rm Pr}\left\{\frac{X_{(n)}}{\theta} &gt; c^{1/n}\right\} =
  1 - {\rm Pr}\left\{\frac{X_{(n)}}{\theta} &lt; c^{1/n}\right\} =
  1 - (c^{1/n})^{n} = 1 - c.
-\]</span>
-So the likelihood interval with cutoff <span class="math inline">\(c\)</span> is a <span class="math inline">\(100 (1-c)\)</span>% confidence
-interval.</p>
+\]</span></p>
+<p>So the likelihood interval with cutoff <span class="math inline">\(c\)</span> is a <span class="math inline">\(100 (1-c)\)</span>%
+confidence interval.</p>
 <p>A likelihood interval at 15% and 4% cutoff for <span class="math inline">\(\theta\)</span> are
 (5.5, 9.062) and
 (5.5, 11.849).</p>
-<p>Comparing the obtained intervals we see a broader range with the pure likelihood
-intervals. In other words, with the pure likelihood intervals we see a higher
-uncertainty than with the (not so recommended here) probability-based likelihood
-intervals.</p>
+<p>Comparing the obtained intervals we see a broader range with the pure
+likelihood intervals. In other words, with the pure likelihood intervals
+we see a higher uncertainty than with the (not so recommended here)
+probability-based likelihood intervals.</p>
 <p><em>For doing this exercise I read and used it Pawitan’s book:</em></p>
 <pre><code>@book{pawitan,
   author    = {Yudi Pawitan},
