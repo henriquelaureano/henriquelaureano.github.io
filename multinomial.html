@@ -1582,7 +1582,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial likelihood</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2019-08-08 17:32:01</h4>
+<h4 class="date"><em>Last modification on</em> 2019-08-09 15:12:51</h4>
 
 </div>
 
@@ -2121,6 +2121,8 @@ matrix(fit_mlogit$coef, nrow = 2, ncol = 3)</code></pre>
 <pre><code>##            [,1]       [,2]       [,3]
 ## [1,] 1.71603345 -0.2607527 -0.4212572
 ## [2,] 0.05885441  0.4327380 -0.4941973</code></pre>
+<p>When we look to the estimated probabilities through the packages <code>nnet</code> and <code>mlogit</code> they’re a little strange, due to your confusing order of presentation. However, by the subject id number we can see that the probabilities are equal to the ones found by our implementation.</p>
+<p>Another interesting thing (that I saw only now, after doing that), is that the package <code>mlogit</code> uses the <code>nnet</code> package as its implementation algorithm, say.</p>
 </div>
 
 
