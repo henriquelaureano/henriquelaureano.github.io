@@ -17,6 +17,8 @@ output:
   legtheme::beamer_leg
 ---
 
+### What we read (long description)
+
 \begincols
  \column{.4\linewidth}
   \begin{figure}
@@ -30,11 +32,95 @@ output:
   \end{figure}
 \endcols
 
-# Classification
+### What we read (short description)
 
-## Some topic about classification
+At chapter 4 are discussed three of the most widely-used classifiers.
 
-### Classification
++ Logistic Regression
+
++ Linear Discriminant Analysis (LDA)
+
++ K-Nearest Neighbors (KNN)
+
+\begin{block}{What we didn't read}
+More computer-intensive methods are discussed in later chapters, such as
+\begin{itemize}
+\item Generalized Additive Models (GAM)
+\item Trees
+\item Random Forests
+\item Boosting
+\item Support Vector Machines (SVM)
+\end{itemize}
+\end{block}
+
+# Why Not Linear Regression?
+
+###
+
+We could consider encoding the response, \(Y\), as a quantitative
+variable, e.g.,
+
+\begin{block}{Predict the medical condition of a patient on the basis of
+her symptoms.}
+\[
+Y = \begin{cases}
+  1 & \text{if}~\textcolor{beamer@UIUCblue}{\texttt{stroke}};\\
+  2 & \text{if}~\textcolor{beamer@UIUCblue}{\texttt{drug overdose}};\\
+  3 & \text{if}~\textcolor{beamer@UIUCblue}{\texttt{epileptic seizure}}.\\
+\end{cases}
+\]
+\end{block}
+
+\pause
+\textcolor{beamer@UIUCorange}{Unfortunately, this coding implies an
+ordering on the outcomes.}
+
+Each possible coding would produce a fundamentally different linear
+model that would ultimately lead to different sets of predictions.
+
+### That leads us to other questions,
+
++ What if the response variable values did take on a natural ordering,
+\textcolor{beamer@UIUCblue}{\texttt{such as mild}},
+\textcolor{beamer@UIUCblue}{\texttt{moderate}}, and
+\textcolor{beamer@UIUCblue}{\texttt{severe}}?
+
++ For a \textcolor{beamer@UIUCblue}{\texttt{binary}} (two level)
+qualitative response, the situation is better.
+
+   - However, if we use linear regression, some of our estimates might
+     be outside the [0, 1] interval.
+
+   - However, the dummy variable approach cannot be easily extended to
+     accommodate qualitative responses with more than two levels.
+
+\pause
+\textcolor{beamer@UIUCorange}{For these reasons, it is preferable to use
+a classification method that is truly suited for qualitative response
+values, such as the ones presented next.}
+
+\begin{block}{Curiously,}
+it turns out that the classifications that we get if we use linear
+regression to predict a binary response will be the same as for the
+linear discriminant analysis (LDA) procedure we discuss later.
+\end{block}
+
+# A typical dataset
+
+### A classic 'book example dataset relationship'
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\textwidth]{iBagens/dataset_chap4.png}
+\end{figure}
+
+... a very pronounced relationship between `balance` and `default`.
+
+# Logistic Regression
+
+# Linear Discriminant Analysis (LDA)
+
+# K-Nearest Neighbors (KNN)
 
 ### and...
 
