@@ -8,7 +8,8 @@ short-author: "leg.ufpr.br/~henrique"
 #email: "laureano\\@ufpr.br"
 #date: "August 12, 2019"
 #short-date:
-department: "Laboratory of Statistics and Geoinformation (LEG)"
+department: "
+Laboratory of Statistics and Geoinformation (LEG)"
 institute: "UFPR/DEST/LEG"
 #short-institute: "LEG"
 section-titles: true
@@ -117,6 +118,72 @@ linear discriminant analysis (LDA) procedure we discuss later.
 ... a very pronounced relationship between `balance` and `default`.
 
 # Logistic Regression
+
+### To start, a comparison with Linear Regression
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{iBagens/linr-vs-logr.png}
+\end{figure}
+
+## The model framework
+
+### Some math, but with just one predictor
+
+\begin{block}{The model and its relations}
+\[
+p(X) = \underset{\begin{gathered}
+                  \text{\textit{logistic}}\\[-\jot]
+                  \text{\textit{function}}\\[-\jot]
+                  (\textit{S-shaped})
+                 \end{gathered}}{
+        \underbrace{\frac{e^{\beta_{0}+\beta_{1}X}}{
+         1+e^{\beta_{0}+\beta_{1}X}}}} \Rightarrow
+       \underset{\textit{odds}~\in~(0, \infty)}{
+        \underbrace{\frac{p(X)}{1-p(X)}}} = e^{\beta_{0}+\beta_{1}X}
+       \Rightarrow \underset{\begin{gathered}
+                              \text{\textit{log-odds}}\\[-\jot]
+                              \text{or}\\[-\jot]
+                              \text{\textit{logit}}
+                             \end{gathered}}{
+                    \underbrace{\log \frac{p(X)}{1-p(X)}}} =
+                   \beta_{0}+\beta_{1}X
+\]
+\end{block}
+
+\pause
+For example,
+
+\[
+p(X) = 0.2~\Rightarrow~\frac{0.2}{1-0.2} = \frac{1}{4}
+\quad \textit{ and } \quad
+p(X) = 0.9~\Rightarrow~\frac{0.9}{1-0.9} = 9.
+\]
+
+## Estimating the Regression Coefficients
+
+### Maximum likelihood
+
+The estimates \(\hat{\beta}_{0}\) and  \(\hat{\beta}_{1}\) are chosen to
+\textcolor{beamer@UIUCblue}{maximize} a math equation called a
+
+\begin{block}{\textit{likelihood function}}
+\[
+l(\beta_{0}, \beta_{1}) =
+\prod_{i:y_{i}=1} p(x_{i}) \prod_{i':y_{i'}=0} (1-p(x_{i'})).
+\]
+\end{block}
+
+\pause
+The coefficients \(\hat{\beta}_{0}\) and \(\hat{\beta}_{1}\) are
+unknown, and must be estimated. The general method of
+\textcolor{beamer@UIUCblue}{maximum likelihood} is preferred, since it
+has better statistical properties.
+
+Maximum likelihood is a very general approach that is used to fit many
+of the non-linear models examined throughout the book. In the linear
+regression setting, the least squares approach is in fact a special case
+of maximum likelihood.
 
 # Linear Discriminant Analysis (LDA)
 
