@@ -187,11 +187,36 @@ of maximum likelihood.
 
 # Linear Discriminant Analysis (LDA)
 
+## To start... why do we need something different?
+
+###
+
+\textcolor{beamer@UIUCblue}{Different ideas,}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{iBagens/logr-vs-lda.jpeg}
+\end{figure}
+
+\begin{adjustwidth}{2.5em}{0pt}
+With LDA we model the distribution of the predictors \(X\) separately in
+each of the response classes (i.e. given \(Y\)), and then use Bayes’
+theorem to flip these around into estimates for \(\mathbb{P}[Y = k | X =
+x]\).
+\end{adjustwidth}
+
+\pause
+\textcolor{beamer@UIUCblue}{Sometimes the same results}
+
+\begin{adjustwidth}{2.5em}{0pt}
+When these distributions are assumed to be normal, it turns out that
+the model is very similar in form to logistic regression.
+\end{adjustwidth}
+
 # K-Nearest Neighbors (KNN)
 
 ### and...
 
-\begin{figure}
-\centering \includegraphics[width=.5\textwidth]{end.jpg}
-\end{figure}
-\hfill \small \href{mailto:laureano@ufpr.br}{laureano@ufpr.br}
+\begin{figure} \centering \includegraphics[width=.5\textwidth]{end.jpg}
+\end{figure} \hfill \small
+\href{mailto:laureano@ufpr.br}{laureano@ufpr.br}
