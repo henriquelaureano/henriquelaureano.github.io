@@ -8,9 +8,8 @@ short-author: "leg.ufpr.br/~henrique"
 #email: "laureano\\@ufpr.br"
 #date: "August 12, 2019"
 #short-date:
-department: "
-Laboratory of Statistics and Geoinformation (LEG)"
-institute: "UFPR/DEST/LEG"
+#department: "Laboratory of Statistics and Geoinformation (LEG)"
+#institute: "UFPR/DEST/LEG"
 #short-institute: "LEG"
 section-titles: true
 safe-columns: true # enables special latex macros for columns
@@ -33,17 +32,26 @@ output:
   \end{figure}
 \endcols
 
-### What we read (short description)
+###
 
+\textcolor{beamer@UIUCorange}{Now in a shorter way}
+
+###
+
+\textcolor{beamer@UIUCblue}{What we read (short description)}
+
+\begin{adjustwidth}{2.5em}{0pt}
 At chapter 4 are discussed three of the most widely-used classifiers.
+\begin{itemize}
+\item Logistic Regression
+\item Linear Discriminant Analysis (LDA)
+\item K-Nearest Neighbors (KNN)
+\end{itemize}
+\end{adjustwidth}
 
-+ Logistic Regression
+\textcolor{beamer@UIUCblue}{What we didn't read}
 
-+ Linear Discriminant Analysis (LDA)
-
-+ K-Nearest Neighbors (KNN)
-
-\begin{block}{What we didn't read}
+\begin{adjustwidth}{2.5em}{0pt}
 More computer-intensive methods are discussed in later chapters, such as
 \begin{itemize}
 \item Generalized Additive Models (GAM)
@@ -52,7 +60,7 @@ More computer-intensive methods are discussed in later chapters, such as
 \item Boosting
 \item Support Vector Machines (SVM)
 \end{itemize}
-\end{block}
+\end{adjustwidth}
 
 # Why Not Linear Regression?
 
@@ -126,11 +134,16 @@ linear discriminant analysis (LDA) procedure we discuss later.
 \includegraphics[width=\textwidth]{iBagens/linr-vs-logr.png}
 \end{figure}
 
+###
+
+\textcolor{beamer@UIUCorange}{\textit{Logistic regression in two slides}}
+
 ## The model framework
 
 ### Some math, but with just one predictor
 
-\begin{block}{The model and its relations}
+\begin{block}{The model and its relations (\textit{showing my
+\LaTeX~skills})}
 \[
 p(X) = \underset{\begin{gathered}
                   \text{\textit{logistic}}\\[-\jot]
@@ -191,6 +204,10 @@ of maximum likelihood.
 
 ###
 
+\textcolor{beamer@UIUCorange}{Different ideas, sometimes the same results}
+
+###
+
 \textcolor{beamer@UIUCblue}{Different ideas,}
 
 \begin{figure}
@@ -212,6 +229,11 @@ x]\).
 When these distributions are assumed to be normal, it turns out that
 the model is very similar in form to logistic regression.
 \end{adjustwidth}
+
+###
+
+\textcolor{beamer@UIUCorange}{But, ok... why not continue with logistic
+regression?}
 
 # K-Nearest Neighbors (KNN)
 
