@@ -90,12 +90,12 @@ model that would ultimately lead to different sets of predictions.
 ### That leads us to other questions,
 
 + What if the response variable values did take on a natural ordering,
-\textcolor{beamer@UIUCblue}{\texttt{such as mild}},
-\textcolor{beamer@UIUCblue}{\texttt{moderate}}, and
-\textcolor{beamer@UIUCblue}{\texttt{severe}}?
+  \textcolor{beamer@UIUCblue}{\texttt{such as mild}},
+  \textcolor{beamer@UIUCblue}{\texttt{moderate}}, and
+  \textcolor{beamer@UIUCblue}{\texttt{severe}}?
 
 + For a \textcolor{beamer@UIUCblue}{\texttt{binary}} (two level)
-qualitative response, the situation is better.
+  qualitative response, the situation is better.
 
    - However, if we use linear regression, some of our estimates might
      be outside the [0, 1] interval.
@@ -234,6 +234,88 @@ the model is very similar in form to logistic regression.
 
 \textcolor{beamer@UIUCorange}{But, ok... why not continue with logistic
 regression?}
+
+### But, ok... why not continue with logistic regression?
+
+Simple, LDA is popular when we have more than two response classes.
+
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+Now, a reason more serious: \textcolor{beamer@UIUCblue}{stability}
+
++ When the classes are well-separated, the parameter estimates for the
+  logistic regression model are surprisingly unstable. LDA does not
+  suffer from this problem.
+
++ If \(n\) is small and the distribution of the predictors \(X\) is
+  approximately normal in each of the classes, the linear discriminant
+  model is again more stable than the logistic regression model.
+
+## LDA in a nutshell
+
+### Model framework
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{iBagens/lda-def.jpeg}
+\end{figure}
+
++ \(\pi_{\textcolor{red}{k}}\) is the overall or
+  \textcolor{beamer@UIUCblue}{prior} prob. that a chosen obs. comes from
+  \(\textcolor{red}{k}\).
+
++ In general, estimating \(\pi_{\textcolor{red}{k}}\) is easy if we have
+  a sample of \(\textcolor{beamer@UIUCblue}{Y}\)s: we simply compute the
+  fraction of observations that belong to the \(\textcolor{red}{k}\)th
+  class. However, estimating
+  \(f_{\textcolor{red}{k}}(\textcolor{red}{x})\) tends to be more
+  challenging, unless we assume some simple forms for these densities.
+
+\textcolor{beamer@UIUCorange}{Remember from Chap. 2} that the Bayes
+classifier has the lowest possible error rate out of all classifiers.
+
+## Living in a simple and \textit{normal} world
+
+### Dealing with just one predictor
+
+\textcolor{beamer@UIUCorange}{Assumptions}:
+\(f_{\textcolor{red}{k}}(\textcolor{red}{x})\) is
+\textcolor{beamer@UIUCblue}{normal} with equal variance for the
+\(\textcolor{red}{k}\)th classes.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{iBagens/lda1-steps.jpeg}
+\end{figure}
+
+Putting a \textcolor{beamer@UIUCblue}{hat} (simple average and a
+weighted average of the sample variances for each class) in everything,
+the LDA \textcolor{beamer@UIUCblue}{approx.} this Bayes classifier.
+
+###
+
+Ok, nice! But... \textcolor{beamer@UIUCblue}{why} the name
+\textcolor{beamer@UIUCorange}{linear discriminant analysis}?
+
+\pause
+\begin{adjustwidth}{2.5em}{0pt}
+The word \textcolor{beamer@UIUCorange}{linear} stems from the fact that
+the \textcolor{beamer@UIUCorange}{discriminant functions}
+\(\hat{\delta}_{\textcolor{red}{k}}(x)\) are linear functions of \(x\).
+\end{adjustwidth}
+
+## Now, with more than one predictor
+
+### Getting bigger
+
+\[
+\text{More than one predictor}~\Rightarrow~
+\begin{gathered}
+  \text{Multivariate normal distribution,}\\[-\jot]
+  \text{with a class-specific mean vector}\\[-\jot]
+  \text{and a common covariance matrix}
+\end{gathered}
+\]
 
 # K-Nearest Neighbors (KNN)
 
