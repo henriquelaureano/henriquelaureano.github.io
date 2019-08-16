@@ -41,12 +41,12 @@ output:
 \textcolor{beamer@UIUCblue}{What we read (short description)}
 
 \begin{adjustwidth}{2.5em}{0pt}
-At chapter 4 are discussed three of the most widely-used classifiers.
-\begin{itemize}
-\item Logistic Regression
-\item Linear Discriminant Analysis (LDA)
-\item K-Nearest Neighbors (KNN)
-\end{itemize}
+ At chapter 4 are discussed three of the most widely-used classifiers.
+ \begin{itemize}
+  \item Logistic Regression
+  \item Linear Discriminant Analysis (LDA)
+  \item Quadratic Discriminant Analysis (QDA)
+ \end{itemize}
 \end{adjustwidth}
 
 \textcolor{beamer@UIUCblue}{What we didn't read}
@@ -109,9 +109,9 @@ a classification method that is truly suited for qualitative response
 values, such as the ones presented next.}
 
 \begin{block}{Curiously,}
-it turns out that the classifications that we get if we use linear
-regression to predict a binary response will be the same as for the
-linear discriminant analysis (LDA) procedure we discuss later.
+ it turns out that the classifications that we get if we use linear
+ regression to predict a binary response will be the same as for the
+ linear discriminant analysis (LDA) procedure we discuss later.
 \end{block}
 
 # A typical dataset
@@ -119,8 +119,8 @@ linear discriminant analysis (LDA) procedure we discuss later.
 ### A classic 'book example dataset relationship'
 
 \begin{figure}
-\centering
-\includegraphics[width=.8\textwidth]{iBagens/dataset_chap4.png}
+ \centering
+ \includegraphics[width=.8\textwidth]{iBagens/dataset_chap4.png}
 \end{figure}
 
 ... a very pronounced relationship between `balance` and `default`.
@@ -130,8 +130,8 @@ linear discriminant analysis (LDA) procedure we discuss later.
 ### To start, a comparison with Linear Regression
 
 \begin{figure}
-\centering
-\includegraphics[width=\textwidth]{iBagens/linr-vs-logr.png}
+ \centering
+ \includegraphics[width=\textwidth]{iBagens/linr-vs-logr.png}
 \end{figure}
 
 ###
@@ -166,7 +166,6 @@ p(X) = \underset{\begin{gathered}
 
 \pause
 For example,
-
 \[
 p(X) = 0.2~\Rightarrow~\frac{0.2}{1-0.2} = \frac{1}{4}
 \quad \textit{ and } \quad
@@ -181,10 +180,10 @@ The estimates \(\hat{\beta}_{0}\) and  \(\hat{\beta}_{1}\) are chosen to
 \textcolor{beamer@UIUCblue}{maximize} a math equation called a
 
 \begin{block}{\textit{likelihood function}}
-\[
-l(\beta_{0}, \beta_{1}) =
-\prod_{i:y_{i}=1} p(x_{i}) \prod_{i':y_{i'}=0} (1-p(x_{i'})).
-\]
+ \[
+ l(\beta_{0}, \beta_{1}) =
+ \prod_{i:y_{i}=1} p(x_{i}) \prod_{i':y_{i'}=0} (1-p(x_{i'})).
+ \]
 \end{block}
 
 \pause
@@ -211,23 +210,23 @@ of maximum likelihood.
 \textcolor{beamer@UIUCblue}{Different ideas,}
 
 \begin{figure}
-\centering
-\includegraphics[width=\textwidth]{iBagens/logr-vs-lda.jpeg}
+ \centering
+ \includegraphics[width=\textwidth]{iBagens/logr-vs-lda.jpeg}
 \end{figure}
 
 \begin{adjustwidth}{2.5em}{0pt}
-With LDA we model the distribution of the predictors \(X\) separately in
-each of the response classes (i.e. given \(Y\)), and then use Bayes’
-theorem to flip these around into estimates for \(\mathbb{P}[Y = k | X =
-x]\).
+ With LDA we model the distribution of the predictors \(X\) separately
+ in each of the response classes (i.e. given \(Y\)), and then use Bayes’
+ theorem to flip these around into estimates for \(\mathbb{P}[Y = k | X
+ = x]\).
 \end{adjustwidth}
 
 \pause
 \textcolor{beamer@UIUCblue}{Sometimes the same results}
 
 \begin{adjustwidth}{2.5em}{0pt}
-When these distributions are assumed to be normal, it turns out that
-the model is very similar in form to logistic regression.
+ When these distributions are assumed to be normal, it turns out that
+ the model is very similar in form to logistic regression.
 \end{adjustwidth}
 
 ###
@@ -256,8 +255,8 @@ Now, a reason more serious: \textcolor{beamer@UIUCblue}{stability}
 ### Model framework
 
 \begin{figure}
-\centering
-\includegraphics[width=\textwidth]{iBagens/lda-def.jpeg}
+ \centering
+ \includegraphics[width=\textwidth]{iBagens/lda-def.jpeg}
 \end{figure}
 
 + \(\pi_{\textcolor{red}{k}}\) is the overall or
@@ -299,10 +298,27 @@ Ok, nice! But... \textcolor{beamer@UIUCblue}{why} the name
 
 \pause
 \begin{adjustwidth}{2.5em}{0pt}
-The word \textcolor{beamer@UIUCorange}{linear} stems from the fact that
-the \textcolor{beamer@UIUCorange}{discriminant functions}
-\(\hat{\delta}_{\textcolor{red}{k}}(x)\) are linear functions of \(x\).
+ The word \textcolor{beamer@UIUCorange}{linear} stems from the fact that
+ the \textcolor{beamer@UIUCorange}{discriminant functions}
+ \(\hat{\delta}_{\textcolor{red}{k}}(x)\) are linear functions of \(x\).
+
+ That is, the \textcolor{beamer@UIUCorange}{LDA} decision rule depends on
+ \(x\) only through a \textcolor{beamer@UIUCorange}{linear combination}
+ of its elements.
 \end{adjustwidth}
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+\pause
+
+\begin{block}
+
+\textcolor{beamer@UIUCorange}{LDA} is trying to
+\textcolor{beamer@UIUCblue}{approximate} the
+\textcolor{beamer@UIUCorange}{Bayes classifier}, which has the
+\textcolor{beamer@UIUCblue}{lowest} total
+\textcolor{beamer@UIUCblue}{error rate} out of all classifiers
+(\textcolor{beamer@UIUCblue}{if} the Gaussian model is correct).
+
+\end{block}
 
 ## Now, with more than one predictor
 
@@ -317,7 +333,102 @@ the \textcolor{beamer@UIUCorange}{discriminant functions}
 \end{gathered}
 \]
 
-# K-Nearest Neighbors (KNN)
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+\pause
+\[
+f(x) = \frac{1}{(2\pi)^{p/2} |\bm{\Sigma}|^{1/2}}
+        \exp\Big\{-\frac{1}{2}(x-\mu_{\textcolor{red}{k}})^{\top}
+                              \bm{\Sigma}^{-1}
+                              (x-\mu_{\textcolor{red}{k}})
+            \Big\}
+\]
+
+\[ \text{\LARGE{\(\textcolor{beamer@UIUCblue}{\Rightarrow}\)}} \]
+
+\[
+\hat{\delta}_{\textcolor{red}{k}}(x) =
+x^{\top} \hat{\bm{\Sigma}}^{-1} \hat{\mu}_{\textcolor{red}{k}} -
+\frac{1}{2} \hat{\mu}_{\textcolor{red}{k}}^{\top} \hat{\bm{\Sigma}}^{-1}
+            \hat{\mu}_{\textcolor{red}{k}} +
+\log \hat{\pi}_{\textcolor{red}{k}}
+\]
+
+### An example
+
+\begin{figure}
+ \centering
+ \includegraphics[width=.85\textwidth]{iBagens/lda-ex.png}
+\end{figure}
+
+## Some important details
+
+### Ok, and about what else do we need to talk? (1/2)
+
+\begin{figure}
+ \centering
+ \includegraphics[width=.95\textwidth]{iBagens/threshold-error_rate.png}
+\end{figure}
+
+### Ok, and about what else do we need to talk? (2/2)
+
+\begin{figure}
+ \centering
+ \includegraphics[width=.75\textwidth]{iBagens/roc_curve.png}
+\end{figure}
+
+# Quadratic Discriminant Analysis (QDA)
+
+###
+
+\textcolor{beamer@UIUCblue}{Unlike} \textcolor{beamer@UIUCorange}{LDA},
+\textcolor{beamer@UIUCorange}{QDA} assumes that each class has its
+\textcolor{beamer@UIUCblue}{own} covariance matrix.
+
+Under this assumption, the \textcolor{beamer@UIUCblue}{approximation} of
+the Bayes classifier becomes
+\[
+\textcolor{beamer@UIUCorange}{\text{QLA}}: \quad
+\hat{\delta}_{\textcolor{red}{k}}(x) =
+- \frac{1}{2} (x-\hat{\mu}_{\textcolor{red}{k}})^{\top}
+              \hat{\bm{\Sigma}}_{\textcolor{red}{k}}^{-1}
+              (x-\hat{\mu}_{\textcolor{red}{k}})
+- \frac{1}{2} \log |\hat{\bm{\Sigma}}_{\textcolor{red}{k}}|
++ \log \hat{\pi}_{\textcolor{red}{k}}.
+\]
+\(x\) appears as a \textcolor{beamer@UIUCorange}{quadratic} function,
+this is where \textcolor{beamer@UIUCorange}{QDA} gets its name.
+\pause
+\begin{figure}
+ \centering
+ \includegraphics[width=.7\textwidth]{iBagens/qda-ex.png}
+\end{figure}
+
+### Ok, but... in practice, what's the difference?
+
+\textcolor{beamer@UIUCblue}{Why} does it matter whether or not we assume
+that the \(\textcolor{red}{K}\) classes share a common covariance
+matrix?
+
+The \textcolor{beamer@UIUCblue}{answer} lies in the
+\textcolor{beamer@UIUCorange}{bias-variance trade-off.}
+
+\begin{figure} \centering
+\includegraphics[width=.85\textwidth]{iBagens/bias-variance_trade-off.jpeg}
+\end{figure}
+
+### Concluding...
+
+\textcolor{beamer@UIUCorange}{LDA} tends to be a
+\textcolor{beamer@UIUCblue}{better} bet than
+\textcolor{beamer@UIUCorange}{QDA} if there are relatively few
+observations and so \textcolor{beamer@UIUCblue}{reducing variance is
+crucial}.
+
+In contrast, \textcolor{beamer@UIUCorange}{QDA} is
+\textcolor{beamer@UIUCblue}{recommended if the data set is very large},
+so that the variance of the classifier is not a major concern, or if the
+assumption of a common covariance matrix for the \(\textcolor{red}{K}\)
+classes is clearly untenable.
 
 ### and...
 
