@@ -430,6 +430,37 @@ so that the variance of the classifier is not a major concern, or if the
 assumption of a common covariance matrix for the \(\textcolor{red}{K}\)
 classes is clearly untenable.
 
+# Main remarks
+
+###
+
++ The \textcolor{beamer@UIUCorange}{logistic regression} and
+  \textcolor{beamer@UIUCorange}{LDA} methods are
+  \textcolor{beamer@UIUCblue}{closely connected}, since both produce
+  \textcolor{beamer@UIUCblue}{linear decision boundaries}.
+
+To make a nicer comparison, we may mencion the
+\textcolor{beamer@UIUCorange}{KNN}.
+
++ \textcolor{beamer@UIUCorange}{KNN} is a completely
+  \textcolor{beamer@UIUCblue}{non-parametric} approach: no assumptions
+  are made about the shape of the decision boundary. Nevertheless,
+  \textcolor{beamer@UIUCorange}{KNN} does not tell us which predictors
+  are important.
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
++ When the true \textcolor{beamer@UIUCblue}{decision boundaries} are
+  \textcolor{beamer@UIUCblue}{linear}, the
+  \textcolor{beamer@UIUCorange}{LDA} and
+  \textcolor{beamer@UIUCorange}{logistic regression} approaches will
+  tend to perform well. When the boundaries are
+  \textcolor{beamer@UIUCblue}{moderately non-linear},
+  \textcolor{beamer@UIUCorange}{QDA} may give better results. Finally,
+  for much more \textcolor{beamer@UIUCblue}{complicated decision
+  boundaries}, a non-parametric approach such as
+  \textcolor{beamer@UIUCorange}{KNN} can be superior. But the level of
+  smoothness for a non-parametric approach must be chosen carefully.
+
 ### and...
 
 \begin{figure} \centering \includegraphics[width=.5\textwidth]{end.jpg}
