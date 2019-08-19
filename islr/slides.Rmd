@@ -246,19 +246,23 @@ regression?}
 
 ### But, ok... why not continue with logistic regression?
 
-Simple, LDA is popular when we have more than two response classes.
+Simple, \textcolor{beamer@UIUCorange}{LDA} is popular when we have more
+than two response classes.
 
 \noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
 
 Now, a reason more serious: \textcolor{beamer@UIUCblue}{stability}
 
 + When the classes are well-separated, the parameter estimates for the
-  logistic regression model are surprisingly unstable. LDA does not
+  \textcolor{beamer@UIUCorange}{logistic regression} model are
+  surprisingly unstable. \textcolor{beamer@UIUCorange}{LDA} does not
   suffer from this problem.
 
 + If \(n\) is small and the distribution of the predictors \(X\) is
-  approximately normal in each of the classes, the linear discriminant
-  model is again more stable than the logistic regression model.
+  approximately \textcolor{beamer@UIUCorange{normal} in each of the
+  classes, the \textcolor{beamer@UIUCorange}{linear discriminant} model
+  is again more stable than the \textcolor{beamer@UIUCorange}{logistic
+  regression} model.
 
 ## LDA in a nutshell
 
