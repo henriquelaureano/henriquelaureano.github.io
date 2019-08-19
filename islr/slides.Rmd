@@ -67,7 +67,7 @@ More computer-intensive methods are discussed in later chapters, such as
 ###
 
 We could consider encoding the response, \(Y\), as a quantitative
-variable, e.g.,
+variable, \textcolor{beamer@UIUCblue}{e.g.},
 
 \begin{block}{Predict the medical condition of a patient on the basis of
 her symptoms.}
@@ -84,24 +84,30 @@ Y = \begin{cases}
 \textcolor{beamer@UIUCorange}{Unfortunately, this coding implies an
 ordering on the outcomes.}
 
-Each possible coding would produce a fundamentally different linear
-model that would ultimately lead to different sets of predictions.
+Each possible coding would produce a
+\textcolor{beamer@UIUCblue}{fundamentally different linear model} that
+would ultimately lead to \textcolor{beamer@UIUCblue}{different sets of
+predictions}.
 
-### That leads us to other questions,
+### This leads us to other questions,
 
-+ What if the response variable values did take on a natural ordering,
-  \textcolor{beamer@UIUCblue}{\texttt{such as mild}},
++ What if the response variable values did take on a
+  \textcolor{beamer@UIUCblue}{natural ordering}, such as
+  \textcolor{beamer@UIUCblue}{\texttt{mild}},
   \textcolor{beamer@UIUCblue}{\texttt{moderate}}, and
   \textcolor{beamer@UIUCblue}{\texttt{severe}}?
 
 + For a \textcolor{beamer@UIUCblue}{\texttt{binary}} (two level)
-  qualitative response, the situation is better.
+  qualitative response, the situation is
+  \textcolor{beamer@UIUCblue}{better}.
 
-   - However, if we use linear regression, some of our estimates might
-     be outside the [0, 1] interval.
+   - \textcolor{beamer@UIUCblue}{However}, if we use linear regression,
+     some of our estimates might be \textcolor{beamer@UIUCblue}{outside}
+     the \textcolor{beamer@UIUCblue}{[0, 1] interval}.
 
-   - However, the dummy variable approach cannot be easily extended to
-     accommodate qualitative responses with more than two levels.
+   - However, the \textcolor{beamer@UIUCblue}{dummy variable approach}
+     cannot be easily extended to accommodate qualitative responses with
+     more than two levels.
 
 \pause
 \textcolor{beamer@UIUCorange}{For these reasons, it is preferable to use
@@ -109,9 +115,11 @@ a classification method that is truly suited for qualitative response
 values, such as the ones presented next.}
 
 \begin{block}{Curiously,}
- it turns out that the classifications that we get if we use linear
- regression to predict a binary response will be the same as for the
- linear discriminant analysis (LDA) procedure we discuss later.
+ it turns out that the classifications that we get if we use
+ \textcolor{beamer@UIUCblue}{linear regression} to predict a binary
+ response will be \textcolor{beamer@UIUCblue}{the same} as for the
+ linear discriminant analysis (\textcolor{beamer@UIUCblue}{LDA})
+ procedure we discuss later.
 \end{block}
 
 # A typical dataset
@@ -449,7 +457,8 @@ To make a nicer comparison, we may mencion the
   are important.
 \noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
 
-+ When the true \textcolor{beamer@UIUCblue}{decision boundaries} are
++ When the true
+\textcolor{beamer@UIUCblue}{decision boundaries} are
   \textcolor{beamer@UIUCblue}{linear}, the
   \textcolor{beamer@UIUCorange}{LDA} and
   \textcolor{beamer@UIUCorange}{logistic regression} approaches will
