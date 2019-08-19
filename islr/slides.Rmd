@@ -225,7 +225,8 @@ of maximum likelihood.
  With \textcolor{beamer@UIUCorange}{LDA} we model the distribution of
  the predictors \(X\) separately in each of the response classes (i.e.
  given \(Y\)), and then use Bayes’ theorem to flip these around into
- estimates for \(\mathbb{P}[Y = k | X = x]\).
+ estimates for \(\mathbb{P}[Y = \textcolor{red}{k} | X =
+ \textcolor{red}{x}]\).
 \end{adjustwidth}
 
 \pause
