@@ -284,8 +284,9 @@ Now, a reason more serious: \textcolor{beamer@UIUCblue}{stability}
   \(f_{\textcolor{red}{k}}(\textcolor{red}{x})\) tends to be more
   challenging, unless we assume some simple forms for these densities.
 
-\textcolor{beamer@UIUCorange}{Remember from Chap. 2} that the Bayes
-classifier has the lowest possible error rate out of all classifiers.
+\textcolor{beamer@UIUCorange}{Remember from Chap. 2} that the
+\textcolor{beamer@UIUCblue}{Bayes classifier} has the lowest possible
+error rate out of all classifiers.
 
 ## Living in a simple and \textit{normal} world
 
@@ -303,7 +304,9 @@ classifier has the lowest possible error rate out of all classifiers.
 
 Putting a \textcolor{beamer@UIUCblue}{hat} (simple average and a
 weighted average of the sample variances for each class) in everything,
-the LDA \textcolor{beamer@UIUCblue}{approx.} this Bayes classifier.
+the \textcolor{beamer@UIUCorange}{LDA}
+\textcolor{beamer@UIUCblue}{approx.} this
+\textcolor{beamer@UIUCorange}{Bayes classifier}.
 
 ###
 
