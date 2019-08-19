@@ -222,18 +222,20 @@ of maximum likelihood.
 \end{figure}
 
 \begin{adjustwidth}{2.5em}{0pt}
- With LDA we model the distribution of the predictors \(X\) separately
- in each of the response classes (i.e. given \(Y\)), and then use Bayes’
- theorem to flip these around into estimates for \(\mathbb{P}[Y = k | X
- = x]\).
+ With \textcolor{beamer@UIUCorange}{LDA} we model the distribution of
+ the predictors \(X\) separately in each of the response classes (i.e.
+ given \(Y\)), and then use Bayes’ theorem to flip these around into
+ estimates for \(\mathbb{P}[Y = k | X = x]\).
 \end{adjustwidth}
 
 \pause
 \textcolor{beamer@UIUCblue}{Sometimes the same results}
 
 \begin{adjustwidth}{2.5em}{0pt}
- When these distributions are assumed to be normal, it turns out that
- the model is very similar in form to logistic regression.
+ When these distributions are \textcolor{beamer@UIUCorange}{assumed} to
+ be \textcolor{beamer@UIUCorange}{normal}, it turns out that the model
+ is very similar in form to \textcolor{beamer@UIUCorange}{logistic
+ regression}.
 \end{adjustwidth}
 
 ###
