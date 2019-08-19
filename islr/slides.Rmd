@@ -152,8 +152,7 @@ values, such as the ones presented next.}
 
 ### Some math, but with just one predictor
 
-\begin{block}{The model and its relations (\textit{showing my
-\LaTeX~skills})}
+\begin{block}{The model and its relations}
 \[
 p(X) = \underset{\begin{gathered}
                   \text{\textit{logistic}}\\[-\jot]
@@ -174,7 +173,6 @@ p(X) = \underset{\begin{gathered}
 \]
 \end{block}
 
-\pause
 For example,
 \[
 p(X) = 0.2~\Rightarrow~\frac{0.2}{1-0.2} = \frac{1}{4}
