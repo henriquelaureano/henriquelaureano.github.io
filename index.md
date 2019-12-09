@@ -5,14 +5,6 @@ description: Henrique Laureano is a MSc student at Universidade Federal do Paran
 keywords: Henrique, Laureano, Stats, modeling, being a good guy
 ---
 
-Brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician (BSc in
-Statistics at [UFPR](https://goo.gl/DtVAbi), 2016) and MSc Student in
-Numerical Methods in Engineering at UFPR under the supervision of
-Professor [Paulo Justiniano](http://leg.ufpr.br/~paulojus/) and
-Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
-
----
-
 <div class="container">
 <h4><a name="contact"></a>contact</h4>
 
@@ -29,6 +21,14 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
         </div>
     </div>
 </div>
+
+Brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician (BSc in
+Statistics at [UFPR](https://goo.gl/DtVAbi), 2016) and MSc Student in
+Numerical Methods in Engineering at UFPR under the supervision of
+Professor [Paulo Justiniano](http://leg.ufpr.br/~paulojus/) and
+Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
+
+---
 
 <div class="navbar">
   <div class="navbar-inner">
