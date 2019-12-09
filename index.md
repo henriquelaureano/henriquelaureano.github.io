@@ -11,8 +11,7 @@ keywords: Henrique, Laureano, Stats, modeling, being a good guy
     <div class="row-fluid">
         <div class="span5">
             Henrique Laurano<br/>
-            email: henriquelaureano@outlook.com ;
-                   laureano@ufpr.br<br/>
+            email: henriquelaureano@outlook.com | laureano@ufpr.br<br/>
         </div>
 
         <div class="span2">
@@ -36,9 +35,9 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
 <div class="navbar">
   <div class="navbar-inner">
       <ul class="nav">
-          <li><a href="{{ BASE_PATH }}/assets/CV.pdf">cv</a></li>
-          <li><a href="https://github.com/mbcarlos">GitHub</a></li>
-          <li><a href="https://twitter.com/dog_feelings">Twitter (@dog_feelings)</a></li>
+          <li><a href="https://github.com/mynameislaure">GitHub</a></li>
+          <li><a href="https://twitter.com/hap_laureano">Twitter</a></li>
+          <li><a href="{{ BASE_PATH }}/tumblr/">"Tumblr"</a></li>
       </ul>
   </div>
 </div>
