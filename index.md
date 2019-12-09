@@ -42,7 +42,7 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
   </div>
 </div>
 
-<div style="float: right; width: 5%;">
+<div style="float: right; height: 5%;">
  <ul class="nav">
      <li><a href="{{ BASE_PATH }}/assets/mike.html"><img src="../assets/mike.png"></a></li>
  </ul>
