@@ -22,6 +22,8 @@ keywords: Henrique, Laureano, Stats, modeling, being a good guy
     </div>
 </div>
 
+---
+
 Brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician (BSc in
 Statistics at [UFPR](https://goo.gl/DtVAbi), 2016) and MSc Student in
 Numerical Methods in Engineering at UFPR under the supervision of
