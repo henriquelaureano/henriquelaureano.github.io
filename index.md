@@ -32,12 +32,20 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
 
 ---
 
+> *Minimalism is not a lack of something. It’s simply the perfect amount of something.*
+
+---
+
 <div class="navbar">
   <div class="navbar-inner">
       <ul class="nav">
           <li><a href="https://github.com/mynameislaure">GitHub</a></li>
           <li><a href="https://twitter.com/hap_laureano">Twitter</a></li>
-          <li><a href="{{ BASE_PATH }}/tumblr/">"Tumblr"</a></li>
+          <li><a href="{{ BASE_PATH }}/tumblr/">Tumblr</a></li>
       </ul>
   </div>
+</div>
+
+<div style="float: right; width: 5%;">
+[<img src="../assets/mike.png">]({{ BASE_PATH }}/assets/mike.html)
 </div>
