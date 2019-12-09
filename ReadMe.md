@@ -1,4 +1,4 @@
-[Henrique Laureano's](http://leg.ufpr.br/~henrique) webpage repository. I made it following [this tutorial.](http://marisacarlos.com/pages/create-simple-academic-website)
+[Henrique Laureano](http://leg.ufpr.br/~henrique)'s webpage repository. I made it following [this tutorial.](http://marisacarlos.com/pages/create-simple-academic-website)
 
 Tutorial and website are heavily based on the tutorial and website from [Karl Broman](http://kbroman.org). Thanks Karl Broman!
 
