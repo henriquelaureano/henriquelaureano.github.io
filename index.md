@@ -17,7 +17,7 @@ keywords: Henrique, Laureano, Stats, modeling, being a good guy
         <div class="span2">
         <a href="../assets/headshot.jpg">
             <img src="../assets/headshot.jpg"
-                  title="Blue Ham" alt="Blue Ham"/></a>
+                  title="Henrique Laureano" alt="Henrique Laureano"/></a>
         </div>
     </div>
 </div>
