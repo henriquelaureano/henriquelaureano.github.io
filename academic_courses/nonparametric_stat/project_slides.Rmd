@@ -1,0 +1,446 @@
+---
+title: "An analysis of the union wages data: \\newline GLM's, GAM's and JAGS"
+short-title: "Project presentation (the project isn't done yet!)"
+author: "Henrique Laureano \\newline \\texttt{mynameislaure.github.io}"
+short-author: "Henrique Laureano"
+# email: "henrique.laureano\\@kaust.edu.sa"
+# date: ""
+# short-date: ""                              # `r format(Sys.Date(), "%m/%d/%Y")`
+institute: "STAT 260: Nonparametric Statistics"
+short-institute: "STAT 260, KAUST"
+# department: ""
+section-titles: true                    # provides slide headings
+safe-columns: true                      # enables special latex macros for columns
+fontsize: 10pt
+output:
+  beamer_presentation:
+    template: template.tex
+---
+
+# Data
+
+***
+
+Turning the dataset into a Kandinsky* painting
+
+```{r, echo=FALSE}
+data(trade.union, package = "SemiPar")
+
+kandinsky::kandinsky(trade.union)
+```
+
+\hfill (github.com/gsimchoni/kandinsky)
+
+***
+
+\* Kandinsky
+
+\begincols
+ \column{.45\linewidth}
+  \begin{figure}
+   \centering
+   \includegraphics[width=\textwidth]{google_kandinsky.png}
+  \end{figure}
+ \column{.55\linewidth}
+  \begin{figure}
+   \centering
+   \includegraphics[width=\textwidth]{kandinsky_flavor.png}
+  \end{figure}
+\endcols
+
+\hfill {\footnotesize (screenshots from Google)}
+
+***
+
+\begin{block}{Trade union data}
+
+Data on 534 U.S. workers with eleven variables (\texttt{SemiPar::trade.union}).
+
+\end{block}
+
+\pause
+
+Variables:
+
+\pause
+
+\begincols
+
+\column{.4\linewidth}
+
+- \color{blue}{\texttt{union.member}} \color{black} \newline {\small (yes or no)}
+
+- \texttt{years.educ}
+
+- \texttt{years.experience}
+
+- \texttt{wage} \newline {\small (dollars per hour)}
+
+- \texttt{age}
+
+- \texttt{female} \newline {\small (yes or no)}
+
+\column{.6\linewidth}
+
+- \texttt{south} \newline {\small (living or not in southern region of U.S.)}
+
+- \texttt{race} \newline {\small (black, hispanic or white)}
+
+- \texttt{occupation} \newline {\small (six categories)}
+
+- \texttt{sector} \newline {\small (three categories)}
+
+- \texttt{married} \newline {\small (yes or no)}
+
+\endcols
+
+***
+
+Quantitative variables:
+
+```{r, echo=FALSE}
+pairs(trade.union[ , c(1, 4, 6:7)]
+      , upper.panel = function(x, y, ...) {
+        usr <- par("usr") ; on.exit(par(usr)) ; par(usr = c(0, 1, 0, 1))
+        r <- abs(cor(x, y))
+        txt <- format(c(r, 0.123456789), digits = 2)[1]
+        text(.5, .5, txt, cex = 2)
+      }
+      , pch = 19, gap = .25, xaxt = "n", yaxt = "n"
+      , col = c("#0080FF", "#F3953E")[trade.union$union.member + 1])
+```
+
+\hfill {\small (colors by \texttt{union.member} status)}
+
+# GLM
+
+## Fitting Generalized Linear Models
+
+\pause
+
+- Let \(p_{i}\) be the probability of trade union membership;
+
+- Using a logistic regression model
+
+\vspace{-.55cm}
+\begin{align*}
+ {\rm logit}(p_{i}) = \beta_{0} + \beta_{1} \texttt{years.educ}_{i} + ... +
+                                    \beta_{10} \texttt{married}_{i}, \\
+ \texttt{union.member}_{i} \sim {\rm Bernoulli}(p_{i}), \quad i = 1, \dots 534.
+\end{align*}
+
+\hfill {\small (b/c we have 10 variables, as previously shown)}
+
+\pause
+\small
+```{r, eval=FALSE}
+formula <- union.member ~
+  years.educ + years.experience + wage + age + female + south +
+  as.factor(race) + as.factor(occupation) + sector + married
+
+union.glm <- glm(formula, family = binomial, trade.union)
+```
+\normalsize	
+
+Using the AIC as criterion we have ...
+
+***
+
+```{r, include=FALSE}
+formula <- union.member ~
+  years.educ + years.experience + wage + age + female + south +
+  as.factor(race) + as.factor(occupation) + sector + married
+
+union.glm <- glm(formula, family = binomial, trade.union)
+
+union.glm <- MASS::stepAIC(union.glm)
+```
+
+\small
+```{r, comment=NA}
+union.glm$formula
+```
+\normalsize
+
+\hfill we *finish* with seven variables, two quantitatives.
+
+\pause
+... and the residues? \pause ... and the goodness-of-fit? \pause
+
+\small
+```{r, message=FALSE}
+pearson <- residuals(union.glm, type = "pearson")
+devi <- residuals(union.glm, type = "deviance")
+rocurve <- pROC::roc(trade.union$union.member, fitted(union.glm))
+```
+
+```{r, echo=FALSE, message=FALSE, fig.height=3.25}
+par(mfrow = c(1, 3), mar = c(2, 3, 3, 1))
+
+plot(pearson
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Pearson residuals", pch = 20)
+abline(h = 0, col = 2, lwd = 1.5) ; Axis(c(-2, 8), side = 2, las = 1)
+
+plot(devi
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Deviance residuals", pch = 20)
+abline(h = 0, col = 2, lwd = 1.5) ; Axis(c(-2, 3), side = 2, las = 1)
+
+library(pROC)
+plot.roc(rocurve, print.auc = TRUE, print.thres = TRUE
+         , las = 1, print.thres.cex = 1, print.auc.cex = 1)
+```
+
+## Coefficients
+
+\pause
+\small
+```{r, comment=NA}
+round( summary(union.glm)$coeff, 5)
+```
+
+```{r}
+                    # null.deviance: 503.0841, deviance: 426.8709
+```
+
+## Effects
+
+\pause
+```{r, include=FALSE}
+df <- trade.union
+
+df[ , c(2:3, 5, 8:11)] <- lapply(df[ , c(2:3, 5, 8:11)], factor)
+
+union.glm <- glm(union.member ~ ., family = binomial, df)
+
+union.glm <- MASS::stepAIC(union.glm)
+
+eff <- effects::allEffects(union.glm)
+plot(eff, ylab = expression(p[i]), main = NULL)
+```
+
+\vspace{-.35cm}
+\begin{figure}
+ \centering
+ \includegraphics[height=7.75cm]{effects.png}
+\end{figure}
+
+# GAM
+
+***
+
+## Fitting Generalized Additive Models
+
+\pause
+
+Logistic regression model
+
+\vspace{-.425cm}
+\begin{align*}
+ {\rm logit}(p_{i}) = \beta_{0}
+                    & + f_{1}(\texttt{years.educ}_{i}) + ... +
+                        f_{4}(\texttt{age}_{i}) \\
+                    & + \beta_{1} \texttt{female}_{i} + ... +
+                        \beta_{6} \texttt{married}_{i}, \\
+ & \hspace{-2cm}
+ \texttt{union.member}_{i} \sim {\rm Bernoulli}(p_{i}), \quad i = 1, \dots 534.
+\end{align*}
+
+\hfill (4 quantitative variables, thus 4 smooth functions/splines, and 6,
+        remaining, qualitative variables.)
+
+\pause
+\small
+```{r, message=FALSE}
+formula <- union.member ~
+  s(years.educ) + s(years.experience, k = 20) + s(wage, k = 20) +
+  s(age, k = 20) + female + south + race + occupation + sector +
+  married
+
+union.gam <- mgcv::gam(formula, family = binomial, trade.union)
+```
+\normalsize	
+
+\pause
+Selecting a model looking to trade off between degree of freedom and RSS ...
+
+***
+
+Doing variable selection in qualitative features and looking to the qualitative
+ones ...
+
+\pause
+```{r, include=FALSE}
+formula <- union.member ~
+  s(years.educ) + s(years.experience, k = 20) + s(wage, k = 20) + s(age, k = 20) +
+  female + south + as.factor(race) + as.factor(occupation)
+
+library(mgcv)
+union.gam <- gam(formula, family = binomial, trade.union)
+
+par(mfrow = c(2, 2), mar = c(4.25, 4, 1.25, 1) + .1)
+
+plot(union.gam, select = 1, lwd = 2, ylim = c(-4.5e5, 4.5e5)
+     , xlab = "Years of education", ylab = "Spline")
+plot(union.gam, select = 2, lwd = 2, ylim = c(-1.5e6, 1.5e6)
+     , xlab = "Years of experience", ylab = "Spline")
+plot(union.gam, select = 3, lwd = 2, ylim = c(-10, 10)
+     , xlab = "Wage", ylab = "Spline")
+plot(union.gam, select = 4, lwd = 2, ylim = c(-1.1e6, 1.1e6)
+     , xlab = "Age", ylab = "Spline")
+```
+
+\vspace{-.25cm}
+\begin{figure}
+ \centering
+ \includegraphics[height=7.5cm]{bad_first.png}
+\end{figure}
+
+***
+
+\small
+```{r, comment=NA}
+round( anova(union.gam)$s.table, 5)
+```
+\normalsize
+
+\pause
+```{r, include=FALSE}
+formula <- union.member ~
+  s(wage, k = 20) + female + south + as.factor(race) + as.factor(occupation)
+
+union.gam <- gam(formula, family = binomial, trade.union)
+
+par(mar = c(4.25, 4, 1.25, 1) + .1)
+
+plot(union.gam, lwd = 2, ylim = c(-10, 10), xlab = "Wage", ylab = "Spline")
+```
+
+\vspace{-.3cm}
+\begincols
+ \column{.4\linewidth}
+  Doing variable selection in the qualitative's...
+ \column{.6\linewidth}
+  \begin{figure}
+   \centering
+   \includegraphics[height=5.75cm]{baaaad.png}
+  \end{figure}
+\endcols
+
+## Residues
+
+\small
+```{r, comment=NA}
+union.gam$formula
+```
+
+```{r}
+pearson <- residuals(union.gam, type = "pearson")
+devi <- residuals(union.gam, type = "deviance")
+rocurve <- roc(trade.union$union.member, fitted(union.gam))
+```
+
+```{r, echo=FALSE, fig.height=3.25}
+par(mfrow = c(1, 3), mar = c(2, 3, 3, 1))
+
+plot(pearson
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Pearson residuals", pch = 20)
+abline(h = 0, col = 2, lwd = 1.5) ; Axis(c(-2, 8), side = 2, las = 1)
+
+plot(devi
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Deviance residuals", pch = 20)
+abline(h = 0, col = 2, lwd = 1.5) ; Axis(c(-2, 3), side = 2, las = 1)
+
+plot.roc(rocurve, print.auc = TRUE, print.thres = TRUE, las = 1
+         , print.thres.cex = 1, print.auc.cex = 1)
+```
+
+## Coefficients
+
+\small
+```{r, comment=NA}
+round( summary(union.gam)$p.table, 5)
+
+summary(union.gam)$s.table
+```
+
+# JAGS
+
+## Logistic regression model
+
+\vspace{-.4cm}
+\[
+ {\rm logit}(p_{i}) = f(\texttt{wage}_{i}), \quad
+ \texttt{union.member}_{i} \sim {\rm Bernoulli}(p_{i}), \quad
+ i = 1, \dots 534.
+\]
+
+JAGS model specification file
+
+\small
+```{r, eval=FALSE}
+model {
+  eta <- X %*% b
+  for (i in 1:n) { mu[i] <-  ilogit(eta[i]) } # expected response
+  for (i in 1:n) { y[i] ~ dbin(mu[i], w[i])            # response
+  for (i in 1:1) { b[i] ~ dnorm(0, .018) }         # tau=1/7.5**2
+                                              # prior for s(wage)
+  K1 <- S1[1:19, 1:19] * lambda[1]  + S1[1:19, 20:38] * lambda[2]
+  b[2:20] ~ dmnorm(zero[2:20] ,K1) 
+                                     # smoothing parameter priors
+  for (i in 1:2) {
+    lambda[i] ~ dgamma(.05, .005)
+    rho[i] <- log(lambda[i])
+  }
+}
+```
+
+## Results
+
+\small
+Simulating from the model and addying a sample of 20 curves from the posterior.
+
+```{r, include=FALSE, cache=TRUE, cache.path='cache_jags/'}
+library(rjags)
+
+jags.gam <- jagam(union.member ~ s(wage, k = 20), trade.union, family = binomial
+                  , file = "trade_union.jags")
+
+union.jags <- jags.model("trade_union.jags"
+                         , data = jags.gam$jags.data, inits = jags.gam$jags.ini
+                         , n.chains = 3)
+
+samp <- jags.samples(union.jags, c("b", "rho", "mu"), n.iter = 1e4, thin = 10)
+
+jam <- sim2jam(samp, jags.gam$pregam)
+```
+
+```{r, echo=FALSE}
+plot(jam
+     , shade = TRUE, shade.col = "orange", shift = coef(jam)[1]
+     , trans = binomial()$linkinv, rug = FALSE, seWithMean = TRUE
+     , xlim = c(0, 30), lwd = 4, col = "#0080ff", xlab = "Wage", ylab = "Spline")
+
+nu <- trade.union$union.member == 0
+with(trade.union, points(wage[nu], 0 * wage[nu], pch = 4))
+with(trade.union, points(wage[!nu], 0 * wage[!nu] + .5, pch = 4))
+
+ii <- 1:20 * 50; df.pred <- data.frame(wage = 0:300 / 10)
+Xp <- predict(jam, type = "lpmatrix", newdata = df.pred)
+for (i in ii) {
+  p <- binomial()$linkinv(Xp %*% samp$b[, i, 1])
+  lines(df.pred$wage, p, lty = 2)
+}
+```
+
+## and is this...
+
+\vspace{1.25cm}
+\centering {\Large thank you!}
+\vspace{1.25cm}
+
+\begin{figure}
+   \centering
+   \includegraphics[width=.325\textwidth]{logo.pdf}
+  \end{figure}
+
+\url{henrique.laureano@kaust.edu.sa}

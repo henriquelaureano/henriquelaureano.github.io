@@ -1,0 +1,831 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+\title{  
+ \normalfont \normalsize 
+ \textsc{CS 229 - Machine Learning} \\
+ Xiangliang Zhang \\
+ Computer Science (CS)/Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\ [.4cm]
+ \LARGE HOMEWORK \\
+  I
+ \horrule{2pt} \\[ .5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold')
+# </r code> ==================================================================== #
+@
+
+\section*{Data} \addcontentsline{toc}{section}{Data}
+
+\horrule{1pt} \\
+
+\textbf{Generate a set of data samples \((x, t)\) by yourself, e.g.,
+        \(t = f(x) + {\rm noise}\). \(x\) is a variable with real value in one
+        dimension, and \(t\) is the target variable with real value in one
+        dimension too. Function \(f(x)\) can be any non-linear function, e.g.,
+        \(\sin x\), \(\cos x\), or more complex ones, and random noises are added.
+       } \\
+
+\textbf{Randomly choose 80\% of the data for learning the regression function. Use
+        the remaining 20\% for evaluating the learned function.} \\
+
+\underline{Solution:} \\
+
+\[ f(x) = 0.2 + 0.15 x + 3.25 x^{2} - 2.8 x ^{3}, \qquad
+   \text{(coefficient values chosen randomly)}
+\]
+
+\[ x: \quad \text{two thousand different values in the interval } [0, 1] \]
+
+\[ {\rm noise}: \quad \text{two thousand random samples of a }
+                      {\rm Normal}(0, 0.025^{2})
+\]
+\\
+<<fig.width=10, fig.height=5>>=
+# <r code> ===================================================================== #
+                             # 2 thousand different numbers in the interval [0, 1]
+x <- seq(0, 1, length.out = 2e3)
+
+fx <- .2 + .15 * x + 3.25 * x**2 - 2.8 * x**3                # non-linear behavior
+
+                               # adding the random noise and building the target t
+t <- fx + rnorm(2e3, sd = .025)
+
+              # sampling 1600 numbers between 0 and 2 thousand, without reposition
+random.choose <- sample(2e3, 16e2)
+
+                                            # defining the train and test datasets
+t.train <- t[ random.choose]; x.train <- x[ random.choose]
+t.test  <- t[-random.choose]; x.test  <- x[-random.choose]
+
+                                                                   # plotting data
+par(mfrow = c(1, 2))                                       # graphical definitions
+
+plot(t.train ~ x.train, main = "Train data: 1600 samples")
+plot(t.test  ~ x.test,  main = "Test data: 400 samples")
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\section*{Regression basis function}
+\addcontentsline{toc}{section}{Regression basis function}
+
+\horrule{1pt} \\
+
+\textbf{Choose any kind of basis function, e.g., polynomial function. Try an
+        appropriate number of  basis functions.} \\
+
+\underline{Solution:} \\
+
+Polynomial function with three and four basis:
+Polynomial of degree 3 (cubic) and 4.
+
+<<>>=
+# <r code> ===================================================================== #
+p <- 6                                            # defining the polynomial degree
+xsp <- function(p, xs) {  # building the matrix with the desired polynomial degree
+  xsp <- matrix(NA, nrow = length(xs), ncol = p + 1)    # creating an empty matrix
+  xsp[ , 1:2] <- cbind(1, xs)                         # first two standard columns
+  for (i in 2:p) xsp[ , i + 1] <- xs**i                    # making the polynomium
+  return(xsp)
+}
+xs3.train <- xsp(p = 3, xs = x.train)              # matrix of dimensions 1600 x 4
+xs4.train <- xsp(p = 4, xs = x.train)              # matrix of dimensions 1600 x 5
+xs5.train <- xsp(p = 5, xs = x.train)              # matrix of dimensions 1600 x 6
+xs6.train <- xsp(p = 6, xs = x.train)              # matrix of dimensions 1600 x 7
+xs3.test  <- xsp(p = 3, xs = x.test)               # matrix of dimensions  400 x 4
+xs4.test  <- xsp(p = 4, xs = x.test)               # matrix of dimensions  400 x 5
+xs5.test  <- xsp(p = 5, xs = x.test)               # matrix of dimensions  400 x 6
+xs6.test  <- xsp(p = 6, xs = x.test)               # matrix of dimensions  400 x 7
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\section*{Task} \addcontentsline{toc}{section}{Task}
+
+\horrule{1pt} \\
+
+\subsection*{(1)} \addcontentsline{toc}{subsection}{(1)}
+
+\horrule{.5pt} \\
+
+\textbf{Implement the \textit{batch gradient descent} algorithm.} \\
+
+\underline{Solution:} \\
+
+Algorithm:
+
+\begin{align*}
+ w_{i}^{j + 1} & := w_{i}^{j} - \eta \frac{\partial}{\partial w_{i}}
+                    \bigg[\frac{1}{2N} \sum_{n = 1}^{N} (y(x_{n}, w) - t_{n})^{2}
+                    \bigg] \\
+               & := w_{i}^{j} - \eta
+                    \frac{1}{N} \sum_{n = 1}^{N} (y(x_{n}, w) - t_{n}) x_{n},
+\end{align*}
+
+with
+
+\begin{itemize}
+ \item \(w\) being the vector of coefficients;
+ \item \(\eta\) being a real constant in the interval \((0, 1]\);
+ \item \(N\) being the sample size;
+ \item \(y(x_{n}, w)\) being the linear predictor, in this case
+       \(y(x_{n}, w) = \sum_{i = 0}^{p} w_{i} x^{i}\);
+ \item \(t_{n}\) being the response target variable;
+ \item \(x\) being the covariables.
+\end{itemize}
+
+Cost function/stop criterium:
+
+\[ \frac{1}{2N} \sum_{n = 1}^{N} (y(x_{n}, w) - t_{n})^{2}. \]
+
+<<>>=
+# <r code> ===================================================================== #
+bgd <- function(t, x) {                                   # batch gradient descent
+  t = matrix(t)         # converting the target value to matrix of dimension n x 1
+  n = length(t)                                                      # sample size
+  p = ncol(x)                                             # number of coefficients
+  # i keep only two vectors of coefficients in the memory. the coefficients of the
+  #                                   actual step and of the immediately past step
+  w = matrix(numeric(p))         # coefficients for the past step. dimension p x 1
+  w.new = matrix(numeric(p))   # coefficients for the actual step. dimension p x 1
+  i = 1                                     # counter for the number of iterations
+  cost = 1     # cost function (convergence criterium). random value to initialize
+  cf <- numeric(1)   # creating vector to keep the cost function at each iteration
+  eta = .5                                                              # constant
+     # establishing convergence criterium. desired difference between steps: 0.001
+  while (cost > .001) {
+    error = x %*% w - t                              # breaking algorithm in parts
+    delta = t(x) %*% error / n                       # breaking algorithm in parts
+    w.new = w - eta * delta                            # computing new coefficents
+    cost = sum((x %*% w.new - t)**2) / (2 * n)           # computing cost function
+    cf[i] = cost                             # keeping the iteration cost function
+    w = w.new                # at each step the new coefficient became the old one
+    # print(c(i, w))         # showing number of iterations and actual coefficents
+    i = i + 1                                  # updating the number of iterations
+  }
+      # returning final coeffients, number of iterations and cost function at each
+      #                                                                  iteration
+  return(list(w = t(w), i = i, cf = cf))
+}
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{a)} \addcontentsline{toc}{subsubsection}{a)}
+
+\horrule{.25pt} \\
+
+\textbf{Show the decreasing of error function with the increasing of iteration
+        numbers.} \\
+
+\underline{Solution:}
+
+<<fig.width=10, fig.height=10>>=
+# <r code> ===================================================================== #
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+
+                                  # running the bgd with a three degree polynomial
+bgd.3train <- bgd(t = t.train, x = xs3.train)
+plot(bgd.3train$cf, type = "l", lwd = 5, col = "#0080ff" # plotting error function
+     , xlab = "Iterations", ylab = "Error"
+     , main = "Polynomial with three basis functions")  
+                                   # running the bgd with a four degree polynomial
+bgd.4train <- bgd(t = t.train, x = xs4.train)
+plot(bgd.4train$cf, type = "l", lwd = 5, col = "#0080ff" # plotting error function
+     , xlab = "Iterations", ylab = "Error"
+     , main = "Polynomial with four basis functions") 
+                                   # running the bgd with a five degree polynomial
+bgd.5train <- bgd(t = t.train, x = xs5.train)
+plot(bgd.5train$cf, type = "l", lwd = 5, col = "#0080ff" # plotting error function
+     , xlab = "Iterations", ylab = "Error"
+     , main = "Polynomial with five basis functions")
+                                    # running the bgd with a six degree polynomial
+bgd.6train <- bgd(t = t.train, x = xs6.train)
+plot(bgd.6train$cf, type = "l", lwd = 5, col = "#0080ff" # plotting error function
+     , xlab = "Iterations", ylab = "Error"
+     , main = "Polynomial with six basis functions")
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{b)} \addcontentsline{toc}{subsubsection}{b)}
+
+\horrule{.25pt} \\
+
+\textbf{Give the results of obtained coefficient, \(w\).} \\
+
+\underline{Solution:}
+
+<<fig.width=10, fig.height=10, results='markup'>>=
+# <r code> ===================================================================== #
+round(bgd.3train$w, 6)  # polynomial with three basis functions: w_{0}, ..., w_{3}
+round(bgd.4train$w, 6)  # polynomial with four basis functions:  w_{0}, ..., w_{4}
+round(bgd.5train$w, 6)  # polynomial with five basis functions:  w_{0}, ..., w_{5}
+round(bgd.6train$w, 6)  # polynomial with six basis functions:   w_{0}, ..., w_{6}
+
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with three basis functions")
+t.bgd.3train <- with(bgd.3train, w) %*% t(xs3.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.bgd.3train[order(x.train)], col = "#0080ff", lwd = 5)
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with four basis functions")
+t.bgd.4train <- with(bgd.4train, w) %*% t(xs4.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.bgd.4train[order(x.train)], col = "#0080ff", lwd = 5)
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with five basis functions")
+t.bgd.5train <- with(bgd.5train, w) %*% t(xs5.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.bgd.5train[order(x.train)], col = "#0080ff", lwd = 5)
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with six basis functions")
+t.bgd.6train <- with(bgd.6train, w) %*% t(xs6.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.bgd.6train[order(x.train)], col = "#0080ff", lwd = 5)
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{c)} \addcontentsline{toc}{subsubsection}{c)}
+
+\horrule{.25pt} \\
+
+\textbf{Show the predicted \(f(x)\) when applying the learned regression function
+        on testing data \(x\), and compare it with the corresponding actual target
+        \(t\) on the same figure.} \\
+
+\underline{Solution:}
+
+<<fig.width=10, fig.height=10>>=
+# <r code> ===================================================================== #
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with three basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.bgd.3test <- with(bgd.3train, w) %*% t(xs3.test)
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.bgd.3test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with four basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.bgd.4test <- with(bgd.4train, w) %*% t(xs4.test)           
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.bgd.4test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with five basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.bgd.5test <- with(bgd.5train, w) %*% t(xs5.test)
+                                          # inserting the fitted curve in the plot
+lines(sort(x.test), t.bgd.5test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with six basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.bgd.6test <- with(bgd.6train, w) %*% t(xs6.test)
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.bgd.6test[order(x.test)], col = "#0080ff", lwd = 5)
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{d)} \addcontentsline{toc}{subsubsection}{d)}
+
+\horrule{.25pt} \\
+
+\textbf{What is the Root-Mean-Square Error on test set?} \\
+
+\underline{Solution:}
+
+\[ \text{Root-Mean-Square (RMS) Error}: \quad
+   E_{\rm RMS} =
+   \sqrt{\frac{1}{N} \sum_{n = 1}^{N} (y(x_{n}, w^{\star}) - t_{n})^{2}}
+\]
+
+<<results='markup'>>=
+# <r code> ===================================================================== #
+rmse <- function(x, w, t) {                               # root-mean-square error
+  n = length(t)                                                      # sample size
+  rmse = sum((x %*% t(w) - t)**2) / (2 * n)                   # computing the rmse
+  return(rmse)                                                # returning the rmse
+}
+             # rmse in the test data using a polynomial with three basis functions
+             #                        (coefficients estimated with the train data)
+(rmse.3test <- rmse(x = xs3.test, w = with(bgd.3train, w), t = t.test))
+              # rmse in the test data using a polynomial with four basis functions
+              #                       (coefficients estimated with the train data)
+(rmse.4test <- rmse(x = xs4.test, w = with(bgd.4train, w), t = t.test))
+              # rmse in the test data using a polynomial with five basis functions
+              #                       (coefficients estimated with the train data)
+(rmse.5test <- rmse(x = xs5.test, w = with(bgd.5train, w), t = t.test))
+               # rmse in the test data using a polynomial with six basis functions
+               #                      (coefficients estimated with the train data)
+(rmse.6test <- rmse(x = xs6.test, w = with(bgd.6train, w), t = t.test))
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsection*{(2)} \addcontentsline{toc}{subsection}{(2)}
+
+\horrule{.5pt} \\
+
+\textbf{Implement the \textit{stochastic gradient descent} algorithm.} \\
+
+\underline{Solution:} \\
+
+Algorithm:
+
+\begin{align*}
+ \text{for } n & = 1:N \\
+ w_{i}^{n} & := w_{i}^{n-1} - \eta \frac{\partial}{\partial w_{i}}
+                    \bigg[\frac{1}{2} (y(x_{n}, w) - t_{n})^{2}\bigg] \\
+           & := w_{i}^{n-1} - \eta (y(x_{n}, w) - t_{n}) x_{n}.
+\end{align*}
+
+<<>>=
+# <r code> ===================================================================== #
+sgd <- function(t, x) {                              # stochastic gradient descent
+  t = matrix(t)         # converting the target value to matrix of dimension n x 1
+  n = length(t)                                                      # sample size
+  p = ncol(x)                                             # number of coefficients
+  w = matrix(numeric(p))               # storing the coefficients. dimension p x 1
+  cf <- numeric(1)   # creating vector to keep the cost function at each iteration
+  eta = .5                                                              # constant
+  for (i in 1:n) {                              # for each observation in the data
+    xn = matrix(x[i, ], ncol = p)         # selecting a line in the n x p matrix x
+    error = xn %*% w - t[i]                          # breaking algorithm in parts
+    delta = t(xn) %*% error                          # breaking algorithm in parts
+    w = w - eta * delta                                    # computing coefficents
+    cf[i] = error**2           # computing and keeping the iteration cost function
+  }               # returning final coeffients and cost function at each iteration
+  return(list(w = t(w), cf = cf))
+}
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{a)} \addcontentsline{toc}{subsubsection}{a)}
+
+\horrule{.25pt} \\
+
+\textbf{Show the decreasing of error function with the increasing number of used
+        data points.} \\
+
+\underline{Solution:}
+
+<<fig.width=10, fig.height=10>>=
+# <r code> ===================================================================== #
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+                                  # running the sgd with a three degree polynomial
+sgd.3train <- sgd(t = t.train, x = xs3.train)
+plot(sgd.3train$cf, type = "l", lwd = 2, col = "#0080ff" # plotting error function
+     , xlab = "Data point", ylab = "Error"
+     , main = "Polynomial with three basis functions")  
+                                   # running the sgd with a four degree polynomial
+sgd.4train <- sgd(t = t.train, x = xs4.train)
+plot(sgd.4train$cf, type = "l", lwd = 2, col = "#0080ff" # plotting error function
+     , xlab = "Data point", ylab = "Error"
+     , main = "Polynomial with four basis functions") 
+                                   # running the sgd with a five degree polynomial
+sgd.5train <- sgd(t = t.train, x = xs5.train)
+plot(sgd.5train$cf, type = "l", lwd = 2, col = "#0080ff" # plotting error function
+     , xlab = "Data point", ylab = "Error"
+     , main = "Polynomial with five basis functions")
+                                    # running the sgd with a six degree polynomial
+sgd.6train <- sgd(t = t.train, x = xs6.train)
+plot(sgd.6train$cf, type = "l", lwd = 2, col = "#0080ff" # plotting error function
+     , xlab = "Data point", ylab = "Error"
+     , main = "Polynomial with six basis functions")
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{b)} \addcontentsline{toc}{subsubsection}{b)}
+
+\horrule{.25pt} \\
+
+\textbf{Give the results of obtained coefficient, \(w\).} \\
+
+\underline{Solution:}
+
+<<fig.width=10, fig.height=10, results='markup'>>=
+# <r code> ===================================================================== #
+round(sgd.3train$w, 6)  # polynomial with three basis functions: w_{0}, ..., w_{3}
+round(sgd.4train$w, 6)  # polynomial with four basis functions:  w_{0}, ..., w_{4}
+round(sgd.5train$w, 6)  # polynomial with five basis functions:  w_{0}, ..., w_{5}
+round(sgd.6train$w, 6)  # polynomial with six basis functions:   w_{0}, ..., w_{6}
+
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with three basis functions")
+t.sgd.3train <- with(sgd.3train, w) %*% t(xs3.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.sgd.3train[order(x.train)], col = "#0080ff", lwd = 5)
+
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with four basis functions")
+t.sgd.4train <- with(sgd.4train, w) %*% t(xs4.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.sgd.4train[order(x.train)], col = "#0080ff", lwd = 5)
+
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with five basis functions")
+t.sgd.5train <- with(sgd.5train, w) %*% t(xs5.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.sgd.5train[order(x.train)], col = "#0080ff", lwd = 5)
+
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with six basis functions")
+t.sgd.6train <- with(sgd.6train, w) %*% t(xs6.train)  # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.sgd.6train[order(x.train)], col = "#0080ff", lwd = 5)
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{c)} \addcontentsline{toc}{subsubsection}{c)}
+
+\horrule{.25pt} \\
+
+\textbf{Show the predicted \(f(x)\) when applying the learned regression function
+        on testing data \(x\), and compare it with the corresponding actual target
+        \(t\) on the same figure.} \\
+
+\underline{Solution:}
+
+<<fig.width=10, fig.height=10>>=
+# <r code> ===================================================================== #
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with three basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.sgd.3test <- with(sgd.3train, w) %*% t(xs3.test)
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.sgd.3test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with four basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.sgd.4test <- with(sgd.4train, w) %*% t(xs4.test)           
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.sgd.4test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with five basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.sgd.5test <- with(sgd.5train, w) %*% t(xs5.test)
+                                          # inserting the fitted curve in the plot
+lines(sort(x.test), t.sgd.5test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with six basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.sgd.6test <- with(sgd.6train, w) %*% t(xs6.test)
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.sgd.6test[order(x.test)], col = "#0080ff", lwd = 5)
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{d)} \addcontentsline{toc}{subsubsection}{d)}
+
+\horrule{.25pt} \\
+
+\textbf{What is the Root-Mean-Square Error on test set?} \\
+
+\underline{Solution:}
+
+<<results='markup'>>=
+# <r code> ===================================================================== #
+             # rmse in the test data using a polynomial with three basis functions
+             #                        (coefficients estimated with the train data)
+(rmse.3test <- rmse(x = xs3.test, w = with(sgd.3train, w), t = t.test))
+              # rmse in the test data using a polynomial with four basis functions
+              #                       (coefficients estimated with the train data)
+(rmse.4test <- rmse(x = xs4.test, w = with(sgd.4train, w), t = t.test))
+              # rmse in the test data using a polynomial with five basis functions
+              #                       (coefficients estimated with the train data)
+(rmse.5test <- rmse(x = xs5.test, w = with(sgd.5train, w), t = t.test))
+               # rmse in the test data using a polynomial with six basis functions
+               #                      (coefficients estimated with the train data)
+(rmse.6test <- rmse(x = xs6.test, w = with(sgd.6train, w), t = t.test))
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsection*{(3)} \addcontentsline{toc}{subsection}{(3)}
+
+\horrule{.5pt} \\
+
+\textbf{Implement the \textit{maximum likelihood} algorithm.} \\
+
+\underline{Solution:} \\
+
+The least squares estimator by maximum likelihood is given by
+
+\[ w = (\Phi^{\top}\Phi)^{-1}\Phi^{\top} t, \quad (\text{ all vectors/matrices}).
+\]
+
+<<>>=
+# <r code> ===================================================================== #
+ls <- function(x, t) {             # least squares estimator by maximum likelihood
+  w = solve(t(x) %*% x) %*% t(x) %*% t                # computing the coefficients
+  return(list(w = t(w)))                    # returning the estimated coefficients
+}
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{a)} \addcontentsline{toc}{subsubsection}{a)}
+
+\horrule{.25pt} \\
+
+\textbf{Give the results of obtained coefficient, \(w\).} \\
+
+\underline{Solution:}
+
+<<fig.width=10, fig.height=10, results='markup'>>=
+# <r code> ===================================================================== #
+                        # polynomial with three basis functions: w_{0}, ..., w_{3}
+(ls.3train <- ls(x = xs3.train, t = t.train))
+                         # polynomial with four basis functions: w_{0}, ..., w_{4}
+(ls.4train <- ls(x = xs4.train, t = t.train))
+                         # polynomial with five basis functions: w_{0}, ..., w_{5}
+(ls.5train <- ls(x = xs5.train, t = t.train))
+                          # polynomial with six basis functions: w_{0}, ..., w_{6}
+(ls.6train <- ls(x = xs6.train, t = t.train))
+
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with three basis functions")
+t.ls.3train <- with(ls.3train, w) %*% t(xs3.train)    # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.ls.3train[order(x.train)], col = "#0080ff", lwd = 5)
+
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with four basis functions")
+t.ls.4train <- with(ls.4train, w) %*% t(xs4.train)    # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.ls.4train[order(x.train)], col = "#0080ff", lwd = 5)
+
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with five basis functions")
+t.ls.5train <- with(ls.5train, w) %*% t(xs5.train)    # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.ls.5train[order(x.train)], col = "#0080ff", lwd = 5)
+
+                                                             # plotting train data
+plot(t.train ~ x.train, main = "Polynomial with six basis functions")
+t.ls.6train <- with(ls.6train, w) %*% t(xs6.train)    # computing the fitted curve
+                                          # inserting the fitted curve in the plot
+lines(sort(x.train), t.ls.6train[order(x.train)], col = "#0080ff", lwd = 5)
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{b)} \addcontentsline{toc}{subsubsection}{b)}
+
+\horrule{.25pt} \\
+
+\textbf{Compare the value of \(w\) obtained at \((1)\) and \((2)\) by gradient
+        descent algorithm, and \((3)\) by maximum likelihood.} \\
+
+\underline{Solution:} \\
+
+Polynomial with three basis functions:
+
+<<>>=
+# <r code> ===================================================================== #
+matrix(cbind(bgd.3train$w, sgd.3train$w, ls.3train$w), ncol = 3
+       , dimnames = list(c("w0", "w1", "w2", "w3"), c("bgd", "sgd", "ls")))
+# </r code> ==================================================================== #
+@
+
+Batch and stochastic gradient descent present similar coefficients. Maximum
+likelihood present bigger estimatives, principally for \(w_{2}\) and \(w_{3}\),
+corresponding respectively to the terms of second and third degree. \\
+
+Polynomial with four basis functions:
+
+<<>>=
+# <r code> ===================================================================== #
+matrix(cbind(bgd.4train$w, sgd.4train$w, ls.4train$w), ncol = 3
+       , dimnames = list(c("w0", "w1", "w2", "w3", "w4"), c("bgd", "sgd", "ls")))
+# </r code> ==================================================================== #
+@
+
+Same behavior. Similar estimatives for batch and stochastic gradient descent, and
+different values for maximum likelihood. \\
+
+Polynomial with five basis functions:
+
+<<>>=
+# <r code> ===================================================================== #
+matrix(cbind(bgd.5train$w, sgd.5train$w, ls.5train$w), ncol = 3
+       , dimnames = list(c("w0", "w1", "w2", "w3", "w4", "w5")
+                         , c("bgd", "sgd", "ls")))
+# </r code> ==================================================================== #
+@
+
+The same. The more different coefficients are observed with the maximum
+likelihood approach. \\
+
+Polynomial with six basis functions:
+
+<<>>=
+# <r code> ===================================================================== #
+matrix(cbind(bgd.6train$w, sgd.6train$w, ls.6train$w), ncol = 3
+       , dimnames = list(c("w0", "w1", "w2", "w3", "w4", "w5", "w6")
+                         , c("bgd", "sgd", "ls")))
+# </r code> ==================================================================== #
+@
+
+The same. The more different coefficients are observed with the maximum
+likelihood approach. \\
+
+In summary: \\
+
+Looking to the fitted curves in the train dataset presented before, the best fits
+are seen with the maximum likelihood approach. Very similar results are obtained
+when comparing the batch with the stochastic gradient descent.
+
+\hfill \(\square\)
+
+\subsubsection*{c)} \addcontentsline{toc}{subsubsection}{c)}
+
+\horrule{.25pt} \\
+
+\textbf{Show the predicted \(f(x)\) when applying the learned regression function
+        on testing data \(x\), and compare it with the corresponding actual target
+        \(t\)  on the same figure.} \\
+
+\underline{Solution:}
+
+\newpage
+
+<<fig.width=10, fig.height=10>>=
+# <r code> ===================================================================== #
+par(mfrow = c(2, 2))                       # dividing the graphical window in four
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with three basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.ls.3test <- with(ls.3train, w) %*% t(xs3.test)
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.ls.3test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with four basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.ls.4test <- with(ls.4train, w) %*% t(xs4.test)           
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.ls.4test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with five basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.ls.5test <- with(ls.5train, w) %*% t(xs5.test)
+                                          # inserting the fitted curve in the plot
+lines(sort(x.test), t.ls.5test[order(x.test)], col = "#0080ff", lwd = 5)
+
+                                                              # plotting test data
+plot(t.test ~ x.test, main = "Polynomial with six basis functions")
+     # computing the curve using the coefficients estimated with the train dataset
+t.ls.6test <- with(ls.6train, w) %*% t(xs6.test)
+                                                 # inserting the curve in the plot
+lines(sort(x.test), t.ls.6test[order(x.test)], col = "#0080ff", lwd = 5)
+# </r code> ==================================================================== #
+@
+
+\hfill \(\square\)
+
+\subsubsection*{d)} \addcontentsline{toc}{subsubsection}{d)}
+
+\horrule{.25pt} \\
+
+\textbf{What is the Root-Mean-Square Error on test set? Which method has the best
+        performance? Batch gradient descent, stochastic gradient descent or
+        maximum likelihood?} \\
+
+\underline{Solution:}
+
+<<results='markup'>>=
+# <r code> ===================================================================== #
+             # rmse in the test data using a polynomial with three basis functions
+             #                        (coefficients estimated with the train data)
+(rmse.3test <- rmse(x = xs3.test, w = with(ls.3train, w), t = t.test))
+              # rmse in the test data using a polynomial with four basis functions
+              #                       (coefficients estimated with the train data)
+(rmse.4test <- rmse(x = xs4.test, w = with(ls.4train, w), t = t.test))
+              # rmse in the test data using a polynomial with five basis functions
+              #                       (coefficients estimated with the train data)
+(rmse.5test <- rmse(x = xs5.test, w = with(ls.5train, w), t = t.test))
+               # rmse in the test data using a polynomial with six basis functions
+               #                      (coefficients estimated with the train data)
+(rmse.6test <- rmse(x = xs6.test, w = with(ls.6train, w), t = t.test))
+# </r code> ==================================================================== #
+@
+
+Looking only to the RMSE the method with best performance is the maximum
+likelihood, with average RMSE of 0.0003. Nevertheless, the RMSE obtained with the
+gradient descent (batch and stochastic) are also pretty similar
+(0.0009 and 0.0004, in average). \\
+
+Looking to the fitted curves (in the train and in the test datasets), the best
+results are obtained with the maximum likelihood approach. \\
+
+The data was generated with a cubic polynomial added of a random noise. Four
+different degrees of polynomials was tested and the bests results was obtained
+with the polynomial of degree six (the highest of the four), this in all the three
+approachs.
+
+\hfill \(\blacksquare\)
+
+\horrule{.5pt}
+
+\vspace{\fill}
+
+\horrule{1pt} \\
+
+\end{document}
