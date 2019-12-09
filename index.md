@@ -11,7 +11,7 @@ keywords: Henrique, Laureano, Stats, modeling, being a good guy
     <div class="row-fluid">
         <div class="span5">
             Henrique Laurano<br/>
-            henriquelaureano@outlook.com | laureano@ufpr.br<br/>
+            \texttt{henriquelaureano@outlook.com | laureano@ufpr.br}<br/>
         </div>
 
         <div class="span2">
