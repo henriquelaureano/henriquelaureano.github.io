@@ -43,5 +43,7 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
 </div>
 
 <div style="float: right; width: 5%;">
-[<img src="../assets/mike.png">]("{{ BASE_PATH }}/assets/mike.html")
+ <ul class="nav">
+     <li><a href="{{ BASE_PATH }}/assets/mike.html"><img src="../assets/mike.png"></a></li>
+ </ul>
 </div>
