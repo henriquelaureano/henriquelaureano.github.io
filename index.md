@@ -1,25 +1,25 @@
 ---
 layout: frontpage
-title: Blue Ham
-description: Blue Ham is a PhD candidate at Broom University. 
-keywords: Blue, Ham, treats, recycling, mail, being a good boy
+title: Henrique Laureano
+description: Henrique Laureano is a MSc student at Universidade Federal do Paran\'{a}.
+keywords: Henrique, Laureano, Stats, modeling, being a good guy
 ---
 
-Blue Ham is a PhD candidate at Broom University. His research interests include analyzing the effectiveness of treat-based incentives such as recycling and getting the mail, as well as designing new methods to protect humans from the adverse effects of rolling trash receptacles.
-
-[curriculum vitae ![CV as pdf]({{ BASE_PATH }}/pages/icons16/pdf-icon.png)]({{ BASE_PATH }}/assets/CV.pdf)<br/>
-
+Brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician (BSc in
+Statistics at [UFPR](https://goo.gl/DtVAbi), 2016) and MSc Student in
+Numerical Methods in Engineering at UFPR under the supervision of
+Professor [Paulo Justiniano](http://leg.ufpr.br/~paulojus/) and
+Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/).
 
 ---
-
 
 <div class="container">
 <h4><a name="contact"></a>contact</h4>
 
     <div class="row-fluid">
         <div class="span5">
-            Blue Ham<br/>
-            Email: WOOFWOOF@goodboy.com<br/>
+            Henrique Laurano<br/>
+            henriquelaureano@outlook.com | laureano@ufpr.br<br/>
         </div>
 
         <div class="span2">
