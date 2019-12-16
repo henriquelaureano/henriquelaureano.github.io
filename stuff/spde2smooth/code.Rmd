@@ -56,7 +56,6 @@ data from
 data(campy) ; str(campy)
 
 campy <- data.frame(x = as.numeric(campy), time = 1:length(campy))
-
 ## set seed
 set.seed(35832)
 ```
@@ -73,7 +72,6 @@ mod <- gam(
     family = "poisson",
     method = "REML") # as we want to use Laplace approx. and marginal lkl
 toc()
-
 ## get hyperparameter estimates
 tau <- mod$sp[1] ; kappa <- mod$sp[2]
 # compute correlation range (rho)
