@@ -204,7 +204,7 @@ entry \(\left \langle D \psi_{i}, D \psi_{j} \right \rangle\).
 
   \(\exp( -\lambda \bm{\beta}^{\top} \bm{S} \bm{\beta} )\) is
   \(\propto\) to a \(\text{MVN} (0, \bm{S}_{\lambda}^{-1} =
-                     \lambda \bm{S})^{-1})\).
+                     (\lambda \bm{S})^{-1})\).
 
   The penalized likelihood is equivalent to assigning the prior
   \(\bm{\beta} \sim \text{MVN} (0, \bm{S}_{\lambda}^{-1})\).
