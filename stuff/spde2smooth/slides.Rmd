@@ -1,0 +1,312 @@
+---
+title: "1st, choose a covariance model;\\newline
+        2nd, aprroximate the precision matrix \\(\\bm{Q}\\);\\newline
+        3rd, draw approximate inference."
+# short-title: ""
+author: "Henrique Laureano \\newline \\url{http://leg.ufpr.br/~henrique}"
+short-author: "leg.ufpr.br/~henrique"
+# email: "laureano\\@ufpr.br"
+date: \today
+short-date: "leg.ufpr.br/~henrique"
+department: ""
+institute: ""
+# short-institute: "LEG"
+section-titles: true
+safe-columns: true # enables special latex macros for columns
+output:
+  legtheme::beamer_leg
+---
+
+```{r, include=FALSE}
+library(knitr)
+
+knit_hooks$set(rmdsize = function(before, options, envir) {
+    if (before) "\\footnotesize"
+    else "\\normalsize"
+})
+
+opts_chunk$set(rmdsize = TRUE,
+               warning = FALSE,
+               cache = TRUE,
+               cache_path = "multinom_cache/")
+```
+
+### spde2smoothing
+
+\includegraphics[width=.925\textwidth]{paper_cover.png}
+
+\footnotesize Where?
+*Journal of Agricultural, Biological, and Environmental Statistics*,
+\newline Published online: 19 September 2019
+\normalsize
+
+###
+
+\begin{minipage}{.5\linewidth}
+\begin{block}{SPDE? An equation to be solved.}
+\[ Df = \epsilon / \tau \]
+\end{block}
+\end{minipage}
+
++ \(\textcolor{beamer@UIUCblue}{f}\), a stochastic process, called
+  \textcolor{beamer@UIUCblue}{a solution} to the SPDE;
+
++ \(Df\) is a linear combination of derivatives of \(f\), of different
+  orders;
+
++ \(\textcolor{beamer@UIUCblue}{\epsilon}\), commonly
+  \textcolor{beamer@UIUCblue}{a white noise} process;
+
++ \(\textcolor{beamer@UIUCblue}{\tau}\), a parameter that
+  \textcolor{beamer@UIUCblue}{controls the variance in the white noise}
+  process.
+
+  + changes in \(f\) are more variable when \(\tau\) is reduced and less
+    variable for higher \(\tau\)
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+\(\textcolor{beamer@UIUCblue}{f}\) has a covariance structure that is
+induced by the choice of \(\textcolor{beamer@UIUCblue}{D}\).
+
+i.e.,
+\[ \text{Find a } \textcolor{beamer@UIUCblue}{D}
+   \text{ that induces the covariance function that you want}. \]
+
+### Going a little deeper
+
+\(Df = \epsilon\) is a convenient shorthand way to think about the SPDE,
+\textcolor{beamer@UIUCblue}{but technically}, the SPDE only has meaning
+when stated in an integral form.
+\[ Df = \epsilon \text{ means that we require }
+   \int Df(x) \phi(x)~\text{d}x = \int \epsilon(x) \phi(x)~\text{d}x \]
+for every function \(\phi\) with compact support.
+
+The function \textcolor{beamer@UIUCblue}{\(\phi\) is} often called
+\textcolor{beamer@UIUCblue}{the test function}.
+
+Integral form makes sense because \underline{any stochastic process can
+be integra-} \underline{ted, but not every one can be differentiated}.
+
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+Ok, but how we solve the SPDE? Finite Element Method (FEM).
+\[ \text{SPDE solution}: \quad
+   \text{weighted sum, } f(x) = \sum_{j=1}^{M} \beta_{j} \psi_{j}(x). \]
+
+### Real life \(\equiv\) Linear Algebra
+
+The integral form can be written as a matrix equation:
+\(\bm{P \beta} = \bm{\epsilon}\) where
+
++ \(\bm{P}\) has \((i, j)^{\text{th}}\) entry
+  \(\left \langle D\psi_{i}, \psi_{j} \right \rangle\);
+
++ \(\bm{\epsilon}\) has \(j^{\text{th}}\) entry
+  \(\left \langle \epsilon, \psi_{j} \right \rangle\)
+
+  + \(\bm{\epsilon} \sim \text{MVN}(0, \bm{Q}_{e}^{-1})\), where
+    \(\bm{Q}_{e}^{-1}\) has \((i, j)^{\text{th}}\) entry
+    \(\left \langle \psi_{i}, \psi_{j} \right \rangle\)
+
++ \(\bm{\beta} \sim \text{MVN}(0, \bm{Q}^{-1})\), where
+  \(\textcolor{beamer@UIUCblue}{\bm{Q} =
+    \bm{P}^{\top} \bm{Q}_{e} \bm{P}}\)
+
+  + i.e., the SPDE is therefore a way to specify a prior for
+    \(\bm{\beta}\).
+
+\begin{minipage}{.85\linewidth}
+ \begin{block}{Summary}
+  Given an SPDE, one can use the FEM to compute \(\bm{Q}\) and therefore
+  simulate \(\tilde{\bm{\beta}}\) from a MVN with precision \(\bm{Q}\).
+  The function \(f = \sum_{j=1}^{M} \tilde{\beta}_{j} \psi_{j}\) would
+  then be a realization from a stochastic process which is a solution to
+  the SPDE, a stochastic process with the covariance structure implied by
+  \(D\).
+ \end{block}
+\end{minipage}
+
+###
+
+\begin{block}{Mat\(\'{e}\)rn SPDE}
+\[ \kappa^{2} f - \Delta f = \epsilon / \tau, \]
+i.e. \(Df = \epsilon\) with \(D = (\kappa^{2} - \Delta)^{\alpha/2} \tau\).
+
+\(D\) is a linear differential operator only when
+\(\alpha = \nu - d / 2 = 2\).
+\end{block}
+
+Whittle, P. (1954)\footnote{On stationary processes in the plane.
+\textit{Biometrika 41}(3-4), 434-449.} shows that
+\textcolor{beamer@UIUCblue}{the solution} of this SPDE
+\textcolor{beamer@UIUCblue}{has Mat\(\'{e}\)rn covariance}.
+
+In other words, the \(\bm{Q}\) computed from the FEM is an approx. to
+the \(\bm{Q}\) one would obtain if you computed \(\bm{\Sigma}\) with the
+Mat\(\'{e}\)rn covariance function and then, at great computational
+cost, inverted it.
+
+###
+
+\begin{block}{Basis-penalty smoothing approach}
+ \[ \text{penalized likelihood}: \quad
+    l_{p} (\bm{\beta}, \lambda) = l (\bm{\beta}) -
+                                  J (\bm{\beta}, \lambda), \]
+ \vspace{-.5cm}
+ \begin{itemize}
+  \item For the observations given the form of \(f\),
+        \textcolor{beamer@UIUCblue}{log-likelihood} \(l (\bm{\beta})\);
+  \item To penalize functions that are too wiggly,
+        \textcolor{beamer@UIUCblue}{smoothing penalty}
+        \(J (\bm{\beta}, \lambda)\).
+ \end{itemize}
+\end{block}
+
+To estimate the optimal smoothing parameter \(\lambda\) and the
+coefficients \(\bm{\beta}\): REstricted Maximum Likelihood (REML).
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+Similar to the SPDE approach:
+
++ The function \(f\) is a sum of basis functions multiplied by
+  coefficients.
+
+Difference:
+
+\begin{minipage}{.85\linewidth}
+ \begin{itemize}
+  \item Rather than specify an SPDE and deduce a covariance structure, a
+        smoothing penalty is used to induce
+        \textcolor{beamer@UIUCblue}{correlation}.
+ \end{itemize}
+\end{minipage}
+
+### Going a little deeper in the smoothing penalty
+
+Smoothing penalty leads to an optimal curve, the
+\textcolor{beamer@UIUCblue}{smoothing spline}\footnote{Wahba, G. (1990).
+\textit{Spline methods for observational data}. SIAM, USA.}. The penalty
+for smoothing splines takes the form
+\(J (\bm{\beta}, \lambda) = \lambda \int (Df)^{2}
+                          = \lambda \left \langle Df, Df \right \rangle\).
+\[ \text{When } f(x) = \sum_{j=1}^{M} \beta_{j} \psi_{j}(x),
+   \text{ we have }
+   J (\bm{\beta}, \lambda) = \lambda \bm{\beta}^{\top} \bm{S} \bm{\beta}
+\]
+where \(\bm{S}\) is a \(M \times M\) matrix with \((i, j)^{\text{th}}\)
+entry \(\left \langle D \psi_{i}, D \psi_{j} \right \rangle\).
+
+\begin{minipage}{.85\textwidth}
+ \begin{block}{Rewriting the penalized log-likelihood as a likelihood,}
+  \[ \exp\{ l_{p} (\bm{\beta}, \lambda) \} =
+     \exp\{ l (\bm{\beta}) \} \times
+     \exp( -\lambda \bm{\beta}^{\top} \bm{S} \bm{\beta} ), \]
+
+  \(\exp( -\lambda \bm{\beta}^{\top} \bm{S} \bm{\beta} )\) is
+  \(\propto\) to a \(\text{MVN} (0, \bm{S}_{\lambda}^{-1} =
+                     \lambda \bm{S})^{-1})\).
+
+  The penalized likelihood is equivalent to assigning the prior
+  \(\bm{\beta} \sim \text{MVN} (0, \bm{S}_{\lambda}^{-1})\).
+ \end{block}
+\end{minipage}
+\vspace{.5cm}
+
+### Connection: SPDE model as a basis-penalty smoother
+
++ For a given differential operator \(D\), the approx. \(\bm{Q}\) for
+  the SPDE is the \textcolor{beamer@UIUCblue}{same} as the precision
+  matrix \(\bm{S}_{\lambda}\) computed using the smoothing penalty
+  \(\left \langle Df, Df \right \rangle\);
+
++ Differences between the basis-penalty approach and the SPDE finite
+  element approx., when using the same basis and differential operator,
+  are \textcolor{beamer@UIUCblue}{differences in implementation only}.
+
+\begin{minipage}{.89\linewidth}
+ \begin{block}{Lindgren, F., Rue, H. and Lindstr\(\"{o}\)m, J.
+ (2011)\footnote{An Explicit Link between Gaussian Fields and Gaussian
+ Markov Random Fields: The Stochastic Partial Differential Equation
+ Approach (with discussion). \textit{Journal of the Royal Statistical
+ Society: Series B 73}(4), 423-498}}
+  An approx. solution to the SPDE is given by representing \(f\) as a
+  sum of linear (specifically, B-spline) basis functions multiplied by
+  coefficients; the coefs of these basis form a GMRF.
+ \end{block}
+\end{minipage}
+
+###
+
+\begin{block}{Mat\(\'{e}\)rn penalty}
+ \[ D = \tau (\kappa^{2} - \Delta) \quad \Rightarrow \quad
+    \text{smoothing penalty}:
+    \tau \int (\kappa^{2} f - \Delta f)^{2} \text{ d}x. \]
+ \vspace{-.5cm}
+ \begin{itemize}
+  \item inverse correlation range \(\kappa\): higher values lead to less
+        smooth functions;
+  \item smoothing parameter \(\tau\) controls the overall smoothness of
+        \(f\).
+ \end{itemize}
+\end{block}
+
+In matrix form, this leads to the smoothing matrix
+\[ \bm{S} =
+   \tau (\kappa^{4} \bm{C} + 2 \kappa^{2} \bm{G}_{1} + \bm{G}_{2})
+   \quad \text{where} \]
+\(\bm{C}, \bm{G}_{1}, \bm{G}_{2}\) are all \(M \times M\) sparse
+matrices with \((i, j)^{\text{th}}\) entries
+\(\left \langle \psi_{i}, \psi_{j} \right \rangle,
+  \left \langle \psi_{i}, \triangledown \psi_{j} \right \rangle\),
+and \(\left \langle \triangledown \psi_{i}, \triangledown \psi_{j}
+      \right \rangle\).
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+\begin{minipage}{.85\linewidth}
+ The matrix \(\bm{S}\) is \textcolor{beamer@UIUCblue}{equal} to the matrix
+ \(\bm{Q} = \bm{P}^{\top} \bm{Q}_{e} \bm{P}\) computed using the FEM.
+\end{minipage}
+
+### Fitting the Mat\(\'{e}\)rn SPDE in \texttt{mgcv}
+
+\texttt{mgcv} allows the specification of
+\textcolor{beamer@UIUCblue}{new basis-penalty smoothers}.
+
+\begin{block}{step-by-step}
+ \begin{itemize}
+  \item \texttt{INLA::inla.mesh.(1d or 2d)} to create a mesh;
+
+  \item \texttt{INLA::inla.mesh.fem} to calculate
+        \(\bm{C}, \bm{G}_{1}\), and \(\bm{G}_{2}\);
+
+  \item Connect the basis representation of \(f\) to the observation
+        locations,
+
+   \begin{itemize}
+    \item The full design matrix is given by combining the fixed effects
+          design matrix \(\bm{X}_{c}\) and the contribution for \(f\),
+          \(\bm{A}\) - the projection matrix found using
+          \texttt{INLA::inla.spde.mesh.A};
+
+   \end{itemize}
+
+  \item Use REML to findo optimal \(\kappa, \tau\) and \(\bm{\beta}\).
+ \end{itemize}
+\end{block}
+
+### Some final remarks,
+
++ As REML is an empirical Bayes procedure, we expect point estimates for
+  \(\hat{\bm{\beta}}\) to \textcolor{beamer@UIUCblue}{coincide} with
+  \texttt{R-INLA};
+
++ A uniform prior is implied for the smoothing parameters
+  \(\tau\) and \(\kappa\);
+
++ \texttt{R-INLA} allows for similar estimation by just using the modes
+  of the hyperparameters \(\kappa\) and \(\tau\)
+  (\texttt{int.strategy="eb"}).
+
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+To finish, let's chech some [[code]](http://leg.ufpr.br/~henrique/stuff/spde2smooth/code.html).
