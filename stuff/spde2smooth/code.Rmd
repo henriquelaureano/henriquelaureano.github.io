@@ -35,9 +35,8 @@ The scripts used here was taken from the
 # pkgs
 
 ```{r}
-pkgs <- c("mgcv", "INLA", "gamair", "ggplot2", "gridExtra",
-          "tictoc",
-          "tscount")
+pkgs <- c(
+    "mgcv", "INLA", "gamair", "ggplot2", "gridExtra", "tictoc", "tscount")
 pacman::p_load(pkgs, character.only = TRUE)
 
 source("mgcv_spde_smooth.R")
@@ -158,6 +157,7 @@ inlapreducl <- exp(apply(inlapred, 1, quantile, .025))
 
 ## extract range and switch to kappa parameterisation
 inla_range <- inlamod$summary.hyperpar[1, 1]
+alpha <- 2 ; nu <- alpha - .5
 inla_kappa <- sqrt(8 * nu)/inla_range
 
 ## extract sd, switch to tau param
