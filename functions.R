@@ -2,14 +2,15 @@
 ## Multinomial GLMM functions ==========================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2019-12-31
+## date: 2020-1-6
 ## =====================================================================
 
 ## =====================================================================
 ## libraries
 
-pack <- c("mvtnorm", "mc2d", "tidyverse", "furrr", "bbmle", "tictoc",
-          "Matrix", "parallel", "bbmle", "fishualize", "latex2exp")
+pack <- c("rmarkdown", "mvtnorm", "mc2d", "tidyverse", "furrr", "bbmle",
+          "tictoc", "Matrix", "parallel", "bbmle", "gridExtra",
+          "fishualize", "latex2exp", "compiler")
 pacman::p_load(pack, character.only = TRUE)
 
 ## =====================================================================
@@ -221,6 +222,10 @@ laplace <- function(initial, preds, ys, beta, det_sigma, inv_sigma) {
 }
 
 ## =====================================================================
+## laplaceC: compiled body expression version of laplace
+laplaceC <- cmpfun(laplace)
+
+## =====================================================================
 ## vcov2: log-determinant of the variance-covariance matrix; and a
 ##        precision matrix
 ## args:
@@ -262,9 +267,9 @@ multi_mixed <- function(theta, preds, data, until) {
     out <- future_map_dbl(
         seq(until),
         function(index) {
-            laplace(initial = alpha, preds = preds, beta = beta,
-                    ys = data[data$i == index, ],
-                    det_sigma = myvcov$logdet, inv_sigma = myvcov$inv)
+            laplaceC(initial = alpha, preds = preds, beta = beta,
+                     ys = data[data$i == index, ],
+                     det_sigma = myvcov$logdet, inv_sigma = myvcov$inv)
         })
     return(-sum(out))
 }
