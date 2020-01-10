@@ -1,0 +1,342 @@
+---
+title: "Naive Bayes & regress\\(\\~{a}\\)o log\\(\\'{i}\\)stica"
+# short-title: ""
+author: "Henrique Laureano \\newline \\url{http://leg.ufpr.br/~henrique}"
+short-author: "leg.ufpr.br/~henrique"
+# email: "laureano\\@ufpr.br"
+date: "\\href{https://cidamo.github.io/CiDWeek/}{CiDWeek I}, 03-07/02/2020"
+short-date: "leg.ufpr.br/~henrique"
+department: ""
+institute: ""
+# short-institute: "LEG"
+section-titles: true
+safe-columns: true # enables special latex macros for columns
+output:
+  legtheme::beamer_leg
+---
+
+```{r, include=FALSE}
+library(knitr)
+
+knit_hooks$set(rmdsize = function(before, options, envir) {
+    if (before) "\\footnotesize"
+    else "\\normalsize"
+})
+
+opts_chunk$set(rmdsize = TRUE,
+               warning = FALSE,
+               cache = TRUE,
+               cache_path = "multinom_cache/")
+```
+
+### Naive Bayes
+
+Primeiro, precisamos falar sobre o que \(\'{e}\) um
+\textcolor{beamer@UIUCorange}{classificador de Bayes}.
+
+\begin{block}{Classificador de Bayes}
+ Um \textit{framework} probabil\(\'{i}\)stico para problemas de
+ classifica\(\c{c}\~{a}\)o, baseado no
+ \textcolor{beamer@UIUCorange}{teorema de Bayes}.
+\end{block}
+
+\noindent{\color{beamer@UIUCblue}Exemplo,~\rule{.9\linewidth}{0.25mm}}
+
++ Meningite causa torcicolo 50% das vezes,
+  \textcolor{beamer@UIUCorange}{\(\mathbb{P}[T | M]\)}
+
++ Prob. *a priori* de um paciente estar com meningite \(\'{e}\)
+  1/50.000, \textcolor{beamer@UIUCorange}{\(\mathbb{P}[M]\)}
+
++ Probabilidade *a priori* de um paciente estar com torcicolo \(\'{e}\)
+  1/20, \textcolor{beamer@UIUCorange}{\(\mathbb{P}[T]\)}
+
+\begin{minipage}{.9\linewidth}
+ Se um paciente est\(\'{a}\) com torcicolo, qual a probabilidade dele
+ estar com meningite?
+ \[ \textcolor{beamer@UIUCorange}{\mathbb{P}[M | T]} =
+    \frac{\mathbb{P}[T | M]~\mathbb{P}[M]}{\mathbb{P}[T]} =
+    \frac{1/2 \times 1/50.000}{1/20} = 0.0002.
+ \]
+\end{minipage}
+
+### Classificadores Bayesianos
+
+Considere \textcolor{beamer@UIUCorange}{atributos}
+\(A_{1}, A_{2}, \dots A_{n}\) e uma \textcolor{beamer@UIUCorange}{classe}
+\(C\) com r\(\'{o}\)tulos \(c_{1}, c_{2}, \dots c_{k}\).
+
+O que queremos?
+\[ \text{Predi\c{c}\~{a}o}: \quad
+   C = c_{1} \text{ ou } C = c_{2} \text{ ou } \dots, \]
+i.e., queremos o valor de \(C\) que maximiza
+\(\mathbb{P}[C | A_{1}, A_{2}, \dots, A_{n}]\).
+
+\begin{minipage}{.85\linewidth}
+ \begin{block}{Como fazemos? Teorema de Bayes.}
+  Calculamos a probabilidade \textit{a posteriori}
+  \(\mathbb{P}[C | A_{1}, A_{2}, \dots, A_{n}]\) para todos os valores de
+  \(C\),
+  \[ \mathbb{P}[C | A_{1}, A_{2}, \dots, A_{n}] =
+     \frac{\mathbb{P}[A_{1}, A_{2}, \dots, A_{n} | C]~\mathbb{P}[C]}{
+           \mathbb{P}[A_{1}, A_{2}, \dots, A_{n}]
+          }.
+  \]
+ \end{block}
+\end{minipage}
+
+E como calculamos \(\mathbb{P}[A_{1}, A_{2}, \dots, A_{n} | C]\)?
+\textcolor{beamer@UIUCorange}{Naive Bayes}.
+
+### Classificador Naive Bayes
+
+\begin{block}{Por que \textit{naive}?}
+ Porque se assume \textcolor{beamer@UIUCorange}{independ\(\^{e}\)ncia}
+ entre os atributos \(A_{i }\), i.e.,
+ \[ \mathbb{P}[A_{1}, A_{2}, \dots, A_{n} | C_{k}] =
+    \mathbb{P}[A_{1} | C_{k}]~
+    \mathbb{P}[A_{2} | C_{k}]~
+    \dots~
+    \mathbb{P}[A_{n} | C_{k}].
+ \]
+\end{block}
+
+Vantagem: \underline{Grande} redu\(\c{c}\~{a}\)o do custo computational.
+
+Um novo ponto \(\'{e}\) classificado como \(C_{j}\) se
+\(\mathbb{P}[C_{j}] \times \prod_{i=1}^{n} \mathbb{P}[A_{i} | C_{k}]\)
+\(\'{e}\) m\(\'{a}\)ximo.
+
+### Exemplo: Estimando probabilidades a partir dos dados
+
+\begin{columns}
+ \begin{column}{.5\textwidth}
+  \includegraphics[width=\linewidth]{naive_bayes-example.png}
+ \end{column}
+ \begin{column}{.5\textwidth}
+  \begin{itemize}
+   \item \(\mathbb{P}[C] = N_{k} / N\)
+
+    \begin{itemize}
+     \item \(\mathbb{P}[C = \text{No}] = 7 / 10\)
+     \item \(\mathbb{P}[C = \text{Yes}] = 3 / 10\)
+    \end{itemize}
+  \end{itemize}
+
+  Atributos \textcolor{beamer@UIUCorange}{discretos}:
+
+  \begin{itemize}
+   \item \(\mathbb{P}[A_{i} | C_{k}] = A_{ik} / N_{k}\)
+
+    \begin{itemize}
+     \item \(\mathbb{P}[\text{Status} = \text{Married} | \text{No}] =
+             4 / 7\)
+     \item \(\mathbb{P}[\text{Refund} = \text{Yes} | \text{Yes}] = 0\)
+     \item \(\dots\)
+    \end{itemize}
+
+  \end{itemize}
+ \end{column}
+\end{columns}
+
+### E com atributos cont\(\'{i}\)nuos?
+
+\begin{columns}
+ \begin{column}{.4\textwidth}
+  \includegraphics[width=\linewidth]{naive_bayes-example.png}
+ \end{column}
+ \begin{column}{.6\textwidth}
+  \begin{block}{Estima\(\c{c}\~{a}\)o da densidade de probabilidade}
+   \begin{itemize}
+    \item Se assume distribui\(\c{c}\~{a}\)o Normal
+
+    \item Se estima a m\(\'{e}\)dia \(\mu\) e o desvio padr\(\~{a}\)o
+          \(\sigma\)
+
+    \item Se estima a probabilidade condicional
+     \[ \mathbb{P}[A_{i} | C_{k}] =
+        \frac{\exp \left\{-\frac{(A_{i} - \mu_{ik})^{2}}{2\sigma_{ik}^{2}}
+                   \right\}}{\sqrt{2\pi\sigma_{ik}^{2}}}
+     \]
+   \end{itemize}
+  \end{block}
+ \end{column}
+\end{columns}
+
+\noindent{\color{beamer@UIUCblue}Exemplo,~\rule{.5\linewidth}{0.25mm}}
+\vspace{-.25cm}
+\begin{minipage}{.85\linewidth}
+ \[ \begin{aligned}
+     \mathbb{P}[\text{Income} = 120 | \text{No}] &=
+     \frac{1}{\sqrt{2\pi 2975}}
+     \exp \left\{-\frac{(120 - 110)^{2}}{2 2975}\right\}\\
+     &= 0.0072.
+    \end{aligned} \]
+\end{minipage}
+
+### Classificador Naive Bayes: Exemplo
+
+\begin{block}{Dado o perfil:
+              \(X\) = (Refund = No, Married, Income = 120k)}
+ \[ \begin{aligned}
+     \mathbb{P}[X | \text{Class} = \text{No}] =
+     ~&\mathbb{P}[\text{Refund} = \text{No} | \text{Class} = \text{No}]
+       ~\times\\
+      &\mathbb{P}[\text{Married} | \text{Class} = \text{No}]
+       ~\times\\
+      &\mathbb{P}[\text{Income} = 120k | \text{Class} = \text{No}]\\
+   = ~& 4/7 \times 4/7 \times 0.0072 = 0.0024.
+    \end{aligned}
+ \]
+ \[ \begin{aligned}
+     \mathbb{P}[X | \text{Class} = \text{Yes}] =
+     ~&\mathbb{P}[\text{Refund} = \text{No} | \text{Class} = \text{Yes}]
+       ~\times\\
+      &\mathbb{P}[\text{Married} | \text{Class} = \text{Yes}]
+       ~\times\\
+      &\mathbb{P}[\text{Income} = 120k | \text{Class} = \text{Yes}]\\
+   = ~& 1 \times 0 \times 10^{-9} = 0.
+    \end{aligned}
+ \]
+\end{block}
+
+J\(\'{a}\) que
+\(\mathbb{P}[X | \text{No}]~\mathbb{P}[\text{No}] >
+  \mathbb{P}[X | \text{Yes}]~\mathbb{P}[\text{Yes}]\),
+\[ \Rightarrow \quad
+   \mathbb{P}[X | \text{No}] > \mathbb{P}[X | \text{Yes}]
+   \Rightarrow
+   \textcolor{beamer@UIUCorange}{\text{Class} = \text{No}}.
+\]
+
+### "Dibrando" o problema de probabilidade zero
+
+Going a little deeper in the smoothing penalty
+
+Smoothing penalty leads to an optimal curve, the
+\textcolor{beamer@UIUCblue}{smoothing spline}\footnote{Wahba, G. (1990).
+\textit{Spline methods for observational data}. SIAM, USA.}. The penalty
+for smoothing splines takes the form
+\(J (\bm{\beta}, \lambda) = \lambda \int (Df)^{2}
+                          = \lambda \left \langle Df, Df \right \rangle\).
+\[ \text{When } f(x) = \sum_{j=1}^{M} \beta_{j} \psi_{j}(x),
+   \text{ we have }
+   J (\bm{\beta}, \lambda) = \lambda \bm{\beta}^{\top} \bm{S} \bm{\beta}
+\]
+where \(\bm{S}\) is a \(M \times M\) matrix with \((i, j)^{\text{th}}\)
+entry \(\left \langle D \psi_{i}, D \psi_{j} \right \rangle\).
+
+\begin{minipage}{.85\textwidth}
+ \begin{block}{Rewriting the penalized log-likelihood as a likelihood,}
+  \[ \exp\{ l_{p} (\bm{\beta}, \lambda) \} =
+     \exp\{ l (\bm{\beta}) \} \times
+     \exp( -\lambda \bm{\beta}^{\top} \bm{S} \bm{\beta} ), \]
+
+  \(\exp( -\lambda \bm{\beta}^{\top} \bm{S} \bm{\beta} )\) is
+  \(\propto\) to a \(\text{MVN} (0, \bm{S}_{\lambda}^{-1} =
+                     (\lambda \bm{S})^{-1})\).
+
+  The penalized likelihood is equivalent to assigning the prior
+  \(\bm{\beta} \sim \text{MVN} (0, \bm{S}_{\lambda}^{-1})\).
+ \end{block}
+\end{minipage}
+\vspace{.5cm}
+
+### Connection: SPDE model as a basis-penalty smoother
+
++ For a given differential operator \(D\), the approx. \(\bm{Q}\) for
+  the SPDE is the \textcolor{beamer@UIUCblue}{same} as the precision
+  matrix \(\bm{S}_{\lambda}\) computed using the smoothing penalty
+  \(\left \langle Df, Df \right \rangle\);
+
++ Differences between the basis-penalty approach and the SPDE finite
+  element approx., when using the same basis and differential operator,
+  are \textcolor{beamer@UIUCblue}{differences in implementation only}.
+
+\begin{minipage}{.89\linewidth}
+ \begin{block}{Lindgren, F., Rue, H. and Lindstr\(\"{o}\)m, J.
+ (2011)\footnote{An Explicit Link between Gaussian Fields and Gaussian
+ Markov Random Fields: The Stochastic Partial Differential Equation
+ Approach (with discussion). \textit{Journal of the Royal Statistical
+ Society: Series B 73}(4), 423-498}}
+  An approx. solution to the SPDE is given by representing \(f\) as a
+  sum of linear (specifically, B-spline) basis functions multiplied by
+  coefficients; the coefs of these basis form a GMRF.
+ \end{block}
+\end{minipage}
+
+###
+
+\begin{block}{Mat\(\'{e}\)rn penalty}
+ \[ D = \tau (\kappa^{2} - \Delta) \quad \Rightarrow \quad
+    \text{smoothing penalty}:
+    \tau \int (\kappa^{2} f - \Delta f)^{2} \text{ d}x. \]
+ \vspace{-.5cm}
+ \begin{itemize}
+  \item inverse correlation range \(\kappa\): higher values lead to less
+        smooth functions;
+  \item smoothing parameter \(\tau\) controls the overall smoothness of
+        \(f\).
+ \end{itemize}
+\end{block}
+
+In matrix form, this leads to the smoothing matrix
+\[ \bm{S} =
+   \tau (\kappa^{4} \bm{C} + 2 \kappa^{2} \bm{G}_{1} + \bm{G}_{2})
+   \quad \text{where} \]
+\(\bm{C}, \bm{G}_{1}, \bm{G}_{2}\) are all \(M \times M\) sparse
+matrices with \((i, j)^{\text{th}}\) entries
+\(\left \langle \psi_{i}, \psi_{j} \right \rangle,
+  \left \langle \psi_{i}, \triangledown \psi_{j} \right \rangle\),
+and \(\left \langle \triangledown \psi_{i}, \triangledown \psi_{j}
+      \right \rangle\).
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+\begin{minipage}{.85\linewidth}
+ The matrix \(\bm{S}\) is \textcolor{beamer@UIUCblue}{equal} to the matrix
+ \(\bm{Q} = \bm{P}^{\top} \bm{Q}_{e} \bm{P}\) computed using the FEM.
+\end{minipage}
+
+### Fitting the Mat\(\'{e}\)rn SPDE in \texttt{mgcv}
+
+\texttt{mgcv} allows the specification of
+\textcolor{beamer@UIUCblue}{new basis-penalty smoothers}.
+
+\begin{block}{step-by-step}
+ \begin{itemize}
+  \item \texttt{INLA::inla.mesh.(1d or 2d)} to create a mesh;
+
+  \item \texttt{INLA::inla.mesh.fem} to calculate
+        \(\bm{C}, \bm{G}_{1}\), and \(\bm{G}_{2}\);
+
+  \item Connect the basis representation of \(f\) to the observation
+        locations,
+
+   \begin{itemize}
+    \item The full design matrix is given by combining the fixed effects
+          design matrix \(\bm{X}_{c}\) and the contribution for \(f\),
+          \(\bm{A}\) - the projection matrix found using
+          \texttt{INLA::inla.spde.mesh.A};
+
+   \end{itemize}
+
+  \item Use REML to findo optimal \(\kappa, \tau\) and \(\bm{\beta}\).
+ \end{itemize}
+\end{block}
+
+### Some final remarks,
+
++ As REML is an empirical Bayes procedure, we expect point estimates for
+  \(\hat{\bm{\beta}}\) to \textcolor{beamer@UIUCblue}{coincide} with
+  \texttt{R-INLA};
+
++ A uniform prior is implied for the smoothing parameters
+  \(\tau\) and \(\kappa\);
+
++ \texttt{R-INLA} allows for similar estimation by just using the modes
+  of the hyperparameters \(\kappa\) and \(\tau\)
+  (\texttt{int.strategy="eb"}).
+
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+To finish, let's check some [[code]](http://leg.ufpr.br/~henrique/stuff/spde2smooth/code.html).
