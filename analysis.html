@@ -1587,7 +1587,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-01-06 16:02:27</h4>
+<h4 class="date"><em>Last modification on</em> 2020-01-17 16:34:29</h4>
 
 </div>
 
@@ -1596,7 +1596,7 @@ div.tocify {
 <hr />
 <div id="math" class="section level1">
 <h1>math</h1>
-<p>For a subject i, with measurements (j, we have</p>
+<p>For a subject <span class="math inline">\(i\)</span>, with measurements <span class="math inline">\(j\)</span>, we have</p>
 <p><span class="math display">\[ y_{i j} \mid \alpha_{1i}, \alpha_{2i} \sim
    \text{Multinomial}(p_{1ij}, p_{2ij}, p_{3ij}), \]</span></p>
 <p><span class="math display">\[ \text{with} \quad
@@ -1771,7 +1771,7 @@ alphas &lt;- future_map(
         )$par
     })
 toc() ## quite fast</code></pre>
-<pre><code>0.396 sec elapsed</code></pre>
+<pre><code>0.873 sec elapsed</code></pre>
 <pre class="r"><code>alphas &lt;- matrix(unlist(alphas), nrow = N, byrow = TRUE)
 colnames(alphas) &lt;- c(&quot;alpha1&quot;, &quot;alpha2&quot;)
 
@@ -1877,7 +1877,7 @@ alphas_pos &lt;- future_map(
         )$par
     })
 toc() ## still quite fast</code></pre>
-<pre><code>0.422 sec elapsed</code></pre>
+<pre><code>0.839 sec elapsed</code></pre>
 <pre class="r"><code>alphas_pos &lt;- matrix(unlist(alphas_pos), nrow = N, byrow = TRUE)
 colnames(alphas_pos) &lt;- c(&quot;alpha1&quot;, &quot;alpha2&quot;)
 
