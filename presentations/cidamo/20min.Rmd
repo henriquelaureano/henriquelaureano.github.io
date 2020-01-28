@@ -64,45 +64,56 @@ opts_chunk$set(rmdsize = TRUE,
  \end{column}
 \end{columns}
 
-### Some continuous parametric failure time models
+### \textcolor{beamer@UIUCorange}{O qu\(\^{e}\)?}\newline\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$} Modelagem Estat\(\'{i}\)stica da incid\(\^{e}\)ncia de c\(\^{a}\)nceres
 
-Random variable: failure time, \(T > 0\).\newline
-Type: continuous.
-\noindent{\color{beamer@UIUCblue}\rule{\linewidth}{0.25mm}}
+Considere uma certa estrutura familiar,
+\vspace{.25cm}
+\begin{columns}
+ \begin{column}{.45\linewidth}
+  \centering
+   \includegraphics[width=\linewidth]{twins.jpg}
+ \end{column}
+ \begin{column}{.55\linewidth}
+  g\(\^{e}\)meos, por exemplo.\newline
+  Agora imagine que um deles teve c\(\^{a}\)ncer.
+ \end{column}
+\end{columns}
+\vspace{.2cm}
+Como fica a probabilidade do outro:
 
-Common failure time distributions for homogeneous populations:
++ Ter o mesmo tipo de c\(\^{a}\)ncer?
 
-\begin{center}
- \begin{minipage}{.675\linewidth}
++ Ter de um tipo diferente? Mas similar.
 
-  \hfill Now, let's better understand how this works.
- \end{minipage}
-\end{center}
++ Ter de um tipo completamente diferente?
 
-### Generalized \(F\)
+### \textcolor{beamer@UIUCorange}{Por qu\(\^{e}\)?}
 
-\hfill \textit{Advantage: it can adapt to a wide variety of
-                          distributional shapes.}
+Em rela\(\c{c}\~{a}\)o ao problema em si,
 
++ Estudar a probabilidade de ocorr\(\^{e}\)ncia dos eventos\newline
+  (neste caso, c\(\^{a}\)nceres)
+  \textcolor{beamer@UIUCblue}{ao longo do tempo};
+
++ Verificar como as doen\(\c{c}\)as s\(\~{a}\)o conectadas,
+  \textcolor{beamer@UIUCblue}{ao longo do tempo}.
+
+\vspace{-.25cm}
 \noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
 
-\begin{minipage}{.85\linewidth}
-\begin{block}{Context}
- A location and scale model for \(Y = \log T\) in which the error
- distribution is assumed to be that of the logarithm of an \(F\) variate
- on \(2m_{1}\) and \(2m_{2}\) degrees of freedom.\newline
+Em rela\(\c{c}\~{a}\)o ao "como fazer",
+\vspace{.3cm}
+\begin{columns}
+ \begin{column}{.45\linewidth}
+  \centering
+   \includegraphics[width=\linewidth]{nazare.jpeg}
+ \end{column}
+ \begin{column}{.55\linewidth}
+  Porque \(\'{e}\) complicado.
+ \end{column}
+\end{columns}
 
- That is, \(Y = \mu + \sigma W\), where
- \[ f_{W}(w) =
-    \frac{(m_{1}/m_{2})^{m_{1}}
-          e^{wm_{1}}
-          (1 + m_{1} e^{w}/m_{2})^{-(m_{1} + m_{2})}}{B(m_{1}, m_{2})}.
- \]
- The resulting model for \(T\) is the generalized \(F\) distribution.
-\end{block}
-\end{minipage}
-
-### Shapes of the hazard functions
+### \textcolor{beamer@UIUCorange}{Como?}
 
 ```{r, echo=FALSE}
 pacman::p_load(ggplot2, latex2exp, gridExtra, pracma)
