@@ -113,287 +113,47 @@ Em rela\(\c{c}\~{a}\)o ao "como fazer",
  \end{column}
 \end{columns}
 
-### \textcolor{beamer@UIUCorange}{Como?}
+### \textcolor{beamer@UIUCorange}{Como?}\newline\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$} Via um GLMM Multinomial
 
-```{r, echo=FALSE}
-pacman::p_load(ggplot2, latex2exp, gridExtra, pracma)
-
-graph_exp <- ggplot(data.frame(t = seq(0, 4)), aes(x = t)) +
-    stat_function(fun = function(t) { 0.5 }, size = 1) +
-    ylim(0, 1) +
-    labs(y = TeX("$\\lambda(t)$"), title = "Exponential") +
-    theme_minimal(base_size = 16)
-
-graph_wei <- ggplot(data.frame(t = seq(0, 4)), aes(x = t)) +
-    stat_function(fun = function(t) { 0.5 * 0.5 * (0.5 * t)^(0.5 - 1) },
-                  size = 1) +
-    stat_function(fun = function(t) { 0.5 * 1.0 * (0.5 * t)^(1.0 - 1) },
-                  linetype = 2, size = 1) +
-    stat_function(fun = function(t) { 0.5 * 1.5 * (0.5 * t)^(1.5 - 1) },
-                  linetype = 3, size = 1) +
-    ylim(0, 1) +
-    labs(y = TeX("$\\lambda(t)$"), title = "Weibull") +
-    theme_minimal(base_size = 16)
-
-graph_logn <- ggplot(data.frame(t = seq(0, 4)), aes(x = t)) +
-    stat_function(fun = function(t) {
-        (2 * pi)^(-0.5) * 0.5/t * exp(-0.5^2 * log(0.5 * t)^2/2)/
-            (1 - pnorm(0.5 * log(0.5 * t)))
-    }, size = 1) +
-    stat_function(fun = function(t) {
-        (2 * pi)^(-0.5) * 1.0/t * exp(-1.0^2 * log(0.5 * t)^2/2)/
-            (1 - pnorm(1.0 * log(0.5 * t)))
-    }, linetype = 2, size = 1) +
-    stat_function(fun = function(t) {
-        (2 * pi)^(-0.5) * 1.5/t * exp(-1.5^2 * log(0.5 * t)^2/2)/
-            (1 - pnorm(1.5 * log(0.5 * t)))
-    }, linetype = 3, size = 1) +
-    ylim(0, 1) +
-    labs(y = TeX("$\\lambda(t)$"), title = "Log-Normal") +
-    theme_minimal(base_size = 16)
-
-gammaincVec <- function(t, k) { gammainc(0.5 * t, k)[3] }
-gammaincVec <- Vectorize(gammaincVec, "t")
-
-graph_gam <- ggplot(data.frame(t = seq(0, 4)), aes(x = t)) +
-    stat_function(fun = function(t) {
-        0.5 * (0.5 * t)^(0.5 - 1) * exp(-0.5 * t)/
-            (gamma(0.5) * (1 - gammaincVec(t, 0.5)))
-    }, size = 1) +
-    stat_function(fun = function(t) {
-        0.5 * (0.5 * t)^(1.0 - 1) * exp(-0.5 * t)/
-            (gamma(1.0) * (1 - gammaincVec(t, 1.0)))
-    }, linetype = 2, size = 1) +
-    stat_function(fun = function(t) {
-        0.5 * (0.5 * t)^(1.5 - 1) * exp(-0.5 * t)/
-            (gamma(1.5) * (1 - gammaincVec(t, 1.5)))
-    }, linetype = 3, size = 1) +
-    ylim(0, 1) +
-    labs(y = TeX("$\\lambda(t)$"), title = "Gamma") +
-    theme_minimal(base_size = 16)
-
-graph_loglog <- ggplot(data.frame(t = seq(0, 4)), aes(x = t)) +
-    stat_function(fun = function(t) {
-        0.5 * 0.5 * (0.5 * t)^(0.5 - 1)/(1 + (0.5 * t)^0.5)
-    }, size = 1) +
-    stat_function(fun = function(t) {
-        0.5 * 1.0 * (0.5 * t)^(1.0 - 1)/(1 + (0.5 * t)^1.0)
-    }, linetype = 2, size = 1) +
-    stat_function(fun = function(t) {
-        0.5 * 1.5 * (0.5 * t)^(1.5 - 1)/(1 + (0.5 * t)^1.5)
-    }, linetype = 3, size = 1) +
-    ylim(0, 1) +
-    labs(y = TeX("$\\lambda(t)$"), title = "Log-Logistic") +
-    theme_minimal(base_size = 16)
-
-grid.arrange(graph_exp, graph_wei, graph_logn,
-             graph_gam, graph_loglog, nrow = 2, ncol = 3)
-```
-
-### A door to another world
-
-To be able to see these Generalized \(F\) special cases,\newline
-the transformation \(Y = \mu + \sigma W\) is necessary.
-
-However, this open a door for another world:
-\textcolor{beamer@UIUCorange}{Extreme Value Theory}.
-
-In the Generalized Gamma case and special cases,\newline
-\(W\) is an extreme value (minimum) distribution.
-
-\noindent{\color{beamer@UIUCblue}\rule{\linewidth}{0.25mm}}
-
-Extreme Value Theory
-\newline
-\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
-              Generalized extreme value (GEV) distribution
-\newline
-\hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
-             Type I extreme value distribution: Gumbel family
-\newline
-\hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
-             Type II extreme value distribution: Fr\(\'{e}\)chet family
-\newline
-\hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
-             Type III extreme value distribution: Weibull family
-
-### Regression models\newline\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$} Exponential and Weibull
-
-Goal: obtain a regression model by allowing the failure rate\newline
-      \hspace*{1cm}to be a function of the derived covariates \(Z\).
-\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
-
-The hazard at time \(t\) for an individual can be written as
-\[
- \lambda(t; x) = \text{hazard} \times c(Z^{\top} \beta),
-\]
-
-three forms have been used for \(c\):
-
-+ \(c(s) = 1 + s\), corresponding to the failure rate;
-
-+ \(c(s) = (1 + s)^{-1}\), corresponding to the mean survival time;
-
-+ \textcolor{beamer@UIUCblue}{\(c(s) = \exp(s)\)}.
-
-###
+\noindent{\color{beamer@UIUCblue}Indo por partes,~\rule{.45\linewidth}{0.25mm}}
 
 \begin{columns}
- \begin{column}{.475\linewidth}
-  \begin{block}{Exponential regression model}
-   \[
-    \begin{aligned}
-     \lambda(t; x) &= \lambda\exp(Z^{\top} \beta)\\
-                 Y &= -\log \lambda - Z^{\top} \beta + W\\
-                 W &\sim \text{Extreme Value dist.}
-    \end{aligned}
-   \]
-  \end{block}
+ \begin{column}{.6\linewidth}
+
+  GLMM: Generalized Linear Mixed Model
+  \newline
+  \hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$} GLM: Generalized Linear Model
+  \newline
+  \hspace*{1.15cm}\rotatebox[origin=c]{180}{$\Lsh$} LM: Linear Model
+
  \end{column}
- \begin{column}{.475\linewidth}
-  \begin{block}{Weibull regression model}
-   \[
-    \begin{aligned}
-     \lambda(t; x) &= \gamma(\lambda t)^{\gamma-1}\exp(Z^{\top} \beta)\\
-                 Y &= -\log \lambda - Z^{\top} \sigma \beta + \gamma^{-1} W\\
-                 W &\sim \text{Extreme Value dist.}
-    \end{aligned}
-   \]
-  \end{block}
+ \begin{column}{.4\linewidth}
+
+  i.e.,
+
+  \begin{itemize}
+   \item[\textcolor{beamer@UIUCblue}{LM}]: \(Y = X \beta + \epsilon\);
+
+   \item[\textcolor{beamer@UIUCblue}{GLM}]: \(Y = g(X \beta) + \epsilon\);
+
+   \item[\textcolor{beamer@UIUCblue}{GLMM}]:
+    \(Y = g(X \beta) + Z u + \epsilon\).
+  \end{itemize}
  \end{column}
 \end{columns}
 
-\vspace{.2cm}
-\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
-
-Accelerated failure time models
-\newline
-\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
-              general class of log-linear models
-\newline
-\hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
-             covariates act additively on \(Y\), or multiplication on \(T\)
-\newline
-\hspace*{1.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
-               log survival time, \(Y = \log T\)
-\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
-
-More general model: Relative Risk or Cox Model.
-
-### Relative risk model
-
-\begin{minipage}{.65\linewidth}
- \begin{block}{Cox, 1972}
-  \[ \lambda(t; x) = \lambda_{0}(t) \exp(Z^{\top} \beta), \]
-  where \(\lambda_{0}(\cdot)\) is an arbitrary unspecified baseline hazard
-  function for continuous \(T\).
- \end{block}
-\end{minipage}
-\vspace{.3cm}
-The conditional survivor function for \(T\) given \(Z\) is
+\noindent{\color{beamer@UIUCorange}Multinomial?~\rule{.8\linewidth}{0.25mm}}
 \[
- F(t; x) = F_{0}^{\exp(Z^{\top} \beta)} (t), \quad \text{where} \quad
- F_{0}(t) = \exp\left[ -\int_{0}^{t} \lambda_{0}(u) \text{d}u \right].
+ \begin{aligned}
+  Y | \{X, u\} &\sim \text{Multinomial}(p_{1}, p_{2}, \dots, p_{k}),\\
+             u &\sim \text{Normal Multivariada}(0, \Sigma).
+ \end{aligned}
 \]
-Thus the survivor function of \(t\) for a covariate value, \(x\), is
-obtained by raising the baseline survivor function \(F_{0}(t)\) to a
-power.
-
 \noindent
-{\color{beamer@UIUCorange}Nice generalizations,~\rule{.6\linewidth}{0.25mm}}
+{\color{beamer@UIUCblue}Ponto importante:~\rule{.525\linewidth}{0.25mm}}
 
-+ stratified Cox model;
-
-+ time-dependent Cox model: *relative* risk model.
-
-### Accelerated failure time model
-
-Suppose \(Y = \log T\) and consider the linear model
-\[
- Y = Z^{\top} \beta + W.
-\]
-Exponentiation gives \(T = \exp (Z^{\top} \beta)~S\), where \(S = \exp
-(W) > 0\) has hazard function \(\lambda_{0}(s)\), say, that is
-independent of \(\beta\).
-
-\vspace{-.15cm}
-\noindent{\color{beamer@UIUCblue}\rule{\linewidth}{0.25mm}}
-
-The hazard function for \(T\) can be written as
-\[
- \lambda(t; x) = \exp (-Z^{\top} \beta)
-                 \lambda_{0} [t \exp (-Z^{\top} \beta)].
-\]
-The effect of the covariate is
-\textcolor{beamer@UIUCorange}{multiplicative on \(t\)} rather than on
-the hazard function.
-
-\begin{minipage}{.875\linewidth}
- \begin{block}{i.e.,}
-  The role of \(Z\) is to \textcolor{beamer@UIUCorange}{accelerate} (or
-  decelerate) the time to failure.
- \end{block}
-\end{minipage}
-
-### Comparison of regression models
-
-\begin{center}
-
-\end{center}
-\vspace{-.5cm}
-\begin{minipage}{.65\linewidth}
- \begin{block}{note}
-  Exponential and Weibull regression models can be considered as special
-  cases of both models.
- \end{block}
-\end{minipage}
-
-### Discrete failure time models
-
-Discrete failure time?
-
-+ Grouping of continuous data due to imprecise measurement;
-
-+ Time itself may be discrete
-
-  + e.g., when the response time represents the number of episodes that\newline
-    \hspace*{.75cm}occur prior to a terminal event.
-
-\vspace{-.35cm}
-\noindent{\color{beamer@UIUCblue}\rule{\linewidth}{0.25mm}}
-
-Discrete regression models?
-
-+ Grouped relative risk model;
-
-+ Discrete and continuous relative risk model;
-
-+ Discrete logistic model.
-
-### Discrete regression models
-
-+ \textcolor{beamer@UIUCblue}{Grouped relative risk model}:
-\[
- \text{Discrete baseline cumulative hazard function}:
- \Lambda_{0}(t) = \sum_{a_{i} \leq t} \lambda_{i},
-\]
-\hspace*{.7cm}this model is the uniquely appropriate one for grouped
-              data from\newline
-\hspace*{.7cm}the continuous relative risk model.
-
-+ \textcolor{beamer@UIUCblue}{Discrete and continuous relative risk model}:
-\[
- \text{d}\Lambda(t; x) = \exp (Z^{\top} \beta)~\text{d}\Lambda_{0}(t),
-\]
-\hspace*{.7cm}which retains the multiplicative hazard relationship.
-
-+ \textcolor{beamer@UIUCblue}{Discrete logistic model}:
-\[
- \frac{\text{d}\Lambda(t; x)}{1-\text{d}\Lambda(t; x)} =
- \frac{\text{d}\Lambda_{0}(t)}{1-\text{d}\Lambda_{0}(t)} \exp (Z^{\top} \beta),
-\]
-\hspace*{.7cm}specifies a linear log odds model for the hazard\newline
-\hspace*{.7cm}probability at each potential failure time.
+Fun\(\c{c}\~{a}\)o de incid\(\^{e}\)ncia acumulada:
+\[ F_{k}(t | \{X, u\}) = [Y | \{X, u\}] \times \Phi(t, X, u). \]
 
 ###
 
