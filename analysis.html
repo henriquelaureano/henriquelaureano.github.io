@@ -1587,7 +1587,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-01-17 16:34:29</h4>
+<h4 class="date"><em>Last modification on</em> 2020-01-31 18:41:51</h4>
 
 </div>
 
@@ -1596,23 +1596,39 @@ div.tocify {
 <hr />
 <div id="math" class="section level1">
 <h1>math</h1>
-<p>For a subject <span class="math inline">\(i\)</span>, with measurements <span class="math inline">\(j\)</span>, we have</p>
-<p><span class="math display">\[ y_{i j} \mid \alpha_{1i}, \alpha_{2i} \sim
-   \text{Multinomial}(p_{1ij}, p_{2ij}, p_{3ij}), \]</span></p>
-<p><span class="math display">\[ \text{with} \quad
-   \begin{bmatrix} \alpha_{1i}\\
-                   \alpha_{2i} \end{bmatrix} \sim
-   \mathcal{N} \Bigg[\begin{bmatrix} 0\\
-                                     0 \end{bmatrix},
-   \begin{bmatrix} \sigma_{\alpha_{1}}^{2} &amp;
-                   \sigma_{\alpha_{1}} \sigma_{\alpha_{2}} \rho\\
-                   \sigma_{\alpha_{1}} \sigma_{\alpha_{2}} \rho &amp;
-                   \sigma_{\alpha_{2}}^{2} \end{bmatrix}
-               \Bigg], \quad \text{and} \quad
-   p_{kij} = \frac{
-    \exp\{\bm{x}_{kij} \bm{\beta}_{kj} + \alpha_{ki}\}}{
-    1 + \sum_{m=1}^{K-1}
-    \exp\{\bm{x}_{mij} \bm{\beta}_{mj} + \alpha_{mi}\}}. \]</span></p>
+<p>For a subject <span class="math inline">\(i\)</span>, with cluster <span class="math inline">\(j\)</span>, in the time <span class="math inline">\(t\)</span>, we have</p>
+<p><span class="math display">\[ y_{i j t} \mid \alpha_{1i}, \alpha_{2i}, \eta_{1i}, \eta_{2i} \sim
+   \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt}), \]</span></p>
+<p><span class="math display">\[
+ \begin{align}
+  \text{with} \quad
+  \begin{bmatrix} \alpha_{1i}\\
+                  \alpha_{2i}\\
+                  \eta_{1i}\\
+                  \eta_{2i} \end{bmatrix} &amp;\sim
+   \mathcal{N} \left[\begin{bmatrix} 0\\
+                                     0\\
+                                     0\\
+                                     0\end{bmatrix},
+  \begin{bmatrix} \sigma_{\alpha_{1}}^{2} &amp;
+                  \varrho_{\alpha_{1}, \alpha_{2}} &amp;
+                  \varrho_{\alpha_{1}, \eta_{1}} &amp;
+                  \varrho_{\alpha_{1}, \eta_{2}}\\
+                  &amp; \sigma_{\alpha_{2}}^{2} &amp;
+                  \varrho_{\alpha_{2}, \eta_{1}} &amp;
+                  \varrho_{\alpha_{2}, \eta_{2}}\\
+                  &amp; &amp; \sigma_{\eta_{1}}^{2} &amp;
+                  \varrho_{\eta_{1}, \eta_{2}}\\
+                  &amp; &amp; &amp; \sigma_{\eta_{2}}^{2} \end{bmatrix}\right],\\
+  \text{and} \quad
+  p_{kijt} &amp;= \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{kj} + \alpha_{ki}\}}{
+                  1 + \sum_{m=1}^{K-1}
+            \exp\{\bm{x}_{mij} \bm{\beta}_{mj} + \alpha_{mi}\}}
+            \frac{\delta}{2\delta t - 2t^{2}}
+            ~\phi[\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right) -
+                  \bm{x}_{kij}\gamma_{k} - \eta_{ki}].
+ \end{align}
+\]</span></p>
 <p>The likelihood for a random sample, and <span class="math inline">\(\bm{\theta} = [\bm{\beta}, \rho, \sigma_{\alpha_{1}}^{2},  \sigma_{\alpha_{1}}^{2}]^{\top}\)</span>, is given by</p>
 <p><span class="math display">\[ L(\bm{\theta}; y) = \prod_{i=1}^{N} \int_{\Re} \int_{\Re}
    \prod_{j=1}^{n_{i}}
@@ -1771,7 +1787,7 @@ alphas &lt;- future_map(
         )$par
     })
 toc() ## quite fast</code></pre>
-<pre><code>0.873 sec elapsed</code></pre>
+<pre><code>0.791 sec elapsed</code></pre>
 <pre class="r"><code>alphas &lt;- matrix(unlist(alphas), nrow = N, byrow = TRUE)
 colnames(alphas) &lt;- c(&quot;alpha1&quot;, &quot;alpha2&quot;)
 
@@ -1877,7 +1893,7 @@ alphas_pos &lt;- future_map(
         )$par
     })
 toc() ## still quite fast</code></pre>
-<pre><code>0.839 sec elapsed</code></pre>
+<pre><code>0.813 sec elapsed</code></pre>
 <pre class="r"><code>alphas_pos &lt;- matrix(unlist(alphas_pos), nrow = N, byrow = TRUE)
 colnames(alphas_pos) &lt;- c(&quot;alpha1&quot;, &quot;alpha2&quot;)
 
