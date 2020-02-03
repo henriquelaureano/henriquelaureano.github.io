@@ -179,7 +179,7 @@ Um novo ponto \(\'{e}\) classificado como \(C_{k}\) se
  \[ \begin{aligned}
      \mathbb{P}[\text{Income} = 120 | \text{No}] &=
      \frac{1}{\sqrt{2\pi 2975}}
-     \exp \left\{-\frac{(120 - 110)^{2}}{2 2975}\right\}\\
+     \exp \left\{-\frac{(120 - 110)^{2}}{2\times 2975}\right\}\\
      &= 0.0072.
     \end{aligned} \]
 \end{minipage}
@@ -414,20 +414,32 @@ Num modelo de regress\(\~{a}\)o temos \(Y = g(X\beta) + \epsilon\).
  \end{block}
 \end{minipage}
 
-### Interpreta\(\c{c}\~{a}\)o? Raz\(\~{a}\)o de chances
+### Interpreta\(\c{c}\~{a}\)o?
 
 \begin{center}
-\includegraphics[width=.775\linewidth]{logistic-relations.jpg}
+\includegraphics[width=.8\linewidth]{logistic-relations.jpg}
 \end{center}
+\vspace{1.25cm}
 
-\vspace{-.45cm}
-\noindent{\color{beamer@UIUCorange}Exemplos,~\rule{.7\linewidth}{0.25mm}}
-\vspace{-.45cm}
-\begin{minipage}{.85\linewidth}
+### Interpreta\(\c{c}\~{a}\)o? Raz\(\~{a}\)o de chances
+
+\noindent{\color{beamer@UIUCorange}Chances,~\rule{.8\linewidth}{0.25mm}}
+\[
+ \text{chance}(X) = e^{X\beta} = \frac{g(X\beta)}{1 - g(X\beta)}.
+\]
+e.g.,
  \[ g(X\beta) = 0.2 \Rightarrow \frac{0.2}{1-0.2} = \frac{1}{4}, \quad
     g(X\beta) = 0.9 \Rightarrow \frac{0.9}{1-0.9} = 9.
  \]
-\end{minipage}
+\noindent
+{\color{beamer@UIUCorange}Raz\(\~{a}\)o de chances,~\rule{.675\linewidth}{0.25mm}}
+
+Para uma vari\(\'{a}\)vel cont\(\'{i}\)nua:
+\[
+ \frac{\text{chance}(x+1)}{\text{chance}(x)} =
+ \frac{e^{\beta_{0}+\beta_{1}(x+1)}}{e^{\beta_{0}+\beta_{1}x}} =
+ e^{\beta_{1}}.
+\]
 
 ### M\(\'{a}\)xima verossimilhan\(\c{c}\)a
 
@@ -493,8 +505,3 @@ modelo <- glm(Y ~ ., family = binomial(link = "logit"), data = dados)
 
 \centering
 \includegraphics[width=.95\linewidth]{thank_you.jpg}
-
-### Perguntas?
-
-\centering
-\includegraphics[width=.65\linewidth]{willy_wonka.jpg}
