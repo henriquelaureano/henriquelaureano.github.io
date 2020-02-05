@@ -393,7 +393,8 @@ grid.arrange(
  \end{column}
 \end{columns}
 
-Num modelo de regress\(\~{a}\)o temos \(Y = g(X\beta) + \epsilon\).
+Num modelo de regress\(\~{a}\)o temos
+\(\mathbb{E}[Y | X] = \mu = g^{-1}(X \beta)\).
 
 + No caso Normal, \(g\) \(\'{e}\) uma fun\(\c{c}\~{a}\)o identidade.
   \(\newline\)
