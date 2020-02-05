@@ -154,7 +154,7 @@ Em rela\(\c{c}\~{a}\)o ao "como fazer",
 {\color{beamer@UIUCblue}Ponto importante:~\rule{.525\linewidth}{0.25mm}}
 
 Fun\(\c{c}\~{a}\)o de incid\(\^{e}\)ncia acumulada:
-\[ F_{k}(t | \{X, u\}) = [Y | \{X, u\}] \times \Phi(t, X, u). \]
+\[ F_{k}(t | X, u) = \text{Multinom}(Y | X, u) \times \Phi(t, X, u). \]
 
 ###
 
