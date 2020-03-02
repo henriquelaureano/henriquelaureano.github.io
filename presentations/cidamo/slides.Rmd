@@ -453,7 +453,7 @@ fun\(\c{c}\~{a}\)o que precisamos \textcolor{beamer@UIUCorange}{maximizar}.
 \begin{minipage}{.6\linewidth}
  \begin{block}{Verossimilhan\(\c{c}\)a}
   \[ L(\beta) = \prod_{i: Y_{i}=1} g(X_{i}\beta)
-                \prod_{{i}': Y_{{i}'}=0} (1 - g(X_{i}\beta))
+                \prod_{i': Y_{i'}=0} (1 - g(X_{i}\beta))
   \]
  \end{block}
 \end{minipage}
