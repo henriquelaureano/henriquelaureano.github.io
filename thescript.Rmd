@@ -1,0 +1,605 @@
+---
+title: "Predicting soccer match scores"
+author: "[Henrique Ap. Laureano](http://www.leg.ufpr.br/~henrique)"
+date: "*Last modification on* `r Sys.time()`"
+include-before:
+  - '\(\newcommand{\bm}[1]{\boldsymbol{\mathbf{#1}}}\)'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    css: font_size.css
+    code_folding: show
+---
+
+```{r, echo=FALSE}
+htmltools::img(src = knitr::image_uri("logo_leg.jpg"),
+               alt = 'logo',
+               style = 'position:absolute; top:0; right:0;
+                        padding:10px; width:200px;')
+options(width = 100)
+library(knitr)
+opts_chunk$set(fig.path = "iBagens/",
+               cache = FALSE,
+               cache.path = "cache/",
+               warning = FALSE,
+               comment = NA,
+               prompt = FALSE)
+```
+
+***
+
+# How?
+
+INLA.
+
+# Show me!
+
+## Data
+
+Premier League results for 2018-19 season
+
+texttt{https://www.soccer24.com/england/premier-league-2018-2019/results/}
+
+```{r}
+pacman::p_load("pacman", "INLA", "ggplot2", "dplyr", "kableExtra", "scales")
+
+dat = read.table("~/Desktop/henrique/PremierLeague-2018-19.txt",
+                 col.names = c("round", "home", "away", "x", "y"))
+
+head(dat, 10) ; tail(dat, 10)
+
+(teams = as.character(sort(unique(dat$home))))
+
+n_teams = length(teams)
+
+n_matches = nrow(dat)
+
+n_rounds = max(dat$round)
+
+n_table <- matrix(c(n_teams, n_matches, n_rounds))
+
+dimnames(n_table) <- list(c("Teams", "Matches", "Round"), "Number")
+
+n_table
+```
+
+## Models
+
+The first row
+
+```{r}
+dat[1, ]
+```
+
+can become something like:
+
+TeamA | TeamB | match | home-adv | num goals scored by A vs B in match k |
+
+```{r}
+dat1 <- data.frame()
+for(i in 1:n_matches){
+  dat1 = rbind(dat1,c(dat$home[i], dat$away[i], dat$round[i], 1, dat$x[i]),
+                c(dat$away[i], dat$home[i], dat$round[i], -1, dat$y[i]))
+}
+names(dat1) = c("TeamA", "TeamB", "round", "home.adv", "score")
+head(dat1)
+```
+
+```{r}
+## head(M1.res$summary.fixed)
+
+## df = data.frame(M1.res$marginals.fixed$home.adv)
+## fill <- "#4271AE"
+## line <- "#1F3552"
+## ggplot(df, aes(x=x)) +
+##     geom_density(fill = fill, colour = line, adjust = 3) +
+##     scale_x_continuous(name = "Home Advantage", limits=c(-0.35, 0.65)) +
+##     scale_y_continuous(name = "Density") +
+##     ggtitle("Marginal distribution of Home Advantages")
+
+## strengthtable=as.data.frame(cbind(teams,M1.res$summary.random$TeamA$mean))
+## names(strengthtable)=c("Team Name","Strength")
+## strengthtable$Strength=as.numeric(as.character(strengthtable$Strength))
+## orderindex=order(strengthtable$Strength,decreasing=T)
+## strengthtable=strengthtable[orderindex,]
+
+## num.points = numeric(n.teams)
+## names(num.points) = teams
+## for (i in 1:nrow(dat)) {
+##   home = dat[i, "home"]; x = dat[i, "x"]
+##   away = dat[i, "away"];  y = dat[i, "y"]
+##   num.points[c(home, away)] = num.points[c(home,away)] +
+##     if (x > y) c(3,0) else
+##       if (y > x) c(0, 3) else c(1,1)
+## }
+## pointstable=cbind(sort(num.points, decreasing=TRUE))
+## orderindex_real=order(num.points,decreasing=TRUE)
+## compare = cbind(as.character(strengthtable$`Team Name`),
+##                 names(num.points)[orderindex_real],
+##                 num.points[orderindex_real])
+## colnames(compare)=c("Rank by strength","Real rank","Number of points")
+## rownames(compare) = seq(1:20)
+## print(compare, quote=FALSE)
+
+## par(mar=c(7.1,4.1,2.1,2.1))
+
+## teams=factor(teams)
+## orderedteams=factor(teams,levels(teams)[orderindex])
+## par(mar=c(7.1,4.1,2.1,2.1))
+## plot(orderedteams[orderindex],
+##      M1.res$summary.random$TeamA$`0.5quant`[orderindex],
+##      las=2,xlab=NULL,ylab="Strength",ylim=c(-0.9,1),main="Team Strength")
+## points(orderedteams[orderindex],
+##        M1.res$summary.random$TeamA$`0.025quant`[orderindex],pch=2,cex=0.5)
+## points(orderedteams[orderindex],
+##        M1.res$summary.random$TeamA$`0.975quant`[orderindex],pch=6,cex=0.5)
+```
+
+Calculate the strength of a team using:
+
+$$
+	S =   (1/2)\times(A_A + D_A )
+$$
+
+```{r}
+## M2.res$summary.random$S$mean =
+##     0.5*(M2.res$summary.random$AttackA$mean +
+##          M2.res$summary.random$DefendB$mean)
+## TableOfStrength2 =as.data.frame(cbind(teams = as.character(teams),
+##                                       round(M2.res$summary.random$S$mean,3)))
+## names(TableOfStrength2)=c("x1","x2")
+## TableOfStrength2 = TableOfStrength2[order(TableOfStrength2$x2,decreasing=T),]
+## TableOfStrength2$x1 <- factor(TableOfStrength2$x1,
+##                               levels =TableOfStrength2$x1)
+```
+
+Plot the strength of all teams
+
+```{r}
+## theme_set(theme_bw())
+## ggplot(TableOfStrength2 , aes(x=x1, y=x2)) +
+##   geom_point(size=3) +
+##   geom_segment(aes(x=x1, xend=x1, y=0, yend=x2)) +
+##   labs(title="Team Strengths",
+##        subtitle="Team Vs Score" ) +
+##     scale_y_discrete("Strength") + xlab("Teams") +
+##   theme(axis.text.x = element_text(angle=65, vjust=0.6))
+```
+
+Plotting Team Attack
+
+```{r}
+## x1 = factor(teams)
+## x2 = c(1:n.teams)
+## x3 = M2.res$summary.random$AttackA$mean
+## x4 = M2.res$summary.random$AttackA$`0.025quant`
+## x5 = M2.res$summary.random$AttackA$`0.975quant`
+
+## mydata2 = data.frame(variable = x1,
+##                      color = x2, mean = x3, start = x4, end = x5)
+
+## ggplot(mydata2, aes(ymin = start, ymax = end,  x = variable)) +
+##     geom_linerange(aes(color = color),
+##                    position = position_dodge(width = 0.2), size = 3) +
+##     coord_flip() +
+##     geom_point(mapping = aes(x = variable, y = mean)) +
+##     labs(title="Team Attacks")
+
+## dat1.temp = t(apply(cbind(dat1$TeamA,dat1$TeamB), 1, sort)) #temporal
+## dat3  = dat1 %>% as_tibble() %>% mutate(
+##   TeamAB = interaction(dat1.temp[,1], dat1.temp[,2], drop = TRUE, sep = ":")
+## )
+## head(dat3, n = 10)
+
+## M3.formula = score ~ -1 + home.adv +
+##     f(TeamA, rep(1, n.matches*2), model = "iid") +
+##     f(TeamB, rep(-1, n.matches*2), copy = "TeamA") +
+##     f(TeamAB, model = "iid")
+```
+
+$$
+	x_i \ \sim \ \text{Poisson}\left(\exp(\mu_H + s^t_{A_i} - s^t_{B_i})\right) \quad \{i=1,3,5,\dots\} \quad \{t=1,\dots,38\}
+$$
+$$
+  \log(\lambda_{x_i})=\mu_H  + s^t_{A_i} - s^t_{B_i}  \quad \{i=1,3,5,\dots\} \quad \{t=1,\dots,38\}
+$$
+$$
+	y_i \ \sim \  \text{Poisson}\left(\exp(-\mu_H  + s^t_{B_i} - s^t_{A_i})\right). \quad \{i=2,4,6,\dots\} \quad \{t=1,\dots,38\}
+$$
+$$
+  \log(\lambda_{y_i})=-\mu_H  + s^t_{B_i} - s^t_{A_i}  \quad \{i=2,4,6,\dots\} \quad \{t=1,\dots,38\}
+$$
+
+where the index $t$ again defines the values info related to the variable 'round' in the dataset. For the implementation, we can more or less follow what was done earlier, but keeping in mind that each strength team now depends on the time each match was played during the season. Hence the 'copy 'structure is now being applied on the variable 'round' and 'round2'(of course a copy of the variable round for TeamB \dots) as follow
+
+```{r}
+dat4 = dat1 %>% as_tibble() %>% mutate(
+  round.home = round,
+  round.away = round,
+  round = NULL
+)
+head(dat4, n = 10)
+```
+
+* a RW1 model
+* an AR1 model
+* a MATERN model
+
+```{r}
+models.outputs <- function(data, mod, prior = NULL,  mod.only = FALSE) {
+  w.roundA = rep(1, times = n_matches*2)
+  w.roundB = rep(-1, times = n_matches*2)
+  stopifnot(is.data.frame(data))
+  if (is.character(mod) && mod == 'rw1') {
+      formula = score ~ -1 + home.adv +
+          f(round.home, w.roundA, model = mod,
+            hyper = prior,
+            scale.model = TRUE,
+            replicate = TeamA, constr = FALSE) +
+          f(round.away, w.roundB, copy = "round.home",
+            replicate = TeamB)
+  } else {
+      formula = score ~ -1 + home.adv +
+          f(round.home, w.roundA, model = mod, hyper = prior,
+            replicate = TeamA, constr = FALSE) +
+          f(round.away,
+            w.roundB, copy = "round.home", replicate = TeamB)
+  }
+  mod.inla = inla(formula, data = data,
+                  control.predictor = list(link = 1),
+                  control.compute = list(config = TRUE, cpo = TRUE, dic
+                                         = TRUE, waic = TRUE),
+                  family = "poisson")
+  if (mod.only) return(mod.inla)
+  top5 = c("ManchesterCity", "Liverpool", "Chelsea", "Tottenham", "Arsenal")
+  index.top5 = c(13, 12, 6, 17, 1)
+  inla.find = function(idx, n_teams) {
+    val = inla.idx(1:n_rounds, replicate = idx, nrep = n_teams)
+    return(val)
+  }
+
+  plot(1:n_rounds,
+       mod.inla$summary.random$round.home$mean[inla.find(
+                                              idx = index.top5[1],
+                                              n_teams = n_teams)],
+       type = 'l', col = 1, ylim = c(0, 1), xlab = 'rounds',
+       ylab = 'Posterior mean',
+       main = 'Premier League Top5 Performance')
+  lines(1:n_rounds,
+        mod.inla$summary.random$round.home$mean[inla.find(
+                                               idx = index.top5[2],
+                                               n_teams = n_teams)],
+        col = 2)
+  lines(1:n_rounds,
+        mod.inla$summary.random$round.home$mean[inla.find(
+                                               idx = index.top5[3],
+                                               n_teams = n_teams)],
+        col = 3)
+  lines(1:n_rounds,
+        mod.inla$summary.random$round.home$mean[idx = inla.find(
+                                                    index.top5[4],
+                                                    n_teams = n_teams)],
+        col = 4)
+  lines(1:n_rounds,
+        mod.inla$summary.random$round.home$mean[idx = inla.find(
+                                                    index.top5[5],
+                                                    n_teams = n_teams)],
+        col = 5)
+  legend("topright", top5, col = 1:5, lty = c(1, 1, 1, 1, 1), cex = 0.8)
+}
+
+rw1.prior = list(prec = list(prior = "pc.prec", param = c(1, 0.01)))
+M4a.res = models.outputs(data = dat4,
+                         mod = 'rw1',
+                         prior = rw1.prior, mod.only = TRUE)
+models.outputs(data = dat4, mod = 'rw1', prior = rw1.prior)
+```
+
+Similar to what we have done for the previous RW2 model we use a PC
+prior on both precision $\tau$ and correlation parameter $\rho$ of the
+AR1 model respectively given by \texttt{theta1} and \texttt{theta2} in
+the prior implementation
+
+```{r}
+ar1.prior = list(theta1 = list(prior="pc.prec", param=c(1, 0.01)),
+                 theta2 = list(prior="pc.cor1", param=c(0.1, 0.9)))
+
+M4b.res = models.outputs(data = dat4, mod = 'ar1',
+                         prior = ar1.prior, mod.only = TRUE)
+models.outputs(data = dat4, mod = 'ar1', prior = ar1.prior)
+```
+
+As previously mentioned we can exploit a one dimensional Matern model
+where we construct a mesh on the time points given by the round variable
+and then apply a joint PC prior on the practical range and marginal
+standard deviation parameters of the SPDE model
+
+```{r}
+timepoints = 1:n_rounds
+mesh.t <- inla.mesh.1d(timepoints)
+mesh.t$loc
+
+model.time = inla.spde2.pcmatern(mesh = mesh.t,
+                                 alpha = 2,
+                                 prior.range = c(2, 0.05),
+                                 prior.sigma = c(1, 0.01))
+M4c.res = models.outputs(data = dat4, mod = model.time, mod.only = TRUE)
+models.outputs(data = dat4, mod = model.time)
+```
+
+The ranking rule may vary according to tournament type, but in our case,
+we will use a simplified version of football ranking rule, i.e., 3 for a
+winning game, 1 for a tied game, 0 for a lost game and the same score of
+the final ranking will be ordered randomly. The goal data of one
+simulated season is sampled according to the linear predictors, i.e.
+$\log(\lambda_{x_i})$ and $\log(\lambda_{y_i})$. They can be sampled
+directly by an INLA function (inla.posterior.sample). In order to have
+the probability mass function, we need to make the simulation number
+large to make the frequency table converge.
+
+```{R}
+## To have a fast simulation, we'd better have these two functions
+## combined because we want to simulate multiple seasons at once.
+table.producer=function(res,N){
+  simres=matrix(0,nrow=20,ncol=20)
+  row.names(simres)=teams
+  colnames(simres)=1:20
+  SAMPLE = inla.posterior.sample(n = N,res)
+  for (i in 1:N){
+    sample = SAMPLE[[i]]$latent[1:(n_matches*2)]
+    lambda=exp(sample)
+    goals=rpois(length(lambda),lambda=lambda)
+    new_season = data.frame("home"=dat$home,
+                            "away"=dat$away,
+                            "x"=goals[2*seq(1,n_matches)-1],
+                            "y"=goals[2*seq(1,n_matches)])
+    homescore=(new_season$x>new_season$y)*3+(new_season$x==new_season$y)
+    awayscore=(new_season$x<new_season$y)*3+(new_season$x==new_season$y)
+    homeres = aggregate(homescore, by=list(new_season$home),FUN=sum)
+    awayscore=aggregate(awayscore, by=list(new_season$away),FUN=sum)
+    num.points=homeres$x+awayscore$x
+    rankorder=rank(-num.points,ties.method = "random")
+    for (j in 1:20){
+      simres[j,rankorder[j]]=simres[j,rankorder[j]]+1
+      }
+  }
+  return(simres)
+}
+table.plot=function(simres,colindex){
+simres %>%
+  mutate(
+   "Team"= row.names(.),
+   "1" = cell_spec(simres[,1], "html",
+                   color = ifelse(colindex[,1], "red", "blue")),
+   "2" = cell_spec(simres[,2], "html",
+                   color = ifelse(colindex[,2], "red", "blue")),
+   "3" = cell_spec(simres[,3], "html",
+                   color = ifelse(colindex[,3], "red", "blue")),
+   "4" = cell_spec(simres[,4], "html",
+                   color = ifelse(colindex[,4], "red", "blue")),
+   "5" = cell_spec(simres[,5], "html",
+                   color = ifelse(colindex[,5], "red", "blue")),
+   "6" = cell_spec(simres[,6], "html",
+                   color = ifelse(colindex[,6], "red", "blue")),
+   "7" = cell_spec(simres[,7], "html",
+                   color = ifelse(colindex[,7], "red", "blue")),
+   "8" = cell_spec(simres[,8], "html",
+                   color = ifelse(colindex[,8], "red", "blue")),
+   "9" = cell_spec(simres[,9], "html",
+                   color = ifelse(colindex[,9], "red", "blue")),
+   "10" = cell_spec(simres[,10], "html",
+                    color = ifelse(colindex[,10], "red", "blue")),
+   "11" = cell_spec(simres[,11], "html",
+                    color = ifelse(colindex[,11], "red", "blue")),
+   "12" = cell_spec(simres[,12], "html",
+                    color = ifelse(colindex[,12], "red", "blue")),
+   "13" = cell_spec(simres[,13], "html",
+                    color = ifelse(colindex[,13], "red", "blue")),
+   "14" = cell_spec(simres[,14], "html",
+                    color = ifelse(colindex[,14], "red", "blue")),
+   "15" = cell_spec(simres[,15], "html",
+                    color = ifelse(colindex[,15], "red", "blue")),
+   "16" = cell_spec(simres[,16], "html",
+                    color = ifelse(colindex[,16], "red", "blue")),
+   "17" = cell_spec(simres[,17], "html",
+                    color = ifelse(colindex[,17], "red", "blue")),
+   "18" = cell_spec(simres[,18], "html",
+                    color = ifelse(colindex[,18], "red", "blue")),
+   "19" = cell_spec(simres[,19], "html",
+                    color = ifelse(colindex[,19], "red", "blue")),
+   "20" = cell_spec(simres[,20], "html",
+                    color = ifelse(colindex[,20], "red", "blue"))
+  ) %>% select("Team",
+               "1","2","3","4","5","6","7","8","9","10",
+               "11","12","13","14","15","16","17","18","19","20") %>%
+  kable(format = "html", escape = F) %>%
+  kable_styling("striped", full_width = F)
+}
+N=10000
+```
+
+```{R message=FALSE, warning=FALSE}
+## M1.simres=table.producer(M1.res,N)
+
+## M1.simres=M1.simres/N
+
+## M1.simres=M1.simres[orderindex_real,]
+
+## colindex=M1.simres>=0.05
+
+## M1.simres[]=percent(M1.simres)
+
+## M1.simres=as.data.frame(M1.simres)
+
+## table.plot(M1.simres,colindex)
+```
+
+These graphs can answer one curious question. Is ManchesterCity truly
+better than Liverpool in the 2018-2019 season, given the difference of
+points is just 1? This question is interesting because the Manchester
+City retained the league title on the final day of the season, finishing
+on 98 points. At the same time, Liverpool finished runners-up with 97
+points – the highest total in English top-flight history for a
+second-place team.
+
+The answer to this question is yes, according to our model. We can see
+that the ManchesterCity won much more first place than Liverpool in our
+simulated seasons.
+
+We also notice that Tottenham Hotspur may be a better team compared to
+Chelsea based on our model, even though it lost by one point to Chelsea.
+
+For completeness, it seems reasonable to show how we can compute
+bayesian criteria for comparing models since we have fitted quite a few
+of them until now. INLA provides an easy way to do so by simply adding
+the requested criteria in a control option. In the following, we fit
+again all the models we have come up with. Comparison amongst the models
+obtained are then performed using the most used Bayesian criteria:
+
+1. CPO (Conditional Predictive Ordinate)
+2. PIT (Predictive Integral Transform)
+3. DIC (Deviance Information Criteria)
+4. WAIC (Watanabe Information Criteria)
+
+The first two quantities well summarise the goodness of fit of the model
+concerning the data, while the last two represent a natural counterpart
+of classical comparison criteria such as AIC and BIC.
+
+```{r}
+criteria.eval <- function(mod) {
+  stopifnot(class(mod) == 'inla')
+  return(c(-sum(log(mod$cpo$cpo)), mod$dic$dic, mod$waic$waic))
+}
+mods.obj = list(M4a.res, M4b.res, M4c.res)
+
+inla.table = sapply(mods.obj, criteria.eval)
+row.names(inla.table) = c("CPO", "DIC", "WAIC")
+colnames(inla.table) = c("RW1", "AR1", "Matern")
+inla.table
+```
+
+We could even assess the models through the PIT values but this does not work well for discrete data like the one from a Poisson model since they do not provide true results. This can be observed in the following examples where we simulate Poisson and Gaussian fake data.
+
+```{r}
+
+## Function for assessing uniformity of PIT values
+pit.plot <- function(mod, name, col){
+  stopifnot(class(mod) == 'inla')
+  if (name == 'Poisson') {
+    pit = mod$cpo$pit-0.5*mod$cpo$cpo
+  } else {
+    pit = mod$cpo$pit
+  }
+  hist(pit, breaks = 20, prob = T, col = col,
+       main = paste0('PITs histogram for ', name,' model'),
+       xlab = 'PIT values')
+  test = ks.test(pit, punif)
+  print(paste0('Kolmogorov-Smirnov test p-value is ', test$p.value))
+}
+```
+
+According to PIT checks both plots should show an uniform behavior in
+the histogram since the fitting models are exactly the ones where the
+data come from. Here we point out that for the Poisson model we have
+computed the adjusted PIT values according to the relation
+
+$$
+PIT^{\text{adj}}_i = PIT_i - 0.5*CPO_i
+$$
+
+since the Poisson data are discrete. Nevertheless, the PIT histogram of
+the Poisson model shows a different result compared to the one we
+expected. Together with the Kolmogorov-Smirnov test outcome, we can
+finalize that this diagnostic cannot be interpreted for the Poisson
+case.
+
+### Model implementation
+
+To implement a model, we create an identical copy of it which inherits
+initial model's number of elements (n) and its values by using a copy
+function.
+
+```{r}
+m = 100
+idx = 1:m
+idx.copy = m + 1:m
+formula = y ~  f(idx, model="iid2d", n=2*m) +
+    f(idx.copy, w, copy="idx") + ....
+```
+
+In this notation, the first `m' elements is `a' and the last `m'
+elements are `b', and where 'w' are the weights. A copied model may also
+have an unknown scaling (hyperparameter), which is default fixed to
+be 1. In order to estimate the scaling parameter, it is necessary to
+type $\texttt{f(idx.copy, model = "iid", copy = "idx",fixed=FALSE}$.
+Small simulated example is provided below:
+
+```{r}
+n=1000
+i=1:n
+j = i
+z = rnorm(n)
+w = runif(n)
+y = z  + 2*z*w + rnorm(n)
+formula = y ~ f(i, model="iid",initial=0, fixed=T) +
+              f(j, w, copy="i", fixed=FALSE)
+r = inla(formula, data = data.frame(i,j,w,y))
+plot(r)
+```
+
+Recall the Base Poisson Model with strength parameters for each Team (Model 1):
+
+```{r}
+M1.formula = score ~ -1 + home.adv + f(TeamA,rep(1,n_matches*2),model="iid")+
+                      f(TeamB,rep(-1,n_matches*2),copy="TeamA")
+```
+
+Here we use copy function for TeamB, because the random effect that we are assigning for football clubs in TeamA are exactly the same ones in TeamB, but appear with different indexing. In order to compute their strength it is necessary that they come from the same model. (omitting copy function will lead to the different functional structure for the model, which we are trying to avoid in this case).
+Here `TeamA` is the variable $s_A$, `rep(1, n.matches*2)` is the "the weight in front of $f(TeamA)$".
+Options in the $f(sA, ...)$ could be `constr=TRUE`, and `hyper = list(prec = list(initial = -2, fixed=TRUE)))`. For more please check the documentation `?f`.
+
+
+Another simulated example on time series model (ar1). Here it is necessary to use copy function, because element at time point [i+1] are dependent from the element at time point [i], and all of them come from one model. More detailed explanation here...
+
+```{r, eval=FALSE}
+n = 500
+phi = 0.8
+x = numeric(n)
+x[1] = rnorm(1,  sd=sqrt(1/(1-phi^2)))
+u = rnorm(n)
+for(i in 2:n) {
+    x[i] = phi * x[i-1] + u[i]
+}
+y = matrix(NA, 2*n, 2)
+y[1:n, 1] = 0
+y[n+1:n, 2] = x
+
+r = inla(y ~ -1
+         + f(i, model="iid")
+         + f(im, minus, copy = "i",
+             hyper = list(beta = list(fixed=FALSE, initial = phi))),
+         family = list("gaussian", "gaussian"),
+         control.family = list(list(
+             hyper = list(prec = list(initial = 0,  fixed=TRUE))),
+             list(hyper = list(prec = list(initial = 20,  fixed=TRUE)))),
+         data = list(y = y,
+                     i=c(1:n, 1:n),
+                     im = c(c(NA, 1:(n-1)), rep(NA, n)),
+                     minus = c(rep(-1, n), rep(0, n))))
+summary(r)
+plot(x, pch=19)
+lines(x)
+lines(r$summary.random$i$mean, lwd=3)
+
+plot(inla.smarginal(r$marginals.hyperpar[[2]]),  type="l",
+     main = "marginal for rho,  both verions")
+
+rr = inla(y ~ -1 + f(i, model="ar1"),
+         family = "gaussian",
+         control.family = list(hyper = list(
+                                   prec = list(initial = 20,  fixed=TRUE))),
+         data = list(y = x, i=1:n))
+summary(rr)
+lines(inla.smarginal(rr$marginals.hyperpar[[2]]), lwd=3,  col="red")
+```
