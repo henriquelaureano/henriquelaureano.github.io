@@ -42,29 +42,19 @@ Premier League results for 2018-19 season
 texttt{https://www.soccer24.com/england/premier-league-2018-2019/results/}
 
 ```{r}
-pacman::p_load("pacman", "INLA", "ggplot2", "dplyr", "kableExtra", "scales")
+pacman::p_load("pacman", "tidyverse", "DT", "INLA", "viridis",
+               "kableExtra", "scales")
 
 dat = read.table("~/Desktop/henrique/PremierLeague-2018-19.txt",
                  col.names = c("round", "home", "away", "x", "y"))
 
-head(dat, 10) ; tail(dat, 10)
-
-(teams = as.character(sort(unique(dat$home))))
-
-n_teams = length(teams)
-
-n_matches = nrow(dat)
-
-n_rounds = max(dat$round)
+teams = as.character(sort(unique(dat$home)))
+n_teams = length(teams) ; n_matches = nrow(dat) ; n_rounds = max(dat$round)
 
 n_table <- matrix(c(n_teams, n_matches, n_rounds))
-
 dimnames(n_table) <- list(c("Teams", "Matches", "Round"), "Number")
-
 n_table
 ```
-
-## Models
 
 The first row
 
@@ -72,19 +62,34 @@ The first row
 dat[1, ]
 ```
 
-can become something like:
+need to become something like:
 
-TeamA | TeamB | match | home-adv | num goals scored by A vs B in match k |
+TeamA | TeamB | round | home-adv | num goals scored by A vs B in match k
 
 ```{r}
-dat1 <- data.frame()
+dat_model <- data.frame()
 for(i in 1:n_matches){
-  dat1 = rbind(dat1,c(dat$home[i], dat$away[i], dat$round[i], 1, dat$x[i]),
-                c(dat$away[i], dat$home[i], dat$round[i], -1, dat$y[i]))
+    dat_model = rbind(
+        dat_model,
+        c(dat$home[i], dat$away[i], dat$round[i],  1, dat$x[i]),
+        c(dat$away[i], dat$home[i], dat$round[i], -1, dat$y[i]))
 }
-names(dat1) = c("TeamA", "TeamB", "round", "home.adv", "score")
-head(dat1)
+names(dat_model) = c("TeamA", "TeamB", "round", "home.adv", "score")
+dat_model <-
+    dat_model %>%
+    as_tibble() %>%
+    mutate(round_home = round, round_away = round, round = NULL)
+
+datatable(dat_model, options = list(pageLength = 6),
+          class = 'cell-border stripe', rownames = FALSE)
 ```
+
+## Models
+
+Calculate the strength of a team using:
+\[
+ S = \frac{1}{2}\times (A_{A} + D_{A})
+\]
 
 ```{r}
 ## head(M1.res$summary.fixed)
@@ -134,15 +139,7 @@ head(dat1)
 ##        M1.res$summary.random$TeamA$`0.025quant`[orderindex],pch=2,cex=0.5)
 ## points(orderedteams[orderindex],
 ##        M1.res$summary.random$TeamA$`0.975quant`[orderindex],pch=6,cex=0.5)
-```
 
-Calculate the strength of a team using:
-
-$$
-	S =   (1/2)\times(A_A + D_A )
-$$
-
-```{r}
 ## M2.res$summary.random$S$mean =
 ##     0.5*(M2.res$summary.random$AttackA$mean +
 ##          M2.res$summary.random$DefendB$mean)
@@ -197,36 +194,83 @@ Plotting Team Attack
 ##     f(TeamB, rep(-1, n.matches*2), copy = "TeamA") +
 ##     f(TeamAB, model = "iid")
 ```
+\[
+ \begin{align}
+  x_{i} &\sim \text{Poisson}
+  \left(\lambda_{x_{i}} =
+        \exp\{\mu_{H} + s_{A_{i}}^{t} - s_{B_{i}}^{t}\}
+  \right)\\
+  \log \lambda_{x_{i}} &= \mu_{H} + s_{A_{i}}^{t} - s_{B_{i}}^{t},
+  \quad i = 1, 3, 5, \dots, \quad t = 1, \dots, 38,\\
+   y_{i} &\sim \text{Poisson}
+  \left(\lambda_{y_{i}} =
+        \exp\{-\mu_{H} + s_{B_{i}}^{t} - s_{A_{i}}^{t}\}
+  \right)\\
+  \log \lambda_{y_{i}} &= -\mu_{H} + s_{B_{i}}^{t} - s_{A_{i}}^{t},
+  \quad i = 2, 4, 6, \dots, \quad t = 1, \dots, 38,
+ \end{align}
+\]
 
-$$
-	x_i \ \sim \ \text{Poisson}\left(\exp(\mu_H + s^t_{A_i} - s^t_{B_i})\right) \quad \{i=1,3,5,\dots\} \quad \{t=1,\dots,38\}
-$$
-$$
-  \log(\lambda_{x_i})=\mu_H  + s^t_{A_i} - s^t_{B_i}  \quad \{i=1,3,5,\dots\} \quad \{t=1,\dots,38\}
-$$
-$$
-	y_i \ \sim \  \text{Poisson}\left(\exp(-\mu_H  + s^t_{B_i} - s^t_{A_i})\right). \quad \{i=2,4,6,\dots\} \quad \{t=1,\dots,38\}
-$$
-$$
-  \log(\lambda_{y_i})=-\mu_H  + s^t_{B_i} - s^t_{A_i}  \quad \{i=2,4,6,\dots\} \quad \{t=1,\dots,38\}
-$$
-
-where the index $t$ again defines the values info related to the variable 'round' in the dataset. For the implementation, we can more or less follow what was done earlier, but keeping in mind that each strength team now depends on the time each match was played during the season. Hence the 'copy 'structure is now being applied on the variable 'round' and 'round2'(of course a copy of the variable round for TeamB \dots) as follow
+where the index $t$ again defines the values info related to the
+variable 'round' in the dataset. For the implementation, we can more or
+less follow what was done earlier, but keeping in mind that each
+strength team now depends on the time each match was played during the
+season. Hence the 'copy 'structure is now being applied on the variable
+'round' and 'round2'(of course a copy of the variable round for TeamB
+\dots) as follow
 
 ```{r}
-dat4 = dat1 %>% as_tibble() %>% mutate(
-  round.home = round,
-  round.away = round,
-  round = NULL
-)
-head(dat4, n = 10)
+w_roundA = rep( 1, times = nrow(dat_model))
+w_roundB = rep(-1, times = nrow(dat_model))
+homeperformance <- function(teams, ploteam, n_rounds, model) {
+    n_teams <- length(ploteam)
+    dat_plot <- matrix(NA, nrow = n_rounds, ncol = n_teams + 1)
+    dat_plot[ ,  1] <- 1:n_rounds
+    dat_plot[ , -1] <- sapply(
+        ploteam,
+        function(i) model$
+                    summary.random$
+                    round_home$
+                    mean[inla.idx(1:n_rounds,
+                                  replicate = which(teams == i),
+                                  nrep = length(teams)
+                                  )])
+    dat_plot <- data.frame(dat_plot)
+    names(dat_plot) <- c("round", ploteam)
+    dat_plot <- dat_plot %>%
+        gather(key = "team", value = "value", -round)
+    ggplot(dat_plot, aes(x = round, y = value)) +
+        geom_line(aes(color = team), size = 1) +
+        labs(x = "rounds", y = "Posterior mean",
+             title = "Premier League Top5 Performance") +
+        scale_color_viridis(discrete = TRUE, breaks = ploteam, name = NULL) +
+        theme_minimal()
+}
 ```
 
-* a RW1 model
-* an AR1 model
-* a MATERN model
+### RW1 model
 
 ```{r}
+formula_rw1 <- score ~ -1 + home.adv +
+    f(round_home, w_roundA, model = "rw1",
+      hyper = list(prec = list(prior =  "pc.prec", param = c(1, .01))),
+      scale.model = TRUE, replicate = TeamA, constr = FALSE) +
+    f(round_away, w_roundB, copy = "round_home", replicate = TeamB)
+
+model_rw1 = inla(formula_rw1, data = dat_model,
+                 control.predictor = list(link = 1),
+                 control.compute = list(config = TRUE,
+                                        cpo = TRUE, dic = TRUE, waic = TRUE),
+                 family = "poisson")
+top5 = c("ManchesterCity", "Liverpool", "Chelsea", "Tottenham", "Arsenal")
+homeperformance(teams, ploteam = top5, n_rounds, model = model_rw1)
+```
+
+### AR1 model
+
+### Matern model
+
+```{r, eval=FALSE}
 models.outputs <- function(data, mod, prior = NULL,  mod.only = FALSE) {
   w.roundA = rep(1, times = n_matches*2)
   w.roundB = rep(-1, times = n_matches*2)
@@ -258,50 +302,10 @@ models.outputs <- function(data, mod, prior = NULL,  mod.only = FALSE) {
     val = inla.idx(1:n_rounds, replicate = idx, nrep = n_teams)
     return(val)
   }
-
-  plot(1:n_rounds,
-       mod.inla$summary.random$round.home$mean[inla.find(
-                                              idx = index.top5[1],
-                                              n_teams = n_teams)],
-       type = 'l', col = 1, ylim = c(0, 1), xlab = 'rounds',
-       ylab = 'Posterior mean',
-       main = 'Premier League Top5 Performance')
-  lines(1:n_rounds,
-        mod.inla$summary.random$round.home$mean[inla.find(
-                                               idx = index.top5[2],
-                                               n_teams = n_teams)],
-        col = 2)
-  lines(1:n_rounds,
-        mod.inla$summary.random$round.home$mean[inla.find(
-                                               idx = index.top5[3],
-                                               n_teams = n_teams)],
-        col = 3)
-  lines(1:n_rounds,
-        mod.inla$summary.random$round.home$mean[idx = inla.find(
-                                                    index.top5[4],
-                                                    n_teams = n_teams)],
-        col = 4)
-  lines(1:n_rounds,
-        mod.inla$summary.random$round.home$mean[idx = inla.find(
-                                                    index.top5[5],
-                                                    n_teams = n_teams)],
-        col = 5)
-  legend("topright", top5, col = 1:5, lty = c(1, 1, 1, 1, 1), cex = 0.8)
 }
-
-rw1.prior = list(prec = list(prior = "pc.prec", param = c(1, 0.01)))
-M4a.res = models.outputs(data = dat4,
-                         mod = 'rw1',
-                         prior = rw1.prior, mod.only = TRUE)
-models.outputs(data = dat4, mod = 'rw1', prior = rw1.prior)
 ```
 
-Similar to what we have done for the previous RW2 model we use a PC
-prior on both precision $\tau$ and correlation parameter $\rho$ of the
-AR1 model respectively given by \texttt{theta1} and \texttt{theta2} in
-the prior implementation
-
-```{r}
+```{r, eval=FALSE}
 ar1.prior = list(theta1 = list(prior="pc.prec", param=c(1, 0.01)),
                  theta2 = list(prior="pc.cor1", param=c(0.1, 0.9)))
 
@@ -315,7 +319,7 @@ where we construct a mesh on the time points given by the round variable
 and then apply a joint PC prior on the practical range and marginal
 standard deviation parameters of the SPDE model
 
-```{r}
+```{r, eval=FALSE}
 timepoints = 1:n_rounds
 mesh.t <- inla.mesh.1d(timepoints)
 mesh.t$loc
@@ -338,7 +342,7 @@ directly by an INLA function (inla.posterior.sample). In order to have
 the probability mass function, we need to make the simulation number
 large to make the frequency table converge.
 
-```{R}
+```{r, eval=FALSE}
 ## To have a fast simulation, we'd better have these two functions
 ## combined because we want to simulate multiple seasons at once.
 table.producer=function(res,N){
@@ -466,7 +470,7 @@ The first two quantities well summarise the goodness of fit of the model
 concerning the data, while the last two represent a natural counterpart
 of classical comparison criteria such as AIC and BIC.
 
-```{r}
+```{r, eval=FALSE}
 criteria.eval <- function(mod) {
   stopifnot(class(mod) == 'inla')
   return(c(-sum(log(mod$cpo$cpo)), mod$dic$dic, mod$waic$waic))
@@ -481,8 +485,7 @@ inla.table
 
 We could even assess the models through the PIT values but this does not work well for discrete data like the one from a Poisson model since they do not provide true results. This can be observed in the following examples where we simulate Poisson and Gaussian fake data.
 
-```{r}
-
+```{r, eval=FALSE}
 ## Function for assessing uniformity of PIT values
 pit.plot <- function(mod, name, col){
   stopifnot(class(mod) == 'inla')
@@ -520,7 +523,7 @@ To implement a model, we create an identical copy of it which inherits
 initial model's number of elements (n) and its values by using a copy
 function.
 
-```{r}
+```{r, eval=FALSE}
 m = 100
 idx = 1:m
 idx.copy = m + 1:m
@@ -535,11 +538,12 @@ be 1. In order to estimate the scaling parameter, it is necessary to
 type $\texttt{f(idx.copy, model = "iid", copy = "idx",fixed=FALSE}$.
 Small simulated example is provided below:
 
-```{r}
+```{r, eval=FALSE}
 n=1000
 i=1:n
 j = i
 z = rnorm(n)
+
 w = runif(n)
 y = z  + 2*z*w + rnorm(n)
 formula = y ~ f(i, model="iid",initial=0, fixed=T) +
