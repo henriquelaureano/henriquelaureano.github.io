@@ -20,7 +20,7 @@ htmltools::img(src = knitr::image_uri("logo_leg.jpg"),
 options(width = 100)
 library(knitr)
 opts_chunk$set(fig.path = "iBagens/",
-               cache = FALSE,
+               cache = TRUE,
                cache.path = "cache/",
                warning = FALSE,
                comment = NA,
@@ -42,7 +42,7 @@ Premier League results for 2018-19 season
 texttt{https://www.soccer24.com/england/premier-league-2018-2019/results/}
 
 ```{r}
-pacman::p_load("pacman", "tidyverse", "DT", "INLA", "viridis",
+pacman::p_load("pacman", "tidyverse", "DT", "INLA", "viridis", "patchwork",
                "kableExtra", "scales")
 
 dat = read.table("~/Desktop/henrique/PremierLeague-2018-19.txt",
@@ -86,114 +86,6 @@ datatable(dat_model, options = list(pageLength = 6),
 
 ## Models
 
-Calculate the strength of a team using:
-\[
- S = \frac{1}{2}\times (A_{A} + D_{A})
-\]
-
-```{r}
-## head(M1.res$summary.fixed)
-
-## df = data.frame(M1.res$marginals.fixed$home.adv)
-## fill <- "#4271AE"
-## line <- "#1F3552"
-## ggplot(df, aes(x=x)) +
-##     geom_density(fill = fill, colour = line, adjust = 3) +
-##     scale_x_continuous(name = "Home Advantage", limits=c(-0.35, 0.65)) +
-##     scale_y_continuous(name = "Density") +
-##     ggtitle("Marginal distribution of Home Advantages")
-
-## strengthtable=as.data.frame(cbind(teams,M1.res$summary.random$TeamA$mean))
-## names(strengthtable)=c("Team Name","Strength")
-## strengthtable$Strength=as.numeric(as.character(strengthtable$Strength))
-## orderindex=order(strengthtable$Strength,decreasing=T)
-## strengthtable=strengthtable[orderindex,]
-
-## num.points = numeric(n.teams)
-## names(num.points) = teams
-## for (i in 1:nrow(dat)) {
-##   home = dat[i, "home"]; x = dat[i, "x"]
-##   away = dat[i, "away"];  y = dat[i, "y"]
-##   num.points[c(home, away)] = num.points[c(home,away)] +
-##     if (x > y) c(3,0) else
-##       if (y > x) c(0, 3) else c(1,1)
-## }
-## pointstable=cbind(sort(num.points, decreasing=TRUE))
-## orderindex_real=order(num.points,decreasing=TRUE)
-## compare = cbind(as.character(strengthtable$`Team Name`),
-##                 names(num.points)[orderindex_real],
-##                 num.points[orderindex_real])
-## colnames(compare)=c("Rank by strength","Real rank","Number of points")
-## rownames(compare) = seq(1:20)
-## print(compare, quote=FALSE)
-
-## par(mar=c(7.1,4.1,2.1,2.1))
-
-## teams=factor(teams)
-## orderedteams=factor(teams,levels(teams)[orderindex])
-## par(mar=c(7.1,4.1,2.1,2.1))
-## plot(orderedteams[orderindex],
-##      M1.res$summary.random$TeamA$`0.5quant`[orderindex],
-##      las=2,xlab=NULL,ylab="Strength",ylim=c(-0.9,1),main="Team Strength")
-## points(orderedteams[orderindex],
-##        M1.res$summary.random$TeamA$`0.025quant`[orderindex],pch=2,cex=0.5)
-## points(orderedteams[orderindex],
-##        M1.res$summary.random$TeamA$`0.975quant`[orderindex],pch=6,cex=0.5)
-
-## M2.res$summary.random$S$mean =
-##     0.5*(M2.res$summary.random$AttackA$mean +
-##          M2.res$summary.random$DefendB$mean)
-## TableOfStrength2 =as.data.frame(cbind(teams = as.character(teams),
-##                                       round(M2.res$summary.random$S$mean,3)))
-## names(TableOfStrength2)=c("x1","x2")
-## TableOfStrength2 = TableOfStrength2[order(TableOfStrength2$x2,decreasing=T),]
-## TableOfStrength2$x1 <- factor(TableOfStrength2$x1,
-##                               levels =TableOfStrength2$x1)
-```
-
-Plot the strength of all teams
-
-```{r}
-## theme_set(theme_bw())
-## ggplot(TableOfStrength2 , aes(x=x1, y=x2)) +
-##   geom_point(size=3) +
-##   geom_segment(aes(x=x1, xend=x1, y=0, yend=x2)) +
-##   labs(title="Team Strengths",
-##        subtitle="Team Vs Score" ) +
-##     scale_y_discrete("Strength") + xlab("Teams") +
-##   theme(axis.text.x = element_text(angle=65, vjust=0.6))
-```
-
-Plotting Team Attack
-
-```{r}
-## x1 = factor(teams)
-## x2 = c(1:n.teams)
-## x3 = M2.res$summary.random$AttackA$mean
-## x4 = M2.res$summary.random$AttackA$`0.025quant`
-## x5 = M2.res$summary.random$AttackA$`0.975quant`
-
-## mydata2 = data.frame(variable = x1,
-##                      color = x2, mean = x3, start = x4, end = x5)
-
-## ggplot(mydata2, aes(ymin = start, ymax = end,  x = variable)) +
-##     geom_linerange(aes(color = color),
-##                    position = position_dodge(width = 0.2), size = 3) +
-##     coord_flip() +
-##     geom_point(mapping = aes(x = variable, y = mean)) +
-##     labs(title="Team Attacks")
-
-## dat1.temp = t(apply(cbind(dat1$TeamA,dat1$TeamB), 1, sort)) #temporal
-## dat3  = dat1 %>% as_tibble() %>% mutate(
-##   TeamAB = interaction(dat1.temp[,1], dat1.temp[,2], drop = TRUE, sep = ":")
-## )
-## head(dat3, n = 10)
-
-## M3.formula = score ~ -1 + home.adv +
-##     f(TeamA, rep(1, n.matches*2), model = "iid") +
-##     f(TeamB, rep(-1, n.matches*2), copy = "TeamA") +
-##     f(TeamAB, model = "iid")
-```
 \[
  \begin{align}
   x_{i} &\sim \text{Poisson}
@@ -222,6 +114,7 @@ season. Hence the 'copy 'structure is now being applied on the variable
 ```{r}
 w_roundA = rep( 1, times = nrow(dat_model))
 w_roundB = rep(-1, times = nrow(dat_model))
+
 homeperformance <- function(teams, ploteam, n_rounds, model) {
     n_teams <- length(ploteam)
     dat_plot <- matrix(NA, nrow = n_rounds, ncol = n_teams + 1)
@@ -241,8 +134,8 @@ homeperformance <- function(teams, ploteam, n_rounds, model) {
         gather(key = "team", value = "value", -round)
     ggplot(dat_plot, aes(x = round, y = value)) +
         geom_line(aes(color = team), size = 1) +
-        labs(x = "rounds", y = "Posterior mean",
-             title = "Premier League Top5 Performance") +
+        ylim(c(.17, .735)) +
+        labs(x = "rounds", y = "Posterior mean") +
         scale_color_viridis(discrete = TRUE, breaks = ploteam, name = NULL) +
         theme_minimal()
 }
@@ -253,94 +146,231 @@ homeperformance <- function(teams, ploteam, n_rounds, model) {
 ```{r}
 formula_rw1 <- score ~ -1 + home.adv +
     f(round_home, w_roundA, model = "rw1",
-      hyper = list(prec = list(prior =  "pc.prec", param = c(1, .01))),
+      hyper = list(prec = list(prior = "pc.prec", param = c(1, .01))),
       scale.model = TRUE, replicate = TeamA, constr = FALSE) +
     f(round_away, w_roundB, copy = "round_home", replicate = TeamB)
 
 model_rw1 = inla(formula_rw1, data = dat_model,
                  control.predictor = list(link = 1),
-                 control.compute = list(config = TRUE,
-                                        cpo = TRUE, dic = TRUE, waic = TRUE),
+                 control.compute = list(config = TRUE, cpo = TRUE,
+                                        dic = TRUE, waic = TRUE),
                  family = "poisson")
 top5 = c("ManchesterCity", "Liverpool", "Chelsea", "Tottenham", "Arsenal")
-homeperformance(teams, ploteam = top5, n_rounds, model = model_rw1)
 ```
 
 ### AR1 model
 
+```{r}
+formula_ar1 <- score ~ -1 + home.adv +
+    f(round_home, w_roundA, model = "ar1",
+      hyper = list(theta1 = list(prior = "pc.prec", param = c(1, .01)),
+                   theta2 = list(prior = "pc.cor1", param = c(.1, .9))),
+    replicate = TeamA, constr = FALSE) +
+    f(round_away, w_roundB, copy = "round_home", replicate = TeamB)
+
+model_ar1 = inla(formula_ar1, data = dat_model,
+                 control.predictor = list(link = 1),
+                 control.compute = list(config = TRUE, cpo = TRUE,
+                                        dic = TRUE, waic = TRUE),
+                 family = "poisson")
+```
+
 ### Matern model
 
-```{r, eval=FALSE}
-models.outputs <- function(data, mod, prior = NULL,  mod.only = FALSE) {
-  w.roundA = rep(1, times = n_matches*2)
-  w.roundB = rep(-1, times = n_matches*2)
-  stopifnot(is.data.frame(data))
-  if (is.character(mod) && mod == 'rw1') {
-      formula = score ~ -1 + home.adv +
-          f(round.home, w.roundA, model = mod,
-            hyper = prior,
-            scale.model = TRUE,
-            replicate = TeamA, constr = FALSE) +
-          f(round.away, w.roundB, copy = "round.home",
-            replicate = TeamB)
-  } else {
-      formula = score ~ -1 + home.adv +
-          f(round.home, w.roundA, model = mod, hyper = prior,
-            replicate = TeamA, constr = FALSE) +
-          f(round.away,
-            w.roundB, copy = "round.home", replicate = TeamB)
-  }
-  mod.inla = inla(formula, data = data,
-                  control.predictor = list(link = 1),
-                  control.compute = list(config = TRUE, cpo = TRUE, dic
-                                         = TRUE, waic = TRUE),
-                  family = "poisson")
-  if (mod.only) return(mod.inla)
-  top5 = c("ManchesterCity", "Liverpool", "Chelsea", "Tottenham", "Arsenal")
-  index.top5 = c(13, 12, 6, 17, 1)
-  inla.find = function(idx, n_teams) {
-    val = inla.idx(1:n_rounds, replicate = idx, nrep = n_teams)
-    return(val)
-  }
+We can exploit a one dimensional Matern model where we construct a mesh
+on the time points given by the round variable and then apply a joint PC
+prior on the practical range and marginal standard deviation parameters
+of the SPDE model.
+
+```{r}
+formula_matern <- score ~ -1 + home.adv +
+    f(round_home, w_roundA,
+      model = inla.spde2.pcmatern(mesh = inla.mesh.1d(1:n_rounds),
+                                  alpha = 2,
+                                  prior.range = c(2, .05),
+                                  prior.sigma = c(1, .01)),
+      replicate = TeamA, constr = FALSE) +
+    f(round_away, w_roundB, copy = "round_home", replicate = TeamB)
+
+model_matern = inla(formula_matern, data = dat_model,
+                    control.predictor = list(link = 1),
+                    control.compute = list(config = TRUE, cpo = TRUE,
+                                           dic = TRUE, waic = TRUE),
+                    family = "poisson")
+```
+
+```{r, fig.width=10}
+plot_rw1 <- homeperformance(teams, ploteam = top5, n_rounds,
+                            model = model_rw1)
+
+plot_ar1 <- homeperformance(teams, ploteam = top5, n_rounds,
+                            model = model_ar1)
+
+plot_matern <- homeperformance(teams, ploteam = top5, n_rounds,
+                               model = model_matern)
+
+plot_all <- plot_rw1 | plot_ar1 | plot_matern
+
+plot_all +
+    plot_layout(guides = "collect") +
+    plot_annotation(title = "Premier League Top5 Performance",
+                    tag_levels = "A")
+```
+
+```{r}
+teams_mean <- sapply(
+    teams,
+    function(i) mean(model_rw1$
+                     summary.random$
+                     round_home$
+                     mean[inla.idx(1:n_rounds,
+                                   replicate = which(teams == i),
+                                   nrep = length(teams)
+                                   )]))
+performance <- data.frame(cbind(teams, teams_mean))
+names(performance) <- c("Team", "Performance")
+
+performance$Performance <- as.numeric(as.character(performance$Performance))
+
+index_order <- order(performance$Performance, decreasing = TRUE)
+performance <- performance[index_order, ]
+rownames(performance) <- NULL
+
+team_points <- numeric(n_teams)
+names(team_points) <- teams
+
+for (i in 1:nrow(dat)) {
+  home = dat[i, "home"]; x = dat[i, "x"]
+  away = dat[i, "away"]; y = dat[i, "y"]
+  team_points[c(home, away)] <- team_points[c(home,away)] +
+      if (x > y) c(3, 0) else
+      if (y > x) c(0, 3) else c(1, 1)
 }
+table_points <- cbind(sort(team_points, decreasing = TRUE))
+index_true <- order(team_points, decreasing = TRUE)
+
+compare <- cbind(as.character(performance$Team),
+                 names(team_points)[index_true],
+                 team_points[index_true])
+colnames(compare) <- c("Rank by performance", "Real rank", "Points")
+rownames(compare) <- 1:20
+print(compare, quote = FALSE)
+
+plot_home.adv <- function(model) {
+    df = data.frame(model$marginals.fixed$home.adv)
+    ggplot(df, aes(x = x)) +
+        geom_density(adjust = 3, size = 1) +
+        scale_x_continuous(name = "Home Advantage") +
+        scale_y_continuous(name = "Density") +
+        theme_minimal()
+}
+home.adv_all <-
+    plot_home.adv(model_rw1) |
+    plot_home.adv(model_ar1) |
+    plot_home.adv(model_matern)
+home.adv_all +
+    plot_annotation(title = "Marginal distribution of Home Advantages",
+                    tag_levels = "A")
+
+plotmed <- function(model, teams, index_order, n_rounds, type) {
+    teams <- factor(teams)
+    orderedteams <- factor(teams, levels(teams)[index_order])
+    teams_0.025 <- sapply(
+        teams,
+        function(i) mean(model$
+                         summary.random$
+                         round_home$
+                         `0.025quant`[inla.idx(1:n_rounds,
+                                               replicate = which(teams == i),
+                                               nrep = length(teams)
+                                               )]))
+    teams_0.5 <- sapply(
+        teams,
+        function(i) mean(model$
+                         summary.random$
+                         round_home$
+                         `0.5quant`[inla.idx(1:n_rounds,
+                                             replicate = which(teams == i),
+                                             nrep = length(teams)
+                                             )]))
+    teams_0.975 <- sapply(
+        teams,
+        function(i) mean(model$
+                         summary.random$
+                         round_home$
+                         `0.975quant`[inla.idx(1:n_rounds,
+                                               replicate = which(teams == i),
+                                               nrep = length(teams)
+                                               )]))
+    if (type == 1) {
+        plot(orderedteams[index_order], teams_0.5[index_order],
+             las = 2, xlab = NULL, ylab = "Performance",
+             ylim = c(-.8, 1), main = "Team performance")
+        points(orderedteams[index_order],
+               teams_0.025[index_order], pch = 2, cex = .75)
+        points(orderedteams[index_order],
+               teams_0.975[index_order], pch = 6, cex = .75)
+    } else {
+        df <- data.frame(variable = teams[index_order],
+                         color = seq(n_teams),
+                         median = teams_0.5[index_order],
+                         start = teams_0.025[index_order],
+                         end = teams_0.975[index_order])
+        ggplot(df, aes(ymin = start, ymax = end, x = variable)) +
+            geom_linerange(aes(color = color),
+                           position = position_dodge(width = .2),
+                           size = 3,
+                           show.legend = FALSE) +
+            coord_flip() +
+            geom_point(mapping = aes(x = variable, y = median)) +
+            labs(x = NULL, y = "Posterior") +
+            scale_color_viridis() +
+            theme_minimal()
+    }
+}
+
+par(mar = c(7, 4, 2, 1) + .1, mfrow = c(1, 3))
+plotmed(model_rw1, teams, index_order, n_rounds, type = 1)
+plotmed(model_ar1, teams, index_order, n_rounds, type = 1)
+plotmed(model_matern, teams, index_order, n_rounds, type = 1)
+
+pm_rw1 <- plotmed(model_rw1, teams, index_order, n_rounds, type = 2)
+pm_ar1 <- plotmed(model_ar1, teams, index_order, n_rounds, type = 2)
+pm_matern <- plotmed(model_matern, teams, index_order, n_rounds, type = 2)
+
+pm_all <- pm_rw1 | pm_ar1 | pm_matern
+
+pm_all +
+    plot_annotation(title = "Premier League Home performances",
+                    tag_levels = "A")
 ```
 
-```{r, eval=FALSE}
-ar1.prior = list(theta1 = list(prior="pc.prec", param=c(1, 0.01)),
-                 theta2 = list(prior="pc.cor1", param=c(0.1, 0.9)))
+```{r}
+## x1 = factor(teams)
 
-M4b.res = models.outputs(data = dat4, mod = 'ar1',
-                         prior = ar1.prior, mod.only = TRUE)
-models.outputs(data = dat4, mod = 'ar1', prior = ar1.prior)
+## x2 = c(1:n.teams)
+## x3 = M2.res$summary.random$AttackA$mean
+## x4 = M2.res$summary.random$AttackA$`0.025quant`
+## x5 = M2.res$summary.random$AttackA$`0.975quant`
+## mydata2 = data.frame(variable = x1,
+##                      color = x2, mean = x3, start = x4, end = x5)
+
+## ggplot(mydata2, aes(ymin = start, ymax = end,  x = variable)) +
+##     geom_linerange(aes(color = color),
+##                    position = position_dodge(width = 0.2), size = 3) +
+##     coord_flip() +
+##     geom_point(mapping = aes(x = variable, y = mean)) +
+##     labs(title="Team Attacks")
+## dat1.temp = t(apply(cbind(dat1$TeamA,dat1$TeamB), 1, sort)) #temporal
+## dat3  = dat1 %>% as_tibble() %>% mutate(
+##   TeamAB = interaction(dat1.temp[,1], dat1.temp[,2], drop = TRUE, sep = ":")
+## )
+## head(dat3, n = 10)
+## M3.formula = score ~ -1 + home.adv +
+##     f(TeamA, rep(1, n.matches*2), model = "iid") +
+##     f(TeamB, rep(-1, n.matches*2), copy = "TeamA") +
+##     f(TeamAB, model = "iid")
 ```
-
-As previously mentioned we can exploit a one dimensional Matern model
-where we construct a mesh on the time points given by the round variable
-and then apply a joint PC prior on the practical range and marginal
-standard deviation parameters of the SPDE model
-
-```{r, eval=FALSE}
-timepoints = 1:n_rounds
-mesh.t <- inla.mesh.1d(timepoints)
-mesh.t$loc
-
-model.time = inla.spde2.pcmatern(mesh = mesh.t,
-                                 alpha = 2,
-                                 prior.range = c(2, 0.05),
-                                 prior.sigma = c(1, 0.01))
-M4c.res = models.outputs(data = dat4, mod = model.time, mod.only = TRUE)
-models.outputs(data = dat4, mod = model.time)
-```
-
-The ranking rule may vary according to tournament type, but in our case,
-we will use a simplified version of football ranking rule, i.e., 3 for a
-winning game, 1 for a tied game, 0 for a lost game and the same score of
-the final ranking will be ordered randomly. The goal data of one
-simulated season is sampled according to the linear predictors, i.e.
-$\log(\lambda_{x_i})$ and $\log(\lambda_{y_i})$. They can be sampled
-directly by an INLA function (inla.posterior.sample). In order to have
-the probability mass function, we need to make the simulation number
-large to make the frequency table converge.
 
 ```{r, eval=FALSE}
 ## To have a fast simulation, we'd better have these two functions
