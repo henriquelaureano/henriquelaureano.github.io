@@ -35,18 +35,24 @@ opts_chunk$set(fig.path = "iBagens/",
 
 # Show me!
 
+## Functions
+
+All the build functions to be used in this analysis can be found
+[HERE](functions.R).
+
+```{r, cache=FALSE}
+source("functions.R")
+```
+
 ## Data
 
 Premier League results for 2018-19 season.
 
 Data from
-[CLICK HERE](https://www.soccer24.com/england/premier-league-2018-2019/results/).
+[HERE](https://www.soccer24.com/england/premier-league-2018-2019/results/).
 
 ```{r}
-pacman::p_load("tidyverse", "DT", "INLA", "viridis", "patchwork",
-               "tictoc", "kableExtra", "scales")
-
-dat <- read.table("~/Desktop/henrique/PremierLeague-2018-19.txt",
+dat <- read.table("~/Dropbox/NORONHA/PremierLeague-2018-19.txt",
                   col.names = c("round", "home", "away", "x", "y"))
 
 teams <- as.character(sort(unique(dat$home)))
@@ -66,7 +72,7 @@ dat[1, ]
 
 need to become something like:
 
-TeamA | TeamB | round | home-adv | num goals scored by A vs B in match k
+> TeamA | TeamB | round | home-adv | num goals scored by A vs B in match k
 
 ```{r}
 dat_model <- data.frame()
@@ -88,7 +94,10 @@ datatable(dat_model, options = list(pageLength = 6),
 
 ## Models
 
-> A Poisson mixed model with
+> A Poisson mixed model with one fixed effect and two random effects. As
+> fixed effect, a binary variable indicating a possible `home effect`.
+> As random effects we have the `team performances/strengths` varying
+> along the time, i.e., the 38 league rounds.
 
 \[
  \begin{align}
@@ -107,51 +116,17 @@ datatable(dat_model, options = list(pageLength = 6),
  \end{align}
 \]
 
+> To describe those random temporal effects we try here three different
+> approachs: a random walk of 1st order (`RW1`); a autoregressive
+> process of 1st order (`AR1`); and a one dimensional Matern model where
+> we construct a mesh on the time points (rounds) and then apply a joint
+> PC prior on the practical range and marginal standard deviation
+> parameters of the SPDE model (`Mat`). In the figures below these
+> models are named as `A`, `B` and `C`, respectively.
+
 ```{r}
 w_roundA = rep( 1, times = nrow(dat_model))
 w_roundB = rep(-1, times = nrow(dat_model))
-
-homeperformance <- function(teams, ploteam, n_rounds, mod) {
-    n_teams <- length(ploteam)
-    dat_plot[ ,  1] <- 1:n_rounds
-    f_mean  <- data.frame(sapply(
-        ploteam,
-        function(i) mod$summary.random$round_home$
-                    mean[inla.idx(seq(n_rounds),
-                                  replicate = which(teams == i),
-                                  nrep = length(teams)
-                                  )]))
-    f_mean$type <- rep("mean", n_rounds)
-    f_lower  <- data.frame(sapply(
-        ploteam,
-        function(i) mod$summary.random$round_home$
-                    `0.025quant`[inla.idx(1:n_rounds,
-                                          replicate = which(teams == i),
-                                          nrep = length(teams)
-                                          )]))
-    f_lower$type <- rep("lower", n_rounds)
-    f_upper  <- data.frame(sapply(
-        ploteam,
-        function(i) mod$summary.random$round_home$
-                    `0.975quant`[inla.idx(1:n_rounds,
-                                          replicate = which(teams == i),
-                                          nrep = length(teams)
-                                          )]))
-    f_upper$type <- rep("upper", n_rounds)
-    dat_plot <- rbind(f_mean, f_lower, f_upper)
-    dat_plot$round <- rep(seq(n_rounds), 3)
-    dat_plot <- dat_plot %>%
-        gather(key = "team", value = "value", - round, - type)
-    dat_plot <- spread(dat_plot, type, value)
-    dat_plot$team <- factor(dat_plot$team, levels = ploteam)
-    ggplot(dat_plot, aes(x = round, group = team)) +
-        geom_line(aes(y = mean, color = team), size = 1.5) +
-        geom_ribbon(aes(ymin = lower, ymax = upper, fill = team),
-                    alpha = .15) +
-        labs(x = "rounds", y = "Posterior mean") +
-        scale_color_viridis(discrete = TRUE) +
-        theme_minimal()
-}
 ```
 
 ### RW1 model
@@ -168,7 +143,6 @@ model_rw1 <- inla(formula_rw1, data = dat_model,
                   control.compute = list(config = TRUE, cpo = TRUE,
                                          dic = TRUE, waic = TRUE),
                   family = "poisson")
-top5 = c("ManchesterCity", "Liverpool", "Chelsea", "Tottenham", "Arsenal")
 ```
 
 ### AR1 model
@@ -190,11 +164,6 @@ model_ar1 <- inla(formula_ar1, data = dat_model,
 
 ### Matern model
 
-We can exploit a one dimensional Matern model where we construct a mesh
-on the time points given by the round variable and then apply a joint PC
-prior on the practical range and marginal standard deviation parameters
-of the SPDE model.
-
 ```{r}
 formula_mat <- score ~ -1 + home.adv +
     f(round_home, w_roundA,
@@ -214,7 +183,9 @@ model_mat <- inla(formula_mat, data = dat_model,
 
 ## Comparisons
 
-```{r, fig.width=10}
+```{r fig1, fig.width=10, fig.cap="Figure 1: A) rw1; B) ar1; C) Matern."}
+top5 = c("ManchesterCity", "Liverpool", "Chelsea", "Tottenham", "Arsenal")
+
 plot.re_rw1 <- homeperformance(teams, ploteam = top5, n_rounds,
                                mod = model_rw1)
 
@@ -227,65 +198,24 @@ plot.re_mat <- homeperformance(teams, ploteam = top5, n_rounds,
 plot.re_all <- plot.re_rw1 | plot.re_ar1 | plot.re_mat
 plot.re_all +
     plot_layout(guides = "collect") +
-    plot_annotation(title = "Premier League Top5 Performance",
-                    tag_levels = "A")
+    plot_annotation(title = "Premier League Top5 performances",
+                    tag_levels = "A", tag_suffix = ")")
 ```
 
-```{r, fig.height=3}
-plot_home.adv <- function(model) {
-    df = data.frame(model$marginals.fixed$home.adv)
-    ggplot(df, aes(x = x)) +
-        geom_density(adjust = 3, size = 1) +
-        scale_x_continuous(name = "Home Advantage") +
-        scale_y_continuous(name = "Density") +
-        theme_minimal()
-}
+```{r fig2, fig.height=3, fig.cap="Figure 2: A) rw1; B) ar1; C) Matern."}
 home.adv_all <-
     plot_home.adv(model_rw1) |
     plot_home.adv(model_ar1) |
     plot_home.adv(model_mat)
 home.adv_all +
-    plot_annotation(title = "Marginal distribution of Home Advantages",
-                    tag_levels = "A")
+    plot_annotation(title = "Marginal distribution of home advantage",
+                    tag_levels = "A", tag_suffix = ")")
 ```
 
 ```{r}
-ranks <- function(teams, model, n_rounds, data) {
-    teams_mean <- sapply(
-        teams,
-        function(i)
-            mean(model$summary.random$round_home$
-                 mean[inla.idx(1:n_rounds,
-                               replicate = which(teams == i),
-                               nrep = length(teams))]))
-    performance <- data.frame(cbind(teams, teams_mean))
-    names(performance) <- c("Team", "Performance")
-    performance$Performance <-
-        as.numeric(as.character(performance$Performance))
-    index_order <- order(performance$Performance, decreasing = TRUE)
-    performance <- performance[index_order, ]
-    rownames(performance) <- NULL
-    team_points <- numeric(n_teams)
-    names(team_points) <- teams
-    for (i in 1:nrow(data)) {
-        home = data[i, "home"]; x = data[i, "x"]
-        away = data[i, "away"]; y = data[i, "y"]
-        team_points[c(home, away)] <- team_points[c(home, away)] +
-            if (x > y) c(3, 0) else
-            if (y > x) c(0, 3) else c(1, 1)
-    }
-    table_points <- cbind(sort(team_points, decreasing = TRUE))
-    index_true <- order(team_points, decreasing = TRUE)
-    compare <- cbind(as.character(performance$Team),
-                     names(team_points)[index_true],
-                     team_points[index_true])
-    colnames(compare) <- c("Rank by performance", "Real rank", "Points")
-    rownames(compare) <- 1:20
-    return(list("rank" = compare, "index_true" = index_true))
-}
-rank_rw1 <- ranks(teams, model = model_rw1, n_rounds, data = dat)
-rank_ar1 <- ranks(teams, model = model_ar1, n_rounds, data = dat)
-rank_mat <- ranks(teams, model = model_mat, n_rounds, data = dat)
+rank_rw1 <- ranks(teams, mod = model_rw1, n_rounds, data = dat)
+rank_ar1 <- ranks(teams, mod = model_ar1, n_rounds, data = dat)
+rank_mat <- ranks(teams, mod = model_mat, n_rounds, data = dat)
 
 rank_all <- cbind(rank_rw1$rank[ , "Rank by performance"],
                   rank_ar1$rank[ , "Rank by performance"],
@@ -293,76 +223,28 @@ rank_all <- cbind(rank_rw1$rank[ , "Rank by performance"],
 colnames(rank_all) <- c("Rank RW1", "Rank AR1", "Rank Matern",
                         "Real rank", "Points")
 print(rank_all, quote = FALSE)
-
-plot_teams <- function(model, teams, index_order, n_rounds, type) {
-    teams <- factor(teams)
-    orderedteams <- factor(teams, levels(teams)[index_order])
-    teams_0.025 <- sapply(
-        teams,
-        function(i) mean(model$summary.random$round_home$
-                         `0.025quant`[inla.idx(
-                             1:n_rounds,
-                             replicate = which(teams == i),
-                             nrep = length(teams))]))
-    teams_0.5 <- sapply(
-        teams,
-        function(i) mean(model$summary.random$round_home$
-                         `0.5quant`[inla.idx(
-                             1:n_rounds,
-                             replicate = which(teams == i),
-                             nrep = length(teams))]))
-    teams_0.975 <- sapply(
-        teams,
-        function(i) mean(model$summary.random$round_home$
-                         `0.975quant`[inla.idx(
-                             1:n_rounds,
-                             replicate = which(teams == i),
-                             nrep = length(teams))]))
-    if (type == 1) {
-        plot(orderedteams[index_order], teams_0.5[index_order],
-             las = 2, xlab = NULL, ylab = "Performance",
-             ylim = c(-.8, 1), main = "Team performance")
-        points(orderedteams[index_order],
-               teams_0.025[index_order], pch = 2, cex = .75)
-        points(orderedteams[index_order],
-               teams_0.975[index_order], pch = 6, cex = .75)
-    } else {
-        df <- data.frame(variable = teams[index_order],
-                         color = seq(n_teams),
-                         median = teams_0.5[index_order],
-                         start = teams_0.025[index_order],
-                         end = teams_0.975[index_order])
-        ggplot(df, aes(ymin = start, ymax = end, x = variable)) +
-            geom_linerange(aes(color = color),
-                           position = position_dodge(width = .2),
-                           size = 3,
-                           show.legend = FALSE) +
-            coord_flip() +
-            geom_point(mapping = aes(x = variable, y = median)) +
-            labs(x = NULL, y = "Posterior") +
-            scale_color_viridis() +
-            theme_minimal()
-    }
-}
 ```
 
-```{r, fig.width=10, fig.height=4.75}
+```{r fig3, fig.width=10, fig.height=4.75, fig.cap="Figure 3: A) rw1; B) ar1; C) Matern."}
 par(mar = c(7, 4, 2, 1) + .1, mfrow = c(1, 3))
 
-plot_teams(model_rw1, teams, index_order, n_rounds, type = 1)
-plot_teams(model_ar1, teams, index_order, n_rounds, type = 1)
-plot_teams(model_mat, teams, index_order, n_rounds, type = 1)
+plot_teams(model_rw1, teams, rank_rw1$index_order, n_rounds, type = 1)
+plot_teams(model_ar1, teams, rank_ar1$index_order, n_rounds, type = 1)
+plot_teams(model_mat, teams, rank_mat$index_order, n_rounds, type = 1)
 ```
 
-```{r, fig.width=10, fig.height=5.75}
-teams_rw1 <- plot_teams(model_rw1, teams, index_order, n_rounds, type = 2)
-teams_ar1 <- plot_teams(model_ar1, teams, index_order, n_rounds, type = 2)
-teams_mat <- plot_teams(model_mat, teams, index_order, n_rounds, type = 2)
+```{r fig4, fig.width=10, fig.height=5.75, fig.cap="Figure 4: A) rw1; B) ar1; C) Matern."}
+teams_rw1 <- plot_teams(model_rw1, teams, rank_rw1$index_order,
+                        n_rounds, type = 2)
+teams_ar1 <- plot_teams(model_ar1, teams, rank_ar1$index_order,
+                        n_rounds, type = 2)
+teams_mat <- plot_teams(model_mat, teams, rank_mat$index_order,
+                        n_rounds, type = 2)
 
 teams_all <- teams_rw1 | teams_ar1 | teams_mat
 teams_all +
     plot_annotation(title = "Premier League team performances",
-                    tag_levels = "A")
+                    tag_levels = "A", tag_suffix = ")")
 ```
 
 Comparison amongst the models obtained are performed using the most used
@@ -378,10 +260,6 @@ concerning the data, while the last two represent a natural counterpart
 of classical comparison criteria such as AIC and BIC.
 
 ```{r}
-criteria_eval <- function(mod) {
-    stopifnot(class(mod) == 'inla')
-    return(c(-sum(log(mod$cpo$cpo)), mod$dic$dic, mod$waic$waic))
-}
 model_obj <- list(model_rw1, model_ar1, model_mat)
 
 inla_table <- sapply(model_obj, criteria_eval)
@@ -390,19 +268,10 @@ colnames(inla_table) <- c("RW1", "AR1", "Matern")
 inla_table
 ```
 
-> Best model: RW1
+> The RW1 model has better measures, however, it has one less parameter.
+> In the end, the models are basically equal.
 
-```{r, fig.height=3}
-pit_plot <- function(mod, name){
-    stopifnot(class(mod) == 'inla')
-    if (name == 'Poisson') pit <- mod$cpo$pit - .5*mod$cpo$cpo
-    else pit <- mod$cpo$pit
-    ggplot() +
-        geom_histogram(aes(x = pit, y = ..density..), bins = 20,
-                       color = "black", fill = "white") +
-        labs(x = "PIT values", y = "Density") +
-        theme_minimal()
-}
+```{r fig5, fig.height=3, fig.cap="Figure 5: A) rw1; B) ar1; C) Matern."}
 pit_rw1 <- pit_plot(model_rw1, name = "Poisson")
 pit_ar1 <- pit_plot(model_ar1, name = "Poisson")
 pit_mat <- pit_plot(model_mat, name = "Poisson")
@@ -410,94 +279,12 @@ pit_mat <- pit_plot(model_mat, name = "Poisson")
 pit_all <- pit_rw1 | pit_ar1 | pit_mat
 pit_all +
     plot_annotation(title = "PITs histograms",
-                    tag_levels = "A")
+                    tag_levels = "A", tag_suffix = ")")
 ```
 
 ## Simulation
 
 ```{r}
-table_producer <- function(teams, mod, N, data) {
-    n_teams <- length(teams)
-    out <- matrix(0, nrow = n_teams, ncol = n_teams)
-    rownames(out) <- teams
-    colnames(out) <- seq(n_teams)
-    SAMPLE <- inla.posterior.sample(n = N, mod)
-    for (i in seq(N)) {
-        sample <- SAMPLE[[i]]$latent[seq(nrow(data) * 2)]
-        lambda <- exp(sample)
-        goals <- rpois(length(lambda), lambda = lambda)
-        new_season <- data.frame("home" = dat$home, "away" = dat$away,
-                                 "x" = goals[2 * seq(nrow(data)) - 1],
-                                 "y" = goals[2 * seq(nrow(data))])
-        homescore <-
-            (new_season$x > new_season$y) * 3 +
-            (new_season$x == new_season$y)
-        awayscore <-
-            (new_season$x < new_season$y) * 3 +
-            (new_season$x == new_season$y)
-        homescore <- aggregate(homescore, by = list(new_season$home),
-                               FUN = sum)
-        awayscore <- aggregate(awayscore, by = list(new_season$away),
-                               FUN = sum)
-        num_points = homescore$x + awayscore$x
-        rankorder = rank(-num_points, ties.method = "random")
-        for (j in seq(n_teams)) {
-            out[j, rankorder[j]] <- out[j, rankorder[j]] + 1
-        }
-  }
-    return(out)
-}
-table_plot <- function(out, colindex){
-    out %>%
-        mutate(
-            "Team" = row.names(.),
-            "1" = cell_spec(out[ , 1], "html",
-                            color = ifelse(colindex[ , 1], "red", "blue")),
-            "2" = cell_spec(out[ , 2], "html",
-                            color = ifelse(colindex[ , 2], "red", "blue")),
-            "3" = cell_spec(out[ , 3], "html",
-                            color = ifelse(colindex[ , 3], "red", "blue")),
-            "4" = cell_spec(out[ , 4], "html",
-                            color = ifelse(colindex[ , 4], "red", "blue")),
-            "5" = cell_spec(out[ , 5], "html",
-                            color = ifelse(colindex[ , 5], "red", "blue")),
-            "6" = cell_spec(out[ , 6], "html",
-                            color = ifelse(colindex[ , 6], "red", "blue")),
-            "7" = cell_spec(out[ , 7], "html",
-                            color = ifelse(colindex[ , 7], "red", "blue")),
-            "8" = cell_spec(out[ , 8], "html",
-                            color = ifelse(colindex[ , 8], "red", "blue")),
-            "9" = cell_spec(out[ , 9], "html",
-                            color = ifelse(colindex[ , 9], "red", "blue")),
-            "10" = cell_spec(out[ , 10], "html",
-                             color = ifelse(colindex[ , 10], "red", "blue")),
-            "11" = cell_spec(out[ , 11], "html",
-                             color = ifelse(colindex[ , 11], "red", "blue")),
-            "12" = cell_spec(out[ , 12], "html",
-                             color = ifelse(colindex[ , 12], "red", "blue")),
-            "13" = cell_spec(out[ , 13], "html",
-                             color = ifelse(colindex[ , 13], "red", "blue")),
-            "14" = cell_spec(out[ , 14], "html",
-                             color = ifelse(colindex[ , 14], "red", "blue")),
-            "15" = cell_spec(out[ , 15], "html",
-                             color = ifelse(colindex[ , 15], "red", "blue")),
-            "16" = cell_spec(out[ , 16], "html",
-                             color = ifelse(colindex[ , 16], "red", "blue")),
-            "17" = cell_spec(out[ , 17], "html",
-                             color = ifelse(colindex[ , 17], "red", "blue")),
-            "18" = cell_spec(out[ , 18], "html",
-                             color = ifelse(colindex[ , 18], "red", "blue")),
-            "19" = cell_spec(out[ , 19], "html",
-                             color = ifelse(colindex[ , 19], "red", "blue")),
-            "20" = cell_spec(out[ , 20], "html",
-                             color = ifelse(colindex[ , 20], "red", "blue"))
-        ) %>%
-        select("Team", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-               "11", "12", "13", "14", "15",
-               "16", "17", "18", "19", "20") %>%
-        kable(format = "html", escape = FALSE) %>%
-        kable_styling("striped", full_width = FALSE)
-}
 N = 1e4
 tic()
 model_rw1.sim <- table_producer(teams, mod = model_rw1, N, data = dat)
@@ -510,17 +297,19 @@ model_rw1.sim <- data.frame(model_rw1.sim)
 table_plot(model_rw1.sim, colindex)
 ```
 
-These table can answer one curious question. Is ManchesterCity truly
-better than Liverpool in the 2018-2019 season, given the difference of
-points is just 1? This question is interesting because the Manchester
-City retained the league title on the final day of the season, finishing
-on 98 points. At the same time, Liverpool finished runners-up with 97
-points – the highest total in English top-flight history for a
-second-place team.
+> This table can answer one curious question.
 
-The answer to this question is yes, according to our model. We can see
-that the ManchesterCity won much more first place than Liverpool in our
-simulated seasons.
+> Is `ManchesterCity` truly better than `Liverpool` in the 2018-2019
+> season, given the difference of points is just 1?
 
-We also notice that Tottenham Hotspur may be a better team compared to
-Chelsea based on our model, even though it lost by one point to Chelsea.
+> This question is interesting because the `Manchester City` retained
+> the league title on the final day of the season, finishing on 98
+> points. At the same time, `Liverpool` finished runners-up with 97
+> points – the highest total in English top-flight history for a
+> second-place team.
+
+> The answer to this question is `yes`, according to our model. We can
+> see that the `ManchesterCity` won much more first place than
+> `Liverpool` in our simulated seasons. We also notice that `Tottenham
+> Hotspur` may be a better team compared to `Chelsea` based on our
+> model, even though it lost by one point to `Chelsea`.
