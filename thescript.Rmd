@@ -31,7 +31,7 @@ opts_chunk$set(fig.path = "iBagens/",
 
 # How?
 
-INLA.
+[INLA](http://www.r-inla.org/).
 
 # Show me!
 
@@ -46,11 +46,12 @@ Data from
 pacman::p_load("tidyverse", "DT", "INLA", "viridis", "patchwork",
                "tictoc", "kableExtra", "scales")
 
-dat = read.table("~/Desktop/henrique/PremierLeague-2018-19.txt",
-                 col.names = c("round", "home", "away", "x", "y"))
+dat <- read.table("~/Desktop/henrique/PremierLeague-2018-19.txt",
+                  col.names = c("round", "home", "away", "x", "y"))
 
-teams = as.character(sort(unique(dat$home)))
-n_teams = length(teams) ; n_matches = nrow(dat) ; n_rounds = max(dat$round)
+teams <- as.character(sort(unique(dat$home)))
+n_teams <- length(teams)
+n_matches <- nrow(dat) ; n_rounds <- max(dat$round)
 
 n_table <- matrix(c(n_teams, n_matches, n_rounds))
 dimnames(n_table) <- list(c("Teams", "Matches", "Round"), "Number")
@@ -86,6 +87,8 @@ datatable(dat_model, options = list(pageLength = 6),
 ```
 
 ## Models
+
+> A Poisson mixed model with
 
 \[
  \begin{align}
@@ -135,19 +138,18 @@ homeperformance <- function(teams, ploteam, n_rounds, mod) {
                                           nrep = length(teams)
                                           )]))
     f_upper$type <- rep("upper", n_rounds)
-    dat_plot <- cbind(seq(n_rounds), f_mean, f_lower, f_upper)
-    names(dat_plot)[1] <- "round"
+    dat_plot <- rbind(f_mean, f_lower, f_upper)
+    dat_plot$round <- rep(seq(n_rounds), 3)
     dat_plot <- dat_plot %>%
-        gather(key = "team", value = "value", -round, -type)
-
-    dat_plot <- as.tibble(dat_plot, .name_repair = "minimal") %>%
-        pivot_longer(-round)
-    ggplot(dat_plot, aes(x = round, y = value)) +
-        geom_line(aes(color = team), size = 1) +
-        ylim(c(.17, .735)) +
+        gather(key = "team", value = "value", - round, - type)
+    dat_plot <- spread(dat_plot, type, value)
+    dat_plot$team <- factor(dat_plot$team, levels = ploteam)
+    ggplot(dat_plot, aes(x = round, group = team)) +
+        geom_line(aes(y = mean, color = team), size = 1.5) +
+        geom_ribbon(aes(ymin = lower, ymax = upper, fill = team),
+                    alpha = .15) +
         labs(x = "rounds", y = "Posterior mean") +
-        scale_color_viridis(discrete = TRUE,
-                            breaks = ploteam, name = NULL) +
+        scale_color_viridis(discrete = TRUE) +
         theme_minimal()
 }
 ```
@@ -214,16 +216,15 @@ model_mat <- inla(formula_mat, data = dat_model,
 
 ```{r, fig.width=10}
 plot.re_rw1 <- homeperformance(teams, ploteam = top5, n_rounds,
-                               model = model_rw1)
+                               mod = model_rw1)
 
 plot.re_ar1 <- homeperformance(teams, ploteam = top5, n_rounds,
-                               model = model_ar1)
+                               mod = model_ar1)
 
 plot.re_mat <- homeperformance(teams, ploteam = top5, n_rounds,
-                                  model = model_mat)
+                               mod = model_mat)
 
-plot.re_all <- plot.re_rw1 | plot.re_ar1 | plot.re_matern
-
+plot.re_all <- plot.re_rw1 | plot.re_ar1 | plot.re_mat
 plot.re_all +
     plot_layout(guides = "collect") +
     plot_annotation(title = "Premier League Top5 Performance",
