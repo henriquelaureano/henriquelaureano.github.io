@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-06 19:02:16</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-07 13:45:29</h4>
 
 </div>
 
@@ -4125,15 +4125,13 @@ datatable(df,
 </div>
 <div id="optimization" class="section level1">
 <h1>optimization</h1>
-<p>What we have here is an augmented likelihood (multinomial likelihood times a multivariate normal for the random effects), so the first step is to integrate out these random effects.</p>
+<p>What we have here is an augmented likelihood (multinomial likelihood times a multivariate normal for the random effects), so the first step is to integrate out these random effects - together, <span class="math inline">\(u\)</span>’s and <span class="math inline">\(\eta\)</span>’s.</p>
 <p>We know since we simulate it, that these random effects are from a distribution with mean zero. Therefore, we can use a Newton-Raphson algorithm. This is what we do next.</p>
 <p>The Newton-Raphson algorithm has the following scheme <span class="math display">\[
- \bm{\alpha}_{l+1} =
- \bm{\alpha}_{l} -
- \bm{Q}^{''} (\bm{\alpha}_{l})^{-1} \bm{Q}^{'} (\bm{\alpha}_{l})
-\]</span> until convergence.</p>
-<p>With <span class="math inline">\(\bm{Q}\)</span> being the augmented log-likelihood.</p>
-<p>To speed up the convergence and numerical stability, I computed by hand the derivatives of <span class="math inline">\(\bm{Q}\)</span> wrt the random effects <span class="math inline">\(\bm{\alpha}_{k}\)</span></p>
+ \bm{r}_{n+1} =
+ \bm{r}_{n} - \bm{l}^{''} (\bm{r}_{n})^{-1} \bm{l}^{'} (\bm{r}_{n}),
+\]</span> until convergence and with <span class="math inline">\(\bm{l}\)</span> being the augmented log-likelihood.</p>
+<p>To speed up the convergence and numerical stability, I computed by hand the derivatives of <span class="math inline">\(\bm{l}\)</span> wrt <span class="math inline">\(\bm{r}\)</span></p>
 <p><span class="math display">\[ \bm{Q}^{'} (\alpha_{ki}) =
    y_{kij} \frac{1 + \sum_{m \neq k}^{K-1}
                      \exp\{\bm{x}_{mij} \bm{\beta}_{mj} + \alpha_{mi}\}
