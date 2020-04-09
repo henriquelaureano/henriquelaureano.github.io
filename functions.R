@@ -115,7 +115,7 @@ failuretimes <- function(Xgama, e, delta) {
 ## return:
 ## -- list with two slots,
 ##    $prec: precision matrix of the transformed parameters;
-##    $logprecdet: log-determinant of '$prec'.
+##    $logdetprec: log-determinant of '$prec'.
 
 preccomp <- function(theta) {
     precdiag <- str_subset(names(theta), "^d\\d")
@@ -131,28 +131,32 @@ preccomp <- function(theta) {
     }
     lowertri <- lower.tri(prec, diag = TRUE)
     prec[lowertri] <- t(prec)[lowertri]
-    logprecdet <- log(det(chol(prec))^2)
-    return(list(prec = prec, logprecdet = logprecdet))
+    logdetprec <- log(det(chol(prec))^2)
+    return(list(prec = prec, logdetprec = logdetprec))
 }
 
 ## =====================================================================
-## augloglik: old 'integrating': augmented log-likelihood
+## augloglik: augmented log-likelihood
 ## args:
-## -- alpha: named vector, random effects;
-## -- beta: named vector;
-## -- det_sigma: log-determinant of the variance-covariance matrix;
-## -- inv_sigma: precision matrix;
-## -- preds: list of linear predictors, they can be of different sizes;
-## -- data: data.frame, it needs the response vectors and covariates.
+## -- r: vector of random effects to be integrated out;
+## -- preds: list of linear predictors, it can be of different sizes;
+## -- beta: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
+## -- data: data.frame, the output of 'datasetup';
+## -- prec: precision matrix, output of 'preccomp';
+## -- logdetprec: log-determinant of the precision matrix, also output
+##                of 'preccomp'.
 ## return:
-## -- value, augmented likelihood evaluation.
+## -- value, augmented log-likelihood evaluation.
 
-augloglik <- function(r, preds, coef, data, u, detprec, prec) {
-    y <- as.matrix(data[ , paste0("y", seq(length(preds) + 1))])
-    Xbeta <- Xcoef(preds, coef, data)
+augloglik <- function(r, preds, beta, data, prec, logdetprec) {
+    npreds <- length(preds)
+    y <- as.matrix(data[ , paste0("y", seq(npreds + 1))])
+    Xbeta <- Xcoef(preds, beta, data)
+    u <- data[ , paste0("u", seq(npreds))]
     ps <- risklevel(Xbeta, u)
     out <- sum(dmultinomial(y, size = 1, prob = ps, log = TRUE)) -
-        2 * log(2 * pi) + .5 * detprec - .5 * r %*% prec %*% r
+        2 * log(2 * pi) + .5 * logdetprec - .5 * r %*% prec %*% r
     return(out)
 }
 

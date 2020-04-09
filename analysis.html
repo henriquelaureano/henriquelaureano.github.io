@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-09 11:41:52</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-09 15:56:47</h4>
 
 </div>
 
@@ -4174,7 +4174,12 @@ datatable(df,
     &quot;offd12&quot; = -0.3, &quot;offd13&quot; = -0.5, &quot;offd14&quot; = -0.3,
     &quot;offd23&quot; = -0.3, &quot;offd24&quot; = -0.2, &quot;offd34&quot; = -0.3)
 
-PREC &lt;- preccomp(theta)</code></pre>
+PREC &lt;- preccomp(theta)
+
+augloglik(r = numeric(4),
+          preds, coefs['beta'], data = df, PREC$prec, PREC$logdetprec)</code></pre>
+<pre><code>          [,1]
+[1,] -29.87651</code></pre>
 <pre class="r"><code>newton_raphson(initial = alpha, preds = preds,
                beta = theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)],
                ys = bigdata[bigdata$i == 1, c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;)],
