@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-07 13:45:29</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-09 11:41:52</h4>
 
 </div>
 
@@ -4162,14 +4162,20 @@ datatable(df,
     \right)^{2}.
    \end{cases}
 \]</span></p>
-<pre class="r"><code>theta &lt;- c(.85, 1.25, .25, log(.2), log(.4))
-names(theta) &lt;- c(&quot;b01&quot;, &quot;b02&quot;, &quot;rho&quot;, &quot;var1&quot;, &quot;var2&quot;)
+<pre class="r"><code>theta &lt;- c(
+    ## risk level fixed-effects parameters -----------------------------
+    &quot;b01&quot; = -1.9, &quot;b02&quot; = -0.2,
+    ## time trajectory fixed-effects parameters ------------------------
+    &quot;g01&quot; =  1.0, &quot;g02&quot; =  1.2,
+    ## precision matrix parameters -------------------------------------
+    ## diagonal elements
+    &quot;d1&quot; = log(1), &quot;d2&quot; = log(1), &quot;d3&quot; = log(1), &quot;d4&quot; = log(1),
+    ## off-diagonal elements
+    &quot;offd12&quot; = -0.3, &quot;offd13&quot; = -0.5, &quot;offd14&quot; = -0.3,
+    &quot;offd23&quot; = -0.3, &quot;offd24&quot; = -0.2, &quot;offd34&quot; = -0.3)
 
-alpha &lt;- numeric(2)
-
-myvcov &lt;- vcov2(theta)
-
-newton_raphson(initial = alpha, preds = preds,
+PREC &lt;- preccomp(theta)</code></pre>
+<pre class="r"><code>newton_raphson(initial = alpha, preds = preds,
                beta = theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)],
                ys = bigdata[bigdata$i == 1, c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;)],
                det_sigma = myvcov$logdet, inv_sigma = myvcov$inv)

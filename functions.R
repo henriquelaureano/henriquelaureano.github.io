@@ -2,7 +2,7 @@
 ## Multinomial GLMM functions ==========================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-6
+## date: 2020-4-9
 ## =====================================================================
 
 ## =====================================================================
@@ -106,7 +106,37 @@ failuretimes <- function(Xgama, e, delta) {
 }
 
 ## =====================================================================
-## integrating: augmented likelihood
+## preccomp: precision matrix and respective log-determinant -
+##           transformations are applied to its parameters
+## args:
+## -- theta: named vector, diagonal elements should start with 'd' and
+##           off-diagonal elements should start with 'offd' followed by
+##           its corresponding position number.
+## return:
+## -- list with two slots,
+##    $prec: precision matrix of the transformed parameters;
+##    $logprecdet: log-determinant of '$prec'.
+
+preccomp <- function(theta) {
+    precdiag <- str_subset(names(theta), "^d\\d")
+    precdim <- length(precdiag)
+    prec <- matrix(NA, nrow = precdim, ncol = precdim)
+    diag(prec) <- exp(theta[precdiag])
+    for (i in seq(precdim - 1)) {
+        for (j in seq(i + 1, precdim)) {
+            ijth <- str_subset(names(theta), paste0("offd", i, j))
+            precij <- exp(theta[ijth])
+            prec[i, j] <- 2 * precij/(1 + precij) - 1
+        }
+    }
+    lowertri <- lower.tri(prec, diag = TRUE)
+    prec[lowertri] <- t(prec)[lowertri]
+    logprecdet <- log(det(chol(prec))^2)
+    return(list(prec = prec, logprecdet = logprecdet))
+}
+
+## =====================================================================
+## augloglik: old 'integrating': augmented log-likelihood
 ## args:
 ## -- alpha: named vector, random effects;
 ## -- beta: named vector;
@@ -117,20 +147,12 @@ failuretimes <- function(Xgama, e, delta) {
 ## return:
 ## -- value, augmented likelihood evaluation.
 
-integrating <- function(alpha, beta, det_sigma, inv_sigma, preds, data) {
-    ind_pred <- seq(preds) ; n_pred <- length(preds) ; k <- n_pred + 1
-    beta <- split(beta, substr(names(beta), start = 3, stop = 3))
-    list_X <- lapply(preds, model.matrix, data = data)
-    exp_xb <- sapply(
-        seq(list_X),
-        function(i) exp(list_X[[i]] %*% beta[[i]] + alpha[i]))
-    link_denominator <- 1 + rowSums(exp_xb)
-    ps <- sapply(ind_pred, function(i) exp_xb[ , i]/link_denominator)
-    ps <- cbind(ps, 1 - rowSums(ps)) ; colnames(ps) <- paste0("p", seq(k))
-    y <- as.matrix(data[ , paste0("y", seq(k))]) ; n <- nrow(y)
+augloglik <- function(r, preds, coef, data, u, detprec, prec) {
+    y <- as.matrix(data[ , paste0("y", seq(length(preds) + 1))])
+    Xbeta <- Xcoef(preds, coef, data)
+    ps <- risklevel(Xbeta, u)
     out <- sum(dmultinomial(y, size = 1, prob = ps, log = TRUE)) -
-        (n/2) * log(2 * pi) -
-        .5 * det_sigma - .5 * alpha %*% inv_sigma %*% alpha
+        2 * log(2 * pi) + .5 * detprec - .5 * r %*% prec %*% r
     return(out)
 }
 
@@ -251,30 +273,6 @@ laplace <- function(initial, preds, ys, beta, det_sigma, inv_sigma) {
 ## =====================================================================
 ## laplaceC: compiled body expression version of laplace
 laplaceC <- cmpfun(laplace)
-
-## =====================================================================
-## vcov2: log-determinant of the variance-covariance matrix; and a
-##        precision matrix
-## args:
-## -- theta: named vector, variance-covariance parameters.
-## return:
-## -- list with two slots,
-##    ["inv"] sigma inverse, i.e., precision matrix;
-##    ["logdet"] log-determinant of the variance-covariance matrix.
-
-vcov2 <- function(theta) {
-    rho <- 2 * exp(theta["rho"])/(1 + exp(theta["rho"])) - 1
-    var1 <- exp(theta["var1"]) ; var2 <- exp(theta["var2"])
-    c1 <- 1 - rho^2
-    off_diag <- -rho/(sqrt(var1) * sqrt(var2) * c1)
-    inv_sigma <- matrix(c(1/(var1 * c1), rep(off_diag, 2),
-                          1/(var2 * c1)), 2, 2)
-    det_sigma <- log(var1 * var2 * c1)[[1]]
-    out <- vector("list", 2) ; names(out) <- c("inv", "logdet")
-    out["inv"][[1]] <- inv_sigma
-    out["logdet"][[1]] <- det_sigma
-    return(out)
-}
 
 ## =====================================================================
 ## multi_mixed: marginal likelihood
