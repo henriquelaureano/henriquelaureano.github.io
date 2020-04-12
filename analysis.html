@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-09 15:56:47</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-11 21:40:54</h4>
 
 </div>
 
@@ -4003,15 +4003,15 @@ div.tocify {
 <div id="math" class="section level1">
 <h1>math</h1>
 <p>For a subject <span class="math inline">\(i\)</span>, with cluster <span class="math inline">\(j\)</span>, in the time <span class="math inline">\(t\)</span>, we have <span class="math display">\[
- y_{i j t} \mid u_{1i}, u_{2i}, \eta_{1i}, \eta_{2i} \sim
+ y_{i j t} \mid u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j} \sim
  \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt}),
 \]</span> <span class="math display">\[
  \begin{align}
   \text{with} \quad
-  \bm{r} = \begin{bmatrix}    u_{1i}\\
-                              u_{2i}\\
-                           \eta_{1i}\\
-                           \eta_{2i} \end{bmatrix} &amp;\sim
+  \bm{r} = \begin{bmatrix}    u_{1j}\\
+                              u_{2j}\\
+                           \eta_{1j}\\
+                           \eta_{2j} \end{bmatrix} &amp;\sim
   \mathcal{N} \left[\begin{bmatrix} 0\\
                                     0\\
                                     0\\
@@ -4027,28 +4027,28 @@ div.tocify {
                   \varrho_{\eta_{1}, \eta_{2}}\\
              &amp; &amp; &amp; \sigma_{\eta_{2}}^{2} \end{bmatrix}\right],\\
   \text{and} \quad
-  p_{kijt} &amp;= \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{kj} + u_{ki}\}}{
+  p_{kijt} &amp;= \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
                   1 + \sum_{m=1}^{K-1}
-                      \exp\{\bm{x}_{mij} \bm{\beta}_{mj} + u_{mi}\}}
+                      \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}
              w_{k}\frac{\delta}{2\delta t - 2t^{2}}
              \phi[w_{k}
                  \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-                 - \bm{x}_{kij}\bm{\gamma}_{kj} - \eta_{ki}].
+                 - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}].
  \end{align}
 \]</span></p>
 <p>The likelihood for a random sample, and <span class="math inline">\(\bm{\theta} = [\bm{\beta}, \bm{\gamma}, \bm{w},  \bm{\sigma^{2}}, \bm{\varrho}]^{\top}\)</span>, is given by <span class="math display">\[
  L(\bm{\theta}; y) =
- \prod_{i=1}^{N} \int_{\Re^{4}} \prod_{j=1}^{n_{i}} \prod_{t=1}^{n_{ij}}
+ \prod_{j=1}^{J} \int_{\Re^{4}} \prod_{i=1}^{n_{j}} \prod_{t=1}^{n_{ij}}
  \Bigg[\binom{n_{ijt}}{y_{1ijt}, y_{2ijt}, y_{3ijt}}
        \prod_{k=1}^{K} p_{kijt}^{y_{kijt}}
  \Bigg]
  (2\pi)^{-2} |Q|^{1/2} \exp\left\{-\frac{1}{2}
-                                   \bm{r}_{i}^{\top} Q \bm{r}_{i}
-                           \right\}\text{d}\bm{r}_{i}.
+                                   \bm{r}_{j}^{\top} Q \bm{r}_{j}
+                           \right\}\text{d}\bm{r}_{j}.
 \]</span> i.e., <span class="math display">\[
- L(\bm{\theta}; y_{i}) =
- \int_{\Re^{4}} \pi(y_{i} \mid \bm{r}_{i})~\pi(\bm{r}_{i})
-                                          ~\text{d}\bm{r}_{i}.
+ L(\bm{\theta}; y_{j}) =
+ \int_{\Re^{4}} \pi(y_{j} \mid \bm{r}_{j})~\pi(\bm{r}_{j})
+                                          ~\text{d}\bm{r}_{j}.
 \]</span></p>
 </div>
 <div id="functions" class="section level1">
@@ -4132,35 +4132,39 @@ datatable(df,
  \bm{r}_{n} - \bm{l}^{''} (\bm{r}_{n})^{-1} \bm{l}^{'} (\bm{r}_{n}),
 \]</span> until convergence and with <span class="math inline">\(\bm{l}\)</span> being the augmented log-likelihood.</p>
 <p>To speed up the convergence and numerical stability, I computed by hand the derivatives of <span class="math inline">\(\bm{l}\)</span> wrt <span class="math inline">\(\bm{r}\)</span></p>
-<p><span class="math display">\[ \bm{Q}^{'} (\alpha_{ki}) =
-   y_{kij} \frac{1 + \sum_{m \neq k}^{K-1}
-                     \exp\{\bm{x}_{mij} \bm{\beta}_{mj} + \alpha_{mi}\}
-                }{1 + \sum_{n = 1}^{K-1}
-                      \exp\{\bm{x}_{nij} \bm{\beta}_{nj} + \alpha_{ni}\}}
-   - \left( \sum_{m \neq k}^{K-1} y_{mij} \right)
-     \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{kj} + \alpha_{ki}\}
-          }{1 + \sum_{n = 1}^{K-1}
-                \exp\{\bm{x}_{nij} \bm{\beta}_{nj} + \alpha_{ni}\}},
-\]</span></p>
-<p><span class="math display">\[ \bm{Q}^{''} =
-   \begin{cases}
-    \alpha_{ki}^2 : &amp;
-    - \left( \sum_{k = 1}^{K-1} y_{kij} \right)
-    \exp\{\bm{x}_{kij} \bm{\beta}_{kj} + \alpha_{ki}\}
-    \left( 1 + \sum_{m \neq k}^{K-1}
-               \exp\{\bm{x}_{mij} \bm{\beta}_{mj} + \alpha_{mi}\}
-    \right) \Big/
-    \left( 1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{nj} + \alpha_{ni}\}
-    \right)^{2},\\
-    \alpha_{ki} \alpha_{mi} : &amp;
-    \left( \sum_{k = 1}^{K-1} y_{kij} \right)
-    \exp\{\bm{x}_{kij} \bm{\beta}_{kj} + \alpha_{ki}\}
-          \exp\{\bm{x}_{mij} \bm{\beta}_{mj} + \alpha_{mi}\} \Big/
-    \left( 1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{nj} + \alpha_{ni}\}
-    \right)^{2}.
-   \end{cases}
+<p><span class="math display">\[
+\begin{aligned}
+ \bm{l}^{'} (u_{kj}) &amp;=
+ y_{kij} \frac{1 + \sum_{m \neq k}^{K-1}
+                   \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+              }{1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+               } -
+ \left( \sum_{m \neq k}^{K-1} y_{mij} \right)
+ \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+      }{1 + \sum_{n = 1}^{K-1}
+            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+       } - e_{k}^{\top} \bm{Qr},\\
+ \bm{l}^{'} (\eta_{kj}) &amp;=,\\
+ \bm{l}^{''} (u_{kj}) &amp;= -
+ \left( \sum_{k = 1}^{K-1} y_{kij} \right)
+ \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+ \left( 1 + \sum_{m \neq k}^{K-1}
+            \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+  \right) \Big/
+ \left( 1 + \sum_{n = 1}^{K-1}
+            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+ \right)^{2} - e_{k}^{\top} \bm{Q},\\
+ \bm{l}^{''} (\eta_{kj}) &amp;=,\\
+ \bm{l}^{''}(u_{kj} u_{mj}) &amp;=
+ \left( \sum_{k = 1}^{K-1} y_{kij} \right)
+ \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+ \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\} \Big/
+ \left( 1 + \sum_{n = 1}^{K-1}
+            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+ \right)^{2} - e_{k}^{\top} \bm{Q},\\
+ \bm{l}^{''}(\eta_{kj} \eta_{mj}) &amp;=
+\end{aligned}
 \]</span></p>
 <pre class="r"><code>theta &lt;- c(
     ## risk level fixed-effects parameters -----------------------------
@@ -4180,6 +4184,19 @@ augloglik(r = numeric(4),
           preds, coefs['beta'], data = df, PREC$prec, PREC$logdetprec)</code></pre>
 <pre><code>          [,1]
 [1,] -29.87651</code></pre>
+<pre class="r"><code>gradHess(alpha = numeric(2), preds,
+         yj = df %&gt;% filter(j == 1) %&gt;% select(paste0(&quot;y&quot;, 1:3)),
+         beta = coefs['beta'],
+         prec = PREC$prec[1:2, 1:2])</code></pre>
+<pre><code>$change
+          [,1]
+[1,] 0.2438671
+[2,] 0.5946947
+
+$hessian
+           [,1]       [,2]
+[1,] -1.1404289  0.2121014
+[2,]  0.2121014 -1.4858740</code></pre>
 <pre class="r"><code>newton_raphson(initial = alpha, preds = preds,
                beta = theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)],
                ys = bigdata[bigdata$i == 1, c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;)],

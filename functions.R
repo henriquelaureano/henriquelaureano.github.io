@@ -2,7 +2,7 @@
 ## Multinomial GLMM functions ==========================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-9
+## date: 2020-4-11
 ## =====================================================================
 
 ## =====================================================================
@@ -75,9 +75,9 @@ Xcoef <- function(preds, coef, data) {
 
 risklevel <- function(Xbeta, u) {
     numerator <- exp(Xbeta + u)
-    denominator <- 1 + rowSums(numerator)
+    denominator <- 1 + Reduce("+", numerator)
     risklevel <- numerator/denominator
-    out <- cbind(risklevel, 1 - rowSums(risklevel))
+    out <- cbind(risklevel, 1 - Reduce("+", risklevel))
     colnames(out) <- paste0("p", seq(dim(Xbeta)[3] + 1))
     return(out)
 }
@@ -161,41 +161,42 @@ augloglik <- function(r, preds, beta, data, prec, logdetprec) {
 }
 
 ## =====================================================================
-## gradHess: gradient and hessian of the augmented likelihood
+## gradHess: gradient and hessian of the augmented log-likelihood
 ##           (integrating fn)
 ## args:
 ## -- alpha: vector, random effects;
 ## -- preds: list of linear predictors, they can be of different sizes;
-## -- ys: data.frame, it needs the response vectors and covariates;
+## -- yj: data.frame, it needs the response vectors and covariates;
 ## -- beta: named vector;
-## -- inv_sigma: precision matrix.
+## -- prec: precision matrix, output of 'preccomp'.
 ## return:
 ## -- list with two slots,
 ##    ["change"] gradient "divided" by the hessian;
 ##    ["hessian"] hessian.
 
-gradHess <- function(alpha, preds, ys, beta, inv_sigma) {
-    list_y <- as.list(ys[ , str_detect(names(ys), pattern = "^y\\d")])
-    list_X <- lapply(preds, model.matrix, data = ys)
-    beta <- split(beta, substr(names(beta), start = 3, stop = 3))
+gradHess <- function(alpha, preds, yj, beta, prec) {
+    X <- sapply(preds, model.matrix, yj, simplify = "array")
+    Xbeta <- Xcoef(preds, beta, yj)
+    risklevel_num <- exp(sweep(Xbeta, 3, alpha, '+'))
+    risklevel_denom <- 1 + rowSums(risklevel_num)
     n_alpha <- length(alpha)
-    exp_xb <- lapply(seq(n_alpha),
-                     function(i) exp(list_X[[i]] %*% beta[[i]] + alpha[i]))
-    denom <- 1 + Reduce("+", exp_xb)
     grad_multi <- sapply(
         seq(n_alpha),
-        function(i) sum((list_y[[i]] * (1 + Reduce("+", exp_xb[-i])) -
-                         Reduce("+", list_y[-i]) * exp_xb[[i]])/denom))
-    grad <- t(grad_multi - alpha %*% inv_sigma)
-    denom2 <- denom^2
-    hess_multi <- matrix(NA, nrow = length(alpha), ncol = length(alpha))
+        function(i) sum((yj[ , i] * (1 + risklevel_num[ , , -i]) -
+                         Reduce("+", yj[ , -i]) * risklevel_num[ , , i]
+        )/risklevel_denom))
+    grad <- t(grad_multi - alpha %*% prec)
+    risklevel_denom2 <- risklevel_denom^2
+    hess_multi <- matrix(NA, nrow = n_alpha, ncol = n_alpha)
     diag(hess_multi) <- sapply(
         seq(n_alpha),
-        function(i) sum(-Reduce("+", list_y) * exp_xb[[i]] *
-                        (1 + Reduce("+", exp_xb[-i]))/denom2))
-    offdiag <- sum(Reduce("+", list_y) * exp_xb[[1]] * exp_xb[[-1]]/denom2)
+        function(i) sum(-Reduce("+", yj) * risklevel_num[ , , i] *
+                        (1 + risklevel_num[ , , -i])/risklevel_denom2))
+    offdiag <- sum(
+        Reduce("+", yj) *
+        risklevel_num[ , , 1] * risklevel_num[ , , -1]/risklevel_denom2)
     hess_multi[is.na(hess_multi)] <- offdiag
-    hess <- hess_multi - inv_sigma
+    hess <- hess_multi - prec
     change <- solve(hess, grad)
     out <- vector("list", 2) ; names(out) <- c("change", "hessian")
     out["change"][[1]] <- change
