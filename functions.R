@@ -2,7 +2,7 @@
 ## Multinomial GLMM functions ==========================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-11
+## date: 2020-4-14
 ## =====================================================================
 
 ## =====================================================================
@@ -138,23 +138,37 @@ preccomp <- function(theta) {
 ## =====================================================================
 ## augloglik: augmented log-likelihood
 ## args:
-## -- r: vector of random effects to be integrated out;
+## -- r: named vector of random effects to be integrated out;
 ## -- preds: list of linear predictors, it can be of different sizes;
 ## -- beta: named vector where the last digit indicates from which
 ##          linear predictor the coef correspond;
+## -- gama: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
 ## -- data: data.frame, the output of 'datasetup';
+## -- v: vector of parameters with the same length that 'preds';
 ## -- prec: precision matrix, output of 'preccomp';
 ## -- logdetprec: log-determinant of the precision matrix, also output
 ##                of 'preccomp'.
 ## return:
 ## -- value, augmented log-likelihood evaluation.
 
-augloglik <- function(r, preds, beta, data, prec, logdetprec) {
+augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
     npreds <- length(preds)
-    y <- as.matrix(data[ , paste0("y", seq(npreds + 1))])
+    seqn <- seq(npreds)
     Xbeta <- Xcoef(preds, beta, data)
-    u <- data[ , paste0("u", seq(npreds))]
-    ps <- risklevel(Xbeta, u)
+    Xgama <- Xcoef(preds, gama, data)
+    rl <- exp(sweep(Xbeta, 3, r[paste0("u", seqn)], '+')) ## risk level
+    rld <- 1 + rowSums(rl) ## rl denominator
+    ratio <- sweep(rl, 1, rld, '/')
+    t <- data$t
+    delta <- max(t) + 1
+    plus <- w * atanh(2 * t/delta - 1)
+    minus <- sweep(-Xgama, 3, r[paste0("e", seqn)], '-')
+    math <- sweep(minus, 1, plus, '+')
+    outgrad <- w * delta/(2 * t * (delta - t))
+    ppreds <- sweep(ratio, 1, outgrad, '*') * dnorm(math)
+    ps <- cbind(matrix(ppreds, ncol = npreds), 1 - rowSums(ppreds))
+    y <- as.matrix(data %>% select(str_subset(names(data), "^y\\d")))
     out <- sum(dmultinomial(y, size = 1, prob = ps, log = TRUE)) -
         2 * log(2 * pi) + .5 * logdetprec - .5 * r %*% prec %*% r
     return(out)
@@ -162,7 +176,6 @@ augloglik <- function(r, preds, beta, data, prec, logdetprec) {
 
 ## =====================================================================
 ## gradHess: gradient and hessian of the augmented log-likelihood
-##           (integrating fn)
 ## args:
 ## -- alpha: vector, random effects;
 ## -- preds: list of linear predictors, they can be of different sizes;
@@ -174,18 +187,37 @@ augloglik <- function(r, preds, beta, data, prec, logdetprec) {
 ##    ["change"] gradient "divided" by the hessian;
 ##    ["hessian"] hessian.
 
-gradHess <- function(alpha, preds, yj, beta, prec) {
-    X <- sapply(preds, model.matrix, yj, simplify = "array")
-    Xbeta <- Xcoef(preds, beta, yj)
-    risklevel_num <- exp(sweep(Xbeta, 3, alpha, '+'))
-    risklevel_denom <- 1 + rowSums(risklevel_num)
-    n_alpha <- length(alpha)
-    grad_multi <- sapply(
-        seq(n_alpha),
-        function(i) sum((yj[ , i] * (1 + risklevel_num[ , , -i]) -
-                         Reduce("+", yj[ , -i]) * risklevel_num[ , , i]
-        )/risklevel_denom))
-    grad <- t(grad_multi - alpha %*% prec)
+gradHess <- function(r, preds, dfj, beta, prec, delta) {
+    X <- sapply(preds, model.matrix, dfj, simplify = "array")
+    Xbeta <- Xcoef(preds, beta, dfj)
+    sizes <- seq(length(preds))
+    core <- exp(sweep(Xbeta, 3, r[sizes], '+'))
+    coresum <- rowSums(core)
+    ## cd, common denominator
+    cd <- 1 + coresum
+    y <- dfj %>% select(str_subset(names(dfj), "^y"))
+    ## -----------------------------------------------------------------
+    d1u_p1 <- sapply(sizes,
+                     function(i) sum(
+                     (y[ , i] * (1 + core[ , , -i]) -
+                      Reduce("+", y[ , -i]) * core[ , , i])/cd ))
+    t <- dfj %>% select(t)
+    cereja <- unlist(
+        c(3, 2) * delta/(2 * t * (delta - t)) *
+        dnorm(unlist(c(3, 2) * atanh(2 * t/delta - 1) -
+                     rowSums(Xcoef(preds, coefs['gama'], dfj)) -
+                     r[sizes + max(sizes)] )))
+    cd2 <- 1 + coresum * (1 - cereja)
+    cdlong <- cd * cd2
+    d1u_p2 <- sapply(sizes,
+                     function(i) sum(y[ , max(sizes) + 1] * (
+                         core[ , , i] * cereja[-i] * core[ , , -i] -
+                         cereja * core[ , , i] * (1 + core[ , , -i]) )))
+    ## -----------------------------------------------------------------
+    d1u_p3 <- d1u_p2/cdlong
+    d1u <- d1u_p1 + d1u_p3 - r[sizes] %*% prec
+    ## =================================================================
+    ## now, d1e --------------------------------------------------------
     risklevel_denom2 <- risklevel_denom^2
     hess_multi <- matrix(NA, nrow = n_alpha, ncol = n_alpha)
     diag(hess_multi) <- sapply(
