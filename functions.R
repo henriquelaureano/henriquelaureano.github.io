@@ -1,8 +1,9 @@
 ## =====================================================================
-## Multinomial GLMM functions ==========================================
+## functions for the competing risks data analysis via a Multinomial
+## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-15
+## date: 2020-4-16
 ## =====================================================================
 
 ## =====================================================================
@@ -145,7 +146,7 @@ preccomp <- function(theta) {
 ## -- gama: named vector where the last digit indicates from which
 ##          linear predictor the coef correspond;
 ## -- data: data.frame, the output of 'datasetup';
-## -- v: vector of parameters with the same length that 'preds';
+## -- w: vector of parameters with the same length that 'preds';
 ## -- prec: precision matrix, output of 'preccomp';
 ## -- logdetprec: log-determinant of the precision matrix, also output
 ##                of 'preccomp'.
@@ -162,14 +163,17 @@ augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
     ratio <- sweep(rl, 1, rld, '/')
     t <- data$t
     delta <- max(t) + .1
-    ## -----------------------------------------------------------------
-    plus <- w * atanh(2 * t/delta - 1)
-    minus <- sweep(-Xgama, 3, r[paste0("e", seqk)], '-')
-    math <- sweep(minus, 1, plus, '+')
-    outgrad <- w * delta/(2 * t * (delta - t))
-    ppreds <- sweep(ratio, 1, outgrad, '*') * dnorm(math)
-    ps <- cbind(matrix(ppreds, ncol = npreds), 1 - rowSums(ppreds))
+    xge <- sweep(-Xgama, 3, r[paste0("e", seqk)], '-')
+    pk <- t(sapply(
+        seq(dim(ratio)[1]), ## number of subjects
+        function(i) { ## each column will be  a subject
+            ratio[i, , ] *
+                w * delta/(2 * t[i] * (delta - t[i])) *
+                dnorm(w * atanh(2 * t[i]/delta - 1) + xge[i, , ])
+        }))
+    ps <- cbind(pk, 1 - rowSums(pk))
     y <- as.matrix(data %>% select(str_subset(names(data), "^y\\d")))
+    ## -----------------------------------------------------------------
     out <- sum(dmultinomial(y, size = 1, prob = ps, log = TRUE)) -
         2 * log(2 * pi) + .5 * logdetprec - .5 * r %*% prec %*% r
     return(out)

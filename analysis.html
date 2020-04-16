@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-14 22:38:50</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-16 10:53:14</h4>
 
 </div>
 
@@ -4212,12 +4212,16 @@ datatable(df,
     &quot;offd23&quot; = -0.3, &quot;offd24&quot; = -0.2, &quot;offd34&quot; = -0.3)
 
 PREC &lt;- preccomp(theta)
-
+prec &lt;- PREC$prec
+logdetprec &lt;- PREC$logdetprec
+beta &lt;- coefs['beta']
+gama &lt;- coefs['gama']
+w &lt;- c(3, 2)
 r &lt;- c(&quot;u1&quot; = 0, &quot;u2&quot; = 0, &quot;e1&quot; = 0, &quot;e2&quot; = 0)
-augloglik(r, preds, coefs['beta'], coefs['gama'],
-          data = df, w = c(3, 2), PREC$prec, PREC$logdetprec)</code></pre>
+
+augloglik(r, preds, beta, gama, data = df, w, prec, logdetprec)</code></pre>
 <pre><code>          [,1]
-[1,] -124.1627</code></pre>
+[1,] -126.1595</code></pre>
 <pre class="r"><code>dfj &lt;- df %&gt;% filter(j == 1)
 ## gradHess(alpha = numeric(2), preds,
 ##          yj = df %&gt;% filter(j == 1) %&gt;% select(paste0(&quot;y&quot;, 1:3)),
