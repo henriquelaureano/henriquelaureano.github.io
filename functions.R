@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-16
+## date: 2020-4-17
 ## =====================================================================
 
 ## =====================================================================
@@ -203,6 +203,10 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     rlsum <- rowSums(rl) ## length? n
     cd <- 1 + rlsum ## cd, common denominator
     y <- as.matrix(dfj %>% select(str_subset(names(dfj), "^y\\d")))
+    t <- dfj$t
+    delta <- max(t) + .1
+    tt <- sweep(-Xgama, 3, r[paste0("e", seqk)], '-') ## trajectory time
+    ## =================================================================
     ## d1u part1, row: subjects
     ## ---------- col: random effects 'u' to be integrated out
     d1u_p1 <- sapply(seqk,
@@ -210,16 +214,18 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
                          ( y[ , i] * (1 + rl[ , , -i]) -
                            rowSums(y[ , -i]) * rl[ , , i]
                          )/cd })
-    t <- dfj$t
-    delta <- max(t) + .1
-    tt <- sweep(-Xgama, 3, r[paste0("e", seqk)], '-') ## trajectory time
+    ## recheio, row: random effects 'u' to be integrated out
+    ## -------- col: subjects
+    recheio <- sapply(
+        seqk,
+        function(i) { w * atanh(2 * t[i]/delta - 1) + tt[i, , ] })
     ## cereja, row: random effects 'u' to be integrated out
     ## ------- col: subjects
     cereja <- sapply(
         seqk,
         function(i) {
-            w * delta/(2 * t[i] * (delta - t[i])) *
-                dnorm(w * atanh(2 * t[i]/delta - 1) * tt[i, , ]) })
+            w * delta/(2 * t[i] * (delta - t[i])) * dnorm(recheio[ , i])
+        })
     ## cdlong, long common denominator. length? n
     cdlong <- sapply(seqk,
                      function(i) {
@@ -233,10 +239,30 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
                 rl[ , , i] * cereja[-i, ] * rl[ , , -i] -
                 cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) ) })
     d1u_p3 <- d1u_p2/cdlong ## it's right
-    d1u <- colSums(d1u_p1 + d1u_p3) - r[paste0("u", seqk)] %*% prec
+    d1u <- colSums(d1u_p1 + d1u_p3) - (prec %*% r)[seqk]
     ## =================================================================
-    ## now, d1e --------------------------------------------------------
-    risklevel_denom2 <- risklevel_denom^2
+    d1e_n <- sapply(seqk,
+                    function(i) {
+                        (rl/cd)[i, , ] *
+                            w * delta/(2 * t[i] * (delta - t[i])) *
+                            recheio[ , i] * dnorm(recheio[ , i])
+                    })
+    d1e_d <- sapply(seqk,
+                    function(i) {
+                        1 - sum((rl/cd)[i, , ] *
+                                w * delta/(2 * t[i] * (delta - t[i])) *
+                                dnorm(recheio[ , i]))
+                    })
+    d1e_p1 <- sapply(seqk,
+                     function(i) {
+                         sum(y[ , i] * recheio[i, ] -
+                             y[ , max(seqk) + 1] * d1e_n[i, ]/d1e_d)
+                     })
+    d1e <- d1e_p1 - (prec %*% r)[seqk + max(seqk)]
+    ## =================================================================
+    grad <- c(d1u, d1e)
+    ## =================================================================
+    ## now, the hessian ================================================
     hess_multi <- matrix(NA, nrow = n_alpha, ncol = n_alpha)
     diag(hess_multi) <- sapply(
         seq(n_alpha),

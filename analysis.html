@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-16 10:53:14</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-17 14:28:40</h4>
 
 </div>
 
@@ -4178,7 +4178,31 @@ datatable(df,
                - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])} \Bigg)\\
  &amp;- e_{k}^{\top} \bm{Qr},\\
  %% --------------------------------------------------------------------
- \bm{l}^{'} (\eta_{kj}) &amp;=,\\
+ \bm{l}^{'} (\eta_{kj}) &amp;=
+ y_{kij} (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+          - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})\\
+ &amp;- y_{Kij}
+    \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+               }{1 + \sum_{n = 1}^{K-1}
+                     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+     - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+         - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+        ]}{
+    1 - \sum_{n = 1}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+             }{1 + \sum_{n = 1}^{K-1}
+                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+              }
+        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}
+             ]}\\
+ &amp;- e_{k}^{\top} \bm{Qr}.\\
+ %% --------------------------------------------------------------------
  \bm{l}^{''} (u_{kj}) &amp;= -
  \left( \sum_{k = 1}^{K-1} y_{kij} \right)
  \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
@@ -4223,10 +4247,7 @@ augloglik(r, preds, beta, gama, data = df, w, prec, logdetprec)</code></pre>
 <pre><code>          [,1]
 [1,] -126.1595</code></pre>
 <pre class="r"><code>dfj &lt;- df %&gt;% filter(j == 1)
-## gradHess(alpha = numeric(2), preds,
-##          yj = df %&gt;% filter(j == 1) %&gt;% select(paste0(&quot;y&quot;, 1:3)),
-##          beta = coefs['beta'],
-##          prec = PREC$prec[1:2, 1:2])</code></pre>
+## gradHess(r, preds, beta, gama, dfj, w, prec)</code></pre>
 <pre class="r"><code>newton_raphson(initial = alpha, preds = preds,
                beta = theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)],
                ys = bigdata[bigdata$i == 1, c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;)],
