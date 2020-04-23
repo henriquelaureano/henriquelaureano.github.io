@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-17
+## date: 2020-4-23
 ## =====================================================================
 
 ## =====================================================================
@@ -196,6 +196,7 @@ augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
 
 gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     n <- nrow(dfj) ## number of subjects
+    nr <- length(r)
     seqk <- seq(length(preds)) ## half of the gradient output dimension
     Xbeta <- Xcoef(preds, beta, dfj)
     Xgama <- Xcoef(preds, gama, dfj)
@@ -209,61 +210,62 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     ## =================================================================
     ## d1u part1, row: subjects
     ## ---------- col: random effects 'u' to be integrated out
-    d1u_p1 <- sapply(seqk,
-                     function(i) {
-                         ( y[ , i] * (1 + rl[ , , -i]) -
-                           rowSums(y[ , -i]) * rl[ , , i]
-                         )/cd })
+    d1u_p1 <- sapply(seqk, function(i) {
+        ( y[ , i] * (1 + rl[ , , -i]) - rowSums(y[ , -i]) * rl[ , , i]
+        )/cd })
     ## recheio, row: random effects 'u' to be integrated out
     ## -------- col: subjects
-    recheio <- sapply(
-        seqk,
-        function(i) { w * atanh(2 * t[i]/delta - 1) + tt[i, , ] })
+    recheio <- sapply(seqk, function(i) {
+        w * atanh(2 * t[i]/delta - 1) + tt[i, , ] })
     ## cereja, row: random effects 'u' to be integrated out
     ## ------- col: subjects
-    cereja <- sapply(
-        seqk,
-        function(i) {
-            w * delta/(2 * t[i] * (delta - t[i])) * dnorm(recheio[ , i])
+    cereja <- sapply(seqk, function(i) {
+        w * delta/(2 * t[i] * (delta - t[i])) * dnorm(recheio[ , i])
         })
     ## cdlong, long common denominator. length? n
-    cdlong <- sapply(seqk,
-                     function(i) {
-                         1 + sum(rl[i, , ] * (1 - cereja[ , i])) })
+    cdlong <- sapply(seqk, function(i) {
+        1 + sum(rl[i, , ] * (1 - cereja[ , i])) })
     ## d1u part2, row: subjects
     ## ---------- col: random effects 'u' to be integrated out
-    d1u_p2 <- sapply(
-        seqk,
-        function(i) {
-            y[ , max(seqk) + 1] * (
-                rl[ , , i] * cereja[-i, ] * rl[ , , -i] -
-                cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) ) })
-    d1u_p3 <- d1u_p2/cdlong ## it's right
+    d1u_p2 <- sapply( seqk, function(i) {
+        y[ , max(seqk) + 1] *
+            ( rl[ , , i] * cereja[-i, ] * rl[ , , -i] -
+              cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i])
+            )})
+    d1u_p3 <- d1u_p2/(cd * cdlong)
     d1u <- colSums(d1u_p1 + d1u_p3) - (prec %*% r)[seqk]
     ## =================================================================
-    d1e_n <- sapply(seqk,
-                    function(i) {
-                        (rl/cd)[i, , ] *
-                            w * delta/(2 * t[i] * (delta - t[i])) *
-                            recheio[ , i] * dnorm(recheio[ , i])
-                    })
-    d1e_d <- sapply(seqk,
-                    function(i) {
-                        1 - sum((rl/cd)[i, , ] *
-                                w * delta/(2 * t[i] * (delta - t[i])) *
-                                dnorm(recheio[ , i]))
-                    })
-    d1e_p1 <- sapply(seqk,
-                     function(i) {
-                         sum(y[ , i] * recheio[i, ] -
-                             y[ , max(seqk) + 1] * d1e_n[i, ]/d1e_d)
-                     })
+    d1e_n <- sapply(seqk, function(i) {
+        (rl/cd)[i, , ] * w * delta/(2 * t[i] * (delta - t[i])) *
+            recheio[ , i] * dnorm(recheio[ , i])
+    })
+    d1e_d <- sapply(seqk, function(i) {
+        1 - sum( (rl/cd)[i, , ] *
+                 w * delta/(2 * t[i] * (delta - t[i])) *
+                 dnorm(recheio[ , i])
+                )})
+    d1e_p1 <- sapply(seqk, function(i) {
+        sum( y[ , i] * recheio[i, ] -
+             y[ , max(seqk) + 1] * d1e_n[i, ]/d1e_d
+            )})
     d1e <- d1e_p1 - (prec %*% r)[seqk + max(seqk)]
     ## =================================================================
     grad <- c(d1u, d1e)
     ## =================================================================
     ## now, the hessian ================================================
-    hess_multi <- matrix(NA, nrow = n_alpha, ncol = n_alpha)
+    hess <- matrix(NA, nrow = nr, ncol = nr)
+    ## each column is a random effect u
+    ## each row is a subeject
+    diag(hess)[seqk] <- sapply(seqk, function(i) {
+        sum( - rowSums(y[ , seqk]) * rl[ , , i] * (1 + rl[ , , -i])/cd^2
+            + d1u_p3[ , i]
+            + y[ , max(seqk) + 1] *
+            ( cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) -
+              rl[ , , i] * cereja[i, ] * rl[ , , -i]
+            ) * rl[ , , i] * ( 1 + rl[ , , -i] * (1 - cereja[-i, ]) +
+                               cd * (1 - cereja[i, ]) )/(cd * cdlong)^2
+            )})
+
     diag(hess_multi) <- sapply(
         seq(n_alpha),
         function(i) sum(-Reduce("+", yj) * risklevel_num[ , , i] *
