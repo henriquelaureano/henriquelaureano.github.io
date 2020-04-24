@@ -265,11 +265,13 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
             ) * rl[ , , i] * ( 1 + rl[ , , -i] * (1 - cereja[-i, ]) +
                                cd * (1 - cereja[i, ]) )/(cd * cdlong)^2
             )})
-
-    diag(hess_multi) <- sapply(
-        seq(n_alpha),
-        function(i) sum(-Reduce("+", yj) * risklevel_num[ , , i] *
-                        (1 + risklevel_num[ , , -i])/risklevel_denom2))
+    diag(hess)[seqk + max(seqk)] <- sapply(seqk, function(i) {
+        sum( - y[ , i] - y[ , max(seqk) + 1] *
+             ( (rl[ , , i]/cd) *
+               cereja[i, ] * (recheio[i, ]^2 - 1)/d1e_d -
+               (d1e_n[i, ]/d1e_d)^2
+             ))})
+    ## -----------------------------------------------------------------
     offdiag <- sum(
         Reduce("+", yj) *
         risklevel_num[ , , 1] * risklevel_num[ , , -1]/risklevel_denom2)
