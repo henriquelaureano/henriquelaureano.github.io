@@ -282,10 +282,10 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
                  ) * rl[ , , -i] *
                  ( cdlong + cd * (1 - cereja[-i, ]) )/(cd * cdlong)^2
              ) )})
+    de12 <- sapply(seqk, function(i) {
+        sum( - y[ , max(seqk) + 1] * (d1e_n[i, ] * d1e_n[-i, ])/d1e_d^2
+            )})
     ## -----------------------------------------------------------------
-    offdiag <- sum(
-        Reduce("+", yj) *
-        risklevel_num[ , , 1] * risklevel_num[ , , -1]/risklevel_denom2)
     hess_multi[is.na(hess_multi)] <- offdiag
     hess <- hess_multi - prec
     change <- solve(hess, grad)
