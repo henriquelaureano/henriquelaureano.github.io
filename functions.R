@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-23
+## date: 2020-4-24
 ## =====================================================================
 
 ## =====================================================================
@@ -257,13 +257,14 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     ## each column is a random effect u
     ## each row is a subeject
     diag(hess)[seqk] <- sapply(seqk, function(i) {
-        sum( - rowSums(y[ , seqk]) * rl[ , , i] * (1 + rl[ , , -i])/cd^2
-            + d1u_p3[ , i]
-            + y[ , max(seqk) + 1] *
-            ( cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) -
-              rl[ , , i] * cereja[i, ] * rl[ , , -i]
-            ) * rl[ , , i] * ( 1 + rl[ , , -i] * (1 - cereja[-i, ]) +
-                               cd * (1 - cereja[i, ]) )/(cd * cdlong)^2
+        sum( - rowSums(y[ , seqk]) *
+             rl[ , , i] * (1 + rl[ , , -i])/cd^2 +
+             d1u_p3[ , i] +
+             y[ , max(seqk) + 1] *
+             ( cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) -
+               rl[ , , i] * cereja[i, ] * rl[ , , -i]
+             ) * rl[ , , i] * ( 1 + rl[ , , -i] * (1 - cereja[-i, ]) +
+                                cd * (1 - cereja[i, ]) )/(cd * cdlong)^2
             )})
     diag(hess)[seqk + max(seqk)] <- sapply(seqk, function(i) {
         sum( - y[ , i] - y[ , max(seqk) + 1] *
@@ -271,6 +272,16 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
                cereja[i, ] * (recheio[i, ]^2 - 1)/d1e_d -
                (d1e_n[i, ]/d1e_d)^2
              ))})
+    du12 <- sapply(seqk, function(i) {
+        sum( rowSums(y[ , seqk]) * rl[ , , i] * rl[ , , -i]/cd^2 +
+             y[ , max(seqk) + 1] * (
+                 rl[ , , i] * rl[ , , -i] *
+                 (cereja[-i, ] - cereja[i, ])/(cd * cdlong) +
+                 ( cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) -
+                   rl[ , , i] * cereja[-i, ] * rl[ , , -i]
+                 ) * rl[ , , -i] *
+                 ( cdlong + cd * (1 - cereja[-i, ]) )/(cd * cdlong)^2
+             ) )})
     ## -----------------------------------------------------------------
     offdiag <- sum(
         Reduce("+", yj) *
