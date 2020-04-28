@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-22 14:10:36</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-27 15:19:48</h4>
 
 </div>
 
@@ -4356,7 +4356,6 @@ datatable(df,
 \end{aligned}
 \]</span> <span class="math display">\[
 \begin{aligned}
-%% --------------------------------------------------------------------
  \bm{l}^{''}(u_{kj} u_{mj}) &amp;=
  \left( \sum_{k = 1}^{K-1} y_{kij} \right)
  \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
@@ -4556,17 +4555,54 @@ augloglik(r, preds, beta, gama, data = df, w, prec, logdetprec)</code></pre>
 <pre><code>          [,1]
 [1,] -126.1595</code></pre>
 <pre class="r"><code>dfj &lt;- df %&gt;% filter(j == 1)
-## gradHess(r, preds, beta, gama, dfj, w, prec)</code></pre>
-<pre class="r"><code>newton_raphson(initial = alpha, preds = preds,
-               beta = theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)],
-               ys = bigdata[bigdata$i == 1, c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;)],
-               det_sigma = myvcov$logdet, inv_sigma = myvcov$inv)
+augloglik(r, preds, beta, gama, data = dfj, w, prec, logdetprec)</code></pre>
+<pre><code>          [,1]
+[1,] -3.783639</code></pre>
+<pre class="r"><code>newton_raphson(initial = r, preds, beta, gama, dfj, w, prec, logdetprec)</code></pre>
+<pre><code>$value
+          [,1]
+[1,] -3.985642
 
-optim(par = alpha, fn = integrating, preds = preds,
-      beta = theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)],
-      data = bigdata[bigdata$i == 1, c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;)],
-      det_sigma = myvcov$logdet, inv_sigma = myvcov$inv,
+$par
+        u1         u2         e1         e2 
+-0.3065511 -0.6460533 -0.1906479 -0.1360471 
+
+$iter
+[1] 15
+
+$hessian
+           [,1]        [,2]       [,3]        [,4]
+[1,] -1.0003323  0.14905400  0.2447385  0.14875991
+[2,]  0.1490540 -1.00044423  0.1467049  0.09815398
+[3,]  0.2447385  0.14670486 -1.0009585  0.14888296
+[4,]  0.1487599  0.09815398  0.1488830 -1.00247118</code></pre>
+<pre class="r"><code>optim(par = r, fn = augloglik,
+      preds = preds, beta = beta, gama = gama,
+      data = dfj, w = w, prec = prec, logdetprec = logdetprec,
       method = &quot;BFGS&quot;, control = list(fnscale = -1), hessian = TRUE)</code></pre>
+<pre><code>$par
+           u1            u2            e1            e2 
+ 0.0005480775 -0.0002181407  0.0013223458  0.0032734523 
+
+$value
+[1] -3.783633
+
+$counts
+function gradient 
+      15        4 
+
+$convergence
+[1] 0
+
+$message
+NULL
+
+$hessian
+           u1         u2         e1         e2
+u1 -1.0001979  0.1490444  0.2455987  0.1486564
+u2  0.1490444 -1.0001390  0.1485796  0.1014319
+e1  0.2455987  0.1485796 -1.0009927  0.1488828
+e2  0.1486564  0.1014319  0.1488828 -1.0037312</code></pre>
 <p>Yes!! They’re performing equally.</p>
 <p>Now, we estimate/predict the random effects for all the subjects and compare them with its original (simulated) values.</p>
 <pre class="r"><code>tic()

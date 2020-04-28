@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-24
+## date: 2020-4-27
 ## =====================================================================
 
 ## =====================================================================
@@ -159,21 +159,18 @@ augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
     Xbeta <- Xcoef(preds, beta, data)
     Xgama <- Xcoef(preds, gama, data)
     rl <- exp(sweep(Xbeta, 3, r[paste0("u", seqk)], '+')) ## risk level
-    rld <- 1 + rowSums(rl) ## rl denominator
-    ratio <- sweep(rl, 1, rld, '/')
+    cd <- 1 + rowSums(rl) ## common denominator
+    ratio <- sweep(rl, 1, cd, '/')
     t <- data$t
     delta <- max(t) + .1
     xge <- sweep(-Xgama, 3, r[paste0("e", seqk)], '-')
-    pk <- t(sapply(
-        seq(dim(ratio)[1]), ## number of subjects
-        function(i) { ## each column will be  a subject
-            ratio[i, , ] *
-                w * delta/(2 * t[i] * (delta - t[i])) *
-                dnorm(w * atanh(2 * t[i]/delta - 1) + xge[i, , ])
-        }))
+    pk <- t(sapply(seq(dim(ratio)[1]), function(i) {
+        ## each column will be a subject
+        ratio[i, , ] * w * delta/(2 * t[i] * (delta - t[i])) *
+            dnorm(w * atanh(2 * t[i]/delta - 1) + xge[i, , ])
+    }))
     ps <- cbind(pk, 1 - rowSums(pk))
     y <- as.matrix(data %>% select(str_subset(names(data), "^y\\d")))
-    ## -----------------------------------------------------------------
     out <- sum(dmultinomial(y, size = 1, prob = ps, log = TRUE)) -
         2 * log(2 * pi) + .5 * logdetprec - .5 * r %*% prec %*% r
     return(out)
@@ -182,17 +179,20 @@ augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
 ## =====================================================================
 ## gradHess: gradient and hessian of the augmented log-likelihood
 ## args:
-## -- r: vector, random effects;
-## -- preds: list of linear predictors, they can be of different sizes;
-## -- beta: named vector;
-## -- gama: named vector;
-## -- dfj: ;
-## -- w: ;
+## -- r: named vector of random effects to be integrated out;
+## -- preds: list of linear predictors, it can be of different sizes;
+## -- beta: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
+## -- gama: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
+## -- dfj: data.frame, the output of 'datasetup' but just with one
+##         cluster at time;
+## -- w: vector of parameters with the same length that 'preds';
 ## -- prec: precision matrix, output of 'preccomp'.
 ## return:
 ## -- list with two slots,
-##    ["change"] gradient "divided" by the hessian;
-##    ["hessian"] hessian.
+##    ['change'] gradient 'divided' by the hessian;
+##    ['hessian'] hessian.
 
 gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     n <- nrow(dfj) ## number of subjects
@@ -203,56 +203,42 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     rl <- exp(sweep(Xbeta, 3, r[paste0("u", seqk)], '+')) ## risk level
     rlsum <- rowSums(rl) ## length? n
     cd <- 1 + rlsum ## cd, common denominator
+    ratio <- sweep(rl, 1, cd, '/')
     y <- as.matrix(dfj %>% select(str_subset(names(dfj), "^y\\d")))
     t <- dfj$t
     delta <- max(t) + .1
     tt <- sweep(-Xgama, 3, r[paste0("e", seqk)], '-') ## trajectory time
-    ## =================================================================
-    ## d1u part1, row: subjects
-    ## ---------- col: random effects 'u' to be integrated out
-    d1u_p1 <- sapply(seqk, function(i) {
-        ( y[ , i] * (1 + rl[ , , -i]) - rowSums(y[ , -i]) * rl[ , , i]
-        )/cd })
-    ## recheio, row: random effects 'u' to be integrated out
-    ## -------- col: subjects
+    ## recheio, each column will be a subject --------------------------
     recheio <- sapply(seqk, function(i) {
         w * atanh(2 * t[i]/delta - 1) + tt[i, , ] })
-    ## cereja, row: random effects 'u' to be integrated out
-    ## ------- col: subjects
+    ## cereja phi(recheio), each column will be a subject --------------
     cereja <- sapply(seqk, function(i) {
         w * delta/(2 * t[i] * (delta - t[i])) * dnorm(recheio[ , i])
-        })
-    ## cdlong, long common denominator. length? n
-    cdlong <- sapply(seqk, function(i) {
-        1 + sum(rl[i, , ] * (1 - cereja[ , i])) })
-    ## d1u part2, row: subjects
-    ## ---------- col: random effects 'u' to be integrated out
-    d1u_p2 <- sapply( seqk, function(i) {
-        y[ , max(seqk) + 1] *
-            ( rl[ , , i] * cereja[-i, ] * rl[ , , -i] -
-              cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i])
-            )})
-    d1u_p3 <- d1u_p2/(cd * cdlong)
-    d1u <- colSums(d1u_p1 + d1u_p3) - (prec %*% r)[seqk]
-    ## =================================================================
-    d1e_n <- sapply(seqk, function(i) {
-        (rl/cd)[i, , ] * w * delta/(2 * t[i] * (delta - t[i])) *
-            recheio[ , i] * dnorm(recheio[ , i])
     })
-    d1e_d <- sapply(seqk, function(i) {
-        1 - sum( (rl/cd)[i, , ] *
-                 w * delta/(2 * t[i] * (delta - t[i])) *
-                 dnorm(recheio[ , i])
-                )})
-    d1e_p1 <- sapply(seqk, function(i) {
-        sum( y[ , i] * recheio[i, ] -
-             y[ , max(seqk) + 1] * d1e_n[i, ]/d1e_d
+    cdlong <- sapply(seqk, function(i) { ## long common denominator
+        1 + sum(rl[i, , ] * (1 - cereja[ , i])) })
+    ## GRADIENT --------------------------------------------------------
+    ## computing by random effect u (do for each subject and then sum)
+    d1u <- sapply(seqk, function(i) {
+        sum( ( y[ , i] * (1 + rl[ , , -i]) -
+               rowSums(y[ , -i]) * rl[ , , i] )/cd +
+             y[ , max(seqk) + 1] * rl[ , , i] *
+             ( cereja[-i, ] * rl[ , , -i] -
+               cereja[i, ] * (1 + rl[ , , -i]) )/(cd * cdlong)
             )})
-    d1e <- d1e_p1 - (prec %*% r)[seqk + max(seqk)]
-    ## =================================================================
-    grad <- c(d1u, d1e)
-    ## =================================================================
-    ## now, the hessian ================================================
+    ## each column corresponds to a random effect eta
+    de_n <- sapply(seqk, function(i) {
+        ratio[ , , i] * recheio[i, ] * cereja[i, ]
+    })
+    ## length? size of eta, here we already do the sum 4all subjects
+    de_d <- sapply(seqk, function(i) {
+        1 - sum( ratio[ , , i] * cereja[i, ] )})
+    d1e <- sapply(seqk, function(i) {
+        sum( y[ , i] * recheio[i, ] -
+             y[ , max(seqk) + 1] * de_n[, i]/de_d[i] )
+    })
+    grad <- c(d1u, d1e) - prec %*% r
+    ## HESSIAN ---------------------------------------------------------
     hess <- matrix(NA, nrow = nr, ncol = nr)
     ## each column is a random effect u
     ## each row is a subeject
@@ -269,8 +255,8 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     diag(hess)[seqk + max(seqk)] <- sapply(seqk, function(i) {
         sum( - y[ , i] - y[ , max(seqk) + 1] *
              ( (rl[ , , i]/cd) *
-               cereja[i, ] * (recheio[i, ]^2 - 1)/d1e_d -
-               (d1e_n[i, ]/d1e_d)^2
+               cereja[i, ] * (recheio[i, ]^2 - 1)/de_d -
+               (de_n[i, ]/de_d)^2
              ))})
     du12 <- sapply(seqk, function(i) {
         sum( rowSums(y[ , seqk]) * rl[ , , i] * rl[ , , -i]/cd^2 +
@@ -283,60 +269,71 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
                  ( cdlong + cd * (1 - cereja[-i, ]) )/(cd * cdlong)^2
              ) )})
     de12 <- sapply(seqk, function(i) {
-        sum( - y[ , max(seqk) + 1] * (d1e_n[i, ] * d1e_n[-i, ])/d1e_d^2
+        sum( - y[ , max(seqk) + 1] * (de_n[i, ] * de_n[-i, ])/de_d^2
             )})
-    ## -----------------------------------------------------------------
-    hess_multi[is.na(hess_multi)] <- offdiag
-    hess <- hess_multi - prec
+    dues <- sapply(seqk, function(i) {
+        sapply(seqk, function(j) {
+            sum( y[ , max(seqk) + 1] *
+                 ( rl[ , , i] * rl[ , , -i]/cd^2 *
+                   recheio[j, ] * cereja[j, ]/d1e_d +
+                   rl[ , , i]/cd^2 * recheio[j, ] * cereja[j, ]/de_d^2
+                 ) * rl[ , , i] *
+                 (sum(rl[ , , -i]/cd^2) + cd + rl[ , , i])
+                )})
+    })
+    hess[1, 2] <- hess[2, 1] <- du12[1]
+    hess[3, 4] <- hess[4, 3] <- de12[1]
+    hess[seqk, -seqk] <- t(dues)
+    lowertri <- lower.tri(hess, diag = TRUE)
+    hess[lowertri] <- t(hess)[lowertri]
+    hess <- hess - prec
     change <- solve(hess, grad)
-    out <- vector("list", 2) ; names(out) <- c("change", "hessian")
-    out["change"][[1]] <- change
-    out["hessian"][[1]] <- hess
-    return(out)
+    return(list('change' = change, 'hessian' = hess))
 }
 
 ## =====================================================================
 ## newton_raphson: optimzation routine to be used inside the laplace
 ##                 approximation
 ## args:
-## -- initial: vector, random effects;
-## -- preds: list of linear predictors, they can be of different sizes;
-## -- ys: data.frame, it needs the response vectors and covariates;
-## -- beta: named vector;
-## -- det_sigma: log-determinant of the variance-covariance matrix;
-## -- inv_sigma: precison matrix;
+## -- initial: named vector of random effects to be integrated out;
+## -- preds: list of linear predictors, it can be of different sizes;
+## -- beta: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
+## -- gama: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
+## -- dfj: data.frame, the output of 'datasetup' but just with one
+##         cluster at time;
+## -- w: vector of parameters with the same length that 'preds';
+## -- prec: precision matrix, output of 'preccomp';
+## -- logdetprec: log-determinant of the precision matrix, also output
+##                of 'preccomp';
 ## -- max_iter: maximum number of iterations, pre-fixed at 50;
 ## -- tol: minimum convergence tolerance.
 ## return:
-## -- list with three slots,
-##    ["est"] estimated values;
-##    ["iter"] number of iterations up to convergence;
-##    ["hessian"] hessian with the estimated values.
+## -- list with four slots,
+##    ['value'] augmented log-likelihood evaluated at 'par';
+##    ['par'] estimated values;
+##    ['iter'] number of iterations up to convergence;
+##    ['hessian'] hessian at 'par'.
 
 newton_raphson <- function(initial,
-                           preds, ys, beta, det_sigma, inv_sigma,
+                           preds, beta, gama, dfj, w, prec, logdetprec,
                            max_iter = 50, tol = 1e-5) {
     sol <- matrix(NA, nrow = max_iter, ncol = length(initial))
+    colnames(sol) <- names(r)
     sol[1, ] <- initial
     for (i in 2:max_iter) {
-        change <- gradHess(alpha = initial,
-                           preds = preds, ys = ys,
-                           beta = beta, inv_sigma = inv_sigma)
+        change <- gradHess(r = initial, preds, beta, gama, dfj, w, prec)
         sol[i, ] <- initial - change$change
         initial <- sol[i, ]
         tol_iter <- abs(sol[i, ] - sol[i - 1, ])
         if (all(tol_iter < tol) == TRUE) break
     }
-    out <- vector("list", 4)
-    names(out) <- c("value", "par", "iter", "hessian")
-    out["value"][[1]] <-
-        integrating(alpha = initial, beta = beta,
-                    det_sigma = det_sigma, inv_sigma = inv_sigma,
-                    preds = preds, data = ys)
-    out["par"][[1]] <- initial
-    out["iter"][[1]] <- i - 1
-    out["hessian"][[1]] <- change$hessian
-    return(out)
+    return(list('value' = augloglik(r = initial, preds, beta, gama,
+                                    data = dfj, w, prec, logdetprec),
+                'par' = initial,
+                'iter' = i - 1,
+                'hessian' = change$hessian))
 }
 
 ## =====================================================================
