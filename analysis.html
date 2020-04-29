@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-27 15:19:48</h4>
+<h4 class="date"><em>Last modification on</em> 2020-04-28 22:37:05</h4>
 
 </div>
 
@@ -4540,8 +4540,8 @@ datatable(df,
     ## diagonal elements
     &quot;d1&quot; = log(1), &quot;d2&quot; = log(1), &quot;d3&quot; = log(1), &quot;d4&quot; = log(1),
     ## off-diagonal elements
-    &quot;offd12&quot; = -0.3, &quot;offd13&quot; = -0.5, &quot;offd14&quot; = -0.3,
-    &quot;offd23&quot; = -0.3, &quot;offd24&quot; = -0.2, &quot;offd34&quot; = -0.3)
+    &quot;offd12&quot; = .4, &quot;offd13&quot; = .5, &quot;offd14&quot; = .4,
+    &quot;offd23&quot; = .4, &quot;offd24&quot; = .3, &quot;offd34&quot; = .4)
 
 PREC &lt;- preccomp(theta)
 prec &lt;- PREC$prec
@@ -4553,43 +4553,57 @@ r &lt;- c(&quot;u1&quot; = 0, &quot;u2&quot; = 0, &quot;e1&quot; = 0, &quot;e2&q
 
 augloglik(r, preds, beta, gama, data = df, w, prec, logdetprec)</code></pre>
 <pre><code>          [,1]
-[1,] -126.1595</code></pre>
+[1,] -126.1535</code></pre>
 <pre class="r"><code>dfj &lt;- df %&gt;% filter(j == 1)
 augloglik(r, preds, beta, gama, data = dfj, w, prec, logdetprec)</code></pre>
 <pre><code>          [,1]
-[1,] -3.783639</code></pre>
+[1,] -3.777656</code></pre>
+<pre class="r"><code>gradHess(r, preds, beta, gama, dfj, w, prec)</code></pre>
+<pre><code>$change
+            [,1]
+[1,]  0.04169349
+[2,]  0.87322353
+[3,] -0.16258070
+[4,] -0.10957055
+
+$hessian
+           [,1]       [,2]       [,3]       [,4]
+[1,] -0.9999966 -0.1972155 -0.2459403 -0.1981426
+[2,] -0.1972155 -0.9999875 -0.1985494 -0.1497667
+[3,] -0.2459403 -0.1985494 -1.0009927 -0.1973776
+[4,] -0.1981426 -0.1497667 -0.1973776 -1.0037337</code></pre>
 <pre class="r"><code>newton_raphson(initial = r, preds, beta, gama, dfj, w, prec, logdetprec)</code></pre>
 <pre><code>$value
           [,1]
-[1,] -3.985642
+[1,] -3.954264
 
 $par
         u1         u2         e1         e2 
--0.3065511 -0.6460533 -0.1906479 -0.1360471 
+-0.1013729 -0.5894169  0.1250890  0.0849379 
 
 $iter
-[1] 15
+[1] 17
 
 $hessian
-           [,1]        [,2]       [,3]        [,4]
-[1,] -1.0003323  0.14905400  0.2447385  0.14875991
-[2,]  0.1490540 -1.00044423  0.1467049  0.09815398
-[3,]  0.2447385  0.14670486 -1.0009585  0.14888296
-[4,]  0.1487599  0.09815398  0.1488830 -1.00247118</code></pre>
+           [,1]       [,2]       [,3]       [,4]
+[1,] -0.9999410 -0.1972576 -0.2454911 -0.1978360
+[2,] -0.1972576 -0.9998421 -0.1979858 -0.1493763
+[3,] -0.2454911 -0.1979858 -1.0010378 -0.1973766
+[4,] -0.1978360 -0.1493763 -0.1973766 -1.0025066</code></pre>
 <pre class="r"><code>optim(par = r, fn = augloglik,
       preds = preds, beta = beta, gama = gama,
       data = dfj, w = w, prec = prec, logdetprec = logdetprec,
       method = &quot;BFGS&quot;, control = list(fnscale = -1), hessian = TRUE)</code></pre>
 <pre><code>$par
            u1            u2            e1            e2 
- 0.0005480775 -0.0002181407  0.0013223458  0.0032734523 
+-0.0007448894 -0.0012667933  0.0005234911  0.0032473825 
 
 $value
-[1] -3.783633
+[1] -3.777651
 
 $counts
 function gradient 
-      15        4 
+       9        3 
 
 $convergence
 [1] 0
@@ -4599,63 +4613,52 @@ NULL
 
 $hessian
            u1         u2         e1         e2
-u1 -1.0001979  0.1490444  0.2455987  0.1486564
-u2  0.1490444 -1.0001390  0.1485796  0.1014319
-e1  0.2455987  0.1485796 -1.0009927  0.1488828
-e2  0.1486564  0.1014319  0.1488828 -1.0037312</code></pre>
+u1 -1.0001983 -0.1972159 -0.2442384 -0.1976036
+u2 -0.1972159 -1.0001394 -0.1976807 -0.1471213
+e1 -0.2442384 -0.1976807 -1.0009923 -0.1973775
+e2 -0.1976036 -0.1471213 -0.1973775 -1.0037293</code></pre>
 <p>Yes!! They’re performing equally.</p>
 <p>Now, we estimate/predict the random effects for all the subjects and compare them with its original (simulated) values.</p>
 <pre class="r"><code>tic()
-alphas &lt;- future_map(
-    seq(N), function(index) {
-        newton_raphson(
-            initial = alpha, preds = preds,
-            beta = theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)],
-            ys = bigdata[bigdata$i == index, c(&quot;y1&quot;, &quot;y2&quot;, &quot;y3&quot;)],
-            det_sigma = myvcov$logdet, inv_sigma = myvcov$inv
-        )$par
+rs &lt;- future_map(seq(J), function(index) {
+    newton_raphson(initial = r, preds, beta, gama,
+                   dfj = df %&gt;% filter(j == index), w, prec, logdetprec
+                   )$par
     })
-toc() ## quite fast
-alphas &lt;- matrix(unlist(alphas), nrow = N, byrow = TRUE)
-colnames(alphas) &lt;- c(&quot;alpha1&quot;, &quot;alpha2&quot;)
-
-cbind(cov(data_start$alpha), cov(alphas))
-
-cbind(cov2cor(cov(data_start$alpha)), cov2cor(cov(alphas)))
-
-alphas2 &lt;- reshape2::melt(alphas)
-names(alphas2) &lt;- c(&quot;out&quot;, &quot;alpha&quot;, &quot;value&quot;)
-alphas2 &lt;- subset(alphas2, select = c(&quot;alpha&quot;, &quot;value&quot;))
-levels(alphas2$alpha) &lt;- c(expression(&quot;Predicted&quot; ~ alpha[1]),
-                           expression(&quot;Predicted&quot; ~ alpha[2]))
-alphas_mean &lt;- data.frame(alpha = levels(alphas2$alpha),
-                          mean = colMeans(alphas))
-p1 &lt;- ggplot() +
-    geom_histogram(data = alphas2, aes(value),
-                   binwidth = .1, col = &quot;black&quot;, fill = &quot;white&quot;) +
-    geom_vline(data = alphas_mean, aes(xintercept = mean),
-               col = &quot;black&quot;, linetype = &quot;dashed&quot;, size = 1) +
-    facet_wrap(. ~ alpha, scales = &quot;free_y&quot;, labeller = label_parsed) +
-    labs(x = NULL, y = NULL) + theme_classic(base_size = 14)
-
-p2 &lt;- ggplot(data.frame(data_start$alpha), aes(x = alpha1, y = alpha2)) +
-    xlim(-1.1, 1.1) + ylim(-1.5, 1.5) +
-    stat_density_2d(aes(fill = stat(level)), geom = &quot;polygon&quot;) +
-    scale_fill_fish(option = &quot;Trimma_lantana&quot;) +
-    theme_minimal(base_size = 13) + guides(fill = &quot;none&quot;) +
-    labs(x = TeX(&quot;$\\alpha_{1}$&quot;), y = TeX(&quot;$\\alpha_{2}$&quot;),
-         title = &quot;Simulated random effects&quot;)
-
-p3 &lt;- ggplot(data.frame(alphas), aes(x = alpha1, y = alpha2)) +
-    xlim(-1.1, 1.1) + ylim(-1.5, 1.5) +
-    stat_density_2d(aes(fill = stat(level)), geom = &quot;polygon&quot;) +
-    scale_fill_fish(option = &quot;Trimma_lantana&quot;) +
-    theme_minimal(base_size = 13) + guides(fill = &quot;none&quot;) +
-    labs(x = TeX(&quot;$\\alpha_{1}$&quot;), y = TeX(&quot;$\\alpha_{2}$&quot;),
-         title = &quot;Predicted random effects&quot;)
-
-grid.arrange(p1, p2, p3, layout_matrix = rbind(c(1, 1),
-                                               c(2, 3)))</code></pre>
+toc()</code></pre>
+<pre><code>0.824 sec elapsed</code></pre>
+<pre class="r"><code>rs &lt;- matrix(unlist(rs), nrow = J, byrow = TRUE)
+colnames(rs) &lt;- names(r)
+rs</code></pre>
+<pre><code>               u1          u2          e1          e2
+ [1,] -0.10137290 -0.58941686  0.12508903  0.08493790
+ [2,] -0.10126114 -0.58938847  0.12489503  0.08500440
+ [3,] -0.50810194  0.67949704 -0.41999627  2.07890211
+ [4,] -0.46320193 -0.02584471 -0.33074579  2.27831688
+ [5,] -0.05429809  0.17413623  0.12301946 -0.73003572
+ [6,] -0.51121376  0.67805405 -0.42329705  2.10092988
+ [7,] -0.11855971  0.14206985  0.05089010 -0.25278588
+ [8,] -0.12430761  0.13921395  0.04445161 -0.21017703
+ [9,] -0.43572190  0.71320340 -0.34312912  1.56593437
+[10,] -0.52047551 -0.05190966 -0.39104976  2.68321520
+[11,]  0.30805663 -0.17433391  0.05506600  2.52126744
+[12,] -0.52306479 -0.05450428 -0.39682660  2.71484160
+[13,] -0.39373351  0.73288549 -0.29845625  1.26781517
+[14,] -0.10284961 -0.59129407  0.12440075  0.08631748
+[15,] -0.48816238  0.68875514 -0.39883820  1.93770430
+[16,] -0.51339817  0.67704141 -0.42561392  2.11639150
+[17,] -0.09873469 -0.59158847  0.12607979  0.07335909
+[18,] -0.52011901 -0.06428909 -0.39489675  2.71010068
+[19,] -0.09874087 -0.58974161  0.12666966  0.07049560
+[20,] -0.09847803 -0.59128510  0.12663558  0.07121976</code></pre>
+<pre class="r"><code>round(cbind(cov2cor(cov(df %&gt;% filter(i == 1) %&gt;% select(names(r)))),
+            cov2cor(cov(rs))),
+      3)</code></pre>
+<pre><code>      u1    u2    e1    e2     u1     u2     e1     e2
+u1 1.000 0.510 0.633 0.391  1.000 -0.605  0.907 -0.622
+u2 0.510 1.000 0.512 0.420 -0.605  1.000 -0.745  0.451
+e1 0.633 0.512 1.000 0.452  0.907 -0.745  1.000 -0.853
+e2 0.391 0.420 0.452 1.000 -0.622  0.451 -0.853  1.000</code></pre>
 <div id="of-the-marginal" class="section level2">
 <h2>of the marginal</h2>
 <pre class="r"><code>parnames(multi_mixed) &lt;- names(theta)

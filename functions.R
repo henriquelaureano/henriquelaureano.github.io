@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-27
+## date: 2020-4-28
 ## =====================================================================
 
 ## =====================================================================
@@ -230,59 +230,56 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     de_n <- sapply(seqk, function(i) {
         ratio[ , , i] * recheio[i, ] * cereja[i, ]
     })
-    ## length? size of eta, here we already do the sum 4all subjects
+    ## length? n
     de_d <- sapply(seqk, function(i) {
-        1 - sum( ratio[ , , i] * cereja[i, ] )})
+        1 - sum(ratio[i, , ] * cereja[ , i]) })
     d1e <- sapply(seqk, function(i) {
         sum( y[ , i] * recheio[i, ] -
-             y[ , max(seqk) + 1] * de_n[, i]/de_d[i] )
+             y[ , max(seqk) + 1] * de_n[, i]/de_d )
     })
     grad <- c(d1u, d1e) - prec %*% r
     ## HESSIAN ---------------------------------------------------------
     hess <- matrix(NA, nrow = nr, ncol = nr)
-    ## each column is a random effect u
-    ## each row is a subeject
+    ## each column is for a random effect u
     diag(hess)[seqk] <- sapply(seqk, function(i) {
         sum( - rowSums(y[ , seqk]) *
              rl[ , , i] * (1 + rl[ , , -i])/cd^2 +
-             d1u_p3[ , i] +
-             y[ , max(seqk) + 1] *
-             ( cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) -
-               rl[ , , i] * cereja[i, ] * rl[ , , -i]
-             ) * rl[ , , i] * ( 1 + rl[ , , -i] * (1 - cereja[-i, ]) +
-                                cd * (1 - cereja[i, ]) )/(cd * cdlong)^2
+             y[ , max(seqk) + 1] * rl[ , , i] *
+             ( ( cereja[-i, ] * rl[ , , -i] -
+                 cereja[i, ] * (1 + rl[ , , -i]) )/(cd * cdlong) +
+               ( cereja[i, ] * (1 + rl[ , , -i]) -
+                 cereja[-i, ] * rl[ , , -i]
+               ) * ( cdlong + cd * (1 - cereja[i, ]) )/(cd * cdlong)^2
+             )
             )})
     diag(hess)[seqk + max(seqk)] <- sapply(seqk, function(i) {
         sum( - y[ , i] - y[ , max(seqk) + 1] *
-             ( (rl[ , , i]/cd) *
-               cereja[i, ] * (recheio[i, ]^2 - 1)/de_d -
-               (de_n[i, ]/de_d)^2
-             ))})
-    du12 <- sapply(seqk, function(i) {
-        sum( rowSums(y[ , seqk]) * rl[ , , i] * rl[ , , -i]/cd^2 +
-             y[ , max(seqk) + 1] * (
-                 rl[ , , i] * rl[ , , -i] *
-                 (cereja[-i, ] - cereja[i, ])/(cd * cdlong) +
-                 ( cereja[i, ] * rl[ , , i] * (1 + rl[ , , -i]) -
-                   rl[ , , i] * cereja[-i, ] * rl[ , , -i]
-                 ) * rl[ , , -i] *
-                 ( cdlong + cd * (1 - cereja[-i, ]) )/(cd * cdlong)^2
-             ) )})
-    de12 <- sapply(seqk, function(i) {
-        sum( - y[ , max(seqk) + 1] * (de_n[i, ] * de_n[-i, ])/de_d^2
+             ( ratio[ , , i] * cereja[i, ] * (recheio[i, ]^2 - 1)/de_d +
+               (de_n[ , i]/de_d)^2 )
             )})
+    du12 <- sum(
+        rowSums(y[ , seqk]) * rl[ , , 1] * rl[ , , 2]/cd^2 +
+        y[ , max(seqk) + 1] *
+        ( rl[ , , 1] * rl[ , , 2] *
+          (cereja[2, ] - cereja[1, ])/(cd * cdlong) +
+          rl[ , , 1] *
+          ( cereja[1, ] * (1 + rl[ , , 2]) - cereja[2, ] * rl[ , , 2]
+          ) * rl[ , , 2] *
+          ( cdlong + cd * (1 - cereja[2, ]) )/(cd * cdlong)^2
+        ) )
+    de12 <- sum( - y[ , max(seqk) + 1] * de_n[ , 1] * de_n[ , 2]/de_d^2)
     dues <- sapply(seqk, function(i) {
         sapply(seqk, function(j) {
             sum( y[ , max(seqk) + 1] *
-                 ( rl[ , , i] * rl[ , , -i]/cd^2 *
-                   recheio[j, ] * cereja[j, ]/d1e_d +
-                   rl[ , , i]/cd^2 * recheio[j, ] * cereja[j, ]/de_d^2
-                 ) * rl[ , , i] *
-                 (sum(rl[ , , -i]/cd^2) + cd + rl[ , , i])
-                )})
+                 ( rl[ , , -i] * rl[ , , i]/cd^2 *
+                   recheio[j, ] * cereja[j, ]/de_d +
+                   rl[ , , -i]/cd^2 * recheio[j, ] * cereja[j, ] *
+                   rl[ , , i] *
+                   ( rl[ , , -i]/cd^2 + cd + rl[ , , i] )/de_d^2
+                 ) )})
     })
-    hess[1, 2] <- hess[2, 1] <- du12[1]
-    hess[3, 4] <- hess[4, 3] <- de12[1]
+    hess[1, 2] <- hess[2, 1] <- du12
+    hess[3, 4] <- hess[4, 3] <- de12
     hess[seqk, -seqk] <- t(dues)
     lowertri <- lower.tri(hess, diag = TRUE)
     hess[lowertri] <- t(hess)[lowertri]
@@ -320,7 +317,7 @@ newton_raphson <- function(initial,
                            preds, beta, gama, dfj, w, prec, logdetprec,
                            max_iter = 50, tol = 1e-5) {
     sol <- matrix(NA, nrow = max_iter, ncol = length(initial))
-    colnames(sol) <- names(r)
+    colnames(sol) <- names(initial)
     sol[1, ] <- initial
     for (i in 2:max_iter) {
         change <- gradHess(r = initial, preds, beta, gama, dfj, w, prec)
