@@ -205,6 +205,8 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     cd <- 1 + rlsum ## cd, common denominator
     ratio <- sweep(rl, 1, cd, '/')
     y <- as.matrix(dfj %>% select(str_subset(names(dfj), "^y\\d")))
+    ymax <- y[ , nr/2 + 1]
+    y <- y[ , -(nr/2 + 1)]
     t <- dfj$t
     delta <- max(t) + .1
     tt <- sweep(-Xgama, 3, r[paste0("e", seqk)], '-') ## trajectory time
@@ -221,8 +223,7 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     ## computing by random effect u (do for each subject and then sum)
     d1u <- sapply(seqk, function(i) {
         sum( ( y[ , i] * (1 + rl[ , , -i]) -
-               rowSums(y[ , -i]) * rl[ , , i] )/cd +
-             y[ , max(seqk) + 1] * rl[ , , i] *
+               y[ , -i] * rl[ , , i] )/cd + ymax * rl[ , , i] *
              ( cereja[-i, ] * rl[ , , -i] -
                cereja[i, ] * (1 + rl[ , , -i]) )/(cd * cdlong)
             )})
@@ -234,8 +235,7 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     de_d <- sapply(seqk, function(i) {
         1 - sum(ratio[i, , ] * cereja[ , i]) })
     d1e <- sapply(seqk, function(i) {
-        sum( y[ , i] * recheio[i, ] -
-             y[ , max(seqk) + 1] * de_n[, i]/de_d )
+        sum( y[ , i] * recheio[i, ] - ymax * de_n[ , i]/de_d )
     })
     grad <- c(d1u, d1e) - prec %*% r
     ## HESSIAN ---------------------------------------------------------
@@ -243,8 +243,7 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     ## each column is for a random effect u
     diag(hess)[seqk] <- sapply(seqk, function(i) {
         sum( - rowSums(y[ , seqk]) *
-             rl[ , , i] * (1 + rl[ , , -i])/cd^2 +
-             y[ , max(seqk) + 1] * rl[ , , i] *
+             rl[ , , i] * (1 + rl[ , , -i])/cd^2 + ymax * rl[ , , i] *
              ( ( cereja[-i, ] * rl[ , , -i] -
                  cereja[i, ] * (1 + rl[ , , -i]) )/(cd * cdlong) +
                ( cereja[i, ] * (1 + rl[ , , -i]) -
@@ -253,13 +252,12 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
              )
             )})
     diag(hess)[seqk + max(seqk)] <- sapply(seqk, function(i) {
-        sum( - y[ , i] - y[ , max(seqk) + 1] *
+        sum( - y[ , i] - ymax *
              ( ratio[ , , i] * cereja[i, ] * (recheio[i, ]^2 - 1)/de_d +
                (de_n[ , i]/de_d)^2 )
             )})
     du12 <- sum(
-        rowSums(y[ , seqk]) * rl[ , , 1] * rl[ , , 2]/cd^2 +
-        y[ , max(seqk) + 1] *
+        rowSums(y[ , seqk]) * rl[ , , 1] * rl[ , , 2]/cd^2 + ymax *
         ( rl[ , , 1] * rl[ , , 2] *
           (cereja[2, ] - cereja[1, ])/(cd * cdlong) +
           rl[ , , 1] *
@@ -267,10 +265,10 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
           ) * rl[ , , 2] *
           ( cdlong + cd * (1 - cereja[2, ]) )/(cd * cdlong)^2
         ) )
-    de12 <- sum( - y[ , max(seqk) + 1] * de_n[ , 1] * de_n[ , 2]/de_d^2)
+    de12 <- sum( - ymax * de_n[ , 1] * de_n[ , 2]/de_d^2)
     dues <- sapply(seqk, function(i) {
         sapply(seqk, function(j) {
-            sum( y[ , max(seqk) + 1] *
+            sum( ymax *
                  ( rl[ , , -i] * rl[ , , i]/cd^2 *
                    recheio[j, ] * cereja[j, ]/de_d +
                    rl[ , , -i]/cd^2 * recheio[j, ] * cereja[j, ] *
