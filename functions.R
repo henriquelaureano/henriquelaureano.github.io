@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-4-28
+## date: 2020-5-1
 ## =====================================================================
 
 ## =====================================================================
@@ -266,19 +266,38 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
           ( cdlong + cd * (1 - cereja[2, ]) )/(cd * cdlong)^2
         ) )
     de12 <- sum( - ymax * de_n[ , 1] * de_n[ , 2]/de_d^2)
-    dues <- sapply(seqk, function(i) {
-        sapply(seqk, function(j) {
-            sum( ymax *
-                 ( rl[ , , -i] * rl[ , , i]/cd^2 *
-                   recheio[j, ] * cereja[j, ]/de_d +
-                   rl[ , , -i]/cd^2 * recheio[j, ] * cereja[j, ] *
-                   rl[ , , i] *
-                   ( rl[ , , -i]/cd^2 + cd + rl[ , , i] )/de_d^2
-                 ) )})
-    })
+    ## dues <- sapply(seqk, function(i) {
+    ##     sapply(seqk, function(j) {
+    ##         sum( ymax *
+    ##              ( rl[ , , -i] * rl[ , , i]/cd^2 *
+    ##                recheio[j, ] * cereja[j, ]/de_d +
+    ##                rl[ , , -i]/cd^2 * recheio[j, ] * cereja[j, ] *
+    ##                rl[ , , i] *
+    ##                ( rl[ , , -i]/cd^2 + cd + rl[ , , i] )/de_d^2
+    ##              ) )})
+    ## })
+    due <- sapply(seqk, function(i) {
+        sum( ymax *
+             ( rl[ , , i] * rl[ , , -i]/cd^2 *
+               recheio[i, ] * cereja[i, ]/de_d +
+               de_n[ , i] *
+               ( rl[ , , i] * rl[ , , -i]/cd^2 * cereja[i, ] -
+                 rl[ , , -i] * (cd - rl[ , , -i])/cd^2 * cereja[-i, ]
+               )/de_d^2
+             )) })
+    due2 <- sapply(seqk, function(i) {
+        sum( ymax *
+             ( de_n[ , i] *
+               ( rl[ , , i] * rl[ , , -i]/cd^2 * cereja[-i, ] -
+                 rl[ , , i] * (cd - rl[ , , i])/cd^2 * cereja[i, ]
+               )/de_d^2 -
+               rl[ , , i] *
+               (cd - rl[ , , i])/cd^2 * recheio[i, ] * cereja[i, ]/de_d
+             ) ) })
     hess[1, 2] <- hess[2, 1] <- du12
     hess[3, 4] <- hess[4, 3] <- de12
-    hess[seqk, -seqk] <- t(dues)
+    hess[1, 3] <- due[1] ; hess[2, 4] <- due[2]
+    hess[1, 4] <- due2[1] ; hess[2, 3] <- due2[2]
     lowertri <- lower.tri(hess, diag = TRUE)
     hess[lowertri] <- t(hess)[lowertri]
     hess <- hess - prec

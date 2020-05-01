@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-04-30 18:09:24</h4>
+<h4 class="date"><em>Last modification on</em> 2020-05-01 13:00:46</h4>
 
 </div>
 
@@ -4483,24 +4483,8 @@ datatable(df,
               - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
              ],\\
  %% --------------------------------------------------------------------
- \bm{l}^{''}(\eta_{kj} u_{mj}) &amp;=
- y_{Kij} \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
- \left( 1 + \sum_{n = 1}^{K-1}
-            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}\right)^{2}}
- w_{k}\frac{\delta}{2\delta t - 2t^{2}}
- (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
- \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
- 1 - \sum_{n = 1}^{K-1}
-     \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
-           1 + \sum_{n = 1}^{K-1}
-           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-     w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-     \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-          - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\\
- &amp;+ y_{Kij}
+ \bm{l}^{''}(\eta_{kj} u_{kj}) &amp;=
+ y_{Kij}
  \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
              \left( 1 + \sum_{n = 1}^{K-1}
                         \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
@@ -4518,17 +4502,44 @@ datatable(df,
         \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
              - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\\
  &amp;\times
- \Bigg( \sum_{n \neq m}^{K-1}
+ \Bigg( \sum_{n \neq k}^{K-1}
         \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-              \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+              \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
         \left( 1 + \sum_{n = 1}^{K-1}
                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-       \right)^{2}} + \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-     \left(1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}\right)\\
+        \right)^{2}}
+        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\\
+ %% ====================================================================
+ &amp;- \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+                (\left(1 + \sum_{n = 1}^{K-1}
+                           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                 \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+                )}{\left(1 + \sum_{n = 1}^{K-1}
+                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
+                                 \}
+                   \right)^{2}}\\
  &amp;+ \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
- \Bigg)
+ \Bigg)\\
+ &amp;+ y_{Kij} \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+ \left( 1 + \sum_{n = 1}^{K-1}
+            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}\right)^{2}}
+ w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+ (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+ \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
+ 1 - \sum_{n = 1}^{K-1}
+     \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
+           1 + \sum_{n = 1}^{K-1}
+           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+     w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+     \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+          - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}
 \end{aligned}
 \]</span></p>
 <pre class="r"><code>theta &lt;- c(
@@ -4562,17 +4573,17 @@ augloglik(r, preds, beta, gama, data = dfj, w, prec, logdetprec)</code></pre>
 gradHess(r, preds, beta, gama, dfj, w, prec)</code></pre>
 <pre><code>$change
               [,1]
-[1,]  0.0007580271
-[2,]  0.0012713604
-[3,] -0.0005332466
-[4,] -0.0032515460
+[1,]  0.0007517308
+[2,]  0.0012673353
+[3,] -0.0005271375
+[4,] -0.0032489956
 
 $hessian
            [,1]       [,2]       [,3]       [,4]
-[1,] -0.9999966 -0.1972155 -0.2459403 -0.1981426
-[2,] -0.1972155 -0.9999875 -0.1985494 -0.1497667
-[3,] -0.2459403 -0.1985494 -1.0009927 -0.1973776
-[4,] -0.1981426 -0.1497667 -0.1973776 -1.0037337</code></pre>
+[1,] -0.9999966 -0.1972155 -0.2452245 -0.1966944
+[2,] -0.1972155 -0.9999875 -0.1956041 -0.1491144
+[3,] -0.2452245 -0.1956041 -1.0009927 -0.1973776
+[4,] -0.1966944 -0.1491144 -0.1973776 -1.0037337</code></pre>
 <pre class="r"><code>newton_raphson(initial = r, preds, beta, gama, dfj, w, prec, logdetprec)</code></pre>
 <pre><code>$value
           [,1]
@@ -4580,17 +4591,17 @@ $hessian
 
 $par
            u1            u2            e1            e2 
--0.0007552497 -0.0012610909  0.0005291344  0.0032465477 
+-0.0007552577 -0.0012610803  0.0005291545  0.0032465281 
 
 $iter
-[1] 3
+[1] 2
 
 $hessian
            [,1]       [,2]       [,3]       [,4]
-[1,] -0.9999965 -0.1972159 -0.2459383 -0.1981385
-[2,] -0.1972159 -0.9999871 -0.1985469 -0.1497620
-[3,] -0.2459383 -0.1985469 -1.0009923 -0.1973775
-[4,] -0.1981385 -0.1497620 -0.1973775 -1.0037293</code></pre>
+[1,] -0.9999965 -0.1972159 -0.2452240 -0.1966950
+[2,] -0.1972159 -0.9999871 -0.1956116 -0.1491133
+[3,] -0.2452240 -0.1956116 -1.0009923 -0.1973775
+[4,] -0.1966950 -0.1491133 -0.1973775 -1.0037293</code></pre>
 <pre class="r"><code>optim(par = r, fn = augloglik,
       preds = preds, beta = beta, gama = gama,
       data = dfj, w = w, prec = prec, logdetprec = logdetprec,
@@ -4624,42 +4635,35 @@ e2 -0.1976036 -0.1471213 -0.1973775 -1.0037293</code></pre>
 rs &lt;- future_map(seq(J), function(index) {
     newton_raphson(initial = r, preds, beta, gama,
                    dfj = df %&gt;% filter(j == index), w, prec, logdetprec
-                   )$par
+                   )
     })
 toc()</code></pre>
-<pre><code>0.58 sec elapsed</code></pre>
-<pre class="r"><code>rs &lt;- matrix(unlist(rs), nrow = J, byrow = TRUE)
-colnames(rs) &lt;- names(r)
-rs</code></pre>
-<pre><code>                 u1           u2            e1           e2
- [1,] -0.0007552497 -0.001261091  0.0005291344  0.003246548
- [2,] -0.0006449565 -0.001255959  0.0003397476  0.003434891
- [3,] -0.5081019360  0.679497043 -0.4199962704  2.078902114
- [4,] -0.4549425546  0.323883602 -0.3978004926  2.258084794
- [5,] -0.0285970747  0.554245152  0.0462917368 -0.753296276
- [6,] -0.5112137566  0.678054054 -0.4232970546  2.100929881
- [7,] -0.0959490876  0.517392786 -0.0242353973 -0.275543301
- [8,] -0.1019668888  0.514108742 -0.0305320577 -0.232889937
- [9,] -0.4357219018  0.713203403 -0.3431291230  1.565934373
-[10,] -0.5140706301  0.293870202 -0.4571470883  2.663370009
-[11,]  0.3080566285 -0.174333910  0.0550660037  2.521267436
-[12,] -0.5169191682  0.290772456 -0.4625671261  2.695019616
-[13,] -0.3937335127  0.732885488 -0.2984562481  1.267815172
-[14,] -0.0014926707 -0.004428799 -0.0002799793  0.004096440
-[15,] -0.4881623779  0.688755140 -0.3988381971  1.937704304
-[16,] -0.5133981707  0.677041413 -0.4256139227  2.116391501
-[17,]  0.0034724202 -0.004249783  0.0023576147 -0.013287422
-[18,] -0.5136675149  0.278020935 -0.4607669647  2.693616061
-[19,]  0.0027204121 -0.001160830  0.0023313468 -0.014027010
-[20,]  0.0036666195 -0.003616243  0.0027847903 -0.015444801</code></pre>
-<pre class="r"><code>round(cbind(cov2cor(cov(df %&gt;% filter(i == 1) %&gt;% select(names(r)))),
-            cov2cor(cov(rs))),
-      3)</code></pre>
-<pre><code>      u1    u2    e1    e2     u1     u2     e1     e2
-u1 1.000 0.510 0.633 0.391  1.000 -0.717  0.970 -0.682
-u2 0.510 1.000 0.512 0.420 -0.717  1.000 -0.605  0.265
-e1 0.633 0.512 1.000 0.452  0.970 -0.605  1.000 -0.839
-e2 0.391 0.420 0.452 1.000 -0.682  0.265 -0.839  1.000</code></pre>
+<pre><code>0.411 sec elapsed</code></pre>
+<pre class="r"><code>iters &lt;- sapply(seq(J), function(i) { rs[[i]]$iter })
+pars &lt;- t(sapply(seq(J), function(i) { rs[[i]]$par }))
+
+round(cbind(iters, pars), 5)</code></pre>
+<pre><code>      iters       u1       u2       e1       e2
+ [1,]     2 -0.00076 -0.00126  0.00053  0.00325
+ [2,]     2 -0.00064 -0.00126  0.00034  0.00343
+ [3,]     4 -0.50810  0.67950 -0.42000  2.07890
+ [4,]     3 -0.45494  0.32388 -0.39780  2.25808
+ [5,]     3 -0.02860  0.55425  0.04629 -0.75330
+ [6,]     4 -0.51121  0.67805 -0.42330  2.10093
+ [7,]     3 -0.09595  0.51739 -0.02424 -0.27554
+ [8,]     3 -0.10197  0.51411 -0.03053 -0.23289
+ [9,]     4 -0.43572  0.71320 -0.34313  1.56593
+[10,]     4 -0.51407  0.29387 -0.45715  2.66337
+[11,]     3  0.30806 -0.17433  0.05507  2.52127
+[12,]     3 -0.51692  0.29077 -0.46257  2.69502
+[13,]     4 -0.39373  0.73289 -0.29846  1.26782
+[14,]     3 -0.00149 -0.00443 -0.00028  0.00410
+[15,]     4 -0.48816  0.68876 -0.39884  1.93770
+[16,]     4 -0.51340  0.67704 -0.42561  2.11639
+[17,]     3  0.00347 -0.00425  0.00236 -0.01329
+[18,]     5 -0.51367  0.27802 -0.46077  2.69362
+[19,]     3  0.00272 -0.00116  0.00233 -0.01403
+[20,]     3  0.00367 -0.00362  0.00278 -0.01544</code></pre>
 <div id="of-the-marginal" class="section level2">
 <h2>of the marginal</h2>
 <pre class="r"><code>parnames(multi_mixed) &lt;- names(theta)
