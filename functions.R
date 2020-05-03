@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-5-1
+## date: 2020-5-2
 ## =====================================================================
 
 ## =====================================================================
@@ -266,33 +266,23 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
           ( cdlong + cd * (1 - cereja[2, ]) )/(cd * cdlong)^2
         ) )
     de12 <- sum( - ymax * de_n[ , 1] * de_n[ , 2]/de_d^2)
-    ## dues <- sapply(seqk, function(i) {
-    ##     sapply(seqk, function(j) {
-    ##         sum( ymax *
-    ##              ( rl[ , , -i] * rl[ , , i]/cd^2 *
-    ##                recheio[j, ] * cereja[j, ]/de_d +
-    ##                rl[ , , -i]/cd^2 * recheio[j, ] * cereja[j, ] *
-    ##                rl[ , , i] *
-    ##                ( rl[ , , -i]/cd^2 + cd + rl[ , , i] )/de_d^2
-    ##              ) )})
-    ## })
     due <- sapply(seqk, function(i) {
-        sum( ymax *
-             ( rl[ , , i] * rl[ , , -i]/cd^2 *
-               recheio[i, ] * cereja[i, ]/de_d +
-               de_n[ , i] *
-               ( rl[ , , i] * rl[ , , -i]/cd^2 * cereja[i, ] -
-                 rl[ , , -i] * (cd - rl[ , , -i])/cd^2 * cereja[-i, ]
-               )/de_d^2
-             )) })
-    due2 <- sapply(seqk, function(i) {
         sum( ymax *
              ( de_n[ , i] *
                ( rl[ , , i] * rl[ , , -i]/cd^2 * cereja[-i, ] -
                  rl[ , , i] * (cd - rl[ , , i])/cd^2 * cereja[i, ]
                )/de_d^2 -
-               rl[ , , i] *
-               (cd - rl[ , , i])/cd^2 * recheio[i, ] * cereja[i, ]/de_d
+               rl[ , , i] * (cd - rl[ , , i])/cd^2 *
+               recheio[i, ] * cereja[i, ]/de_d
+             ) ) })
+    due2 <- sapply(seqk, function(i) {
+        sum( ymax *
+             ( de_n[ , i] *
+               ( rl[ , , i] * rl[ , , -i]/cd^2 * cereja[-i, ] -
+                 rl[ , , -i] * (cd - rl[ , , -i])/cd^2 * cereja[-i, ]
+               )/de_d^2 +
+               rl[ , , i] * rl[ , , -i]/cd^2 *
+               recheio[i, ] * cereja[i, ]/de_d
              ) ) })
     hess[1, 2] <- hess[2, 1] <- du12
     hess[3, 4] <- hess[4, 3] <- de12
@@ -351,23 +341,29 @@ newton_raphson <- function(initial,
 }
 
 ## =====================================================================
-## laplace: laplace approximation
+## laplace: laplace approximation of the augmented log-likelihood
 ## args:
-## -- initial: vector, random effects;
-## -- preds: list of linear predictors, they can be of different sizes;
-## -- ys: data.frame, it needs the response vectors and covariates;
-## -- beta: named vector;
-## -- det_sigma: log-determinant of the variance-covariance matrix;
-## -- inv_sigma: precison matrix.
+## -- initial: named vector of random effects to be integrated out;
+## -- preds: list of linear predictors, it can be of different sizes;
+## -- beta: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
+## -- gama: named vector where the last digit indicates from which
+##          linear predictor the coef correspond;
+## -- dfj: data.frame, the output of 'datasetup' but just with one
+##         cluster at time;
+## -- w: vector of parameters with the same length that 'preds';
+## -- prec: precision matrix, output of 'preccomp';
+## -- logdetprec: log-determinant of the precision matrix, also output
+##                of 'preccomp'.
 ## return:
-## -- value, laplace approx. evaluation.
+## -- value, laplace approximation evaluation.
 
-laplace <- function(initial, preds, ys, beta, det_sigma, inv_sigma) {
+laplace <- function(initial,
+                    preds, beta, gama, dfj, w, prec, logdetprec) {
     integral <- -6e+05
     logQ <- try(
-        newton_raphson(initial = initial,
-                       preds = preds, ys = ys, beta = beta,
-                       det_sigma = det_sigma, inv_sigma = inv_sigma),
+        newton_raphson(initial,
+                       preds, beta, gama, dfj, w, prec, logdetprec),
         silent = TRUE)
     if (class(logQ) != "try-error") {
         integral <-
@@ -378,7 +374,10 @@ laplace <- function(initial, preds, ys, beta, det_sigma, inv_sigma) {
 }
 
 ## =====================================================================
-## laplaceC: compiled body expression version of laplace
+## laplaceC: 'laplace' compiled body expression version
+## args: see 'laplace' args
+## return: see 'laplace' return
+
 laplaceC <- cmpfun(laplace)
 
 ## =====================================================================

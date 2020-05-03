@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-05-01 13:00:46</h4>
+<h4 class="date"><em>Last modification on</em> 2020-05-02 21:39:33</h4>
 
 </div>
 
@@ -4126,12 +4126,12 @@ datatable(df,
 </div>
 <div id="optimization" class="section level1">
 <h1>optimization</h1>
-<p>What we have here is an augmented likelihood (multinomial likelihood times a multivariate normal for the random effects), so the first step is to integrate out these random effects - together, <span class="math inline">\(u\)</span>’s and <span class="math inline">\(\eta\)</span>’s.</p>
-<p>We know since we simulate it, that these random effects are from a distribution with mean zero. Therefore, we can use a Newton-Raphson algorithm. This is what we do next.</p>
+<p>What we have here is an augmented likelihood (multinomial likelihood times a multivariate normal distribution for the random effects), so the first step is to integrate out these random effects - together, <span class="math inline">\(u\)</span>’s and <span class="math inline">\(\eta\)</span>’s.</p>
+<p>We know, since we simulate it, that these random effects are from a distribution with mean zero. Therefore, a Newton-Raphson algorithm is a good choice here. This is what we do next.</p>
 <p>The Newton-Raphson algorithm has the following scheme <span class="math display">\[
  \bm{r}_{n+1} =
  \bm{r}_{n} - \bm{l}^{''} (\bm{r}_{n})^{-1} \bm{l}^{'} (\bm{r}_{n}),
-\]</span> until convergence and with <span class="math inline">\(\bm{l}\)</span> being the augmented log-likelihood.</p>
+\]</span> that is performed until convergence and with <span class="math inline">\(\bm{l}\)</span> being the augmented log-likelihood.</p>
 <p>To speed up the convergence and numerical stability, I computed by hand the gradient, <span class="math display">\[
 \begin{aligned}
  \bm{l}^{'} (u_{kj})
@@ -4481,14 +4481,16 @@ datatable(df,
  &amp;\times \phi[w_{m}
               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
               - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
-             ],\\
- %% --------------------------------------------------------------------
+             ]\\
+ &amp;- e_{k}^{\top} \bm{Q},
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
  \bm{l}^{''}(\eta_{kj} u_{kj}) &amp;=
  y_{Kij}
  \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
-             \left( 1 + \sum_{n = 1}^{K-1}
-                        \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-            \right)^{2}}
+             1 + \sum_{n = 1}^{K-1}
+                 \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
   w_{k}\frac{\delta}{2\delta t - 2t^{2}}
  (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
   - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
@@ -4512,36 +4514,110 @@ datatable(df,
         \phi[w_{n}
              \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
              - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\\
- %% ====================================================================
- &amp;- \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-                (\left(1 + \sum_{n = 1}^{K-1}
-                           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                 \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-                )}{\left(1 + \sum_{n = 1}^{K-1}
+  &amp;- \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \left(
+          \left(1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \right)}{\left(1 + \sum_{n = 1}^{K-1}
                              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
                                  \}
                    \right)^{2}}\\
- &amp;+ \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-    \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
- \Bigg)\\
- &amp;+ y_{Kij} \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
- \left( 1 + \sum_{n = 1}^{K-1}
-            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}\right)^{2}}
+  &amp;\times
+  w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+  \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\Bigg)\\
+ &amp;- y_{Kij} \frac{
+    \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \left(
+          \left(1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \right)}{\left(1 + \sum_{n = 1}^{K-1}
+                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
+                                 \}
+                   \right)^{2}}}{
+    1 - \sum_{n = 1}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
+              1 + \sum_{n = 1}^{K-1}
+                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+              w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+         - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\\
+ &amp;\times
  w_{k}\frac{\delta}{2\delta t - 2t^{2}}
- (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+  (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+   - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+  \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\\
+ &amp;- e_{k}^{\top} \bm{Q},
+\end{aligned}
+\]</span> <span class="math display">\[
+\begin{aligned}
+ \bm{l}^{''}(\eta_{kj} u_{mj}) &amp;=
+ y_{Kij}
+ \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+             \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+       \left( 1 + \sum_{n = 1}^{K-1}
+                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+       \right)^{2}}
+ w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+(w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
   - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
  \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
  1 - \sum_{n = 1}^{K-1}
      \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
            1 + \sum_{n = 1}^{K-1}
+               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+           w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+      \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+           - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\\
+ &amp;+
+ y_{Kij}
+ \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
+       1 + \sum_{n = 1}^{K-1}
            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-     w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-     \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-          - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}
+ w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+(w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+ \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
+ \left(1 - \sum_{n = 1}^{K-1}
+           \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
+       1 + \sum_{n = 1}^{K-1}
+           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+ w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+ \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+      - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\\
+ &amp;\times
+ \Bigg( \sum_{n \neq m}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+              \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+        \left( 1 + \sum_{n = 1}^{K-1}
+                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+        \right)^{2}}
+        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\\
+  &amp;- \frac{\exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+          \left(
+          \left(1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          \right) - \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+          \right)}{\left(1 + \sum_{n = 1}^{K-1}
+                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
+                                 \}
+                   \right)^{2}}\\
+  &amp;\times
+  w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+  \phi[w_{m} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+       - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]\Bigg)\\
+ &amp;- e_{k}^{\top} \bm{Q}.
 \end{aligned}
 \]</span></p>
+<p>And now we see the magic happens,</p>
 <pre class="r"><code>theta &lt;- c(
     ## risk level fixed-effects parameters -----------------------------
     &quot;b01&quot; = -1.9, &quot;b02&quot; = -0.2,
@@ -4560,48 +4636,28 @@ logdetprec &lt;- PREC$logdetprec
 beta &lt;- coefs['beta']
 gama &lt;- coefs['gama']
 w &lt;- c(3, 2)
-r &lt;- c(&quot;u1&quot; = 0, &quot;u2&quot; = 0, &quot;e1&quot; = 0, &quot;e2&quot; = 0)
-
-augloglik(r, preds, beta, gama, data = df, w, prec, logdetprec)</code></pre>
-<pre><code>          [,1]
-[1,] -126.1535</code></pre>
+r &lt;- c(&quot;u1&quot; = 0, &quot;u2&quot; = 0, &quot;e1&quot; = 0, &quot;e2&quot; = 0)</code></pre>
+<p>First, to check if my derivatives and Newton-Raphson algorithm are correclty (and implemented correctly) we also perform an optimization routine that computes the derivatives numerically. All this for just one cluster, i.e. a pair of twins.</p>
 <pre class="r"><code>dfj &lt;- df %&gt;% filter(j == 1)
-augloglik(r, preds, beta, gama, data = dfj, w, prec, logdetprec)</code></pre>
-<pre><code>          [,1]
-[1,] -3.777656</code></pre>
-<pre class="r"><code>## source(&quot;functions.R&quot;)
-gradHess(r, preds, beta, gama, dfj, w, prec)</code></pre>
-<pre><code>$change
-              [,1]
-[1,]  0.0007517308
-[2,]  0.0012673353
-[3,] -0.0005271375
-[4,] -0.0032489956
 
-$hessian
-           [,1]       [,2]       [,3]       [,4]
-[1,] -0.9999966 -0.1972155 -0.2452245 -0.1966944
-[2,] -0.1972155 -0.9999875 -0.1956041 -0.1491144
-[3,] -0.2452245 -0.1956041 -1.0009927 -0.1973776
-[4,] -0.1966944 -0.1491144 -0.1973776 -1.0037337</code></pre>
-<pre class="r"><code>newton_raphson(initial = r, preds, beta, gama, dfj, w, prec, logdetprec)</code></pre>
+newton_raphson(initial = r, preds, beta, gama, dfj, w, prec, logdetprec)</code></pre>
 <pre><code>$value
           [,1]
 [1,] -3.777651
 
 $par
            u1            u2            e1            e2 
--0.0007552577 -0.0012610803  0.0005291545  0.0032465281 
+-0.0007552496 -0.0012610908  0.0005291343  0.0032465476 
 
 $iter
 [1] 2
 
 $hessian
            [,1]       [,2]       [,3]       [,4]
-[1,] -0.9999965 -0.1972159 -0.2452240 -0.1966950
-[2,] -0.1972159 -0.9999871 -0.1956116 -0.1491133
-[3,] -0.2452240 -0.1956116 -1.0009923 -0.1973775
-[4,] -0.1966950 -0.1491133 -0.1973775 -1.0037293</code></pre>
+[1,] -0.9999965 -0.1972159 -0.2442384 -0.1976806
+[2,] -0.1972159 -0.9999871 -0.1976037 -0.1471213
+[3,] -0.2442384 -0.1976037 -1.0009923 -0.1973775
+[4,] -0.1976806 -0.1471213 -0.1973775 -1.0037293</code></pre>
 <pre class="r"><code>optim(par = r, fn = augloglik,
       preds = preds, beta = beta, gama = gama,
       data = dfj, w = w, prec = prec, logdetprec = logdetprec,
@@ -4629,18 +4685,17 @@ u1 -1.0001983 -0.1972159 -0.2442384 -0.1976036
 u2 -0.1972159 -1.0001394 -0.1976807 -0.1471213
 e1 -0.2442384 -0.1976807 -1.0009923 -0.1973775
 e2 -0.1976036 -0.1471213 -0.1973775 -1.0037293</code></pre>
-<p>Yes!! They’re performing equally.</p>
-<p>Now, we estimate/predict the random effects for all the subjects and compare them with its original (simulated) values.</p>
+<p>Yeah! It’s all right. … and took just 2 iterations to converge.</p>
+<p>Now we estimate/predict the random effects for all pairs of twins.</p>
 <pre class="r"><code>tic()
 rs &lt;- future_map(seq(J), function(index) {
     newton_raphson(initial = r, preds, beta, gama,
-                   dfj = df %&gt;% filter(j == index), w, prec, logdetprec
-                   )
+                   dfj = df %&gt;% filter(j == index), w, prec, logdetprec)
     })
 toc()</code></pre>
-<pre><code>0.411 sec elapsed</code></pre>
-<pre class="r"><code>iters &lt;- sapply(seq(J), function(i) { rs[[i]]$iter })
-pars &lt;- t(sapply(seq(J), function(i) { rs[[i]]$par }))
+<pre><code>0.397 sec elapsed</code></pre>
+<pre class="r"><code>iters &lt;- sapply(seq(J), function(i) rs[[i]]$iter)
+pars &lt;- t(sapply(seq(J), function(i) rs[[i]]$par))
 
 round(cbind(iters, pars), 5)</code></pre>
 <pre><code>      iters       u1       u2       e1       e2
@@ -4653,15 +4708,15 @@ round(cbind(iters, pars), 5)</code></pre>
  [7,]     3 -0.09595  0.51739 -0.02424 -0.27554
  [8,]     3 -0.10197  0.51411 -0.03053 -0.23289
  [9,]     4 -0.43572  0.71320 -0.34313  1.56593
-[10,]     4 -0.51407  0.29387 -0.45715  2.66337
+[10,]     3 -0.51407  0.29387 -0.45715  2.66337
 [11,]     3  0.30806 -0.17433  0.05507  2.52127
 [12,]     3 -0.51692  0.29077 -0.46257  2.69502
 [13,]     4 -0.39373  0.73289 -0.29846  1.26782
-[14,]     3 -0.00149 -0.00443 -0.00028  0.00410
+[14,]     2 -0.00149 -0.00443 -0.00028  0.00410
 [15,]     4 -0.48816  0.68876 -0.39884  1.93770
 [16,]     4 -0.51340  0.67704 -0.42561  2.11639
 [17,]     3  0.00347 -0.00425  0.00236 -0.01329
-[18,]     5 -0.51367  0.27802 -0.46077  2.69362
+[18,]     4 -0.51367  0.27802 -0.46077  2.69362
 [19,]     3  0.00272 -0.00116  0.00233 -0.01403
 [20,]     3  0.00367 -0.00362  0.00278 -0.01544</code></pre>
 <div id="of-the-marginal" class="section level2">
