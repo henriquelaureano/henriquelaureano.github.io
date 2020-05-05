@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-5-2
+## date: 2020-5-4
 ## =====================================================================
 
 ## =====================================================================
@@ -391,16 +391,20 @@ laplaceC <- cmpfun(laplace)
 ## return:
 ## -- negative of the likelihood sum.
 
-multi_mixed <- function(theta, preds, data, until) {
+marginaloglik <- function(theta, preds, data, until) {
     out <- -sqrt(.Machine$double.xmax)
     beta <- theta[str_detect(names(theta), pattern = "^b\\d")]
-    myvcov <- vcov2(theta) ; alpha <- numeric(nrow(myvcov$inv))
-    out <- future_map_dbl(
-        seq(until),
-        function(index) {
-            laplaceC(initial = alpha, preds = preds, beta = beta,
-                     ys = data[data$i == index, ],
-                     det_sigma = myvcov$logdet, inv_sigma = myvcov$inv)
-        })
+    gama <- theta[str_detect(names(theta), pattern = "^g\\d")]
+    w <- theta[str_detect(names(theta), pattern = "^w\\d")]
+    PREC <- try(preccomp(theta), silent = TRUE)
+    lpreds <- length(preds)
+    r <- numeric(lpreds * 2)
+    names(r) <- c(paste0("u", seq(lpreds)), paste0("e", seq(lpreds)))
+    out <- future_map_dbl(seq(until), function(index) {
+        laplaceC(initial = r,
+                 preds = preds, beta = beta, gama = gama,
+                 dfj = data %>% filter(j == index),
+                 w = w, prec = PREC$prec, logdetprec = PREC$logdetprec)
+    })
     return(-sum(out))
 }
