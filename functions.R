@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-5-4
+## date: 2020-5-9
 ## =====================================================================
 
 ## =====================================================================
@@ -119,21 +119,36 @@ failuretimes <- function(Xgama, e, delta) {
 ##    $logdetprec: log-determinant of '$prec'.
 
 preccomp <- function(theta) {
-    precdiag <- str_subset(names(theta), "^d\\d")
-    precdim <- length(precdiag)
-    prec <- matrix(NA, nrow = precdim, ncol = precdim)
-    diag(prec) <- exp(theta[precdiag])
+    ## precdiag <- str_subset(names(theta), "^d\\d")
+    ## precdim <- length(precdiag)
+    ## prec <- matrix(NA, nrow = precdim, ncol = precdim)
+    ## diag(prec) <- exp(theta[precdiag])
+    ## for (i in seq(precdim - 1)) {
+    ##     for (j in seq(i + 1, precdim)) {
+    ##         ijth <- str_subset(names(theta), paste0("offd", i, j))
+    ##         precij <- exp(theta[ijth])
+    ##         prec[i, j] <- 2 * precij/(1 + precij) - 1
+    ##     }
+    ## }
+    Dentries <- str_subset(names(theta), "^d\\d")
+    precdim <- length(Dentries)
+    invD2 <- diag(1/exp(theta[Dentries]), precdim, precdim)
+    tT <- diag(1, nrow = precdim, ncol = precdim)
     for (i in seq(precdim - 1)) {
         for (j in seq(i + 1, precdim)) {
             ijth <- str_subset(names(theta), paste0("offd", i, j))
-            precij <- exp(theta[ijth])
-            prec[i, j] <- 2 * precij/(1 + precij) - 1
+            tT[i, j] <- exp(theta[ijth])
         }
     }
-    lowertri <- lower.tri(prec, diag = TRUE)
-    prec[lowertri] <- t(prec)[lowertri]
-    logdetprec <- log(det(chol(prec))^2)
-    return(list(prec = prec, logdetprec = logdetprec))
+    T <- t(tT)
+    ## modified cholesky decomposition
+    Q <- tT %*% invD2 %*% T
+    ## lowertri <- lower.tri(prec, diag = TRUE)
+    ## prec[lowertri] <- t(prec)[lowertri]
+    ## logdetprec <- determinant(Q)$modulus
+    ## logdetprec <- log(prod(diag(chol(prec)))^2)
+    logdetQ <- log(prod(diag(invD2)))
+    return(list(prec = Q, logdetprec = logdetQ))
 }
 
 ## =====================================================================
@@ -369,6 +384,7 @@ laplace <- function(initial,
         integral <-
             logQ$value + length(initial)/2 * log(2*pi) -
             .5 * determinant(-logQ$hessian)$modulus
+            ## log(prod(diag(chol(-logQ$hessian))))
     }
     return(integral)
 }
@@ -381,7 +397,7 @@ laplace <- function(initial,
 laplaceC <- cmpfun(laplace)
 
 ## =====================================================================
-## multi_mixed: marginal likelihood
+## marginaloglik: marginal log-likelihood
 ## args:
 ## -- theta: named vector, whole parameter vector;
 ## -- preds: list of linear predictors, they can be of different sizes;
@@ -406,5 +422,11 @@ marginaloglik <- function(theta, preds, data, until) {
                  dfj = data %>% filter(j == index),
                  w = w, prec = PREC$prec, logdetprec = PREC$logdetprec)
     })
+    ## out <- sapply(seq(until), function(index) {
+    ##     laplaceC(initial = r,
+    ##              preds = preds, beta = beta, gama = gama,
+    ##              dfj = data %>% filter(j == index),
+    ##              w = w, prec = PREC$prec, logdetprec = PREC$logdetprec)
+    ## })
     return(-sum(out))
 }
