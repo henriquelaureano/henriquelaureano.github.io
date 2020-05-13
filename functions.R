@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-5-9
+## date: 2020-5-12
 ## =====================================================================
 
 ## =====================================================================
@@ -107,48 +107,62 @@ failuretimes <- function(Xgama, e, delta) {
 }
 
 ## =====================================================================
-## preccomp: precision matrix and respective log-determinant -
-##           transformations are applied to its parameters
+## compQ: precision matrix and respective log-determinant,
+##        transformations are applied to its parameters
 ## args:
 ## -- theta: named vector, diagonal elements should start with 'd' and
 ##           off-diagonal elements should start with 'offd' followed by
-##           its corresponding position number.
+##           its corresponding position number;
+## -- method: "modChol", i.e. a modified Cholesky decomposition
+##            (Q = T^{\top} (D^{2})^{-1} T) and "unconsCorr", i.e. a
+##            decomposition based on the unconstrained correlation
+##            matrix of TMB's manual (Q = W^{-\top} \Sigma W^{-1},
+##            \Sigma = D^{1/2} L^{-\top} L^{-1} D^{1/2}).
 ## return:
 ## -- list with two slots,
-##    $prec: precision matrix of the transformed parameters;
-##    $logdetprec: log-determinant of '$prec'.
+##    $Q: precision matrix of the transformed parameters;
+##    $logdetQ: log-determinant of '$Q'.
 
-preccomp <- function(theta) {
-    ## precdiag <- str_subset(names(theta), "^d\\d")
-    ## precdim <- length(precdiag)
-    ## prec <- matrix(NA, nrow = precdim, ncol = precdim)
-    ## diag(prec) <- exp(theta[precdiag])
-    ## for (i in seq(precdim - 1)) {
-    ##     for (j in seq(i + 1, precdim)) {
-    ##         ijth <- str_subset(names(theta), paste0("offd", i, j))
-    ##         precij <- exp(theta[ijth])
-    ##         prec[i, j] <- 2 * precij/(1 + precij) - 1
-    ##     }
-    ## }
+compQ <- function(theta, method = c("modChol", "unconsCorr")) {
     Dentries <- str_subset(names(theta), "^d\\d")
-    precdim <- length(Dentries)
-    invD2 <- diag(1/exp(theta[Dentries]), precdim, precdim)
-    tT <- diag(1, nrow = precdim, ncol = precdim)
-    for (i in seq(precdim - 1)) {
-        for (j in seq(i + 1, precdim)) {
-            ijth <- str_subset(names(theta), paste0("offd", i, j))
-            tT[i, j] <- exp(theta[ijth])
-        }
-    }
-    T <- t(tT)
-    ## modified cholesky decomposition
-    Q <- tT %*% invD2 %*% T
-    ## lowertri <- lower.tri(prec, diag = TRUE)
-    ## prec[lowertri] <- t(prec)[lowertri]
-    ## logdetprec <- determinant(Q)$modulus
-    ## logdetprec <- log(prod(diag(chol(prec)))^2)
-    logdetQ <- log(prod(diag(invD2)))
-    return(list(prec = Q, logdetprec = logdetQ))
+    dimQ <- length(Dentries)
+    switch(method,
+           "modChol" = {
+               invD2 <- diag(1/exp(theta[Dentries])^2, dimQ, dimQ)
+               tT <- diag(1, nrow = dimQ, ncol = dimQ)
+               for (i in seq(dimQ - 1)) {
+                   for (j in seq(i + 1, dimQ)) {
+                       ijth <- str_subset(names(theta),
+                                          paste0("offd", i, j))
+                       tT[i, j] <- -exp(theta[ijth])
+                   }
+               }
+               T <- t(tT)
+               ## modified cholesky decomposition
+               Q <- tT %*% invD2 %*% T
+               logdetQ <- log(prod(diag(invD2)))
+           },
+           "unconsCorr" = {
+               ## based on the TMB unconstrained correlation matrix
+               tinvL <- diag(1, nrow = dimQ, ncol = dimQ)
+               for (i in seq(dimQ - 1)) {
+                   for (j in seq(i + 1, dimQ)) {
+                       ijth <- str_subset(names(theta),
+                                          paste0("offd", i, j))
+                       tinvL[i, j] <- -exp(theta[ijth])
+                   }
+               }
+               sqrtD <- diag(sqrt(diag(t(tinvL) %*% tinvL)),
+                             nrow = dimQ, ncol = dimQ)
+               ## invW is equal to invD2
+               invW <- diag(1/exp(theta[Dentries]), dimQ, dimQ)
+               Q <- invW %*%
+                   sqrtD %*% tinvL %*% t(tinvL) %*% sqrtD %*% invW
+               logdetQ <- log((prod(diag(invW)) * prod(diag(sqrtD)))^2)
+           })
+    ## logdetQ <- determinant(Q)$modulus
+    ## logdetQ <- log(prod(diag(chol(Q)))^2)
+    return(list(Q = Q, logdetQ = logdetQ))
 }
 
 ## =====================================================================
@@ -162,13 +176,13 @@ preccomp <- function(theta) {
 ##          linear predictor the coef correspond;
 ## -- data: data.frame, the output of 'datasetup';
 ## -- w: vector of parameters with the same length that 'preds';
-## -- prec: precision matrix, output of 'preccomp';
-## -- logdetprec: log-determinant of the precision matrix, also output
-##                of 'preccomp'.
+## -- Q: precision matrix, output of 'compQ';
+## -- logdetQ: log-determinant of the precision matrix, also output of
+##             'compQ'.
 ## return:
 ## -- value, augmented log-likelihood evaluation.
 
-augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
+augloglik <- function(r, preds, beta, gama, data, w, Q, logdetQ) {
     npreds <- length(preds)
     seqk <- seq(npreds)
     Xbeta <- Xcoef(preds, beta, data)
@@ -187,7 +201,7 @@ augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
     ps <- cbind(pk, 1 - rowSums(pk))
     y <- as.matrix(data %>% select(str_subset(names(data), "^y\\d")))
     out <- sum(dmultinomial(y, size = 1, prob = ps, log = TRUE)) -
-        2 * log(2 * pi) + .5 * logdetprec - .5 * r %*% prec %*% r
+        2 * log(2 * pi) + .5 * logdetQ - .5 * r %*% Q %*% r
     return(out)
 }
 
@@ -203,13 +217,13 @@ augloglik <- function(r, preds, beta, gama, data, w, prec, logdetprec) {
 ## -- dfj: data.frame, the output of 'datasetup' but just with one
 ##         cluster at time;
 ## -- w: vector of parameters with the same length that 'preds';
-## -- prec: precision matrix, output of 'preccomp'.
+## -- Q: precision matrix, output of 'compQ'.
 ## return:
 ## -- list with two slots,
 ##    ['change'] gradient 'divided' by the hessian;
 ##    ['hessian'] hessian.
 
-gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
+gradHess <- function(r, preds, beta, gama, dfj, w, Q) {
     n <- nrow(dfj) ## number of subjects
     nr <- length(r)
     seqk <- seq(length(preds)) ## half of the gradient output dimension
@@ -252,7 +266,7 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     d1e <- sapply(seqk, function(i) {
         sum( y[ , i] * recheio[i, ] - ymax * de_n[ , i]/de_d )
     })
-    grad <- c(d1u, d1e) - prec %*% r
+    grad <- c(d1u, d1e) - Q %*% r
     ## HESSIAN ---------------------------------------------------------
     hess <- matrix(NA, nrow = nr, ncol = nr)
     ## each column is for a random effect u
@@ -305,7 +319,7 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
     hess[1, 4] <- due2[1] ; hess[2, 3] <- due2[2]
     lowertri <- lower.tri(hess, diag = TRUE)
     hess[lowertri] <- t(hess)[lowertri]
-    hess <- hess - prec
+    hess <- hess - Q
     change <- solve(hess, grad)
     return(list('change' = change, 'hessian' = hess))
 }
@@ -323,9 +337,9 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
 ## -- dfj: data.frame, the output of 'datasetup' but just with one
 ##         cluster at time;
 ## -- w: vector of parameters with the same length that 'preds';
-## -- prec: precision matrix, output of 'preccomp';
-## -- logdetprec: log-determinant of the precision matrix, also output
-##                of 'preccomp';
+## -- Q: precision matrix, output of 'compQ';
+## -- logdetQ: log-determinant of the precision matrix, also output of
+##             'compQ';
 ## -- max_iter: maximum number of iterations, pre-fixed at 50;
 ## -- tol: minimum convergence tolerance.
 ## return:
@@ -335,21 +349,20 @@ gradHess <- function(r, preds, beta, gama, dfj, w, prec) {
 ##    ['iter'] number of iterations up to convergence;
 ##    ['hessian'] hessian at 'par'.
 
-newton_raphson <- function(initial,
-                           preds, beta, gama, dfj, w, prec, logdetprec,
-                           max_iter = 50, tol = 1e-5) {
+newton_raphson <- function(initial, preds, beta, gama, dfj, w,
+                           Q, logdetQ, max_iter = 50, tol = 1e-5) {
     sol <- matrix(NA, nrow = max_iter, ncol = length(initial))
     colnames(sol) <- names(initial)
     sol[1, ] <- initial
     for (i in 2:max_iter) {
-        change <- gradHess(r = initial, preds, beta, gama, dfj, w, prec)
+        change <- gradHess(r = initial, preds, beta, gama, dfj, w, Q)
         sol[i, ] <- initial - change$change
         initial <- sol[i, ]
         tol_iter <- abs(sol[i, ] - sol[i - 1, ])
         if (all(tol_iter < tol) == TRUE) break
     }
     return(list('value' = augloglik(r = initial, preds, beta, gama,
-                                    data = dfj, w, prec, logdetprec),
+                                    data = dfj, w, Q, logdetQ),
                 'par' = initial,
                 'iter' = i - 1,
                 'hessian' = change$hessian))
@@ -367,18 +380,16 @@ newton_raphson <- function(initial,
 ## -- dfj: data.frame, the output of 'datasetup' but just with one
 ##         cluster at time;
 ## -- w: vector of parameters with the same length that 'preds';
-## -- prec: precision matrix, output of 'preccomp';
-## -- logdetprec: log-determinant of the precision matrix, also output
-##                of 'preccomp'.
+## -- Q: precision matrix, output of 'compQ';
+## -- logdetQ: log-determinant of the precision matrix, also output of
+##             'compQ'.
 ## return:
 ## -- value, laplace approximation evaluation.
 
-laplace <- function(initial,
-                    preds, beta, gama, dfj, w, prec, logdetprec) {
+laplace <- function(initial, preds, beta, gama, dfj, w, Q, logdetQ) {
     integral <- -6e+05
     logQ <- try(
-        newton_raphson(initial,
-                       preds, beta, gama, dfj, w, prec, logdetprec),
+        newton_raphson(initial, preds, beta, gama, dfj, w, Q, logdetQ),
         silent = TRUE)
     if (class(logQ) != "try-error") {
         integral <-
@@ -400,19 +411,21 @@ laplaceC <- cmpfun(laplace)
 ## marginaloglik: marginal log-likelihood
 ## args:
 ## -- theta: named vector, whole parameter vector;
+## -- decomp: precision matrix decomposition technique to be applied,
+##            see 'precQ' documentation for more info;
 ## -- preds: list of linear predictors, they can be of different sizes;
 ## -- data: data.frame, it needs the response vectors, covariates and a
-## subject index;
+##          subject index;
 ## -- until: number of subjects.
 ## return:
 ## -- negative of the likelihood sum.
 
-marginaloglik <- function(theta, preds, data, until) {
+marginaloglik <- function(theta, decomp, preds, data, until) {
     out <- -sqrt(.Machine$double.xmax)
     beta <- theta[str_detect(names(theta), pattern = "^b\\d")]
     gama <- theta[str_detect(names(theta), pattern = "^g\\d")]
     w <- theta[str_detect(names(theta), pattern = "^w\\d")]
-    PREC <- try(preccomp(theta), silent = TRUE)
+    PREC <- try(compQ(theta, method = decomp), silent = TRUE)
     lpreds <- length(preds)
     r <- numeric(lpreds * 2)
     names(r) <- c(paste0("u", seq(lpreds)), paste0("e", seq(lpreds)))
@@ -420,13 +433,13 @@ marginaloglik <- function(theta, preds, data, until) {
         laplaceC(initial = r,
                  preds = preds, beta = beta, gama = gama,
                  dfj = data %>% filter(j == index),
-                 w = w, prec = PREC$prec, logdetprec = PREC$logdetprec)
+                 w = w, Q = PREC$Q, logdetQ = PREC$logdetQ)
     })
     ## out <- sapply(seq(until), function(index) {
     ##     laplaceC(initial = r,
     ##              preds = preds, beta = beta, gama = gama,
     ##              dfj = data %>% filter(j == index),
-    ##              w = w, prec = PREC$prec, logdetprec = PREC$logdetprec)
+    ##              w = w, Q = PREC$Q, logdetQ = PREC$logdetQ)
     ## })
     return(-sum(out))
 }

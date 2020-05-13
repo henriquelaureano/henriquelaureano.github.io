@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-05-10 20:58:49</h4>
+<h4 class="date"><em>Last modification on</em> 2020-05-12 15:35:41</h4>
 
 </div>
 
@@ -4121,8 +4121,7 @@ print(cbind(df %&gt;% filter(y1 == 1) %&gt;% select(t) %&gt;% summary(),
  Mean   :56.69   Mean   :56.076   Mean   : 57.8823  
  3rd Qu.:68.25   3rd Qu.:68.124   3rd Qu.: 82.6211  
  Max.   :78.77   Max.   :79.958   Max.   :109.4805  </code></pre>
-<pre class="r"><code>## ---------------------------------------------------------------------
-datatable(df,
+<pre class="r"><code>datatable(df,
           options = list(pageLength = 6),
           class = 'cell-border stripe',
           rownames = FALSE) %&gt;%
@@ -4625,27 +4624,35 @@ datatable(df,
 \]</span></p>
 <p>And now we see the magic happens,</p>
 <pre class="r"><code>## C &lt;- t(chol(E))
-## invD &lt;- diag(1/diag(C), 4, 4)
-## L &lt;- C %*% invD
-## T &lt;- solve(L)
+## D &lt;- diag(diag(C), 4, 4)
+## mT &lt;- D %*% solve(C)
+## t(mT)
+thetaCho &lt;- c(&quot;b01&quot; = -1.9, &quot;b02&quot; = -.2, ## risk level fixed-effects
+              &quot;w1&quot; = 3, &quot;g01&quot; = 1, ## time trajectory fixed-effects
+              &quot;w2&quot; = 2, &quot;g02&quot; = 1.2,
+              ## precision matrix pars ---------------------------------
+              ## diagonal elements
+              &quot;d1&quot; = log(1), &quot;d2&quot; = log(.9165),
+              &quot;d3&quot; = log(.8381), &quot;d4&quot; = log(.8815),
+              ## off-diagonal elements
+              &quot;offd12&quot; = log(.4), &quot;offd13&quot; = log(.4047),
+              &quot;offd14&quot; = log(.2373),
+              &quot;offd23&quot; = log(.2381), &quot;offd24&quot; = log(.11),
+              &quot;offd34&quot; = log(.2373))
 
-## invD2 &lt;- diag(1/diag(C)^2, 4, 4)
-## t(T) %*% invD2 %*% T
-## solve(E)
+thetaTMB &lt;- c(&quot;b01&quot; = -1.9, &quot;b02&quot; = -.2, ## risk level fixed-effects
+              &quot;w1&quot; = 3, &quot;g01&quot; = 1, ## time trajectory fixed-effects
+              &quot;w2&quot; = 2, &quot;g02&quot; = 1.2,
+              ## precision matrix pars ---------------------------------
+              ## diagonal elements
+              &quot;d1&quot; = log(1), &quot;d2&quot; = log(1),
+              &quot;d3&quot; = log(1), &quot;d4&quot; = log(1),
+              ## off-diagonal elements
+              &quot;offd12&quot; = log(.4), &quot;offd13&quot; = log(.4047),
+              &quot;offd14&quot; = log(.2373),
+              &quot;offd23&quot; = log(.2381), &quot;offd24&quot; = log(.11),
+              &quot;offd34&quot; = log(.2373))
 
-theta &lt;- c(&quot;b01&quot; = -1.9, &quot;b02&quot; = -.2, ## risk level fixed-effects pars
-           &quot;w1&quot; = 3, &quot;g01&quot; = 1, ## time trajectory fixed-effects pars
-           &quot;w2&quot; = 2, &quot;g02&quot; = 1.2,
-           ## precision matrix pars ------------------------------------
-           ## diagonal elements
-           &quot;d1&quot; = log(1), &quot;d2&quot; = log(1), &quot;d3&quot; = log(1), &quot;d4&quot; = log(1),
-           ## off-diagonal elements
-           &quot;offd12&quot; = -.4, &quot;offd13&quot; = -.5, &quot;offd14&quot; = -.4,
-           &quot;offd23&quot; = -.4, &quot;offd24&quot; = -.3, &quot;offd34&quot; = -.4)
-
-PREC &lt;- preccomp(theta)
-prec &lt;- PREC$prec
-logdetprec &lt;- PREC$logdetprec
 beta &lt;- theta[str_detect(names(theta), pattern = &quot;^b\\d&quot;)]
 gama &lt;- theta[str_detect(names(theta), pattern = &quot;^g\\d&quot;)]
 w &lt;- theta[str_detect(names(theta), pattern = &quot;^w\\d&quot;)]
@@ -4653,128 +4660,171 @@ r &lt;- c(&quot;u1&quot; = 0, &quot;u2&quot; = 0, &quot;e1&quot; = 0, &quot;e2&q
 <p>First, to check if my derivatives and Newton-Raphson algorithm are correclty (and implemented correctly) we also perform an optimization routine that computes the derivatives numerically. All this for just one cluster, i.e. a pair of twins.</p>
 <pre class="r"><code>dfj &lt;- df %&gt;% filter(j == 1)
 
-newton_raphson(initial = r, preds, beta, gama, dfj, w, prec, logdetprec)</code></pre>
-<pre><code>$value
-          [,1]
-[1,] -3.676804
+## newton_raphson(initial = r, preds, beta, gama, dfj, w, Q, logdetQ)
 
-$par
-           u1            u2            e1            e2 
- 0.0005834547 -0.0005795515  0.0010391847 -0.0021353939 
-
-$iter
-[1] 2
-
-$hessian
-           [,1]       [,2]       [,3]       [,4]
-[1,] -2.2665386 -1.5734604 -1.0558462 -0.6703261
-[2,] -1.5734604 -1.9981309 -1.1667930 -0.7416819
-[3,] -1.0558462 -1.1667930 -1.4493871 -0.6703201
-[4,] -0.6703261 -0.7416819 -0.6703201 -1.0137201</code></pre>
-<pre class="r"><code>optim(par = r, fn = augloglik,
-      preds = preds, beta = beta, gama = gama,
-      data = dfj, w = w, prec = prec, logdetprec = logdetprec,
-      method = &quot;BFGS&quot;, control = list(fnscale = -1), hessian = TRUE)</code></pre>
-<pre><code>$par
-           u1            u2            e1            e2 
- 0.0005715787 -0.0005348346  0.0009871232 -0.0021342623 
-
-$value
-[1] -3.676804
-
-$counts
-function gradient 
-       8        4 
-
-$convergence
-[1] 0
-
-$message
-NULL
-
-$hessian
-           u1        u2         e1         e2
-u1 -2.2664726 -1.573460 -1.0558462 -0.6702076
-u2 -1.5734604 -1.998243 -1.1669114 -0.7416820
-e1 -1.0558462 -1.166911 -1.4493871 -0.6703201
-e2 -0.6702076 -0.741682 -0.6703201 -1.0137205</code></pre>
+## optim(par = r, fn = augloglik,
+##       preds = preds, beta = beta, gama = gama,
+##       data = dfj, w = w, Q = Q, logdetQ = logdetQ,
+##       method = &quot;BFGS&quot;, control = list(fnscale = -1), hessian = TRUE)</code></pre>
 <p>Yeah! It’s all right. … and took just 3 iterations to converge.</p>
 <p>Now we estimate/predict the random effects for all pairs of twins.</p>
+<pre class="r"><code>precCho &lt;- compQ(thetaCho, method = &quot;modChol&quot;)
+precTMB &lt;- compQ(thetaTMB, method = &quot;unconsCorr&quot;)
+
+choQ &lt;- precCho$Q
+tmbQ &lt;- precTMB$Q
+
+logdetQcho &lt;- precCho$logdetQ
+logdetQtmb &lt;- precTMB$logdetQ
+
+plan(multiprocess)
+tic()
+rs &lt;- future_map(seq(J), function(index) {
+    try(newton_raphson(initial = r, preds, beta, gama,
+                       dfj = df %&gt;% filter(j == index), w,
+                       choQ, logdetQcho),
+        silent = TRUE)
+})
+toc()</code></pre>
+<pre><code>3.241 sec elapsed</code></pre>
+<pre class="r"><code>table(sapply(seq(J), function(i) try(rs[[i]]$iter, silent = TRUE)))</code></pre>
+<pre><code>
+  1   2   3   4   5 
+  3 108 206 178   5 </code></pre>
 <pre class="r"><code>plan(multiprocess)
 tic()
 rs &lt;- future_map(seq(J), function(index) {
     try(newton_raphson(initial = r, preds, beta, gama,
-                       dfj = df %&gt;% filter(j == index),
-                       w, prec, logdetprec), silent = TRUE)
+                       dfj = df %&gt;% filter(j == index), w,
+                       tmbQ, logdetQtmb),
+        silent = TRUE)
 })
 toc()</code></pre>
-<pre><code>2.514 sec elapsed</code></pre>
+<pre><code>2.289 sec elapsed</code></pre>
 <pre class="r"><code>table(sapply(seq(J), function(i) try(rs[[i]]$iter, silent = TRUE)))</code></pre>
 <pre><code>
   1   2   3   4   5 
-  2  92 202 202   2 </code></pre>
+  3 108 218 166   5 </code></pre>
 <p>Thinking in a sample of 500 pairs of twins, the Newton-Raphson routine above took around 6, 7 times more time to run if not parallelized.</p>
 <div id="of-the-marginal" class="section level2">
 <h2>of the marginal</h2>
-<pre class="r"><code>parnames(marginaloglik) &lt;- names(theta)
+<pre class="r"><code>parnames(marginaloglik) &lt;- names(thetaCho)
 plan(multiprocess)
 tic()
-mle2_fit &lt;- mle2(marginaloglik,
-                 start = theta, method = &quot;BFGS&quot;,
-                 data = list(preds = preds, data = df, until = J))
+mle2Cho &lt;- mle2(marginaloglik,
+                start = thetaCho, method = &quot;BFGS&quot;,
+                data = list(decomp = &quot;modChol&quot;,
+                            preds = preds, data = df, until = J))
 toc()</code></pre>
-<pre><code>4267.456 sec elapsed</code></pre>
-<pre class="r"><code>summary(mle2_fit)@coef</code></pre>
+<pre><code>4736.915 sec elapsed</code></pre>
+<pre class="r"><code>summary(mle2Cho)@coef</code></pre>
 <pre><code>          Estimate   Std. Error       z value Pr(z)
-b01    -1.81841907 1.982295e-05 -9.173302e+04     0
-b02     0.05026886 5.479909e-07  9.173302e+04     0
-w1      2.35367616 1.003216e-13  2.346132e+13     0
-g01     1.21449082 6.747850e-14  1.799819e+13     0
-w2      1.76703221 1.926280e-05  9.173288e+04     0
-g02     1.22253365 1.332709e-05  9.173301e+04     0
-d1      0.05940911 6.476306e-07  9.173302e+04     0
-d2      0.13374173 1.457945e-06  9.173302e+04     0
-d3      0.07340905 8.002468e-07  9.173302e+04     0
-d4     -0.43934914 4.789434e-06 -9.173301e+04     0
-offd12 -0.23926401 2.608265e-06 -9.173302e+04     0
-offd13 -0.58676148 6.396404e-06 -9.173302e+04     0
-offd14 -0.40406419 4.404785e-06 -9.173301e+04     0
-offd23  0.17532016 1.911200e-06  9.173301e+04     0
-offd24 -0.52727345 5.747913e-06 -9.173302e+04     0
-offd34 -0.57240552 6.239907e-06 -9.173302e+04     0</code></pre>
-<pre class="r"><code>logLik(mle2_fit)</code></pre>
-<pre><code>'log Lik.' -2472.224 (df=16)</code></pre>
+b01    -1.76597771 2.098553e-07  -8415214.745     0
+b02     1.04601281 2.857309e-04      3660.832     0
+w1      0.80422648 5.059679e-05     15894.813     0
+g01     1.60862846 8.526217e-08  18866848.251     0
+w2      1.31080356          NaN           NaN   NaN
+g02     0.91273041 7.169379e-06    127309.547     0
+d1      0.69813821 1.205851e-07   5789591.061     0
+d2     -0.07995242          NaN           NaN   NaN
+d3      1.21801810          NaN           NaN   NaN
+d4     -2.00270020          NaN           NaN   NaN
+offd12 -0.82890501 7.385651e-08 -11223181.324     0
+offd13 -0.20240277          NaN           NaN   NaN
+offd14 -1.90530808          NaN           NaN   NaN
+offd23 -1.32747316 8.590365e-06   -154530.463     0
+offd24 -2.36223669          NaN           NaN   NaN
+offd34 -2.08831313 1.344875e-05   -155279.355     0</code></pre>
+<pre class="r"><code>logLik(mle2Cho)</code></pre>
+<pre><code>'log Lik.' -2077.72 (df=16)</code></pre>
+<pre class="r"><code>parnames(marginaloglik) &lt;- names(thetaTMB)
+plan(multiprocess)
+tic()
+mle2TMB &lt;- mle2(marginaloglik,
+                start = thetaTMB, method = &quot;BFGS&quot;,
+                data = list(decomp = &quot;unconsCorr&quot;,
+                            preds = preds, data = df, until = J))
+toc()</code></pre>
+<pre><code>15388.949 sec elapsed</code></pre>
+<pre class="r"><code>summary(mle2TMB)@coef</code></pre>
+<pre><code>         Estimate   Std. Error    z value Pr(z)
+b01    -1.6623012          NaN        NaN   NaN
+b02     1.0392750          NaN        NaN   NaN
+w1      0.1370511 1.173116e-06  116826.58     0
+g01     1.8465752          NaN        NaN   NaN
+w2      0.4025076 2.664586e-06  151058.23     0
+g02     0.7532214 6.230251e-06  120897.44     0
+d1      0.4963923          NaN        NaN   NaN
+d2      0.1718409          NaN        NaN   NaN
+d3      4.4892884 6.928609e-05   64793.50     0
+d4     -2.7210887 3.256168e-05  -83567.20     0
+offd12 -0.7800958          NaN        NaN   NaN
+offd13 -0.6635027 8.762422e-06  -75721.39     0
+offd14 -1.4825621 9.754261e-06 -151991.22     0
+offd23 -1.3491572 6.766704e-06 -199381.72     0
+offd24 -2.1860385 1.608136e-05 -135936.16     0
+offd34 -1.5555794 1.468442e-05 -105933.99     0</code></pre>
+<pre class="r"><code>logLik(mle2TMB)</code></pre>
+<pre><code>'log Lik.' -2641.029 (df=16)</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>results</h2>
-<pre class="r"><code>theta2 &lt;- theta
-mle2_est &lt;- mle2_fit@coef
+<pre class="r"><code>thetaCho2 &lt;- thetaCho
+thetaTMB2 &lt;- thetaTMB
+mle2Cho2 &lt;- mle2Cho@coef
+mle2TMB2 &lt;- mle2TMB@coef
 
-ds &lt;- str_detect(names(mle2_est), pattern = &quot;^d\\d&quot;)
-theta2[ds] &lt;- exp(theta2[ds])
-mle2_est[ds] &lt;- exp(mle2_est[ds])
+ds &lt;- str_detect(names(mle2Cho2), pattern = &quot;^d\\d&quot;)
+offds &lt;- str_detect(names(mle2Cho2), pattern = &quot;^offd\\d&quot;)
 
-offds &lt;- str_detect(names(mle2_est), pattern = &quot;^offd\\d&quot;)
+thetaCho2[ds] &lt;- exp(thetaCho2[ds])
+thetaCho2[offds] &lt;- -exp(thetaCho2[offds])
+mle2Cho2[ds] &lt;- exp(mle2Cho2[ds])
+mle2Cho2[offds] &lt;- -exp(mle2Cho2[offds])
 
-cbind(theta2, mle2_est)</code></pre>
-<pre><code>       theta2    mle2_est
-b01      -1.9 -1.81841907
-b02      -0.2  0.05026886
-w1        3.0  2.35367616
-g01       1.0  1.21449082
-w2        2.0  1.76703221
-g02       1.2  1.22253365
-d1        1.0  1.06120930
-d2        1.0  1.14309755
-d3        1.0  1.07617066
-d4        1.0  0.64445574
-offd12   -0.4 -0.23926401
-offd13   -0.5 -0.58676148
-offd14   -0.4 -0.40406419
-offd23   -0.4  0.17532016
-offd24   -0.3 -0.52727345
-offd34   -0.4 -0.57240552</code></pre>
-<pre class="r"><code>## grad_vec &lt;- c(
+thetaTMB2[ds] &lt;- exp(thetaTMB2[ds])
+thetaTMB2[offds] &lt;- -exp(thetaTMB2[offds])
+mle2TMB2[ds] &lt;- exp(mle2TMB2[ds])
+mle2TMB2[offds] &lt;- -exp(mle2TMB2[offds])
+
+cbind(thetaCho2, mle2Cho2)</code></pre>
+<pre><code>       thetaCho2    mle2Cho2
+b01      -1.9000 -1.76597771
+b02      -0.2000  1.04601281
+w1        3.0000  0.80422648
+g01       1.0000  1.60862846
+w2        2.0000  1.31080356
+g02       1.2000  0.91273041
+d1        1.0000  2.01000700
+d2        0.9165  0.92316027
+d3        0.8381  3.38048130
+d4        0.8815  0.13497034
+offd12   -0.4000 -0.43652702
+offd13   -0.4047 -0.81676589
+offd14   -0.2373 -0.14877680
+offd23   -0.2381 -0.26514640
+offd24   -0.1100 -0.09420927
+offd34   -0.2373 -0.12389596</code></pre>
+<pre class="r"><code>cbind(thetaTMB2, mle2TMB2)</code></pre>
+<pre><code>       thetaTMB2    mle2TMB2
+b01      -1.9000 -1.66230125
+b02      -0.2000  1.03927499
+w1        3.0000  0.13705115
+g01       1.0000  1.84657524
+w2        2.0000  0.40250757
+g02       1.2000  0.75322139
+d1        1.0000  1.64278397
+d2        1.0000  1.18748891
+d3        1.0000 89.05804763
+d4        1.0000  0.06580308
+offd12   -0.4000 -0.45836210
+offd13   -0.4047 -0.51504412
+offd14   -0.2373 -0.22705519
+offd23   -0.2381 -0.25945884
+offd24   -0.1100 -0.11236099
+offd34   -0.2373 -0.21106706</code></pre>
+<pre class="r"><code>## LATTERRRR -----------------------------------------------------------
+## grad_vec &lt;- c(
 ##     2 * exp(mle2_fit@coef[offds])/(1 + exp(mle2_fit@coef[offds]))^2,
 ##     exp(mle2_fit@coef[ds]))
 ## delta_method &lt;-
