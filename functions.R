@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-5-12
+## date: 2020-5-13
 ## =====================================================================
 
 ## =====================================================================
@@ -134,7 +134,7 @@ compQ <- function(theta, method = c("modChol", "unconsCorr")) {
                    for (j in seq(i + 1, dimQ)) {
                        ijth <- str_subset(names(theta),
                                           paste0("offd", i, j))
-                       tT[i, j] <- -exp(theta[ijth])
+                       tT[i, j] <- exp(theta[ijth])
                    }
                }
                T <- t(tT)
