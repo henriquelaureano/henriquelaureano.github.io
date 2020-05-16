@@ -3,7 +3,7 @@
 ## GLMM ================================================================
 ## author: henrique laureano
 ## contact: www.leg.ufpr.br/~henrique
-## date: 2020-5-13
+## date: 2020-5-16
 ## =====================================================================
 
 ## =====================================================================
@@ -114,8 +114,8 @@ failuretimes <- function(Xgama, e, delta) {
 ##           off-diagonal elements should start with 'offd' followed by
 ##           its corresponding position number;
 ## -- method: "modChol", i.e. a modified Cholesky decomposition
-##            (Q = T^{\top} (D^{2})^{-1} T) and "unconsCorr", i.e. a
-##            decomposition based on the unconstrained correlation
+##            (Q = T^{\top} (D^{2})^{-1} T) and "unstrucCorr", i.e. a
+##            decomposition based on the unstructured correlation
 ##            matrix of TMB's manual (Q = W^{-\top} \Sigma W^{-1},
 ##            \Sigma = D^{1/2} L^{-\top} L^{-1} D^{1/2}).
 ## return:
@@ -123,7 +123,7 @@ failuretimes <- function(Xgama, e, delta) {
 ##    $Q: precision matrix of the transformed parameters;
 ##    $logdetQ: log-determinant of '$Q'.
 
-compQ <- function(theta, method = c("modChol", "unconsCorr")) {
+compQ <- function(theta, method = c("modChol", "unstrucCorr")) {
     Dentries <- str_subset(names(theta), "^d\\d")
     dimQ <- length(Dentries)
     switch(method,
@@ -142,8 +142,8 @@ compQ <- function(theta, method = c("modChol", "unconsCorr")) {
                Q <- tT %*% invD2 %*% T
                logdetQ <- log(prod(diag(invD2)))
            },
-           "unconsCorr" = {
-               ## based on the TMB unconstrained correlation matrix
+           "unstrucCorr" = {
+               ## based on the TMB unstructured correlation matrix
                tinvL <- diag(1, nrow = dimQ, ncol = dimQ)
                for (i in seq(dimQ - 1)) {
                    for (j in seq(i + 1, dimQ)) {

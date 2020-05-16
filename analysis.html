@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-05-15 19:54:53</h4>
+<h4 class="date"><em>Last modification on</em> 2020-05-16 12:02:11</h4>
 
 </div>
 
@@ -4714,7 +4714,7 @@ rs &lt;- future_map(seq(J), function(index) {
         silent = TRUE)
 })
 toc()</code></pre>
-<pre><code>41.441 sec elapsed</code></pre>
+<pre><code>38.618 sec elapsed</code></pre>
 <pre class="r"><code>prop.table(table(sapply(seq(J), function(i) {
     try(rs[[i]]$iter, silent = TRUE) } )))</code></pre>
 <pre><code>
@@ -4742,6 +4742,29 @@ Error : $ operator is invalid for atomic vectors\n
 <blockquote>
 <p>Ah, and we have sixteen parameters because we chose to estimate the covariances instead of the correlations, which would increase the number of parameters in the model.</p>
 </blockquote>
+<p>The problem with correlation parameters is that they’re constrained to the interval -1 and 1. A reparametrization with the goal of contour this problem is well known, however, if we model the covariance matrix we still have to invert it in the computation of the multivariate normal density. To skip this inversion we model directly the inverse of the covariance matrix, i.e. the precision matrix. But this creates a new problem.</p>
+<p>If we model the entries of the precision matrix we don’t know which transformation to use and (important point) we can’t guarantee the positive-definiteness of that matrix during the optimization routine. When working with the variance-covariance matrix a smart choice is to work with it Cholesky decomposition, were we then estimate its entries. But what to do when we work with its inverse, the precision matrix? We try here two approaches: the <code>modified Cholesky decomposition</code> and a decomposition based on <a href="https://kaskr.github.io/adcomp/classdensity_1_1UNSTRUCTURED__CORR__t.html"><code>TMB's</code></a> unstructured correlation matrix.</p>
+<p>Modified Cholesky decomposition:</p>
+<p>Starting by what is simpler. The Cholesky decomposition of the variance-covariance matrix <span class="math inline">\(\Sigma\)</span> is given by <span class="math inline">\(\Sigma = C C^{\top}\)</span>, with <span class="math inline">\(C\)</span> being a lower-triangular matrix. The modified Cholesky decomposition of the precision matrix <span class="math inline">\(Q\)</span> is given by <span class="math display">\[
+Q = T^{\top} (D^{2})^{-1} T,
+\]</span> with <span class="math inline">\(D = \text{diag}(C)\)</span> and <span class="math inline">\(T = D C^{-1}\)</span>. i.e., <span class="math display">\[
+\begin{aligned}
+ Q &amp;= T^{\top} (D^{2})^{-1} T\\
+ Q &amp;= C^{-\top} D^{\top} D^{-1} D^{-1} D C^{-1}\\
+ Q &amp;= C^{-\top} I I C^{-1}\\
+ Q &amp;= C^{-\top} C^{-1}\\
+ Q &amp;= (C C^{\top})^{-1}\\
+ Q &amp;= \Sigma^{-1}.
+\end{aligned}
+\]</span> Ok, what we do with this decomposition and why it is good? Well, we estimate the entries of the lower-triangular matrix <span class="math inline">\(T\)</span> with unit diagonal and the entries of the diagonal matrix <span class="math inline">\(D\)</span> (1 over the entries, in reality, since we’re working with its inverse). This is good for two reasons: 1) the entries that we’ll estimate are unconstrained and 2) this decomposition guarantees that we’ll always have a positive definite matrix. Here we also reparametrize the entries applying the log function, just for stabilization.</p>
+<p>Decomposition based on <a href="https://kaskr.github.io/adcomp/classdensity_1_1UNSTRUCTURED__CORR__t.html"><code>TMB's</code></a> unstructured correlation matrix:</p>
+<p>We just take that unstructured correlation matrix, scale the variances, and invert everything. i.e., <span class="math display">\[
+\begin{aligned}
+ Q &amp;= (W \Sigma W^{\top})^{-1}\\
+ Q &amp;= (W D^{-1/2} L L^{\top} D^{-1/2} W^{\top})^{-1}\\
+ Q &amp;= W^{-\top} D^{1/2} L^{-\top} L^{-1} D^{1/2} W^{-1}.
+\end{aligned}
+\]</span></p>
 <pre class="r"><code>parnames(marginaloglik) &lt;- names(theta)
 plan(multiprocess)
 tic()
