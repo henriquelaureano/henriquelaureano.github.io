@@ -3981,7 +3981,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">competing risks data analysis via a Multinomial GLMM</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-05-16 12:02:11</h4>
+<h4 class="date"><em>Last modification on</em> 2020-05-18 10:31:10</h4>
 
 </div>
 
@@ -4765,6 +4765,9 @@ Q = T^{\top} (D^{2})^{-1} T,
  Q &amp;= W^{-\top} D^{1/2} L^{-\top} L^{-1} D^{1/2} W^{-1}.
 \end{aligned}
 \]</span></p>
+<p>So, <span class="math inline">\(W\)</span> is a diagonal matrix with standard errors as entries. <span class="math inline">\(L\)</span> is a lower triangular matrix with unit diagonal and <span class="math inline">\(D = \text{diag}(L L^{\top})\)</span>.</p>
+<p>A consensus found between both decompositions for our specific model is that the modified Cholesky approach is slightly fast but the TMB’s based approach is slightly preciser in the sense that we’re able to compute more standard errors. Nevertheless, we chose here the modified Cholesky decomposition, since all these results are still based in small sample sizes and the idea is that as the sample size increases the results get better. In other words, we’ll be able to obtain all the desired standard errors, making the TMB’s based approach advantage not so relevant anymore, and the speed advantage of the modified Cholesky approach will still be attractive, maybe even more attractive.</p>
+<p>Performing the marginal optimization we get:</p>
 <pre class="r"><code>parnames(marginaloglik) &lt;- names(theta)
 plan(multiprocess)
 tic()
@@ -4774,6 +4777,7 @@ mle2fit &lt;- mle2(
 )
 toc()</code></pre>
 <pre><code>105206.719 sec elapsed</code></pre>
+<p>With 10^{4} pairs of twins and using all the 12 core available in my machine, the model optimization took 29.22 hours, a lot.</p>
 <pre class="r"><code>summary(mle2fit)@coef</code></pre>
 <pre><code>          Estimate   Std. Error    z value Pr(z)
 b01    -1.83466647 5.883206e-06 -311848.10     0
@@ -4797,42 +4801,42 @@ offd34 -0.36997432          NaN        NaN   NaN</code></pre>
 </div>
 <div id="results" class="section level2">
 <h2>results</h2>
-<pre class="r"><code>thetaCho2 &lt;- theta
-mle2Cho2 &lt;- mle2fit@coef
+<pre class="r"><code>theta2co &lt;- theta
+mle2coef &lt;- mle2fit@coef
 
-ds &lt;- str_detect(names(mle2Cho2), pattern = &quot;^d\\d&quot;)
-offds &lt;- str_detect(names(mle2Cho2), pattern = &quot;^offd\\d&quot;)
+ds &lt;- str_detect(names(mle2coef), pattern = &quot;^d\\d&quot;)
+offds &lt;- str_detect(names(mle2coef), pattern = &quot;^offd\\d&quot;)
 
-thetaCho2[ds] &lt;- exp(thetaCho2[ds])
-mle2Cho2[ds] &lt;- exp(mle2Cho2[ds])
+theta2co[ds] &lt;- exp(theta2co[ds])
+mle2coef[ds] &lt;- exp(mle2coef[ds])
 
-cbind(thetaCho2, mle2Cho2)</code></pre>
-<pre><code>       thetaCho2    mle2Cho2
-b01      -1.9000 -1.83466647
-b02      -0.2000 -0.11180785
-w1        3.0000  2.40215388
-g01       1.0000  1.18619038
-w2        2.0000  0.88527209
-g02       1.2000  1.12986119
-d1        1.0000  0.74563136
-d2        0.9165  0.97710439
-d3        0.8381  0.98946818
-d4        0.8815  0.79253910
-offd12   -0.4000 -0.40079853
-offd13   -0.4047 -0.16922083
-offd14   -0.2373 -0.45909884
-offd23   -0.2381  0.01970679
-offd24   -0.1100  0.08372410
-offd34   -0.2373 -0.36997432</code></pre>
-<pre class="r"><code>## LATTERRRR -----------------------------------------------------------
+cbind(theta2co, mle2coef)</code></pre>
+<pre><code>       theta2co    mle2coef
+b01     -1.9000 -1.83466647
+b02     -0.2000 -0.11180785
+w1       3.0000  2.40215388
+g01      1.0000  1.18619038
+w2       2.0000  0.88527209
+g02      1.2000  1.12986119
+d1       1.0000  0.74563136
+d2       0.9165  0.97710439
+d3       0.8381  0.98946818
+d4       0.8815  0.79253910
+offd12  -0.4000 -0.40079853
+offd13  -0.4047 -0.16922083
+offd14  -0.2373 -0.45909884
+offd23  -0.2381  0.01970679
+offd24  -0.1100  0.08372410
+offd34  -0.2373 -0.36997432</code></pre>
+<pre class="r"><code>## ---------------------------------------------------------------------
 ## grad_vec &lt;- c(
-##     2 * exp(mle2_fit@coef[offds])/(1 + exp(mle2_fit@coef[offds]))^2,
-##     exp(mle2_fit@coef[ds]))
+##     2 * exp(mle2fit@coef[offds])/(1 + exp(mle2fit@coef[offds]))^2,
+##     exp(mle2fit@coef[ds]))
 ## delta_method &lt;-
-##     sqrt(grad_vec * diag(mle2_fit@vcov[7:16, 7:16]) * grad_vec)
+##     sqrt(grad_vec * diag(mle2fit@vcov[7:16, 7:16]) * grad_vec)
 ## ## standard errors
-## c(sqrt(diag(mle2_fit@vcov[1:6, 1:6])), delta_method)</code></pre>
-<p>Without parallelization, the optimization of the marginal log-likelihood takes 3 times more time to run. Nevertheless, the optimization looks like to be much more smooth, i.e. the pointwise estimates are more precise and the we’re able to estimate more standard-errors.</p>
+## c(sqrt(diag(mle2fit@vcov[1:6, 1:6])), delta_method)</code></pre>
+<p>Without parallelization, the model fitting takes 3 times more time to run. Nevertheless, the optimization looks like to be better, i.e. the pointwise estimates are more precise and we’re able to estimate more standard errors.</p>
 </div>
 </div>
 
