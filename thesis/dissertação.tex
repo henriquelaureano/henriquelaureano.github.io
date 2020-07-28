@@ -1,0 +1,416 @@
+% ======================================================================
+% LAST MODIFICATION ON (MONTH / DAY / YEAR): 7/27/20
+% ======================================================================
+\documentclass[12pt, % tamanho da fonte
+               openright, % capítulos começam em pág ímpar
+                          % (insere página vazia caso preciso)
+               oneside, % para impressão apenas em um lado do papel
+               a4paper, % tamanho do papel.
+               chapter=TITLE, % títulos de capítulos convertidos em
+                              % letras maiúsculas
+               section=TITLE, % títulos de seções convertidos em letras
+                              % maiúsculas
+               % subsection=TITLE, % títulos de subseções convertidos em
+                                 % letras maiúsculas
+               % subsubsection=TITLE, % títulos de subsubseções em letras
+                                    % maiúsculas
+               % sumario=tradicional,
+               brazil,
+               english % o último idioma é o principal do documento
+]{abntex2}
+% ----------------------------------------------------------------------
+% \renewcommand{\ABNTEXsectionfont}{\normalfont}
+\renewcommand{\cftsectionfont}{\normalsize}
+% ----------------------------------------------------------------------
+\renewcommand{\ABNTEXchapterfontsize}{\bfseries\large}
+\renewcommand{\ABNTEXsectionfontsize}{\large}
+\renewcommand{\ABNTEXsubsectionfontsize}{\large}
+% ----------------------------------------------------------------------
+\usepackage{lastpage}
+% \usepackage{times}
+\usepackage{etoolbox}
+\usepackage{lmodern} % usa a fonte Latin Modern
+% \usepackage[T1]{fontenc} % selecao de codigos de fonte
+\usepackage[utf8]{inputenc} % sodificacao do documento (conversão
+                            % automática dos acentos)
+% \usepackage{lastpage} % ssado pela ficha catalográfica
+\usepackage{indentfirst} % indenta o primeiro parágrafo de cada seção
+\setlength{\parindent}{1.5cm} % espaçamento de 1.5cm do parágrafo
+\usepackage{color} % controle das cores
+\usepackage{graphicx} % inclusão de gráficos
+\usepackage{microtype} % para melhorias de justificação
+\usepackage{setspace}
+\usepackage{pdflscape} % pagina na horizontal
+% \usepackage{lscape} % pagina na horizontal
+\usepackage{wrapfig}
+\usepackage{pgf} % para geração de dummy text
+\usepackage[english, hyperpageref]{backref} % paginas com as citações
+% ----------------------------------------------------------------------
+% quadro cinza =========================================================
+% \usepackage{caption}
+\usepackage[small]{caption}
+\usepackage{tikz} % permite desenhos vetoriais
+% define o ambiente para colocar o código R
+% (draw=gray!50 fill=gray!20 originais)
+\tikzstyle{mybox} = [draw=gray!95, fill=white, very thick, rectangle,
+                     inner sep=7pt, inner ysep=7pt]
+\tikzstyle{mybox2} = [draw=gray!50, fill=gray!20,
+                      very thick, % para códigos em R (Apêndices)
+                      rectangle, inner sep=7pt, inner ysep=7pt]
+% \usepackage[scaled=0.8]{beramono} % usa esta nos verbatins
+\usepackage{float} % controla e define objetos flutuantes
+\usepackage{tocloft} % controla lista de objetos flutuantes
+% ambiente flutuante para código R
+\newcommand{\listofprogramname}{CODE} % nome dessa lista
+\newlistof{program}{lol}{\listofprogramname} % configura os arquivos
+                                             % auxiliares para fazer a
+                                             % lista
+\makeatletter % allows use of "@" before \begin{document}
+% this creates a custom and simpler ruled box style
+\newcommand\floatc@simplerule[2]{{\@fs@cfont #1 #2}\par}
+\newcommand\fs@simplerule{\def\@fs@cfont{ % aqui o estilo de fonte, e.g.
+                                          % \bfseries
+  }\let\@fs@capt\floatc@simplerule
+  \def\@fs@pre{} % antes do caption, pode ser uma régua
+  \def\@fs@post{} % depois do float, pode ser uma régua
+  \def\@fs@mid{\kern3pt} % espaço entre caption e corpo
+  \let\@fs@iftopcapt\iftrue}
+\floatstyle{simplerule} % define o estilo do ambiente
+\newfloat{program}{thp}{lol}[chapter] % ambiente contado por capítulo
+\floatname{program}{Code} % rótulo que vai aparecer na legenda
+\newcommand{\programautorefname}{Code} % altera o padrão do contador
+                                       % para seguir capítulos
+\renewcommand{\theprogram}{\thechapter.\arabic{program}} % capítulo.
+                                                         % programa:
+\sloppy
+% FIM - TIKZ (quadro cinza) ============================================
+% ----------------------------------------------------------------------
+% CONFIGURAÇÕES DE PACOTES
+% Configurações do pacote backref
+% Usado sem a opção hyperpageref de backref
+\renewcommand{\backrefpagesname}{Cited in the page(s):~}
+% Texto padrão antes do número das páginas
+\renewcommand{\backref}{}
+% Define os textos da citação
+\renewcommand*{\backrefalt}[4]{
+  \ifcase #1 %
+  None text citation.%
+  \or
+  Cited on page #2.%
+  \else
+  Cited #1 times on pages #2.%
+  \fi}%
+% ----------------------------------------------------------------------
+\usepackage[alf]{abntex2cite}	% Citações padrão ABNT
+% ----------------------------------------------------------------------
+% New comand for anexos
+\newcommand{\refanexo}[1]{\hyperref[#1]{Annex~\ref{#1}}}
+% \renewcommand{\cftsectionfont}{\sfseries}
+% \refanexo{anexo_xxx} usar esse comando!
+% ----------------------------------------------------------------------
+% para titulo em destaque sem sequencia de numeração
+\newcommand{\datatitle}[1]{
+  \normalsize \textsc{#1}
+}
+\usepackage{pslatex}
+% \usepackage{mathptmx} fonte - times new roman em tudo
+% ----------------------------------------------------------------------
+% adequando o uppercase titulo dos elementos nas suas respectivas LISTAS
+\renewcommand{\cftfigurename}{FIGURE\enspace}
+\renewcommand{\cfttablename}{TABLE\enspace}
+% ----------------------------------------------------------------------
+% fontes matemáticas
+\usepackage{mathpazo}
+\usepackage{inconsolata}
+\usepackage{verbatim}
+% ----------------------------------------------------------------------
+% \usepackage[table, xcdraw]{xcolor} % cédula colorida em tabelas
+% \usepackage{pdflscape} % rotaciona página
+\usepackage{Capa} % capa e folha de rosto com modificações
+\usepackage{float} % melhor posicionamento de figuras
+\usepackage{gensymb} % símbolo º
+\usepackage[justification=justified, singlelinecheck=false]{caption}
+% \usepackage{etoolbox} % configurações adicionais de macros
+\usepackage{xparse}
+\usepackage{algorithm} % pacote usado para gerar pseudocódigo
+\usepackage{algorithmic} % pacote usado para gerar pseudocódigo
+\usepackage{listings}
+\usepackage{multirow}
+% ----------------------------------------------------------------------
+% pacote para fazer o checkmark
+\usepackage{pifont} % http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+% ----------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{pdfpages}
+% \usepackage{times}
+% \usepackage{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+% ----------------------------------------------------------------------
+\NewDocumentCommand\cc{+u{\cc}}{\ignorespaces}
+% ----------------------------------------------------------------------
+% controle do espaçamento entre um parágrafo e outro:
+\setlength{\parskip}{0.2cm} % tente também \onelineskip
+% ----------------------------------------------------------------------
+\titulo{A MULTINOMIAL GLMM FOR COMPETING RISK DATA}
+\autor{HENRIQUE APARECIDO LAUREANO}
+\data{2020}
+\instituicao{FEDERAL UNIVERSITY OF PARANÁ}
+\orientador{Prof. PhD Wagner Hugo Bonat}
+\coorientador{Prof. PhD Paulo Justiniano Ribeiro Jr}
+\tipotrabalho{Dissertação (mestrado)}
+\preambulo{\small{Thesis presented to the Graduate Program of Numerical
+    Methods in Engineering, Concentration Area in Mathematical
+    Programming: Statistical Methods Applied in Engineering, Federal
+    University of Paran\'{a}, as part of the requirements to the
+    obtention of the Master's Degree in Sciences.}}
+% ----------------------------------------------------------------------
+% informações do PDF
+\makeatletter
+\hypersetup{
+  % pagebackref=true,
+  pdftitle={\@title},
+  pdfauthor={\@author},
+  pdfsubject={\imprimirpreambulo},
+  % pdfkeywords = {}{}{}{},
+  colorlinks=true, % false: boxed links; true: colored links
+  linkcolor=blue, % color of internal links
+  citecolor=blue, % color of links to bibliography
+  filecolor=magenta, % color of file links
+  urlcolor=blue,
+  bookmarksdepth=4
+}
+\addto\captionsenglish{
+  % adjusts names from abnTeX2
+  \renewcommand{\folhaderostoname}{Title page}
+  \renewcommand{\epigraphname}{Epigraph}
+  \renewcommand{\dedicatorianame}{Dedication}
+  \renewcommand{\errataname}{Errata sheet}
+  \renewcommand{\agradecimentosname}{Acknowledgements}
+  \renewcommand{\anexoname}{ANNEX}
+  \renewcommand{\anexosname}{Annex}
+  \renewcommand{\apendicename}{APPENDIX}
+  \renewcommand{\apendicesname}{Appendix}
+  \renewcommand{\orientadorname}{Supervisor:}
+  \renewcommand{\coorientadorname}{Co-supervisor:}
+  \renewcommand{\folhadeaprovacaoname}{Approval}
+  \renewcommand{\resumoname}{Abstract}
+  \renewcommand{\listadesiglasname}{List of abbreviations and acronyms}
+  \renewcommand{\listadesimbolosname}{List of symbols}
+  \renewcommand{\fontename}{Source}
+  \renewcommand{\notaname}{Note}
+  % adjusts names used by \autoref
+  \renewcommand{\pageautorefname}{page}
+  \renewcommand{\sectionautorefname}{section}
+  \renewcommand{\subsectionautorefname}{subsection}
+  \renewcommand{\subsubsectionautorefname}{subsubsection}
+  \renewcommand{\paragraphautorefname}{subsubsubsection}
+}
+\makeatother
+% ----------------------------------------------------------------------
+\graphicspath{{Figuras/}}
+% ----------------------------------------------------------------------
+\begin{document}
+\selectlanguage{english}
+% adequando o uppercase titulo dos elementos nas suas respectivas
+% legendas
+\renewcommand{\tablename}{TABLE }
+\renewcommand{\figurename}{FIGURE }
+% ----------------------------------------------------------------------
+\frenchspacing % retira espaço extra obsoleto entre as frases
+% ----------------------------------------------------------------------
+% capa
+\tikz[remember picture,overlay] \node[opacity=1,inner sep=0pt] at
+(current page.center){
+  \includegraphics[width=\paperwidth,
+  height=\paperheight]{Figuras/ufpr_bg}};
+% ----------------------------------------------------------------------
+\imprimircapa
+% ----------------------------------------------------------------------
+% folha de rosto
+\imprimirfolhaderosto
+% ----------------------------------------------------------------------
+
+% \begin{dedicatoria}
+%   \vspace*{\fill}
+%   ...
+%   \vspace*{\fill}
+% \end{dedicatoria}
+% ----------------------------------------------------------------------
+% ficha catalográfica
+
+% \begin{fichacatalografica}
+%   \includepdf{ficha.pdf}
+% \end{fichacatalografica}
+% ----------------------------------------------------------------------
+% inserir folha de aprovação
+% \begin{folhadeaprovacao}
+%   \includepdf{termo.pdf}
+% \end{folhadeaprovacao}
+\begin{folhadeaprovacao}
+ \begin{center}
+   {\ABNTEXchapterfont\large\imprimirautor}
+
+   \vspace*{\fill}\vspace*{\fill}
+   \begin{center}
+     \ABNTEXchapterfont\bfseries\large\imprimirtitulo
+   \end{center}
+   \vspace*{\fill}
+
+    \hspace{.45\textwidth}
+    \begin{minipage}{.5\textwidth}
+       \imprimirpreambulo
+    \end{minipage}
+   \vspace*{\fill}
+ \end{center}
+
+ Master thesis approved. XXX XX, 2020.
+
+  \assinatura{\textbf{\imprimirorientador} \\ Supervisor}
+  \assinatura{\textbf{Prof. PhD Paulo Justiniano Ribeiro Jr} \\
+    Co-supervisor}
+  \assinatura{\textbf{Prof. PhD ...} \\Internal Examinator - PPGMNE}
+  \assinatura{\textbf{Prof. PhD ...} \\Internal Examinator - PPGMNE}
+  \assinatura{\textbf{Prof. PhD ...} \\External Examiner - }
+
+  \begin{center}
+   \vspace*{0.5cm}
+   {\large CURITIBA}
+   \par
+   {\large\imprimirdata}
+   \vspace*{1cm}
+ \end{center}
+
+\end{folhadeaprovacao}
+% ----------------------------------------------------------------------
+\begin{dedicatoria}
+  \vspace*{22.7cm}
+  \begin{flushright}
+    \begin{minipage}[H]{4.5cm}
+      {To Celita and Olivio}
+    \end{minipage}
+  \end{flushright}
+\end{dedicatoria}
+% ----------------------------------------------------------------------
+\begin{agradecimentos}
+  ...
+\end{agradecimentos}
+
+\begin{epigrafe}
+  \vspace*{\fill}
+  \begin{flushright}
+    \textit{"A simplicidade é o último grau de sofisticação".\\
+      (Leonardo da Vinci)}
+  \end{flushright}
+\end{epigrafe}
+% ----------------------------------------------------------------------
+\newpage
+\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do
+                             % resumo
+\setlength{\abstitleskip}{1cm} % adiciona mais um cm após o 'titulo' do
+                               % resumo para ficar com 2cm
+\begin{resumo}[]
+  \vspace{-2cm}
+  \begin{center}
+    \bfseries{\large{\textsf{ABSTRACT}}}
+  \end{center}
+  \vspace{0.3cm}
+  ...
+
+  \textbf{Keywords}: . . . . . .
+\end{resumo}
+% ----------------------------------------------------------------------
+\newpage
+\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do
+                             % resumo
+\setlength{\abstitleskip}{1cm} % adiciona mais um cm após o 'titulo' do
+                               % resumo para ficar com 2cm
+\begin{resumo}[]
+  \begin{otherlanguage*}{brazil}
+    \vspace{-2cm}
+    \begin{center}
+      \bfseries{\large{\textsf{RESUMO}}}
+    \end{center}
+    \vspace{0.3cm}
+    ...
+
+    \textbf{Palavras-chave}: . . . . . .
+  \end{otherlanguage*}
+\end{resumo}
+% ----------------------------------------------------------------------
+\pdfbookmark[0]{\listfigurename}{lof}
+\listoffigures*
+\cleardoublepage
+% ----------------------------------------------------------------------
+\pdfbookmark[0]{\listtablename}{lot}
+\listoftables*
+\cleardoublepage
+% ----------------------------------------------------------------------
+% \begin{siglas}
+% \item[Fig.] Area of the $i^{th}$ component
+% \item[456] Isto éum número
+% \item[123] Isto éoutro número
+% \item[lauro cesar] este éo meu nome
+% \end{siglas}
+% ----------------------------------------------------------------------
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\cleardoublepage
+% ----------------------------------------------------------------------
+\makepagestyle{abntheadings}
+\makeevenhead{abntheadings}{\ABNTEXfontereduzida\thepage}{}{}
+\makeoddhead{abntheadings}{}{}{\ABNTEXfontereduzida\thepage}
+\makeheadrule{abntheadings}{\textwidth}{0in}
+% ----------------------------------------------------------------------
+\textual
+% ----------------------------------------------------------------------
+\chapter{Introdução}
+\label{cap:introducao}
+\input{./Modulos/Introducao}
+% ----------------------------------------------------------------------
+\chapter{Conjuntos de dados}
+\label{cap:aplicacoes}
+\input{./Modulos/Aplicacoes}
+% ----------------------------------------------------------------------
+\chapter{Fundamentação teórica}
+\label{cap:fundamentacaoteorica}
+\input{./Modulos/Metodologia}
+% ----------------------------------------------------------------------
+\chapter{Modelo de regressão multivariado}
+\label{cap:multivariatemodel}
+\input{./Modulos/Modelo}
+% ----------------------------------------------------------------------
+\chapter{Resultados}
+\label{cap:resultados}
+\input{./Modulos/Resultados}
+% ----------------------------------------------------------------------
+\chapter{Considerações finais}
+\label{cap:considefinais}
+\input{./Modulos/ConsFinais}
+% ----------------------------------------------------------------------
+\setlength{\afterchapskip}{\baselineskip}
+% ----------------------------------------------------------------------
+\bibliography{referencias}
+% ----------------------------------------------------------------------
+\postextual
+% ----------------------------------------------------------------------
+% \begin{apendicesenv}
+% \partapendices
+% \addcontentsline{toc}{chapter}{\hspace{2.105cm}APPENDIX}
+% \renewcommand{\ABNTEXchapterfontsize}{\ABNTEXsectionfont}
+% \end{apendicesenv}
+% ----------------------------------------------------------------------
+% \begin{anexosenv}
+% \partanexos
+% \addcontentsline{toc}{chapter}{\hspace{2.105cm}ANNEX}
+% \renewcommand{\ABNTEXchapterfontsize}{\ABNTEXsectionfont}
+% \end{anexosenv}
+%-----------------------------------------------------------------------
+\phantompart
+\printindex
+%-----------------------------------------------------------------------
+\end{document}
+% END ==================================================================

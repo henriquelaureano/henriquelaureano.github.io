@@ -1,0 +1,266 @@
+
+Este Capítulo apresenta a fundamentação teórica que será usada nesta dissertação. A~\autoref{cap:refteorico} apresenta um breve resumo dos principais trabalhos que deram base para esta dissertação. A distribuição de probabilidade beta e suas propriedades encontram-se na~\autoref{cap:densbeta}. A~\autoref{cap:norta} apresenta o algoritmo NORTA, que será usado no estudo de simulação de variáveis aleatórias beta correlacionadas. A~\autoref{cap:betamodel} introduz o modelo de regressão beta (univariado). Por fim, a~\autoref{cap:gof} apresenta medidas de bondade de ajuste usadas na comparação dos modelos.
+
+
+%=====================================================
+
+\section{Referencial teórico}
+\label{cap:refteorico}
+
+%=====================================================
+
+
+Variáveis respostas limitadas são comuns em diversas áreas de pesquisa, como em medicina, ciências sociais, engenharias dentre outras. Um dos primeiros trabalhos a propor uma distribuição de probabilidade para a modelagem de variáveis respostas limitadas foi apresentado por \citeonline{Paolino2001}. Na sequência, \citeonline{Kieschnick2003} apresentaram diversos modelos de regressão para análise de respostas limitadas, dentre eles o modelo linear gaussiano com censura, modelo de regressão beta, simplex e um modelo semi-paramétrico estimado por quase-verossimilhança. \citeonline{Ferrari2004} apresentaram o popular modelo de regressão beta a partir de uma reparametrização na densidade beta, que permitiu modelar diretamente a média da variável resposta em função de covariáveis. Extensões do modelo beta são descritas em \citeonline{smithson:2006,Simas2010} e \citeonline{grun2012}. Além disso, alguns autores usaram o modelo de regressão simplex como forma alternativa ao modelo de regressão beta \cite{Lopez:2013}. \citeonline{Miyashiro:2008} comparou os modelos beta e simplex com aplicações em dois conjuntos de dados reais. \citeonline{Bonat:2012} especificaram uma classe geral de modelos a partir da escolha da distribuição de probabilidade, função de ligação e/ou transformação para a variável resposta. Nesta classe de modelos, os autores incluíram a densidade beta \cite{Ferrari2004}, simplex \cite{Barndorff:1991}, Kumaraswamy \cite{Lemonte:2013}, gaussiana e gaussiana transformada. 
+
+Mais recentemente, \citeonline{liu:2016} revisaram e compararam aspectos metodológicos e computacionais de inferência bayesiana e por máxima verossimilhança nos modelos de regressão beta e beta inflacionada, incluindo modelos com/sem efeitos aleatórios. Ainda, para o caso de uma variável resposta, outros modelos foram propostos como o modelo de regressão gama unitário desenvolvido por \citeonline{mousa2016gamma} e o modelo de regressão Johnson $S_B$ apresentado por \citeonline{lemonte2016new}. \citeonline{Bonatetal:2018a} propuseram uma nova classe de modelos de regressão para análise de variáveis respostas limitadas. Os modelos são baseados em suposições de segundo momentos, isto é, média e variância, onde $\mu$ é a média da variável resposta e $\phi \mu^p(1 - \mu)^p$ é a variância. Nessa notação, $\phi$ é o parâmetro de dispersão e $p$ é um parâmetro de potência, que foi introduzido para dar mais flexibilidade na modelagem da relação entre média e variância~\cite{Bonatetal:2018a}.
+
+%além de servir como forma automática de seleção de distribuições, como no caso das distribuições beta $(p = 1)$ e simplex $(p = 3)$
+
+No contexto de medidas repetidas e análide de dados longitudinais \citeonline{qiu2008simplex} exploraram um modelo de efeitos mistos baseado na distribuição simplex. \citeonline{verkuilen2012mixed} apresentam o modelo beta com efeitos aleatórios na análise de experimentos de psicologia cognitiva. Já \citeonline{bonat:2015beta} usaram a mesma abordagem para discutir métodos de inferência por máxima verossimilhança com aplicações a dados reais. Sob o paradigma de inferência Bayesiana, o modelo beta com efeitos mistos  é discutido em \citeonline{zuniga:2013} e \citeonline{Bonat:2015b}. \citeonline{masarotto2012gaussian} propuseram uma classe de modelos marginais baseados em copulas gaussianas, incluindo o modelo marginal beta. Sob a estrutura de séries temporais alguns modelos foram propostos \cite{McKenzie2007,Grunwald1993,Rocha2010,Da-Silva2011}.
+
+
+Embora os modelos supracitados possam ser usados em inúmeras aplicações, eles são limitados à análise de apenas uma variável resposta. Em certos casos, o pesquisador pode estar interessado em analisar mais de uma variável resposta simultaneamente. Além disso, pode existir interesse em investigar possíveis correlações entre as respostas, dada a presença de covariáveis no modelo. Acredita-se que um modelo de regressão multivariado possa agregar mais informações na análise dos dados, produzindo estimativas dos parâmetros mais precisas e confiáveis. Nesse sentido, alguns autores propuseram modelos de regressão para modelagem conjunta de variáveis respostas limitadas no intervalo unitário. 
+
+O modelo de regressão beta bivariado com modelagem conjunta de média e dispersão foi proposto por \citeonline{cepeda:2014}. Os autores usaram a função copula Farlie–Gumbel–Morgenstern (FGM) para construção da distribuição beta bivariada, em que os parâmetros do modelo são estimados conjuntamente via inferência bayesiana. \citeonline{souza2016multivariate} propuseram duas classes de modelos de regressão multivariados com resposta beta. O primeiro usa cópulas para a modelagem marginal das variáveis respostas, enquanto o segundo modelo considera a inclusão de efeitos fixos e aleatórios, resultando num modelo hierárquico multivariado com efeitos aleatórios correlacionados. Já o modelo de regressão Dirichlet é uma outra abordagem quando se tem mais de uma variável resposta. Esse modelo foi usado inicialmente por \citeonline{hijazi2009} e explorado mais tarde por \citeonline{murteira:2016} com aplicações na área econômica, onde os autores apresentam uma reparametrização do modelo, além de estudos de simulação. 
+
+Cabe ressaltar, que o modelo de regressão Dirichlet é comumente usado na análise de dados composicionais, em que um vetor de respostas $Y_1, Y_2, \ldots, Y_p$, denominadas composições, representam $p$-frações de algum ``inteiro" e satisfazem a restrição de soma igual a um, isto é, $Y_1 + Y_2 + \ldots + Y_p = 1$ e $Y_1 \geq 0, Y_2 \geq 0, \ldots, Y_p \geq 0$ \cite{aitchison1986}. Devido a tal restrição, essas variáveis não são mutuamente exclusivas, ou seja, quando o valor de uma variável se altera, obrigatoriamente os valores das outras variáveis também são alterados. Logo, o modelo de regressão Dirichlet é diferente do modelo de regressão multivariado proposto nesta dissertação e, portanto, não se aplica ao conjunto de dados apresentado na \autoref{cap:gorduraCorporal}.
+
+
+
+%=====================================================
+
+\section{Distribuição de probabilidade beta}
+\label{cap:densbeta}
+
+%=====================================================
+
+A distribuição de probabilidade beta é um modelo probabilístico para variáveis aleatórias contínuas e restritas ao intervalo $(0,1)$. Essa distribuição de probabilidade possui dois parâmetros, ambos positivos, que controlam o formato da distribuição. Sua função densidade de probabilidade é expressa por:
+\begin{equation}
+\label{eq:beta1}
+f(y;p,q) = \dfrac{\Gamma(p + q)}{\Gamma(p)\Gamma(q)} y^{p-1}(1 - y)^{q - 1},~p > 0,~q > 0,
+\end{equation}
+\noindent
+em que $0< y < 1$ e $\Gamma(\cdot)$ denota a função gama. Sua média e variância são dadas, respectivamente, por:
+\[ \mathrm{E}(y) = \dfrac{p}{p + q} \quad \mbox{e} \quad \mathrm{Var}(y) = \dfrac{pq}{(p + q)^2(p+q+1)}.  \]
+
+
+Em modelos de regressão é de interesse relacionar a média de uma variável resposta $y$ em função de uma ou mais covariáveis. Assim, \citeonline{Ferrari2004} propuseram uma reparametrização da densidade beta, na qual pode-se modelar diretamente sua resposta média em função de covariáveis, $\mu = p/(p + q)$. Além disso, incluiu-se o parâmetro $\phi = p + q$, sendo este um parâmetro de precisão ou dispersão. Reescrevendo, tem-se: $p = \mu \phi$ e $q = (1 - \mu)\phi$. Consequentemente, sua densidade fica da seguinte forma:
+\begin{equation}
+\label{eq:beta2}
+f(y, \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma{(\mu\phi)}\Gamma{((1 - \mu)\phi)}}y^{\mu\phi - 1}(1 - y)^{(1 - \mu)\phi - 1},
+\end{equation}
+\noindent
+em que $0 < \mu, y < 1$ e $\phi > 0$. Logo, a média e a variância da densidade beta na sua forma reparametrizada são dadas por:
+\[ \mathrm{E}(y) = \mu \quad \mbox{e} \quad \mathrm{Var}(y) = \dfrac{\mu(1  -\mu)}{1 + \phi}.  \]
+\noindent
+Note que, a $\mathrm{Var}(y) \to \mu(1  -\mu)$ quando $\phi \to 0$. Dessa forma, tem-se como caso particular a relação entre média e variância da distribuição Bernoulli.
+
+A~\autoref{fig:dbeta} apresenta a função de distribuição beta para diferentes valores de $\mu$ combinados com $\phi = (0,00001;~0,666;~4;~9;~23,99)$. Tais valores foram definidos quando $\mu = 0,5$ e $\mathrm{Var}(y) = 0,25;~0,15;$ $~0,05;~0,025;~0,01$, respectivamente.
+
+
+%Em alguns casos, observa-se que a densidade beta assume formas de U, J e J invertido. Além disso, pode-se observar formas simétricas (quando $\mu = 0,5$) e assimétricas (quando $\mu \neq 0,5$).
+
+% slavo em 11 x 9.0
+
+\begin{figure}[!htb]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\includegraphics[width=.9\textwidth]{FbetaB.pdf}
+\caption{Função de distribuição beta para diferentes valores de $\mu$ combinados com $\phi = (0,00001;~0,666;~4;~9;~23,99)$.}
+\label{fig:dbeta}
+\end{figure}
+
+ Os resultados apresentados na~\autoref{fig:dbeta} mostram que para valores mais altos de $\phi$ a função de distribuição beta fica mais concentrada em torno da média. Além disso, na medida em que $\phi \to \infty$ a função de distribuição beta tende para o caso Gaussiano.
+ 
+
+%=====================================================
+
+\section{Algoritmo NORTA}
+\label{cap:norta}
+
+%=====================================================
+
+O algoritmo NORTA \cite{cario:1997} é um dos métodos mais populares para simulação de vetores aleatórios correlacionados. O método funciona como um processo em dois passos. Primeiro é gerado um vetor aleatório normal multivariado $\mathbf{Z}$ de dimensão $p \times 1$. Logo então, esse vetor é transformado num vetor uniforme multivarido $\mathbf{U}$, que é novamente transformado no vetor $\mathbf{Y}$ que tem distribuição NORTA (\textit{NORmal To Anything}), em que cada elemento do vetor tem distribuição marginal arbitrária desejada. Logo, sua representação é dada por:
+\begin{equation}
+\mathbf{Y} = \Big[ F^{-1}_{Y_1}(\Phi[Z_1]), F^{-1}_{Y_2}(\Phi[Z_2]), \ldots, F^{-1}_{Y_p}(\Phi[Z_p])  \Big]^{\top},
+\end{equation}
+\noindent
+onde $\Phi[\cdot]$ é a função de distribuição acumulada da distribuição normal padrão aplicada a cada elemento do vetor $\mathbf{Z}$ e $F^{-1}_{Y_l}(u) \equiv~\mbox{inf} \{ y: F_{Y_l}(y) \geq u  \}$ é a inversa da função de distribuição acumulada.
+
+A matriz de correlação de $\mathbf{Z}$ determina diretamente a matriz de correlação de $\mathbf{Y}$, desde que
+$$
+\rho_{Y}(l,l') = \mbox{Corr}(Y_{l},Y_{l'}) = \mbox{Corr}\big(F^{-1}_{Y_l}(\Phi[Z_l]), F^{-1}_{Y_{l'}}(\Phi[Z_{l'}])\big),
+$$
+para todo $l \neq l'$. A correlação é definida por:
+\begin{equation}
+\label{eq:corr}
+\mbox{Corr}(Y_{l},Y_{l'}) = \dfrac{\mbox{E}(Y_{l},Y_{l'}) - \mbox{E}(Y_{l}) \mbox{E}(Y_{l'}) }{\sqrt{\mbox{Var}(Y_{l})\mbox{Var}(Y_{l'})}},
+\end{equation}
+onde as quantidades marginais $\mbox{E}(Y_{l}), \mbox{E}(Y_{l'}), \mbox{Var}(Y_{l})~\mbox{e}~\mbox{Var}(Y_{l'})$ são definidas por $F_{Y_{l}}$ e $F_{Y_{l'}}$. Vale destacar que $(Z_l, Z_{l'})$ têm distribuição normal padrão bivariada com correlação $\mbox{Corr} (z_l, z_{l'}) = \rho_{Z}(l,l')$ e que a quantidade $E(Y_{l},Y_{l'})$ (\ref{eq:corr}) é calculada por: 
+%\begin{footnotesize}
+\begin{eqnarray}
+\label{eq:eyy}
+E(Y_{l},Y_{l'}) &=& E \Big( F^{-1}_{Y_l}(\Phi[Z_l]) F^{-1}_{Y_{l'}}(\Phi[Z_{l'}]) \Big)   \\
+&=& \int_{- \infty}^{\infty} \int_{- \infty}^{\infty} F^{-1}_{Y_l}(\Phi[Z_l]) F^{-1}_{Y_{l'}}(\Phi[Z_{l'}]) \varphi_{\rho_{Z}(l,l')} (z_l, z_{l'}) dz_l dz_{l'}, \nonumber
+\end{eqnarray}
+%\end{footnotesize}
+\noindent
+em que $\varphi_{\rho_{\mathcal{Z}}(l,l')}$ denota a função densidade de probabilidade de uma distribuição normal padrão bivariada com correlação $\rho_{Z}(l,l')$.
+
+Cabe ressaltar, que nem sempre a integral $(\ref{eq:eyy})$ vai ter solução, devido à relação média/variância da distribuição beta. Tal restrição, impacta diretamente no espaço paramétrico da correlação $(\ref{eq:corr})$ que também depende da especificação das médias marginais.
+
+
+\subsection{Resumo do algoritmo NORTA}
+
+\begin{itemize}
+
+\item \textbf{Entrada}: Distribuições marginais desejadas $F_{Y_l}(y), l = 1,2, \ldots, p$ e matriz de correlação $\boldsymbol{\Sigma}_Y = \mbox{Corr}(Y_{l},Y_{l'})$. 
+
+\item \textbf{Saída}: Vetor aleatório $Y$ com as marginais desejadas $F_{Y_l}(y)$ e sua respectiva matriz de correlação $\boldsymbol{\Sigma}_Y$. 
+
+\begin{itemize}
+
+\item \textbf{Passo 1}: Gere um vetor aleatório $\mathbf{Z}$ com distribuição normal $p$-variada com vetor de média zero e matriz de correlação $\boldsymbol{\Sigma}_Z$, isto é, $\mathbf{Z} \sim \mathcal{N}(\mathbf{0},\boldsymbol{\Sigma}_Z)$. 
+
+\item \textbf{Passo 2}: Avalie $\mathbf{Y} = \Big[ Y_1 , Y_2, \ldots, Y_p \Big]^{\top}$ via $Y_l = F^{-1}_{Y_l}(\Phi[Z_l]), l = 1,2, \ldots, p$.
+
+\end{itemize}
+\end{itemize}
+
+
+
+
+\subsection{Algoritmo NORTA no software R}
+
+No \textit{software} estatístico \texttt{R} \cite{R} o algoritmo NORTA está implementado no pacote \texttt{NORTARA} \cite{nortara}. Por meio da função \texttt{genNORTARA()} é possível gerar o vetor aleatório $\mathbf{Y}$ com as marginais desejadas.
+
+Destaca-se que nesta subseção os códigos \texttt{R} encontram-se em figuras, para melhor visualização. Além disso, comentários feitos no código estão à direita do símbolo $\#$.
+
+Por exemplo, para gerar um conjunto de dados com 1000 observações de uma distribuição beta bivariada com correlação fixada em $\rho = 0,75$, basta usar o código apresentado na~\autoref{fig:TESTE2}.
+
+
+
+
+% ----------------------------------------------------------------------
+% Início quadro cinza
+\begin{figure}[H]
+\begin{program}[H]
+\begin{tikzpicture}
+  \node [mybox] (box){
+    \begin{minipage}{0.955\textwidth}
+
+
+\begin{verbatim}
+require(NORTARA)  # carrega o pacote
+invcdfnames <- c("qbeta","qbeta")  # define as marginais beta
+cor_matrix <- matrix(c(1.0,0.75,0.75,1.0),2,2) # matriz de correlação
+mu = 0.5  # parâmetro de média
+phi = 9  # parâmetro de dispersão
+paramslists <- list(
+  m1 = list(shape1 =  mu*phi, shape2 = (1 - mu)*phi),
+  m2 = list(shape1 = mu*phi, shape2 = (1 - mu)*phi)  
+      )
+Y <- genNORTARA(1000,cor_matrix,invcdfnames,paramslists)  # gera os dados
+\end{verbatim}
+
+
+ \end{minipage}
+};
+\end{tikzpicture}
+\end{program}
+\vspace{-0.6cm}
+\caption{Códigos em linguagem R para geração de variáveis aleatórias beta correlacionadas.}
+\label{fig:TESTE2}
+\end{figure}
+% Fim quadro cinza
+% ----------------------------------------------------------------------
+
+Na sequência, a~\autoref{fig:TESTE} mostra as 6 primeiras linhas do vetor $\texttt{Y}$, composto pelas marginais beta correlacionadas.
+
+% ----------------------------------------------------------------------
+% Início quadro cinza
+\begin{figure}[H]
+\begin{program}[H]
+\begin{tikzpicture}
+  \node [mybox] (box){
+    \begin{minipage}{0.955\textwidth}
+
+\begin{verbatim}
+head(Y)
+       [,1]      [,2]
+ [1,] 0.3703328 0.5654726
+ [2,] 0.2964144 0.6680834
+ [3,] 0.4286495 0.5751067
+ [4,] 0.1511930 0.8660905
+ [5,] 0.3929269 0.4270119
+ [6,] 0.4936319 0.6899231
+\end{verbatim}
+
+ \end{minipage}
+};
+\end{tikzpicture}
+\end{program}
+\vspace{-0.6cm}
+\caption{Resultado gerado pelo algoritmo NORTA.}
+\label{fig:TESTE}
+\end{figure}
+% Fim quadro cinza
+% ----------------------------------------------------------------------
+
+Note que, cada coluna de \texttt{Y} define as densidades marginais beta $Y_1$ e $Y_2$, respectivamente.
+
+
+
+
+%=====================================================
+
+\section{Modelo de regressão beta}
+\label{cap:betamodel}
+
+%=====================================================
+
+O modelo de regressão beta foi introduzido por \citeonline{Ferrari2004} com objetivo de modelar variáveis respostas contínuas pertencentes ao intervalo $(0,1)$. Esse modelo foi estruturado a partir da reparametrização da densidade beta que permite modelar diretamente sua resposta média, bem como seu parâmetro de dispersão em função de covariáveis. Assim, a função de densidade beta na sua forma reparametrizada é expressa por:
+ \begin{equation}\label{equ:beta}
+f(y;\mu,\phi) = \dfrac{\Gamma(\phi)}{\Gamma(\mu\phi)\Gamma((1 - \mu)\phi)} y^{\mu \phi - 1} (1 - y)^{(1 - \mu)\phi - 1}, \ \ 0 < y < 1,
+ \end{equation}
+
+\noindent
+ em que $\mu$ $(0 < \mu < 1)$ é o parâmetro associado a média da variável resposta e $\phi> 0  $ o parâmetro de precisão (ou dispersão). Nesta parametrização, sua esperança e variância são dadas, respectivamente, por $E(Y) = \mu$ e $V(Y) = \tfrac{\mu(1-\mu)}{1+\phi}$. 
+ 
+ Então, seja $Y_1, Y_2, \ldots, Y_n$ variáveis aleatórias independentes, em que cada variável $Y_i~(i=1,2,\ldots,n)$ segue a função de densidade beta (\ref{equ:beta}), isto é, $Y_i \sim \mathcal{B}(\mu_i,\phi_i)$, de tal forma que o modelo de regressão beta é definido por $f(y;\mu,\phi)$ e pela seguinte relação funcional: 
+\begin{equation}\label{equ:g1}
+ g(\mu_i) = \eta_i = \mathbf{x}_i^{\top} \boldsymbol{\beta}, \nonumber
+ \end{equation}
+%\begin{equation}\label{equ:g2}
+%g_2(\phi_i) = \xi_i = \mathbf{z}_i^{\top} \boldsymbol{\gamma}, \nonumber
+%\end{equation}
+
+
+\noindent
+ onde $\mathbf{x}_i = (x_{i1}, x_{i2}, \ldots, x_{ik})^{\top}$ é o vetor $(k \times 1)$ das covariáveis (conhecidas), $\boldsymbol{\beta} = (\beta_1, \beta_2, \ldots, \beta_k)^{\top}$ é o vetor $(k \times 1)$ dos coeficientes de regressão (desconhecidos) e $g(\cdot)$ é uma função de ligação. As principais funções de ligação usadas para análise de dados limitados são: \textit{logit}, \textit{probit}, \textit{cloglog} e \textit{cauchit}.
+ 
+ A função de ligação \textit{logit} é uma das mais populares entre os usuários de estatística aplicada. Ela é de fácil utilização e interpretação, pois permite que os coeficientes de regressão sejam interpretados em termos de razão de chances (RC). Para isso, basta exponenciar os coeficientes $\beta_j$, ou seja, $\mathrm{RC} = \exp\{ \beta_j  \}$ para $j = 1, \ldots, k$. Além disso, pode-se construir intervalos de confiança conforme~\autoref{eq:ICRC}:
+\begin{equation}
+\label{eq:ICRC}
+\exp\big\{ \beta_j \pm z_{1 - \alpha /2} \mathrm{EP}(\beta_j) \big\},
+\end{equation}
+\noindent
+onde $z_{1 - \alpha /2}$ é um ponto obtido a partir da distribuição normal padrão e $\mathrm{EP}(\beta_j)$ é o erro-padrão associado a estimativa de $\beta_j$.
+
+%=====================================================
+
+\section{Medidas de bondade de ajuste}
+\label{cap:gof}
+
+%=====================================================
+
+
+A seleção e comparação de modelos é uma questão importante em quase toda análise de dados. O modelo de regressão proposto nesta dissertação não apresenta uma função de verossimilhança explícita. Desse modo, para fazer comparações entre modelos foram usadas medidas de bondade de ajuste (\textit{goodnees-of-fit}) propostas por \citeonline{Bonat:2017}. Tais medidas se referem aos pseudo critérios de informação de \textit{Akaike}~(\texttt{pAIC}) e Bayesiano~(\texttt{pBIC}), assim como o valor maximizado do logaritmo da função de pseudo verossimilhança~(\texttt{plogLik}). 
+ 
+
+% é necessário de um método adequado. Como o modelo proposto nesta dissertação é baseado apenas em suposições de momentos, a estimação e inferência é feita usando as funções de estimação quase-escore e Pearson. Nesta dissertação, para fazer comparações entre os modelos, serão usadas as medidas de bondade de ajuste (\textit{goodnees-of-fit}) propostas por \citeonline{Bonat:2017}: 
+ 
+
+
+
+
