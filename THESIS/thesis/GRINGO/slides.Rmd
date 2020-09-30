@@ -1,0 +1,276 @@
+---
+title: "A multinomial GLMM\\newline for clustered competing risk data"
+subtitle: ""
+short-title: ""
+author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
+         \\hspace{.5\\textwidth}
+         \\includegraphics[width=.25\\textwidth]{logo/ufpr.png}
+         \\vspace{.75cm}\\newline
+         Henrique Laureano\\hspace{.25\\textwidth} Wagner Bonat\\newline
+         \\url{http://leg.ufpr.br/~henrique} $\\mid$
+         \\url{http://leg.ufpr.br/~wagner}"
+short-author: "leg.ufpr.br/~henrique"
+# email: "laureano\\@ufpr.br"
+# date: "*Last modification on* `r Sys.time()`"
+short-date: "leg.ufpr.br/~henrique"
+department: ""
+institute: ""
+# short-institute: "LEG"
+section-titles: true
+safe-columns: true # enables special latex macros for columns
+output:
+  legtheme::beamer_leg
+---
+
+```{r, include=FALSE}
+library(knitr)
+
+knit_hooks$set(rmdsize = function(before, options, envir) {
+    if (before) "\\footnotesize"
+    else "\\normalsize"
+})
+
+opts_chunk$set(rmdsize = TRUE,
+               warning = FALSE,
+               cache = TRUE,
+               cache_path = "scheike_cache/")
+```
+
+###
+
+\begin{minipage}{.75\textwidth}
+ \begin{shaded} A multinomial GLMM for clustered competing risk data
+ \end{shaded}
+\end{minipage}
+
+\pause
++ We work on the probability scale, modeling the
+
+\begin{block}{Cause-specific \textbf{cumulative incidence function}
+(CIF)}
+\[
+\begin{aligned}
+  \text{for a type}~{\color{beamer@UIUCorange}{k}}~\text{failure},
+  \quad
+  F_{\color{beamer@UIUCorange}{k}}(t \mid X) &=
+  \mathbb{P}[T \leq t,
+  {\color{beamer@UIUCorange}{K}} =
+  {\color{beamer@UIUCorange}{k}} \mid X]\\
+  &= \int_{0}^{t} f_{\color{beamer@UIUCorange}{k}}(a \mid X) da,
+  \quad t > 0,
+\end{aligned}
+\]
+where \(f_{\color{beamer@UIUCorange}{k}}(t \mid X) =
+        \lambda_{\color{beamer@UIUCorange}{k}}(t \mid X) \times
+        S(t \mid X)\) is the (sub)density for the time to a type
+        \(\color{beamer@UIUCorange}{k}\) failure
+\end{block}
+
+\pause
++ We go beyond the independence supposition, having clusters of subjects
+  with a possible correlation
+
++ Our latent structure to capture this possible correlation has\newline
+  audacity, allowing for \textcolor{beamer@UIUCblue}{within-cluster
+  dependence} of both\newline risk and timing
+
+###
+
+Considering a competing risks setup of three competing causes\dots
+
+\pause
+\dots we want to model the \textcolor{beamer@UIUCblue}{CIF} in the
+following specific manner
+\[
+\begin{aligned}
+  F_{\color{beamer@UIUCorange}{k}}(t \mid X, U) &=
+  \mathbb{P}[T \leq t, {\color{beamer@UIUCorange}{K}} =
+                       {\color{beamer@UIUCorange}{k}} \mid X, U]\\
+  &= \underbrace{
+    \pi_{\color{beamer@UIUCorange}{k}}(X, u_{1}, u_{2})}_{
+    \substack{\text{cluster-specific}\\\text{risk level}}}
+  \times
+  \underbrace{
+    \Phi[w_{\color{beamer@UIUCorange}{k}} g(t) -
+         X^{\top}\gamma_{\color{beamer@UIUCorange}{k}} -
+         \eta_{\color{beamer@UIUCorange}{k}}]}_{
+         \substack{\text{cluster-specific}\\
+                   \text{failure time trajectory}}},
+               \quad {\color{beamer@UIUCorange}{k}} = 1, 2.
+\end{aligned}
+\]
+i.e., a product of two functions
+
++ the first models the \textcolor{beamer@UIUCblue}{absolute risk} of a
+  competing cause in the presence of another
+
++ the second models the \textcolor{beamer@UIUCblue}{failure time
+  distribution},
+
+both varying between clusters
+
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+\pause
+
++ The third competing cause is left to accommodate\newline
+  the \textcolor{beamer@UIUCblue}{censorship}
+
++ Which probability distribution fits this setup?
+  \textcolor{beamer@UIUCblue}{Multinomial}
+
+###
+
+\texttt{Scheike} works out this idea via a pairwise composite likelihood
+approach,
+
+\small
+```
+@article{Scheike,
+  author  = {L. Cederkvist and K. K. Holst and K. K. Andersen and
+             T. H. Scheike},
+  title   = {Modeling the cumulative incidence function of
+             multivariate competing risks data allowing for
+             within-cluster dependence of risk and timing},
+  year    = {2019},
+  journal = {Biostatistics},
+  volume  = {20},
+  number  = {2},
+  pages   = {199--217},
+}
+```
+\vspace{-0.5cm}
+\normalsize
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+And we? We try a hierarchical approach via a GLMM
+
+###
+
+\begin{minipage}{.35\textwidth}
+ \begin{shaded} Our approach: what we do
+ \end{shaded}
+\end{minipage}
+\pause
+
+For an observed response \(y_{ijt}\) of a subject \(i\), with cluster
+\(j\), in the time \(t\), we have
+\[
+\begin{aligned}
+  y_{ijt} \mid \{u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j}\} &\sim
+  \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt}),\\
+  \begin{bmatrix} u_{1j}\\u_{2j}\\\eta_{1j}\\\eta_{2j} \end{bmatrix}
+  &\sim
+  \mathcal{N}
+  \left[\begin{bmatrix} 0\\0\\0\\0\end{bmatrix},
+    \begin{bmatrix}
+      \sigma_{u_{1}}^{2}&\varrho_{u_{1}, u_{2}}&
+      \varrho_{u_{1}, \eta_{1}}&\varrho_{u_{1}, \eta_{2}}\\
+      &\sigma_{u_{2}}^{2}&
+      \varrho_{u_{2}, \eta_{1}}&\varrho_{u_{2}, \eta_{2}}\\
+      &&\sigma_{\eta_{1}}^{2}&\varrho_{\eta_{1}, \eta_{2}}\\
+      &&&\sigma_{\eta_{2}}^{2}
+    \end{bmatrix}
+  \right]
+\end{aligned}.
+\]
+\pause
+This model structure is connected via a \textcolor{beamer@UIUCblue}{link
+function}, i.e., a functional form for the multinomial probabilities.
+
+Here we use the CIF derivative w.r.t. time \(t\),
+
+\begin{minipage}{0.8\textwidth}
+\[
+\begin{aligned}
+  p_{{\color{beamer@UIUCorange}{k}}ijt} &=
+  \frac{\exp\{
+    \bm{x}_{{\color{beamer@UIUCorange}{k}}ij}
+    \bm{\beta}_{{\color{beamer@UIUCorange}{k}}i} +
+    u_{{\color{beamer@UIUCorange}{k}}j}\}}{
+    1 + \sum_{{\color{beamer@UIUCorange}{m}}=1}^{
+      {\color{beamer@UIUCorange}{K}}-1
+    }
+    \exp\{
+    \bm{x}_{{\color{beamer@UIUCorange}{m}}ij}
+    \bm{\beta}_{{\color{beamer@UIUCorange}{m}}i} +
+    u_{{\color{beamer@UIUCorange}{m}}j}\}}
+  \hspace{1.85cm}\{{\color{beamer@UIUCorange}{k}} = 1, 2\}\\
+  &\times
+  w_{\color{beamer@UIUCorange}{k}}\frac{\delta}{2\delta t - 2t^{2}}
+  \phi[
+  w_{\color{beamer@UIUCorange}{k}}
+  \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right) -
+  \bm{x}_{{\color{beamer@UIUCorange}{k}}ij}
+  \bm{\gamma}_{{\color{beamer@UIUCorange}{k}}i} -
+  \eta_{{\color{beamer@UIUCorange}{k}}j}
+  ].
+\end{aligned}
+\]
+\end{minipage}
+
+###
+
+\begin{minipage}{.35\textwidth}
+ \begin{shaded} Our approach: how we do
+ \end{shaded}
+\end{minipage}
+\pause
+
+\begin{center}
+\textcolor{beamer@UIUCblue}{TMB: Template Model Builder}
+\end{center}
+
+Quickly implement complex random effect models through simple
+\texttt{C++} templates. The \texttt{R} package combines
+
++ \texttt{CppAD}: \texttt{C++} automatic differentiation
+
++ \texttt{Eigen}: templated matrix-vector library
+
++ \texttt{CHOLMOD}: sparse matrix routines available from \texttt{R}
+
+to obtain an efficient implementation of the applied Laplace
+approximation with exact derivatives.
+
+Also, key features are
+
++ automatic sparseness detection
+
++ parallelism through \texttt{BLAS}
+
++ parallel user templates.
+
+###
+
+\begin{minipage}{.6\textwidth}
+ \begin{shaded} Main application: cancer incidence in twins
+ \end{shaded}
+\end{minipage}
+\vspace{0.75cm}
+\begin{columns}
+\begin{column}{.55\linewidth}
+\centering
+\includegraphics[width=\linewidth]{prints/twins.jpg}
+\end{column}
+\begin{column}{.45\linewidth}
+Clustered competing risks data\newline
+\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+Clusters? Families\newline
+\hspace*{1.35cm}\rotatebox[origin=c]{180}{$\Lsh$}Family studies\newline
+\hspace*{2.1cm}\rotatebox[origin=c]{180}{$\Lsh$}
+\textcolor{beamer@UIUCblue}{Twins data}
+\end{column}
+\end{columns}
+
+\begin{center}
+within-cluster dependence \(\Rightarrow\) within-family dependence
+\end{center}
+
+within-family dependence may reflect both disease \textbf{heritability}
+and\newline the impact of shared \textbf{environmental effects}
+
+<!-- ### -->
+
+<!-- \begin{center} -->
+<!--  \includegraphics[width=.9\linewidth]{thank_you.jpg} -->
+<!-- \end{center} -->

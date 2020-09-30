@@ -1,0 +1,244 @@
+Consider a cluster of random variables representing the time until some
+event occurs. The random variables that compose that cluster are assumed
+to be correlated, i.e. for some biological or environmental reason it is
+not adequate to assume independence between them, the random variables.
+Also, we may be interested in the occurrence of not only one specific
+event, having in practice a competition of events to see which one
+happens first, if it happens. Such events may also be of low probability
+but with severe consequences. That is the moment when the correlation
+ingredient makes its difference since the occurrence of an event in a
+subject should affect the probability of the same happening in the
+others.
+
+A realistic and practical context that fits perfectly with the
+theoretical framework described above is the study of disease incidence
+in family members, where each member is indexed by a random variable and
+each cluster consists of a family. The inspiration to the study of these
+types of problems came from the work developed in \citeonline{SCHEIKE},
+where they studied breast cancer incidence in mothers and daughters.
+Based on that, the aim of this thesis is to propose a simpler framework
+to make inference on the gender-specific cancer incidence in twins. The
+twins' case is just one more in the range of possible applications to
+our model, but given its vast intrinsic particularities, becomes the
+focus application. Until now we only contextualized the problem and the
+focus, we still need to introduce the methodology. To this, some
+definitions and theoretical contexts are welcome.
+
+When the object under study is random variables representing the time
+until some event occurs, we're in the field of \textit{failure time
+  data}~\cite{kalb&prentice}. The occurrence of an event is generally
+called as a \textit{failure}, and major areas of application are
+biomedical studies and industrial life testing. In this thesis, we
+maintain our focus on the former. In industrial life testing
+applications, is performed what is called a \textit{reliability
+  analysis}; in biomedical studies, is performed what is called
+\textit{survival analysis}. Generally, the term survival analysis is
+applied when we're interested in the occurrence of only one event, a
+\textit{failure time process}. When we're interested in the occurrence
+of more than one event, like now, we enter in the yard of
+\textit{competing risks} and \textit{multistate} models. A visual aid is
+presented on \autoref{fig:intro1} and a comprehensive reference
+is~\citeonline{kalb&prentice}.
+
+\begin{figure}[H]
+  % \vspace{0.35cm}
+  \setlength{\abovecaptionskip}{.0001pt}
+  \caption{BEHAVIOR ILLUSTRATIONS OF MULTISTATE MODELS FOR A) FAILURE
+    TIME PROCESS; B) COMPETING RISKS; AND C) ILNESS-DEATH MODEL, THE
+    SIMPLEST MULTISTATE MODEL}
+  \vspace{0.425cm} \centering
+  \tikzfig{fig1}\\
+  \vspace{0.45cm}
+  \begin{footnotesize}
+    SOURCE: The author~(2020).
+  \end{footnotesize}
+  \label{fig:intro1}
+\end{figure}
+
+Failure time and competing risk processes may be seen as particular
+cases of a multistate model. Besides the number of events (states) of
+interest, a big difference between a multistate model and its particular
+cases is that only in the multistate scenario we may have transient
+states, using a \textit{stochastic process} language. In the particular
+cases, all the states, besides the initial state 0, are absorbents -
+once you reached it you don't leave. The simplest multistate model that
+exemplify this behavior is the so-called illness-death model,
+\autoref{fig:intro1}~C). A patient enters the study (state 0) and it can
+get sick (state 1) or die (state 2); if sick it can recover (returns to
+state 0) or die. In this thesis, we'll work only with competing risk
+processes. For each individual, we have the time, age, until the
+occurrence (or not) of cancer.
+
+When for some know or unknown reason we're able to see the occurrence of
+the event, we have what is called \textit{censorship}. Still in the
+illness-death model: during the period of follow up the patient may not
+get sick or die, staying at state 0, this is called a
+\textit{right-censorship}; The same for state 1. If a patient is in
+state 1 at the end of the study, we're \textit{censored} to see him
+reaching the state 2 or returning to state 0. This is the inherent idea
+to censorship and must be present in the modeling framework.
+
+In a survival model what we model is the survival experience. Usually,
+there are covariates (explanatory/independent variables) upon which
+failure time may depend. The model is defined by the \textit{hazard}
+(failure rate), \(\lambda(\cdot)\), at time \(t\) for an individual with
+covariate vector \(\mathbf{X}_{i}\) and can be written as
+\begin{equation}
+  \lambda(t~;~\mathbf{X}_{i}) =
+  \lambda_{0}(t) \times c(\mathbf{X}_{i} \bm{\beta}),
+  \label{eq:intro1}
+\end{equation}
+where \(\bm{\beta}^{\top} = [\beta_{1}~\dots~\beta_{p}]\) is a vector
+of regression parameters; \(\lambda_{0}(\cdot)\) is an arbitrary
+baseline hazard function; and \(c\) is a specific function form, that
+will depend on the chosen probability distribution for the failure time.
+The structure of equation~\ref{eq:intro1} is made thinking in a simple
+failure time process, as in~\autoref{fig:intro1}~A). However, is easy to
+extend its idea. We basically have the equation~\ref{eq:intro1} model
+for each cause-specific, in a competing risks process; or transition, in
+a multistate process. A complete and extensive detailing can be, again,
+found in~\citeonline{kalb&prentice}.
+
+In this thesis, we approach the case of the clustered competing risks.
+Besides the cause-specific structure, we have the fact that the disease
+occurrences are happening in related individuals (twins). This
+configures what is called \textit{family studies}. We have a cluster (a
+family/pair of twins) dependence that needs to be considered. This,
+possible, dependence is something that we don't actually measure, but
+know (or just suppose) that exists. In the statistical modeling
+language, this type of characteristic receives the name of
+\textit{random} or \textit{latent} effect. A survival model with a
+latent effect, association, or unobserved heterogeneity, is called a
+\textit{frailty model}~\cite{frailty78, frailty79}. In its simplest
+form, a frailty is an unobserved random proportionality factor that
+modifies the hazard function of an individual, or of related
+individuals. Frailty models are extensions of the equation
+\ref{eq:intro1} model.
+
+Specifically in the competing risks setting, we have to choose which of
+two scales we want to work on. The hazard scale focusing on the
+cause-specific hazard or on the probability scale focusing on the
+cause-specific cumulative incidence. Both may complement each
+other~\cite{andersen12}. However, in family studies, there is often a
+strong interest in describing age at disease onset including
+within-family dependence. The distribution of age at disease onset is
+directly described by the cause-specific cumulative incidence.
+Therefore, the probability scale is the chosen one here.
+
+Frailty models are generally defined based on the hazard scale and with
+a latent effect that modifies the hazard function via a proportionality
+factor. To work on the probability scale and with a latent effect that
+allows for within-cluster dependence of both risk and
+timing,~\citeonline{SCHEIKE} proposed a pairwise composite likelihood
+approach based based on a linear model with multinomial response
+distribution and multivariate normal latent effects (in a frailty model
+the common choice for the latent effects is the gamma distribution). The
+idea in this thesis is to try to do that in a simpler manner via a
+generalized linear mixed model (GLMM). Instead of concentrating on
+failure time data and consequently having a survival/frailty model on
+the hazard scale, or using a composite approach, we just build the joint
+likelihood function (multinomial distrtibution with a link function
+based on the cause-specific cumulative incidence function and
+appropriate latent effects), integrate out the latent effects and
+optimize the obtained distribution with respect to (wrt) its parameters.
+With this approach, we easily work on the probability scale and are able
+to specify the desired within-cluster dependence structure. To conclude,
+a brief introduction of a GLMM.
+
+In a standard linear model we assume that the response variable,
+\(Y_{i}\), conditioned on the covariates follows a normal distribution,
+and we model it's mean, \(\mu_{i} \equiv \mathbb{E}(Y_{i})\), via a
+linear combination. Generalizing this idea with a smooth monotonic
+``link function'' \(g\), we get a generalized linear model
+(GLM)~\cite{GLM72} with the basic structure
+\[
+ g(\mu_{i}) = \mathbf{X}_{i} \bm{\beta},
+\]
+where \(\mathbf{X}_{i}\) is the \(i^\text{th}\) row of a
+model matrix \(\mathbf{X}\), and \(\bm{\beta}\) is a vector of unknown
+parameters. In a GLM the \(Y_{i}\) are independent and
+\[
+  Y_{i} \sim \text{some exponential family distribution}.
+\]
+
+The \textit{exponential family} of distributions includes many
+distributions that are useful for practical modelling, such as the
+Poisson (for counting data), binomial (dichotomic data), gamma
+(continuous but positive) and normal (continuous data) distributions.
+The comprehensive reference for GLMs is~\citeonline{GLM89}.
+
+The insertion of a latent effect, \(\mathbf{b}\), in that structure
+makes a mixed model. A linear model becomes a linear mixed model and a
+GLM becomes a generalized linear mixed model (GLMM). We now have
+\[
+  g(\mu_{i}) = \mathbf{X}_{i} \bm{\beta} + \mathbf{Z}_{i}\mathbf{b},
+  \quad \mathbf{b} \sim \mathcal{N}(\mathbf{0}, \bm{\psi})
+\]
+where the latent effect is assumed to follow a multivariate normal
+distribution of mean zero and a given variance-covariance structure.
+
+\section{GOALS}
+
+\subsection{General goals}
+
+Propose a multinomial GLMM to the cause-specific cumulative incidence
+function of clustered competing risks data.
+
+\subsection{Specific goals}
+
+\begin{enumerate}
+\item Simulate from the model following and adapting the guidelines
+  from~\citeonline{SCHEIKE}.
+
+\item Write the model via Template Model Builder (TMB)~\cite{TMB},
+  possibly the most efficient way of doing so, and take advantage of its
+  functionalities: compute all necessary gradients and Hessians via
+  Automatic Differentiation and integrate out the latent effects of the
+  joint likelihood via Laplace approximation.
+
+\item Try different complexity levels of the proposed modeling framework
+  to see how identifiable it is.
+
+\item Apply the model to the Nordic Cancer Union (NCU) twins data.
+
+\item Compare the results of the multinomial GLMM approach to the
+  pairwise composite likelihood approach of~\citeonline{SCHEIKE}.
+\end{enumerate}
+
+\section{JUSTIFICATION}
+
+In family studies examining disease occurrence in related individuals,
+key points of interest are the within-family dependence and determining
+the role of different risk factors. The within-family dependence may
+reflect both disease heritability and the impact of shared environmental
+effects. The number of statistical models for competing risks data that
+accommodate the within-cluster (family) dependence is limited. We didn't
+find, e.g., any GLMM approach to do that and didn't find any
+justification to not do that. Therefore, we propose a multinomial GLMM
+apporach that accommodates these key points by modeling the
+cause-specific cumulative incidence function (that describes age at
+disease onset) of the competing risks, using a latent structure that
+allows the absolute risk and the failure time distribution to vary
+between clusters (here, families).
+
+\section{LIMITATION}
+
+This work restraint to the proposition and application of a multinomial
+model for competing risks data with a latent effect structure to
+accommodate within-cluster dependence with regard to both risk and
+timing. Given the elevated model complexity, hypothesis tests; residual
+analysis; and good-of-fit measures will not be approached.
+
+\section{THESIS ORGANIZATION}
+
+This thesis contains 6 chapters including this introduction.
+The~\autoref{cap:methods} presents a review of the main aspects of a
+general GLMM and its respective inference procedures.
+The~\autoref{cap:model} presents the multinomial GLMM with its
+particular characteristics and in~\autoref{cap:datasets} we describes
+how to simulate from the proposed model, and presents a dataset for a
+real application. In~\autoref{cap:results} the obtained results are
+presented, and in~\autoref{cap:finalc} we discuss the contributions of
+this thesis and present some suggestions for future work.
+
+% END ==================================================================

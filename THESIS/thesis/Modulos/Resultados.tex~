@@ -1,0 +1,1273 @@
+
+Neste Capítulo são apresentados os resultados de três estudos de simulação, além da análise dos dados apresentados no \autoref{cap:aplicacoes}. O primeiro estudo de simulação foi conduzido para investigar o comportamento do algoritmo NORTA (NOR\textit{mal To Anything}) na simulação de variáveis aleatórias beta correlacionadas (\autoref{cap:simul1}). O segundo visou checar propriedades dos estimadores para os parâmetros de dispersão, no contexto de análise de dados longitudinais (\autoref{cap:simulLong}). E o terceiro foi delineado para explorar a flexibilidade dos estimadores para lidar com múltiplas respostas correlacionadas (\autoref{cap:simul2}). Por fim, a \autoref{cap:resultIQA} apresenta os resultados da análise dos dados referente ao índice de qualidade da água (IQA), enquanto a \autoref{cap:resultcorporal} apresenta os resultados correpondentes ao percentual de gordura corporal.
+
+\section{Estudos de simulação}
+
+% ---------------------------------------------------------
+
+\subsection{Comportamento do algoritmo NORTA}
+\label{cap:simul1}
+
+% ---------------------------------------------------------
+
+
+Fenômenos aleatórios ocorrem em diversas áreas de pesquisa. Esses fenômenos, também chamados de variáveis aleatórias, geralmente são descritos por uma distribuição de probabilidades. Para o caso de duas ou mais variáveis aleatórias, pode-se pensar numa distribuição de probabilidades bivariada ou multivariada, além de uma possível correlação existente entre elas. Porém, um dos problemas é especificar a distribuição conjunta do vetor aleatório \cite{diassimulaccao}.
+
+
+Para simular vetores aleatórios correlacionados vários métodos foram propostos. \citeonline{li1975:generation} descrevem um método para gerar vetores aleatórios correlacionados. Na sequência, \citeonline{cario:1997} apresentam o algoritmo NORTA (NOR\textit{mal To Anything}), que é um dos métodos mais populares para simulação de variáveis aleatórias correlacionadas não-gaussianas. Aplicações do método podem ser vistas em \citeonline{2001:HuifenChen} e \citeonline{ghosh2003:behavior}. Adicionalmente, o algoritmo NORTA foi combinado com o método de redes neurais artificiais para gerar vetores aleatórios correlacionados com distribuições marginais de qualquer tipo, quando se tem problemas em resolver equações não-lineares por métodos convencionais \cite{niaki2008generating}. Recentemente, \citeonline{bonat2017genetic} adaptou o algoritmo NORTA para simular vetores aleatórios correlacionados na análise de dados genéticos. 
+
+Fazendo-se uso de estudos de simulação, pode-se investigar o comportamento das variáveis aleatórias, uma vez que se tem o controle sobre o mecanismo gerador dos dados. Além disso, pode-se estudar propriedades dos estimadores, tais como viés, consistência e taxa de cobertura (ver~\autoref{cap:simulLong}~e~\autoref{cap:simul2}).
+
+Para o caso da distribuição beta bivariada, o principal problema está na identificação dos valores mínimo e máximo que a matriz de correlação pode assumir em função das suas médias marginais. A distribuição beta, na sua forma reparametrizada \cite{Ferrari2004}, é modelada por dois parâmetros: um de média e outro de dispersão denotados, respectivamente, por $\mu$ e $\phi$. Essa distribuição não é ortogonal, como é o caso da distribuição Gaussiana. Assim, seus parâmetros são definidos por $p = \mu \phi$ e $q = (1 - \mu)\phi$. Para detalhes, ver~\autoref{cap:densbeta}.
+
+Nesse contexto, o principal objetivo desta seção é estudar o comportamento do algoritmo NORTA para simular variaveis aleatórias beta bivariada. Assim, fez-se uso do \textit{software} estatístico \texttt{R} \cite{R} e do pacote \texttt{NORTARA} \cite{nortara}, que fornece toda a implementação computacional do algoritmo NORTA.
+
+O delineamento do estudo de simulação foi feito usando duas variáveis aleatórias beta, denotadas por $Y_1$ e $Y_2$, fixando-se diferentes valores para os parâmetros de dispersão $\phi = (0,00001;~0,666;~4;~9;~23,99)$. Para cada distribuição marginal foi gerado uma sequência com 100 valores entre $(0,1)$. Assim, construiu-se um grid de valores com 10.000 pontos $(100 \times 100)$ para avaliação da matriz de correlação entre as marginais beta. Como o interesse é saber quais são os valores mínimo e máximo que a matriz de correlação pode assumir entre duas variáveis aleatórias beta, de acordo com suas médias marginais e valores de $\phi$, fez-se uso da função \texttt{valid$\_$input$\_$cormat()} do pacote \texttt{NORTARA}. Esta função retorna os valores mínimo $(\rho_L)$ e máximo $(\rho_U)$ que a matriz de correlação pode assumuir em função das distribuições marginais. 
+
+Por exemplo, no caso da distribuição beta, quando $\mu_1 = 0,495$ e $\mu_2 = 0,851$ com $\phi = 0,00001$ (fixo) tem-se $\rho_L = -0,421$ e $\rho_U = 0,413$, enquanto que para os mesmos valores das médias marginais, porém com $\phi = 9$ (fixo), tem-se $\rho_L = -0,956$ e $\rho_U = 0,954$. Isso mostra como o parâmetro de dispersão afeta diretamente a média das distribuições marginais e, consequentemente, os limites da matriz de correlação.
+
+Com o objetivo de tornar essa ideia mais geral, construiu-se a~\autoref{fig:simulnorta}. A parte superior desta figura mostra os limites mínimos, enquanto a parte inferior da figura apresenta os limites máximos que a correlação entre duas variáveis aleatórias beta assume em função das suas médias marginais para cada valor de $\phi$. De acordo com os resultados apresentados na~\autoref{fig:simulnorta}, quando se tem valores baixos para $\phi$ a correlação mínima obtida fica restrita, especialmente quando $\phi = (0,00001$ e $0,666)$. Na medida em que o valor de $\phi$ aumenta, correlações mais fortes são observadas nas regiões mais escuras do gráfico. O mesmo é observado para os valores máximos da correlação (\autoref{fig:simulnorta}). Dessa forma, observou-se que altos valores do parâmetro de dispersão combinados com altos/baixos valores das médias marginais produzem correlações mais fortes. 
+
+
+
+% width=16.0cm,height=8cm
+% width=.9\textwidth
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Valores mínimos e máximos para a correlação entre duas variáveis aleatórias beta em função das médias marginais e diferentes valores do parâmetro $\phi$}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.38cm}
+\includegraphics[width=16.0cm,height=7.6cm]{norta2.pdf}
+\vspace{-0.7cm}
+\begin{footnotesize}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+
+\label{fig:simulnorta}
+\end{figure}
+
+
+Os resultados do estudo de simulação mostraram que o espaço paramétrico da correlação ficou reduzido, quando se tem baixos valores para os parâmetros de dispersão associados com altos/baixos valores das médias marginais. Diante dos resultados obtidos, tem-se uma ideia do comportamento do algoritmo NORTA que será usado nos estudos de simulação apresentados na~\autoref{cap:simulLong}~e~\autoref{cap:simul2} para avaliar o desempenho do método de estimação proposto para os parâmetros do modelo de regressão quase-beta multivariado.
+
+
+Cabe observar, que a simulação de uma distribuição beta multivariada é uma tarefa desafiadora devido a certas restrições. Primeiro, o suporte das distribuições marginais é o intervalo unitário. Segundo, na distribuição beta existe um relacionamento entre média e variância. Finalmente, dependendo da especificação das distribuições marginais pode ser difícil simular vetores aleatórios dessa distribuição, especialmente quando se tem baixos valores para os parâmetros de dispersão.
+
+
+% ----------------------------------------------------------
+
+\subsection{Propriedades dos estimadores em estudos longitudinais}
+\label{cap:simulLong}
+
+% ----------------------------------------------------------
+
+
+O segundo estudo de simulação foi delineado para verificar a robustez dos estimadores propostos na~\autoref{cap:estimacao}, para lidar com dados limitados em estudos longitudinais. Nesse caso, o principal interesse é avaliar viés e consistência nos parâmetros de dispersão. Para isso, foram criados 36 cenários de simulação levando em conta diferentes estruturas de covariância. Os cenários foram delineados combinando três estruturas de covariância, associadas a três níveis de correlação cada, com quatro valores do parâmetro de dispersão $\phi = (0,666;~4;~9;~23,99)$ da densidade beta com $\mu_{ri}$ fixa em $0,5$. Assim, o preditor linear da estrutura da média foi especificado por $g(\mu_{ri}) = \beta_0$, onde $g(\cdot)$ é a função de ligação \textit{logit} e $\beta_0$ é o termo constante (intercepto). Além disso, o preditor linear matricial de cada estrutura de covariância foi especificado pela combinação da matriz identidade com matrizes conhecidas que definem a estrutura de interesse.
+
+
+Neste estudo de simulação, considerou-se as estruturas de covariância permutável (do inglês~\textit{exchangeable}, Exch), médias móveis de ordem 1 (MA1) e uma estrutura baseada em distâncias (Dist$^2$), que é definida pela matriz de distâncias (Dist) somada a outra matriz de distâncias com seus elementos elevados ao quadrado. Ainda, considerou-se $R = 5$ e $R = 10$, isto é, cinco e dez medidas repetidas no mesmo indivíduo.
+
+Para descrever os componentes do preditor linear matricial para cada caso, suponha, por simplicidade, $R = 3$. Logo, a especificação do preditor linear matricial para cada uma das estruturas acima mencionadas é dada por:
+\begin{equation*} 
+\label{eq:exchangeable}
+\boldsymbol{\Omega}(\boldsymbol{\tau}) = \tau_{0} \begin{bmatrix}
+1 & . & . \\ 
+. & 1 & . \\ 
+. & . & 1 
+\end{bmatrix} + \tau_{1} \begin{bmatrix}
+1 & 1 & 1 \\ 
+1 & 1 & 1 \\
+1 & 1 & 1 
+\end{bmatrix},
+\end{equation*}
+no caso permutável, por
+\begin{equation*}
+\label{eq:MA1}
+\boldsymbol{\Omega}(\boldsymbol{\tau}) =
+\tau_{0} \begin{bmatrix} 
+1 & . & . \\ 
+. & 1 & . \\ 
+. & . & 1  
+\end{bmatrix} + 
+\tau_{1} \begin{bmatrix} 
+. & 1 & . \\ 
+1 & . & 1 \\ 
+. & 1 & . 
+\end{bmatrix}, \\
+\end{equation*}
+no caso da estrutura MA1, e por
+\begin{equation*}
+\label{eq:Dist2}
+\boldsymbol{\Omega}(\boldsymbol{\tau}) =
+\tau_{0} \begin{bmatrix}
+1 & . & . \\ 
+. & 1 & . \\ 
+. & . & 1 
+\end{bmatrix} + 
+\tau_{1} \begin{bmatrix}
+. & 1/d_{12} & 1/d_{13} \\ 
+1/d_{12} & . & 1/d_{23} \\ 
+1/d_{13} & 1/d_{23} & .  
+\end{bmatrix} + 
+\tau_{2} \begin{bmatrix}
+. & 1/d_{12}^2 & 1/d_{13}^2 \\ 
+1/d_{12}^2 & . & 1/d_{23}^2  \\ 
+1/d_{13}^2 & 1/d_{23}^2  & .  
+\end{bmatrix}, \\
+\end{equation*}
+para a estrutura baseada em distâncias (Dist$^2$).
+
+Para as estruturas de covariância Exch e MA1, foram definidas correlações negativa, nula e positiva, enquanto que para a estrutura baseada em distâncias foram consideradas correlações nula, positiva fraca e positiva forte. Portanto, para cada um dos 36 cenários de simulação, foram gerados 300 conjuntos de dados com quatro tamanhos de amostra cada $(100, 250, 500~\mathrm{e}~1000)$. Para simular variáveis aleatórias beta correlacionadas, fez-se uso do algoritmo NORTA (NOR\textit{mal To Anything}), disponível no pacote \texttt{NORTARA} \cite{nortara} do \textit{software} estatístico \texttt{R}~\cite{R}.
+
+No caso da estrutura de covariância Exch com correlação negativa, definiu-se $\tau_0 = 1,2$ e $\tau_1 = -0,2$ como os verdadeiros valores dos parâmetros de dispersão, enquanto que para correlações nula e positiva os parâmatros foram fixados em $(\tau_0 = 1;~ \tau_1 = 0)$ e $(\tau_0 = 0,3;~\tau_1 = 0,7)$, respectivamente. Para a estrutura de covariância MA1, com correlações negativa, nula e positiva os parâmetros de dispersão foram fixados em $(\tau_0 = 1;~\tau_1 = -0,5)$, $(\tau_0 = 1;~\tau_1 = 0)$ e $(\tau_0 = 1;~\tau_1 = 0,5)$, respectivamente. Finalmente, os parâmetros de dispersão $(\tau_0 = 1;~\tau_1 = 0;~\tau_2 = 0)$, $(\tau_0 = 1;~\tau_1 = 0,1;~\tau_2 = 0,2)$ e $(\tau_0 = 1;~\tau_1 = 0,25;~\tau_2 = 0,45)$ foram fixados na avaliação da estrutura baseada em distâncias (Dist$^2$) para os casos com correlações nula, positiva fraca e positiva forte, respectivamente.
+
+A~\autoref{fig:simulLong} apresenta o viés médio mais ou menos o erro padrão médio para os parâmetros de dispersão sob cada cenário de simulação. Nesta figura, as escalas foram padronizadas para cada parâmetro dividindo-se o viés médio e os limites dos intervalos de confiança pelo erro padrão obtido na amostra de tamanho 100. Além disso, esta figura apresenta os resultados do estudo de simulação para $R = 5$ medidas repetidas. De acordo com os resultados apresentados na~\autoref{fig:simulLong}, os parâmetros $\tau_1$ são viciados sob todos os cenários de simulação nos quais $\phi = 0,666$, com exceção dos cenários onde a correlação é nula. Porém, para os outros cenários de simulação os estimadores propostos para os parâmetros de dispersão são não viciados e consistentes, conforme aumenta-se o tamanho da amostra.
+
+
+\begin{figure}[H]
+\vspace{0.05cm}
+\caption{Viés médio e intervalos de confiança em escala padronizada para os parâmetros de dispersão por tamanho de amostra e estrutura de covariância com diferentes níveis de correlação}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.3cm}
+\includegraphics[width=0.95\textwidth]{SimulLongitudinale.pdf} % Save 9.8 x 11.1
+\begin{footnotesize}
+\vspace{-0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{-0.15cm}
+
+\end{footnotesize}
+\label{fig:simulLong}
+\end{figure}
+
+
+No~\autoref{cap:apendiceSimul} encontra-se uma figura semelhante a~\autoref{fig:simulLong}, que foi construída com $R = 10$ medidas repetidas. Para a construção desta figura algumas configurações foram alteradas no estudo de simulação. Na estrutura de covariância Exch com correlação negativa, fixou-se
+$\tau_0 = 1,1$ e $\tau_1 = - 0,1$ como os verdadeiros valores dos parâmetros de dispersão, e na estrutura Dist$^2$ com correlação positiva forte, trocou-se apenas um valor, de $\tau_2 = 0,45$ para $\tau_2 = 0,4$. Tais modificações foram necessárias para garantir que a matriz de correlação usada no algoritmo NORTA seja positiva definida.
+
+
+% ----------------------------------------------------------
+
+\subsection{Propriedades dos estimadores em estudos com múltiplas respostas}
+\label{cap:simul2}
+
+% ----------------------------------------------------------
+
+
+
+Nesta subseção, serão apresentados os resultados do terceiro estudo de simulação, conduzido para investigar as propriedades dos estimadores propostos na \autoref{cap:estimacao} para lidar com dados limitados em estudos com múltiplas respostas correlacionadas. Diferentemente do estudo de simulação apresentado na~\autoref{cap:simulLong}, este estudo visa verificar viés, consistência e taxa de cobertura nos parâmetros de regressão e dispersão, respectivamente. Para tanto, foram criados 35 cenários de simulação com dados gerados por uma distribuição beta bivariada. Desse modo, os cenários foram delineados pela combinação de cinco valores do parâmetro de dispersão $\phi = (0,00001;~0,666;~4;~9;~23,99)$ com sete valores do coeficiente de correlação $\rho = (-0,75;~-0,50;~-0,25;~0,00;~0,25;~0,50;~0,75)$. Tais correlações foram fixadas para supor diferentes graus de depêndencia entre as distribuições marginais beta. Para cada cenário, foram gerados 1000 conjuntos de dados com quatro tamanhos de amostra cada $(100, 250, 500~\mathrm{e}~1000)$. 
+
+Para simular variáveis aleatórias beta correlacionadas fez-se uso do algoritmo NORTA \cite{cario:1997}. Assim, o estudo de simulação foi conduzido no \textit{software} estatístico \texttt{R} \cite{R} com auxílio do pacote \texttt{NORTARA} \cite{nortara}. 
+
+Nas simulações, foram considerados os seguintes preditores lineares:
+\begin{eqnarray}
+\label{eq:marginalGaussian}
+g(\mu_{1i}) = \beta_{01} + \beta_{11}x_{1i} + \beta_{21}x_{2i}, \hspace{2.5cm}    \\
+g(\mu_{2i}) = \beta_{02} + \beta_{12}x_{1i} + \beta_{22}x_{2i},~i = 1, 2, \ldots, n, \nonumber
+\end{eqnarray}
+onde $g(\cdot)$ é a função de ligação \textit{logit}. Os preditores lineares definidos na~\autoref{eq:marginalGaussian} foram usados em todos os cenários de simulação e são compostos por uma covariável contínua e outra categórica. A covariável contínua $x_1$ foi gerada a partir de uma distribuição Gaussiana com média zero e variância fixa em $0,3^2$. Já a covariável categórica $x_2$ foi gerada a partir de uma distribuição Bernoulli com probabilidade fixa em $0,5$. Os coeficientes de regressão $(\beta_{01}, \beta_{11}, \beta_{21}, \beta_{02}, \beta_{12}, \beta_{22})$ foram fixados de acordo com as correlações assumidas entre as variáveis respostas. Com base no primeiro estudo de simulação (\autoref{cap:simul1}) definiu-se três conjuntos de coeficientes de regressão. Para correlações negativas, os coeficientes foram fixados em $\boldsymbol{\beta} = (0;~4;~0,5;~0;~-4;~-0,5)^{\top}$, enquanto que para correlações positivas e nula os coeficientes foram fixados em $\boldsymbol{\beta} = (0;~4;~0,5;~0;~4;~0,5)^{\top}$ e $\boldsymbol{\beta} = (0;~-4;~-0,5;~0;~-4;~-0,5)^{\top}$, respectivamente. Já os parâmetros $\boldsymbol{\lambda} = (\rho_{12}, \phi_{11}, \phi_{12})^{\top}$ foram fixados de acordo com os cenários de simulação.
+
+A~\autoref{fig:simul1} apresenta o viés médio mais ou menos o erro padrão médio para os coeficientes de regressão sob cada cenário, enquanto a~\autoref{fig:simul2} apresenta as mesmas informações, porém, para os parâmetros $\boldsymbol{\lambda} = (\rho_{12}, \phi_{11}, \phi_{12})^{\top}$. Apesar destas duas figuras apresentarem informações semelhantes, elas foram separadas por questões visuais e de espaço, além de permitir que os resultados possam ser melhor interpretados.
+
+
+É importante observar, que as escalas da \autoref{fig:simul1} e~\autoref{fig:simul2} foram padronizadas para cada parâmetro, dividindo-se o viés médio e os limites dos intervalos de confiança pelo erro-padrão obtido na amostra de tamanho 100.
+
+
+% width=13.5cm,height=7cm
+% width=1\textwidth
+
+% A fig abaixo antes era f1.pdf
+% mudou p/ f1b.pdf salva em: 14.0 x 15.9
+
+\begin{figure}[H]
+\caption{Viés médio e intervalos de confiança em escala padronizada para os coeficientes de regressão $(\beta_{01}, \beta_{11}, \beta_{21}, \beta_{02}, \beta_{12}, \beta_{22})$ por tamanho de amostra e cenário de simulação}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.3cm}
+\includegraphics[width=0.99\textwidth]{f1b.pdf}
+\begin{footnotesize}
+\vspace{-0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.1cm}
+
+\end{footnotesize}
+\label{fig:simul1}
+\end{figure}
+
+
+Os resultados apresentados na~\autoref{fig:simul1} mostram que do cenário mais difícil de simular $(\phi = 0,00001)$ para o mais fácil $(\phi = 23,99)$, independente da correlação que foi fixada, ambos os parâmetros $\beta_{11}$ e $\beta_{12}$ são ligeiramente viesados para amostras pequenas. Por outro lado, os parâmetros $\beta_{01}, \beta_{21}, \beta_{02}~\mathrm{e}~\beta_{22}$ mostraram-se não viciados sob todos os cenários de simulação e tamanhos de amostra.
+
+Portanto, os resultados apresentados na~\autoref{fig:simul1} mostram que em todos os cenários de simulação ambos viés e erro-padrão médio tendem a zero à medida que o tamanho da amostra aumenta, mostrando que os estimadores propostos na~\autoref{cap:estimacao} para os parâmetros de regressão são consistentes e não-viciados.
+
+Os resultados apresentados na~\autoref{fig:simul2} correspondem aos parâmetros de dispersão e correlação, por cenário de simulação e tamanho de amostra. 
+
+
+% A fig abaixo antes era f2.pdf
+% mudou p/ f2b.pdf salva em: 14.2 x 9.5
+
+\begin{figure}[H]
+\vspace{0.45cm}
+\caption{Viés médio e intervalos de confiança em escala padronizada para cada parâmetro $(\rho_{12}, \phi_{11}, \phi_{12})$ por tamanho de amostra e cenário de simulação}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.13cm}
+\includegraphics[width=0.99\textwidth]{f2c.pdf}
+\begin{footnotesize}
+\vspace{-0.15cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\end{footnotesize}
+\label{fig:simul2}
+\end{figure}
+
+
+Assim, a~\autoref{fig:simul2} mostra que o viés médio e o erro-padrão médio para os parâmetros $\phi_{11}$ e $\phi_{12}$ tendem a zero à medida que o tamanho da amostra aumenta. Nos cenários onde $\phi = 0,00001$, independente da correlação que foi fixada, os resultados para esses parâmetros foram satisfatórios. No entanto, nos cenários onde $\phi = 0,666$ até $\phi = 23,99$ os estimadores são viesados para amostras pequenas. 
+
+Ainda, de acordo com os resultados apresentados na~\autoref{fig:simul2}, é possível verificar que o parâmetro de correlação $\rho_{12}$ foi viesado nos cenários onde $\phi = 0,00001$, principalmente quando se tem correlações mais extremas $(-0,75~\mathrm{e}~0,75)$. Porém, nos outros cenários de simulação, ambos viés e erro-padrão médio de $\rho_{12}$ tendem a zero, conforme aumenta-se o tamanho da amostra. 
+
+De maneira geral, os estimadores propostos na~\autoref{cap:estimacao} para os parâmetros de dispersão e correlação são consistentes e não-viciados para amostras grandes.
+
+
+A~\autoref{fig:simul3c} apresenta a taxa de cobertura dos intervalos de confiança para os coeficientes de regressão. Desta figura, observa-se que em todos os cenários de simulação e tamanhos de amostra, as taxas de cobertura dos intervalos de confiança ficaram próximas do nível nominal de $95\%$.
+
+\vspace{0.2cm}
+
+% salvo em 11.5 x 10
+\begin{figure}[H]
+\caption{Taxa de cobertura para cada parâmetro $(\beta_{01},~\beta_{11},~\beta_{21},~\beta_{02},~\beta_{12},~\beta_{22})$, por tamanho de amostra, parâmetro de dispersão e coeficiente de correlação}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.27cm}
+\includegraphics[width=0.99\textwidth]{simul3e.pdf}
+\begin{footnotesize}
+\vspace{-0.05cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.2cm}
+
+%\end{flushleft}
+\end{footnotesize}
+\label{fig:simul3c}
+\end{figure}
+
+
+
+Na~\autoref{fig:simul3d} encontram-se os resultados da taxa de cobertura para os parâmetros de dispersão $(\phi_{11}~\mbox{e}~\phi_{12})$ e correlação $(\rho_{12})$, por tamanho de amostra e cenário de simulação. 
+
+
+% salvo em 11.5 x 10
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Taxa de cobertura para cada parâmetro $(\rho_{12},~\phi_{11},~\phi_{12})$ por tamanho de amostra, parâmetro de dispersão e coeficiente de correlação}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.35cm}
+\includegraphics[width=0.99\textwidth]{simul3g.pdf}
+\begin{footnotesize}
+\vspace{-0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+%\vspace{0.1cm}
+
+\end{footnotesize}
+\label{fig:simul3d}
+\end{figure}
+
+
+
+De acordo com os resultados apresentados na~\autoref{fig:simul3d}, a taxa de cobertura para o coeficiente de correlação ficou em torno do nível nominal de $90\%$, para os cenários com correlações fixas em $-0,25$ e $0,25$, independente do valor fixado para a dispersão. Contudo, para os cenários com correlações mais extremas $(-0,75~\mbox{e}~0,75)$ o nível nominal dos intervalos de confiança ficaram próximos de $70\%$, quando $\phi = 0,00001$.
+
+
+Ainda, conforme mostra a~\autoref{fig:simul3d}, a taxa de cobertura dos parâmetros de dispersão $(\phi_{11}~\mbox{e}~\phi_{12})$, sob todos os cenários de simulação e tamanhos de amostra, ficaram em torno do nível nominal de $95\%$.
+
+
+% ----------------------------------------------------------
+
+\section{Resultado da análise dos dados}
+
+% ----------------------------------------------------------
+
+
+
+% ----------------------------------------------------------
+
+\subsection{Análise do índice de qualidade da água}
+\label{cap:resultIQA}
+
+% ----------------------------------------------------------
+
+
+Nesta subseção, são apresentados os principais resultados da análise dos dados da~\autoref{cap:IQA}. Os dados se referem ao índice de qualidade da água~(IQA), de reservatórios de usinas hidrelétricas operadas pela COPEL no Estado do Paraná. O objetivo da análise é investigar o relacionamento do IQA com a covariável local (montante, reservatório e jusante) controlado pelo efeitos dos trimestres e das usinas. Portanto, o principal desafio deste conjunto de dados está na avaliação de uma variável resposta limitada ao intervalo $(0,1)$, levando em conta características de um estudo longitudinal e de dados agrupados. 
+
+
+Assim, para investigar tais questões, pretende-se modelar a estrutura de covariância $\boldsymbol{\Omega}(\boldsymbol{\tau})$ do modelo proposto no~\autoref{cap:multivariatemodel}, com o intuito de investigar possíveis correlações intraunidades amostrais. Em outras palavras, será investigada a presença de correlações entre os locais e os trimestres dentro de cada unidade amostral (usina).
+
+Considere $\mathbf{Y}_i = ( Y_{1i}, \ldots, Y_{12i} )^{\top}$ um vetor de variáveis respostas com 12 medidas (3 locais~$\times$~4 trimestres) associado ao índice de qualidade da água da $i$-ésima usina, para $i = 1, \ldots, 16$. Nessa notação, $r = j \times k$, para $j = 1, 2, 3$ locais (montante, reservatório e jusante) e $k = 1, \ldots, 4$ trimestres. Denote $\boldsymbol{\mu}_i = ( \mu_{1i}, \ldots, \mu_{12i} )^{\top}$ seu respectivo vetor de médias e seja $g(\mu_{jki})$ o preditor linear relacionado ao local $j$, trimestre $k$ e usina $i$. Logo, sua representação é dada por:
+\begin{equation}
+\label{eq:linearPredIQA}
+g(\mu_{jki}) = \beta_0  + \beta_{1j}~\texttt{local}_{ji} + \beta_{2k}~\texttt{trimestre}_{ki},
+\end{equation}
+\noindent
+onde $g(\cdot):(0,1)\mapsto\mathbb{R}$ é uma função de ligação para dados limitados, $\beta_0$ define o termo constante (intercepto) e $\beta_{1j},~\mathrm{para}~j = 2~\mathrm{e}~3$, avalia mudanças da montante para o reservatório e da montante para a jusante, respectivamente. Já os coeficientes $\beta_{2k},~\mathrm{para}~k = 2,~3~\mathrm{e}~4$, medem as diferenças do trimestre 1 para os demais trimestres. Note que, as categorias de referência foram definidas para o local montante e trimestre 1.
+
+Nesse contexto, o modelo de regressão quase-beta multivariado fica representado da seguinte forma:
+$$
+\begin{pmatrix}
+Y_{1i} \vspace{-0.1cm} \\
+\vdots \vspace{-0.1cm} \\
+Y_{12i} \\
+\end{pmatrix} \sim \bullet \begin{bmatrix}
+\begin{pmatrix}
+\boldsymbol{\mu}_{1i} \vspace{-0.1cm}  \\
+\vdots \vspace{-0.1cm}  \\
+\boldsymbol{\mu}_{12i} \\
+\end{pmatrix}; \boldsymbol{\Sigma}_i
+\end{bmatrix},~i = 1, \ldots, 16,
+$$
+onde $\boldsymbol{\Sigma}_i = \mathrm{V}(\boldsymbol{\mu}_{i})^{\tfrac{1}{2}}\boldsymbol{\Omega}(\boldsymbol{\tau}) \mathrm{V}(\boldsymbol{\mu}_{i})^{\tfrac{1}{2}}$ é uma matriz $12 \times 12$. No contexto de medidas repetidas e análise de dados longitudinais, o principal interesse é modelar a matriz $\boldsymbol{\Omega}(\boldsymbol{\tau})$, que é a parte da covariância que não depende da estrutura da média. Dessa forma, foram propostas quatro estruturas de covariância para a matriz $\boldsymbol{\Omega}(\boldsymbol{\tau})$. A primeira estrutura supõem independência entre as observações, sendo composta por uma matriz identidade. É importante destacar, que as três estruturas apresentadas a seguir são compostas por uma matriz identidade além de outras matrizes que definem a estrutura de interesse. A segunda estrutura é conhecida por permutável (do inglês~\textit{exchangeable}), sendo definida por uma matriz constituída de 1's, conforme~\autoref{eq:exchangeableIQA}. 
+\begin{equation} 
+\label{eq:exchangeableIQA}
+\boldsymbol{\Omega}(\boldsymbol{\tau}) = \tau_{0} \begin{bmatrix}
+1 & . & . \\ 
+. & 1 & . \\ 
+. & . & 1 
+\end{bmatrix} + \tau_{1} \begin{bmatrix}
+1 & 1 & 1 \\ 
+1 & 1 & 1 \\
+1 & 1 & 1 
+\end{bmatrix}.
+\end{equation}
+
+
+A matriz não estruturada, usada para avaliar o efeito dos locais (dados agrupados) é dada por
+\begin{eqnarray}
+\label{eq:StrLocal}
+\boldsymbol{\Omega}(\boldsymbol{\tau}) =
+\tau_0 \begin{bmatrix}
+ 1  &  .  &  .  \\
+  . &  1  &  .  \\
+  . &  .  &  1 
+\end{bmatrix} + \tau_1 \begin{bmatrix}
+ .  &  1  &  .  \\
+ 1 &   .  &  .  \\
+ . &   .  &  . 
+\end{bmatrix}  + \tau_2 \begin{bmatrix}
+ .  &  .  &  1  \\
+ .  &  .  &  .  \\
+ 1  &  .  &  . 
+\end{bmatrix}  + \tau_3 \begin{bmatrix}
+ .  &  .  &  .  \\
+ .  &  .  &  1  \\
+ .  &  1  &  . 
+\end{bmatrix},
+\end{eqnarray}
+onde $\tau_1$ mede a covariância entre a montante e o reservatório e, $\tau_2$ e $\tau_3$ avaliam a covariância entre a montante e a jusante e, entre o reservatório e a jusante, respectivamente. Logo, a terceira estrutura, chamada por não estruturada 1, é composta pela combinação da estrutura 2 com a especificação apresentada na~\autoref{eq:StrLocal}. 
+
+Para avaliação do efeito dos trimestres (dados longitudinais), a matriz não estruturada tem a seguinte representação
+\begin{eqnarray}
+\label{eq:StrTrim}
+\boldsymbol{\Omega}(\boldsymbol{\tau}) &=&
+\tau_0 \begin{bmatrix}
+ 1  &  .  &  . & .  \\
+  . &  1  &  . & .  \\
+  . &  .  &  1  & . \\
+  . &  .  &  .  & 1
+\end{bmatrix} + \tau_1 \begin{bmatrix}
+ .  &  1  &  . & .  \\
+  1 &  .  &  . & .  \\
+ . &   .  &  . & . \\
+ . &   .  &  . & . \\
+\end{bmatrix}  + \tau_2 \begin{bmatrix}
+ .  &  .  &  1 & .  \\
+ .  &  .  &  . & .  \\
+ 1  &  .  &  . & .  \\
+ .  &  .  &  . & .  
+\end{bmatrix}  + \tau_3 \begin{bmatrix}
+ .  &  .  &  . & 1  \\
+ .  &  .  &  . & .  \\
+ .  &  .  &  . & .  \\
+ 1  &  .  &  . & .  
+\end{bmatrix} \quad \\
+&& + \tau_4 \begin{bmatrix}
+ .  &  .  &  . & .  \\
+ .  &  .  &  1 & .  \\
+ .  &  1  &  . & .  \\
+ .  &  .  &  . & .  
+\end{bmatrix}  +  \tau_5 \begin{bmatrix}
+ .  &  .  &  . & .  \\
+ .  &  .  &  . & 1  \\
+ .  &  .  &  . & .  \\
+ .  &  1  &  . & .  
+
+\end{bmatrix} + \tau_6 \begin{bmatrix}
+ .  &  .  &  . & .  \\
+ .  &  .  &  . & .  \\
+ .  &  .  &  . & 1  \\
+ .  &  .  &  1 & .  
+\end{bmatrix}. \nonumber
+\end{eqnarray}
+Note que, as covariâncias entre os trimestres são avaliadas pelos coeficientes $\tau_1$ à $\tau_6$. Por exemplo, a covariância entre os trimestres 1 e 2 é avaliada pelo coeficiente $\tau_1$. Já a covariância entre os trimestres 1 e 3 e, entre os trimestres 1 e 4 é avaliada pelos coeficientes $\tau_2$ e $\tau_3$, respectivamente. Para as demais avaliações, a interpretação é feita de forma semelhante. Portanto, a quarta estrutura (não estruturada 2), é definida pela combinação da estrutura 3 com a especificação mostrada na~\autoref{eq:StrTrim}.
+
+Na sequência, ajustou-se o modelo de regressão quase-beta multivariado aos dados do IQA, considerando as quatro estruturas acima mencionadas além de especificar a função de ligação \textit{logit} para o preditor linear~(\autoref{eq:linearPredIQA}).
+
+A~\autoref{tab:gofIQA} apresenta o valor maximizado do logaritmo da função de pseudo verossimilhança~(\texttt{plogLik}), graus de liberdade~(\texttt{df}) e os valores dos pseudo critérios de informação de \textit{Akaike}~(\texttt{pAIC}) e Bayesiano~(\texttt{pBIC}) para o modelo proposto, ajustado sob diferentes estruturas de covariância. A principal diferença entre as quatro estruturas de covariância está na quantidade de parâmetros que são estimados, além da forma em que os dados longitudinais e agrupados são considerados. 
+
+
+
+\begin{table}[H]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Valor maximizado do logaritmo da função de pseudo verossimilhança~(\texttt{plogLik}), graus de liberdade~(\texttt{df}) e pseudo critérios de informação de \textit{Akaike}~(\texttt{pAIC}) e Bayesiano~(\texttt{pBIC}) para diferentes estruturas de covariância.}
+\label{tab:gofIQA}
+\begin{tabular}{lcccc} 
+\hline
+Estrutura & \texttt{plogLik} & \texttt{df}  & \texttt{pAIC} & \texttt{pBIC} \\
+\hline
+Independente      & $212,06$ & $7$  & $-410,12$  & $-387,39$ \\
+Permutável        & $217,06$ & $8$  & $-418,12$  & $-392,14$ \\
+Não estruturada 1 & $222,03$ & $11$ & $-422,06$  & $-386,34$ \\
+Não estruturada 2 & $234,36$ & $17$ & $-434,72$  & $-379,52$ \\
+\hline   
+\end{tabular}
+\begin{footnotesize}
+\vspace{0.05cm}
+
+FONTE: O autor~(2018). \hspace{6.7cm}
+\vspace{-0.3cm}
+
+\end{footnotesize}
+\end{table}
+
+
+
+Os resultados apresentados na~\autoref{tab:gofIQA} mostram que tanto o valor da função de pseudo verossimilhança~(\texttt{plogLik} $ = 234,36$) quanto o valor do pseudo critério de informação de \textit{Akaike}~(\texttt{pAIC} $ = -434,72$) indicam a quarta estrutura (não estruturada 2) como aquela que apresenta o melhor ajuste aos dados. Dessa forma, selecionou-se esta estrutura de covariância para análise dos dados, uma vez que ela é a mais completa. No~\autoref{cap:apendiceB}, encontram-se detalhes sobre a especificação do preditor linear matricial referente a estrutura de covariância selecionada.
+
+A~\autoref{tab:anovaIQA} apresenta os resultados da estatística de Wald, graus de liberdade (\texttt{df}) e $p$-valores para cada covariável que compõem o preditor linear~(\autoref{eq:linearPredIQA}).
+
+\begin{table}[H]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Estatística de Wald ($W_s$), graus de liberdade (\texttt{df}) e $p$-valores associados ao modelo de regressão quase-beta multivariado ajustado aos dados do IQA.}
+\label{tab:anovaIQA}
+\setlength{\tabcolsep}{9.5pt}
+\begin{tabular}{lccc} 
+\hline
+Efeitos  & $W_s$  &  \texttt{df}  &  $p$-valor  \\
+\hline
+\texttt{Local}      &  $8,56$  &  $2$  & $0,01$  \\
+\texttt{Trimestre}  &  $8,34$  &  $3$  &  $0,04$  \\
+\hline     
+\end{tabular}
+\begin{footnotesize}
+\vspace{0.05cm}
+
+FONTE: O autor~(2018). \hspace{3.3cm}
+\vspace{-0.2cm}
+
+\end{footnotesize}
+\end{table}
+
+
+Os resultados na~\autoref{tab:anovaIQA} mostram que ambas as covariáveis são significativamente diferentes de zero e, portanto, são relevantes na análise dos dados.
+
+Após selecionar a estrutura de covariância e analisar o efeito das covariáveis, serão apresentadas a seguir a análise de resíduos e de diagnóstico, afim de avaliar a qualidade produzida pelo modelo, além de investigar possíveis pontos influentes e \textit{outliers}.
+
+A~\autoref{fig:residualsDataset2} apresenta os resíduos de Pearson versus os valores preditos pelo modelo de regressão quase-beta multivariado, ajustado por diferentes estruturas de covariância. Além dos resíduos de Pearson, esta figura também mostra curvas de suavização com bandas de confiança estimadas pelo método \textit{loess}~\cite{cleveland1979}.  
+
+
+
+
+% Save 13.5 x 4.5
+\begin{figure}[H]
+\vspace{0.2cm}
+\caption{Resíduos de Pearson associados ao modelo de regressão quase-beta multivariado ajustado aos dados do índice de qualidade da água (IQA)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.25cm}
+\includegraphics[width=0.99\textwidth]{ResidualsIQA.pdf}
+\begin{footnotesize}
+\vspace{0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{-0.15cm}
+
+\end{footnotesize}
+\label{fig:residualsDataset2}
+\end{figure}
+
+
+
+Os resultados mostrados na~\autoref{fig:residualsDataset2} apontam que, independente da estrutura de covariância considerada, o modelo proposto apresentou um ajuste satisfatório aos dados do IQA, uma vez que os resíduos variam entre $-2$ e $2$. Apesar de alguns pontos ficarem abaixo do limite inferior, o ajuste por ambos os modelos parecem adequados. 
+
+
+Na sequência, são apresentados os gráficos da distância de Cook versus o número de observações~(\autoref{fig:CookDataSet1}) para o modelo proposto ajustado sob cada estrutura de covariância. Para avaliação da distância de Cook, define-se $2p/n$ como ponto de corte, onde $p$ é a quantidade de coeficientes de regressão estimados pelo modelo e $n$ é o tamanho da amostra. Assim, valores acima de $0,063$ são considerados pontos influentes. 
+
+% Save 18.0 x 5.5
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Distância de Cook para o modelo de regressão quase-beta multivariado ajustado aos dados do índice de qualidade da água (IQA)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.25cm}
+\includegraphics[width=0.99\textwidth]{CookDataSet1.pdf}
+\begin{footnotesize}
+\vspace{0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:CookDataSet1}
+\end{figure}
+
+De acordo com os resultados apresentados na~\autoref{fig:CookDataSet1}, as observações 4 e 39 foram indicadas como pontos influentes no ajuste do modelo sob as estruturas independente e permutável, enquanto que as demais estruturas indicaram apenas a observação 39 como ponto influente.
+
+
+A~\autoref{fig:DFFTSDataSet1} apresenta a medida DFFITS para os modelos de regressão ajustados aos dados do IQA. Em geral, essa medida é usada para avaliar a influência da exclusão da $i$-ésima observação no seu valor estimado pelo modelo. Para a medida DFFITS, o ponto de corte é definido por $2 \sqrt{\dfrac{p}{n}}$, onde $p$ e $n$ se referem a quantidade de coeficientes de regressão e ao tamanho da amostra, respectivamente. Nesse caso, valores fora do intervalo $\pm 0,355$ devem ser investigados. Portanto, com base na medida DFFITS, não há evidências de que o ajuste produzido pelos modelos estejam inadequados. 
+
+
+% Save 17.0 x 5.5
+\begin{figure}[H]
+\vspace{0.2cm}
+\caption{DFFITS para o modelo de regressão quase-beta multivariado ajustado aos dados do índice de qualidade da água (IQA)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.25cm}
+\includegraphics[width=0.99\textwidth]{DFFITS_DataSet1.pdf}
+\begin{footnotesize}
+\vspace{0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{-0.1cm}
+
+\end{footnotesize}
+\label{fig:DFFTSDataSet1}
+\end{figure}
+
+
+Os resultados associados a medida DFBETA são mostrados na~\autoref{fig:DFBETASDataSet1}. Tal medida é comumente usada para avaliar a influência da $i$-ésima observação sobre cada coeficiente de regressão. Seu ponto de corte é dado por $2/\sqrt{n}$, onde $n$ é o tamanho da amostra. Em particular, para os dados do IQA, valores fora do intervalo $\pm 0,145$ são considerados pontos influentes sobre os parâmetros de regressão.
+
+Conforme os resultados apresentados na~\autoref{fig:DFBETASDataSet1}, existem alguns pontos influentes no ajuste dos modelos de regressão. Além disso, observa-se que esses pontos são os mesmos no ajuste de cada um dos quatro modelos.
+
+
+% Save 20.3 x 13.3
+\begin{figure}[H]
+\vspace{0.05cm}
+\caption{DFBETAS para o modelo de regressão quase-beta multivariado ajustado aos dados do índice de qualidade da água (IQA)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.2cm}
+\includegraphics[width=0.99\textwidth]{DFBETAS_DataSet1.pdf}
+\begin{footnotesize}
+\vspace{0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.1cm}
+
+\end{footnotesize}
+\label{fig:DFBETASDataSet1}
+\end{figure}
+
+
+
+A~\autoref{fig:DataSet1Env} apresenta o gráfico de probabilidade meio-normal com envelope simulado para o modelo proposto ajustado aos dados do IQA, sob cada uma das estruturas de covariância. Essa técnica de diagnóstico é comumente usada para avaliar a qualidade produzida pelo modelo, além de auxiliar na detecção de \textit{outliers}.
+
+
+% Save 14.0 x 4.6 
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Gráfico de probabilidade meio-normal com envelope simulado ajustado aos dados do índice de qualidade da água (IQA) pelo modelo de regressão quase-beta multivariado usando diferentes estruturas de covariância}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.43cm}
+\includegraphics[width=0.99\textwidth]{envelope_iqa.pdf}
+\begin{footnotesize}
+\vspace{0.1cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:DataSet1Env}
+\end{figure}
+
+Os resultados apresentados na~\autoref{fig:DataSet1Env} indicam que poucos pontos ficaram fora das bandas de confiança no ajuste produzido pelos quatro modelos. Tais resultados indicam que o ajuste do modelo de regressão quase-beta multivariado foi adequado sob diferentes estruturas de covariância. Cabe lembrar, que neste procedimento, assumiu-se distribuição de probabilidade beta para as variáveis respostas simuladas. Assim, mostrou-se que o modelo de regressão proposto nesta dissertação fornece uma aproximação adequada para conjuntos de dados gerados por uma distribuição marginal beta.
+
+Em geral, tanto os resíduos de Pearson como as demais medidas (distância de Cook, DFFITS, DFBETAS e gráfico de probabilidade meio-normal) indicam que o modelo de regressão quase-beta multivariado ajustou-se adequadamente aos dados do IQA. 
+
+Após a análise de resíduos e de diagnóstico, serão apresentadas as principais interpretações dos parâmetros estimados pelo modelo. Assim, a~\autoref{tab:coefIQA} mostra as estimativas dos parâmetros de regressão, erros-padrão, razão de chances, $p$-valores além de outras informações associadas ao modelo de regressão quase-beta multivariado. É importante destacar, que a razão de chances e os intervalos de confiança apresentados na~\autoref{tab:coefIQA} foram calculados de forma usual, ou seja, de maneira semelhante ao modelo de regressão beta~(\autoref{cap:betamodel}).
+
+\begin{table}[H]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Estimativas dos parâmetros de regressão~(Est.), erros-padrão~(EP), razão de chances (RC) e intervalos (IC) com $95\%$ de confiança, Z-valor e $p$-valores associados ao modelo de regressão quase-beta multivariado ajustado aos dados do IQA.}
+\label{tab:coefIQA}
+\vspace{0.1cm}
+\setlength{\tabcolsep}{4.2pt}
+\begin{tabular}{lccccc}
+\hline
+Efeito                  &     Est.  &    EP    &  Z-valor  &    RC (IC $95\%$)    & $p$-valor \\
+\hline
+$\beta_0$: \texttt{Intercepto}     &  $1,111$  & $0,103$  &  $10,745$ &     $-------$        & $< 0,001$ \\
+$\beta_{12}$: \texttt{Reservatório}   &  $0,251$  & $0,098$  &  $2,552$  & 1,286 (1,060$-$1,559) & $0,011$ \\
+$\beta_{13}$: \texttt{Jusante}        &  $0,163$  & $0,102$  &  $1,604$  & 1,178 (0,964$-$1,438) & $0,109$ \\
+$\beta_{22}$: \texttt{Trimestre 2}    &  $0,243$  & $0,131$  &  $1,848$  & 1,275 (0,985$-$1,650) & $0,065$ \\
+$\beta_{23}$: \texttt{Trimestre 3}    &  $0,345$  & $0,132$  &  $2,617$  & 1,412 (1,090$-$1,828) & $0,009$ \\
+$\beta_{24}$: \texttt{Trimestre 4}    &  $0,065$  & $0,106$  &  $0,618$  & 1,068 (0,867$-$1,315) & $0,537$ \\
+\hline
+\end{tabular} 
+\begin{footnotesize}
+\vspace{0.05cm}
+
+FONTE: O autor~(2018). \hspace{9.65cm}
+
+\end{footnotesize}
+\end{table}
+
+
+
+De acordo com os resultados apresentados na~\autoref{tab:coefIQA}, o IQA no reservatório apresentou-se $28,6\%$ maior do que na montante. Durante o trimestre 3, os valores estimados para o IQA foram $41,2\%$ maiores do que os valores obtidos para o trimestre 1. Por outro lado, os valores do IQA para os trimestres 2 e 4 foram semelhantes ao do trimestre 1, uma vez que os parâmetros associados a essas avaliações não apresentaram relevância $(p$-valor $> 0,05$). Além disso, a diferença do IQA entre a jusante e a montante também não foi importante na análise dos dados $(p$-valor $=0,109)$. Portanto, os resultados estimados pelo modelo de regressão quase-beta multivariado, são concordantes com a análise descritiva e exploratória apresentada na~\autoref{cap:IQA}.
+
+
+A~\autoref{tab:dispIQA} apresenta as estimativas dos parâmetros de dispersão e seus respectivos erros-padrão, estatística Z e $p$-valores. As estruturas associadas aos locais e aos trimestres são modeladas pelos parâmetros $(\tau_2, \tau_3, \tau_4)$ e $(\tau_5, \tau_6, \tau_7, \tau_8, \tau_9, \tau_{10})$, respectivamente. Para a estrutura de dados agrupados, nenhum dos parâmetros apresentou significância ao nível de $5\%$. Com relação a estrutura longitudinal, apenas os parâmetros $\tau_5, \tau_6$ e $\tau_9$ foram significativamente diferentes de zero. Apesar de alguns parâmetros de dispersão não apresentarem relevância, a interpretação relacionada a eles será mostrada a seguir como forma ilustrativa. Dessa forma, o principal interesse nos parâmetros de dispersão é avaliar correlações intraunidades amostrais.
+
+
+
+
+\begin{table}[H]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Estimativas dos parâmetros de dispersão~(Est.), erros-padrão~(EP), Z-valor e $p$-valores associados ao modelo de regressão quase-beta multivariado ajustado aos dados do IQA.}\label{tab:dispIQA}
+\vspace{0.1cm}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcccc}
+\hline
+Parâmetro   &  Est.  & EP  & Z-valor & $p$-valor \\
+\hline
+$\tau_0$    &  \ \ $0,019$  &  $0,003$  &  \ \ $5,460$  &  $<0,001$  \\
+$\tau_1$    &  \ \ $0,020$  &  $0,005$  &  \ \ $3,913$  &  $<0,001$  \\
+$\tau_2$    &  $-0,007$     &  $0,004$  &  $-1,662$     &  $0,097$   \\
+$\tau_3$    &  $-0,008$     &  $0,004$  &  $-1,832$     &  $0,067$   \\
+$\tau_4$    & \ \ $0,002$   &  $0,001$  &  \ \ $1,697$  &  $0,089$   \\
+$\tau_5$    &  $-0,015$     &  $0,007$  &  $-2,191$     &  $0,028$   \\
+$\tau_6$    &  $-0,015$     &  $0,006$  &  $-2,235$     &  $0,025$   \\
+$\tau_7$    &  $-0,008$     &  $0,005$  &  $-1,648$     &  $0,099$   \\
+$\tau_8$    &  $-0,011$     &  $0,005$  &  $-1,821$     &  $0,069$   \\
+$\tau_9$    &  $-0,016$     &  $0,007$  &  $-2,286$     &  $0,022$   \\
+$\tau_{10}$ &  $-0,008$     &  $0,005$  &  $-1,616$     &  $0,106$   \\
+\hline
+\end{tabular} 
+\begin{footnotesize}
+\vspace{0.05cm}
+
+FONTE: O autor~(2018). \hspace{5.5cm}
+
+\end{footnotesize}
+\end{table}
+
+
+
+Por exemplo, a correlação entre a montante e o reservatório foi estimada em $\hat{\rho}_{12} = 0,3217$, sendo o cálculo obtido por $(\hat{\tau}_1 + \hat{\tau}_2)/(\hat{\tau}_0 + \hat{\tau}_1)$. Assim, para tornar essa ideia mais geral, construiu-se a matriz de correlação para o efeito dos locais, dada por
+\begin{eqnarray}
+\label{eq:corrIQAlocal}
+\hat{\boldsymbol{\Omega}}(\boldsymbol{\tau})_{\mathrm{Local}} &=&
+\begin{bmatrix}
+ 1   &  &    \\
+ 0,3217 (0,1025)  &  1   &   \\
+ 0,2909 (0,1078)  &  0,5607 (0,0284)  &  1  \\
+\end{bmatrix},
+\end{eqnarray}
+onde os números entre parênteses denotam o erro padrão calculado pelo método delta. Desta matriz, observa-se que a correlação entre o resevatório e a jusante foi estimada em $\hat{\rho}_{23} = 0,5607$. A menor correlação foi entre a montante e a jusante $(\hat{\rho}_{13} = 0,2909)$. Tal resultado é esperado, uma vez que a água do rio passa primeiro pela montante, entra no reservatório saindo no sentido da jusante. Em outras palavras, a distância entre os locais induz correlações mais fortes ou mais fracas. 
+
+
+Na sequência, encontra-se a matriz de correlação para o efeito dos trimestres:
+\begin{eqnarray}
+\label{eq:corrIQATri}
+\hat{\boldsymbol{\Omega}}(\boldsymbol{\tau})_{\mathrm{Trimestre}} &=&
+\begin{bmatrix}
+ 1  &  &  &   \\
+ 0,1146 (0,1604)  &  1   &  &   \\
+ 0,1281 (0,1542)  &  0,2367 (0,1395)  &  1  &   \\
+ 0,2857 (0,1278)  &  0,1025 (0,1591)  &  0,2919 (0,1264) &  1   \\
+\end{bmatrix}.
+\end{eqnarray}
+Assim, por exemplo, a correlação entre os trimestres 1 e 2 foi estimada em $\hat{\rho}_{12} = 0,1146$, sendo esta obtida por $(\hat{\tau}_1 + \hat{\tau}_5)/(\hat{\tau}_0 + \hat{\tau}_1)$. Note que, os resultados apresentados na matriz acima mostram correlações fracas entre os trimestres. A correlação entre os trimestres 1 e 4 foi estimada em $\hat{\rho}_{14} = 0,2857$. Esse resultado é esperado, uma vez os trimestres são cíclicos e, portanto, os trimestres 1 e 4 são próximos. 
+
+Na~\autoref{fig:structures} encontram-se os resultados do modelo de regressão quase-beta multivariado ajustado sob diferentes estruturas de covariância e funções de ligação. Os resultados são comparados por meio dos coeficientes de regressão e seus respectivos intervalos com $95\%$ de confiança. O coeficiente $\beta _0$ foi omitido para evitar problemas com a escala do gráfico. Logo, a~\autoref{fig:structures} mostra que os resultados obtidos pelas quatro estruturas de covariância são concordantes para todas as funções de ligação. Os coeficientes $\beta_{13}$ e $\beta_{22}$ foram os que não apresentaram significância quando avaliados pela estrurura de covariância não estruturada 2, a escolhida para análise dos dados. Além do coeficiente $\beta_{22}$ não ser significativo, o comprimento do seu intervalo de confiança foi maior na estrutura de covariância usada para análise dos dados, levando em conta todas as funções de ligação avaliadas. Tais resultados, mostram a importância de avaliar diferentes estruturas de covariância, uma vez que as interpretações dos parâmetros variam entre as estruturas. 
+
+É importante destacar que, os coeficientes $\beta_{13}$ e $\beta_{22}$ medem o efeito da jusante e do trimestre 2, respectivamente. Assim, quando comparam-se as categorias de referência (montante e trimestre 1) com esses coeficientes, seus efeitos são nulos, isto é, o efeito entre os trimestres 1 e 2 são semelhantes, assim como o efeito entre montante e jusante.
+
+
+
+% Salvo em 8.5 x 4.8
+\begin{figure}[H]
+\vspace{0.45cm}
+\caption{Estimativas dos parâmetros e intervalos com $95\%$ de confiança para os dados do IQA ajustado
+pelo modelo de regressão quase-beta multivariado usando diferentes funções de ligação e estruturas de covariância}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.33cm}
+\includegraphics[width=0.99\textwidth]{Strb.pdf}
+\begin{footnotesize}
+\vspace{-0.25cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:structures}
+\end{figure}
+
+
+A~\autoref{fig:resultIQA} apresenta curvas de predição com bandas de confiança $(95\%)$ para a média do IQA obtida pelo modelo de regressão quase-beta multivariado, ajustado sob diferentes estruturas de covariâncias. 
+
+
+\begin{figure}[H]
+\vspace{0.5cm}
+\caption{Curvas de predição com bandas de confiança $(95\%)$ para a média do IQA por local e trimestre ajustado pelo modelo de regressão quase-beta multivariado usando diferentes estruturas de covariância}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.3cm}
+\includegraphics[width=0.99\textwidth]{resultIQA.pdf}
+\begin{footnotesize}
+\vspace{-0.25cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.25cm}
+
+\end{footnotesize}
+\label{fig:resultIQA}
+\end{figure}
+
+
+Os resultados apresentados na~\autoref{fig:resultIQA} mostram pequenas diferenças entre os ajustes, tanto nas estimativas pontuais quanto nos intervalos de confiança. Além disso, os resultados apresentados nesta figura confirmam as hipóteses levantadas na~\autoref{fig:iqa1}~(\autoref{cap:IQA}) e indicam que o IQA foi maior para os dados coletados no terceiro trimestre, bem como no reservatório.
+
+
+
+A~\autoref{fig:predictionIQA} apresenta os mesmos resultados da figura anterior, porém, de forma alternativa apenas para ilustrar o ajuste do modelo proposto.
+
+
+
+% salvo em 9.7 x 4.5 (IQAPredict)
+% salvo em 11.8 x 6.0 (Pred_IQA)
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Curvas de predição com bandas de confiança $(95\%)$ para a média do IQA por trimestre e local ajustado pelo modelo de regressão quase-beta multivariado usando diferentes estruturas de covariância}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.3cm}
+\includegraphics[width=0.99\textwidth]{Pred_IQA.pdf}
+\begin{footnotesize}
+\vspace{-0.1cm}
+
+\centering
+FONTE: O autor~(2018). 
+\vspace{-0.1cm}
+
+\end{footnotesize}
+\label{fig:predictionIQA}
+\end{figure}
+
+
+
+Portanto, esta subseção apresentou uma análise de dados com características de um estudo longitudinal e de dados agrupados, mostrando a flexibilidade do modelo proposto nesta dissertação para lidar com dados limitados em estudos com tais características. Na próxima subseção será discutida uma análise diferente desta, onde o conjunto de dados apresenta múltiplas variáveis respostas correlacionadas. 
+
+%No~\autoref{cap:apendiceCurva} encontra-se uma figura semelhante a~\autoref{fig:predictionIQA}, onde os mesmos resultados são apresentados de forma alternativa.
+
+
+
+
+
+% ----------------------------------------------------------
+
+\subsection{Análise do percentual de gordura corporal}
+\label{cap:resultcorporal}
+
+% ----------------------------------------------------------
+
+
+
+
+Esta subseção mostra os principais resultados da análise dos dados apresentados na~\autoref{cap:gorduraCorporal}, que correspondem ao percentual de gordura corporal de indivíduos avaliados no HC-UFPR. Tais resultados foram obtidos pelo modelo de regressão quase-beta multivariado proposto no~\autoref{cap:multivariatemodel}. Dessa forma, são apresentadas as estimativas dos parâmetros, análise de resíduos e de diagnóstico (distância de Cook, DFBETAS, DFFITS e o gráfico de probabilidade meio-normal com envelope simulado), matriz de correlação entre as respostas além de curvas de predição com bandas de confiança para a média das variáveis respostas. 
+
+Como descrito na~\autoref{cap:gorduraCorporal}, este conjunto de dados apresenta cinco variáveis respostas, que se referem aos percentuais de gordura na região dos braços, pernas, tronco, andróide e ginecóide (\autoref{fig:fig1}). Além disso, o conjunto de dados conta com a presença de quatro covariáveis: sexo, idade, IMC e IPAQ. Assim, o objetivo da análise dos dados é investigar o relacionamento das cinco variáveis respostas com as covariáveis supracitadas. O modelo descrito no~\autoref{cap:multivariatemodel} deve ser capaz de analisar conjuntamente as cinco variáveis respostas e ainda, estimar a matriz de correlação entre as variáveis respostas levando em conta o efeito das covariáveis.
+
+De acordo com os resultados mostrados na~\autoref{cap:gorduraCorporal}, existe correlação positiva entre as variáveis respostas e há um indicativo de que elas estão relacionadas com as covariáveis do estudo~(ver~\autoref{fig:corr} e~\autoref{fig:fig2}). Com o ajuste do modelo de regressão quase-beta multivariado, espera-se que esses resultados se confirmem, além de esperar que mais informações possam ser obtidas na análise dos dados.
+
+
+Considere $\mathbf{Y}_i = ( Y_{1i}, \ldots, Y_{5i} )^{\top}$ um vetor de variáveis respostas associado, respectivamente, aos percentuais de gordura nos braços, pernas, tronco, andróide e ginecóide do indivíduo~$i$, para~$i = 1, \ldots, 298$. Seja $\boldsymbol{\mu}_i = ( \mu_{1i}, \ldots, \mu_{5i} )^{\top}$ seu respectivo vetor de médias e denote $g_r(\mu_{ri})$ o preditor linear relacionado a $r$-ésima resposta, para~$r = 1, \ldots, 5$, dado por:
+\begin{small}
+\begin{equation}
+\label{eq:preditordatase2}
+g_r(\mu_{ri}) = \beta_{0r} + \beta_{1r}~\mbox{\texttt{idade}}_i + \beta_{2r}~\mbox{\texttt{IMC}}_i + \beta_{3r}~\mbox{\texttt{sexo-M}}_i + \beta_{4r}~\mbox{\texttt{IPAQ-IA}}_i + \beta_{5r}~\mbox{\texttt{IPAQ-A}}_i,
+\end{equation}
+\end{small}
+\noindent
+onde $g_r(\cdot):(0,1)\mapsto\mathbb{R}$ é a função de ligação \textit{logit}. \\
+
+\vspace{-0.5cm}
+
+O preditor linear definido na~\autoref{eq:preditordatase2} será usado em toda análise dos dados, o qual é composto por duas covariáveis contínuas e duas categóricas. As covariáveis contínuas se referem a idade (anos) e IMC (Kg/m$^2$) dos indivíduos, enquanto as covariáveis categóricas correspondem ao sexo (F-feminino ou M-masculino) e IPAQ (S-sedentário, IA-insuficientemente ativo ou A-ativo). Para as covariáveis categóricas, definiu-se sexo feminino e IPAQ sedentário como as categorias de referência.
+
+Logo, para este particular conjunto de dados, o modelo de regressão quase-beta multivariado fica expresso por:
+$$
+\begin{pmatrix}
+Y_{1i} \vspace{-0.1cm} \\
+\vdots \vspace{-0.1cm} \\
+Y_{5i} \\
+\end{pmatrix} \sim \bullet \begin{bmatrix}
+\begin{pmatrix}
+\mu_{1i} \vspace{-0.1cm}  \\
+\vdots \vspace{-0.1cm}  \\
+\mu_{5i} \\
+\end{pmatrix}; \boldsymbol{\Sigma}_i
+\end{bmatrix},~i = 1, \ldots, 298,
+$$ 
+\vspace{-0.3cm}
+
+\noindent
+onde $\boldsymbol{\Sigma}_i = \mathrm{V}(\boldsymbol{\mu}_{i})^{\tfrac{1}{2}}\boldsymbol{\Omega}(\boldsymbol{\lambda}) \mathrm{V}(\boldsymbol{\mu}_{i})^{\tfrac{1}{2}}$ é uma matriz $5 \times 5$ com a seguinte forma:
+
+\vspace{0.2cm}
+
+\begin{equation}
+\hspace{-0.2cm}  \boldsymbol{\Sigma}_i  = \begin{footnotesize}  \nonumber \\
+\begin{bmatrix}
+\sqrt{\mu_{1i}(1 - \mu_{1i})} &  0  &  0  &  0  &  0  \\
+0 &  \hspace{-0.2cm} \sqrt{\mu_{2i}(1 - \mu_{2i})} &  0  &  0  &  0    \\
+0 & 0 &  \hspace{-0.2cm} \sqrt{\mu_{3i}(1 - \mu_{3i})} &  0  &  0  \\
+0 & 0 & 0 &  \hspace{-0.2cm} \sqrt{\mu_{4i}(1 - \mu_{4i})}  &  0  \\
+0 & 0 & 0 & 0 &  \hspace{-0.2cm} \sqrt{\mu_{5i}(1 - \mu_{5i})}  \\
+\end{bmatrix}  \hspace{7cm}
+\end{footnotesize}
+\end{equation} 
+
+\vspace{-0.45cm}
+
+\begin{equation}
+\begin{footnotesize}  \nonumber \\
+\hspace{-0.44cm} \times  \begin{bmatrix}
+\sigma_1^2 &  \rho_{12} \sigma_1 \sigma_2  &  \rho_{13} \sigma_1 \sigma_3  &  \rho_{14} \sigma_1 \sigma_4  &  \rho_{15} \sigma_1 \sigma_5   \\
+\rho_{12} \sigma_1 \sigma_2  & \sigma_2^2  &  \rho_{23} \sigma_2 \sigma_3  &  \rho_{24} \sigma_2 \sigma_4  &  \rho_{25} \sigma_2 \sigma_5    \\
+\rho_{13} \sigma_1 \sigma_3 & \rho_{23} \sigma_2 \sigma_3 & \sigma_3^2 &  \rho_{34} \sigma_3 \sigma_4  &  \rho_{35} \sigma_3 \sigma_5  \\
+\rho_{14} \sigma_1 \sigma_4 & \rho_{24} \sigma_2 \sigma_4  &  \rho_{34} \sigma_3 \sigma_4 & \sigma_4^2 &  \rho_{45} \sigma_4 \sigma_5   \\
+\rho_{15} \sigma_1 \sigma_5 & \rho_{25} \sigma_2 \sigma_5 & \rho_{35} \sigma_3 \sigma_5  & \rho_{45} \sigma_4 \sigma_5 & \sigma_5^2 \\
+\end{bmatrix}\hspace{6.7cm}
+\end{footnotesize}
+\end{equation} 
+
+\vspace{-0.45cm}
+
+\begin{equation}
+\begin{footnotesize} \nonumber   \\
+\times  \begin{bmatrix}
+\sqrt{\mu_{1i}(1 - \mu_{1i})} &  0  &  0  &  0  &  0  \\
+0 &  \hspace{-0.2cm} \sqrt{\mu_{2i}(1 - \mu_{2i})} &  0  &  0  &  0    \\
+0 & 0 &  \hspace{-0.2cm} \sqrt{\mu_{3i}(1 - \mu_{3i})} &  0  &  0  \\
+0 & 0 & 0 &  \hspace{-0.2cm} \sqrt{\mu_{4i}(1 - \mu_{4i})}  &  0  \\
+0 & 0 & 0 & 0 &  \hspace{-0.2cm} \sqrt{\mu_{5i}(1 - \mu_{5i})}  \\
+\end{bmatrix}, \hspace{2.65cm}
+\end{footnotesize}
+\end{equation} 
+
+\noindent
+onde $\sqrt{\mu_{ri}(1 - \mu_{ri})}$ denota a função de variância da distribuição binomial associada à $r$-ésima resposta $r = 1, \ldots 5$. Denote $\mathbf{R}$ a matriz de correlação entre as respostas, obtida pela multiplicação de cada elemento da matriz $\boldsymbol{\Omega}(\boldsymbol{\lambda})$ por $\frac{1}{\sigma_r \sigma_{r^\prime}}$. Assim, para este particular conjunto de dados, a representação da matriz $\mathbf{R}$ é dada por:
+\begin{eqnarray*} 
+\mathbf{R} = \begin{bmatrix}
+1 &  \rho_{12}   &  \rho_{13}   &  \rho_{14}  &  \rho_{15}    \\
+\rho_{12}  & 1 &  \rho_{23} &  \rho_{24}  &  \rho_{25}  \\
+\rho_{13}  & \rho_{23}  & 1 &  \rho_{34}  &  \rho_{35}  \\
+\rho_{14}  & \rho_{24}   &  \rho_{34} & 1 &  \rho_{45}  \\
+\rho_{15}  & \rho_{25}  & \rho_{35}  & \rho_{45} & 1 \\
+\end{bmatrix}, 
+\end{eqnarray*} 
+onde $\rho_{rr^\prime}$ denota a correlação entre a resposta $r$ e $r^\prime$.
+
+
+Note que, a matriz $\mathbf{R}$ é simétrica, não depende da estrutura da média e a quantidade de coeficientes de correlação desta matriz pode ser obtida por $R(R-1)/2$. Desse modo, esta matriz possui dez coeficientes de correlação. Assim, por exemplo, a correlação entre o percentual de gordura na região dos braços e pernas é denotada por $\rho_{12}$. Da mesma forma, as correlações entre o percentual de gordura na região dos braços e tronco, entre braços e andróide e entre braços e ginecóide são representadas, respectivamente, por $\rho_{13}, \rho_{14}$ e $\rho_{15}$. Reciprocamente, os coeficientes $\rho_{23}, \rho_{24}$ e $\rho_{25}$ indicam as correlações entre o percentual de gordura na região das pernas e tronco, entre pernas e andróide e entre pernas e ginecóide. Já a correlação entre o percentual de gordura na região do tronco e andróide é denotada por $\rho_{34}$, e entre tronco e ginecóide por $\rho_{35}$. Por fim, a correlação entre o percentual de gordura na região andróide e ginecóide é expressa por $\rho_{45}$.
+
+Numa primeira etapa da análise, ajustou-se o modelo de regressão multivariado e o univariado, no qual as análises foram feitas separadamente para cada variável resposta. O objetivo foi comparar as duas análises por meio de medidas de bondade de ajuste (\textit{goodness-of-fit}). Dessa forma, a~\autoref{tab:gof} apresenta o valor maximizado do logaritmo da função de pseudo verossimilhança (\texttt{plogLik}), graus de liberdade (\texttt{df}), e valores dos pseudo critérios de informação de \textit{Akaike}~(\texttt{pAIC}) e Bayesiano~(\texttt{pBIC}) para os modelos uni e multivariado.
+
+
+
+\begin{table}[H]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Valor maximizado do logaritmo da função de pseudo verossimilhança~(\texttt{plogLik}), graus de liberdade~(\texttt{df}) e pseudo critérios de informação de \textit{Akaike}~(\texttt{pAIC}) e Bayesiano~(\texttt{pBIC}) para os modelos uni e multivariado.}
+\label{tab:gof}
+\begin{tabular}{lcccc} 
+\hline
+Modelo & \texttt{plogLik} & \texttt{df}  & \texttt{pAIC} & \texttt{pBIC} \\
+\hline
+Univariado   & $2176,19$ & $35$ & $-4282,38$  & $-4096,65$ \\
+Multivariado & $3162,10$ & $45$ & $-6234,20$  & $-5995,41$ \\
+\hline   
+\end{tabular}
+\begin{footnotesize}
+\vspace{0.05cm}
+
+FONTE: O autor~(2018). \hspace{6.2cm}
+
+\end{footnotesize}
+\end{table}
+
+De acordo com os resultados apresentados na~\autoref{tab:gof}, todas as medidas de bondade de ajuste apontam para o modelo multivariado como aquele que apresenta o melhor ajuste aos dados. A diferença entre os modelos uni e multivariado em termos de pseudo log-verossimilhança foi de $985,91$, enquanto para os pseudo critérios de informação de \textit{Akaike} e Bayesiano esta diferença foi de $-1951,82$ e $-1898,76$, respectivamente. Como o modelo multivariado apresentou vantagens na análise dos dados, todas as análises apresentadas a seguir são baseadas neste modelo.
+
+
+Os resultados apresentados na~\autoref{tab:anova} mostram que todas as covariáveis pertencentes aos preditores lineares (\autoref{eq:preditordatase2}) são significativamente diferentes de zero~($p$-valor $< 0,00$), com exceção da covariável idade para as variáveis respostas porcentagem de gordura na região das pernas~($p$-valor $= 0,90$) e ginecóide~($p$-valor $= 0,26$), respectivamente.
+
+\begin{table}[H]
+\vspace{0.2cm}
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Estatística de Wald ($W_s$), graus de liberdade (\texttt{df}) e $p$-valores para os componentes do preditor linear de cada variável resposta.}\label{tab:anova}
+\begin{small}
+\setlength{\tabcolsep}{2.9pt}
+\begin{tabular}{@{}lccccccccccc@{}} 
+\hline
+\multirow{2}{*}{Efeitos} & \multirow{2}{*}{\texttt{df}} & \multicolumn{2}{c}{Braços $\%$} & \multicolumn{2}{c}{Pernas $\%$}  & \multicolumn{2}{c}{Tronco $\%$}  & \multicolumn{2}{c}{Andróide $\%$} & \multicolumn{2}{c}{Ginecóide $\%$}  \\
+\cmidrule(l){3-12}
+& & $W_s$ & $p$-valor & $W_s$ & $p$-valor & $W_s$ & $p$-valor &  $W_s$ & $p$-valor & $W_s$ & $p$-valor \\
+\hline
+\texttt{IMC}   & $1$ & $201,97$  & $< 0,01$ & $122,66$     & $< 0,01$  & $337,07$  & $< 0,01$  & $253,47$  & $< 0,01$ &  $136,35$  & $< 0,01$ \\
+\texttt{Sexo}  & $1$ & $672,28$  &  $< 0,01$  & $661,41$  &  $< 0,01$  & $184,78$  &  $< 0,01$ & $102,44$  &  $< 0,01$  & $657,38$  &  $< 0,01$ \\
+\texttt{Idade} & $1$ & $15,75$  & $< 0,01$  &  $0,01$  &  $0,90$  & $16,81$  & $< 0,01$  & $18,73$  & $< 0,01$ &  $1,23$  &  $0,26$  \\
+\texttt{IPAQ}  & $2$ & $31,13$  & $< 0,01$  & $12,61$  & $< 0,01$  & $18,75$  & $< 0,01$  & $14,36$  &  $< 0,01$   & $15,23$  & $ < 0,01$ \\
+\hline     
+\end{tabular}
+\end{small}
+\begin{footnotesize}
+\vspace{0.05cm}
+
+FONTE: O autor~(2018). \hspace{11.8cm}
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\end{table}
+
+Antes de interpretar os coeficientes estimados pelo modelo de regressão quase-beta multivariado, verificou-se a qualidade produzida pelo ajuste do modelo, por meio de uma análise de resíduos e de diagnóstico. Dessa forma, a~\autoref{fig:residualsDataset1} apresenta os resíduos de Pearson versus os valores preditos pelo modelo para cada variável resposta. A~\autoref{fig:residualsDataset1} também apresenta curvas de suavização com bandas de confiança estimadas pelo método \textit{loess}~\cite{cleveland1979}.
+
+
+% P/ salvar .pdf (14.0 x 4.0)
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Resíduos de Pearson associados ao modelo de regressão quase-beta multivariado ajustado aos dados do percentual de gordura corporal}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.3cm}
+\includegraphics[width=1.0\textwidth]{res3.pdf}
+\begin{footnotesize}
+\vspace{-0.40cm}
+
+\centering
+FONTE: O autor~(2018).
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+
+\label{fig:residualsDataset1}
+\end{figure}
+
+
+
+Os resíduos de Pearson mostrados na~\autoref{fig:residualsDataset1} indicam que o modelo de regressão quase-beta multivariado ajustou-se satisfatoriamente aos dados do percentual de gordura corporal. Em geral, os resíduos variam entre -2 e 2 e observa-se que apenas alguns valores estão fora desse intervalo, o que não compromete os resultados da análise. Porém, vale ressaltar que algumas curvas de suavização se destacaram pela sua forma ``quadrática", em especial, as curvas associadas aos percentuais de gordura na região do tronco, andróide e ginecóide. 
+
+Nesse sentido, ajustou-se o modelo novamente incluindo o efeito de polinômios do 2\textordmasculine~grau nas covariáveis contínuas (idade e IMC), além de verificar o efeito de interação entre as covariáveis do estudo. Após essa nova análise, verificou-se que nenhuma dessas possibilidades trouxe benefícios no ajuste do modelo, assim como na melhoria dos resíduos apresentados na~\autoref{fig:residualsDataset1}. Acredita-se que uma das principais causas do efeito ``quadrático"~observado nas curvas de suavização seja devido a falta de covariáveis não observadas no estudo. 
+
+Diante disso, foi proposta uma transformação para as variáveis respostas, afim de investigar o comportamento dos resíduos. Tal transformação, é simplesmente um reescalonamento das variáveis respostas ($Y_{ri}$) para o intervalo $[0,1]$. Note que, no reescalonamento, as variáveis respostas podem assumir os valores zero ou um, o que não acontece na escala original. Logo, a transformação proposta é dada por:
+\begin{equation}
+\label{eq:transDataSet2}
+Y_{ri}^* = \dfrac{ Y_{ri} - \mathrm{min}(Y_{r})}{\mathrm{max}(Y_{r}) - \mathrm{min}(Y_{r})},
+\end{equation}
+\noindent
+onde $\mathrm{min}(Y_{r})$ e $\mathrm{max}(Y_{r})$ denotam os valores mínimo e máximo da $r$-ésima resposta, para $r = 1, \ldots, 5$. 
+Para ilustar essa transformação, considere $Y_{1i}$ o percentual de gordura na região dos braços do $i$-ésimo indivíduo. Seus valores mínimo e máximo são dados, respectivamente, por $0,042$ e $0,547$. Assim, para o primeiro indivíduo da amostra, $Y_{11}$, observou-se um percentual de gordura nos braços igual a $ 0,163$ e por meio da~\autoref{eq:transDataSet2}, esse valor em escala transformada fica $Y_{11}^* = 0,239$. Para as demais variáveis respostas, o cálculo é feito de forma semelhante. No~\autoref{cap:apendiceC}, encontra-se uma tabela com as seis primeiras linhas do conjunto de dados, mostrando as variáveis respostas nas escalas original e transformada. 
+
+
+A~\autoref{fig:residualsDataset1Trans} apresenta os resíduos de Pearson versus os valores peditos pelo modelo, com as variáveis respostas em escala transformada~(\autoref{eq:transDataSet2}). Dessa forma, os resultados apresentados na~\autoref{fig:residualsDataset1Trans}, mostram que o efeito ``quadrático"~nas curvas de suavização diminuíram, melhorando de forma geral os resíduos do modelo. 
+ 
+
+
+% P/ salvar .pdf (14.0 x 4.0)
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Resíduos de Pearson associados ao modelo de regressão quase-beta multivariado ajustado aos dados do percentual de gordura corporal em escala transformada ($Y_r^*$)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.3cm}
+\includegraphics[width=1.0\textwidth]{res3trans.pdf}
+\begin{footnotesize}
+\vspace{-0.40cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:residualsDataset1Trans}
+\end{figure}
+
+
+Com objetivo de construir bandas de confiança para os resíduos em escala transformada, adotou-se o seguinte procedimento. Considere $\mathbf{Y}_i^{S} = (Y_{1i}^{S}, \ldots, Y_{5i}^{S})^{\top}$ um vetor de variáveis respostas simulado associado, respectivamente, aos percentuais de gordura nos braços, pernas, tronco, andróide e ginecóide do indivíduo $i$. Nesse caso, as variáveis respostas $Y_{ri}^S$ foram simuladas a partir dos parâmetros estimados pelo modelo de regressão quase-beta multivariado com a escala transformada. Assim, a média de cada resposta simulada, foi obtida pelos valores preditos pelo modelo, isto é, $\mu_{ri}^{S} = \hat{\mu}_{ri}$. Os parâmetros de dispersão ($\sigma_r^2$) também foram transformados, para que fiquem na mesma escala do parâmetro de dispersão da densidade beta (\autoref{equ:beta}). A transformação é dada por:
+\begin{equation}
+\phi_r^{S} = \dfrac{1 - \sigma_r^2}{\sigma_r^2},~r = 1, \ldots, 5.  \nonumber
+\end{equation}
+\noindent
+Note que, o inverso dessa transformação corresponde a parametrização adotada no modelo de regressão quase-beta multivariado para os parâmetros de dispersão, ou seja, $\sigma_r^2 = 1/(1 + \phi_r)$. Assim, as variáveis respostas $Y_{ri}^{S}$ foram simuladas a partir da densidade beta (\autoref{equ:beta}) com os parâmetros $\mu_{ri}^{S}$ e $ \phi_{r}^{S}$, isto é, $ Y_{ri}^{S} \sim \mathcal{B}(\mu_{ri}^{S}, \phi_{r}^{S})$. Após esses procedimentos, o modelo de regressão quase-beta multivariado foi ajustado novamente, usando as variáveis respostas simuladas, e os resíduos de Pearson versus os valores preditos pelo modelo foram plotados na~\autoref{fig:resreesca} por meio de curvas de suavização usando o método \textit{loess}. Esse procedimento foi repetido 1000 vezes, gerando as bandas de confiança mostradas na~\autoref{fig:resreesca}. As linhas pontilhadas em vermelho mostram o ajuste do modelo em escala transformada $Y_{ri}^*$, enquanto as bandas de confiança (linhas em cinza) ilustram os resultados do procedimento supracitado.
+
+
+% Save 18.0 x 3.8 
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Resíduos de Pearson e bandas de confiança associadas ao ajuste do modelo de regressão quase-beta multivariado aos dados do percentual de gordura corporal em escala transformada ($Y_r^*$)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.15cm}
+\includegraphics[width=1.01\textwidth]{res4.pdf}
+\begin{footnotesize}
+\vspace{-0.4cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.05cm}
+
+\end{footnotesize}
+\label{fig:resreesca}
+\end{figure}
+
+
+Pelos resultados apresentados na~\autoref{fig:resreesca}, é possível verificar que o ajuste do modelo mantém-se dentro das bandas de confiança dos dados simulados. No entanto, observa-se que alguns pontos das variáveis respostas relacionadas ao percentual de gordura na região do tronco e andróide afastaram-se das bandas de confiança. Após investigar o comportamento dos resíduos em escala transformada, considere os resultados obtidos a seguir pelo modelo de regressão na escala original dos dados.
+
+
+Assim, a~\autoref{fig:CookDataSet2} mostra os gráficos da distância de Cook versus o número de observações para as cinco variáveis respostas. A linha pontilhada no centro da figura se refere ao ponto de corte $2p/n$. Portanto, valores acima de $0,0403$ indicam possíveis pontos influentes. Desta figura, observa-se que para os pecentuais de gordura na região dos braços, pernas e ginecóide existe apenas um ponto influente.
+
+
+
+
+% Save 25.0 x 6.5
+\begin{figure}[H]
+\vspace{0.04cm}
+\caption{Distância de Cook para o modelo de regressão quase-beta multivariado ajustado aos dados do percentual de gordura corporal}
+\vspace{-0.25cm}
+\setlength{\abovecaptionskip}{.0001pt}
+\includegraphics[width=0.99\textwidth]{CookDataSet2b.pdf}
+\begin{footnotesize}
+\vspace{0.1cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{-0.05cm}
+
+\end{footnotesize}
+\label{fig:CookDataSet2}
+\end{figure}
+
+
+Os resultados na~\autoref{fig:DFFTSDataSet2} mostram a medida DFFITS para cada variável resposta referente ao percentual de gordura corporal. A maioria dos pontos encontram-se no intervalo $\pm 0,284$, porém, observa-se alguns pontos abaixo do limite inferior.
+
+
+% Save 19.0 x 5.3
+\begin{figure}[H]
+\vspace{0.2cm}
+\caption{DFFITS para o modelo de regressão quase-beta multivariado ajustado aos dados do percentual de gordura corporal}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.3cm}
+\includegraphics[width=0.99\textwidth]{DFFITS_DataSet2.pdf}
+\begin{footnotesize}
+\vspace{0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{-0.2cm}
+
+\end{footnotesize}
+\label{fig:DFFTSDataSet2}
+\end{figure}
+
+
+
+A~\autoref{fig:DFBETASDataSet2} apresenta a medida DFBETA para cada variável resposta. Por meio dessa medida, pode-se analisar a influência de cada observação sobre os coeficientes de regressão. Desse modo, valores fora do intervalo $\pm 0,116$ são considerados pontos influentes. De acordo com os resultados mostrados na~\autoref{fig:DFBETASDataSet2}, existem pontos influentes no ajuste do modelo de regressão quase-beta multivariado. Os pontos que estão fora do intervalo, diferem entre as variáveis respostas. Além disso, a maior parte dos pontos encontram-se dentro do intervalo, o que mostra um bom ajuste do modelo aos dados.
+
+
+
+% Save 23.0 x 15.0
+\begin{figure}[H]
+\vspace{0.2cm}
+\caption{DFBETAS para o modelo de regressão quase-beta multivariado ajustado aos dados do percentual de gordura corporal}
+\vspace{-0.3cm}
+\setlength{\abovecaptionskip}{.0001pt}
+\includegraphics[width=0.99\textwidth]{DFBETAS_DataSet2.pdf}
+\begin{footnotesize}
+\vspace{0.10cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{-0.15cm}
+
+\end{footnotesize}
+\label{fig:DFBETASDataSet2}
+\end{figure}
+
+
+Na~\autoref{fig:DataSet2Env} encontram-se os gráficos de probabilidade meio-normal com envelope simulado. Os resultados apresentados nesta figura mostram que, em geral, o ajuste do modelo de regressão quase-beta multivariado está adequado para as cinco variáveis respostas, uma vez que os pontos encontram-se dentro das bandas de confiança. No entanto, para os percentuais de gordura nas regiões do tronco e andróide pode-se observar alguns pontos fora do intervalo.
+
+% Save 16.0 x 4.3
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Gráfico de probabilidade meio-normal com envelope simulado para cada variável resposta do percentual de gordura corporal ajustado pelo modelo de regressão quase-beta multivariado}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.43cm}
+\includegraphics[width=0.99\textwidth]{envelope_corporal.pdf}
+\begin{footnotesize}
+\vspace{0.1cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:DataSet2Env}
+\end{figure}
+
+
+Com o intuito de investigar os pontos influentes e \textit{outliers} que se destacaram na análise de diagnóstico, fez-se uma investigação no conjunto de dados examinando os pontos indicados na análise. Assim, conforme nos mostra a~\autoref{fig:CookDataSet2}, \autoref{fig:DFFTSDataSet2} e~\autoref{fig:DFBETASDataSet2} o indivíduo 158 foi quem se destacou. Tal indivíduo é uma mulher, tem 49 anos, apresenta um IMC igual a $29,3$ e tem percentuais de gordura nas regiões dos braços, pernas, tronco, andróide e ginecóide iguais a: 0,196; 0,203; 0,378; 0,411 e 0,292 respectivamente. Em outras palavras, este indivíduo apresenta um elevado IMC, mas baixos valores para os percentuais de gordura na região dos braços, pernas e ginecóide conforme foi apontado na análise de diagnóstico. Dessa forma, mostrou-se que as técnicas de diagnóstico adaptadas para o modelo proposto são eficientes na detecção de pontos influentes e \textit{outliers}.
+
+De maneira geral, todas as medidas de diagnóstico além da análise de resíduos indicam que o modelo de regressão quase-beta multivariado apresentou um ajuste satisfatório aos dados do percentual de gordura corporal. 
+
+Após a análise de resíduos e de diagnóstico, serão apresentadas as principais interpretações relacionadas aos parâmetros de regressão estimados pelo modelo de regressão quase-beta multivariado, na escala original. Assim, a~\autoref{tab:coefmult} apresenta as estimativas dos parâmetros e erros-padrão associados a cada variável resposta. 
+
+\begin{table}[H]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Estimativas dos parâmetros (Est.) e erros-padrão (EP) para o percentual de gordura na região dos braços, pernas, tronco, andróide e ginecóide, respectivamente, obtidos pelo modelo de regressão quase-beta multivariado.}
+\label{tab:coefmult}
+\begin{small}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lccccc}
+\hline
+ & Braços & Pernas & Tronco & Andróide & Ginecóide \\
+\hline
+Efeito   &  Est.(EP)  &  Est.(EP)  &  Est.(EP)  &  Est.(EP) &  Est.(EP) \\
+\hline
+\texttt{Intercepto} & -2,810(0,136)  &  -1,879(0,131) & -2,998(0,121)  & -2,859(0,139)  & -1,442(0,113)  \\
+\texttt{Idade}      & 0,004(0,001)   &  0,001(0,010)$^*$ &  0,003(0,001)  &  0,004(0,001)  & -0,009(0,008)$^*$  \\   
+\texttt{IMC}        & 0,086(0,006)   &   0,065(0,005) &  0,098(0,005)  &  0,098(0,006)  &  0,059(0,005)  \\
+\texttt{Sexo-M}     & -0,889(0,034)  &  -0,852(0,033) & -0,401(0,029)  & -0,343(0,033)  & -0,726(0,028)  \\
+\texttt{IPAQ-IA}      & -0,118(0,047)  &  -0,044(0,046) & -0,106(0,042)  & -0,115(0,048)  & -0,066(0,041)  \\
+\texttt{IPAQ-A}      & -0,248(0,045)  &  -0,145(0,044) & -0,175(0,040)  & -0,177(0,046)  & -0,146(0,038)  \\
+$\hat{\sigma}_r^2$      & 0,014(0,001)   &   0,015(0,001) &  0,013(0,001)  &  0,018(0,001)  &  0,012(0,001)  \\
+\hline
+\end{tabular} 
+\end{small}
+\begin{footnotesize}
+\begin{flushleft}
+\vspace{-0.31cm}
+\ \ Nota: $^*$Indica $p$-valor $> 0,05$; \texttt{Sexo-M} $ = $ sexo~(masculino);  \texttt{IPAQ-IA} $ = $ IPAQ (insuficientemente ativo); \\  \ \ \texttt{IPAQ-A} $ = $ IPAQ~(ativo);~$\hat{\sigma}_r^2$: coeficiente de dispersão associado à $r$-ésima resposta, $r = 1, \ldots,5$.
+\end{flushleft}
+\end{footnotesize}
+\end{table}
+
+
+Com base nos resultados apresentados na~\autoref{tab:coefmult}, pode-se observar que a idade foi a única covariável que não se relacionou com todas as respostas. Assim, não faz diferença a idade dos indivíduos na avaliação do percentual de gordura na região das pernas e ginecóide. Entretanto, para as outras variáveis respostas, essa covariável mostrou-se relevante, podendo-se observar sinais positivos em todos os coeficientes. Desse modo, quanto maior for a idade dos indivíduos maior se espera que sejam os percentuais de gordura na região dos braços, tronco e andróide. O IMC também exerceu influência positiva nos percentuais de gordura corporal, tanto para homens quanto para mulheres. Como já era esperado, quanto maior o IMC dos indivíduos maior serão seus percentuais de gordura corporal. 
+
+O nível de atividade física, estimado pelo questionário IPAQ, mostrou ser um fator determinante na redução do percentual gordura corporal. Logo, há um indicativo de que os índivíduos classificados pelo IPAQ em ativos apresentam menos gordura distribuída pelo corpo do que os indivíduos classificados em sedentários, sendo esta avaliação para ambos os sexos. De maneira análoga, os indivíduos classificados em insuficientemente ativos também apresentam menos gordura corporal quando comparados aos sedentários. Porém, a redução de gordura corporal é maior para os indivíduos ativos. Basta olhar os valores dos coeficientes de regressão associados a esta covariável~(\texttt{IPAQ-A}). Eles são maiores do que os coeficientes que medem o efeito do nível de atividade física dos indivíduos classificados em insuficientemente ativos~(\texttt{IPAQ-IA}).
+
+No ajuste do modelo de regressão quase-beta multivariado, fez-se uso da função de ligação \textit{logit} que permite interpretar os coeficientes de regressão em termos de razão de chances. Nesse sentido, o~\autoref{cap:apendiceC} apresenta uma tabela com razões de chances e intervalos com $95\%$ de confiança para as estimativas dos parâmetros apresentadas na~\autoref{tab:coefmult}.
+
+Por exemplo, a cada unidade adicionada ao IMC tem-se um acréscimo de $6,8\%$ no percentual de gordura na região das pernas. Os indivíduos classificados pelo IPAQ em ativos, apresentam em torno de $16\%$ menos gordura na região do tronco, quando comparados aos indivíduos classificados em sedentários. Da mesma forma, os homens apresentam $58,9\%$ menos gordura na região dos braços do que as mulheres. As demais interpretações, seguem forma semelhante~(\autoref{cap:apendiceC}).
+
+
+A correlação entre as variáveis respostas, dada a presença das covariáveis no modelo é apresentada na
+matriz a seguir:
+\begin{equation}
+\label{eq:matrizcorr}
+\hat{\mathbf{R}} = \begin{bmatrix}
+1 &  &  &  &   \\
+0,7636(0,0359) & 1 &  &  &  \\
+0,7466(0,0337) & 0,6442(0,0411) & 1 &  & \\
+0,6938(0,0381) & 0,5343(0,0465) & 0,9433(0,0337) & 1 & \\
+0,7649(0,0353) & 0,9417(0,0379) & 0,7529(0,0363) & 0,6521(0,0418) & 1 \\
+\end{bmatrix},
+\end{equation}
+onde os números dentro dos parênteses denotam os erros padrões associados aos coeficientes de correlação. Todas as correlações apresentadas na matriz~\ref{eq:matrizcorr} são significativamente diferentes de zero. Assim, por exemplo, a correlação entre o percentual de gordura na região dos braços e pernas foi estimada em $\hat{\rho}_{12} = 0,7636(0,0359)$. Já a correlação entre o percentual de gordura na região das pernas e tronco foi estimada em $\hat{\rho}_{23} = 0,6442(0,0411)$. A maior correlação estimada foi entre o percentual de gordura na região do tronco e andróide, $\hat{\rho}_{34} = 0,9433(0,0337)$.
+
+
+A~\autoref{fig:corrplot} mostra as correlações entre os percentuais de gordura corporal estimadas pelos modelos de regressão quase-beta multivariado nas escalas original e transformada. Com base nos resultados apresentados na~\autoref{fig:corrplot}, é possível observar que as correlações entre os dois ajustes ficaram muito próximas uma da outra. Tal resultado, mostrou que as correlações não foram afetadas pelas transformações das variáveis respostas.
+
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Imagem da matriz de correlação entre as variáveis respostas estimada pelo modelo de regressão quase-beta multivariado nas escalas original~(A) e transformada~(B)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.43cm}
+\includegraphics[width=0.99\textwidth]{Corr_plot.pdf}
+\begin{footnotesize}
+\vspace{0.1cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:corrplot}
+\end{figure}
+
+
+
+
+Para tornar mais visual as variações entre os percentuais de gordura corporal conforme as covariáveis em estudo, construiu-se a~\autoref{fig:bodyfat}. Esta figura foi construída com base nos coeficientes de regressão e seus respectivos erros-padrão estimados pelo modelo de regressão quase-beta multivariado (\autoref{tab:coefmult}). Assim, a~\autoref{fig:bodyfat} apresenta curvas de predição com bandas de confiança $(95\%)$ para a média das variáveis respostas em função das covariáveis do estudo. A idade foi a única covariável que não se relacionou com todas as respostas. Logo, a~\autoref{fig:bodyfat} foi construída fixando-se a idade média $(\bar{x} = 46~\mathrm{anos})$ dos indivíduos.
+
+
+% P/ salvar .pdf (10.0 x 9.5)
+
+\begin{figure}[H]
+\vspace{0.4cm}
+\caption{Gráfico do percentual de gordura estimado para cada região do corpo e intervalos com $95\%$ de confiança obtidos pelo modelo de regressão quase-beta multivariado em função do IMC, sexo (F-feminino ou M-masculino) e IPAQ (Sedentário, Insuficientemente ativo ou Ativo)}
+\setlength{\abovecaptionskip}{.0001pt}
+\vspace{-0.46cm}
+\includegraphics[width=0.99\textwidth]{bodyfat.pdf}
+\begin{footnotesize}
+\vspace{-0.2cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:bodyfat}
+\end{figure}
+
+
+Com base nos resultados apresentados na~\autoref{fig:bodyfat}, pode-se observar que o percentual de gordura na região dos braços apresentou mudanças consideráveis com relação à prática de atividade física e o sexo dos indivíduos. Também observa-se uma variação semelhante com relação ao percentual de gordura na região das pernas. No entanto, essas variações não correspondem para os percentuais de gordura nas regiões do tronco e andróide.
+
+
+

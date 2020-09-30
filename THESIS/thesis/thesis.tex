@@ -1,0 +1,947 @@
+% ======================================================================
+% LAST MODIFICATION ON (MONTH / DAY / YEAR): 9/30/20
+% ======================================================================
+\documentclass[12pt, % tamanho da fonte
+               openright, % capítulos começam em pág ímpar
+                          % (insere página vazia caso preciso)
+               oneside, % para impressão apenas em um lado do papel
+               a4paper, % tamanho do papel.
+               chapter=TITLE, % títulos de capítulos convertidos em
+                              % letras maiúsculas
+               section=TITLE, % títulos de seções convertidos em letras
+                              % maiúsculas
+               % subsection=TITLE, % títulos de subseções convertidos em
+                                 % letras maiúsculas
+               % subsubsection=TITLE, % títulos de subsubseções em
+                                    % letras maiúsculas
+               % sumario=tradicional,
+               brazil,
+               english % o último idioma é o principal do documento
+]{abntex2}
+% ----------------------------------------------------------------------
+% \renewcommand{\ABNTEXsectionfont}{\normalfont}
+\renewcommand{\cftsectionfont}{\normalsize}
+% ----------------------------------------------------------------------
+\renewcommand{\ABNTEXchapterfontsize}{\bfseries\large}
+\renewcommand{\ABNTEXsectionfontsize}{\large}
+\renewcommand{\ABNTEXsubsectionfontsize}{\large}
+% ----------------------------------------------------------------------
+\usepackage{lastpage}
+% \usepackage{times}
+\usepackage{etoolbox}
+\usepackage{lmodern} % usa a fonte Latin Modern
+% \usepackage[T1]{fontenc} % selecao de codigos de fonte
+\usepackage[utf8]{inputenc} % sodificacao do documento (conversão
+                            % automática dos acentos)
+% \usepackage{lastpage} % ssado pela ficha catalográfica
+\usepackage{indentfirst} % indenta o primeiro parágrafo de cada seção
+\setlength{\parindent}{1.5cm} % espaçamento de 1.5cm do parágrafo
+\usepackage{color} % controle das cores
+\usepackage{graphicx} % inclusão de gráficos
+\usepackage{microtype} % para melhorias de justificação
+\usepackage{setspace}
+\usepackage{pdflscape} % pagina na horizontal
+% \usepackage{lscape} % pagina na horizontal
+\usepackage{wrapfig}
+\usepackage{pgf} % para geração de dummy text
+\usepackage[english, hyperpageref]{backref} % paginas com as citações
+% ----------------------------------------------------------------------
+% quadro cinza =========================================================
+% \usepackage{caption}
+\usepackage[small]{caption}
+\usepackage{tikz} % permite desenhos vetoriais
+% define o ambiente para colocar o código R
+% (draw=gray!50 fill=gray!20 originais)
+\tikzstyle{mybox} = [draw=gray!95, fill=white, very thick, rectangle,
+                     inner sep=7pt, inner ysep=7pt]
+\tikzstyle{mybox2} = [draw=gray!50, fill=gray!20,
+                      very thick, % para códigos em R (Apêndices)
+                      rectangle, inner sep=7pt, inner ysep=7pt]
+% \usepackage[scaled=0.8]{beramono} % usa esta nos verbatins
+\usepackage{float} % controla e define objetos flutuantes
+\usepackage{tocloft} % controla lista de objetos flutuantes
+% ambiente flutuante para código R
+\newcommand{\listofprogramname}{CODE} % nome dessa lista
+\newlistof{program}{lol}{\listofprogramname} % configura os arquivos
+                                             % auxiliares para fazer a
+                                             % lista
+\makeatletter % allows use of "@" before \begin{document}
+% this creates a custom and simpler ruled box style
+\newcommand\floatc@simplerule[2]{{\@fs@cfont #1 #2}\par}
+\newcommand\fs@simplerule{\def\@fs@cfont{ % aqui o estilo de fonte, e.g.
+                                          % \bfseries
+  }\let\@fs@capt\floatc@simplerule
+  \def\@fs@pre{} % antes do caption, pode ser uma régua
+  \def\@fs@post{} % depois do float, pode ser uma régua
+  \def\@fs@mid{\kern3pt} % espaço entre caption e corpo
+  \let\@fs@iftopcapt\iftrue}
+\floatstyle{simplerule} % define o estilo do ambiente
+\newfloat{program}{thp}{lol}[chapter] % ambiente contado por capítulo
+\floatname{program}{Code} % rótulo que vai aparecer na legenda
+\newcommand{\programautorefname}{Code} % altera o padrão do contador
+                                       % para seguir capítulos
+\renewcommand{\theprogram}{\thechapter.\arabic{program}} % capítulo.
+                                                         % programa:
+\sloppy
+% FIM - TIKZ (quadro cinza) ============================================
+% ----------------------------------------------------------------------
+% CONFIGURAÇÕES DE PACOTES
+% Configurações do pacote backref
+% Usado sem a opção hyperpageref de backref
+\renewcommand{\backrefpagesname}{Cited in the page(s):~}
+% Texto padrão antes do número das páginas
+\renewcommand{\backref}{}
+% Define os textos da citação
+\renewcommand*{\backrefalt}[4]{
+  \ifcase #1 %
+  None text citation.%
+  \or
+  Cited on page #2.%
+  \else
+  Cited #1 times on pages #2.%
+  \fi}%
+% ----------------------------------------------------------------------
+% Citações padrão ABNT
+\usepackage[alf, abnt-and-type=&, abnt-etal-list=0]{abntex2cite}
+% ----------------------------------------------------------------------
+% New comand for anexos
+\newcommand{\refanexo}[1]{\hyperref[#1]{Annex~\ref{#1}}}
+% \renewcommand{\cftsectionfont}{\sfseries}
+% \refanexo{anexo_xxx} usar esse comando!
+% ----------------------------------------------------------------------
+% para titulo em destaque sem sequencia de numeração
+\newcommand{\datatitle}[1]{
+  \normalsize \textsc{#1}
+}
+\usepackage{pslatex}
+% \usepackage{mathptmx} fonte - times new roman em tudo
+% ----------------------------------------------------------------------
+% adequando o uppercase titulo dos elementos nas suas respectivas LISTAS
+\renewcommand{\cftfigurename}{FIGURE\enspace}
+\renewcommand{\cfttablename}{TABLE\enspace}
+% ----------------------------------------------------------------------
+% fontes matemáticas
+\usepackage{mathpazo}
+\usepackage{inconsolata}
+\usepackage{verbatim}
+\usepackage{bm}
+% ----------------------------------------------------------------------
+% \usepackage[table, xcdraw]{xcolor} % cédula colorida em tabelas
+% \usepackage{pdflscape} % rotaciona página
+\usepackage{Capa} % capa e folha de rosto com modificações
+\usepackage{float} % melhor posicionamento de figuras
+\usepackage{gensymb} % símbolo º
+\usepackage[justification=justified, singlelinecheck=false]{caption}
+% \usepackage{etoolbox} % configurações adicionais de macros
+\usepackage{xparse}
+\usepackage{algorithm} % pacote usado para gerar pseudocódigo
+% \usepackage{algorithmic} % pacote usado para gerar pseudocódigo
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage[noend]{algpseudocode}
+\makeatletter
+\renewcommand{\ALG@name}{ALGORITHM}
+\makeatother
+% ----------------------------------------------------------------------
+\usepackage{xpatch}
+\makeatletter
+\xpatchcmd{\algorithmic}{\itemsep\z@}{\itemsep=0.5ex plus2pt}{}{}
+\makeatother
+% ----------------------------------------------------------------------
+\usepackage{tikzit}
+\input{thesis.tikzstyles}
+% ----------------------------------------------------------------------
+% pacote para fazer o checkmark
+\usepackage{pifont} % http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+% ----------------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{pdfpages}
+% \usepackage{times}
+% \usepackage{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+% ----------------------------------------------------------------------
+\NewDocumentCommand\cc{+u{\cc}}{\ignorespaces}
+% ----------------------------------------------------------------------
+% controle do espaçamento entre um parágrafo e outro:
+\setlength{\parskip}{0.2cm} % tente também \onelineskip
+% ----------------------------------------------------------------------
+\titulo{MODELING THE CUMULATIVE INCIDENCE FUNCTION OF CLUSTERED
+  COMPETING RISKS DATA VIA A MULTINOMIAL GLMM}
+\autor{HENRIQUE APARECIDO LAUREANO}
+\data{2020}
+\instituicao{FEDERAL UNIVERSITY OF PARANÁ}
+\orientador{Prof. PhD Wagner Hugo Bonat}
+\coorientador{Prof. PhD Paulo Justiniano Ribeiro Jr}
+\tipotrabalho{Dissertação (mestrado)}
+\preambulo{\small{Thesis presented to the Graduate Program of Numerical
+    Methods in Engineering, Concentration Area in Mathematical
+    Programming: Statistical Methods Applied in Engineering, Federal
+    University of Paran\'{a}, as part of the requirements to the
+    obtention of the Master's Degree in Sciences.}}
+% ----------------------------------------------------------------------
+% informações do PDF
+\makeatletter
+\hypersetup{
+  % pagebackref=true,
+  pdftitle={\@title},
+  pdfauthor={\@author},
+  pdfsubject={\imprimirpreambulo},
+  % pdfkeywords = {}{}{}{},
+  colorlinks=true, % false: boxed links; true: colored links
+  linkcolor=blue, % color of internal links
+  citecolor=blue, % color of links to bibliography
+  filecolor=magenta, % color of file links
+  urlcolor=blue,
+  bookmarksdepth=4
+}
+\addto\captionsenglish{
+  % adjusts names from abnTeX2
+  \renewcommand{\folhaderostoname}{Title page}
+  \renewcommand{\epigraphname}{Epigraph}
+  \renewcommand{\dedicatorianame}{Dedication}
+  \renewcommand{\errataname}{Errata sheet}
+  \renewcommand{\agradecimentosname}{Acknowledgements}
+  \renewcommand{\anexoname}{ANNEX}
+  \renewcommand{\anexosname}{Annex}
+  \renewcommand{\apendicename}{APPENDIX}
+  \renewcommand{\apendicesname}{Appendix}
+  \renewcommand{\orientadorname}{Supervisor:}
+  \renewcommand{\coorientadorname}{Co-supervisor:}
+  \renewcommand{\folhadeaprovacaoname}{Approval}
+  \renewcommand{\resumoname}{Abstract}
+  \renewcommand{\listadesiglasname}{List of abbreviations and acronyms}
+  \renewcommand{\listadesimbolosname}{List of symbols}
+  \renewcommand{\fontename}{Source}
+  \renewcommand{\notaname}{Note}
+  % adjusts names used by \autoref
+  \renewcommand{\pageautorefname}{page}
+  \renewcommand{\chapterautorefname}{Chapter}
+  \renewcommand{\sectionautorefname}{Section}
+  \renewcommand{\subsectionautorefname}{subsection}
+  \renewcommand{\subsubsectionautorefname}{subsubsection}
+  \renewcommand{\paragraphautorefname}{subsubsubsection}
+}
+\makeatother
+% ----------------------------------------------------------------------
+\graphicspath{{figures/}}
+% ----------------------------------------------------------------------
+\begin{document}
+\selectlanguage{english}
+% adequando o uppercase titulo dos elementos nas suas respectivas
+% legendas
+\renewcommand{\tablename}{TABLE }
+\renewcommand{\figurename}{FIGURE }
+% ----------------------------------------------------------------------
+\frenchspacing % retira espaço extra obsoleto entre as frases
+% ----------------------------------------------------------------------
+% capa
+\tikz[remember picture,overlay] \node[opacity=1,inner sep=0pt] at
+(current page.center){
+  \includegraphics[width=\paperwidth,
+  height=\paperheight]{Figuras/ufpr_bg}};
+% ----------------------------------------------------------------------
+\imprimircapa
+% ----------------------------------------------------------------------
+% folha de rosto
+\imprimirfolhaderosto
+% ----------------------------------------------------------------------
+% \begin{dedicatoria}
+%   \vspace*{\fill}
+%   ...
+%   \vspace*{\fill}
+% \end{dedicatoria}
+% ----------------------------------------------------------------------
+% ficha catalográfica
+
+% \begin{fichacatalografica}
+%   \includepdf{ficha.pdf}
+% \end{fichacatalografica}
+% ----------------------------------------------------------------------
+% inserir folha de aprovação
+% \begin{folhadeaprovacao}
+%   \includepdf{termo.pdf}
+% \end{folhadeaprovacao}
+\begin{folhadeaprovacao}
+ \begin{center}
+   {\ABNTEXchapterfont\large\imprimirautor}
+
+   \vspace*{\fill}\vspace*{\fill}
+   \begin{center}
+     \ABNTEXchapterfont\bfseries\large\imprimirtitulo
+   \end{center}
+   \vspace*{\fill}
+
+    \hspace{.45\textwidth}
+    \begin{minipage}{.5\textwidth}
+       \imprimirpreambulo
+    \end{minipage}
+   \vspace*{\fill}
+ \end{center}
+
+ Master thesis approved. XXX XX, 2020.
+
+  \assinatura{\textbf{\imprimirorientador}\\ Supervisor}
+  \assinatura{\textbf{Prof. PhD Paulo Justiniano Ribeiro Jr}\\
+    Co-supervisor}
+  \assinatura{\textbf{Prof. PhD \(\dots\)}\\
+    Internal Examinator - PPGMNE}
+  \assinatura{\textbf{Prof. PhD \(\dots\)}\\
+    Internal Examinator - PPGMNE}
+  \assinatura{\textbf{Prof. PhD \(\dots\)}\\External Examiner - }
+
+  \begin{center}
+   \vspace*{0.5cm}
+   {\large CURITIBA}
+   \par
+   {\large\imprimirdata}
+   \vspace*{1cm}
+ \end{center}
+
+\end{folhadeaprovacao}
+% ----------------------------------------------------------------------
+\begin{dedicatoria}
+  \vspace*{22.7cm}
+  \begin{flushright}
+    \begin{minipage}[H]{4.5cm}
+      {To Celita and Olivio}
+    \end{minipage}
+  \end{flushright}
+\end{dedicatoria}
+% ----------------------------------------------------------------------
+\begin{agradecimentos}
+  As Moro said once, I'm thankful for everything and everyone.
+\end{agradecimentos}
+
+\begin{epigrafe}
+  \vspace*{\fill}
+  \begin{flushright}
+    \textit{"It's not supposed to be easy."\\
+             (Gregg Popovich)}
+              % on Sao Antonio Spurs \(\times\) Oklahoma City Thunder,
+              % first game of the 2012 Western Conference Finais
+  \end{flushright}
+\end{epigrafe}
+% ----------------------------------------------------------------------
+\newpage
+\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do
+                             % resumo
+\setlength{\abstitleskip}{1cm} % adiciona mais um cm após o 'titulo' do
+                               % resumo para ficar com 2cm
+\begin{resumo}[]
+  \vspace{-2cm}
+  \begin{center}
+    \bfseries{\large{\textsf{ABSTRACT}}}
+  \end{center}
+  \vspace{0.3cm}
+  Failure time data \(\dots\)\\
+
+  \textbf{Keywords}: Competing risks.
+\end{resumo}
+% ----------------------------------------------------------------------
+\newpage
+\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do
+                             % resumo
+\setlength{\abstitleskip}{1cm} % adiciona mais um cm após o 'titulo' do
+                               % resumo para ficar com 2cm
+\begin{resumo}[]
+  \begin{otherlanguage*}{brazil}
+    \vspace{-2cm}
+    \begin{center}
+      \bfseries{\large{\textsf{RESUMO}}}
+    \end{center}
+    \vspace{0.3cm}
+    Dados de tempos de falha \(\dots\)\\
+
+    \textbf{Palavras-chave}: Riscos competitivos.
+  \end{otherlanguage*}
+\end{resumo}
+% ----------------------------------------------------------------------
+\pdfbookmark[0]{\listfigurename}{lof}
+\listoffigures*
+\cleardoublepage
+% ----------------------------------------------------------------------
+\pdfbookmark[0]{\listtablename}{lot}
+\listoftables*
+\cleardoublepage
+% ----------------------------------------------------------------------
+\makeatletter
+\renewcommand\numberline[1]{
+	\leftskip -0.7em
+	\rightskip 1.6em
+	\parfillskip -\rightskip
+	\parindent 0em
+	\@tempdima 2.0em
+	\vspace{0em}
+  \advance\leftskip \@tempdima \null\nobreak\hskip -\leftskip
+	ALGORITHM \normalfont #1 ~~ }
+\makeatother
+% ----------------------------------------------------------------------
+\pdfbookmark[0]{\listalgorithmname}{loa}
+\listofalgorithms
+\cleardoublepage
+% ----------------------------------------------------------------------
+\makeatletter
+\def\numberline#1{\hb@xt@\@tempdima{#1\hfil}}
+\makeatother
+% ----------------------------------------------------------------------
+% \begin{siglas}
+% \item[Fig.] Area of the $i^{th}$ component
+% \item[456] Isto é um número
+% \item[123] Isto é outro número
+% \item[lauro cesar] este é o meu nome
+% \end{siglas}
+% ----------------------------------------------------------------------
+% \begin{simbolos}
+% \item[\(\mathbb{E}(\cdot)\)] The mathematical expectation of a random
+%   variable \(\cdot\)
+% \end{simbolos}
+% ----------------------------------------------------------------------
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\cleardoublepage
+% ----------------------------------------------------------------------
+\makepagestyle{abntheadings}
+\makeevenhead{abntheadings}{\ABNTEXfontereduzida\thepage}{}{}
+\makeoddhead{abntheadings}{}{}{\ABNTEXfontereduzida\thepage}
+\makeheadrule{abntheadings}{\textwidth}{0in}
+% ----------------------------------------------------------------------
+\textual
+% ----------------------------------------------------------------------
+\chapter{Introduction}
+\label{cap:intro}
+\input{./modules/intro}
+% ----------------------------------------------------------------------
+\chapter{Methods}
+\label{cap:methods}
+\input{./modules/methods}
+% ----------------------------------------------------------------------
+\chapter{multiGLMM: a multinomial generalized linead
+  mixed model}
+\label{cap:model}
+\input{./modules/model}
+% ----------------------------------------------------------------------
+\chapter{datasets}
+\label{cap:datasets}
+\input{./modules/datasets}
+% ----------------------------------------------------------------------
+\chapter{Results}
+\label{cap:results}
+\input{./modules/results}
+% ----------------------------------------------------------------------
+\chapter{Final considerations}
+\label{cap:finalc}
+\input{./modules/finalc}
+% ----------------------------------------------------------------------
+\setlength{\afterchapskip}{\baselineskip}
+% ----------------------------------------------------------------------
+\bibliography{references}
+% ----------------------------------------------------------------------
+\postextual
+% ----------------------------------------------------------------------
+\begin{apendicesenv}
+\partapendices
+\addcontentsline{toc}{chapter}{\hspace{2.105cm}APPENDIX}
+\renewcommand{\ABNTEXchapterfontsize}{\ABNTEXsectionfont}
+
+\chapter{GRADIENTS AND HESSIAN MATRIX OF THE MULTINOMIAL
+  GENERALIZED LINEAR MIXED MODEL (GLMM) WITH A LINK
+  FUNCTION BASED ON THE CUMULATIVE INCIDENCE FUNCTION
+  (CIF)}
+\label{cap:appendixA}
+
+\begin{align*}
+ \bm{l}^{'} (u_{kj})
+ &= y_{kij} \frac{1 + \sum_{m \neq k}^{K-1}
+                      \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+                 }{1 + \sum_{n = 1}^{K-1}
+                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}\\
+ &- \left( \sum_{m \neq k}^{K-1} y_{mij} \right)
+    \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+         }{1 + \sum_{n = 1}^{K-1}
+           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}\\
+ &- y_{Kij} \frac{1}{1 + \sum_{n = 1}^{K-1}
+                         \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                    } \Bigg(\\
+ &
+ \frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+       \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+            - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+           ]
+       \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+       \left(1 + \sum_{m \neq k}^{K-1}
+                 \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+       \right)}{
+ 1 + \sum_{n = 1}^{K-1}
+     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+     (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{n}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])}\\
+ &-
+ \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+       \sum_{m \neq k}^{K-1}
+       w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+       \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+            - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
+           ]
+       \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+ 1 + \sum_{n = 1}^{K-1}
+     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+     (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{n}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])} \Bigg)\\
+ &- e_{k}^{\top} \bm{Qr},\\
+ %% --------------------------------------------------------------------
+ \bm{l}^{'} (\eta_{kj}) &=
+ y_{kij} (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+          - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})\\
+ &- y_{Kij}
+    \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+               }{1 + \sum_{n = 1}^{K-1}
+                     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+     - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+         - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+        ]}{
+    1 - \sum_{n = 1}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+             }{1 + \sum_{n = 1}^{K-1}
+                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+              }
+        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}
+             ]}\\
+ &- e_{k}^{\top} \bm{Qr}.
+\end{align*}
+and the hessian,
+\begin{align*}
+ \bm{l}^{''} (u_{kj}) &= -
+ \frac{\left( \sum_{k = 1}^{K-1} y_{kij} \right)
+       \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+       \left( 1 + \sum_{m \neq k}^{K-1}
+                  \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+       \right)}{\left( 1 + \sum_{n = 1}^{K-1}
+                           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                         \right)^{2}}\\
+ &+ \frac{y_{Kij}
+          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \sum_{m \neq k}^{K-1}
+          w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                 \right)
+               - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
+              ] \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+    \left(1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \right) \left( 1 + \sum_{n = 1}^{K-1}
+                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                  (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+                       \phi[w_{n}
+                        \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                     \right)
+                        - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+           \right)}\\
+ &- \frac{y_{Kij}
+          w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                 \right)
+               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+              ] \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \left( 1 + \sum_{m \neq k}^{K-1}
+                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+         \right)}{
+    \left(1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+   \right) \left( 1 + \sum_{n = 1}^{K-1}
+                      \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                 (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+                      \phi[w_{n}
+                       \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                    \right)
+                       - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+          \right)}\\
+ &- \frac{y_{Kij}}{
+    \left( 1 + \sum_{n = 1}^{K-1}
+               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}} \Bigg(\\
+ & \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+         \sum_{m \neq k}^{K-1}
+         w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+         \phi[w_{m}\text{arctanh}
+                   \left(\frac{t-\delta/2}{\delta/2}\right)
+              - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
+             ]
+         \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+   \left( 1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+               \phi[w_{n}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+   \right)^{2}}\\
+ &- \frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{k}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+              ]
+          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \left( 1 + \sum_{m \neq k}^{K-1}
+                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+          \right)}{
+    \left( 1 + \sum_{n = 1}^{K-1}
+               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+           (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+                \phi[w_{n}
+                \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+                     - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+    \right)^{2}} \Bigg)\\
+ &\times \Bigg(
+ \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+ \Big( 1 + \sum_{n = 1}^{K-1}
+           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+       (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+            \phi[w_{n}
+                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+                 - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+ \Big)\\
+ &+ \Big( 1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \Big) \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+    (1 - w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{k}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]) \Bigg)\\
+ &- e_{k}^{\top} \bm{Q},
+\end{align*}
+\begin{align*}
+ \bm{l}^{''} (\eta_{kj}) &= - y_{kij}\\
+ &- y_{Kij}
+    \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+               }{1 + \sum_{n = 1}^{K-1}
+                     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+          w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{k}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+              ] \left( \left(
+          w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+          - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+                       \right)^{2} - 1 \right)}{
+    1 - \sum_{n = 1}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+             }{1 + \sum_{n = 1}^{K-1}
+                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+              }
+        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}
+            ]}\\
+ &- y_{Kij}
+    \frac{\left( \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+                      }{1 + \sum_{n = 1}^{K-1}
+                            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
+                                 \}}
+                 w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+                 (w_{k}
+                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+                 - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+                 \phi[w_{k}
+                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+                 - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+                     ]
+          \right)^{2}}{
+    \left( 1 - \sum_{n = 1}^{K-1}
+               \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                    }{1 + \sum_{n = 1}^{K-1}
+                          \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                     }
+               w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+               \phi[w_{n}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}
+                   ]
+    \right)^{2}}\\
+ &- e_{k}^{\top} \bm{Q},\\
+\end{align*}
+\begin{align*}
+ \bm{l}^{''}(u_{kj} u_{mj}) &=
+ \left( \sum_{k = 1}^{K-1} y_{kij} \right)
+ \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+       \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+ \left( 1 + \sum_{n = 1}^{K-1}
+            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+ \right)^{2}}\\
+ &+ \frac{y_{Kij}
+          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                 \right)
+               - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
+              ] \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+    \left(1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \right) \left( 1 + \sum_{n = 1}^{K-1}
+                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                  (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+                       \phi[w_{n}
+                        \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                     \right)
+                        - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+           \right)}\\
+ &- \frac{y_{Kij}
+          w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                 \right)
+               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+              ] \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+                \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+    \left(1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+   \right) \left( 1 + \sum_{n = 1}^{K-1}
+                      \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                 (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+                      \phi[w_{n}
+                       \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
+                                    \right)
+                       - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+          \right)}\\
+ &- \frac{y_{Kij}}{
+    \left( 1 + \sum_{n = 1}^{K-1}
+               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}} \Bigg(\\
+ & \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+         \sum_{m \neq k}^{K-1}
+         w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+         \phi[w_{m}\text{arctanh}
+                   \left(\frac{t-\delta/2}{\delta/2}\right)
+              - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
+             ]
+         \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+   \left( 1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+               \phi[w_{n}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+   \right)^{2}}\\
+ &- \frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+          \phi[w_{k}
+               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+              ]
+          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \left( 1 + \sum_{m \neq k}^{K-1}
+                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+          \right)}{
+    \left( 1 + \sum_{n = 1}^{K-1}
+               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+           (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+                \phi[w_{n}
+                \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+                     - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+    \right)^{2}} \Bigg)\\
+ &\times \Bigg(
+ \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+ \Big( 1 + \sum_{n = 1}^{K-1}
+           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+       (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+            \phi[w_{n}
+                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+                 - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
+ \Big)\\
+ &+ \Big( 1 + \sum_{n = 1}^{K-1}
+              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \Big) \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+    (1 - w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{m}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]) \Bigg)\\
+ &- e_{k}^{\top} \bm{Q},\\
+\end{align*}
+\begin{align*}
+ \bm{l}^{''}(\eta_{kj} \eta_{mj}) &= -
+ y_{Kij}
+ \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+            }{1 + \sum_{n = 1}^{K-1}
+                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+       w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+      (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+       \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+            - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+           ]}{
+ \left( 1 - \sum_{n = 1}^{K-1}
+            \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+                 }{1 + \sum_{n = 1}^{K-1}
+                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+            w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+            \phi[w_{n}
+            \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+            - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]
+ \right)^{2}}\\
+ &\times \frac{\exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+              }{1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+         w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+        (w_{m} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+         - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj})\\
+ &\times \phi[w_{m}
+              \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+              - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
+             ]\\
+ &- e_{k}^{\top} \bm{Q},
+\end{align*}
+\begin{align*}
+ \bm{l}^{''}(\eta_{kj} u_{kj}) &=
+ y_{Kij}
+ \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
+             1 + \sum_{n = 1}^{K-1}
+                 \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+  w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+ (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+ \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
+ \left( 1 - \sum_{n = 1}^{K-1}
+            \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
+                  1 + \sum_{n = 1}^{K-1}
+                      \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+            w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\\
+ &\times
+ \Bigg( \sum_{n \neq k}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+              \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
+        \left( 1 + \sum_{n = 1}^{K-1}
+                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+        \right)^{2}}
+        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\\
+  &- \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \left(
+          \left(1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \right)}{\left(1 + \sum_{n = 1}^{K-1}
+                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
+                                 \}
+                   \right)^{2}}\\
+  &\times
+  w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+  \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\Bigg)\\
+ &- y_{Kij} \frac{
+    \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \left(
+          \left(1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+          \right)}{\left(1 + \sum_{n = 1}^{K-1}
+                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
+                                 \}
+                   \right)^{2}}}{
+    1 - \sum_{n = 1}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
+              1 + \sum_{n = 1}^{K-1}
+                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+              w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+         - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\\
+ &\times
+ w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+  (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+   - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+  \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\\
+ &- e_{k}^{\top} \bm{Q},
+\end{align*}
+\begin{align*}
+ \bm{l}^{''}(\eta_{kj} u_{mj}) &=
+ y_{Kij}
+ \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+             \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+       \left( 1 + \sum_{n = 1}^{K-1}
+                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+       \right)^{2}}
+ w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+(w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+ \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
+ 1 - \sum_{n = 1}^{K-1}
+     \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
+           1 + \sum_{n = 1}^{K-1}
+               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+           w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+      \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+           - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\\
+ &+
+ y_{Kij}
+ \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
+       1 + \sum_{n = 1}^{K-1}
+           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+ w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+(w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+ \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
+ \left(1 - \sum_{n = 1}^{K-1}
+           \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
+       1 + \sum_{n = 1}^{K-1}
+           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+ w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+ \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+      - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\\
+ &\times
+ \Bigg( \sum_{n \neq m}^{K-1}
+        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+              \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+        \left( 1 + \sum_{n = 1}^{K-1}
+                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+        \right)^{2}}
+        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+        \phi[w_{n}
+             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\\
+  &- \frac{\exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+          \left(
+          \left(1 + \sum_{n = 1}^{K-1}
+                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+          \right) - \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+          \right)}{\left(1 + \sum_{n = 1}^{K-1}
+                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
+                                 \}
+                   \right)^{2}}\\
+  &\times
+  w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+  \phi[w_{m} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+       - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]\Bigg)\\
+ &- e_{k}^{\top} \bm{Q}.
+\end{align*}
+
+\end{apendicesenv}
+% ----------------------------------------------------------------------
+% \begin{anexosenv}
+% \partanexos
+% \addcontentsline{toc}{chapter}{\hspace{2.105cm}ANNEX}
+% \renewcommand{\ABNTEXchapterfontsize}{\ABNTEXsectionfont}
+% \end{anexosenv}
+%-----------------------------------------------------------------------
+\phantompart
+\printindex
+%-----------------------------------------------------------------------
+\end{document}
+% END ==================================================================

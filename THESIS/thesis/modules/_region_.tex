@@ -1,0 +1,77 @@
+\message{ !name(datasets.tex)}
+\message{ !name(datasets.tex) !offset(-2) }
+This chapter describes how to simulate from our proposed multiGLMM and,
+a real-based dataset used as an application example. The simulation
+procedure is not straightforward, since we need to simulate the failure
+and censoring times, controlling for a pre-specified censorship level.
+The application example is a simulated dataset based on the Nordic
+Cancer Union (NCU) twins data.
+
+\section{SIMULATING FROM THE MULTIGLMM}
+\label{cap:simu}
+
+Being able to simulate some data from a model is a key task, fundamental
+to assess the finite-sample properties and the estimation procedure of a
+given statistical model.
+
+Simulate from our multiGLMM, as specified in \autoref{eq:model}, is
+basically a three-step procedure. In the first step, we have to simulate
+the failures and censorship probabilities. The second step consists in
+simulate the outputs based on the probabilities, i.e. the subject fails
+or censors. The final step is the failure/censorship time simulation.
+
+\begin{algorithm}
+\caption{Put your caption here}
+\begin{algorithmic}[1]
+
+\Procedure{Roy}{$a,b$}       \Comment{This is a test}
+    \State System Initialization
+    \State Read the value
+    \If{$condition = True$}
+        \State Do this
+        \If{$Condition \geq 1$}
+        \State Do that
+        \ElsIf{$Condition \neq 5$}
+        \State Do another
+        \State Do that as well
+        \Else
+        \State Do otherwise
+        \EndIf
+    \EndIf
+
+    \While{$something \not= 0$}  \Comment{put some comments here}
+        \State $var1 \leftarrow var2$  \Comment{another comment}
+        \State $var3 \leftarrow var4$
+    \EndWhile  \label{roy's loop}
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
+
+\section{REAL-BASED DATASET}
+\label{cap:data}
+
+% \begin{table}[H]
+%   \centering
+%   \setlength{\abovecaptionskip}{.0001pt}
+%   \caption{ANÁLISE DESCRITIVA PARA O IQA POR TRIMESTRE E LOCAL}
+%   \label{tab:descIQA}
+%   \begin{tabular}{cccc}
+%     \hline
+%     \multirow{2}{*}{Trimestre} & \multicolumn{3}{c}{Local} \\
+%     \cline{2-4}  & Montante & Reservatório & Jusante \\
+%     \cline{2-4} 1   & $0,75\pm 0,11$   &  $0,80\pm 0,10$  &  $0,78\pm 0,10$  \\
+%     2  &  $0,79\pm 0,10$  &  $0,83\pm 0,06$   &  $0,83\pm 0,07$     \\
+%     3   &  $0,81\pm 0,07$   & $0,85\pm 0,05$   &  $0,83\pm 0,06$    \\
+%     4   & $0,76\pm 0,10$    &  $0,81\pm 0,08$    &  $0,79\pm 0,09$    \\
+%     \hline
+%   \end{tabular}
+%   \begin{footnotesize}
+%     \vspace{0.05cm}
+%     FONTE: O autor~(2018). \hspace{6.2cm}
+%     \vspace{-0.15cm}
+%   \end{footnotesize}
+% \end{table}
+
+% END ==================================================================
+\message{ !name(datasets.tex) !offset(-77) }

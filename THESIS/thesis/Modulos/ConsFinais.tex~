@@ -1,0 +1,50 @@
+
+
+O principal objetivo desta dissertação é propor um modelo de regressão para análise de variáveis respostas limitadas multivariada. O modelo é baseado apenas em suposições de momentos e a estimação dos parâmetros é feita usando uma abordagem que combina as funções de estimação quase-score e Pearson para estimação dos parâmetros de regressão e dispersão, respectivamente. Uma das vantagens desta especificação é a simplicidade e rapidez do algoritmo. Ele é
+computacionalmente mais rápido do que o método de máxima verossimilhança, podendo ser resumido em um simples algoritmo do tipo Newton-score \cite{Bonat:2016}. Outra vantagem, é a propriedade de insensitividade, que também contribui para a simplificação do algoritmo de estimação.
+
+O modelo foi motivado por um conjunto de dados com cinco variáveis respostas. O objetivo da análise dos dados foi investigar a relação do percentual de gordura corporal com as covariáveis presentes no estudo. Os resultados mostraram que o modelo de regressão quase-beta multivariado apresentou um melhor
+desempenho na análise dos dados, quando comparado às análises feitas separadamente para cada variável resposta (modelo univariado). Essa comparação foi feita pelo valor maximizado do logaritmo da função de pseudo verossimilhança (\texttt{plogLik}), bem como pelos pseudo critérios de informação de \textit{Akaike} (\texttt{pAIC}) e Bayesiano (\texttt{pBIC}). Além disso, com o modelo multivariado foi possível estimar a matriz de correlação entre as respostas,
+dada a presença das covariáveis no modelo. De certa forma, tal abordagem trouxe mais informação na análise dos dados, indicando vantagens em usar o modelo proposto.
+
+
+%Na sequência, analisou-se os dois conjuntos de dados que foram apresentados no Capítulo 2. O conjunto de dados sobre o percentual de gordura corporal possui cinco variáveis respostas. Pelos métodos estatísticos convencionais, fica difícil a análise de dados com essas características, sobretudo, porque são dados multivariados limitados no intervalo unitário. O principal objetivo dessa análise foi relacionar os percentuais de gordura corporal (braços, pernas, tronco, andróide e ginecóide) com a idade, sexo, nível de atividade física (IPAQ) e IMC de indivíduos avaliados no HC-UFPR. Os resultados mostraram que o modelo de regressão quase-beta multivariado apresentou um melhor desempenho na análise dos dados, quando comparado às análises feitas separadamente para cada variável resposta (modelo univariado). Essa comparação foi feita pelo valor maximizado do logaritmo da função de pseudo verossimilhança (\texttt{plogLik}), bem como pelos pseudo critérios de informação de \textit{Akaike} (\texttt{pAIC}) e Bayesiano (\texttt{pBIC}). Além disso, com o modelo multivariado foi possível estimar a matriz de correlação entre as respostas, dada a presença das covariáveis no modelo. De certa forma, tal abordagem trouxe mais informação e precisão na análise dos dados, indicando vantagens em usar este modelo. Quanto ao diagnóstico do modelo, basta plotar um gráfico com os resíduos de Pearson versus os valores preditos pelo modelo. Isso traz vantagens nessa etapa da análise. Primeiro, os usuários não precisam estar familiarizados com diversos tipos de resíduos para fazer o diagnóstico do modelo. Segundo, esse tipo de abordagem é simples de se fazer. Finalmente, tal abordagem é possível devido a especificação do modelo, que é baseada em suposições de segundo momentos.
+
+
+\section{Continuidade e cronograma}
+
+
+Na versão final deste trabalho, pretende-se apresentar dois estudos de simulação. O primeiro será delineado com objetivo de avaliar o comportamento do algoritmo NORTA na simulação de variáveis aleatórias beta correlacionadas. Nesse caso, o principal interesse consiste em identificar os valores mínimos e máximos que a matriz de correlação entre duas variáveis aleatórias beta pode assumir em função das suas médias marginais e valores dos parâmetros de dispersão. 
+
+Em geral, a construção e simulação de distribuições beta multivariadas é difícil devido ao fato que o suporte das distribuições marginais é o intervalo unitário. Tal restrição impõe um relacionamento entre a média e a variância da distribuição que por sua vez induz restrições não triviais nos possíveis valores das correlações entre os componentes do vetor aleatório. Além disso, tais restrições dependem da média e da variância da distribuição marginal especificada. Entender tais restrições é fundamental para avaliar o comportamento e aplicabilidade do algoritmo de simulação. 
+
+Na sequência, será delineado um segundo estudo de simulação com o objetivo de avaliar o comportamento dos estimadores propostos para o modelo de regressão quase-beta multivariado sob diferentes cenários. Para esse caso serão criados 35 cenários de simulação considerando-se duas variáveis aleatórias beta correlacionadas. Os cenários serão construídos combinando-se cinco valores do parâmetro de dispersão com sete valores do coeficiente de correlação assumidos entre duas variáveis aleatórias beta. 
+
+Finalmente, pretende-se aplicar o modelo proposto em mais um conjunto de dados, referente ao índice de qualidade da água (IQA) em reservatórios operados pela COPEL no estado do Paraná. Assim, a~\autoref{tab:cronos} sumariza a continuidade da pesquisa e apresenta o cronograma deste trabalho.
+
+
+
+\begin{table}[H]
+\centering
+\setlength{\arrayrulewidth}{2\arrayrulewidth}
+\renewcommand{\arraystretch}{1.3}
+\caption{Cronograma das atividades propostas.}
+\label{tab:cronos}
+\begin{small}
+\begin{tabular}{lccccc}
+\hline
+ \hspace{.5cm}ATIVIDADES &  03/2018   &  05/2018   &   08/2018   &   10/2018   &   12/2018 \ \\
+\hline
+Qualificação & \xmark & & &  &   \\
+Disciplina optativa & \xmark & \xmark & & & \\
+Estudos de simulação & \xmark & \xmark & & & \\
+Análise do conjunto de dados IQA &  \xmark  & \xmark &  & &  \\
+Documentação &  \xmark & \xmark & \xmark  &  & \\
+Correções e ajustes & \xmark & \xmark & \xmark & \xmark  & \\
+Apresentação no SEPEP &  & &  & \xmark &   \\
+Defesa &  & &  &   & \xmark \\
+Artigos &  & & \xmark  & \xmark  & \xmark \\
+\hline
+\end{tabular}
+\end{small}
+\end{table}

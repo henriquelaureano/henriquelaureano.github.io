@@ -1,0 +1,29 @@
+(TeX-add-style-hook
+ "references"
+ (lambda ()
+   (LaTeX-add-bibitems
+    "kalb&prentice"
+    "frailty78"
+    "frailty79"
+    "SCHEIKE"
+    "andersen12"
+    "GLM72"
+    "GLM89"
+    "TMB"
+    "MCMC"
+    "Diaconis"
+    "EM77"
+    "molenberghs&verbeke"
+    "LA4H"
+    "tierney"
+    "corestats"
+    "patrao"
+    "nocedal&wright"
+    "PORTreport"
+    "PORTpaper"
+    "R18"
+    "peyre"
+    "ADMB"
+    "eigen"))
+ :bibtex)
+
