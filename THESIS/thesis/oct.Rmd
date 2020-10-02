@@ -18,6 +18,7 @@ datasimu <- function(J, delta = 85, beta, gamma, w, S, cp = 0.5)
 {
     out <- data.frame("i" = rep(seq(2), times = J),
                       "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
                       "y1" = NA, "y2" = NA, "y3" = NA, "t" = NA)
     K <- 3
     ladim <- 2 * (K - 1) ## latent effects dimension
@@ -32,16 +33,16 @@ datasimu <- function(J, delta = 85, beta, gamma, w, S, cp = 0.5)
     risk1 <- exp(beta[1] + B[ , 1])
     risk2 <- exp(beta[2] + B[ , 2])
     level <- 1 + risk1 + risk2
-    p1 <- risk1/level *
+    out$p1 <- risk1/level *
         w[1] * delta/(2 * t1 * (delta - t1)) *
         dnorm(w[1] * atanh(2 * t1/delta - 1) - gamma[1] - B[ , 3])
-    p2 <- risk2/level *
+    out$p2 <- risk2/level *
         w[2] * delta/(2 * t2 * (delta - t2)) *
         dnorm(w[2] * atanh(2 * t2/delta - 1) - gamma[2] - B[ , 4])
-    p3 <- 1 - p1 - p2
+    out$p3 <- with(out, 1 - p1 - p2)
     ## 3rd step: compute the outputs based on the probs ----------------
     out[ , c("y1", "y2", "y3")] <-
-        rmultinomial(2 * J, 1, prob = cbind(p1, p2, p3))
+        rmultinomial(2 * J, 1, prob = with(out, cbind(p1, p2, p3)))
     ## 4th step: controlling for censorship ----------------------------
     ## (and someway overwriting all the rest)
     cens <- rbinom(n = 2 * J, size = 1, prob = cp)
@@ -64,38 +65,32 @@ df <- datasimu(J = 500,
                             0.5, 0.4, 1.0, 0.4,
                             0.4, 0.3, 0.4, 1.0), 4, 4))
 ## ---------------------------------------------------------------------
-dfwide <- mets::fast.reshape(df, id = df$j, varying = "t")
-dflong <- dfwide %>%
+dfk <- df %>%
     pivot_longer(cols = y1:y3,
                  names_to = "kclass", values_to = "kvalue") %>%
-    filter(kvalue == 1)
-dflong2 <- dflong %>% pivot_longer(cols = t1:t2,
-                                   names_to = "ti", values_to = "t")
+    filter(kvalue == 1) %>% mutate(id = seq(nrow(df)))
 ```
 
-```{r datasimu, fig.height=12, fig.width=8.5}
-p1 <- ggplot(dflong, aes(x = j, y = t2)) +
-    facet_wrap(. ~ kclass,
-               labeller = label_bquote("Competing cause" : .(kclass))) +
-    geom_segment(aes(x = j, xend = j, y = t1, yend = t2)) +
-    labs(x = "Cluster/Twins", y = "Time (years)") +
+```{r datasimu, fig.height=10}
+p1 <- ggplot(dfk, aes(x = id, y = t)) +
+    facet_wrap(. ~ kclass) +
+    geom_segment(aes(x = id, xend = id, y = 0, yend = t)) +
+    labs(x = "Individuals", y = "Time (years)") +
     coord_flip() +
     theme(strip.background = element_rect(colour = "black",
                                           fill = "white"),
           strip.text.x = element_text(size = 12),
           axis.text.x = element_text(size = 11),
-          axis.text.y = element_text(size = 0),
           axis.title.x = element_text(
               size = 12,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
           axis.title.y = element_text(
               size = 12,
-              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
-
-p2 <- ggplot(dflong2, aes(x = kclass, y = t)) +
+              margin = unit(c(t = 0, r = -6, b = 0, l = 0), "mm"))) +
+    scale_x_continuous(breaks = NULL)
+p2 <- ggplot(dfk, aes(x = kclass, y = t)) +
     geom_boxplot() +
-    facet_wrap(. ~ kclass, scales = "free", ncol = 1,
-               labeller = label_bquote("Competing cause" : .(kclass))) +
+    facet_wrap(. ~ kclass, scales = "free", ncol = 1) +
     labs(x = NULL, y = "Time (years)") +
     theme(strip.background = element_rect(colour = "black",
                                           fill = "white"),
@@ -105,8 +100,36 @@ p2 <- ggplot(dflong2, aes(x = kclass, y = t)) +
           axis.title.y = element_text(
               size = 12,
               margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
-
-p1 + p2 + plot_layout(widths = c(3, 1))
+dfkplong <- dfk %>% pivot_longer(cols = p1:p3,
+                                 names_to = "pk", values_to = "p")
+p3 <- ggplot(dfkplong, aes(p, p)) +
+    geom_hex(bins = 15, color = "black") +
+    scale_fill_distiller(palette = "Greys") +
+    facet_wrap(. ~ pk, scales = "free") +
+    labs(x = NULL, y = NULL, fill = "Frequency") +
+    theme(strip.background = element_rect(colour = "black",
+                                          fill = "white"),
+          legend.position = "top",
+          strip.text.x = element_text(size = 12),
+          axis.text.x = element_text(size = 11),
+          axis.text.y = element_text(size = 11),
+          axis.title.x = element_text(
+              size = 12,
+              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
+          axis.title.y = element_text(
+              size = 12,
+              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
+layout <- "
+AAAB
+AAAB
+AAAB
+AAAD
+CCCC
+"
+p1 + p2 + p3 +
+    grid::textGrob(paste("Level of censorship:",
+                         prop.table(table(dfk$kclass))[[3]])) +
+    plot_layout(design = layout)
 ```
 
 ```{r datasimucif, fig.height=4}
@@ -158,7 +181,7 @@ dcif <- function() {
     return(out)
 }
 dfdcif <- dcif()
-g1 <- ggplot(dfcif, aes(t, value, group = cif)) +
+p1 <- ggplot(dfcif, aes(t, value, group = cif)) +
     geom_line(aes(linetype = cif)) +
     labs(x = "Time", y = NULL) +
     scale_linetype_discrete(labels = c("CIF 1", "CIF 2")) +
@@ -170,7 +193,7 @@ g1 <- ggplot(dfcif, aes(t, value, group = cif)) +
           axis.title.x = element_text(
               size = 11,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")))
-g2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
+p2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
     geom_line(aes(linetype = dcif)) +
     labs(x = "Time", y = NULL) +
     scale_linetype_discrete(labels = c("dCIF 1", "dCIF 2")) +
@@ -182,5 +205,5 @@ g2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
           axis.title.x = element_text(
               size = 11,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")))
-g2 + g1
+p2 + p1
 ```
