@@ -1,47 +1,60 @@
-Consider a cluster of random variables representing the time until some
-event occurs. The random variables that compose that cluster are assumed
-to be correlated, i.e. for some biological or environmental reason it is
-not adequate to assume independence between them, the random variables.
-Also, we may be interested in the occurrence of not only one specific
-event, having in practice a competition of events to see which one
-happens first, if it happens. Such events may also be of low probability
-but with severe consequences. That is the moment when the correlation
-ingredient makes its difference since the occurrence of an event in a
-subject should affect the probability of the same happening in the
-others.
+Consider a cluster of random variables representing the time until the
+occurrence of some event. The random variables that compose that cluster
+are assumed to be correlated, i.e. for some biological or environmental
+reason it is not adequate to assume independence between them. Also, we
+may be interested in the occurrence of not only one specific event,
+having in practice a competition of events to see which one happens
+first, if it happens. Such events may also be of low probability but
+with severe consequences, that is the moment when the correlation
+ingredient makes its difference: the occurrence of an event in a subject
+should affect the probability of the same happening in the others.
 
-A realistic and practical context that fits perfectly with the
-theoretical framework described above is the study of disease incidence
-in family members, where each member is indexed by a random variable and
-each cluster consists of a family. The inspiration to the study of these
-types of problems came from the work developed in \citeonline{SCHEIKE},
-where they studied breast cancer incidence in mothers and daughters.
-Based on that, the aim of this thesis is to propose a simpler framework
-to make inference on the gender-specific cancer incidence in twins. The
-twins' case is just one more in the range of possible applications to
-our model, but given its vast intrinsic particularities, becomes the
-focus application. Until now we only contextualized the problem and the
-focus, we still need to introduce the methodology. To this, some
-definitions and theoretical contexts are welcome.
+A realistic context that fits perfectly with the framework described
+above is the study of disease incidence in family members, where each
+member is indexed by a random variable and each cluster consists of a
+family. The inspiration to the study of these kinds of problems came
+from the work developed in \citeonline{SCHEIKE}, where they studied
+breast cancer incidence in mothers and daughters. Based on that, the aim
+of this thesis is to propose a simpler framework to make inference on
+the gender-specific cancer incidence in twins. The twins' case is just
+one more in the range of possible applications to our model, but given
+its intrinsic particularities, becomes the focus application. Until now
+we just contextualized, we still need to introduce the methodology. To
+this, some definitions and theoretical contexts are welcome.
 
 When the object under study is random variables representing the time
 until some event occurs, we're in the field of \textit{failure time
   data}~\cite{kalb&prentice}. The occurrence of an event is generally
 called as a \textit{failure}, and major areas of application are
 biomedical studies and industrial life testing. In this thesis, we
-maintain our focus on the former. In industrial life testing
-applications, is performed what is called a \textit{reliability
-  analysis}; in biomedical studies, is performed what is called
-\textit{survival analysis}. Generally, the term survival analysis is
-applied when we're interested in the occurrence of only one event, a
-\textit{failure time process}. When we're interested in the occurrence
-of more than one event, like now, we enter in the yard of
-\textit{competing risks} and \textit{multistate} models. A visual aid is
-presented on \autoref{fig:intro1} and a comprehensive reference
+maintain our focus on the former.
+
+As is common in science, same methodologies can receive different names
+in different areas. In industrial life testing applications is performed
+what is called a \textit{reliability analysis}; in biomedical studies is
+performed what is called \textit{survival analysis}. Generally, the term
+survival analysis is applied when we're interested in the occurrence of
+only one event, a \textit{failure time process}. When we're interested
+in the occurrence of more than one event, like now, we enter in the yard
+of \textit{competing risks} and \textit{multistate} models. A visual aid
+is presented on \autoref{fig:intro1} and a comprehensive reference
 is~\citeonline{kalb&prentice}.
 
+Failure time and competing risk processes may be seen as particular
+cases of a multistate model. Besides the number of events (states) of
+interest, the main difference between a multistate model and its
+particular cases is that only in the multistate scenario we may have
+transient states, using a \textit{stochastic process} language. In the
+particular cases, all the states besides the initial state 0, are
+absorbents - once you reached it you don't leave. The simplest
+multistate model that exemplify this behavior is the so-called
+illness-death model, \autoref{fig:intro1}~C), i.e. a patient enters the
+study (state 0) and it can get sick (state 1) or die (state 2); if sick
+it can recover (returns to state 0) or die. We will work only with
+competing risk processes. For each individual, we have the time (age)
+until the occurrence, or not, of cancer.
+
 \begin{figure}[H]
-  % \vspace{0.35cm}
   \setlength{\abovecaptionskip}{.0001pt}
   \caption{BEHAVIOR ILLUSTRATIONS OF MULTISTATE MODELS FOR A) FAILURE
     TIME PROCESS; B) COMPETING RISKS; AND C) ILNESS-DEATH MODEL, THE
@@ -55,34 +68,21 @@ is~\citeonline{kalb&prentice}.
   \label{fig:intro1}
 \end{figure}
 
-Failure time and competing risk processes may be seen as particular
-cases of a multistate model. Besides the number of events (states) of
-interest, a big difference between a multistate model and its particular
-cases is that only in the multistate scenario we may have transient
-states, using a \textit{stochastic process} language. In the particular
-cases, all the states, besides the initial state 0, are absorbents -
-once you reached it you don't leave. The simplest multistate model that
-exemplify this behavior is the so-called illness-death model,
-\autoref{fig:intro1}~C). A patient enters the study (state 0) and it can
-get sick (state 1) or die (state 2); if sick it can recover (returns to
-state 0) or die. In this thesis, we'll work only with competing risk
-processes. For each individual, we have the time, age, until the
-occurrence (or not) of cancer.
-
-When for some know or unknown reason we're able to see the occurrence of
-the event, we have what is called \textit{censorship}. Still in the
-illness-death model: during the period of follow up the patient may not
-get sick or die, staying at state 0, this is called a
+When for some know or unknown reason we are not able to see the
+occurrence of an event, we have what is called \textit{censorship}.
+Still in the illness-death model: during the period of follow up the
+patient may not get sick or die, staying at state 0, this is called a
 \textit{right-censorship}; The same for state 1. If a patient is in
 state 1 at the end of the study, we're \textit{censored} to see him
 reaching the state 2 or returning to state 0. This is the inherent idea
-to censorship and must be present in the modeling framework.
+to censorship and must be present in the modeling framework, in this
+manner, arriving in the so-called \textit{survival models}.
 
-In a survival model what we model is the survival experience. Usually,
-there are covariates (explanatory/independent variables) upon which
-failure time may depend. The model is defined by the \textit{hazard}
-(failure rate), \(\lambda(\cdot)\), at time \(t\) for an individual with
-covariate vector \(\mathbf{X}_{i}\) and can be written as
+A survival model deals with survival experience. Usually, there are
+covariates (explanatory/independent variables) upon which failure time
+may depend. The model is defined by the \textit{hazard} (failure rate),
+\(\lambda(\cdot)\), at time \(t\) for an individual with covariate
+vector \(\mathbf{X}_{i}\) and can be written as
 \begin{equation}
   \lambda(t~;~\mathbf{X}_{i}) =
   \lambda_{0}(t) \times c(\mathbf{X}_{i} \bm{\beta}),
