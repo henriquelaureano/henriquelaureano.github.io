@@ -78,126 +78,128 @@ reaching the state 2 or returning to state 0. This is the inherent idea
 to censorship and must be present in the modeling framework, in this
 manner, arriving in the so-called \textit{survival models}.
 
-A survival model deals with survival experience. Usually, there are
-covariates (explanatory/independent variables) upon which failure time
-may depend. The model is defined by the \textit{hazard} (failure rate),
-\(\lambda(\cdot)\), at time \(t\) for an individual with covariate
-vector \(\mathbf{X}_{i}\) and can be written as
+A survival model deals with survival experience. Usually, survival
+experience is modeled in the \textit{hazard} (failure rate) scale and
+for an individual \(i\) can be written as
 \begin{equation}
-  \lambda(t~;~\mathbf{X}_{i}) =
-  \lambda_{0}(t) \times c(\mathbf{X}_{i} \bm{\beta}),
+  \lambda(t \mid \mathbf{x}_{i}) =
+  \lambda_{0}(t) \times c(\bm{x}_{i} \bm{\beta})
+  \quad \text{at time } t,
   \label{eq:intro1}
 \end{equation}
-where \(\bm{\beta}^{\top} = [\beta_{1}~\dots~\beta_{p}]\) is a vector
-of regression parameters; \(\lambda_{0}(\cdot)\) is an arbitrary
-baseline hazard function; and \(c\) is a specific function form, that
-will depend on the chosen probability distribution for the failure time.
-The structure of equation~\ref{eq:intro1} is made thinking in a simple
-failure time process, as in~\autoref{fig:intro1}~A). However, is easy to
-extend its idea. We basically have the equation~\ref{eq:intro1} model
-for each cause-specific, in a competing risks process; or transition, in
-a multistate process. A complete and extensive detailing can be, again,
-found in~\citeonline{kalb&prentice}.
+i.e. a product of \(\lambda_{0}(\cdot)\), an arbitrary baseline hazard
+function, and \(c\), a specific function form that will depend on the
+chosen probability distribution for the failure time and on a covariates
+(explanatory/independent variables) vector \(\bm{x}_{i} =
+[x_{1}~\dots~x_{p}]\), where \(\bm{\beta}^{\top} =
+[\beta_{1}~\dots~\beta_{p}]\) is a vector of regression parameters. This
+structure is specified for a simple failure time process, as
+in~\autoref{fig:intro1}~A). Nevertheless, its idea is easy to extend. We
+basically have the \autoref{eq:intro1} model for each cause-specific (in
+a competing risks process) or transition (in a multistate process). A
+complete and extensive detailing can be, again, found
+in~\citeonline{kalb&prentice}.
 
-In this thesis, we approach the case of the clustered competing risks.
-Besides the cause-specific structure, we have the fact that the disease
-occurrences are happening in related individuals (twins). This
-configures what is called \textit{family studies}. We have a cluster (a
-family/pair of twins) dependence that needs to be considered. This,
-possible, dependence is something that we don't actually measure, but
-know (or just suppose) that exists. In the statistical modeling
-language, this type of characteristic receives the name of
+In this work we approach the case of clustered competing risks. Besides
+the cause-specific structure, we have to deal with the fact that the
+events are happening in related individuals (twins). This configures
+what is called \textit{family studies}, i.e. we have a cluster (a
+family/pair of twins) dependence that needs to be considered and
+modeled. This, possible, dependence is something that we do not actually
+measure, but know (or just suppose) that exists. In the statistical
+modeling language this characteristic receives the name of
 \textit{random} or \textit{latent} effect. A survival model with a
 latent effect, association, or unobserved heterogeneity, is called a
 \textit{frailty model}~\cite{frailty78, frailty79}. In its simplest
 form, a frailty is an unobserved random proportionality factor that
 modifies the hazard function of an individual, or of related
-individuals. Frailty models are extensions of the equation
-\ref{eq:intro1} model.
+individuals. Frailty models are extensions of the \autoref{eq:intro1}
+model.
 
-Specifically in the competing risks setting, we have to choose which of
-two scales we want to work on. The hazard scale focusing on the
-cause-specific hazard or on the probability scale focusing on the
-cause-specific cumulative incidence. Both may complement each
-other~\cite{andersen12}. However, in family studies, there is often a
-strong interest in describing age at disease onset including
-within-family dependence. The distribution of age at disease onset is
-directly described by the cause-specific cumulative incidence.
-Therefore, the probability scale is the chosen one here.
+In the competing risks setting, the hazard scale (focusing on the
+cause-specific hazard) is not the only possible scale to work on. A more
+attractive possibility is to work on the probability scale, focusing on
+the cause-specific cumulative incidence. Both may complement each
+other~\cite{andersen12}. However, in family studies there is often a
+strong interest in: describing age at disease onset and account for
+within-family dependence. The point to be made is that the distribution
+of age at disease onset is directly described by the cause-specific
+cumulative incidence. Therefore, the probability scale is the logical
+choice.
 
-Frailty models are generally defined based on the hazard scale and with
-a latent effect that modifies the hazard function via a proportionality
-factor. To work on the probability scale and with a latent effect that
-allows for within-cluster dependence of both risk and
-timing,~\citeonline{SCHEIKE} proposed a pairwise composite likelihood
-approach based based on a linear model with multinomial response
+To work with competing risks data, on the probability scale, and with a
+latent effect structure that allows for within-cluster dependence of
+both risk and timing, \citeonline{SCHEIKE} proposed a pairwise composite
+likelihood approach based on a linear model with multinomial response
 distribution and multivariate normal latent effects (in a frailty model
-the common choice for the latent effects is the gamma distribution). The
-idea in this thesis is to try to do that in a simpler manner via a
-generalized linear mixed model (GLMM). Instead of concentrating on
-failure time data and consequently having a survival/frailty model on
-the hazard scale, or using a composite approach, we just build the joint
-likelihood function (multinomial distrtibution with a link function
-based on the cause-specific cumulative incidence function and
-appropriate latent effects), integrate out the latent effects and
-optimize the obtained distribution with respect to (wrt) its parameters.
-With this approach, we easily work on the probability scale and are able
-to specify the desired within-cluster dependence structure. To conclude,
-a brief introduction of a GLMM.
+the common choice for the latent effects is the gamma distribution).
+This approach sounds complicated and unnecessary, so we try to reach the
+same goal but with a much simpler framework, a generalized linear mixed
+model (GLMM). Instead of concentrating on failure time data and
+consequently having a survival/frailty model based on the hazard scale,
+or using a complicated composite approach, we just build the joint
+likelihood function (a multinomial model with a link function based on
+the cause-specific cumulative incidence function accouting for an
+appropriate latent effects structure), marginalize (integrate out the
+latent effects) and optimize it.
 
-In a standard linear model we assume that the response variable,
-\(Y_{i}\), conditioned on the covariates follows a normal distribution,
-and we model it's mean, \(\mu_{i} \equiv \mathbb{E}(Y_{i})\), via a
-linear combination. Generalizing this idea with a smooth monotonic
-``link function'' \(g\), we get a generalized linear model
-(GLM)~\cite{GLM72} with the basic structure
+To better contextualize our GLMM approach, lets first just define it
+starting by the start. For a random individual \(i\), in a standard
+linear model we assume that the response variable, \(Y_{i}\),
+conditioned on the (possible) covariates follows a normal (gaussian)
+distribution and, what we do is to model its mean, \(\mu_{i} \equiv
+\mathbb{E}(Y_{i})\), via a linear combination. As much well explained in
+\citeonline{GLM72}, with the support of a ``link function'',
+\(g(\cdot)\), we are able to generalize this idea to non-gaussian
+distributions. This extended framework received the name of generalized
+linear model (GLM) and is characterized by the following mean structure
 \[
- g(\mu_{i}) = \mathbf{X}_{i} \bm{\beta},
+ g(\mu_{i}) = \bm{x}_{i}\bm{\beta},
 \]
-where \(\mathbf{X}_{i}\) is the \(i^\text{th}\) row of a
-model matrix \(\mathbf{X}\), and \(\bm{\beta}\) is a vector of unknown
-parameters. In a GLM the \(Y_{i}\) are independent and
+where \(\bm{x}_{i}\) is the \(i^\text{th}\) row of a model matrix
+\(\bm{X}\), and \(\bm{\beta}\) is a vector of unknown parameters. Also,
+in a GLM the \(Y_{i}\) are independent and
 \[
   Y_{i} \sim \text{some exponential family distribution}.
 \]
-
 The \textit{exponential family} of distributions includes many
 distributions that are useful for practical modelling, such as the
 Poisson (for counting data), binomial (dichotomic data), gamma
-(continuous but positive) and normal (continuous data) distributions.
-The comprehensive reference for GLMs is~\citeonline{GLM89}.
+(continuous but positive) and normal (continuous data) distributions. A
+comprehensive reference for GLMs is \citeonline{GLM89}.
 
-The insertion of a latent effect, \(\mathbf{b}\), in that structure
-makes a mixed model. A linear model becomes a linear mixed model and a
-GLM becomes a generalized linear mixed model (GLMM). We now have
+What makes a GLM into a GLMM is the addition of a latent
+(\textit{m}ixed) effect, \(\bm{b}\). The mean structure becomes
 \[
-  g(\mu_{i}) = \mathbf{X}_{i} \bm{\beta} + \mathbf{Z}_{i}\mathbf{b},
-  \quad \mathbf{b} \sim \mathcal{N}(\mathbf{0}, \bm{\psi})
+  g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{b},
+  \quad \bm{b} \sim \mathcal{N}(\bm{0},~\Sigma)
 \]
 where the latent effect is assumed to follow a multivariate normal
-distribution of mean zero and a given variance-covariance structure.
+distribution of zero mean and a given variance-covariance matrix.
 
 \section{GOALS}
 
 \subsection{General goals}
 
-Propose a multinomial GLMM to the cause-specific cumulative incidence
-function of clustered competing risks data.
+Propose a multinomial generalized linear mixed model (multiGLMM) to the
+cause-specific cumulative incidence function (CIF) of clustered
+competing risks data.
 
 \subsection{Specific goals}
 
 \begin{enumerate}
-\item Simulate from the model following and adapting the guidelines
-  from~\citeonline{SCHEIKE}.
+\item Simulate from the multiGLMM to the cause-specific CIF.
 
-\item Write the model via Template Model Builder (TMB)~\cite{TMB},
-  possibly the most efficient way of doing so, and take advantage of its
-  functionalities: compute all necessary gradients and Hessians via
-  Automatic Differentiation and integrate out the latent effects of the
-  joint likelihood via Laplace approximation.
+\item Write the model in the Template Model Builder (TMB) software,
+  developed by \citeonline{TMB} and possibly the most efficient way of
+  doing so, taking advantage of its functionalities: computation of all
+  necessary gradients and Hessians via Automatic Differentiation (AD)
+  and integration of the joint likelihood latent effects,
+  marginalization, via an efficient Laplace approximation
+  implementation.
 
-\item Try different complexity levels of the proposed modeling framework
-  to see how identifiable it is.
+\item Study the model identifiability through the proposition of models
+  with different complexity levels in terms of parametric space.
 
 \item Apply the model to the Nordic Cancer Union (NCU) twins data.
 
