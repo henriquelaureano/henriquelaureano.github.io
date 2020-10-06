@@ -188,7 +188,8 @@ competing risks data.
 \subsection{Specific goals}
 
 \begin{enumerate}
-\item Simulate from the multiGLMM to the cause-specific CIF.
+\item Simulate from the multiGLMM to the cause-specific CIF, i.e.
+  generate synthetic data from the model.
 
 \item Write the model in the Template Model Builder (TMB) software,
   developed by \citeonline{TMB} and possibly the most efficient way of
@@ -201,46 +202,58 @@ competing risks data.
 \item Study the model identifiability through the proposition of models
   with different complexity levels in terms of parametric space.
 
-\item Apply the model to the Nordic Cancer Union (NCU) twins data.
+\item Apply the model to synthetic data and a real-based dataset.
 
-\item Compare the results of the multinomial GLMM approach to the
-  pairwise composite likelihood approach of~\citeonline{SCHEIKE}.
+\item Compare the results of our multiGLMM to the cause-specific CIF
+  with the results obtained with the pairwise composite approach of
+  \citeonline{SCHEIKE}, the probably state-of-art to the study of
+  clustered competing risks data.
 \end{enumerate}
 
 \section{JUSTIFICATION}
 
-In family studies examining disease occurrence in related individuals,
-key points of interest are the within-family dependence and determining
-the role of different risk factors. The within-family dependence may
-reflect both disease heritability and the impact of shared environmental
-effects. The number of statistical models for competing risks data that
-accommodate the within-cluster (family) dependence is limited. We didn't
-find, e.g., any GLMM approach to do that and didn't find any
-justification to not do that. Therefore, we propose a multinomial GLMM
-apporach that accommodates these key points by modeling the
-cause-specific cumulative incidence function (that describes age at
-disease onset) of the competing risks, using a latent structure that
-allows the absolute risk and the failure time distribution to vary
-between clusters (here, families).
+In the biomedical statistical modeling literature, the examination of
+disease occurrence in related individuals receives the name of family
+studies. Key points of interest are the within-family dependence and
+determining the role of different risk factors. The within-family
+dependence may reflect both disease heritability and the impact of
+shared environmental effects. The role of different risk factors arrives
+in the class of multivariate models, which options are limited in the
+statistical literature. Thus, the number of statistical models for
+competing risks data that accommodate the within-cluster (family)
+dependence is even more limited. Some modeling options are briefly
+commented in \citeonline{SCHEIKE}, with his pairwise composite approach
+being proposed as a new and better option to model the cause-specific
+cumulative incidence function (CIF, that describes age at disease onset)
+of clustered competing risks data on the probability scale. We propose
+to model the cause-specific CIF and accommodate the within-family
+dependence in the same fashion (via a latent structure that allows the
+absolute risk and the failure time distribution to vary between
+families) but with an easier framework, based on a multinomial
+generalized linear mixed model (multiGLMM) approach.
 
 \section{LIMITATION}
 
-This work restraint to the proposition and application of a multinomial
-model for competing risks data with a latent effect structure to
-accommodate within-cluster dependence with regard to both risk and
-timing. Given the elevated model complexity, hypothesis tests; residual
-analysis; and good-of-fit measures will not be approached.
+This work restraint to the proposition and application of a specific
+multinomial model for the cause-specific cumulative incidence function
+of competing risks data with a latent effect structure to accommodate
+within-family dependence with regard to both risk and timing. Given the
+elevated model complexity, hypothesis tests; residual analysis; and
+good-of-fit measures are not contemplated.
 
 \section{THESIS ORGANIZATION}
 
 This thesis contains 6 chapters including this introduction.
-The~\autoref{cap:methods} presents a review of the main aspects of a
-general GLMM and its respective inference procedures.
-The~\autoref{cap:model} presents the multinomial GLMM with its
-particular characteristics and in~\autoref{cap:datasets} we describes
-how to simulate from the proposed model, and presents a dataset for a
-real application. In~\autoref{cap:results} the obtained results are
-presented, and in~\autoref{cap:finalc} we discuss the contributions of
-this thesis and present some suggestions for future work.
+\autoref{cap:methods} presents a systematic review of the main aspects
+involved in the construction and optimzation of a generalized linear
+mixed model (GLMM). Given the modeling framework overview,
+\autoref{cap:model} presents our multinomial GLMM (multiGLMM) to model
+the cause-specific cumulative incidence function (CIF) of clustered
+competing risks data. In \autoref{cap:datasets} we describes how to
+simulate some synthetic data from the proposed model, and presents a
+real-based dataset as an application. In \autoref{cap:results} the
+obtained results are presented, and in \autoref{cap:finalc} we discuss
+the contributions of this thesis and present some suggestions for future
+work.
 
 % END ==================================================================

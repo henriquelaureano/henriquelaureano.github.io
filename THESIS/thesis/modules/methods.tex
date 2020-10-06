@@ -1,17 +1,18 @@
-This chapter presents a review of the main theoretical aspects involved
-in the construction, estimation and implementation of a generalized
-linear mixed model (GLMM). We start in~\autoref{cap:joint} with the
-model construction framework, that ends up with a joint likelihood
-function. \autoref{cap:laplace} address the integration of that joint
-likelihood, a necessary and fundamental step in our modeling approach,
-resulting in a marginal likelihood function. \autoref{cap:opt} discusses
-available alternatives for the optimization of the marginal distribution
-obtained through that integration. \autoref{cap:ad} talks about
-automatic differentiation, the most efficent manner of computing
-derivatives, and a key point for us. Last but not least, in
-\autoref{cap:tmb} we present the computational tool used to peform all
-the discussed procedure, the TMB: Template Model Builder. A very
-exciting \texttt{R} \cite{R18} package developed by~\citeonline{TMB}.
+This chapter presents a systematic review of the main theoretical
+aspects involved in the construction, estimation and implementation of a
+generalized linear mixed model (GLMM). We start in \autoref{cap:joint}
+with the model construction framework, concluding with the so-called
+joint likelihood function. \autoref{cap:laplace} address the integration
+of that joint likelihood, a necessary and fundamental step in our
+modeling approach, resulting in a marginal likelihood function.
+\autoref{cap:opt} discusses available alternatives for the optimization
+of the marginal distribution obtained through that integration.
+\autoref{cap:ad} talks about automatic differentiation, the most
+efficent manner of computing derivatives, and a key point for us. Last
+but not least, in \autoref{cap:tmb} we present the computational tool
+used to peform all the discussed procedure, the TMB: Template Model
+Builder. A very exciting \texttt{R} \cite{R18} package developed
+by~\citeonline{TMB}.
 
 \section{JOINT LIKELIHOOD}
 \label{cap:joint}
