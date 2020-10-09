@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.1.13)  6 OCT 2020 14:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.1.13)  8 OCT 2020 21:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2139,28 +2139,28 @@ Package microtype Info: Loading generic protrusion settings for font family
  [19
 
 ] [20]
-[21] [22pdfTeX warning (ext4): destination with the same identifier (name{equat
-ion.2.2.8}) has been already used, duplicate ignored
+[21] [22] [23pdfTeX warning (ext4): destination with the same identifier (name{
+equation.2.2.7}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.308 \section
-              {MARGINAL LIKELIHOOD OPTIMIZATION}] [23] [24] [25]
-<figures/computational_graph.png, id=380, 771.88374pt x 202.7575pt>
+l.353 \[
+        ] [24] [25]
+<figures/computational_graph.png, id=379, 771.88374pt x 202.7575pt>
 File: figures/computational_graph.png Graphic file (type png)
 <use figures/computational_graph.png>
 Package pdftex.def Info: figures/computational_graph.png  used on input line 52
 5.
 (pdftex.def)             Requested size: 364.00139pt x 95.6147pt.
  [26 <./figures/computational_graph.png>]
-<figures/ex-computational_graph.png, id=394, 662.475pt x 131.49126pt>
+<figures/ex-computational_graph.png, id=393, 662.475pt x 131.49126pt>
 File: figures/ex-computational_graph.png Graphic file (type png)
 <use figures/ex-computational_graph.png>
 Package pdftex.def Info: figures/ex-computational_graph.png  used on input line
  582.
 (pdftex.def)             Requested size: 364.00139pt x 72.24817pt.
- [27 <./figures/ex-computational_graph.png>] [28]
-[29]) [30] (./modules/model.tex [31
+ [27 <./figures/ex-computational_graph.png>] [28] [29]) [30] (./modules/model.t
+ex [31
 
 ] [32]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
@@ -2175,13 +2175,13 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 11.40997pt on input line 192.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 6.25204pt on input line 192.
-<figures/cif-1.png, id=458, 505.89pt x 433.62pt>
+<figures/cif-1.png, id=459, 505.89pt x 433.62pt>
 File: figures/cif-1.png Graphic file (type png)
 <use figures/cif-1.png>
 Package pdftex.def Info: figures/cif-1.png  used on input line 194.
 (pdftex.def)             Requested size: 455.0pt x 390.00958pt.
- [33] [34 <./figures/cif-1.png>]
-[35]
+
+[33] [34 <./figures/cif-1.png>] [35]
 
 LaTeX Warning: there is no bold Symbol font on input line 304.
 
@@ -2200,13 +2200,13 @@ put line 37.
 [37
 
 ]
-<figures/datasimucif-1.png, id=498, 505.89pt x 289.08pt>
+<figures/datasimucif-1.png, id=499, 505.89pt x 289.08pt>
 File: figures/datasimucif-1.png Graphic file (type png)
 <use figures/datasimucif-1.png>
 Package pdftex.def Info: figures/datasimucif-1.png  used on input line 114.
 (pdftex.def)             Requested size: 455.0pt x 260.00638pt.
  [38]
-<figures/datasimu-1.png, id=503, 505.89pt x 722.7pt>
+<figures/datasimu-1.png, id=504, 505.89pt x 722.7pt>
 File: figures/datasimu-1.png Graphic file (type png)
 <use figures/datasimu-1.png>
 Package pdftex.def Info: figures/datasimu-1.png  used on input line 129.
@@ -2296,7 +2296,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 950.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 950.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 950.
 Package rerunfilecheck Info: File `_region_.brf' has not changed.
-(rerunfilecheck)             Checksum: D627F5B1DE05F3FE9F62D3BE32AE8D94;2441.
+(rerunfilecheck)             Checksum: 06579DAF88D4D2BCC4FB438767829B65;2491.
 
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
@@ -2304,15 +2304,15 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 950.
  ) 
 Here is how much of TeX's memory you used:
- 40984 strings out of 492641
- 753449 string characters out of 6131787
- 909418 words of memory out of 5000000
- 43786 multiletter control sequences out of 15000+600000
- 617836 words of font info for 366 fonts, out of 8000000 for 9000
+ 40998 strings out of 492641
+ 753634 string characters out of 6131787
+ 909760 words of memory out of 5000000
+ 43794 multiletter control sequences out of 15000+600000
+ 618120 words of font info for 370 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  52i,19n,69p,936b,913s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc}{/usr
-/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texliv
+e/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc}</usr/share/texlive/texmf
 -dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-d
 ist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fo
@@ -2327,10 +2327,10 @@ dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/pal
 atino/uplbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8
 a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on _region_.pdf (51 pages, 822652 bytes).
+Output written on _region_.pdf (51 pages, 824429 bytes).
 PDF statistics:
- 814 PDF objects out of 1000 (max. 8388607)
- 725 compressed objects within 8 object streams
+ 815 PDF objects out of 1000 (max. 8388607)
+ 726 compressed objects within 8 object streams
  150 named destinations out of 1000 (max. 500000)
  60771 words of extra memory for PDF output out of 61914 (max. 10000000)
 

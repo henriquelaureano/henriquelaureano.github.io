@@ -4,7 +4,6 @@
    (LaTeX-add-labels
     "cap:joint"
     "eq:gmu"
-    "eq:Zu"
     "eq:joint"
     "cap:laplace"
     "eq:generalmarginal"

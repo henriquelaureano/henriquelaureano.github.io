@@ -13,6 +13,7 @@
     "MCMC"
     "Diaconis"
     "EM77"
+    "quadrature"
     "molenberghs&verbeke"
     "LA4H"
     "tierney"

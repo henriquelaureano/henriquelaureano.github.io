@@ -2,169 +2,172 @@ This chapter presents a systematic review of the main theoretical
 aspects involved in the construction, estimation and implementation of a
 generalized linear mixed model (GLMM). We start in \autoref{cap:joint}
 with the model construction framework, concluding with the so-called
-joint likelihood function. \autoref{cap:laplace} address the integration
-of that joint likelihood, a necessary and fundamental step in our
-modeling approach, resulting in a marginal likelihood function.
-\autoref{cap:opt} discusses available alternatives for the optimization
-of the marginal distribution obtained through that integration.
-\autoref{cap:ad} talks about automatic differentiation, the most
-efficent manner of computing derivatives, and a key point for us. Last
-but not least, in \autoref{cap:tmb} we present the computational tool
-used to peform all the discussed procedure, the TMB: Template Model
-Builder. A very exciting \texttt{R} \cite{R18} package developed
-by~\citeonline{TMB}.
+joint likelihood function. \autoref{cap:laplace} address the
+marginalization of that joint likelihood, performed here in terms of a
+Laplace approximation technique. \autoref{cap:opt} discusses available
+alternatives for the parameters optimization of the marginal likelihood
+obtained through that marginalization. \autoref{cap:ad} talks about
+automatic differentiation (AD), the most efficent manner of computing
+derivatives, and a key point for us. Last but not least, in
+\autoref{cap:tmb} we present the computational tool used to peform all
+the discussed procedure, the TMB: Template Model Builder. A very
+exciting \texttt{R} \cite{R18} package developed by~\citeonline{TMB}.
 
-\section{JOINT LIKELIHOOD}
+\section{CONSTRUCTION: JOINT LIKELIHOOD FUNCTION}
 \label{cap:joint}
 
-A standard, univariate, GLMM models an \(n\)-vector of exponential
-family random variables, \(\mathbf{Y}\), with conditional expected
-value, \(\bm{\mu} \equiv \mathbb{E}(\mathbf{Y} \mid \mathbf{X},
-\mathbf{u})\), via a linear predictor equation expressed by
+A GLMM models an \(n\)-vector of exponential family random variables,
+\(\mathbf{Y}\), in terms of its conditional expected value, \(\bm{\mu}
+\equiv \mathbb{E}(\mathbf{Y} \mid \mathbf{X}, \mathbf{u})\), via a
+linear combination called of linear predictor and generally expressed by
 \begin{equation}
   g(\bm{\mu}) = \mathbf{X} \bm{\beta} + \mathbf{Zu}, \quad
   \mathbf{u} \sim \mathcal{N}(\mathbf{0}, \bm{\Sigma}).
   \label{eq:gmu}
 \end{equation}
-
-That is, a GLMM is a generalized linear model (GLM) in which the linear
-predictor depends on some Gaussian latent effects, \(\mathbf{u}\), times
-a latent effects model matrix \(\mathbf{Z}\). The idea embedded in that
-matrix is exemplified in~\autoref{eq:Zu}. Suppose, e.g., three
-individuals and each has two measures. This configures a simple repeated
-measures context, the focus of this work. It is reasonable to admit that
-each individual has a particular latent effect value. Consequently,
-\begin{equation}
+In other words, a GLMM is a generalized linear model (GLM) in which the
+linear predictor depends on some Gaussian latent effects,
+\(\mathbf{u}\), times a latent effects model matrix \(\mathbf{Z}\).
+Since we do not observe the latent component, an exemplification of the
+idea embedded in matrix \(\mathbf{Z}\) is welcome. Suppose, e.g. three
+individuals (or clusters) and that each one has two measures. This
+configures a repeated measures context, the most common latent structure
+in family studies.. Also, it is reasonable to admit that each individual
+has its particular latent effect value. Consequently,
+\[
   \mathbf{Zu} = \begin{bmatrix}
-                 1 & 0 & 0\\
-                 1 & 0 & 0\\
-                 0 & 1 & 0\\
-                 0 & 1 & 0\\
-                 0 & 0 & 1\\
-                 0 & 0 & 1\\
+                 1 & 0 & 0\\1 & 0 & 0\\
+                 0 & 1 & 0\\0 & 1 & 0\\
+                 0 & 0 & 1\\0 & 0 & 1\\
                 \end{bmatrix} \begin{bmatrix}
-                               u_{1}\\
-                               u_{2}\\
-                               u_{3}\\
+                               u_{1}\\u_{2}\\u_{3}\\
                               \end{bmatrix} = \begin{bmatrix}
-                                               u_{1}\\
-                                               u_{1}\\
-                                               u_{2}\\
-                                               u_{2}\\
-                                               u_{3}\\
-                                               u_{3}\\
+                                               u_{1}\\u_{1}\\
+                                               u_{2}\\u_{2}\\
+                                               u_{3}\\u_{3}\\
                                               \end{bmatrix},
-  \label{eq:Zu}
-\end{equation}
+\]
 where \(\mathbf{u}^{\top} = [u_{1}~u_{2}~u_{3}]\) and \(\mathbf{Z}\) has
 the role of projecting the values of \(\mathbf{u}\) to match the number
 of measures.
 
-We model this mean structure into a combination of probability
-distributions. It's a combination since we have to assume probabilistic
-structures for the observed and non-observed, latent, data. For each
-observed variable \(y_{ij}\), we have a probability distribution of the
-exponential family, denoted by \(f(y_{ij} \mid \mathbf{u}_{i},
-\bm{\theta})\). For the non-observed latent effect we have, generally, a
-(multivariate) Gaussian distribution, denoted by \(f(\mathbf{u}_{i} \mid
-\bm{\Sigma})\). For each individual or unity under study, \(i\), and to
-each measure, \(j\), we have the product of these probability densities,
-a likelihood contribution.
+In a mixed model the mean structure is approached into a combination of
+probability distributions. It is a combination since we have to assume
+probabilistic structures for the observed and non-observed (latent)
+data. To each observed variable \(y_{ij}\) we have a probability
+distribution of the exponential family, denoted by \(f(y_{ij} \mid
+\mathbf{u}_{i}, \bm{\theta})\). To the non-observed latent effect we
+have, generally, a (multivariate) Gaussian distribution, denoted by
+\(f(\mathbf{u}_{i} \mid \bm{\Sigma})\). To each individual or unity
+under study, \(i\), and to each measure, \(j\), we have the product of
+these probability densities, a likelihood contribution.
 
-We want to estimate the parameter vector \(\bm{\theta} =
-[\bm{\beta}~\bm{\Sigma}]^{\top}\) of~\autoref{eq:gmu}. Besides the role
-of emphasizing the fact that \(\bm{\mu}\) is a function of
-\(\bm{\theta}\) and that we want to estimate \(\bm{\theta}\), the
-likelihood function ties the probability densities. i.e., the likelihood
-is the product of the probability densities product for each subject.
-Since the \(Y_{i}\) are mutually independent, the likelihood of
-\(\bm{\theta}\) is
+Our goal is to estimate the parameter vector \(\bm{\theta} =
+[\bm{\beta}~\bm{\Sigma}]^{\top}\) of a mean structure, as in
+\autoref{eq:gmu}. Besides the role of emphasizing the fact that
+\(\bm{\mu}\) is a function of \(\bm{\theta}\) and that we want to
+estimate that \(\bm{\theta}\), the likelihood function ties the
+probability densities. i.e. the likelihood is the product of the product
+of probability densities, to each subject \(i\). Since \(Y_{i}\) are
+mutually independent, the likelihood for \(\bm{\theta}\) can be written
+as
 \begin{equation}
   L(\bm{\theta} \mid \mathbf{y}, \mathbf{u}) =
-  \prod_{i=1}^{n}~\prod_{j=1}^{n_{i}}~
+  \prod_{i=1}^{I}~\prod_{j=1}^{n_{i}}~
   f(y_{ij} \mid \mathbf{u}_{i}, \bm{\beta}, \bm{\Sigma})~
   f(\mathbf{u}_{i} \mid \bm{\Sigma}).
   \label{eq:joint}
 \end{equation}
-
 From standard probability theory is easy to see that in the right-hand
-side (r.h.s.) we have a joint density, consequently,~\autoref{eq:joint}
+side (r.h.s.) we have a joint density, consequently, \autoref{eq:joint}
 represents what is called a joint likelihood function. What makes
-working with this joint likelihood problematic is that we don't have all
-the information necessary to just optimize it and get the desired
+problematic working with this joint likelihood is that we do not have
+all the necessary information to just maximize it and get the desired
 parameter estimates. The latent effect \(\mathbf{u}\) is
-\textit{latent}, we don't observe it. To handle with this we basically
-have two available paths.
+\textit{latent}, i.e. we do not observe it. To handle this we have
+basically two available paths.
 
-\section{LAPLACE APPROXIMATION}
+\section{MARGINALIZATION: LAPLACE APPROXIMATION}
 \label{cap:laplace}
 
-To deal with the joint likelihood in~\autoref{eq:joint}~we have a choice
-to make. Be or not to be Bayesian. Each choice has its own difficulties,
-advantages, and characteristics.
+To deal with a joint likelihood function as in \autoref{eq:joint} we
+have a choice to make. Be or not to be Bayesian. Each choice has its own
+difficulties, advantages, and characteristics.
 
 The Bayesian path assumes that all \(\bm{\theta}\) components are random
-variables. With all parameters being treated as random variables, and
-since we don't observe them, what the Bayesian framework does is try to
-compute the mode of each ``parameter'' marginal distribution via a
-sampling algorithm, called MCMC: Markov Chain Monte Carlo~\cite{MCMC,
-  Diaconis}. The advantage is that we can reach an MCMC algorithm to
-basically any statistical model, the disadvantages are that this
-approach is very time consuming and we have to propose prior
-distributions to each ``parameter''. These prior proposals are not
-always easy to make, and the resulting marginal distributions can be
-very depending on it.
+variables. With all parameters being treated as random variables and,
+since we do not observe them, what the Bayesian framework does is try to
+compute the mode of each ``parameter'' marginal distribution, generally,
+via a sampling algorithm called MCMC: Markov chain Monte Carlo
+\cite{MCMC, Diaconis}. The advantage of being Bayesian is that we can
+reach an MCMC algorithm to basically any statistical model, the
+disadvantage is that this approach is very time consuming and we have to
+propose prior distributions to each ``parameter''. These prior proposals
+are not always easy to make and, the resulting marginal distributions
+can be very depending of it.
 
-A Bayesian approach can be applied in basically any context. However, in
-complex scenarios they can be the only available method to maximize the
-likelihood. This isn't the case here. We have a joint density where one
-of the random variables isn't observed, but we're not interested in it,
-only in the variance parameters inherent in it. Again, from standard
-probability theory, if we have a joint density we can just integrate out
-the undesired variable. This results in
+A Bayesian approach can be applied in basically any context, without
+guarantees that will work - obtain convergence to all parameters is not
+a straightforward task. However, in complex scenarios they can be the
+only available method to ``maximize'' the likelihood function. This is
+not the case here. We have a joint density where one of the random
+variables is not observed, but we are not interested in it, only in the
+variance parameters inherent in it. Again, from standard probability
+theory, if we have a joint density we can just integrate out the
+undesired variable resulting in
 \begin{equation}
   \begin{aligned}
     L(\bm{\theta} \mid \mathbf{y}) &=
-    \prod_{i=1}^{n}~\int_{\mathcal{R}^{\mathbf{u}_{i}}}
-    \left\{
-      \prod_{j=1}^{n_{i}}~
+    \prod_{i=1}^{I}~\int_{\mathcal{R}^{\mathbf{u}_{i}}}
+    \left[
+      ~\prod_{j=1}^{n_{i}}~
       f(y_{ij} \mid \mathbf{u}_{i}, \bm{\beta}, \bm{\Sigma})~
       f(\mathbf{u}_{i} \mid \bm{\Sigma})
-    \right\} \text{d} \mathbf{u}_{i}\\
-    &= \prod_{i=1}^{n}~\int_{\mathcal{R}^{\mathbf{u}_{i}}}~
+    \right]\text{d} \mathbf{u}_{i}\\
+    &= \prod_{i=1}^{I}~\int_{\mathcal{R}^{\mathbf{u}_{i}}}~
     f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})~
     \text{d} \mathbf{u}_{i},
     \label{eq:generalmarginal}
   \end{aligned}
 \end{equation}
-a marginal density that keeps the parameters of the integrated variable.
+a marginal density that keeps the parameters \(\bm{\Sigma}\) of the
+integrated variable.
 
-If the response distribution in our mixed model is Gaussian, is
+When the response distribution of a mixed model is Gaussian, is
 analytically tractable to integrate \(\mathbf{u}\) out of the joint
-density. Consequently, is possible to evaluate the likelihood exactly.
-This is the case of linear mixed models and the main difference to the
-GLMMs. When the response distribution isn't Gaussian, generally, isn't
-anymore analytically tractable to integrate out the latent effect. So
-what do we do? Well, basically we have two options.
+density. Consequently, it is possible to evaluate the marginal
+likelihood exactly. This is the case of the linear mixed models (LMMs)
+and the main difference to the GLMMs. When the response distribution is
+not Gaussian, generally, it is not anymore analytically tractable to
+integrate out the latent effect. So what do we do? Well, we have
+basically two options.
 
-We can avoid the integrals in~\autoref{eq:generalmarginal}, replacing it
-by integrals that are sometimes more analytically tractable. This can be
-performed via an algorithm called EM:
-Expectation-Maximization~\cite{EM77}. This method is considered a little
-bit naive and generally isn't recommended if you have a better option.
-Our better option consists in take advantage of the exponential family
-structure and the fact that we're dealing with Gaussian latent effects.
-These ideas converge to what is called, \textit{Laplace
-  approximation}~\cite{molenberghs&verbeke, LA4H, tierney, corestats}.
+We can avoid the integrals in \autoref{eq:generalmarginal} replacing it
+by integrals that are more analytically tractable. This can be performed
+via an algorithm called Expectation-Maximization (EM) proposed by
+\citeonline{EM77}. This approach is considered a little bit naive and
+generally is not recommended if you have a better option. The other
+option consists of performing a numerical integration, i.e.
+approximating the integral. The most common way of doing that in the
+statistical modeling literature is via an adaptive Gaussian quadrature
+rule \cite{quadrature}. In general, adaptive Gaussian quadratures are
+not so simple of using (may be unstable, computationally expensive and
+we have the problem of choosing how many integration points should be
+used). To us, the better option consists in take advantage of the
+exponential family structure and the fact that we are dealing with
+Gaussian latent effects. These ideas converge to an adaptive Gaussian
+quadrature with one integration point, also called as \textit{Laplace
+  approximation} \cite{molenberghs&verbeke, LA4H, tierney, corestats}.
 
-If the integral is analytically intractable, we can approximate it to
-obtain a tractable closed-form expression, allowing the numerical
-maximization of the marginal likelihood~\cite{patrao}. The Laplace
-approximation has been designed to approximate integrals in the form
+With an integral that is analytically intractable, we may approximate it
+to obtain a tractable closed-form expression allowing then the numerical
+maximization of the resulting marginal likelihood function
+\cite{patrao}. The Laplace approximation has been designed to
+approximate integrals in the form
 \begin{equation}
   \int_{\mathcal{R}^{\mathbf{u}_{i}}}
-  \exp\{Q(\mathbf{u}_{i})\} \text{d} \mathbf{u}_{i}
-  \approx (2\pi)^{n_{\mathbf{u}}/2}~
+  \exp\{Q(\mathbf{u}_{i})\} \text{d} \mathbf{u}_{i}\approx
+  (2\pi)^{n_{\mathbf{u}}/2}~
   |{Q}''(\mathbf{\hat{u}}_{i})|^{-1/2}~\exp\{Q(\mathbf{\hat{u}}_{i})\},
   \label{eq:laplace}
 \end{equation}
@@ -175,7 +178,7 @@ consists of a second order Taylor expansion of \(\log f(\mathbf{y}_{i},
 \mathbf{u}_{i} \mid \bm{\theta})\), about \(\mathbf{\hat{u}}_{i}\), that
 gives
 \[
-  \log f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta}) \approx
+  \log f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})\approx
   \log f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta}) -
   \frac{1}{2}
   (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
@@ -185,7 +188,7 @@ where \(\mathbf{H} = - \nabla_{u}^{2} \log f(\mathbf{y}_{i},
 \mathbf{\hat{u}}_{i} \mid \bm{\theta})\). Hence, we can approximate the
 joint by
 \begin{equation}
-  f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta}) \approx
+  f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})\approx
   f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta})~\exp
   \left\{- \frac{1}{2}
     (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
@@ -193,41 +196,40 @@ joint by
   \right\}.
   \label{eq:taylor}
 \end{equation}
-
 From here we start to take advantage of the points mentioned above.
-First, the fact that we're working with Gaussian distributed latent
-effects. In~\autoref{eq:taylor}~we see the core of a Gaussian density,
+First, the fact that we are dealing with Gaussian distributed latent
+effects. In \autoref{eq:taylor} we have the core of a Gaussian density,
 that complete is
 \[
   \int_{\mathcal{R}^{\mathbf{u}_{i}}}
-  \frac{1}{(2 \pi)^{n_{\mathbf{u}}/2}~|\mathbf{H}^{-1}|^{1/2}}~\exp
+  \frac{1}{(2\pi)^{n_{\mathbf{u}}/2}~|\mathbf{H}^{-1}|^{1/2}}~\exp
   \left\{- \frac{1}{2}
     (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
     (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})
-  \right\} \text{d} \mathbf{u}_{i} = 1,
+  \right\} \text{d}\mathbf{u}_{i} = 1,
 \]
-and integrates to 1. Integrating~\autoref{eq:taylor}, it follows that
+i.e. integrates to 1. Integrating \autoref{eq:taylor} follows that
 \begin{align*}
   \int_{\mathcal{R}^{\mathbf{u}_{i}}}
   f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})
-  \text{d} \mathbf{u}_{i}
+  ~\text{d}\mathbf{u}_{i}
   &\approx f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta})
     \int_{\mathcal{R}^{\mathbf{u}_{i}}} \exp
     \left\{- \frac{1}{2}
     (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
     (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})
-    \right\} \text{d} \mathbf{u}_{i}\\
-  &= (2 \pi)^{n_{\mathbf{u}}/2}~|\mathbf{H}|^{-1/2}~
+    \right\} \text{d}\mathbf{u}_{i}\\
+  &= (2\pi)^{n_{\mathbf{u}}/2}~|\mathbf{H}|^{-1/2}~
     f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta}),
 \end{align*}
-i.e., we get~\autoref{eq:laplace}, a first order Laplace approximation
-to the integral. Careful accounting of the approximation error shows it
-to generally be \(\mathcal{O}(n^{-1})\) where \(n\) is the sample size,
-assuming a fixed length for \(\mathbf{u}_{i}\)~\cite{corestats}.
+i.e. we get \autoref{eq:laplace}, a first order Laplace approximation to
+the integral. Careful accounting of the approximation error shows it to
+generally be \(\mathcal{O}(n^{-1})\), where \(n\) is the sample size and
+assuming a fixed length for \(\mathbf{u}_{i}\) \cite{corestats}.
 
 The second advantage of a Laplace approximation approach in a GLMM is
 the exponential family structure. In a usual GLMM, the response follows
-a one-parameter exponential family distribution, that can be written as
+a one-parameter exponential family distribution that can be written as
 \[
   f(\mathbf{y}_{i} \mid \mathbf{u}_{i}, \bm{\theta}) = \exp
   \left\{\mathbf{y}_{i}^{\top}
@@ -240,7 +242,7 @@ a one-parameter exponential family distribution, that can be written as
 where \(b(\cdot)\) and \(c(\cdot)\) are known functions. This general
 and easy to compute expression, together with a (multivariate) Gaussian
 distribution, highlights the convenience of the Laplace method. The
-\(Q(\mathbf{u}_{i})\) function to be maximized can then be expressed as
+\(Q(\mathbf{u}_{i})\) function to be maximized can be expressed as
 \begin{equation}
   \begin{aligned}
     Q(\mathbf{u}_{i}) &= \mathbf{y}_{i}^{\top}
@@ -248,26 +250,26 @@ distribution, highlights the convenience of the Laplace method. The
     \mathbf{1}_{i}^{\top}
     b(\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) +
     \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})\\
-    &- \frac{n_{\mathbf{u}}}{2} \log (2 \pi) -
+    &- \frac{n_{\mathbf{u}}}{2} \log (2\pi) -
     \frac{1}{2} \log |\bm{\Sigma}| -
-    \frac{1}{2} \mathbf{u}_{i}^{\top} \bm{\Sigma}^{-1}~\mathbf{u}_{i}.
+    \frac{1}{2} \mathbf{u}_{i}^{\top}\bm{\Sigma}^{-1}~\mathbf{u}_{i}.
   \end{aligned}
 \end{equation}
-
 The approximation in~\autoref{eq:laplace} requires the maximum
-\(\mathbf{\hat{u}}_{i}\) of the function \(Q(\mathbf{u}_{i})\). Since we
+\(\mathbf{\hat{u}}_{i}\) of the function \(Q(\mathbf{u}_{i})\). As we
 assume a Gaussian distribution with a known mean for the latent effects,
-we have the perfect initial guess for a gradient-based method as the
-Newton-Raphson (NR) algorithm. The NR method consists of an iterative
-scheme as follows:
+we have the perfect initial guess for a gradient-based maximization
+method as the Newton-Raphson (NR) algorithm. The NR method consists of
+an iterative scheme as follows:
 \[
   \mathbf{u}_{i}^{(k+1)} = \mathbf{u}_{i}^{(k)} -
   {Q}''(\mathbf{u}_{i}^{(k)})^{-1}~{Q}'(\mathbf{u}_{i}^{(k)}),
+  \quad k = 0,~1,~\dots
 \]
 until convergence, which gives \(\mathbf{\hat{u}}_{i}\). At this stage,
-all parameters are considered known.~\citeonline{patrao}~presents the
-generic expressions for the derivatives required by the NR method, given
-by the following:
+all parameters \(\bm{\theta}\) are considered known. \citeonline{patrao}
+presents the generic expressions for the derivatives required by the NR
+method, given by the following:
 \begin{equation}
   \begin{aligned}
     {Q}'(\mathbf{u}_{i}^{(k)}) &= \{\mathbf{y}_{i} -
@@ -280,75 +282,78 @@ by the following:
   \end{aligned}
   \nonumber
 \end{equation}
+At \(k = 0\) we have the initial guess.
 
-Finally, the marginal log-likelihood returned by the Laplace
-approximation for each invividual or unit under study, is as follows:
+Finally, the marginal log-likelihood function returned by the Laplace
+approximation, to each invividual or unit under study \(i\), is as
+follows:
 \begin{equation}
   \begin{aligned}
     l(\bm{\theta} \mid \mathbf{y}_{i}) =
     \log L(\bm{\theta} \mid \mathbf{y}_{i}) &=
-    \frac{n}{2} \log (2 \pi) - \frac{1}{2} \log
+    \frac{n}{2} \log (2\pi) - \frac{1}{2} \log
     \left|
       \text{diag}\{{b}''(\mathbf{X}_{i}\bm{\beta} +
       \mathbf{Z}_{i}\mathbf{\hat{u}}_{i})\} + \bm{\Sigma}^{-1}
     \right|\\
     &+ \mathbf{y}_{i}^{\top}
-    (\mathbf{X}_{i} \bm{\beta} + \mathbf{Z}_{i} \mathbf{\hat{u}}_{i}) -
+    (\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) -
     \mathbf{1}_{i}^{\top}
-    b(\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i} \mathbf{\hat{u}}_{i}) +
+    b(\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) +
     \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})\\
-    &- \frac{n_{\mathbf{u}}}{2} \log (2 \pi) -
+    &- \frac{n_{\mathbf{u}}}{2} \log (2\pi) -
     \frac{1}{2} \log |\bm{\Sigma}| - \frac{1}{2}
     \mathbf{\hat{u}}_{i}^{\top}\bm{\Sigma}^{-1}~\mathbf{\hat{u}}_{i},
   \end{aligned}
   \nonumber
 \end{equation}
-that can now be numerically maximized over the model parameters.
+that can now be numerically maximized over the model parameters
+\(\bm{\theta} = [\bm{\beta}~\bm{\Sigma}]^{\top}\).
 
-\section{MARGINAL LIKELIHOOD OPTIMIZATION}
+\section{OPTIMIZATION: MARGINAL LIKELIHOOD FUNCTION}
 \label{cap:opt}
 
-At this point is clear that we have two optimizations to be made. An
-``inside'' and an ``outside'' optimization. The inside optimization is
-performed into the Laplace approximation layer via a Newton-Raphson
+At this point it is already clear that we have two optimizations to be
+performed, an ``inside'' and an ``outside'' optimization. The inside one
+is made into the Laplace approximation layer via a Newton-Raphson
 algorithm, a Newton's method. The outside optimization is made with the
-Laplace approximation outputs, i.e., the maximization step
-of~\autoref{eq:generalmarginal}'s marginal log-likelihood over its
-parameters. This task is usually performed via a quasi-Newton method. We
-focus here on two of the most traditional ones, the
+Laplace approximation outputs, i.e. the maximization step
+\autoref{eq:generalmarginal}'s marginal log-likelihood over its
+parameters \(\bm{\theta}\). This task is usually performed via a
+quasi-Newton method, we focus on two of the most traditional ones: the
 Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm and the PORT routines.
 
-The inside optimization is the joint log-likelihood numerical
-maximization w.r.t. its latent effects. This is kind of a simple task
+The inside optimization is the numerical maximization of the joint
+log-likelihood w.r.t. its latent effects. This is kind of a simple task
 since all model parameters are considered as fixed and we ``know'' that
-the latent effects are distributed with zero mean, i.e., we have the
+the latent effects are distributed with zero mean, i.e. we have the
 perfect initial guess. In this context, the use of a Newton's method is
 straightforward. When we talk about the outside optimization it is a
-completely different scenario. It is not straightforward to find a good
-initial guess or reach convergence, so more robust methods are a good
+completely different scenario, it is not straightforward to find a good
+initial guess or reach convergence. Thus, more robust methods are a good
 choice.
 
 In optimization, Newton methods are algorithms for finding local maxima
-and minima of functions, i.e., the search for the zeroes of the gradient
+and minima of functions, i.e. the search for the zeroes of the gradient
 of that function. Newton methods are characterized by the use of a
 symmetric matrix of function's second derivatives, the Hessian matrix.
 Quasi-Newton methods are based on Newton's method and are seen as an
-alternative to it. They can be used if the Hessian is unavailable or is
-too expensive to compute at every iteration.
+alternative to it. They can be used if the Hessian is unavailable or if
+is too expensive to compute it at every iteration.
 
-As shown in~\citeonline{nocedal&wright}, chief advantages of
+As shown in \citeonline{nocedal&wright}, major advantages of
 quasi-Newton methods over Newton's method are that the Hessian matrix
-doesn't need to be computed, its approximated; and it also doesn't need
-to be inverted. Newton's method requires the Hessian to be inverted,
-typically by solving a system of linear equations - often quite costly.
-In contrast, quasi-Newton methods usually generate an estimate of it
-directly. As in Newton's method, they use a second-order approximation
-to find the minimum of a function \(f(\mathbf{x})\). The Taylor series
-of \(f(\mathbf{x})\) around an iterate is
+does not need to be computed, it is approximated; and it also does not
+need to be inverted. Newton's method requires the Hessian to be
+inverted, typically by solving a system of linear equations - often
+quite costly. In contrast, quasi-Newton methods usually generate an
+estimate of it directly. As in Newton's method, they use a second-order
+approximation to find the minimum of a function \(f(\mathbf{x})\). The
+Taylor series of \(f(\mathbf{x})\) around an iterate is
 \[
-  f(\mathbf{x}_{k} + \Delta\mathbf{x}) \approx
-  f(\mathbf{x}_{k}) + \nabla f(\mathbf{x}_{k})^{\top} \Delta\mathbf{x} +
-  \frac{1}{2} \Delta\mathbf{x}^{\top} \mathbf{B}~\Delta\mathbf{x},
+  f(\mathbf{x}_{k} + \Delta\mathbf{x})\approx
+  f(\mathbf{x}_{k}) + \nabla f(\mathbf{x}_{k})^{\top}\Delta\mathbf{x} +
+  \frac{1}{2} \Delta\mathbf{x}^{\top}\mathbf{B}~\Delta\mathbf{x},
 \]
 where \(\nabla f(\cdot)\) is the gradient, and \(\mathbf{B}\) an
 approximation to the Hessian matrix. The gradient of this approximation
@@ -359,21 +364,20 @@ w.r.t. \(\Delta\mathbf{x}\) is
 \]
 setting this gradient to zero provides the Newton step:
 \[
-  \Delta\mathbf{x} = - \mathbf{B}^{-1} \nabla f(\mathbf{x}_{k}).
+  \Delta\mathbf{x} = - \mathbf{B}^{-1}\nabla f(\mathbf{x}_{k}).
 \]
-
 The Hessian approximation \(\mathbf{B}\) is chosen to satisfy
 \[
   \nabla f(\mathbf{x}_{k} + \Delta\mathbf{x}) =
   \nabla f(\mathbf{x}_{k}) + \mathbf{B}~\Delta\mathbf{x},
 \]
-which is called the \textit{secant} equation, the Taylor series of the
-gradient itself. Solving for \(\mathbf{B}\) and applying the Newton's
-step with the updated value is equivalent to the \textit{secant} method.
-Quasi-Newton methods are a generalization of the secant method to find
-the root of the first derivative for multidimensional problems. The
-various quasi-Newton methods differ in their choice of the solution to
-the secant equation.
+which is called the \textit{secant} equation, i.e. the Taylor series of
+the gradient itself. Solving for \(\mathbf{B}\) and applying the
+Newton's step with the updated value is equivalent to the
+\textit{secant} method. Quasi-Newton methods are a generalization of the
+secant method to find the root of the first derivative for
+multidimensional problems. The various quasi-Newton methods differ in
+their choice of the solution to the secant equation.
 
 In a general quasi-Newton method, the unknown \(\mathbf{x}_{k}\) is
 updated applying the Newton's step calculated using the current
@@ -381,7 +385,7 @@ approximate Hessian matrix \(\mathbf{B}_{k}\) in the following fashion:
 \begin{itemize}
 \item \(\Delta \mathbf{x}_{k} = -\alpha_{k}\mathbf{B}_{k}^{-1}\nabla
   f(\mathbf{x}_{k})\), with \(\alpha\) chosen to satisfy the so called
-  Wolfe conditions~\cite[p.~34]{nocedal&wright};
+  Wolfe conditions \cite[p.~34]{nocedal&wright};
 
 \item \(\mathbf{x}_{k+1} = \mathbf{x}_{k} + \Delta\mathbf{x}_{k}\);
 
@@ -418,14 +422,13 @@ following update formula
                      \Delta\mathbf{x}_{k}^{\top}}{
                      \mathbf{y}_{k}^{\top}\Delta\mathbf{x}_{k}}.
 \end{align*}
-
-Another quasi-Newton method, popular in statistical data analysis, is
-the one based on PORT routines~\url{http://www.netlib.org/port/}. A
-Fortran mathematical subroutine library designed to be \textit{portable}
-over different types of computers, and developed by David Gay in the
-Bell Labs~\cite{PORTreport}. It is a quasi-Newton adaptive nonlinear
-least-squares algorithm~\cite{PORTpaper} with the following update
-formula
+Another quasi-Newton method, popular in the statistical modeling
+literature, is the one based on the PORT routines
+\url{http://www.netlib.org/port/}. A Fortran mathematical subroutine
+library designed to be \textit{portable} over different types of
+computers, and developed by David Gay in the Bell Labs
+\cite{PORTreport}. It is a quasi-Newton adaptive nonlinear least-squares
+algorithm \cite{PORTpaper} with the following update formula
 \begin{align*}
   \mathbf{B}_{k+1} &= \mathbf{B}_{k}\\
                    &+ \frac{
@@ -447,36 +450,34 @@ formula
                      \Delta\mathbf{x}_{k}^{\top}\mathbf{B}_{k}
                      \Delta\mathbf{x}_{k}}.
 \end{align*}
-
-As~\citeonline{nocedal&wright} points out, each quasi-Newton method
+As \citeonline{nocedal&wright} points out, each quasi-Newton method
 iteration can be performed at a cost of \(\mathcal{O}(n^{2})\)
 arithmetic operations (plus the cost of function and gradient
 evaluations); there are no \(\mathcal{O}(n^{3})\) operations such as
-linear system solves or matrix-matrix operations. For the BFGS algorithm
-is known that the rate of convergence is superlinear, but this is a
-valid assumption to any quasi-Newton method, which is fast enough for
-most practical purposes. Even though Newton's method converges more
-rapidly, quadratically, its cost per iteration usually is higher,
-because of its need for second derivatives and solution of a linear
-system.
+linear system solves or matrix-matrix operations. In the BFGS algorithm
+is known that the rate of convergence is superlinear, which is a valid
+assumption to any quasi-Newton method and is fast enough for most
+practical purposes. Even though Newton's method converges more rapidly,
+quadratically, its cost per iteration usually is higher, because of its
+need for second derivatives and solution of a linear system.
 
 In this thesis, the used BFGS implementation is the one in the
 \texttt{R}~\cite{R18}~function \texttt{optim()}, and the PORT routine
 used is the one implemented in the \texttt{R} function
 \texttt{nlminb()}.
 
-\section{AUTOMATIC DIFFERENTIATION}
+\section{A DIFFERENTIAL: AUTOMATIC DIFFERENTIATION}
 \label{cap:ad}
 
 Computing gradients, \(\nabla f(\mathbf{x})\), are a fundamental and
-crucial task, but also the main computational bottleneck for any Newton
-and quasi-Newton method. Consequently, these computations are
-fundamental to the development of this thesis. We choose to use the most
-efficient manner of computing gradients, and one of the best scientific
-computing techniques, the \textit{automatic differentiation} (AD)
-procedure. AD has two modes, the so-called forward and reverse mode. We
-will talk a bit about both, but we will use only the reverse mode. The
-reason can be illustraded by a simple example, given later.
+crucial task but also the main computational bottleneck to any Newton
+and quasi-Newton method. We choose to use the most efficient manner of
+computing gradients, one of the best scientific computing techniques but
+still not so famous in the statistical modeling literature, the
+\textit{automatic differentiation} (AD) procedure. AD has two modes, the
+so-called forward and reverse mode. We will talk a bit about both but we
+will use only the reverse mode. The reason can be illustraded by a
+simple example, given later.
 
 Automatic differentiation, also called algorithmic differentiation or
 computational differentiation, is a set of techniques to numerically and
@@ -507,24 +508,23 @@ The use of AD is inherent to the use of a computational graph,
 \autoref{fig:compgraph}. Assuming that \(f\) is implemented in an
 algorithm, the goal is to compute the derivatives
 \begin{align*}
-  &\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}_{k}} \in
+  &\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}_{k}}\in
   \mathbb{R}^{n_{t} \times n_{k}},\\
   &\text{for a numerical algorithm
          (succession of functions) of the form}\\
-  &\forall~k = s + 1, \dots, t, \quad
-    \mathbf{x}_{k} = f_{k}(\mathbf{x}_{1}, \dots, \mathbf{x}_{k-1}),
+  &\forall~k = s + 1,~\dots,~t,\quad
+    \mathbf{x}_{k} = f_{k}(\mathbf{x}_{1},~\dots,~\mathbf{x}_{k-1}),
 \end{align*}
 where \(f_{k}\) is a function which only depends on the previous
 variables.
 
 \begin{figure}[H]
-  % \vspace{0.35cm}
   \setlength{\abovecaptionskip}{.0001pt}
   \caption{A COMPUTATIONAL GRAPH}
-  \vspace{0.425cm} \centering
+  \vspace{0.3cm} \centering
   \includegraphics[width=.8\textwidth]{computational_graph.png}
   \\
-  \vspace{0.45cm}
+  \vspace{0.3cm}
   \begin{footnotesize}
     SOURCE:~\citeonline[p.~31]{peyre}.
   \end{footnotesize}
@@ -534,8 +534,8 @@ variables.
 The computational graph, \autoref{fig:compgraph}, has the role of
 represent the linking of the variables involved in \(f_{k}\) to
 \(\mathbf{x}_{k}\). The evaluation of \(f(\mathbf{x})\) corresponds to a
-forward traversal of this graph. Now, how exactly we evaluate \(f\)
-through the graph? Via one of the AD modes.
+forward traversal of this graph. Now, how we evaluate \(f\) through the
+graph? Via one of the AD modes.
 
 \subsection{Forward Mode}
 
