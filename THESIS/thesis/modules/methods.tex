@@ -542,26 +542,25 @@ graph? Via one of the AD modes.
 The forward mode correspond to the usual way of computing differentials.
 The method initialize with the derivative of the input nodes
 \[
-  \frac{\partial \mathbf{x}_{1}}{\partial \mathbf{x}_{1}} =
-  \text{Id}_{n_{1} \times n_{1}}, \quad
-  \frac{\partial \mathbf{x}_{2}}{\partial \mathbf{x}_{1}} =
-  \mathbf{0}_{n_{2} \times n_{1}}, \quad
-  \frac{\partial \mathbf{x}_{s}}{\partial \mathbf{x}_{1}} =
+  \frac{\partial\mathbf{x}_{1}}{\partial\mathbf{x}_{1}} =
+  \text{Id}_{n_{1} \times n_{1}},\quad
+  \frac{\partial\mathbf{x}_{2}}{\partial\mathbf{x}_{1}} =
+  \mathbf{0}_{n_{2} \times n_{1}},\quad
+  \frac{\partial\mathbf{x}_{s}}{\partial\mathbf{x}_{1}} =
   \mathbf{0}_{n_{s} \times n_{1}},
 \]
 and then iteratively make use of the following recursion formula
 \begin{align*}
-  &\forall~k = s + 1, \dots, t,\\
+  &\forall~k = s + 1,~\dots,~t,\\
   &\frac{\partial\mathbf{x}_{k}}{\partial\mathbf{x}_{1}} =
     \sum_{l~\in~\text{father}(k)}
-    \frac{\partial\mathbf{x}_{k}}{\partial\mathbf{x}_{l}} \times
+    \frac{\partial\mathbf{x}_{k}}{\partial\mathbf{x}_{l}}\times
     \frac{\partial\mathbf{x}_{l}}{\partial\mathbf{x}_{1}} =
     \sum_{l~\in~\text{father}(k)}
     \frac{\partial}{\partial\mathbf{x}_{l}}
-    f_{k}(\mathbf{x}_{1}, \dots, \mathbf{x}_{k-1}) \times
+    f_{k}(\mathbf{x}_{1},~\dots,~\mathbf{x}_{k-1})\times
     \frac{\partial\mathbf{x}_{l}}{\partial\mathbf{x}_{1}}.
 \end{align*}
-
 The notation ``father(\(k\))'' denotes the nodes \(l < k\) of the graph
 that are connected to \(k\). We make use of \citeonline[p.~32]{peyre}'s
 simple example.
@@ -575,20 +574,19 @@ with the corresponding computational graph being displayed in
 \autoref{fig:excompgraph}.
 
 \begin{figure}[H]
-  % \vspace{0.35cm}
   \setlength{\abovecaptionskip}{.0001pt}
   \caption{EXAMPLE OF A SIMPLE COMPUTATIONAL GRAPH}
-  \vspace{0.425cm} \centering
+  \vspace{0.3cm} \centering
   \includegraphics[width=.8\textwidth]{ex-computational_graph.png}
   \\
-  \vspace{0.45cm}
+  \vspace{0.3cm}
   \begin{footnotesize}
     SOURCE:~\citeonline[p.~33]{peyre}.
   \end{footnotesize}
   \label{fig:excompgraph}
 \end{figure}
 
-The forward mode iterations to compute the derivative w.r.t. \(x\),
+The forward mode iterations to compute the derivative w.r.t. \(x\)
 following the computational graph, is given by
 \begin{align*}
   \frac{\partial x}{\partial x} &= 1, \quad
@@ -612,7 +610,6 @@ following the computational graph, is given by
   1 \frac{\partial b}{\partial x} + 1 \frac{\partial c}{\partial x}
   \qquad &\{(b, c) \mapsto f = b + c\}
 \end{align*}
-
 To compute the derivative w.r.t. \(y\) we run another forward process
 \begin{align*}
   \frac{\partial x}{\partial y} &= 0, \quad
@@ -642,25 +639,25 @@ Instead of evaluating the differentials for all the input nodes, which
 is problematic for a large number of nodes, the reverse mode evaluates
 the differentials of the output node w.r.t. all the inner nodes.
 
-The method initialize with the derivative of the final node
+The method is based on a backward adjoint chain rule and initialize with
+the derivative of the final node
 \[
-  \frac{\partial \mathbf{x}_{t}}{\partial \mathbf{x}_{t}} =
-  \text{Id}_{n_{y} \times n_{y}},
+  \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{t}} =
+  \text{Id}_{n_{t} \times n_{t}},
 \]
 and then, from the last to the first node, iteratively make use of the
 following recursion formula
 \begin{align*}
-  &\forall~k = t - 1, t - 2, \dots, 1,\\
+  &\forall~k = t - 1,~t - 2,~\dots,~1,\\
   &\frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{k}} =
     \sum_{m~\in~\text{son}(k)}
-    \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{m}} \times
+    \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{m}}\times
     \frac{\partial\mathbf{x}_{m}}{\partial\mathbf{x}_{k}} =
     \sum_{m~\in~\text{son}(k)}
-    \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{m}} \times
+    \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{m}}\times
     \frac{\partial}{\partial\mathbf{x}_{k}}
     f_{m}(\mathbf{x}_{1}, \dots, \mathbf{x}_{m}).
 \end{align*}
-
 The notation ``son(\(k\))'' denotes the nodes \(m < k\) of the graph
 that are connected to \(k\). To be clear, the same simple example.
 
@@ -669,7 +666,6 @@ Consider, again, the function
 \[
   f(x, y) = y\log(x) + \sqrt{y\log(x)}.
 \]
-
 The iterations of the reverse mode is given by
 \begin{align*}
   \frac{\partial f}{\partial f} &= 1\\
@@ -687,24 +683,24 @@ The iterations of the reverse mode is given by
   \frac{\partial f}{\partial b} y\qquad &\{a \mapsto b = ya\}\\
   \frac{\partial f}{\partial y} &=
   \frac{\partial f}{\partial b} \frac{\partial b}{\partial y} =
-  \frac{\partial f}{\partial b} a \qquad &\{y \mapsto b = ya\}\\
+  \frac{\partial f}{\partial b} a \qquad &\{y \mapsto b = ya\}
+\end{align*}
+\begin{align*}
   \frac{\partial f}{\partial x} &=
   \frac{\partial f}{\partial a} \frac{\partial a}{\partial x} =
-  \frac{\partial f}{\partial a} \frac{1}{x} \qquad
+  \frac{\partial f}{\partial a} \frac{1}{x} \hspace{6.5cm}
   &\{x \mapsto a = \log(x)\}
 \end{align*}
-
 This is the advantage of reverse mode over the forward mode. A single
 traversal over the computational graph allows to compute both
-derivatives w.r.t. \(x, y\), while the forward mode necessities two
-processes.
+derivatives w.r.t. \(x\) and \(y\), while the forward mode necessities
+two processes.
 
 An drawback of the reverse mode is the need to store the entire
 computational graph, which is needed for the reverse sweep. In
 principle, storage of this graph is not too difficult to implement.
 However, the main benefit of AD is higher accuracy, and in many
 applications the cost is not critical.
-
 
 \section{TMB: TEMPLATE MODEL BUILDER}
 \label{cap:tmb}
@@ -716,33 +712,33 @@ combinatorial problem. Thus, since our goal is to be able to fit our
 desired statistical models, a computational tool able to efficiently
 define and implement this computational graph is make necessary. To
 solve this and many other tasks, we have the Template Model Builder
-(TMB) \cite{TMB}.
+(TMB) developed by \citeonline{TMB}.
 
 TMB \url{ http://tmb-project.org} is an \texttt{R} \cite{R18} package
 for fitting statistical latent variable models to data, inpired by AD
-Model Builder (ADMB) \cite{ADMB}. ADMB is a statistical application for
-fitting nonlinear statistical models and solve optimization problems,
-that implements AD using \texttt{C++} classes and a native template
-language. Unlike most \texttt{R} packages, in TMB the model is
-formulated in \texttt{C++}. This characteristic provides great
-flexibility, but requires some familiarity with the
+Model Builder (ADMB) and developed by \citeonline{ADMB}. ADMB is a
+statistical application for fitting nonlinear statistical models and
+solve optimization problems, that implements AD using \texttt{C++}
+classes and a native template language. Unlike most \texttt{R} packages,
+in TMB the model is formulated in \texttt{C++}. This characteristic
+provides great flexibility but requires some familiarity with the
 \texttt{C}/\texttt{C++} programming language. With TMB a user should be
 able to quickly implement complex latent effect models through simple
 \texttt{C++} templates.
 
 In this chapter we describe step-by-step all the processes involved in
-the creation and parameter estimation of a GLMM. With the TMB, all this
-is put in practice in an efficient and robust fashion.
+the creation and parameter estimation of a GLMM. With TMB all this is
+put in practice in an efficient and robust fashion.
 
-A user needs to provide just the joint likelihood function writing in a
-\texttt{C++} template. If the model presents latent effects, during the
-compilation the latent effects will be integrated out via an efficient
-Laplace approximation routine, with a Newton algorithm inside, and the
-marginal log-likelihood gradient will be also computed. These marginal
-log-likelihood will be returned into an \texttt{R} object, that can then
-be optimized using the user's favorite quasi-Newton routine, available
-in \texttt{R}. To do all that, TMB combines some state of the art
-software
+The user needs to provide just the joint likelihood function writing in
+a \texttt{C++} template. When the model presents latent effects, during
+the compilation the latent effects will be integrated out via an
+efficient Laplace approximation routine with a Newton algorithm inside,
+and the marginal log-likelihood gradient will be also computed and
+returned. The marginal log-likelihood will be returned into an
+\texttt{R} object that can then be optimized using the user's favorite
+quasi-Newton routine, available in \texttt{R}. To accomplish all that,
+TMB combines some state-of-art software
 
 \begin{itemize}
 \item \texttt{CppAD}, a \texttt{C++} AD package
