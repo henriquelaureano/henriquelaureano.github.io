@@ -752,12 +752,11 @@ TMB combines some state-of-art software
 \item Parallelism through \texttt{BLAS}: Basic Linear Algebra
   Subprograms \url{http://www.netlib.org/blas/}.
 \end{itemize}
-
 Also, some of its key characteristics are
-
 \begin{itemize}
 \item TMB employs AD to calculate first and second order derivatives of
-  the likelihood function or any objective function in \texttt{C++};
+  the likelihood function or of any objective function written in
+  \texttt{C++};
 \item The objective function, and its derivatives, can be called from
   \texttt{R}. Hence, parameter estimation via \texttt{optim()} or
   \texttt{nlminb()} is easy to be performed;
@@ -767,8 +766,8 @@ Also, some of its key characteristics are
 
 Here we focus on GLMMs, but basically any statistical model with a
 latent structure (or not), linear (or not), can be fitted with TMB. In
-times of \textit{big data}, and with the TMB's authors having a
-professional preference for state-of-space and spatial models, TMB has
+times of \textit{big data} and with the TMB's authors having a
+professional preference for state-space and spatial models, TMB has
 also automatic sparseness detection.and some other nice built tools. Pre
 and post-processing of data should be done in \texttt{R}.
 
