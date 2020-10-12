@@ -1,30 +1,37 @@
-We are handling with a complex survival data structure, the clustered
-competing risks setting. But we are using a general statistical modeling
-framework, the generalized linear mixed models (GLMMs), that was not
-made for this purpose.
+The clustered competing risks setting is a complex and specific survival
+data structure. Although, we are using a general statistical modeling
+framework, a generalized linear mixed model (GLMM). Consequently, some
+specific features are necessary into the model construction to properly
+accommodate all the characteristics of the data structure.
 
-To model competing risks data, one has to choose in which scale to work.
-We can work on the hazard scale dealing with the cause-specific hazard
-or on the probability scale dealing with the cause-specific cumulative
-incidence function (CIF). With the correct link function, we can make an
-appropriate GLMM to work on that probability scale.
+To model competing risks data we need a multivariate model (several
+responses, causes of failure) and to choose in which scale to work on.
+We may work on the hazard scale and deal with the cause-specific hazard
+function or on the probability scale and deal with the cause-specific
+cumulative incidence function (CIF). Using the correct link function, we
+are able to construct an appropriate multivariate GLMM to work on the
+probability scale.
 
-Our focus in this thesis is to be able to deal with complex family
-studies, where there is generally a strong interest in describing age at
-disease onset in the scenarios of within-cluster dependence. The
-distribution of age at disease onset is directly described by the
-cause-specific CIF. To make a GLMM work for this type of data we need to
-accommodate the cause-specific CIFs and the censorings. Assuming the
-conditional distribution for our model response as multinomial already
-deals with both left-truncation and right-censoring, avoiding the
-specification of a censoring distribution. The cause-specific CIFs can
-be modeled via the link function of our, then, multinomial GLMM
-(multiGLMM). The multinomial distribution also guarantees that the CIFs
-of all causes are modeled.
+Our goal is to be able to deal with complex family studies, where there
+is generally a strong interest in describing age at disease onset in the
+scenarios of within-cluster dependence. The distribution of age at
+disease onset is directly described by the cause-specific CIF. To build
+a multivariate GLMM for this type of data we need to accommodate the
+cause-specific CIFs and the censorings. Assuming the conditional
+distribution for our model response as multinomial (a multivariate
+distribution) we already deal with both left-truncation and
+right-censoring, avoiding the specification of a censoring distribution.
+The cause-specific CIFs can be modeled via the link function of our,
+then, multinomial GLMM (multiGLMM). The multinomial distribution also
+guarantees that the CIFs of all causes are modeled.
 
-Our choice of a general framework tries to make the inference of this
-complex model, easier. Besides, taking advantage of all the procedures
-mentioned in the previous chapter.
+Our choice for a general framework tries to make the inference of this
+complex model, easier. Besides, taking advantage of all the
+computational procedures mentioned in the previous chapter. This chapter
+presents our multiGLMM for clustered competing risks data and is divided
+into two sections. In \autoref{cap:cif} we discuss in detail the
+cluster-specific cumulative incidence function (CIF) and in
+\autoref{cap:modelitself} we present the complete modeling framework.
 
 \section{CLUSTER-SPECIFIC CUMULATIVE INCIDENCE FUNCTION
   (CIF)}
@@ -32,70 +39,67 @@ mentioned in the previous chapter.
 
 Consider that the observed follow-up time of an individual is given by
 \(T = \min(T^{\ast},~C)\), where \(T^{\ast}\) denote the failure time
-and \(C\) denote the censoring time. Given the possible covariates \(X\)
-(that can be time-dependent), for a cause-specific of failure \(k\) the
-CIF is defined as
+and \(C\) denote the censoring time. Given the possible covariates
+\(\mathbf{x}\), for a cause-specific of failure \(k\) the cumulative
+incidence function (CIF) is defined as
 \begin{align*}
-  F_{k}(t \mid X) &= \mathbb{P}[T \leq t, K = k \mid X]\\
-                  &= \int_{0}^{t} f_{k}(z \mid X)~\text{d}z\\
-                  &= \int_{0}^{t} \lambda_{k}(z \mid X)~S(z \mid X)
-                    ~\text{d}z, \quad t > 0, \quad k = 1, \dots, K.
+  F_{k}(t \mid \mathbf{x})
+  &= \mathbb{P}[T \leq t,~K = k \mid \mathbf{x}]\\
+  &= \int_{0}^{t} f_{k}(z \mid \mathbf{x})~\text{d}z\\
+  &= \int_{0}^{t} \lambda_{k}(z \mid \mathbf{x})~S(z \mid \mathbf{x})
+    ~\text{d}z, \quad t > 0, \quad k = 1,~\dots,~K.
 \end{align*}
-where \(f_{k}(t \mid X)\) is the (sub)density for the time to a type
-\(k\) failure. This is the general definition of a CIF, and to define it
-we need to define the functions that compose the subdensity.
-
+where \(f_{k}(t \mid \mathbf{x})\) is the (sub)density for the time to a
+type \(k\) failure. This is the general definition of a CIF, and to
+define it we need to define the functions that compose the subdensity.
 The first is the cause-specific hazard function or process
 \[
-  \lambda_{k}(t \mid X) =
-  \lim_{h \rightarrow 0}~h^{-1}
-  \mathbb{P}[t \leq T < t + h, K = k \mid T \geq t, X],
-  \quad t > 0, \quad k = 1, \dots, K.
+  \lambda_{k}(t \mid \mathbf{x}) =
+  \lim_{h \rightarrow 0}~\frac{1}{h}~
+  \mathbb{P}[t \leq T < t + h,~K = k \mid T \geq t,~\mathbf{x}],
+  \quad t > 0, \quad k = 1,~\dots,~K.
 \]
-
-In words, the cause-specific hazard function, \(\lambda_{k}(t \mid X)\),
-represents the instantaneous rate for failures of type \(k\) at time
-\(t\) given \(X\) and all other failure types (competing causes). If
-we sum up all cause-specific hazard function we get the overall hazard
+In words, the cause-specific hazard function, \(\lambda_{k}(t \mid
+\mathbf{x})\), represents the instantaneous rate for failures of type
+\(k\) at time \(t\) given \(\mathbf{x}\) and all other failure types
+(competing causes). If we sum up all cause-specific hazard function we
+get the overall hazard function,
+\[
+  \lambda(t \mid \mathbf{x}) =
+  \sum_{k=1}^{K}\lambda_{k}(t \mid \mathbf{x}).
+\]
+From the overall hazard function we arrive in the overall survival
 function,
 \[
-  \lambda(t \mid X) = \sum_{k=1}^{K}\lambda_{k}(t \mid X).
+  S(t \mid \mathbf{x}) =
+  \mathbb{P}[T > t \mid \mathbf{x}] =
+  \exp\left\{-\int_{0}^{t} \lambda(z \mid \mathbf{x})~\text{d}z\right\},
 \]
-
-From the overall hazard function we arrive in the overall survival function,
-\[
-  S(t \mid X) =
-  \mathbb{P}[T > t \mid X] =
-  \exp\left\{-\int_{0}^{t} \lambda(z \mid X)~\text{d}z\right\},
-\]
-the second function that compose the subdensity \(f_{k}(t \mid X)\). A
-comprehensive reference for all these definitions is the book of
-\citeonline{kalb&prentice}.
+the second function that compose the subdensity \(f_{k}(t \mid
+\mathbf{x})\). A comprehensive reference for all these definitions is
+the book of \citeonline{kalb&prentice}.
 
 Until this point, we were talking about a general CIF's definition. We
 need now a precise framework telling how to take into consideration our
 clustered/family structure. We use the same CIF specification of
-\citeonline{SCHEIKE}, i.e. the approach that motivated this thesis.
-
-For two competing causes of failure, the cause-specific CIFs are
-specified in the following manner,
+\citeonline{SCHEIKE}, i.e. the approach that motivated this thesis. For
+two competing causes of failure, the cause-specific CIFs are specified
+in the following manner,
 \begin{equation}
-  F_{k} (t \mid X, u_{1}, u_{2}, \eta_{k}) =
-  \underbrace{\pi_{k}(X, u_{1}, u_{2})}_{
+  F_{k} (t \mid \mathbf{x},~u_{1},~u_{2},~\eta_{k}) =
+  \underbrace{\pi_{k}(\mathbf{x},~u_{1},~u_{2})}_{
     \substack{\text{cluster-specific}\\\text{risk level}}}\times
-  \underbrace{\Phi[w_{k} g(t) - X^{\top}\gamma_{k} - \eta_{k}]}_{
+  \underbrace{\Phi[w_{k} g(t) - \mathbf{x}\bm{\gamma}_{k} - \eta_{k}]}_{
     \substack{\text{cluster-specific}\\\text{failure time trajectory}}
   }, \quad t > 0, \quad k = 1,~2.
   \label{eq:cif}
 \end{equation}
 i.e. as a product of a cluster-specific risk level and a
 cluster-specific failure time trajectory, resulting in a
-cluster-specific CIF.
-
-What makes the components in \autoref{eq:cif} cluster-specific are
-\(\bm{u} = \{u_{1}, u_{2}\}\) and \(\bm{\eta} = \{\eta_{1},
-\eta_{2}\}\), Gaussian distributed latent effects with zero mean and
-potentially correlated, i.e.
+cluster-specific CIF. What makes these components cluster-specific are
+\(\bm{u} = \{u_{1},~u_{2}\}\) and \(\bm{\eta} =
+\{\eta_{1},~\eta_{2}\}\), Gaussian distributed latent effects with zero
+mean and potentially correlated, i.e.
 \[
   \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix} \sim
   \mathcal{N} \left(\begin{bmatrix} 0\\0\\0\\0\end{bmatrix},
@@ -109,20 +113,18 @@ potentially correlated, i.e.
       &&&\sigma_{\eta_{2}}^{2}
     \end{bmatrix}\right).
 \]
+The cluster-specific survival function is given as \(S(t \mid
+\mathbf{x},~\bm{u},~\bm{\eta}) = 1 - F_{1} (t \mid
+\mathbf{x},~\bm{u},~\eta_{1}) - F_{2} (t \mid
+\mathbf{x},~\bm{u},~\eta_{2})\). Since we use the same CIF specification
+of \citeonline{SCHEIKE}, the following details are essentially the same
+encountered in the paper.
 
-The cluster-specific survival function is given as \(S(t \mid X, \bm{u},
-\bm{\eta}) = 1 - F_{1} (t \mid X, \bm{u}, \eta_{1}) - F_{2} (t \mid X,
-\bm{u}, \eta_{2})\).
-
-Since we use the same CIF specification of \citeonline{SCHEIKE}, the
-following descriptions and details are essentially the same encountered
-in the paper.
-
-Focusing first on the second component of \autoref{eq:cif}. The
+Focusing first on the second component of \autoref{eq:cif}, the
 cluster-specific failure time trajectory
 \[
-  \Phi[w_{k} g(t) - X^{\top}\gamma_{k} - \eta_{k}],
-  \quad t > 0, \quad k = 1, ~2,
+  \Phi[w_{k} g(t) - \mathbf{x}\bm{\gamma}_{k} - \eta_{k}],
+  \quad t > 0, \quad k = 1,~2,
 \]
 where \(\Phi(\cdot)\) is the cumulative distribution function of a
 standard Gaussian distribution.
@@ -130,43 +132,44 @@ standard Gaussian distribution.
 Instead of \(w_{k} g(t)\), in \citeonline{SCHEIKE} is specified
 \(\alpha_{k}(g(t))\), where \(\alpha_{k}(\cdot)\) are monotonically
 increasing functions known up to a finite-dimensional parameter vector,
-\(w_{k}\). Examples are monotonically increasing B-spline or piecewise
-lienar functions. However, to try to simplify the model structure we
+\(w_{k}\). Examples are monotonically increasing B-splines or piecewise
+linear functions. However, to try to simplify the model structure we
 consider just the finite-dimensional parameter vector. The bottom line
-is that the authors do the same approach in their applications.
-
-With regard to the function \(g(t)\), it plays a crucial role since the
+is that the authors do the same approach in their applications. With
+regard to the function \(g(t)\), it plays a crucial role since the
 separation of the CIF in \autoref{eq:cif} is only possible with it. A
 time \(t\) transformation given by
 \[
   g(t) = \text{arctanh}\left(\frac{t - \delta/2}{\delta/2}\right),
-  \quad t\in~]0,~\delta[, \quad g(t)\in~]-\infty,~\infty[,
+  \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty),
 \]
 where \(\delta\) depends on the data and cannot exceed the maximum
 observed follow-up time \(\tau\), i.e. \(\delta \leq \tau\). With this
-transformation, based on a Fisher transformation, the value of the
+transformation based on a Fisher transformation, the value of the
 cluster-specific failure time trajectory is equal 1, at time \(\delta\).
-Consequently, \(F_{k} (\delta \mid X, \bm{u}, \eta_{k}) = \pi_{k}(X \mid
-\bm{u})\) and, we can interpret \(\pi_{1}(X \mid \bm{u})\) and
-\(\pi_{2}(X \mid \bm{u})\) as the cause-specific cluster-specific risk
-levels, at time \(\delta\).
+Consequently, \(F_{k} (\delta \mid \mathbf{x},~\bm{u},~\eta_{k}) =
+\pi_{k}(\mathbf{x} \mid \bm{u})\) and we can interpret
+\(\pi_{1}(\mathbf{x} \mid \bm{u})\) and \(\pi_{2}(\mathbf{x} \mid
+\bm{u})\) as the cause-specific cluster-specific risk levels, at time
+\(\delta\).
 
 The cluster-specific risk levels are modeled by a multinomial logistic
 regression model with latent effects, i.e.
 \begin{equation}
-  \pi_{k}(X, \bm{u}) =
-  \frac{\exp\{X^{\top}\beta_{k} + u_{k}\}}{1 +
-    \exp\{X^{\top}\beta_{1} + u_{1}\} +
-    \exp\{X^{\top}\beta_{2} + u_{2}\}}, \quad k = 1,~2,
+  \pi_{k}(\mathbf{x}, \bm{u}) =
+  \frac{\exp\{\mathbf{x}\bm{\beta}_{k} + u_{k}\}}{1 +
+    \exp\{\mathbf{x}\bm{\beta}_{1} + u_{1}\} +
+    \exp\{\mathbf{x}\bm{\beta}_{2} + u_{2}\}}, \quad k = 1,~2,
   \label{eq:risklevel}
 \end{equation}
-where \(\beta_{k}\)'s are the parameters responsible for quantifying the
-impact of the covariates in the cause-specific risk levels. For
-individuals from the same chuster/family, at the same time point, the
-\(\beta_{k}\)s have the well-known odds ratio interpretation.
+where \(\bm{\beta}_{k}\)'s are the parameters responsible for
+quantifying the impact of the covariates in the cause-specific risk
+levels. For individuals from the same chuster/family, at the same time
+point, the \(\bm{\beta}_{k}\)s have the well-known odds ratio
+interpretation.
 
-The \(\gamma_{k}\)'s are the parameters responsible for quantifying the
-impact of the covariates in the cause-specific failure time
+The \(\bm{\gamma}_{k}\)'s are the parameters responsible for quantifying
+the impact of the covariates in the cause-specific failure time
 trajectories, i.e. the shape of the cumulative incidence, and
 consequently how quickly the cluster-specific risk levels observed at
 time \(\delta\) are reached. The fact that \(\gamma_{k}\) enters
