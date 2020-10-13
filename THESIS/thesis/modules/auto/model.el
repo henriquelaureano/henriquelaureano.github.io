@@ -5,6 +5,7 @@
     "cap:cif"
     "eq:cif"
     "eq:risklevel"
+    "fig:cifcoefs"
     "fig:cif"
     "cap:modelitself"
     "eq:model"
