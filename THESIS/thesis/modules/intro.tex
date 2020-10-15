@@ -82,15 +82,15 @@ A survival model deals with survival experience. Usually, survival
 experience is modeled in the \textit{hazard} (failure rate) scale and
 for an individual \(i\) can be written as
 \begin{equation}
-  \lambda(t \mid \mathbf{x}_{i}) =
-  \lambda_{0}(t) \times c(\mathbf{x}_{i} \bm{\beta})
+  \lambda(t \mid \bm{x}_{i}) =
+  \lambda_{0}(t) \times c(\bm{x}_{i} \bm{\beta})
   \quad \text{at time } t,
   \label{eq:intro1}
 \end{equation}
 i.e. a product of \(\lambda_{0}(\cdot)\), an arbitrary baseline hazard
 function, and \(c\), a specific function form that will depend on the
 chosen probability distribution for the failure time and on a covariates
-(explanatory/independent variables) vector \(\mathbf{x}_{i} =
+(explanatory/independent variables) vector \(\bm{x}_{i} =
 [x_{1}~\dots~x_{p}]\), where \(\bm{\beta}^{\top} =
 [\beta_{1}~\dots~\beta_{p}]\) is a vector of regression parameters. This
 structure is specified for a simple failure time process, as
@@ -154,10 +154,10 @@ distribution and, what we do is to model its mean, \(\mu_{i} \equiv
 distributions. This extended framework received the name of generalized
 linear model (GLM) and is characterized by the following mean structure
 \[
- g(\mu_{i}) = \mathbf{x}_{i}\bm{\beta},
+ g(\mu_{i}) = \bm{x}_{i}\bm{\beta},
 \]
-where \(\mathbf{x}_{i}\) is the \(i^\text{th}\) row of a model matrix
-\(\mathbf{X}\), and \(\bm{\beta}\) is a vector of unknown parameters.
+where \(\bm{x}_{i}\) is the \(i^\text{th}\) row of a model matrix
+\(\bm{x}\), and \(\bm{\beta}\) is a vector of unknown parameters.
 Also, in a GLM the \(Y_{i}\) are independent and
 \[
   Y_{i} \sim \text{some exponential family distribution}.
@@ -171,7 +171,7 @@ comprehensive reference for GLMs is \citeonline{GLM89}.
 What makes a GLM into a GLMM is the addition of a latent
 (\textit{m}ixed) effect, \(\mathbf{u}\). The mean structure becomes
 \[
-  g(\mu_{i}) = \mathbf{x}_{i}\bm{\beta} + \mathbf{z}_{i}\mathbf{u},
+  g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \mathbf{z}_{i}\mathbf{u},
   \quad \mathbf{u} \sim \mathcal{N}(\mathbf{0},\bm{\Sigma})
 \]
 where the latent effect is assumed to follow a multivariate normal

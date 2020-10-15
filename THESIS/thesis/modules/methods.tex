@@ -18,10 +18,10 @@ exciting \texttt{R} \cite{R18} package developed by~\citeonline{TMB}.
 
 A GLMM models an \(n\)-vector of exponential family random variables,
 \(\mathbf{Y}\), in terms of its conditional expected value, \(\bm{\mu}
-\equiv \mathbb{E}(\mathbf{Y} \mid \mathbf{X}, \mathbf{u})\), via a
+\equiv \mathbb{E}(\mathbf{Y} \mid \bm{x}, \mathbf{u})\), via a
 linear combination called of linear predictor and generally expressed by
 \begin{equation}
-  g(\bm{\mu}) = \mathbf{X} \bm{\beta} + \mathbf{Zu}, \quad
+  g(\bm{\mu}) = \bm{x} \bm{\beta} + \mathbf{Zu}, \quad
   \mathbf{u} \sim \mathcal{N}(\mathbf{0}, \bm{\Sigma}).
   \label{eq:gmu}
 \end{equation}
@@ -233,9 +233,9 @@ a one-parameter exponential family distribution that can be written as
 \[
   f(\mathbf{y}_{i} \mid \mathbf{u}_{i}, \bm{\theta}) = \exp
   \left\{\mathbf{y}_{i}^{\top}
-    (\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) -
+    (\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) -
     \mathbf{1}_{i}^{\top}
-    b(\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) +
+    b(\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) +
     \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})
   \right\},
 \]
@@ -246,9 +246,9 @@ distribution, highlights the convenience of the Laplace method. The
 \begin{equation}
   \begin{aligned}
     Q(\mathbf{u}_{i}) &= \mathbf{y}_{i}^{\top}
-    (\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) -
+    (\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) -
     \mathbf{1}_{i}^{\top}
-    b(\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) +
+    b(\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) +
     \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})\\
     &- \frac{n_{\mathbf{u}}}{2} \log (2\pi) -
     \frac{1}{2} \log |\bm{\Sigma}| -
@@ -273,11 +273,11 @@ method, given by the following:
 \begin{equation}
   \begin{aligned}
     {Q}'(\mathbf{u}_{i}^{(k)}) &= \{\mathbf{y}_{i} -
-    {b}'(\mathbf{X}_{i}\bm{\beta} +
+    {b}'(\bm{x}_{i}\bm{\beta} +
     \mathbf{Z}_{i}\mathbf{u}_{i}^{(k)})\}^{\top} -
     {\mathbf{u}_{i}^{(k)}}^{\top} \bm{\Sigma}^{-1},\\
     {Q}''(\mathbf{u}_{i}^{(k)}) &=
-    - \text{diag}\{{b}''(\mathbf{X}_{i}\bm{\beta} +
+    - \text{diag}\{{b}''(\bm{x}_{i}\bm{\beta} +
     \mathbf{Z}_{i}\mathbf{u}_{i}^{(k)})\} - \bm{\Sigma}^{-1}.
   \end{aligned}
   \nonumber
@@ -293,13 +293,13 @@ follows:
     \log L(\bm{\theta} \mid \mathbf{y}_{i}) &=
     \frac{n}{2} \log (2\pi) - \frac{1}{2} \log
     \left|
-      \text{diag}\{{b}''(\mathbf{X}_{i}\bm{\beta} +
+      \text{diag}\{{b}''(\bm{x}_{i}\bm{\beta} +
       \mathbf{Z}_{i}\mathbf{\hat{u}}_{i})\} + \bm{\Sigma}^{-1}
     \right|\\
     &+ \mathbf{y}_{i}^{\top}
-    (\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) -
+    (\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) -
     \mathbf{1}_{i}^{\top}
-    b(\mathbf{X}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) +
+    b(\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) +
     \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})\\
     &- \frac{n_{\mathbf{u}}}{2} \log (2\pi) -
     \frac{1}{2} \log |\bm{\Sigma}| - \frac{1}{2}
@@ -348,28 +348,28 @@ need to be inverted. Newton's method requires the Hessian to be
 inverted, typically by solving a system of linear equations - often
 quite costly. In contrast, quasi-Newton methods usually generate an
 estimate of it directly. As in Newton's method, they use a second-order
-approximation to find the minimum of a function \(f(\mathbf{x})\). The
-Taylor series of \(f(\mathbf{x})\) around an iterate is
+approximation to find the minimum of a function \(f(\bm{x})\). The
+Taylor series of \(f(\bm{x})\) around an iterate is
 \[
-  f(\mathbf{x}_{k} + \Delta\mathbf{x})\approx
-  f(\mathbf{x}_{k}) + \nabla f(\mathbf{x}_{k})^{\top}\Delta\mathbf{x} +
-  \frac{1}{2} \Delta\mathbf{x}^{\top}\mathbf{B}~\Delta\mathbf{x},
+  f(\bm{x}_{k} + \Delta\bm{x})\approx
+  f(\bm{x}_{k}) + \nabla f(\bm{x}_{k})^{\top}\Delta\bm{x} +
+  \frac{1}{2} \Delta\bm{x}^{\top}\mathbf{B}~\Delta\bm{x},
 \]
 where \(\nabla f(\cdot)\) is the gradient, and \(\mathbf{B}\) an
 approximation to the Hessian matrix. The gradient of this approximation
-w.r.t. \(\Delta\mathbf{x}\) is
+w.r.t. \(\Delta\bm{x}\) is
 \[
-  \nabla f(\mathbf{x}_{k} + \Delta\mathbf{x}) \approx
-  \nabla f(\mathbf{x}_{k}) + \mathbf{B}~\Delta\mathbf{x},
+  \nabla f(\bm{x}_{k} + \Delta\bm{x}) \approx
+  \nabla f(\bm{x}_{k}) + \mathbf{B}~\Delta\bm{x},
 \]
 setting this gradient to zero provides the Newton step:
 \[
-  \Delta\mathbf{x} = - \mathbf{B}^{-1}\nabla f(\mathbf{x}_{k}).
+  \Delta\bm{x} = - \mathbf{B}^{-1}\nabla f(\bm{x}_{k}).
 \]
 The Hessian approximation \(\mathbf{B}\) is chosen to satisfy
 \[
-  \nabla f(\mathbf{x}_{k} + \Delta\mathbf{x}) =
-  \nabla f(\mathbf{x}_{k}) + \mathbf{B}~\Delta\mathbf{x},
+  \nabla f(\bm{x}_{k} + \Delta\bm{x}) =
+  \nabla f(\bm{x}_{k}) + \mathbf{B}~\Delta\bm{x},
 \]
 which is called the \textit{secant} equation, i.e. the Taylor series of
 the gradient itself. Solving for \(\mathbf{B}\) and applying the
@@ -379,19 +379,19 @@ secant method to find the root of the first derivative for
 multidimensional problems. The various quasi-Newton methods differ in
 their choice of the solution to the secant equation.
 
-In a general quasi-Newton method, the unknown \(\mathbf{x}_{k}\) is
+In a general quasi-Newton method, the unknown \(\bm{x}_{k}\) is
 updated applying the Newton's step calculated using the current
 approximate Hessian matrix \(\mathbf{B}_{k}\) in the following fashion:
 \begin{itemize}
-\item \(\Delta \mathbf{x}_{k} = -\alpha_{k}\mathbf{B}_{k}^{-1}\nabla
-  f(\mathbf{x}_{k})\), with \(\alpha\) chosen to satisfy the so called
+\item \(\Delta \bm{x}_{k} = -\alpha_{k}\mathbf{B}_{k}^{-1}\nabla
+  f(\bm{x}_{k})\), with \(\alpha\) chosen to satisfy the so called
   Wolfe conditions \cite[p.~34]{nocedal&wright};
 
-\item \(\mathbf{x}_{k+1} = \mathbf{x}_{k} + \Delta\mathbf{x}_{k}\);
+\item \(\bm{x}_{k+1} = \bm{x}_{k} + \Delta\bm{x}_{k}\);
 
 \item The gradient computed at the new point \(\nabla
-  f(\mathbf{x}_{k+1})\), and \(\mathbf{y}_{k} = \nabla
-  f(\mathbf{x}_{k+1}) - \nabla f(\mathbf{x}_{k})\) is used to update the
+  f(\bm{x}_{k+1})\), and \(\mathbf{y}_{k} = \nabla
+  f(\bm{x}_{k+1}) - \nabla f(\bm{x}_{k})\) is used to update the
   approximate Hessian \(\mathbf{B}_{k+1}\), or directly its inverse
   \(\mathbf{H}_{k+1} = \mathbf{B}_{k+1}^{-1}\).
 \end{itemize}
@@ -402,25 +402,25 @@ following update formula
 \begin{align*}
   \mathbf{B}_{k+1} &= \mathbf{B}_{k} +
                      \frac{\mathbf{y}_{k}\mathbf{y}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\mathbf{x}_{k}} -
-                     \frac{\mathbf{B}_{k}\Delta\mathbf{x}_{k}
-                     (\mathbf{B}_{k}\Delta\mathbf{x}_{k})^{\top}}{
-                     \Delta\mathbf{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\mathbf{x}_{k}},\\
+                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}} -
+                     \frac{\mathbf{B}_{k}\Delta\bm{x}_{k}
+                     (\mathbf{B}_{k}\Delta\bm{x}_{k})^{\top}}{
+                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
+                     \Delta\bm{x}_{k}},\\
   \mathbf{H}_{k+1} = \mathbf{B}_{k+1}^{-1}
                    &= \left(
                      \mathbf{I} -
-                     \frac{\Delta\mathbf{x}_{k}\mathbf{y}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\mathbf{x}_{k}}
+                     \frac{\Delta\bm{x}_{k}\mathbf{y}_{k}^{\top}}{
+                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}}
                      \right) \mathbf{H}_{k}
                      \left(
                      \mathbf{I} -
-                     \frac{\mathbf{y}_{k}\Delta\mathbf{x}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\mathbf{x}_{k}}
+                     \frac{\mathbf{y}_{k}\Delta\bm{x}_{k}^{\top}}{
+                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}}
                      \right) +
-                     \frac{\Delta\mathbf{x}_{k}
-                     \Delta\mathbf{x}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\mathbf{x}_{k}}.
+                     \frac{\Delta\bm{x}_{k}
+                     \Delta\bm{x}_{k}^{\top}}{
+                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}}.
 \end{align*}
 Another quasi-Newton method, popular in the statistical modeling
 literature, is the one based on the PORT routines
@@ -433,22 +433,22 @@ algorithm \cite{PORTpaper} with the following update formula
   \mathbf{B}_{k+1} &= \mathbf{B}_{k}\\
                    &+ \frac{
                      \left(\mathbf{y}_{k} -
-                     \mathbf{B}_{k}\Delta\mathbf{x}_{k}\right)
-                     \Delta\mathbf{x}_{k}^{\top}\mathbf{B}_{k} +
-                     \mathbf{B}_{k}\Delta\mathbf{x}_{k}
+                     \mathbf{B}_{k}\Delta\bm{x}_{k}\right)
+                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k} +
+                     \mathbf{B}_{k}\Delta\bm{x}_{k}
                      \left(\mathbf{y}_{k} -
-                     \mathbf{B}_{k}\Delta\mathbf{x}_{k}\right)^{\top}}{
-                     \Delta\mathbf{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\mathbf{x}_{k}}\\
-                   &- \frac{\Delta\mathbf{x}_{k}^{\top}
+                     \mathbf{B}_{k}\Delta\bm{x}_{k}\right)^{\top}}{
+                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
+                     \Delta\bm{x}_{k}}\\
+                   &- \frac{\Delta\bm{x}_{k}^{\top}
                      \left(\mathbf{y}_{k} -
-                     \mathbf{B}_{k}\Delta\mathbf{x}_{k}\right)
-                     \mathbf{B}_{k}\Delta\mathbf{x}_{k}
-                     \Delta\mathbf{x}_{k}^{\top}\mathbf{B}_{k}}{
-                     \left(\Delta\mathbf{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\mathbf{x}_{k}\right)^{\top}
-                     \Delta\mathbf{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\mathbf{x}_{k}}.
+                     \mathbf{B}_{k}\Delta\bm{x}_{k}\right)
+                     \mathbf{B}_{k}\Delta\bm{x}_{k}
+                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}}{
+                     \left(\Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
+                     \Delta\bm{x}_{k}\right)^{\top}
+                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
+                     \Delta\bm{x}_{k}}.
 \end{align*}
 As \citeonline{nocedal&wright} points out, each quasi-Newton method
 iteration can be performed at a cost of \(\mathcal{O}(n^{2})\)
@@ -469,7 +469,7 @@ used is the one implemented in the \texttt{R} function
 \section{A DIFFERENTIAL: AUTOMATIC DIFFERENTIATION}
 \label{cap:ad}
 
-Computing gradients, \(\nabla f(\mathbf{x})\), are a fundamental and
+Computing gradients, \(\nabla f(\bm{x})\), are a fundamental and
 crucial task but also the main computational bottleneck to any Newton
 and quasi-Newton method. We choose to use the most efficient manner of
 computing gradients, one of the best scientific computing techniques but
@@ -508,12 +508,12 @@ The use of AD is inherent to the use of a computational graph,
 \autoref{fig:compgraph}. Assuming that \(f\) is implemented in an
 algorithm, the goal is to compute the derivatives
 \begin{align*}
-  &\frac{\partial f(\mathbf{x})}{\partial\mathbf{x}_{k}}\in
+  &\frac{\partial f(\bm{x})}{\partial\bm{x}_{k}}\in
   \mathbb{R}^{n_{t} \times n_{k}},\\
   &\text{for a numerical algorithm
          (succession of functions) of the form}\\
   &\forall~k = s + 1,~\dots,~t,\quad
-    \mathbf{x}_{k} = f_{k}(\mathbf{x}_{1},~\dots,~\mathbf{x}_{k-1}),
+    \bm{x}_{k} = f_{k}(\bm{x}_{1},~\dots,~\bm{x}_{k-1}),
 \end{align*}
 where \(f_{k}\) is a function which only depends on the previous
 variables.
@@ -533,7 +533,7 @@ variables.
 
 The computational graph, \autoref{fig:compgraph}, has the role of
 represent the linking of the variables involved in \(f_{k}\) to
-\(\mathbf{x}_{k}\). The evaluation of \(f(\mathbf{x})\) corresponds to a
+\(\bm{x}_{k}\). The evaluation of \(f(\bm{x})\) corresponds to a
 forward traversal of this graph. Now, how we evaluate \(f\) through the
 graph? Via one of the AD modes.
 
@@ -542,24 +542,24 @@ graph? Via one of the AD modes.
 The forward mode correspond to the usual way of computing differentials.
 The method initialize with the derivative of the input nodes
 \[
-  \frac{\partial\mathbf{x}_{1}}{\partial\mathbf{x}_{1}} =
+  \frac{\partial\bm{x}_{1}}{\partial\bm{x}_{1}} =
   \text{Id}_{n_{1} \times n_{1}},\quad
-  \frac{\partial\mathbf{x}_{2}}{\partial\mathbf{x}_{1}} =
+  \frac{\partial\bm{x}_{2}}{\partial\bm{x}_{1}} =
   \mathbf{0}_{n_{2} \times n_{1}},\quad
-  \frac{\partial\mathbf{x}_{s}}{\partial\mathbf{x}_{1}} =
+  \frac{\partial\bm{x}_{s}}{\partial\bm{x}_{1}} =
   \mathbf{0}_{n_{s} \times n_{1}},
 \]
 and then iteratively make use of the following recursion formula
 \begin{align*}
   &\forall~k = s + 1,~\dots,~t,\\
-  &\frac{\partial\mathbf{x}_{k}}{\partial\mathbf{x}_{1}} =
+  &\frac{\partial\bm{x}_{k}}{\partial\bm{x}_{1}} =
     \sum_{l~\in~\text{father}(k)}
-    \frac{\partial\mathbf{x}_{k}}{\partial\mathbf{x}_{l}}\times
-    \frac{\partial\mathbf{x}_{l}}{\partial\mathbf{x}_{1}} =
+    \frac{\partial\bm{x}_{k}}{\partial\bm{x}_{l}}\times
+    \frac{\partial\bm{x}_{l}}{\partial\bm{x}_{1}} =
     \sum_{l~\in~\text{father}(k)}
-    \frac{\partial}{\partial\mathbf{x}_{l}}
-    f_{k}(\mathbf{x}_{1},~\dots,~\mathbf{x}_{k-1})\times
-    \frac{\partial\mathbf{x}_{l}}{\partial\mathbf{x}_{1}}.
+    \frac{\partial}{\partial\bm{x}_{l}}
+    f_{k}(\bm{x}_{1},~\dots,~\bm{x}_{k-1})\times
+    \frac{\partial\bm{x}_{l}}{\partial\bm{x}_{1}}.
 \end{align*}
 The notation ``father(\(k\))'' denotes the nodes \(l < k\) of the graph
 that are connected to \(k\). We make use of \citeonline[p.~32]{peyre}'s
@@ -642,21 +642,21 @@ the differentials of the output node w.r.t. all the inner nodes.
 The method is based on a backward adjoint chain rule and initialize with
 the derivative of the final node
 \[
-  \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{t}} =
+  \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{t}} =
   \text{Id}_{n_{t} \times n_{t}},
 \]
 and then, from the last to the first node, iteratively make use of the
 following recursion formula
 \begin{align*}
   &\forall~k = t - 1,~t - 2,~\dots,~1,\\
-  &\frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{k}} =
+  &\frac{\partial\bm{x}_{t}}{\partial\bm{x}_{k}} =
     \sum_{m~\in~\text{son}(k)}
-    \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{m}}\times
-    \frac{\partial\mathbf{x}_{m}}{\partial\mathbf{x}_{k}} =
+    \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{m}}\times
+    \frac{\partial\bm{x}_{m}}{\partial\bm{x}_{k}} =
     \sum_{m~\in~\text{son}(k)}
-    \frac{\partial\mathbf{x}_{t}}{\partial\mathbf{x}_{m}}\times
-    \frac{\partial}{\partial\mathbf{x}_{k}}
-    f_{m}(\mathbf{x}_{1}, \dots, \mathbf{x}_{m}).
+    \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{m}}\times
+    \frac{\partial}{\partial\bm{x}_{k}}
+    f_{m}(\bm{x}_{1}, \dots, \bm{x}_{m}).
 \end{align*}
 The notation ``son(\(k\))'' denotes the nodes \(m < k\) of the graph
 that are connected to \(k\). To be clear, the same simple example.

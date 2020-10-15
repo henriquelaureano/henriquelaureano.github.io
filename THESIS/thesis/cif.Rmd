@@ -13,12 +13,13 @@ opts_chunk$set(fig.path = "figures/")
 cif1 <- function(mrow) {
     t <- mrow[ , 1] ; eta1 <- mrow[ , 2] ; u1 <- mrow[ , 3] ; u2 <- 0
     X <- 1
-    beta1 <- -1.9 ; beta2 <- -0.2
+    beta1 <- -2 ; beta2 <- -1
     risklevel1 <- exp(X * beta1 + u1)
     risklevel <- risklevel1/(1 + risklevel1 + exp(X * beta2 + u2))
     delta <- 80
-    gamma1 <- 2
-    trajectory <- pnorm(3 * atanh(2 * t/delta - 1) - X * gamma1 - eta1)
+    gamma1 <- 1
+    w1 <- 3
+    trajectory <- pnorm(w1 * atanh(2 * t/delta - 1) - X * gamma1 - eta1)
     out <- risklevel * trajectory
     return(out)
 }
@@ -41,10 +42,10 @@ pacman::p_load(ggplot2, patchwork)
 ggplot(df, aes(t, cifs, group = eta1)) +
     geom_line(aes(linetype = factor(eta1))) +
     facet_wrap(~ u1, labeller = label_bquote(u[1] : .(u1))) +
-    ylim(0, 0.2) +
+    ## ylim(0, 0.2) +
     labs(x = "Time", y = "Cluster-specific CIF",
          linetype = expression(eta[1])) +
-    theme(legend.position = c(0.07, 0.83),
+    theme(legend.position = c(0.07, 0.81),
           legend.text = element_text(size = 11),
           strip.background = element_rect(colour = "black",
                                           fill = "white"),
