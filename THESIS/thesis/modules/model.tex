@@ -340,7 +340,7 @@ where \(\bm{\theta} = [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
 framework, a subject can fail from just one competing cause or get
 censor, at a given time. Thus, the fraction of factorials in the fixed
 effect component is made only by 0's and 1's. Finally, returning the
-value 1 .The matrix \(\Sigma\) is the variance-covariance matrix, which
+value 1. The matrix \(\Sigma\) is the variance-covariance matrix, which
 components are given by \(\bm{\sigma}^{2}\) and \(\bm{\varrho}\).
 
 Now, \autoref{eq:loglik} in words. To each cluster (family) \(j\) we
@@ -354,12 +354,77 @@ fixed effects contribution. The likelihood in \autoref{eq:loglik} is the
 most general as possible, allowing for repeated measures to each
 subject. Since all subjects of a given cluster shares the same latent
 effect, we have just one latent effect contribution multiplying the
-product of fixed effects contribution. As we don't observe the latent
+product of fixed effect contributions. As we do not observe the latent
 effect variables, \(\bm{r}_{j}\), we integrate out in it. With two
 competing causes of failure, we have four latent effects (a multivariate
-Gaussian distribution in four dimensions). As consequence, for each
+Gaussian distribution in four dimensions). Consequently, for each
 cluster, we approximate an integral in four dimensions. The product of
 these approximated integrals results in the called marginal likelihood,
 to be maximized in \(\bm{\theta}\).
+
+\subsection{Parametrization}
+\label{cap:parametrization}
+
+The parameters to be estimated are the components of the vector
+\(\bm{\theta} = [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
+\bm{\varrho}]^{\top}\). There we have the fixed effect or mean
+components \(\{\bm{\beta}~\bm{\gamma}~\bm{w}\}\), the easiest to
+estimate in a statistical modeling framework; we have variance
+components \(\{\bm{\sigma^{2}}\}\), the intermediate ones; and we have
+the correlation components \(\{\bm{\varrho}\}\), the hardest ones. This
+idea of easy or hard to estimate may be justified by two points.
+
+The first comes from the fact that we are modeling the mean of a
+probability distribution in a hierarchical and structured fashion,
+consequently, the easiest parameters to estimate will be the mean
+parameters. We may make the analogy that to estimate the mean parameters
+we need data (resources); to estimate the variance parameters we need
+more data (more resources), and to estimate the correlation parameters
+we need much more data (even more resources). The second point comes
+from the parametric space boundaries.
+
+Generally, the fixed effect components do not present restrictions, i.e.
+they can vary in all \(\mathbb{R}\). The same can not be said from the
+variance components, restricted by definition into the
+\(\mathbb{R}_{\ast}^{+}\). Finally, we have the correlation components,
+restricted to the interval \([-1,~1]\). These parametric space
+boundaries drive us again to the first point mentioned above since we
+need more data (resources, information) to be able to estimate
+coefficients restricted to some interval. Nevertheless, this may not be
+enough. Without providing some extra information, in terms of an
+constrained algorithm e.g., it is very reasonable to expect that during
+the optimization procedure some unrealistic areas of the parametric
+space could be visited and jeopardize the stability or even the whole
+optimization procedure. To overcome these possible difficulties,
+parameter reparametrizations are more than welcome.
+
+In the statistical modeling literature, the most common parametrization
+employed to handle the components of a variance-covariance matrix
+\(\Sigma\) is the Cholesky factorization or decomposition. Still
+thinking in two competing causes of failure, the Cholesky decomposition
+of \(\Sigma\) may be expressed as
+\begin{align*}
+  \Sigma =
+  \begin{bmatrix}
+    \sigma_{u_{1}}^{2}&
+    \varrho_{u_{1},~u_{2}}&
+    \varrho_{u_{1},~\eta_{1}}&\varrho_{u_{1},~\eta_{2}}\\
+    &\sigma_{u_{2}}^{2}&
+    \varrho_{u_{2},~\eta_{1}}&\varrho_{u_{2},~\eta_{2}}\\
+    &&\sigma_{\eta_{1}}^{2}&\varrho_{\eta_{1},~\eta_{2}}\\
+    &&&\sigma_{\eta_{2}}^{2}
+  \end{bmatrix} =
+        \begin{bmatrix}
+          c_{1}&0&0&0\\
+          c_{2}&c_{3}&0&0\\
+          c_{4}&c_{5}&c_{6}&0\\
+          c_{7}&c_{8}&c_{9}&c_{10}
+        \end{bmatrix}\begin{bmatrix}
+          c_{1}&c_{2}&c_{4}&c_{7}\\
+          0&c_{3}&c_{5}&c_{8}\\
+          0&0&c_{6}&c_{9}\\
+          0&0&0&c_{10}
+        \end{bmatrix} = LL^{\top}.
+\end{align*}
 
 % END ==================================================================

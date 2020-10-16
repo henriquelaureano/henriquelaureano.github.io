@@ -9,6 +9,7 @@
     "fig:cif"
     "cap:modelitself"
     "eq:model"
-    "eq:loglik"))
+    "eq:loglik"
+    "cap:parametrization"))
  :latex)
 
