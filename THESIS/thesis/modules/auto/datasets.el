@@ -6,7 +6,6 @@
     "alg:algo"
     "fig:datasimucif"
     "fig:datasimu"
-    "fig:steps1e2"
     "cap:data"))
  :latex)
 

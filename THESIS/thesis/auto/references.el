@@ -25,6 +25,8 @@
     "R18"
     "peyre"
     "ADMB"
-    "eigen"))
+    "eigen"
+    "cholesky"
+    "modifiedcholesky"))
  :bibtex)
 

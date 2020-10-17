@@ -372,37 +372,46 @@ components \(\{\bm{\beta}~\bm{\gamma}~\bm{w}\}\), the easiest to
 estimate in a statistical modeling framework; we have variance
 components \(\{\bm{\sigma^{2}}\}\), the intermediate ones; and we have
 the correlation components \(\{\bm{\varrho}\}\), the hardest ones. This
-idea of easy or hard to estimate may be justified by two points.
+idea of easy or hard to estimate may be justified by three, connected,
+arguments.
 
 The first comes from the fact that we are modeling the mean of a
 probability distribution in a hierarchical and structured fashion,
 consequently, the easiest parameters to estimate will be the mean
-parameters. We may make the analogy that to estimate the mean parameters
+components. We may make the analogy that to estimate the mean parameters
 we need data (resources); to estimate the variance parameters we need
 more data (more resources), and to estimate the correlation parameters
-we need much more data (even more resources). The second point comes
-from the parametric space boundaries.
+we need much more data (even more resources). The second argument comes
+to also explain the first one via the parametric space constraints.
 
-Generally, the fixed effect components do not present restrictions, i.e.
+Generally, the fixed effect components do not present constraints, i.e.
 they can vary in all \(\mathbb{R}\). The same can not be said from the
-variance components, restricted by definition into the
+variance components, constrained by definition into the
 \(\mathbb{R}_{\ast}^{+}\). Finally, we have the correlation components,
-restricted to the interval \([-1,~1]\). These parametric space
-boundaries drive us again to the first point mentioned above since we
-need more data (resources, information) to be able to estimate
-coefficients restricted to some interval. Nevertheless, this may not be
-enough. Without providing some extra information, in terms of an
-constrained algorithm e.g., it is very reasonable to expect that during
-the optimization procedure some unrealistic areas of the parametric
-space could be visited and jeopardize the stability or even the whole
-optimization procedure. To overcome these possible difficulties,
-parameter reparametrizations are more than welcome.
+constrained to the interval \([-1,~1]\). These parametric space
+constraints drive us again to the first argument since we need more data
+(resources, information) to be able to estimate coefficients constrained
+to some interval. Nevertheless, this may not be enough. Without
+providing some extra information, in terms of an constrained algorithm
+e.g., it is very reasonable to expect that during the optimization
+procedure some unrealistic areas of the parametric space could be
+visited and jeopardize the stability or even the whole optimization
+procedure. To overcome these possible difficulties, parameter
+reparametrizations are more than welcome.
+
+The variance and correlation parameters are modeled in terms of a
+variance-covariance matrix, \(\Sigma\). This matrix is symmetric and
+more important, positive semi-definite. This last characteristic is the
+third argument to justify why is so difficult to estimate these
+parameters. Since the estimates should be positive semi-definite
+matrices, the employment of a parametrization is welcome to enforces
+this condition.
 
 In the statistical modeling literature, the most common parametrization
-employed to handle the components of a variance-covariance matrix
-\(\Sigma\) is the Cholesky factorization or decomposition. Still
-thinking in two competing causes of failure, the Cholesky decomposition
-of \(\Sigma\) may be expressed as
+for a positive-definite matrix, \(\Sigma\), is the Cholesky
+factorization or decomposition \cite{cholesky}. Still thinking in two
+competing causes of failure, a standard Cholesky decomposition of
+\(\Sigma\) may be expressed as
 \begin{align*}
   \Sigma =
   \begin{bmatrix}
@@ -424,7 +433,52 @@ of \(\Sigma\) may be expressed as
           0&c_{3}&c_{5}&c_{8}\\
           0&0&c_{6}&c_{9}\\
           0&0&0&c_{10}
-        \end{bmatrix} = LL^{\top}.
+        \end{bmatrix} = LL^{\top},
 \end{align*}
+where \(\{c_{i}\}_{i=1}^{10}\) are then the coefficients to be
+estimated.
+
+A disadvantage in the use of decomposition as the Cholesky is the lack
+of a straightforward interpretation of the elements
+\(\{c_{i}\}_{i=1}^{10}\). However, with the help of the delta method,
+already implemented in TMB \cite{TMB}, is straightforward to get the
+estimates of the elements of \(\Sigma\) and to obtain the respective
+standard errors. The main advantage of this parametrization, apart from
+the fact that it ensures positive definiteness, is that it is
+computationally simple and stable.
+
+Just to mention another viable possibilities, we could use a modified
+Cholesky decomposition \cite{modifiedcholesky} that provides a better
+statistical interpretation of the decomposition elements or, we could
+also parametrize the precision matrix, \(\bm{Q} = \Sigma^{-1}\), instead
+of the variance-covariance matrix, \(\Sigma\). This should be a more
+attractive approach since it is the inverse of the variance-covariance
+matrix that is used in the marginal likelihood of \autoref{eq:loglik}.
+
+Nonetheless, we do something different here. We use the factorization
+scheme available in TMB, a factorization based on a vector scale
+transformation of an unstructured correlation matrix. For two competing
+causes of failure the decomposition is specified in the following
+fashion
+\[
+  \Sigma = VD^{-1/2}LL^{\top}D^{-1/2}V^{\top},
+\]
+where
+\[
+  L =
+  \begin{bmatrix}
+    1&0&0&0\\
+    c_{1}&1&0&0\\
+    c_{2}&c_{3}&1&0\\
+    c_{4}&c_{5}&c_{6}&1
+  \end{bmatrix},\quad D = \text{diag}(LL^{\top})\quad
+  \text{ and }\quad W = \text{diag}(\{d_{i=1}^{4}\}).
+\]
+This scheme is based initially on the factorization of a correlation
+matrix (unit diagonal) as \(D^{-1/2}LL^{\top}D^{-1/2}\). The elements
+\(\{c_{i}\}_{i=1}^{6}\) has the advantage of being unconstrained and
+guarantees that the symmetry and positive definiteness constraint is
+respected. The variances are scaled via diagonal matrix V, its elements
+\(\{d_{i}\}_{i=1}^{4}\) are the standard deviations.
 
 % END ==================================================================

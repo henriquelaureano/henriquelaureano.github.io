@@ -1,10 +1,9 @@
-This chapter describes how to simulate from our multiGLMM, and describes
-a real-based dataset used as an application example. The simulation
-procedure addressed in \autoref{cap:simu} is not straightforward, since
-we need to simulate the outputs (failure or censor) and the
-failure/censoring times, controlling for a pre-specified censorship
-level. In \autoref{cap:data} a simulated dataset based on the Nordic
-Cancer Union (NCU) twins data is presented as an application example.
+This chapter describes how to simulate from our multiGLMM for the CIF of
+clustered competing risks data, and describes a real-based dataset used
+as an application example. The simulation procedure is addressed in
+\autoref{cap:simu}. In \autoref{cap:data} a simulated dataset based on
+the Nordic Cancer Union (NCU) twins data is presented as an application
+example.
 
 \section{SIMULATING FROM A \(\text{multiGLMM}\)}
 \label{cap:simu}
@@ -133,38 +132,6 @@ process for an arbitrary number of competing causes of failure.
     SOURCE: The author (2020).
   \end{footnotesize}
   \label{fig:datasimu}
-\end{figure}
-
-\begin{figure}[H]
-  \vspace{0.35cm}
-  \setlength{\abovecaptionskip}{.00001pt}
-  \caption{CÓDIGOS EM LINGUAGEM R PARA GERAÇÃO DE VARIÁVEIS ALEATÓRIAS
-    BETA CORRELACIONADAS}
-  \vspace{-0.25cm}
-  \begin{program}[H]
-    \begin{tikzpicture}
-      \node [mybox] (box){
-        \begin{minipage}{0.955\textwidth}
-\begin{verbatim}
-R = 1000  # tamanho da amostra
-mu = 0.5  # parâmetro de média
-phi = 9  # parâmetro de dispersão
-cor_matrix <- matrix(c(1.0,0.75,0.75,1.0),2,2) # matriz de correlação
-require(MASS)  # carrega o pacote com a função mvrnorm()
-Z <- mvrnorm(n = R, mu = c(0,0), Sigma = cor_matrix)  # passo 1
-Y <- qbeta(pnorm(Z), shape1 = mu*phi, shape2 = (1 - mu)*phi) # passo 2
-\end{verbatim}
-        \end{minipage}
-      };
-    \end{tikzpicture}
-  \end{program}
-  % \vspace{-.75cm}
-  \begin{footnotesize}
-    \begin{center}
-      SOURCE: The author (2020).
-    \end{center}
-  \end{footnotesize}
-  \label{fig:steps1e2}
 \end{figure}
 
 \section{REAL-BASED DATASET}
