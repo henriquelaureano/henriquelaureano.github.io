@@ -1,46 +1,42 @@
-This chapter describes how to simulate from our multiGLMM for the CIF of
-clustered competing risks data, and describes a real-based dataset used
-as an application example. The simulation procedure is addressed in
+This chapter describes how to simulate from our multiGLMM for clustered
+competing risks data, and describes a real-based dataset used as an
+application example. The simulation procedure is addressed in
 \autoref{cap:simu}. In \autoref{cap:data} a simulated dataset based on
 the Nordic Cancer Union (NCU) twins data is presented as an application
 example.
 
-\section{SIMULATING FROM A \(\text{multiGLMM}\)}
+\section{SIMULATING FROM A \(\text{multiGLMM}\) FOR THE CIF OF CLUSTERED
+  COMPETING RISKS DATA}
 \label{cap:simu}
 
-Being able to simulate some data from a model is a key task, fundamental
-to assess the finite-sample properties and the estimation procedure of a
-given statistical model.
-
-The core of the simulation procedure for our multiGLMM,
-\autoref{eq:model}, was proposed by \citeonline{SCHEIKE} and is
-basically a four-step procedure.
-
-In the first step, based on the set model parameters and sampled latent
-effects, we compute the cause-specific failure times. The second step
-(the only when that differs from the simulation procedure proposed by
-\citeonline{SCHEIKE}) consists of the computation of all competing risk
-probabilities as defined in \autoref{eq:model}, with the censorship
-probability being computed as the complementary to guarantee that the
-probabilities sum up 1 to each individual. Based on that probabilities,
-we sample the outputs, i.e. the subject fails or censors, from a
-multinomial probability distribution. The last and fourth step is a
-somehow output overwriting to have better control of the proportion of
-censorship. In this last step which individuals should be censor are
-chosen by a Bernoulli process, with a fixed probability, and its
-censoring times are sampled from a given Uniform probability
-distribution. Algorithm~\ref{alg:algo} describes step-by-step all that
-process for an arbitrary number of competing causes of failure.
+Being able to simulate data from a model is a key task, fundamental to
+assess the finite-sample properties and the estimation procedure of a
+given statistical model. Since our model is very similar and was based
+on the one proposed by \citeonline{SCHEIKE}, in the first moment the
+idea was to follow the same guidelines proposed by them. However, after
+an extensive period of thought, we reached the conclusion that they are
+not really simulating from the model. Instead of using the proposed
+framework to generate the failure probabilities, they use just a piece
+of that. Besides, with the excuse of being controlling the censorship
+level, they generate outputs via a Bernoulli process, completely random
+and disconnect of the proposed modeling framework. Thus, the following
+simulation algorithm is from our authorship and is somewhat
+straightforward, since we are just following the hierarchical structure
+stipulated in \autoref{eq:model}.
 
 \begin{algorithm}[H]
-  \caption{SIMULATING FROM THE \(\text{multiGLMM}\)}
+  \caption{SIMULATING FROM THE \(\text{multiGLMM}\) FOR CLUSTERED
+    COMPETING RISKS DATA}
   \label{alg:algo}
 \begin{algorithmic}[1]
     \State
-    Set \(J\), the number of clusters/families
+    Set \(J\), the number of clusters/families/pairs of twins
     \State
-    Set \(n_{j}\), the number of individuals in each family
+    Set \(n_{j}\), the number of individuals in each cluster
     \Comment{can be of different sizes}
+    \State
+    Set \(K-1\), the number of competing causes of failure
+    \Comment{with the censorship, \(K\)}
     \State
     Set values to the model parameters \(\bm{\theta} =
     [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~\bm{\varrho}]^{\top}\)
@@ -50,7 +46,7 @@ process for an arbitrary number of competing causes of failure.
     \bm{\varrho}))\)
     \State
     Set \(\delta\)
-    \Comment{cannot exceed the maximum follow-up time}
+    \Comment{maximum follow-up time}
     \State
     Sample \(\varsigma\sim\text{U}(0,~1)\)
     \State
@@ -83,15 +79,6 @@ process for an arbitrary number of competing causes of failure.
     If \(t_{kij} = \delta\), subject moves to class K
     \Comment{any failure at time \(\delta\) is censored}
     \State
-    Set a censoring probability, \(cp\)
-    \Comment{larger than actual proportion of censored}
-    \State
-    Sample which individuals will be censored from a
-    \(\text{Bernoulli}(cp)\)
-    \State
-    For the censored individuals, sample the censoring times from a
-    \(\text{U}(0,~\delta + 30)\)
-    \State
     \Return
     To each individual, its failure/censoring time and from which
     cause-specific it is
@@ -104,26 +91,71 @@ process for an arbitrary number of competing causes of failure.
   \end{center}
 \end{footnotesize}
 
+The model described as in \autoref{eq:model} is the most general form,
+i.e. allowing for multiple measures at each subject and varying
+coefficients. However, at least for now, we focus on a simpler structure
+without covariates, a single measure per subject, and common
+coefficients. Putting in practice Algorithm \autoref{alg:algo}, we use
+the following model configuration
+\begin{align}
+  p_{kijt}
+  &= \frac{\exp\{\beta_{ki} + u_{kj}\}}{
+    1 + \sum_{m=1}^{K-1}\exp\{\beta_{mi} + u_{mj}\}}\nonumber\\
+  &\times w_{k}\frac{\delta}{2\delta t - 2t^{2}}~
+    \phi\left(
+    w_{k}
+    \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \gamma_{ki} - \eta_{kj}
+    \right),\quad k = 1,~2,\nonumber\\
+  \text{with }\quad
+  \bm{\beta}_{i} &= [-2~~~1.5]^{\top}\nonumber\\
+  \bm{\gamma}_{i} &= [1.2~~~1]^{\top}\label{eq:modelconfig}\\
+  \bm{w} &= [3~~~5]^{\top}\nonumber\\
+  \bm{u}_{j} &= [0~~~0]^{\top}\quad
+               \bm{\eta}_{j} = [0~~~0]^{\top}\nonumber.
+\end{align}
+Based on that we get the cluster-specific CIF's and failure
+probabilities, its CIF derivatives (dCIF) w.r.t. time \(t\), presented
+respectively in \autoref{fig:datasimucif}.
+
 \begin{figure}[H]
-  % \vspace{0.35cm}
   \setlength{\abovecaptionskip}{.0001pt}
-  \caption{FAILURE (\(y_{1},~y_{2}\)) AND CENSORING (\(y_{3}\)) TIMES
-    FOR 200 PAIRS OF TWINS SAMPLED FROM A MODEL \dots}
-  \vspace{0.425cm} \centering
+  \caption{CLUSTER-SPECIFIC CUMULATIVE INCIDENCE FUNCTIONS (CIF) AND
+    RESPECTIVE DERIVATIVES W.R.T. TIME (\(\text{dCIF}\)) FOR A MODEL
+    WITH TWO COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES AND THE
+    FOLLOWING CONFIGURATION: \(\beta_{1} = -2\), \(\beta_{2} = -1.5\),
+    \(\gamma_{1} = 1.2\), \(\gamma = 1\), \(w_{1} = 3\), \(w_{2} = 5\)
+    AND LATENT EFFECTS FIXED AT ZERO}
+  \vspace{0.2cm} \centering
   \includegraphics[width=\textwidth]{datasimucif-1.png}
   \\
-  \vspace{0.45cm}
   \begin{footnotesize}
     SOURCE: The author (2020).
   \end{footnotesize}
   \label{fig:datasimucif}
 \end{figure}
 
+By adding the latent structure
+\[
+  \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix}
+  \sim\mathcal{N} \left(
+    \begin{bmatrix} 0\\0\\0\\0 \end{bmatrix},
+    \begin{bmatrix}
+      1&0.4&0.5&0.4\\
+      &1&0.4&0.3\\
+      &&1&0.4\\
+      &&&1
+    \end{bmatrix}\right),
+\]
+in \autoref{eq:modelconfig}, we generate a complete model sample with
+500 clusters/pairs of twins, summarized in \autoref{fig:datasimu}.
+
 \begin{figure}[H]
   % \vspace{0.35cm}
   \setlength{\abovecaptionskip}{.0001pt}
-  \caption{FAILURE (\(y_{1},~y_{2}\)) AND CENSORING (\(y_{3}\)) TIMES
-    FOR 200 PAIRS OF TWINS SAMPLED FROM A MODEL \dots}
+  \caption{SUMMARY OF A SIMULATED DATASET WITH 500 PAIRS OF TWINS. A)
+    TIME BY TWIN; B) TIMES BOXPLOT; C) PROBABILITIES SCATTERPLOT D)
+    \(y_{3}\)'S \%}
   \vspace{0.2cm} \centering
   \includegraphics[width=\textwidth]{datasimu-1.png}
   \\

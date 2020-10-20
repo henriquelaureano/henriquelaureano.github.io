@@ -13,129 +13,12 @@ pacman::p_load(mvtnorm, ## rmvnorm()
 ## why not library()?
 ## with p_load(), if the package isn't installed,
 ## install_packages() is automatically loaded
-
-datasimu <- function(J, delta = 85, beta, gamma, w, S, cp = 0.5)
-{
-    out <- data.frame("i" = rep(seq(2), times = J),
-                      "j" = factor(rep(seq(J), each = 2)),
-                      "p1" = NA, "p2" = NA, "p3" = NA,
-                      "y1" = NA, "y2" = NA, "y3" = NA, "t" = NA)
-    K <- 3
-    ladim <- 2 * (K - 1) ## latent effects dimension
-    B <- rmvnorm(J, mean = rep(0, ladim), sigma = S)
-    ## 1st step: compute the failure times -----------------------------
-    qv <- qnorm(runif(2 * J)) ## qnorm() of the varepsilons
-    t1 <- 0.5 * delta * (tanh((qv + gamma[1] + B[ , 3])/w[1]) + 1)
-    t2 <- 0.5 * delta * (tanh((qv + gamma[2] + B[ , 4])/w[2]) + 1)
-    ## t3 <- runif(2 * J, 0, delta + 30)
-    t3 <- runif(2 * J, 20, delta)
-    ## 2nd step: compute the competing cause probabilities -------------
-    risk1 <- exp(beta[1] + B[ , 1])
-    risk2 <- exp(beta[2] + B[ , 2])
-    level <- 1 + risk1 + risk2
-    out$p1 <- risk1/level *
-        w[1] * delta/(2 * t1 * (delta - t1)) *
-        dnorm(w[1] * atanh(2 * t1/delta - 1) - gamma[1] - B[ , 3])
-    out$p2 <- risk2/level *
-        w[2] * delta/(2 * t2 * (delta - t2)) *
-        dnorm(w[2] * atanh(2 * t2/delta - 1) - gamma[2] - B[ , 4])
-    out$p3 <- with(out, 1 - p1 - p2)
-    ## 3rd step: compute the outputs based on the probs ----------------
-    out[ , c("y1", "y2", "y3")] <-
-        rmultinomial(2 * J, 1, prob = with(out, cbind(p1, p2, p3)))
-    ## 4th step: controlling for censorship ----------------------------
-    ## (and someway overwriting all the rest)
-    cens <- rbinom(n = 2 * J, size = 1, prob = cp)
-    out %>% select(y1:y3) %>% mutate(y1 = ifelse(cens == 1, 0, y1),
-                                     y2 = ifelse(cens == 1, 0, y2),
-                                     y3 = ifelse(cens == 1, 1, y3))
-    out$t <-
-        (out$y1 == 1) * t1 +
-        (out$y2 == 1) * t2 +
-        (out$y3 == 1) * t3
-    out %>% select(y1:t) %>% mutate(y1 = ifelse(t == delta, 0, y1),
-                                    y2 = ifelse(t == delta, 0, y2),
-                                    y3 = ifelse(t == delta, 1, y3))
-    return(out)
-}
-df <- datasimu(J = 500,
-               beta = c(-2, -1.5), gamma = c(1.2, 1), w = c(3, 5),
-               S = matrix(c(1.0, 0.4, 0.5, 0.4,
-                            0.4, 1.0, 0.4, 0.3,
-                            0.5, 0.4, 1.0, 0.4,
-                            0.4, 0.3, 0.4, 1.0), 4, 4))
-## ---------------------------------------------------------------------
-dfk <- df %>%
-    pivot_longer(cols = y1:y3,
-                 names_to = "kclass", values_to = "kvalue") %>%
-    filter(kvalue == 1) %>% mutate(id = seq(nrow(df)))
 ```
 
-```{r datasimu, fig.height=10}
-p1 <- ggplot(dfk, aes(x = id, y = t)) +
-    facet_wrap(. ~ kclass) +
-    geom_segment(aes(x = id, xend = id, y = 0, yend = t)) +
-    labs(x = "Individuals", y = "Time (years)") +
-    coord_flip() +
-    theme(strip.background = element_rect(colour = "black",
-                                          fill = "white"),
-          strip.text.x = element_text(size = 12),
-          axis.text.x = element_text(size = 11),
-          axis.title.x = element_text(
-              size = 12,
-              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
-          axis.title.y = element_text(
-              size = 12,
-              margin = unit(c(t = 0, r = -6, b = 0, l = 0), "mm"))) +
-    scale_x_continuous(breaks = NULL)
-p2 <- ggplot(dfk, aes(x = kclass, y = t)) +
-    geom_boxplot() +
-    facet_wrap(. ~ kclass, scales = "free", ncol = 1) +
-    labs(x = NULL, y = "Time (years)") +
-    theme(strip.background = element_rect(colour = "black",
-                                          fill = "white"),
-          strip.text.x = element_text(size = 12),
-          axis.text.x = element_text(size = 0),
-          axis.text.y = element_text(size = 11),
-          axis.title.y = element_text(
-              size = 12,
-              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
-dfkplong <- dfk %>% pivot_longer(cols = p1:p3,
-                                 names_to = "pk", values_to = "p")
-p3 <- ggplot(dfkplong, aes(p, p)) +
-    geom_hex(bins = 15, color = "black") +
-    scale_fill_distiller(palette = "Greys") +
-    facet_wrap(. ~ pk, scales = "free") +
-    labs(x = NULL, y = NULL, fill = "Frequency") +
-    theme(strip.background = element_rect(colour = "black",
-                                          fill = "white"),
-          legend.position = "top",
-          strip.text.x = element_text(size = 12),
-          axis.text.x = element_text(size = 11),
-          axis.text.y = element_text(size = 11),
-          axis.title.x = element_text(
-              size = 12,
-              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
-          axis.title.y = element_text(
-              size = 12,
-              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
-layout <- "
-AAAB
-AAAB
-AAAB
-AAAD
-CCCC
-"
-p1 + p2 + p3 +
-    grid::textGrob(paste("Level of censorship:",
-                         prop.table(table(dfk$kclass))[[3]])) +
-    plot_layout(design = layout)
-```
-
-```{r datasimucif, fig.height=4}
+```{r datasimucif, fig.height=3.75}
 cif <- function() {
-    t <- seq(20, 84.9, length.out = 75)
-    delta <- 85
+    t <- seq(30, 79.5, by = 0.5)
+    delta <- 80
     u <- c(0, 0)
     eta <- c(0, 0)
     beta <- c(-2, -1.5)
@@ -157,8 +40,8 @@ cif <- function() {
 }
 dfcif <- cif()
 dcif <- function() {
-    t <- seq(20, 84.9, length.out = 75)
-    delta <- 85
+    t <- seq(30, 79.5, by = 0.5)
+    delta <- 80
     u <- c(0, 0)
     eta <- c(0, 0)
     beta <- c(-2, -1.5)
@@ -205,5 +88,108 @@ p2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
           axis.title.x = element_text(
               size = 11,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")))
-p2 + p1
+p1 + p2
+```
+
+```{r}
+datasimu <- function(J, delta = 80, beta, gamma, w, S) {
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA, "t" = NA)
+    K <- 3
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    out$t <- rep(seq(30, 79.5, by = 0.5), length.out = 2 * J)
+    ## qv <- qnorm(runif(2 * J)) ## qnorm() of the varepsilons
+    ## t1 <- 0.5 * delta * (tanh((qv + gamma[1] + B[ , 3])/w[1]) + 1)
+    ## t2 <- 0.5 * delta * (tanh((qv + gamma[2] + B[ , 4])/w[2]) + 1)
+    ## t3 <- runif(2 * J, 30, delta)
+    risk1 <- exp(beta[1] + B[ , 1])
+    risk2 <- exp(beta[2] + B[ , 2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1] - B[ , 3])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2] - B[ , 4])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        rmultinomial(2 * J, 1, prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+```
+
+```{r datasimu, fig.height=10}
+df <- datasimu(J = 500,
+               beta = c(-2, -1.5), gamma = c(1.2, 1), w = c(3, 5),
+               S = matrix(c(1.0, 0.4, 0.5, 0.4,
+                            0.4, 1.0, 0.4, 0.3,
+                            0.5, 0.4, 1.0, 0.4,
+                            0.4, 0.3, 0.4, 1.0), 4, 4))
+## ---------------------------------------------------------------------
+dfk <- df %>%
+    pivot_longer(cols = y1:y3,
+                 names_to = "kclass", values_to = "kvalue") %>%
+    filter(kvalue == 1) %>% mutate(id = seq(nrow(df)))
+p1 <- ggplot(dfk, aes(x = id, y = t)) +
+    facet_wrap(. ~ kclass) +
+    geom_segment(aes(x = id, xend = id, y = 0, yend = t)) +
+    labs(x = "id's", y = "Time") +
+    coord_flip() +
+    theme(strip.background = element_rect(colour = "black",
+                                          fill = "white"),
+          strip.text.x = element_text(size = 12),
+          axis.text.x = element_text(size = 11),
+          axis.title.x = element_text(
+              size = 12,
+              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
+          axis.title.y = element_text(
+              size = 12,
+              margin = unit(c(t = 0, r = -6, b = 0, l = 0), "mm"))) +
+    scale_x_continuous(breaks = NULL)
+p2 <- ggplot(dfk, aes(x = kclass, y = t)) +
+    geom_boxplot() +
+    facet_wrap(. ~ kclass, scales = "free", ncol = 1) +
+    labs(x = NULL, y = "Time") +
+    theme(strip.background = element_rect(colour = "black",
+                                          fill = "white"),
+          strip.text.x = element_text(size = 12),
+          axis.text.x = element_text(size = 0),
+          axis.text.y = element_text(size = 11),
+          axis.title.y = element_text(
+              size = 12,
+              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
+dfkplong <- dfk %>% pivot_longer(cols = p1:p3,
+                                 names_to = "pk", values_to = "p")
+p3 <- ggplot(dfkplong, aes(p, p)) +
+    geom_hex(bins = 15, color = "black") +
+    scale_fill_distiller(palette = "Greys") +
+    facet_wrap(. ~ pk, scales = "free") +
+    labs(x = NULL, y = NULL, fill = "Frequency") +
+    theme(strip.background = element_rect(colour = "black",
+                                          fill = "white"),
+          legend.position = "top",
+          strip.text.x = element_text(size = 12),
+          axis.text.x = element_text(size = 11),
+          axis.text.y = element_text(size = 11),
+          axis.title.x = element_text(
+              size = 12,
+              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
+          axis.title.y = element_text(
+              size = 12,
+              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
+layout <- "
+AAAB
+AAAB
+AAAB
+AAAD
+CCCC
+"
+p1 + p2 + p3 +
+    grid::textGrob(paste("Level of censorship:",
+                         prop.table(table(dfk$kclass))[[3]])) +
+    plot_layout(design = layout) +
+    plot_annotation(tag_levels = "A", tag_suffix = ")")
 ```

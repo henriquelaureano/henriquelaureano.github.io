@@ -189,13 +189,13 @@ are interested only on the positive side.
 
 \begin{figure}[H]
   \setlength{\abovecaptionskip}{.0001pt}
-  \caption{ILLUSTRATION OF COEFFICIENT BEHAVIORS OF A CLUSTER-SPECIFIC
-    CUMULATIVE INCIDENCE FUNCTION (CIF), PROPOSED BY
-    \citeonline{SCHEIKE}, FOR A GIVEN FAILURE CAUSE 1 IN A MODEL WITH
-    TWO COMPETING CAUSES AND WITH THE FOLLOWING CONFIGURATION: \(X = 1\)
-    FOR ALL SUBJECTS, \(\beta_{2} = 0\), \(\bm{u} = 0\) AND \(\bm{\eta}
-    = 0\). IN EACH SCENARIO ALL THE OTHER COEFFICIENTS ARE SET AT ZERO,
-    WITH THE EXCEPTION OF \(w_{1} = 1\)}
+  \caption{ILLUSTRATION OF COEFFICIENT BEHAVIORS FOR A GIVEN
+    CLUSTER-SPECIFIC CUMULATIVE INCIDENCE FUNCTION (CIF), PROPOSED BY
+    \citeonline{SCHEIKE}, IN A MODEL WITH TWO COMPETING CAUSES OF
+    FAILURE, WITHOUT COVARIATES AND THE FOLLOWING CONFIGURATION:
+    \(\beta_{2} = 0\), \(\bm{u} = 0\) AND \(\bm{\eta} = 0\); IN EACH
+    SCENARIO ALL OTHER COEFFICIENTS ARE SET AT ZERO, WITH THE EXCEPTION
+    OF \(w_{1} = 1\)}
   \vspace{0.3cm} \centering
   \includegraphics[width=\textwidth]{cifcoefs-1.png}
   \\
@@ -235,13 +235,12 @@ failure cause.
 
 \begin{figure}[H]
   \setlength{\abovecaptionskip}{.0001pt}
-  \caption{ILLUSTRATION OF A CLUSTER-SPECIFIC CUMULATIVE INCIDENCE
-    FUNCTION (CIF), PROPOSED BY \citeonline{SCHEIKE}, FOR A GIVEN
-    FAILURE CAUSE 1 IN A MODEL WITH TWO COMPETING CAUSES AND WITH THE
-    FOLLOWING CONFIGURATION: \(X = 1\) FOR ALL SUBJECTS, \(\beta_{1} =
-    -2\), \(\beta_{2} = -1\), \(\gamma_{1} = 1\), \(w_{1} = 3\) AND
-    \(u_{2} = 0\). THE VARIATION BETWEEN FRAMES IS GIVEN BY THE LATENT
-    EFFECTS \(u_{1}\) AND \(\eta_{1}\)}
+  \caption{ILLUSTRATION OF A GIVEN CLUSTER-SPECIFIC CUMULATIVE INCIDENCE
+    FUNCTION (CIF), PROPOSED BY \citeonline{SCHEIKE}, IN A MODEL WITH
+    TWO COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES AND FOLLOWING
+    CONFIGURATION: \(\beta_{1} = -2\), \(\beta_{2} = -1\), \(\gamma_{1}
+    = 1\), \(w_{1} = 3\) AND \(u_{2} = 0\). THE VARIATION BETWEEN FRAMES
+    IS GIVEN BY THE LATENT EFFECTS \(u_{1}\) AND \(\eta_{1}\)}
   \vspace{0.3cm} \centering
   \includegraphics[width=\textwidth]{cif-1.png}
   \\
@@ -259,9 +258,9 @@ cluster/family.
 \section{MODEL SPECIFICATION}
 \label{cap:modelitself}
 
-The multiGLMM to the CIF of clustered competing risks data is specified
-in the following hierarchical fashion. By simplicity, we focus on two
-competing causes of failure but an extension is straightforward.
+The multiGLMM for clustered competing risks data is specified in the
+following hierarchical fashion. By simplicity, we focus on two competing
+causes of failure but an extension is straightforward.
 
 For two competing causes of failure, a subject \(i\), in the
 cluster/family \(j\), in time \(t\), we have
