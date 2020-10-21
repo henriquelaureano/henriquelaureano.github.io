@@ -22,7 +22,7 @@ options(width = 100)
 opts_chunk$set(fig.path = "imultiglmm/",
                cache = TRUE,
                cache.path = "cmultiglmm/",
-               warning = FALSE,
+               ## warning = FALSE,
                comment = NA,
                prompt = FALSE)
 ```
@@ -85,7 +85,7 @@ df <- datasimu(J = J)
 df %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
 ```
 
-```{r tmbstan}
+```{r tmb1, warning=FALSE}
 ## compile("multiGLMM.cpp")
 dyn.load(dynlib("multiGLMM"))
 openmp(n = 10)
@@ -114,7 +114,9 @@ objstan$fn()
 tictoc::tic()
 optstan <- nlminb(objstan$par, objstan$fn, objstan$gr)
 tictoc::toc()
-## ---------------------------------------------------------------------
+```
+
+```{r tmbstan1}
 ## FOR SOME WEIRD REASON AND CAN NOT PARALLELIZE THE MODEL SAMPLING
 ## cores <- parallel::detectCores()
 ## options(mc.cores = cores)
