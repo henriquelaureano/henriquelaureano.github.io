@@ -9,6 +9,7 @@
     "andersen12"
     "GLM72"
     "GLM89"
+    "GLMM"
     "TMB"
     "MCMC"
     "Diaconis"

@@ -135,11 +135,11 @@ distribution and multivariate normal latent effects (in a frailty model
 the common choice for the latent effects is the gamma distribution).
 This approach sounds complicated and unnecessary, so we try to reach the
 same goal but with a much simpler framework, a generalized linear mixed
-model (GLMM). Instead of concentrating on failure time data and
-consequently having a survival/frailty model based on the hazard scale,
-or using a complicated composite approach, we just build the joint
-likelihood function (a multinomial model with a link function based on
-the cause-specific cumulative incidence function accouting for an
+model (GLMM) \cite{GLMM}. Instead of concentrating on failure time data
+and consequently having a survival/frailty model based on the hazard
+scale, or using a composite approach, we just build the joint likelihood
+function (a multinomial model with a link function based on the
+cause-specific cumulative incidence function accouting for an
 appropriate latent effects structure), marginalize (integrate out the
 latent effects) and optimize it.
 
@@ -168,7 +168,7 @@ Poisson (for counting data), binomial (dichotomic data), gamma
 (continuous but positive) and normal (continuous data) distributions. A
 comprehensive reference for GLMs is \citeonline{GLM89}.
 
-What makes a GLM into a GLMM is the addition of a latent
+What makes a GLM into a GLMM \cite{GLMM} is the addition of a latent
 (\textit{m}ixed) effect, \(\mathbf{u}\). The mean structure becomes
 \[
   g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \mathbf{z}_{i}\mathbf{u},

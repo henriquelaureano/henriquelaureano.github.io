@@ -16,10 +16,11 @@ exciting \texttt{R} \cite{R18} package developed by~\citeonline{TMB}.
 \section{CONSTRUCTION: JOINT LIKELIHOOD FUNCTION}
 \label{cap:joint}
 
-A GLMM models an \(n\)-vector of exponential family random variables,
-\(\mathbf{Y}\), in terms of its conditional expected value, \(\bm{\mu}
-\equiv \mathbb{E}(\mathbf{Y} \mid \bm{x}, \mathbf{u})\), via a
-linear combination called of linear predictor and generally expressed by
+A GLMM \cite{GLMM} models an \(n\)-vector of exponential family random
+variables, \(\mathbf{Y}\), in terms of its conditional expected value,
+\(\bm{\mu} \equiv \mathbb{E}(\mathbf{Y} \mid \bm{x}, \mathbf{u})\), via
+a linear combination called of linear predictor and generally expressed
+by
 \begin{equation}
   g(\bm{\mu}) = \bm{x} \bm{\beta} + \mathbf{Zu}, \quad
   \mathbf{u} \sim \mathcal{N}(\mathbf{0}, \bm{\Sigma}).
@@ -149,15 +150,17 @@ via an algorithm called Expectation-Maximization (EM) proposed by
 generally is not recommended if you have a better option. The other
 option consists of performing a numerical integration, i.e.
 approximating the integral. The most common way of doing that in the
-statistical modeling literature is via an adaptive Gaussian quadrature
-rule \cite{quadrature}. In general, adaptive Gaussian quadratures are
-not so simple of using (may be unstable, computationally expensive and
-we have the problem of choosing how many integration points should be
-used). To us, the better option consists in take advantage of the
-exponential family structure and the fact that we are dealing with
-Gaussian latent effects. These ideas converge to an adaptive Gaussian
-quadrature with one integration point, also called as \textit{Laplace
-  approximation} \cite{molenberghs&verbeke, LA4H, tierney, corestats}.
+statistical modeling literature is via an importance sampling version of
+the Gaussian quadrature rule, denoted adaptive Gaussian quadrature (AGQ)
+\cite{quadrature}. In general, adaptive Gaussian quadratures are not so
+simple of using (computationally expensive and we have to choose how
+many integration points to use and an importance distribution to
+approximate the integrand). To us, the better option consists in take
+advantage of the exponential family structure and the fact that we are
+dealing with Gaussian latent effects. These ideas converge to an
+adaptive Gaussian quadrature with one integration point, also called as
+\textit{Laplace approximation} \cite{molenberghs&verbeke, LA4H, tierney,
+  corestats}.
 
 With an integral that is analytically intractable, we may approximate it
 to obtain a tractable closed-form expression allowing then the numerical
