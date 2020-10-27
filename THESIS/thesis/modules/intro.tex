@@ -1,13 +1,13 @@
 Consider a cluster of random variables representing the time until the
-occurrence of some event. The random variables that compose that cluster
-are assumed to be correlated, i.e. for some biological or environmental
-reason it is not adequate to assume independence between them. Also, we
-may be interested in the occurrence of not only one specific event,
-having in practice a competition of events to see which one happens
-first, if it happens. Such events may also be of low probability but
-with severe consequences, that is the moment when the correlation
-ingredient makes its difference: the occurrence of an event in a subject
-should affect the probability of the same happening in the others.
+occurrence of some event. The random variables of a cluster are assumed
+to be correlated, i.e. for some biological or environmental reason it is
+not adequate to assume independence between them. Also, we may be
+interested in the occurrence of not only one specific event, having in
+practice a competition of events to see which one happens first, if it
+happens. Such events may also be of low probability albeit severe
+consequences, that is the moment when the correlation makes its
+difference: the occurrence of an event in a subject should affect the
+probability of the same happening in the others.
 
 A realistic context that fits perfectly with the framework described
 above is the study of disease incidence in family members, where each
@@ -23,21 +23,20 @@ we just contextualized, we still need to introduce the methodology. To
 this, some definitions and theoretical contexts are welcome.
 
 When the object under study is random variables representing the time
-until some event occurs, we're in the field of \textit{failure time
+until some event occurs, we are in the field of \textit{failure time
   data} \cite{kalb&prentice}. The occurrence of an event is generally
-called as a \textit{failure}, and major areas of application are
-biomedical studies and industrial life testing. In this thesis, we
-maintain our focus on the former.
-
-As is common in science, same methodologies can receive different names
-in different areas. In industrial life testing applications is performed
-what is called a \textit{reliability analysis}; in biomedical studies is
-performed what is called \textit{survival analysis}. Generally, the term
-survival analysis is applied when we're interested in the occurrence of
-only one event, a \textit{failure time process}. When we're interested
-in the occurrence of more than one event, like now, we enter in the yard
-of \textit{competing risks} and \textit{multistate} models. A visual aid
-is presented on \autoref{fig:intro1} and a comprehensive reference
+denoted \textit{failure}, and major areas of application are biomedical
+studies and industrial life testing. In this thesis, we maintain our
+focus on the former. As common in science, same methodologies can
+receive different names in different areas. In industrial life testing
+applications is performed what is called a \textit{reliability
+  analysis}; in biomedical studies is performed what is called
+\textit{survival analysis}. Generally, the term survival analysis is
+applied when we are interested in the occurrence of only one event, a
+\textit{failure time process}. When we are interested in the occurrence
+of more than one event we enter in the yard of \textit{competing risks}
+and \textit{multistate} models. A visual aid is presented on
+\autoref{fig:intro1} and a comprehensive reference
 is~\citeonline{kalb&prentice}.
 
 Failure time and competing risk processes may be seen as particular
@@ -45,14 +44,14 @@ cases of a multistate model. Besides the number of events (states) of
 interest, the main difference between a multistate model and its
 particular cases is that only in the multistate scenario we may have
 transient states, using a \textit{stochastic process} language. In the
-particular cases, all the states besides the initial state 0, are
-absorbents - once you reached it you don't leave. The simplest
-multistate model that exemplify this behavior is the so-called
-illness-death model, \autoref{fig:intro1}~C), i.e. a patient enters the
-study (state 0) and it can get sick (state 1) or die (state 2); if sick
-it can recover (returns to state 0) or die. We will work only with
-competing risk processes. For each individual, we have the time (age)
-until the occurrence, or not, of cancer.
+particular cases, all states besides the initial state 0, are absorbents
+- once you reached it you do not leave. The simplest multistate model
+that exemplify this behavior is the illness-death model,
+\autoref{fig:intro1}~C), where a patient (initially in state 0) can get
+sick (state 1) or die (state 2); if sick it can recover (returns to
+state 0) or die. We will work only with competing risk processes, and
+to each patient we need the time (age) until the occurrence, or not, of
+cancer (the event).
 
 \begin{figure}[H]
   \setlength{\abovecaptionskip}{.0001pt}
@@ -69,63 +68,62 @@ until the occurrence, or not, of cancer.
 \end{figure}
 
 When for some know or unknown reason we are not able to see the
-occurrence of an event, we have what is called \textit{censorship}.
-Still in the illness-death model: during the period of follow up the
-patient may not get sick or die, staying at state 0, this is called a
+occurrence of an event, we have what is denoted \textit{censorship}.
+Still in the illness-death model, during the period of follow up the
+patient may not get sick or die, staying at state 0. This is denoted
 \textit{right-censorship}; The same for state 1. If a patient is in
-state 1 at the end of the study, we're \textit{censored} to see him
+state 1 at the end of the study, we are \textit{censored} to see him
 reaching the state 2 or returning to state 0. This is the inherent idea
 to censorship and must be present in the modeling framework, in this
-manner, arriving in the so-called \textit{survival models}.
+manner, arriving in the so-called \textit{survival models}
+\cite{kalb&prentice}.
 
-A survival model deals with survival experience. Usually, survival
+A survival model deals with survival experience. Usually, the survival
 experience is modeled in the \textit{hazard} (failure rate) scale and
-for an individual \(i\) can be written as
+for an individual \(i\) can be expressed as
 \begin{equation}
   \lambda(t \mid \bm{x}_{i}) =
   \lambda_{0}(t) \times c(\bm{x}_{i} \bm{\beta})
   \quad \text{at time } t,
   \label{eq:intro1}
 \end{equation}
-i.e. a product of \(\lambda_{0}(\cdot)\), an arbitrary baseline hazard
-function, and \(c\), a specific function form that will depend on the
-chosen probability distribution for the failure time and on a covariates
-(explanatory/independent variables) vector \(\bm{x}_{i} =
-[x_{1}~\dots~x_{p}]\), where \(\bm{\beta}^{\top} =
-[\beta_{1}~\dots~\beta_{p}]\) is a vector of regression parameters. This
-structure is specified for a simple failure time process, as
-in~\autoref{fig:intro1}~A). Nevertheless, its idea is easy to extend. We
-basically have the \autoref{eq:intro1} model for each cause-specific (in
-a competing risks process) or transition (in a multistate process). A
-complete and extensive detailing can be, again, found
-in~\citeonline{kalb&prentice}.
+i.e. a product of an arbitrary baseline hazard
+function\(\lambda_{0}(\cdot)\), with \(c(\cdot)\), a specific function
+form that will depend on the chosen probability distribution for the
+failure time and on a covariates (explanatory/independent variables)
+vector \(\bm{x}_{i} = [x_{1}~\dots~x_{p}]\), where \(\bm{\beta}^{\top} =
+[\beta_{1}~\dots~\beta_{p}]\) is a vector of parameters. This structure
+is specified for a failure time process, as in~\autoref{fig:intro1}~A).
+Nevertheless, its idea is easy to extend. We basically have the
+\autoref{eq:intro1} model to each cause-specific (in a competing risks
+process) or transition (in a multistate process). A complete and
+extensive detailing can be, again, found in \citeonline{kalb&prentice}.
 
 In this work we approach the case of clustered competing risks. Besides
 the cause-specific structure, we have to deal with the fact that the
 events are happening in related individuals (twins). This configures
-what is called \textit{family studies}, i.e. we have a cluster (a
-family/pair of twins) dependence that needs to be considered and
+what is denoted \textit{family studies}, i.e. we have a
+cluster/family/pair of twins dependence that needs to be considered and
 modeled. This, possible, dependence is something that we do not actually
 measure, but know (or just suppose) that exists. In the statistical
 modeling language this characteristic receives the name of
-\textit{random} or \textit{latent} effect. A survival model with a
-latent effect, association, or unobserved heterogeneity, is called a
+\textit{random} or \textit{latent effect}. A survival model with a
+latent effect, association, or unobserved heterogeneity, is denoted
 \textit{frailty model}~\cite{frailty78, frailty79}. In its simplest
 form, a frailty is an unobserved random proportionality factor that
 modifies the hazard function of an individual, or of related
-individuals. Frailty models are extensions of the \autoref{eq:intro1}
-model.
+individuals. Frailty models are extensions of the model in
+\autoref{eq:intro1}.
 
 In the competing risks setting, the hazard scale (focusing on the
 cause-specific hazard) is not the only possible scale to work on. A more
 attractive possibility is to work on the probability scale, focusing on
-the cause-specific cumulative incidence. Both may complement each
-other~\cite{andersen12}. However, in family studies there is often a
-strong interest in: describing age at disease onset and account for
-within-family dependence. The point to be made is that the distribution
-of age at disease onset is directly described by the cause-specific
-cumulative incidence. Therefore, the probability scale is the logical
-choice.
+the cause-specific cumulative incidence \cite{andersen12}. In family
+studies, there is often a strong interest in describing age at disease
+onset and account for within-family dependence. The point to be made is
+that the distribution of age at disease onset is directly described by
+the cause-specific cumulative incidence. Therefore, the probability
+scale is the logical choice.
 
 To work with competing risks data, on the probability scale, and with a
 latent effect structure that allows for within-cluster dependence of
