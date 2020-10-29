@@ -451,55 +451,58 @@
 \addcontentsline{toc}{chapter}{\hspace{2.105cm}APPENDIX}
 \renewcommand{\ABNTEXchapterfontsize}{\ABNTEXsectionfont}
 
-\chapter{GRADIENTS AND HESSIAN MATRIX OF THE MULTINOMIAL
-  GENERALIZED LINEAR MIXED MODEL (GLMM) WITH A LINK
-  FUNCTION BASED ON THE CUMULATIVE INCIDENCE FUNCTION
-  (CIF)}
+\chapter{LATENT EFFECTS ANALYTIC GRADIENTS AND HESSIAN
+  COMPONENTS, FOR THE JOINT LOG-LIKELIHOOD FUNCTION OF
+  THE MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS
+  DATA}
 \label{cap:appendixA}
 
+Subject \(i\), cluster \(j\), competing cause \(k\).
 \begin{align*}
- \bm{l}^{'} (u_{kj})
- &= y_{kij} \frac{1 + \sum_{m \neq k}^{K-1}
-                      \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-                 }{1 + \sum_{n = 1}^{K-1}
-                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}\\
- &- \left( \sum_{m \neq k}^{K-1} y_{mij} \right)
-    \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-         }{1 + \sum_{n = 1}^{K-1}
-           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}\\
- &- y_{Kij} \frac{1}{1 + \sum_{n = 1}^{K-1}
-                         \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                    } \Bigg(\\
- &
- \frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+  \frac{\partial}{\partial u_{kj}}
+  \log L(\bm{\theta}\mid\bm{y}, \bm{r})
+  &= y_{kij}\frac{1 +
+    \sum_{m \neq k}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    }{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}\\
+  &- \left(\sum_{m \neq k}^{K-1} y_{mij}\right)
+    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    }{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}\\
+  &- y_{Kij}\frac{1}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    }\Bigg(\\
+  &\frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
        \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
             - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
            ]
-       \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-       \left(1 + \sum_{m \neq k}^{K-1}
-                 \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-       \right)}{
+       }{
  1 + \sum_{n = 1}^{K-1}
      \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-     (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+     }\times\\
+  &\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+       \left(1 + \sum_{m \neq k}^{K-1}
+                 \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+       \right)}{(1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
           \phi[w_{n}
                \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])}\\
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])}\\
  &-
  \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-       \sum_{m \neq k}^{K-1}
+       }{
+ 1 + \sum_{n = 1}^{K-1}
+     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+     }\times\\
+  &\frac{\sum_{m \neq k}^{K-1}
        w_{m}\frac{\delta}{2\delta t - 2t^{2}}
        \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
             - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
            ]
-       \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
- 1 + \sum_{n = 1}^{K-1}
-     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-     (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+       \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{(1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
           \phi[w_{n}
                \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])} \Bigg)\\
- &- e_{k}^{\top} \bm{Qr},\\
+   - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])}\\
+  &\Bigg) - e_{k}^{\top} \bm{Qr},\\
  %% --------------------------------------------------------------------
  \bm{l}^{'} (\eta_{kj}) &=
  y_{kij} (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
@@ -949,4 +952,4 @@ and the hessian,
 %-----------------------------------------------------------------------
 \end{document}
 % END ==================================================================
-\message{ !name(thesis.tex) !offset(-952) }
+\message{ !name(thesis.tex) !offset(-955) }

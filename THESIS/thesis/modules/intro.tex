@@ -118,62 +118,78 @@ individuals. Frailty models are extensions of the model in
 In the competing risks setting, the hazard scale (focusing on the
 cause-specific hazard) is not the only possible scale to work on. A more
 attractive possibility is to work on the probability scale, focusing on
-the cause-specific cumulative incidence \cite{andersen12}. In family
-studies, there is often a strong interest in describing age at disease
-onset and account for within-family dependence. The point to be made is
-that the distribution of age at disease onset is directly described by
-the cause-specific cumulative incidence. Therefore, the probability
-scale is the logical choice.
+the cause-specific cumulative incidence function \cite[CIF]{andersen12}.
+In family studies, there is often a strong interest in describing age at
+disease onset and account for within-family dependence. The point to be
+made is that the distribution of age at disease onset is directly
+described by the cause-specific cumulative incidence. Therefore, the
+probability scale is the logical choice.
 
-To work with competing risks data, on the probability scale, and with a
-latent effect structure that allows for within-cluster dependence of
-both risk and timing, \citeonline{SCHEIKE} proposed a pairwise composite
-likelihood approach based on a linear model with multinomial response
-distribution and multivariate normal latent effects (in a frailty model
-the common choice for the latent effects is the gamma distribution).
-This approach sounds complicated and unnecessary, so we try to reach the
-same goal but with a much simpler framework, a generalized linear mixed
-model (GLMM) \cite{GLMM}. Instead of concentrating on failure time data
-and consequently having a survival/frailty model based on the hazard
-scale, or using a composite approach, we just build the joint likelihood
-function (a multinomial model with a link function based on the
-cause-specific cumulative incidence function accouting for an
-appropriate latent effects structure), marginalize (integrate out the
-latent effects) and optimize it.
+To work with competing risks data on the probability scale, and with a
+latent structure that allows for within-cluster dependence of both risk
+and timing, \citeonline{SCHEIKE} proposed a pairwise composite
+likelihood approach based on the factorization of the cause-specific CIF
+as a product of a cluster-specific risk level and a cluster-specific
+failure time trajectory. A composite approach \cite{lindsay88,
+  cox&reid04, varin11} is a valid alternative to a full likelihood
+analysis in high-dimensional situations when a full approach is too
+computational costly or even inviable. In failure time data problems, a
+composite likelihood is built from the product of marginal densities. A
+clear advantage is that we do not need to care about a joint
+distribution specification, which generally translates into a
+computational advantage. A disadvantage is the model specification,
+which becomes much more complicated. The marginal specification implies
+a pairwise approach since we need to add model layers to be able to
+handle the dependence structure.
+
+We do not have any guarantees that a full likelihood analysis is not
+viable here, so what we propose to do is to try to reach the same goal
+of \citeonline{SCHEIKE} albeit with a simpler framework taking advantage
+of state-of-art software, something still not so common in the
+statistical modeling community. This simpler framework is a generalized
+linear mixed model \cite[GLMM]{GLMM}. Instead of concentrating on
+failure time data and consequently having a survival/frailty model based
+on the hazard scale, or using a composite approach, we just build the
+joint likelihood function (a multinomial model with a link function
+based on the cause-specific cumulative incidence function (CIF)
+accouting for an appropriate latent effects structure), marginalize
+(integrate out the latent effects) and optimize it. A Fisherian
+approach.
 
 To better contextualize our GLMM approach, lets first just define it
 starting by the start. For a random individual \(i\), in a standard
 linear model we assume that the response variable, \(Y_{i}\),
 conditioned on the (possible) covariates follows a normal (Gaussian)
-distribution and, what we do is to model its mean, \(\mu_{i} \equiv
+distribution and what we do is to model its mean, \(\mu_{i} \equiv
 \mathbb{E}(Y_{i})\), via a linear combination. As much well explained in
-\citeonline{GLM72}, with the support of a ``link function'',
+\citeonline{GLM72}, with the support of a \textit{link function},
 \(g(\cdot)\), we are able to generalize this idea to non-Gaussian
 distributions. This extended framework received the name of generalized
 linear model (GLM) and is characterized by the following mean structure
 \[
  g(\mu_{i}) = \bm{x}_{i}\bm{\beta},
 \]
-where \(\bm{x}_{i}\) is the \(i^\text{th}\) row of a model matrix
-\(\bm{x}\), and \(\bm{\beta}\) is a vector of unknown parameters.
-Also, in a GLM the \(Y_{i}\) are independent and
+where \(\bm{x}_{i}\) is the \(i^\text{th}\) vector row of a model matrix
+\(\bm{X}\), and \(\bm{\beta}\) is a vector of unknown parameters. Also,
+in a GLM the \(Y_{i}\) are independent and
 \[
   Y_{i} \sim \text{some exponential family distribution}.
 \]
 The \textit{exponential family} of distributions includes many
 distributions that are useful for practical modelling, such as the
 Poisson (for counting data), binomial (dichotomic data), gamma
-(continuous but positive) and normal (continuous data) distributions. A
-comprehensive reference for GLMs is \citeonline{GLM89}.
+(continuous but positive) and Gaussian (continuous data) distributions.
+A comprehensive reference for GLMs is \citeonline{GLM89}.
 
 What makes a GLM into a GLMM \cite{GLMM} is the addition of a latent
-(\textit{m}ixed) effect, \(\mathbf{u}\). The mean structure becomes
+effect \(\mathbf{u}\) (then, \textit{m}ixed). The mean structure becomes
 \[
   g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \mathbf{z}_{i}\mathbf{u},
   \quad \mathbf{u} \sim \mathcal{N}(\mathbf{0},\bm{\Sigma})
 \]
-where the latent effect is assumed to follow a multivariate normal
-distribution of zero mean and a given variance-covariance matrix.
+where the latent effect is assumed to follow a multivariate Gaussian
+distribution of zero mean and a given variance-covariance matrix
+\(\bm{\Sigma}\).
 
 \section{GOALS}
 
@@ -186,15 +202,15 @@ competing risks data.
 \subsection{Specific goals}
 
 \begin{enumerate}
-\item Simulate from the multiGLMM to the cause-specific CIF, i.e.
-  generate synthetic data from the model.
+\item Simulate from the model, i.e. generate synthetic data to study
+  statistical properties.
 
 \item Write the model in the Template Model Builder (TMB) software,
   developed by \citeonline{TMB} and possibly the most efficient way of
-  doing so, taking advantage of its functionalities: computation of all
-  necessary gradients and Hessians via Automatic Differentiation (AD)
-  and integration of the joint likelihood latent effects,
-  marginalization, via an efficient Laplace approximation
+  doing such task. Taking advantage of its functionalities with special
+  attention to the computation of gradients and Hessians via an
+  state-of-art \textit{automatic differentiation} (AD), and joint
+  likelihood marginalization via an efficient Laplace approximation
   implementation.
 
 \item Study the model identifiability through the proposition of models
@@ -202,41 +218,40 @@ competing risks data.
 
 \item Apply the model to synthetic data and a real-based dataset.
 
-\item Compare the results of our multiGLMM to the cause-specific CIF
-  with the results obtained with the pairwise composite approach of
-  \citeonline{SCHEIKE}, the probably state-of-art to the study of
-  clustered competing risks data.
+\item Compare the results of our multinomial GLMM for clustered
+  competing risks data with the results obtained with the pairwise
+  composite approach of \citeonline{SCHEIKE}.
 \end{enumerate}
 
 \section{JUSTIFICATION}
 
-In the biomedical statistical modeling literature, the examination of
-disease occurrence in related individuals receives the name of family
-studies. Key points of interest are the within-family dependence and
-determining the role of different risk factors. The within-family
-dependence may reflect both disease heritability and the impact of
-shared environmental effects. The role of different risk factors arrives
-in the class of multivariate models, which options are limited in the
-statistical literature. Thus, the number of statistical models for
-competing risks data that accommodate the within-cluster (family)
-dependence is even more limited. Some modeling options are briefly
-commented in \citeonline{SCHEIKE}, with his pairwise composite approach
-being proposed as a new and better option to model the cause-specific
-cumulative incidence function (CIF, that describes age at disease onset)
-of clustered competing risks data on the probability scale. We propose
-to model the cause-specific CIF and accommodate the within-family
+In the biomedical statistical modeling literature, the study of disease
+occurrence in related individuals receives the name of family studies.
+Key points of interest are the within-family dependence and determining
+the role of different risk factors. The within-family dependence may
+reflect both disease heritability and the impact of shared environmental
+effects. The role of different risk factors arrives in the class of
+multivariate models, which options are limited in the statistical
+literature. Thus, the number of statistical models for competing risks
+data that accommodate the within-cluster (family) dependence is even
+more limited. Some modeling options are briefly commented in
+\citeonline{SCHEIKE}, with his pairwise composite approach being
+proposed as a new and better option to model the cause-specific
+cumulative incidence function (CIF), describing age at disease onset, of
+clustered competing risks data on the probability scale. We propose to
+model the cause-specific CIF and accommodate the within-family
 dependence in the same fashion (via a latent structure that allows the
 absolute risk and the failure time distribution to vary between
 families) but with an easier framework, based on a multinomial
-generalized linear mixed model (multiGLMM) approach.
+generalized linear mixed model approach.
 
 \section{LIMITATION}
 
-This work restraint to the proposition and application of a specific
-multinomial model for the cause-specific cumulative incidence function
-of competing risks data with a latent effect structure to accommodate
-within-family dependence with regard to both risk and timing. Given the
-elevated model complexity, hypothesis tests; residual analysis; and
+This work restraint to the proposition and application of a multinomial
+model for the cause-specific cumulative incidence function (CIF) of
+competing risks data, with a latent effect structure to accommodate
+within-family dependence with regard to both risk and timing. Given its
+considerable model complexity, hypothesis tests; residual analysis; and
 good-of-fit measures are not contemplated.
 
 \section{THESIS ORGANIZATION}

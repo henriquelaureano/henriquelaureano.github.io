@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.1.13)  27 OCT 2020 15:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.1.13)  28 OCT 2020 22:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -2122,17 +2122,27 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 8.33606pt on input line 46.
  [11
 
-]) [12] (./modules/intro.tex [13
+]
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+ [][] [][][]\OT1/phv/b/n/12 LATENT EF-FECTS AN-A-LYTIC GRA-DI-ENTS AND 
+ []
 
 
-] (./figures/fig1.tikz)
-[14]
-LaTeX Font Info:    Try loading font information for U+fplmbb on input line 149
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
+ \OT1/phv/b/n/12 HES-SIAN COM-PO-NENTS, FOR THE JOINT LOG- 
+ []
+
+) [12] (./modules/intro.tex [13
+
+
+] (./figures/fig1.tikz) [14] [15]
+LaTeX Font Info:    Try loading font information for U+fplmbb on input line 164
 .
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ufplmbb.fd
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ufplmbb.fd
 File: ufplmbb.fd 2003/10/30 Fontinst v1.914 font definitions for U/fplmbb.
-) [15] [16]
-[17]) [18] (./modules/methods.tex
+) [16] [17]) [18]
+(./modules/methods.tex
 LaTeX Font Info:    Try loading font information for OT1+zi4 on input line 14.
 
 (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/ot1zi4.fd
@@ -2154,14 +2164,14 @@ equation.2.2.7}) has been already used, duplicate ignored
                                                   \fi \fi 
 l.356 \[
         ] [24] [25]
-<figures/computational_graph.png, id=407, 771.88374pt x 202.7575pt>
+<figures/computational_graph.png, id=422, 771.88374pt x 202.7575pt>
 File: figures/computational_graph.png Graphic file (type png)
 <use figures/computational_graph.png>
 Package pdftex.def Info: figures/computational_graph.png  used on input line 52
 8.
 (pdftex.def)             Requested size: 364.00139pt x 95.6147pt.
  [26 <./figures/computational_graph.png>]
-<figures/ex-computational_graph.png, id=422, 662.475pt x 131.49126pt>
+<figures/ex-computational_graph.png, id=436, 662.475pt x 131.49126pt>
 File: figures/ex-computational_graph.png Graphic file (type png)
 <use figures/ex-computational_graph.png>
 Package pdftex.def Info: figures/ex-computational_graph.png  used on input line
@@ -2196,12 +2206,12 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 11.40997pt on input line 198.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
 (Font)              scaled to size 6.25204pt on input line 198.
-<figures/cifcoefs-1.png, id=497, 722.7pt x 271.0125pt>
+<figures/cifcoefs-1.png, id=511, 722.7pt x 271.0125pt>
 File: figures/cifcoefs-1.png Graphic file (type png)
 <use figures/cifcoefs-1.png>
 Package pdftex.def Info: figures/cifcoefs-1.png  used on input line 200.
 (pdftex.def)             Requested size: 455.0pt x 170.6271pt.
-<figures/cif-1.png, id=502, 505.89pt x 433.62pt>
+<figures/cif-1.png, id=516, 505.89pt x 433.62pt>
 File: figures/cif-1.png Graphic file (type png)
 <use figures/cif-1.png>
 Package pdftex.def Info: figures/cif-1.png  used on input line 245.
@@ -2229,12 +2239,12 @@ put line 29.
 Package hyperref Warning: No autoref name for `algorithm' on input line 98.
 
 [41]
-<figures/datasimucif-1.png, id=566, 505.89pt x 271.0125pt>
+<figures/datasimucif-1.png, id=580, 505.89pt x 271.0125pt>
 File: figures/datasimucif-1.png Graphic file (type png)
 <use figures/datasimucif-1.png>
 Package pdftex.def Info: figures/datasimucif-1.png  used on input line 130.
 (pdftex.def)             Requested size: 455.0pt x 243.75598pt.
-<figures/datasimu-1.png, id=569, 505.89pt x 722.7pt>
+<figures/datasimu-1.png, id=583, 505.89pt x 722.7pt>
 File: figures/datasimu-1.png Graphic file (type png)
 <use figures/datasimu-1.png>
 Package pdftex.def Info: figures/datasimu-1.png  used on input line 160.
@@ -2257,55 +2267,55 @@ Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 bibitemlist
 [47
 
-]) [48]
+] [48]) [49]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
 (hyperref)                removing `\uppercase' on input line 451.
 
-[49
-
-
-]
-Overfull \hbox (139.9456pt too wide) detected at line 528
-[]
- []
-
-
-Overfull \hbox (194.31375pt too wide) detected at line 628
-[]
- []
-
 [50
 
+
 ]
-Overfull \hbox (191.50511pt too wide) detected at line 679
+Overfull \hbox (199.3745pt too wide) detected at line 531
 []
  []
 
 
-Overfull \hbox (212.05464pt too wide) detected at line 774
+Overfull \hbox (194.31375pt too wide) detected at line 631
 []
  []
 
-[51]
-Overfull \hbox (169.47699pt too wide) detected at line 807
+[51
+
+]
+Overfull \hbox (191.50511pt too wide) detected at line 682
 []
  []
 
 
-Overfull \hbox (162.18411pt too wide) detected at line 874
+Overfull \hbox (212.05464pt too wide) detected at line 777
 []
  []
 
 [52]
-Overfull \hbox (204.07347pt too wide) detected at line 937
+Overfull \hbox (169.47699pt too wide) detected at line 810
+[]
+ []
+
+
+Overfull \hbox (162.18411pt too wide) detected at line 877
+[]
+ []
+
+[53]
+Overfull \hbox (204.07347pt too wide) detected at line 940
 []
  []
 
 No file _region_.ind.
 
 AED: lastpage setting LastPage
-[53]
+[54]
 \tf@lof=\write6
 \openout6 = `_region_.lof'.
 
@@ -2318,25 +2328,25 @@ AED: lastpage setting LastPage
 \tf@toc=\write9
 \openout9 = `_region_.toc'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 950.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 950.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 953.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 953.
  (./_region_.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 950.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 950.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 953.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 953.
 Package rerunfilecheck Info: File `_region_.brf' has not changed.
-(rerunfilecheck)             Checksum: 36848F28ECEC9A419EC118F0208849D7;2881.
+(rerunfilecheck)             Checksum: 4F504792FBC1C1FCBB4F85E03C0E3172;3130.
 
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 950.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 953.
  ) 
 Here is how much of TeX's memory you used:
- 41064 strings out of 492641
- 754463 string characters out of 6131787
- 914095 words of memory out of 5000000
- 43823 multiletter control sequences out of 15000+600000
- 623316 words of font info for 394 fonts, out of 8000000 for 9000
+ 41104 strings out of 492641
+ 754964 string characters out of 6131787
+ 915055 words of memory out of 5000000
+ 43850 multiletter control sequences out of 15000+600000
+ 623713 words of font info for 400 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  52i,19n,69p,936b,884s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-ot1-0.enc}{/usr
@@ -2355,10 +2365,10 @@ dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/palatino/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/pal
 atino/uplbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8
 a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on _region_.pdf (54 pages, 872349 bytes).
+Output written on _region_.pdf (55 pages, 875476 bytes).
 PDF statistics:
- 891 PDF objects out of 1000 (max. 8388607)
- 797 compressed objects within 8 object streams
- 158 named destinations out of 1000 (max. 500000)
+ 914 PDF objects out of 1000 (max. 8388607)
+ 818 compressed objects within 9 object streams
+ 162 named destinations out of 1000 (max. 500000)
  62832 words of extra memory for PDF output out of 74296 (max. 10000000)
 
