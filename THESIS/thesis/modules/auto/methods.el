@@ -13,6 +13,7 @@
     "cap:ad"
     "fig:compgraph"
     "fig:excompgraph"
-    "cap:tmb"))
+    "cap:tmb"
+    "fig:tmbpackdesign"))
  :latex)
 

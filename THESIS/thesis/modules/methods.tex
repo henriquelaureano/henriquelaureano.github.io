@@ -714,17 +714,17 @@ efficient graph associated to a mathematical formula is a complicated
 combinatorial problem. Thus, since our goal is to be able to fit our
 desired statistical models, a computational tool able to efficiently
 define and implement this computational graph is make necessary. To
-solve this and many other tasks, we have the Template Model Builder
-(TMB) developed by \citeonline{TMB}.
+solve this and many other tasks we have the Template Model Builder
+(TMB), developed by \citeonline{TMB}.
 
 TMB \url{ http://tmb-project.org} is an \texttt{R} \cite{R18} package
 for fitting statistical latent variable models to data, inpired by AD
-Model Builder (ADMB) and developed by \citeonline{ADMB}. ADMB is a
-statistical application for fitting nonlinear statistical models and
-solve optimization problems, that implements AD using \texttt{C++}
-classes and a native template language. Unlike most \texttt{R} packages,
-in TMB the model is formulated in \texttt{C++}. This characteristic
-provides great flexibility but requires some familiarity with the
+Model Builder \cite[ADMB]{ADMB}. ADMB is a statistical application for
+fitting nonlinear statistical models and solve optimization problems,
+that implements AD using \texttt{C++} classes and a native template
+language. Unlike most \texttt{R} packages, in TMB the model is
+formulated in \texttt{C++}. This characteristic provides great
+flexibility but requires some familiarity with the
 \texttt{C}/\texttt{C++} programming language. With TMB a user should be
 able to quickly implement complex latent effect models through simple
 \texttt{C++} templates.
@@ -733,32 +733,39 @@ In this chapter we describe step-by-step all the processes involved in
 the creation and parameter estimation of a GLMM. With TMB all this is
 put in practice in an efficient and robust fashion.
 
-The user needs to provide just the joint likelihood function writing in
-a \texttt{C++} template. When the model presents latent effects, during
-the compilation the latent effects will be integrated out via an
-efficient Laplace approximation routine with a Newton algorithm inside,
-and the marginal log-likelihood gradient will be also computed and
-returned. The marginal log-likelihood will be returned into an
-\texttt{R} object that can then be optimized using the user's favorite
-quasi-Newton routine, available in \texttt{R}. To accomplish all that,
-TMB combines some state-of-art software
+The user needs to provide just the negative joint log-likelihood
+function writing in a \texttt{C++} template, using specialized macros
+that pass the parameters, latent effects and data from \texttt{R}. When
+the model presents latent effects, during the compilation the latent
+effects are integrated out via an efficient Laplace approximation
+routine with a Newton algorithm inside, and the negative marginal
+log-likelihood gradient is computed, via AD, and returned. The negative
+marginal log-likelihood is returned into an \texttt{R} object that can
+then be optimized using the user's favorite quasi-Newton routine,
+available in \texttt{R}. To accomplish all that, TMB combines some
+state-of-art software
 
 \begin{itemize}
 \item \texttt{CppAD}, a \texttt{C++} AD package
   \url{https://coin-or.github.io/CppAD/};
 \item \texttt{Eigen} \cite{eigen}, a \texttt{C++} templated
   matrix-vector library;
-\item \texttt{CHOLMOD}, sparse matrix routines available from
+\item \texttt{CHOLMOD}, \texttt{C} sparse matrix routines available from
   \texttt{R}, used to obtain an efficient implementation of the Laplace
   approximation with exact derivatives
   \url{https://developer.nvidia.com/cholmod};
-\item Parallelism through \texttt{BLAS}: Basic Linear Algebra
-  Subprograms \url{http://www.netlib.org/blas/}.
+\item Parallelism through \texttt{BLAS}
+  \url{http://www.netlib.org/blas/}, a \texttt{Fortran} tuned set of
+  Basic Linear Algebra Subprograms;
+\item \texttt{Matrix} \cite{Matrix}, a rich hierarchy sparse and dense
+  matrix classes and methods using \texttt{LAPACK}
+  \url{http://www.netlib.org/lapack/} and \texttt{SuiteSparse}
+  \url{https://sparse.tamu.edu/} libraries.
 \end{itemize}
 Also, some of its key characteristics are
 \begin{itemize}
 \item TMB employs AD to calculate first and second order derivatives of
-  the likelihood function or of any objective function written in
+  the log-likelihood function or of any objective function written in
   \texttt{C++};
 \item The objective function, and its derivatives, can be called from
   \texttt{R}. Hence, parameter estimation via \texttt{optim()} or
@@ -766,6 +773,21 @@ Also, some of its key characteristics are
 \item Standard deviations of any parameter, or derived parameter, can be
   obtained via the \textit{delta method}.
 \end{itemize}
+An overview of the pachage design is shown in
+\autoref{fig:tmbpackdesign}.
+
+\begin{figure}[H]
+  \setlength{\abovecaptionskip}{.0001pt}
+  \caption{TMB PACKAGE DESIGN}
+  \vspace{0.35cm} \centering
+  \includegraphics[width=0.85\textwidth]{tmb_package_design.png}
+  \\
+  \vspace{0.1cm}
+  \begin{footnotesize}
+    SOURCE:~\citeonline{TMB}.
+  \end{footnotesize}
+  \label{fig:tmbpackdesign}
+\end{figure}
 
 Here we focus on GLMMs, but basically any statistical model with a
 latent structure (or not), linear (or not), can be fitted with TMB. In

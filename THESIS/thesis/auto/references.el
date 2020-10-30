@@ -30,6 +30,7 @@
     "peyre"
     "ADMB"
     "eigen"
+    "Matrix"
     "cholesky"
     "modifiedcholesky"))
  :bibtex)
