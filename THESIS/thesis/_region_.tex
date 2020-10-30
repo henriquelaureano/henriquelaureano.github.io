@@ -451,493 +451,423 @@
 \addcontentsline{toc}{chapter}{\hspace{2.105cm}APPENDIX}
 \renewcommand{\ABNTEXchapterfontsize}{\ABNTEXsectionfont}
 
-\chapter{LATENT EFFECTS ANALYTIC GRADIENTS AND HESSIAN
-  COMPONENTS, FOR THE JOINT LOG-LIKELIHOOD FUNCTION OF
-  THE MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS
-  DATA}
+\chapter{LATENT EFFECTS ANALYTIC GRADIENT FOR THE JOINT
+  LOG-LIKELIHOOD FUNCTION OF THE MULTINOMIAL GLMM FOR
+  CLUSTERED COMPETING RISKS DATA}
 \label{cap:appendixA}
 
-Subject \(i\), cluster \(j\), competing cause \(k\).
+The following gradient components are computed by cluster,
+to be used e.g., in a Newton optimization.
+
+Subject \(i\) at cluster \(j\) and for competing cause \(k\)
+
 \begin{align*}
-  \frac{\partial}{\partial u_{kj}}
-  \log L(\bm{\theta}\mid\bm{y}, \bm{r})
-  &= y_{kij}\frac{1 +
+  &\frac{\partial}{\partial u_{kj}}
+    \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &y_{kij}\frac{1 +
     \sum_{m \neq k}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
     }{1 +
-    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}\\
-  &- \left(\sum_{m \neq k}^{K-1} y_{mij}\right)
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}} -
+    \left(\sum_{m \neq k}^{K-1} y_{mij}\right)
     \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
     }{1 +
-    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}\\
-  &- y_{Kij}\frac{1}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}-\\
+  &y_{Kij}\frac{1}{1 +
     \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
     }\Bigg(\\
+  &\frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \left(1 +
+    \sum_{m \neq k}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    \right)}{
+    1 + \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    }\times\\
   &\frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-       \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-            - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-           ]
-       }{
- 1 + \sum_{n = 1}^{K-1}
-     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-     }\times\\
-  &\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-       \left(1 + \sum_{m \neq k}^{K-1}
-                 \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-       \right)}{(1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{n}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])}\\
- &-
- \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-       }{
- 1 + \sum_{n = 1}^{K-1}
-     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-     }\times\\
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+    ]}{1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]} -
+    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{
+    1 + \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    \times\\
+  &\frac{
+    \sum_{m \neq k}^{K-1}
+    w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]
+    \exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}{
+    1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\Bigg) -\\
+  &\bm{e_{k}^{\top}Qr_{j}},\\
+  %% -------------------------------------------------------------------
+  \\
+  %% -------------------------------------------------------------------
+  &\frac{\partial}{\partial \eta_{kj}}
+  \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &y_{kij} (w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}) -\\
+  &y_{Kij}\frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    }{1 + \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    \times\\
+  &\frac{
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+    ]}{1 -
+    \sum_{n = 1}^{K-1}
+    \frac{\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]} -\\
+  &\bm{e_{k}^{\top}Qr_{j}},
+\end{align*}
+with \(\bm{e_{k}^{\top}}\) begin a vector with \(1\) at the \(k\)-th
+position and zero elsewhere.
+
+\chapter{LATENT EFFECTS ANALYTIC HESSIAN FOR THE JOINT
+  LOG-LIKELIHOOD FUNCTION OF THE MULTINOMIAL GLMM FOR
+  CLUSTERED COMPETING RISKS DATA}
+\label{cap:appendixB}
+
+The following hessian components are computed by cluster, to be used
+e.g., in a Newton optimization.
+
+Subject \(i\) at cluster \(j\) and for competing cause \(k\)
+\begin{align*}
+  &\frac{\partial^{2}}{\partial u_{kj}^{2}}
+    \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &-\frac{\left(\sum_{k = 1}^{K-1} y_{kij}\right)
+    \exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \left(1 +
+    \sum_{m \neq k}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    \right)}{\left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}} +\\
+  &\frac{y_{Kij}
+    \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
+    1 + \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    }\times\\
+  &\frac{
+    \sum_{m \neq k}^{K-1}w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]
+    \exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])} -\\
+  &\frac{
+    y_{Kij}
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}] }{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    }\times\\
+  &\frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \left(1 +
+    \sum_{m \neq k}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    \right)}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])} -\\
+  &\frac{y_{Kij}\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{\left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}\Bigg(\\
   &\frac{\sum_{m \neq k}^{K-1}
-       w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-       \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-            - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
-           ]
-       \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{(1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{n}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-   - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])}\\
-  &\Bigg) - e_{k}^{\top} \bm{Qr},\\
- %% --------------------------------------------------------------------
- \bm{l}^{'} (\eta_{kj}) &=
- y_{kij} (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-          - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})\\
- &- y_{Kij}
-    \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-               }{1 + \sum_{n = 1}^{K-1}
-                     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+    w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]
+    \exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}{\left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])\right)^{2}}-\\
+  &\frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\left(1 +
+    \sum_{m \neq k}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    \right)}{\left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])\right)^{2}}\Bigg)\\
+  &\times\Bigg(\Big(1 +\\
+  &\sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])\Big) +\\
+  &\Big(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \Big)\times\\
+  &(1 - w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}])\Bigg)
+    - \bm{e_{k}^{\top}Q},
+\end{align*}
+
+\begin{align*}
+  &\frac{\partial^{2}}{\partial \eta_{kj}^{2}}
+    \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &- y_{kij} - y_{Kij}
+    \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}\Bigg(\\
+  &w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\times\\
+  &\frac{\left(
+    w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+    \right)^{2} - 1}{
+    1 - \sum_{n = 1}^{K-1}
+    \frac{\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]} -\\
+  &\frac{\left(
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\right)^{2}}{\left(1 -
+    \sum_{n = 1}^{K-1}
+    \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\\
+  &\Bigg) - \bm{e_{k}^{\top}Q},
+\end{align*}
+
+\begin{align*}
+  &\frac{\partial^{2}}{\partial u_{kj} u_{mj}}
+    \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &\left(\sum_{k = 1}^{K-1} y_{kij}\right)
+    \frac{
+    \exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}{
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}} +\\
+  &\frac{
+    y_{Kij}
+    \exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}\Bigg(\\
+  &\frac{
+    w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])} -\\
+  &\frac{
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])}\Bigg) -\\
+  &\frac{y_{Kij}}{
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}\Bigg(\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}\Bigg(\\
+  &\frac{
+    \sum_{m \neq k}^{K-1}
+    w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]
+    \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
+    \left(1 + \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])\right)^{2}} -\\
+  &\frac{
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]
+    \left(1 +
+    \sum_{m \neq k}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    \right)}{\left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])\right)^{2}}\Bigg)
+\end{align*}
+\begin{align*}
+  &\Bigg)\times\Bigg(\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    \Big(1 +\\
+  &\sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])\Big) +\\
+  &\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    (1 - w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}])\Big(1 +\\
+  &\sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}\Big)
+    \Bigg) - \bm{e_{k}^{\top}Q},
+\end{align*}
+
+\begin{align*}
+  &\frac{\partial^{2}}{\partial \eta_{kj} \eta_{mj}}
+    \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &- y_{Kij}\frac{
+    \exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}\times\\
+  &\frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]}{\left(1 -
+    \sum_{n = 1}^{K-1}\frac{\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    }{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\times\\
+  &\frac{\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj})\times\\
+  &\phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}] - \bm{e_{k}^{\top}Q},
+\end{align*}
+
+\begin{align*}
+  &\frac{\partial^{2}}{\partial \eta_{kj} u_{kj}}
+    \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &y_{Kij}
+    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}\times\\
+  &\frac{
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
+    \left(1 -
+    \sum_{n = 1}^{K-1}\frac{\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}{
+    1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\times\\
+  &\Bigg(
+    \sum_{n \neq k}^{K-1}
+    \frac{
+    \exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}\times\\
+  &w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}] -\\
+  &\frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \left(
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+    \right)}{
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}\times\\
+  &w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\Bigg) -
+\end{align*}
+\begin{align*}
+  &y_{Kij}
+    \frac{
+    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \left(
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
+    \right)}{
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}}{1 -
+    \sum_{n = 1}^{K-1}\frac{\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}{
+    1 + \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\times\\
+  &w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})\times\\
+  &\phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}] - \bm{e_{k}^{\top}Q},
+\end{align*}
+
+\begin{align*}
+  &\frac{\partial^{2}}{\partial \eta_{kj} u_{mj}}
+    \log L(\bm{\theta}\mid\bm{y}_{j}, \bm{r}_{j}) =\\
+  &y_{Kij}
+    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}
+    \exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}{
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}\times\\
+  &\frac{
     w_{k}\frac{\delta}{2\delta t - 2t^{2}}
     (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-     - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
-    \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-         - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-        ]}{
-    1 - \sum_{n = 1}^{K-1}
-        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-             }{1 + \sum_{n = 1}^{K-1}
-                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-              }
-        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-        \phi[w_{n}
-             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}
-             ]}\\
- &- e_{k}^{\top} \bm{Qr}.
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{1 - \sum_{n = 1}^{K-1}
+    \frac{\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]} +\\
+  &y_{Kij}
+    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}\times\\
+  &\frac{
+    w_{k}\frac{\delta}{2\delta t - 2t^{2}}
+    (w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
+    \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
+    \left(1 - \sum_{n = 1}^{K-1}
+    \frac{\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}{1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}}
+    w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\times\\
+  &\Bigg(
+    \sum_{n \neq m}^{K-1}\frac{
+    \exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}{
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}\times\\
+  &w_{n}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{n}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}] -\\
+  &\frac{\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+    \left(
+    \left(1 +
+    \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right) - \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
+    \right)}{
+    \left(1 + \sum_{n = 1}^{K-1}\exp\{\bm{x}_{nij}\bm{\beta}_{ni} + u_{nj}\}
+    \right)^{2}}\times\\
+  &w_{m}\frac{\delta}{2\delta t - 2t^{2}}
+    \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+    - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]\Bigg) - \bm{e_{k}^{\top}Q},
 \end{align*}
-and the hessian,
-\begin{align*}
- \bm{l}^{''} (u_{kj}) &= -
- \frac{\left( \sum_{k = 1}^{K-1} y_{kij} \right)
-       \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-       \left( 1 + \sum_{m \neq k}^{K-1}
-                  \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-       \right)}{\left( 1 + \sum_{n = 1}^{K-1}
-                           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                         \right)^{2}}\\
- &+ \frac{y_{Kij}
-          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \sum_{m \neq k}^{K-1}
-          w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                 \right)
-               - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
-              ] \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
-    \left(1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-    \right) \left( 1 + \sum_{n = 1}^{K-1}
-                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                  (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-                       \phi[w_{n}
-                        \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                     \right)
-                        - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-           \right)}\\
- &- \frac{y_{Kij}
-          w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                 \right)
-               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-              ] \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \left( 1 + \sum_{m \neq k}^{K-1}
-                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-         \right)}{
-    \left(1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-   \right) \left( 1 + \sum_{n = 1}^{K-1}
-                      \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                 (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-                      \phi[w_{n}
-                       \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                    \right)
-                       - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-          \right)}\\
- &- \frac{y_{Kij}}{
-    \left( 1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-    \right)^{2}} \Bigg(\\
- & \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-         \sum_{m \neq k}^{K-1}
-         w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-         \phi[w_{m}\text{arctanh}
-                   \left(\frac{t-\delta/2}{\delta/2}\right)
-              - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
-             ]
-         \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
-   \left( 1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-          (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-               \phi[w_{n}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-   \right)^{2}}\\
- &- \frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{k}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-              ]
-          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \left( 1 + \sum_{m \neq k}^{K-1}
-                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-          \right)}{
-    \left( 1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-           (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-                \phi[w_{n}
-                \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-                     - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-    \right)^{2}} \Bigg)\\
- &\times \Bigg(
- \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
- \Big( 1 + \sum_{n = 1}^{K-1}
-           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-       (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-            \phi[w_{n}
-                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-                 - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
- \Big)\\
- &+ \Big( 1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-    \Big) \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-    (1 - w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-        \phi[w_{k}
-             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-             - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]) \Bigg)\\
- &- e_{k}^{\top} \bm{Q},
-\end{align*}
-\begin{align*}
- \bm{l}^{''} (\eta_{kj}) &= - y_{kij}\\
- &- y_{Kij}
-    \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-               }{1 + \sum_{n = 1}^{K-1}
-                     \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-          w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{k}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-              ] \left( \left(
-          w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-          - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-                       \right)^{2} - 1 \right)}{
-    1 - \sum_{n = 1}^{K-1}
-        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-             }{1 + \sum_{n = 1}^{K-1}
-                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-              }
-        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-        \phi[w_{n}
-             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}
-            ]}\\
- &- y_{Kij}
-    \frac{\left( \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-                      }{1 + \sum_{n = 1}^{K-1}
-                            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
-                                 \}}
-                 w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-                 (w_{k}
-                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-                 - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
-                 \phi[w_{k}
-                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-                 - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-                     ]
-          \right)^{2}}{
-    \left( 1 - \sum_{n = 1}^{K-1}
-               \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                    }{1 + \sum_{n = 1}^{K-1}
-                          \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                     }
-               w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-               \phi[w_{n}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}
-                   ]
-    \right)^{2}}\\
- &- e_{k}^{\top} \bm{Q},\\
-\end{align*}
-\begin{align*}
- \bm{l}^{''}(u_{kj} u_{mj}) &=
- \left( \sum_{k = 1}^{K-1} y_{kij} \right)
- \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-       \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
- \left( 1 + \sum_{n = 1}^{K-1}
-            \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
- \right)^{2}}\\
- &+ \frac{y_{Kij}
-          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{m}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                 \right)
-               - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
-              ] \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
-    \left(1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-    \right) \left( 1 + \sum_{n = 1}^{K-1}
-                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                  (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-                       \phi[w_{n}
-                        \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                     \right)
-                        - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-           \right)}\\
- &- \frac{y_{Kij}
-          w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{k}\text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                 \right)
-               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-              ] \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-                \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
-    \left(1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-   \right) \left( 1 + \sum_{n = 1}^{K-1}
-                      \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                 (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-                      \phi[w_{n}
-                       \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}
-                                    \right)
-                       - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-          \right)}\\
- &- \frac{y_{Kij}}{
-    \left( 1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-    \right)^{2}} \Bigg(\\
- & \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-         \sum_{m \neq k}^{K-1}
-         w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-         \phi[w_{m}\text{arctanh}
-                   \left(\frac{t-\delta/2}{\delta/2}\right)
-              - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
-             ]
-         \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
-   \left( 1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-          (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-               \phi[w_{n}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-   \right)^{2}}\\
- &- \frac{w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-          \phi[w_{k}
-               \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-               - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-              ]
-          \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \left( 1 + \sum_{m \neq k}^{K-1}
-                     \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-          \right)}{
-    \left( 1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-           (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-                \phi[w_{n}
-                \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-                     - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
-    \right)^{2}} \Bigg)\\
- &\times \Bigg(
- \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
- \Big( 1 + \sum_{n = 1}^{K-1}
-           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-       (1 - w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-            \phi[w_{n}
-                 \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-                 - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}])
- \Big)\\
- &+ \Big( 1 + \sum_{n = 1}^{K-1}
-              \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-    \Big) \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-    (1 - w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-        \phi[w_{m}
-             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-             - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]) \Bigg)\\
- &- e_{k}^{\top} \bm{Q},\\
-\end{align*}
-\begin{align*}
- \bm{l}^{''}(\eta_{kj} \eta_{mj}) &= -
- y_{Kij}
- \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-            }{1 + \sum_{n = 1}^{K-1}
-                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-       w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-      (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
-       \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-            - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-           ]}{
- \left( 1 - \sum_{n = 1}^{K-1}
-            \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-                 }{1 + \sum_{n = 1}^{K-1}
-                       \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-            w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-            \phi[w_{n}
-            \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-            - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]
- \right)^{2}}\\
- &\times \frac{\exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-              }{1 + \sum_{n = 1}^{K-1}
-                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-         w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-        (w_{m} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-         - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj})\\
- &\times \phi[w_{m}
-              \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-              - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}
-             ]\\
- &- e_{k}^{\top} \bm{Q},
-\end{align*}
-\begin{align*}
- \bm{l}^{''}(\eta_{kj} u_{kj}) &=
- y_{Kij}
- \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
-             1 + \sum_{n = 1}^{K-1}
-                 \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-  w_{k}\frac{\delta}{2\delta t - 2t^{2}}
- (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
- \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
- \left( 1 - \sum_{n = 1}^{K-1}
-            \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
-                  1 + \sum_{n = 1}^{K-1}
-                      \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-            w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-        \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\\
- &\times
- \Bigg( \sum_{n \neq k}^{K-1}
-        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-              \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
-        \left( 1 + \sum_{n = 1}^{K-1}
-                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-        \right)^{2}}
-        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-        \phi[w_{n}
-             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\\
-  &- \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \left(
-          \left(1 + \sum_{n = 1}^{K-1}
-                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-          \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \right)}{\left(1 + \sum_{n = 1}^{K-1}
-                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
-                                 \}
-                   \right)^{2}}\\
-  &\times
-  w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-  \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\Bigg)\\
- &- y_{Kij} \frac{
-    \frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \left(
-          \left(1 + \sum_{n = 1}^{K-1}
-                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-          \right) - \exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-          \right)}{\left(1 + \sum_{n = 1}^{K-1}
-                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
-                                 \}
-                   \right)^{2}}}{
-    1 - \sum_{n = 1}^{K-1}
-        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
-              1 + \sum_{n = 1}^{K-1}
-                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-              w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-    \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-         - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\\
- &\times
- w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-  (w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-   - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
-  \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-       - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}]\\
- &- e_{k}^{\top} \bm{Q},
-\end{align*}
-\begin{align*}
- \bm{l}^{''}(\eta_{kj} u_{mj}) &=
- y_{Kij}
- \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}
-             \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
-       \left( 1 + \sum_{n = 1}^{K-1}
-                  \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-       \right)^{2}}
- w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-(w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
- \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
- 1 - \sum_{n = 1}^{K-1}
-     \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
-           1 + \sum_{n = 1}^{K-1}
-               \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
-           w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-      \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-           - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]}\\
- &+
- y_{Kij}
- \frac{\frac{\exp\{\bm{x}_{kij} \bm{\beta}_{ki} + u_{kj}\}}{
-       1 + \sum_{n = 1}^{K-1}
-           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
- w_{k}\frac{\delta}{2\delta t - 2t^{2}}
-(w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-  - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})
- \phi[w_{k} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-      - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj})]}{
- \left(1 - \sum_{n = 1}^{K-1}
-           \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}{
-       1 + \sum_{n = 1}^{K-1}
-           \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}}
- w_{n}\frac{\delta}{2\delta t - 2t^{2}}
- \phi[w_{n} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-      - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\right)^{2}}\\
- &\times
- \Bigg( \sum_{n \neq m}^{K-1}
-        \frac{\exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-              \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}}{
-        \left( 1 + \sum_{n = 1}^{K-1}
-                   \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-        \right)^{2}}
-        w_{n}\frac{\delta}{2\delta t - 2t^{2}}
-        \phi[w_{n}
-             \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-             - \bm{x}_{nij}\bm{\gamma}_{ni} - \eta_{nj}]\\
-  &- \frac{\exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-          \left(
-          \left(1 + \sum_{n = 1}^{K-1}
-                    \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}\}
-          \right) - \exp\{\bm{x}_{mij} \bm{\beta}_{mi} + u_{mj}\}
-          \right)}{\left(1 + \sum_{n = 1}^{K-1}
-                             \exp\{\bm{x}_{nij} \bm{\beta}_{ni} + u_{nj}
-                                 \}
-                   \right)^{2}}\\
-  &\times
-  w_{m}\frac{\delta}{2\delta t - 2t^{2}}
-  \phi[w_{m} \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-       - \bm{x}_{mij}\bm{\gamma}_{mi} - \eta_{mj}]\Bigg)\\
- &- e_{k}^{\top} \bm{Q}.
-\end{align*}
+with \(\bm{e_{k}^{\top}}\) begin a vector with \(1\) at the \(k\)-th
+position and zero elsewhere.
 
 \end{apendicesenv}
 % ----------------------------------------------------------------------
@@ -952,4 +882,4 @@ and the hessian,
 %-----------------------------------------------------------------------
 \end{document}
 % END ==================================================================
-\message{ !name(thesis.tex) !offset(-955) }
+\message{ !name(thesis.tex) !offset(-885) }

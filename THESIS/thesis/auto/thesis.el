@@ -73,7 +73,8 @@
     "cap:datasets"
     "cap:results"
     "cap:finalc"
-    "cap:appendixA")
+    "cap:appendixA"
+    "cap:appendixB")
    (LaTeX-add-bibliographies
     "references"))
  :latex)
