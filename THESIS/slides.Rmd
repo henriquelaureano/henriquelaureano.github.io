@@ -113,6 +113,35 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
  \end{shaded}
 \end{minipage}
 
+\begin{center}
+ \scalebox{0.85}{\tikzfig{../figures/fig2}}
+\end{center}
+
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+\pause
+
+\begin{minipage}{.275\textwidth}
+ \begin{shaded}
+  Survival models
+ \end{shaded}
+\end{minipage}
+
+\[
+\begin{aligned}
+  \text{for a type}~{\color{beamer@UIUCorange}{k}}~\text{failure},
+  \quad
+  F_{\color{beamer@UIUCorange}{k}}(t\mid\{X, R\})
+  &=\mathbb{P}[T\leq t,
+               K = {\color{beamer@UIUCorange}{k}}\mid\{X, R\}]\\
+  &=\underbrace{
+     \pi_{\color{beamer@UIUCorange}{k}}(\{X, R\})}_{
+     \substack{\text{risk level}}}\times
+    \underbrace{
+     \Phi[t\mid\{X, R_{\color{beamer@UIUCorange}{k}}\}]}_{
+     \substack{\text{failure time}\\\text{trajectory}}}.
+\end{aligned}
+\]
+
 ###
 
 + We work on the probability scale, modeling the
