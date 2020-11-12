@@ -1,0 +1,289 @@
+---
+title: "multiGLMM: a multinomial GLMM 4 clustered competing risks data"
+author: "[Henrique Ap. Laureano](http://www.leg.ufpr.br/~henrique)"
+date: "*Last modification on* `r Sys.time()`"
+include-before:
+  - '\(\newcommand{\bm}[1]{\boldsymbol{\mathbf{#1}}}\)'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    css: font_size.css
+    code_folding: show
+---
+
+```{r, echo=FALSE}
+library(knitr)
+htmltools::img(src = image_uri("logo_leg.jpg"),
+               alt = 'logo',
+               style = 'position:absolute; top:0; right:0;
+                        padding:10px; width:175px;')
+options(width = 100)
+opts_chunk$set(fig.path = "iprocess/",
+               cache = TRUE,
+               cache.path = "cprocess/",
+               ## warning = FALSE,
+               comment = NA,
+               prompt = FALSE)
+```
+
+```{r packages}
+pacman::p_load(tidyverse, ## pipes, select()
+               TMB, ## template model builder
+               Matrix, ## bdiag()
+               tmbstan, ## MCMC samp. from TMB model object using Stan
+               patchwork)
+## why not library()?
+## with p_load(), if the package isn't installed,
+## install_packages() is automatically loaded
+```
+
+## starting from the bottom
+
+## just fixed effects
+
+```
+times: equally spaced grid from 30 to 80 years old
+```
+
+```{r datasimuF}
+datasimuF <- function(J, from = 30, to =  79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    risk1 <- exp(beta[1])
+    risk2 <- exp(beta[2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+tmbparsF <- list(beta1 = -2,
+                 beta2 = -1.5,
+                 gama1 = 1.2,
+                 gama2 = 1,
+                 w1 = 3,
+                 w2 = 5)
+```
+
+```{r fixedmodels}
+## compile("SCHEIKEfixed.cpp")
+dyn.load(dynlib("SCHEIKEfixed"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+dfF <- datasimuF(J = 1e3)
+dfF %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdataF <- list(Y = as.matrix(dfF %>% select(y1:y3)),
+                 T = dfF$t,
+                 delta = 80)
+objF <- MakeADFun(data = tmbdataF,
+                  parameters = tmbparsF,
+                  DLL = "SCHEIKEfixed",
+                  hessian = TRUE, silent = TRUE)
+objF$fn()
+tictoc::tic()
+optF <- nlminb(objF$par, objF$fn, objF$gr)
+tictoc::toc()
+sdrF <- sdreport(objF)
+## ---------------------------------------------------------------------
+dfF2 <- datasimuF(J = 5e3)
+dfF2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdataF2 <- list(Y = as.matrix(dfF2 %>% select(y1:y3)),
+                  T = dfF2$t,
+                  delta = 80)
+objF2 <- MakeADFun(data = tmbdataF2,
+                   parameters = tmbparsF,
+                   DLL = "SCHEIKEfixed",
+                   hessian = TRUE, silent = TRUE)
+objF2$fn()
+tictoc::tic()
+optF2 <- nlminb(objF2$par, objF2$fn, objF2$gr)
+tictoc::toc()
+sdrF2 <- sdreport(objF2)
+## ---------------------------------------------------------------------
+dfF3 <- datasimuF(J = 1e4)
+dfF3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdataF3 <- list(Y = as.matrix(dfF3 %>% select(y1:y3)),
+                  T = dfF3$t,
+                  delta = 80)
+objF3 <- MakeADFun(data = tmbdataF3,
+                   parameters = tmbparsF,
+                   DLL = "SCHEIKEfixed",
+                   hessian = TRUE, silent = TRUE)
+objF3$fn()
+tictoc::tic()
+optF3 <- nlminb(objF3$par, objF3$fn, objF3$gr)
+tictoc::toc()
+sdrF3 <- sdreport(objF3)
+## ---------------------------------------------------------------------
+dfF4 <- datasimuF(J = 25e3)
+dfF4 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdataF4 <- list(Y = as.matrix(dfF4 %>% select(y1:y3)),
+                  T = dfF4$t,
+                  delta = 80)
+objF4 <- MakeADFun(data = tmbdataF4,
+                   parameters = tmbparsF,
+                   DLL = "SCHEIKEfixed",
+                   hessian = TRUE, silent = TRUE)
+objF4$fn()
+tictoc::tic()
+optF4 <- nlminb(objF4$par, objF4$fn, objF4$gr)
+tictoc::toc()
+sdrF4 <- sdreport(objF4)
+## ---------------------------------------------------------------------
+dfF5 <- datasimuF(J = 50e3)
+dfF5 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdataF5 <- list(Y = as.matrix(dfF5 %>% select(y1:y3)),
+                  T = dfF5$t,
+                  delta = 80)
+objF5 <- MakeADFun(data = tmbdataF5,
+                   parameters = tmbparsF,
+                   DLL = "SCHEIKEfixed",
+                   hessian = TRUE, silent = TRUE)
+objF5$fn()
+tictoc::tic()
+optF5 <- nlminb(objF5$par, objF5$fn, objF5$gr)
+tictoc::toc()
+sdrF5 <- sdreport(objF5)
+```
+
+```{r fixedsummaries}
+## 1e3 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5), summary(sdrF))
+## 5e3 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5), summary(sdrF2))
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5), summary(sdrF3))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5), summary(sdrF4))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5), summary(sdrF5))
+```
+
+```{r fixedprofiles}
+b1F <- tmbprofile(objF5, name = "beta1", trace = FALSE)
+b2F <- tmbprofile(objF5, name = "beta2", trace = FALSE)
+g1F <- tmbprofile(objF5, name = "gama1", trace = FALSE)
+g2F <- tmbprofile(objF5, name = "gama2", trace = FALSE)
+w1F <- tmbprofile(objF5, name = "w1", trace = FALSE)
+w2F <- tmbprofile(objF5, name = "w2", trace = FALSE)
+## ---------------------------------------------------------------------
+par(mfrow = c(2, 3), mar =  c(4, 4, 2, 2))
+plot(b1F) ; abline(v = -2, lty = 2)
+plot(b2F) ; abline(v = -1.5, lty = 2)
+plot(g1F) ; abline(v = 1.2, lty = 2)
+plot(g2F) ; abline(v = 1, lty = 2)
+plot(w1F) ; abline(v = 3, lty = 2)
+plot(w2F) ; abline(v = 5, lty = 2)
+```
+
+```
+remember: this is just one fit. the right thing to do here should be a
+simulation study to get the histogram estimatives
+```
+
+## adding latent structure
+
+### 1
+
+```{r datasimu1}
+datasimu1 <- function(J, from = 30, to =  79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(1.0, 0.0,
+                                                0.0, 1.0), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1] + R[ , 1])
+    risk2 <- exp(beta[2] + R[ , 2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(140234)
+df1 <- datasimu(J = 1e3)
+df1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata1 <- list(
+    Y = as.matrix(df1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e3, rep(1, 2), simplify = FALSE)),
+    T = df1$t,
+    delta = 80)
+tmbpars1 <- list(beta1 = -2,
+                 beta2 = -1.5,
+                 gama1 = 1.2,
+                 gama2 = 1,
+                 w1 = 3,
+                 w2 = 5,
+                 R = matrix(0, nrow = 1e3, ncol = 4),
+                 sigma2 = log(1))
+## ---------------------------------------------------------------------
+set.seed(140424)
+df2 <- datasimu(J = 5e3)
+df2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata2 <- list(
+    Y = as.matrix(df2 %>% select(y1:y3)),
+    Z = bdiag(replicate(5e3, rep(1, 2), simplify = FALSE)),
+    T = df2$t,
+    delta = 80)
+tmbpars2 <- list(beta1 = -2,
+                 beta2 = -1.5,
+                 gama1 = 1.2,
+                 gama2 = 1,
+                 w1 = 3,
+                 w2 = 5,
+                 R = matrix(0, nrow = 5e3, ncol = 4),
+                 sigma2 = log(1))
+## ---------------------------------------------------------------------
+set.seed(140440)
+df3 <- datasimu(J = 1e4)
+df3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata3 <- list(
+    Y = as.matrix(df3 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df3$t,
+    delta = 80)
+tmbpars3 <- list(beta1 = -2,
+                 beta2 = -1.5,
+                 gama1 = 1.2,
+                 gama2 = 1,
+                 w1 = 3,
+                 w2 = 5,
+                 R = matrix(0, nrow = 1e4, ncol = 4),
+                 sigma2 = log(1))
+```
+
+```{r}
+```
