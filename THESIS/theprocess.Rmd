@@ -193,7 +193,7 @@ plot(w2F) ; abline(v = 5, lty = 2)
 
 ```
 remember: this is just one fit. the right thing to do here should be a
-simulation study to get the histogram estimatives
+simulation study to get the histogram estimates
 ```
 
 ## adding latent structure
@@ -201,10 +201,10 @@ simulation study to get the histogram estimatives
 ### 1
 
 ```{r datasimu1}
-datasimu1 <- function(J, from = 30, to =  79.5, by = 0.5, delta = 80,
+datasimu1 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
                       beta = c(-2, -1.5), gamma = c(1.2, 1),
-                      w = c(3, 5), S = matrix(c(1.0, 0.0,
-                                                0.0, 1.0), 2, 2))
+                      w = c(3, 5), S = matrix(c(0.5, 0.0,
+                                                0.0, 0.5), 2, 2))
 {
     out <- data.frame("i" = rep(seq(2), times = J),
                       "j" = factor(rep(seq(J), each = 2)),
@@ -233,57 +233,1109 @@ datasimu1 <- function(J, from = 30, to =  79.5, by = 0.5, delta = 80,
     return(out)
 }
 ## ---------------------------------------------------------------------
-set.seed(140234)
-df1 <- datasimu(J = 1e3)
-df1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
-tmbdata1 <- list(
-    Y = as.matrix(df1 %>% select(y1:y3)),
-    Z = bdiag(replicate(1e3, rep(1, 2), simplify = FALSE)),
-    T = df1$t,
-    delta = 80)
-tmbpars1 <- list(beta1 = -2,
-                 beta2 = -1.5,
-                 gama1 = 1.2,
-                 gama2 = 1,
-                 w1 = 3,
-                 w2 = 5,
-                 R = matrix(0, nrow = 1e3, ncol = 4),
-                 sigma2 = log(1))
-## ---------------------------------------------------------------------
-set.seed(140424)
-df2 <- datasimu(J = 5e3)
-df2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
-tmbdata2 <- list(
-    Y = as.matrix(df2 %>% select(y1:y3)),
-    Z = bdiag(replicate(5e3, rep(1, 2), simplify = FALSE)),
-    T = df2$t,
-    delta = 80)
-tmbpars2 <- list(beta1 = -2,
-                 beta2 = -1.5,
-                 gama1 = 1.2,
-                 gama2 = 1,
-                 w1 = 3,
-                 w2 = 5,
-                 R = matrix(0, nrow = 5e3, ncol = 4),
-                 sigma2 = log(1))
-## ---------------------------------------------------------------------
-set.seed(140440)
-df3 <- datasimu(J = 1e4)
-df3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
-tmbdata3 <- list(
-    Y = as.matrix(df3 %>% select(y1:y3)),
+set.seed(110137)
+df1.1 <- datasimu1(J = 1e4)
+df1.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata1.1 <- list(
+    Y = as.matrix(df1.1 %>% select(y1:y3)),
     Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
-    T = df3$t,
+    T = df1.1$t,
     delta = 80)
-tmbpars3 <- list(beta1 = -2,
-                 beta2 = -1.5,
-                 gama1 = 1.2,
-                 gama2 = 1,
-                 w1 = 3,
-                 w2 = 5,
-                 R = matrix(0, nrow = 1e4, ncol = 4),
-                 sigma2 = log(1))
+tmbpars1.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = log(0.5))
+## ---------------------------------------------------------------------
+set.seed(110208)
+df1.2 <- datasimu1(J = 25e3)
+df1.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata1.2 <- list(
+    Y = as.matrix(df1.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df1.2$t,
+    delta = 80)
+tmbpars1.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = log(0.5))
+## ---------------------------------------------------------------------
+set.seed(110246)
+df1.3 <- datasimu1(J = 50e3)
+df1.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata1.3 <- list(
+    Y = as.matrix(df1.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df1.3$t,
+    delta = 80)
+tmbpars1.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = log(0.5))
+```
+
+```{r models_1, error=TRUE, warning=FALSE, dependson="datasimu1"}
+## compile("multiGLMM_1.cpp")
+dyn.load(dynlib("multiGLMM_1"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_1.1 <- MakeADFun(data = tmbdata1.1,
+                   parameters = tmbpars1.1,
+                   DLL = "multiGLMM_1",
+                   random = "R",
+                   hessian = TRUE, silent = TRUE)
+obj_1.1$fn()
+tictoc::tic()
+opt_1.1 <- nlminb(obj_1.1$par, obj_1.1$fn, obj_1.1$gr)
+tictoc::toc()
+sdr_1.1 <- sdreport(obj_1.1)
+## ---------------------------------------------------------------------
+obj_1.2 <- MakeADFun(data = tmbdata1.2,
+                   parameters = tmbpars1.2,
+                   DLL = "multiGLMM_1",
+                   random = "R",
+                   hessian = TRUE, silent = TRUE)
+obj_1.2$fn()
+tictoc::tic()
+opt_1.2 <- nlminb(obj_1.2$par, obj_1.2$fn, obj_1.2$gr)
+tictoc::toc()
+sdr_1.2 <- sdreport(obj_1.2)
+##----------------------------------------------------------------------
+obj_1.3 <- MakeADFun(data = tmbdata1.3,
+                     parameters = tmbpars1.3,
+                     DLL = "multiGLMM_1",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_1.3$fn()
+tictoc::tic()
+opt_1.3 <- nlminb(obj_1.3$par, obj_1.3$fn, obj_1.3$gr)
+tictoc::toc()
+sdr_1.3 <- sdreport(obj_1.3)
+```
+
+```{r summaries_1, error=TRUE, dependson="datasimu1"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5)), summary(sdr_1.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5)), summary(sdr_1.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5)), summary(sdr_1.3, "fixed"))
+```
+
+### 2
+
+```{r datasimu2}
+datasimu2 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(1.0, 0.0,
+                                                0.0, 0.5), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1] + R[ , 1])
+    risk2 <- exp(beta[2] + R[ , 2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(151340)
+df2.1 <- datasimu2(J = 1e4)
+df2.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata2.1 <- list(
+    Y = as.matrix(df2.1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df2.1$t,
+    delta = 80)
+tmbpars2.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = c(log(1), log(0.5)))
+## ---------------------------------------------------------------------
+set.seed(151449)
+df2.2 <- datasimu2(J = 25e3)
+df2.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata2.2 <- list(
+    Y = as.matrix(df2.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df2.2$t,
+    delta = 80)
+tmbpars2.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)))
+## ---------------------------------------------------------------------
+set.seed(151532)
+df2.3 <- datasimu2(J = 50e3)
+df2.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata2.3 <- list(
+    Y = as.matrix(df2.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df2.3$t,
+    delta = 80)
+tmbpars2.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)))
+```
+
+```{r models_2, error=TRUE, warning=FALSE, dependson="datasimu2"}
+## compile("multiGLMM_2.cpp")
+dyn.load(dynlib("multiGLMM_2"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_2.1 <- MakeADFun(data = tmbdata2.1,
+                     parameters = tmbpars2.1,
+                     DLL = "multiGLMM_2",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_2.1$fn()
+tictoc::tic()
+opt_2.1 <- nlminb(obj_2.1$par, obj_2.1$fn, obj_2.1$gr)
+tictoc::toc()
+sdr_2.1 <- sdreport(obj_2.1)
+## ---------------------------------------------------------------------
+obj_2.2 <- MakeADFun(data = tmbdata2.2,
+                     parameters = tmbpars2.2,
+                     DLL = "multiGLMM_2",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_2.2$fn()
+tictoc::tic()
+opt_2.2 <- nlminb(obj_2.2$par, obj_2.2$fn, obj_2.2$gr)
+tictoc::toc()
+sdr_2.2 <- sdreport(obj_2.2)
+##----------------------------------------------------------------------
+obj_2.3 <- MakeADFun(data = tmbdata2.3,
+                     parameters = tmbpars2.3,
+                     DLL = "multiGLMM_2",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_2.3$fn()
+tictoc::tic()
+opt_2.3 <- nlminb(obj_2.3$par, obj_2.3$fn, obj_2.3$gr)
+tictoc::toc()
+sdr_2.3 <- sdreport(obj_2.3)
+```
+
+```{r summaries_2, error=TRUE, dependson="datasimu2"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5)),
+      summary(sdr_2.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5)),
+      summary(sdr_2.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5)),
+      summary(sdr_2.3, "fixed"))
+```
+
+### 3
+
+```{r datasimu3}
+datasimu3 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(0.5, 0.25,
+                                                0.25, 0.5), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1] + R[ , 1])
+    risk2 <- exp(beta[2] + R[ , 2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(173612)
+df3.1 <- datasimu3(J = 1e4)
+df3.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata3.1 <- list(
+    Y = as.matrix(df3.1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df3.1$t,
+    delta = 80)
+tmbpars3.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = log(0.5),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(173725)
+df3.2 <- datasimu3(J = 25e3)
+df3.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata3.2 <- list(
+    Y = as.matrix(df3.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df3.2$t,
+    delta = 80)
+tmbpars3.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = log(0.5),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(173812)
+df3.3 <- datasimu3(J = 50e3)
+df3.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata3.3 <- list(
+    Y = as.matrix(df3.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df3.3$t,
+    delta = 80)
+tmbpars3.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = log(0.5),
+                   rhoZ = atanh(0.25))
+```
+
+```{r models_3, error=TRUE, warning=FALSE, dependson="datasimu3"}
+## compile("multiGLMM_3.cpp")
+dyn.load(dynlib("multiGLMM_3"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_3.1 <- MakeADFun(data = tmbdata3.1,
+                     parameters = tmbpars3.1,
+                     DLL = "multiGLMM_3",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_3.1$fn()
+tictoc::tic()
+opt_3.1 <- nlminb(obj_3.1$par, obj_3.1$fn, obj_3.1$gr)
+tictoc::toc()
+sdr_3.1 <- sdreport(obj_3.1)
+## ---------------------------------------------------------------------
+obj_3.2 <- MakeADFun(data = tmbdata3.2,
+                     parameters = tmbpars3.2,
+                     DLL = "multiGLMM_3",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_3.2$fn()
+tictoc::tic()
+opt_3.2 <- nlminb(obj_3.2$par, obj_3.2$fn, obj_3.2$gr)
+tictoc::toc()
+sdr_3.2 <- sdreport(obj_3.2)
+##----------------------------------------------------------------------
+obj_3.3 <- MakeADFun(data = tmbdata3.3,
+                     parameters = tmbpars3.3,
+                     DLL = "multiGLMM_3",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_3.3$fn()
+tictoc::tic()
+opt_3.3 <- nlminb(obj_3.3$par, obj_3.3$fn, obj_3.3$gr)
+tictoc::toc()
+sdr_3.3 <- sdreport(obj_3.3)
+```
+
+```{r summaries_3, error=TRUE, dependson="datasimu3"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      summary(sdr_3.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      summary(sdr_3.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      summary(sdr_3.3, "fixed"))
 ```
 
 ```{r}
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      opt_3.1$par, ## 1e4 pairs
+      opt_3.2$par, ## 25e3
+      opt_3.3$par) ## 50e3
+```
+
+### 4
+
+```{r datasimu4}
+datasimu4 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(1.0, 0.25,
+                                                0.25, 0.5), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1] + R[ , 1])
+    risk2 <- exp(beta[2] + R[ , 2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(083512)
+df4.1 <- datasimu4(J = 1e4)
+df4.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata4.1 <- list(
+    Y = as.matrix(df4.1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df4.1$t,
+    delta = 80)
+tmbpars4.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = c(log(1), log(0.5)),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(083602)
+df4.2 <- datasimu4(J = 25e3)
+df4.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata4.2 <- list(
+    Y = as.matrix(df4.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df4.2$t,
+    delta = 80)
+tmbpars4.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(083639)
+df4.3 <- datasimu4(J = 50e3)
+df4.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata4.3 <- list(
+    Y = as.matrix(df4.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df4.3$t,
+    delta = 80)
+tmbpars4.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)),
+                   rhoZ = atanh(0.25))
+```
+
+```{r models_4, error=TRUE, warning=FALSE, dependson="datasimu4"}
+## compile("multiGLMM_4.cpp")
+dyn.load(dynlib("multiGLMM_4"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_4.1 <- MakeADFun(data = tmbdata4.1,
+                     parameters = tmbpars4.1,
+                     DLL = "multiGLMM_4",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_4.1$fn()
+tictoc::tic()
+opt_4.1 <- nlminb(obj_4.1$par, obj_4.1$fn, obj_4.1$gr)
+tictoc::toc()
+sdr_4.1 <- sdreport(obj_4.1)
+## ---------------------------------------------------------------------
+obj_4.2 <- MakeADFun(data = tmbdata4.2,
+                     parameters = tmbpars4.2,
+                     DLL = "multiGLMM_4",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_4.2$fn()
+tictoc::tic()
+opt_4.2 <- nlminb(obj_4.2$par, obj_4.2$fn, obj_4.2$gr)
+tictoc::toc()
+sdr_4.2 <- sdreport(obj_4.2)
+##----------------------------------------------------------------------
+obj_4.3 <- MakeADFun(data = tmbdata4.3,
+                     parameters = tmbpars4.3,
+                     DLL = "multiGLMM_4",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_4.3$fn()
+tictoc::tic()
+opt_4.3 <- nlminb(obj_4.3$par, obj_4.3$fn, obj_4.3$gr)
+tictoc::toc()
+sdr_4.3 <- sdreport(obj_4.3)
+```
+
+```{r summaries_4, error=TRUE, dependson="datasimu4"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      summary(sdr_4.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      summary(sdr_4.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      summary(sdr_4.3, "fixed"))
+```
+
+```{r}
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      opt_4.1$par, ## 1e4 pairs
+      opt_4.2$par, ## 25e3
+      opt_4.3$par) ## 50e3
+```
+
+### 5
+
+```{r datasimu5}
+datasimu5 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(0.5, 0.0,
+                                                0.0, 0.5), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1])
+    risk2 <- exp(beta[2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1] - R[ , 1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2] - R[ , 2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(132643)
+df5.1 <- datasimu5(J = 1e4)
+df5.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata5.1 <- list(
+    Y = as.matrix(df5.1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df5.1$t,
+    delta = 80)
+tmbpars5.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = log(0.5))
+## ---------------------------------------------------------------------
+set.seed(132741)
+df5.2 <- datasimu5(J = 25e3)
+df5.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata5.2 <- list(
+    Y = as.matrix(df5.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df5.2$t,
+    delta = 80)
+tmbpars5.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = log(0.5))
+## ---------------------------------------------------------------------
+set.seed(132810)
+df5.3 <- datasimu5(J = 50e3)
+df5.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata5.3 <- list(
+    Y = as.matrix(df5.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df5.3$t,
+    delta = 80)
+tmbpars5.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = log(0.5))
+```
+
+```{r models_5, error=TRUE, warning=FALSE, dependson="datasimu5"}
+## compile("multiGLMM_5.cpp")
+dyn.load(dynlib("multiGLMM_5"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_5.1 <- MakeADFun(data = tmbdata5.1,
+                     parameters = tmbpars5.1,
+                     DLL = "multiGLMM_5",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_5.1$fn()
+tictoc::tic()
+opt_5.1 <- nlminb(obj_5.1$par, obj_5.1$fn, obj_5.1$gr)
+tictoc::toc()
+sdr_5.1 <- sdreport(obj_5.1)
+## ---------------------------------------------------------------------
+obj_5.2 <- MakeADFun(data = tmbdata5.2,
+                     parameters = tmbpars5.2,
+                     DLL = "multiGLMM_5",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_5.2$fn()
+tictoc::tic()
+opt_5.2 <- nlminb(obj_5.2$par, obj_5.2$fn, obj_5.2$gr)
+tictoc::toc()
+sdr_5.2 <- sdreport(obj_5.2)
+##----------------------------------------------------------------------
+obj_5.3 <- MakeADFun(data = tmbdata5.3,
+                     parameters = tmbpars5.3,
+                     DLL = "multiGLMM_5",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_5.3$fn()
+tictoc::tic()
+opt_5.3 <- nlminb(obj_5.3$par, obj_5.3$fn, obj_5.3$gr)
+tictoc::toc()
+sdr_5.3 <- sdreport(obj_5.3)
+```
+
+```{r summaries_5, error=TRUE, dependson="datasimu5"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5)), summary(sdr_5.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5)), summary(sdr_5.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5)), summary(sdr_5.3, "fixed"))
+```
+
+```{r datasimu6}
+datasimu6 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(1.0, 0.0,
+                                                0.0, 0.5), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1])
+    risk2 <- exp(beta[2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1] - R[ , 1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2] - R[ , 2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(150447)
+df6.1 <- datasimu6(J = 1e4)
+df6.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata6.1 <- list(
+    Y = as.matrix(df6.1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df6.1$t,
+    delta = 80)
+tmbpars6.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = c(log(1), log(0.5)))
+## ---------------------------------------------------------------------
+set.seed(150527)
+df6.2 <- datasimu6(J = 25e3)
+df6.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata6.2 <- list(
+    Y = as.matrix(df6.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df6.2$t,
+    delta = 80)
+tmbpars6.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)))
+## ---------------------------------------------------------------------
+set.seed(150611)
+df6.3 <- datasimu6(J = 50e3)
+df6.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata6.3 <- list(
+    Y = as.matrix(df6.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df6.3$t,
+    delta = 80)
+tmbpars6.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)))
+```
+
+```{r models_6, error=TRUE, warning=FALSE, dependson="datasimu6"}
+## compile("multiGLMM_6.cpp")
+dyn.load(dynlib("multiGLMM_6"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_6.1 <- MakeADFun(data = tmbdata6.1,
+                     parameters = tmbpars6.1,
+                     DLL = "multiGLMM_6",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_6.1$fn()
+tictoc::tic()
+opt_6.1 <- nlminb(obj_6.1$par, obj_6.1$fn, obj_6.1$gr)
+tictoc::toc()
+sdr_6.1 <- sdreport(obj_6.1)
+## ---------------------------------------------------------------------
+obj_6.2 <- MakeADFun(data = tmbdata6.2,
+                     parameters = tmbpars6.2,
+                     DLL = "multiGLMM_6",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_6.2$fn()
+tictoc::tic()
+opt_6.2 <- nlminb(obj_6.2$par, obj_6.2$fn, obj_6.2$gr)
+tictoc::toc()
+sdr_6.2 <- sdreport(obj_6.2)
+##----------------------------------------------------------------------
+obj_6.3 <- MakeADFun(data = tmbdata6.3,
+                     parameters = tmbpars6.3,
+                     DLL = "multiGLMM_6",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_6.3$fn()
+tictoc::tic()
+opt_6.3 <- nlminb(obj_6.3$par, obj_6.3$fn, obj_6.3$gr)
+tictoc::toc()
+sdr_6.3 <- sdreport(obj_6.3)
+```
+
+```{r summaries_6, error=TRUE, dependson="datasimu6"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5)),
+      summary(sdr_6.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5)),
+      summary(sdr_6.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5)),
+      summary(sdr_6.3, "fixed"))
+```
+
+```{r}
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5)),
+      opt_6.1$par, ## 1e4
+      opt_6.2$par) ## 25e3
+```
+
+## 7
+
+```{r datasimu7}
+datasimu7 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(0.5, 0.25,
+                                                0.25, 0.5), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1])
+    risk2 <- exp(beta[2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1] - R[ , 1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2] - R[ , 2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(163308)
+df7.1 <- datasimu7(J = 1e4)
+df7.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata7.1 <- list(
+    Y = as.matrix(df7.1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df7.1$t,
+    delta = 80)
+tmbpars7.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = log(0.5),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(163411)
+df7.2 <- datasimu7(J = 25e3)
+df7.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata7.2 <- list(
+    Y = as.matrix(df7.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df7.2$t,
+    delta = 80)
+tmbpars7.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = log(0.5),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(163454)
+df7.3 <- datasimu7(J = 50e3)
+df7.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata7.3 <- list(
+    Y = as.matrix(df7.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df7.3$t,
+    delta = 80)
+tmbpars7.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = log(0.5),
+                   rhoZ = atanh(0.25))
+```
+
+```{r models_7, error=TRUE, warning=FALSE, dependson="datasimu7"}
+## compile("multiGLMM_7.cpp")
+dyn.load(dynlib("multiGLMM_7"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_7.1 <- MakeADFun(data = tmbdata7.1,
+                     parameters = tmbpars7.1,
+                     DLL = "multiGLMM_7",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_7.1$fn()
+tictoc::tic()
+opt_7.1 <- nlminb(obj_7.1$par, obj_7.1$fn, obj_7.1$gr)
+tictoc::toc()
+sdr_7.1 <- sdreport(obj_7.1)
+## ---------------------------------------------------------------------
+obj_7.2 <- MakeADFun(data = tmbdata7.2,
+                     parameters = tmbpars7.2,
+                     DLL = "multiGLMM_7",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_7.2$fn()
+tictoc::tic()
+opt_7.2 <- nlminb(obj_7.2$par, obj_7.2$fn, obj_7.2$gr)
+tictoc::toc()
+sdr_7.2 <- sdreport(obj_7.2)
+##----------------------------------------------------------------------
+obj_7.3 <- MakeADFun(data = tmbdata7.3,
+                     parameters = tmbpars7.3,
+                     DLL = "multiGLMM_7",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_7.3$fn()
+tictoc::tic()
+opt_7.3 <- nlminb(obj_7.3$par, obj_7.3$fn, obj_7.3$gr)
+tictoc::toc()
+sdr_7.3 <- sdreport(obj_7.3)
+```
+
+```{r summaries_7, error=TRUE, dependson="datasimu7"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      summary(sdr_7.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      summary(sdr_7.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      summary(sdr_7.3, "fixed"))
+```
+
+```{r}
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(0.5), atanh(0.25)),
+      opt_7.1$par, ## 1e4 pairs
+      opt_7.2$par, ## 25e3
+      opt_7.3$par) ## 50e3
+```
+
+### 8
+
+```{r datasimu8}
+datasimu8 <- function(J, from = 30, to = 79.5, by = 0.5, delta = 80,
+                      beta = c(-2, -1.5), gamma = c(1.2, 1),
+                      w = c(3, 5), S = matrix(c(1.0, 0.25,
+                                                0.25, 0.5), 2, 2))
+{
+    out <- data.frame("i" = rep(seq(2), times = J),
+                      "j" = factor(rep(seq(J), each = 2)),
+                      "p1" = NA, "p2" = NA, "p3" = NA,
+                      "y1" = NA, "y2" = NA, "y3" = NA,
+                      "t" = rep(seq(from = from, to = to, by = by),
+                                length.out = 2 * J))
+    K <- dim(S)[1]/2 + 1
+    ladim <- 2 * (K - 1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean = rep(0, ladim), sigma = S)
+    Z <- bdiag(replicate(J, rep(1, 2), simplify = FALSE))
+    R <- Z %*% B
+    risk1 <- exp(beta[1])
+    risk2 <- exp(beta[2])
+    level <- 1 + risk1 + risk2
+    out$p1 <- risk1/level *
+        w[1] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[1] * atanh(2 * out$t/delta - 1) - gamma[1] - R[ , 1])
+    out$p2 <- risk2/level *
+        w[2] * delta/(2 * out$t * (delta - out$t)) *
+        dnorm(w[2] * atanh(2 * out$t/delta - 1) - gamma[2] - R[ , 2])
+    out$p3 <- with(out, 1 - p1 - p2)
+    out[ , c("y1", "y2", "y3")] <-
+        mc2d::rmultinomial(2 * J, 1,
+                           prob = with(out, cbind(p1, p2, p3)))
+    return(out)
+}
+## ---------------------------------------------------------------------
+set.seed(174316)
+df8.1 <- datasimu8(J = 1e4)
+df8.1 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata8.1 <- list(
+    Y = as.matrix(df8.1 %>% select(y1:y3)),
+    Z = bdiag(replicate(1e4, rep(1, 2), simplify = FALSE)),
+    T = df8.1$t,
+    delta = 80)
+tmbpars8.1 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 1e4, ncol = 2),
+                   logs2 = c(log(1), log(0.5)),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(174355)
+df8.2 <- datasimu8(J = 25e3)
+df8.2 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata8.2 <- list(
+    Y = as.matrix(df8.2 %>% select(y1:y3)),
+    Z = bdiag(replicate(25e3, rep(1, 2), simplify = FALSE)),
+    T = df8.2$t,
+    delta = 80)
+tmbpars8.2 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 25e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)),
+                   rhoZ = atanh(0.25))
+## ---------------------------------------------------------------------
+set.seed(174433)
+df8.3 <- datasimu8(J = 50e3)
+df8.3 %>% dplyr::select(y1:y3) %>% colSums() %>% prop.table()
+tmbdata8.3 <- list(
+    Y = as.matrix(df8.3 %>% select(y1:y3)),
+    Z = bdiag(replicate(50e3, rep(1, 2), simplify = FALSE)),
+    T = df8.3$t,
+    delta = 80)
+tmbpars8.3 <- list(beta1 = -2,
+                   beta2 = -1.5,
+                   gama1 = 1.2,
+                   gama2 = 1,
+                   w1 = 3,
+                   w2 = 5,
+                   R = matrix(0, nrow = 50e3, ncol = 2),
+                   logs2 = c(log(1), log(0.5)),
+                   rhoZ = atanh(0.25))
+```
+
+```{r models_8, error=TRUE, warning=FALSE, dependson="datasimu8"}
+## compile("multiGLMM_8.cpp")
+dyn.load(dynlib("multiGLMM_8"))
+openmp(n = 10)
+## ---------------------------------------------------------------------
+obj_8.1 <- MakeADFun(data = tmbdata8.1,
+                     parameters = tmbpars8.1,
+                     DLL = "multiGLMM_8",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_8.1$fn()
+tictoc::tic()
+opt_8.1 <- nlminb(obj_8.1$par, obj_8.1$fn, obj_8.1$gr)
+tictoc::toc()
+sdr_8.1 <- sdreport(obj_8.1)
+## ---------------------------------------------------------------------
+obj_8.2 <- MakeADFun(data = tmbdata8.2,
+                     parameters = tmbpars8.2,
+                     DLL = "multiGLMM_8",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_8.2$fn()
+tictoc::tic()
+opt_8.2 <- nlminb(obj_8.2$par, obj_8.2$fn, obj_8.2$gr)
+tictoc::toc()
+sdr_8.2 <- sdreport(obj_8.2)
+##----------------------------------------------------------------------
+obj_8.3 <- MakeADFun(data = tmbdata8.3,
+                     parameters = tmbpars8.3,
+                     DLL = "multiGLMM_8",
+                     random = "R",
+                     hessian = TRUE, silent = TRUE)
+obj_8.3$fn()
+tictoc::tic()
+opt_8.3 <- nlminb(obj_8.3$par, obj_8.3$fn, obj_8.3$gr)
+tictoc::toc()
+sdr_8.3 <- sdreport(obj_8.3)
+```
+
+```{r summaries_8, error=TRUE, dependson="datasimu8"}
+## 1e4 -----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      summary(sdr_8.1, "fixed"))
+## 25e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      summary(sdr_8.2, "fixed"))
+## 50e3 ----------------------------------------------------------------
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      summary(sdr_8.3, "fixed"))
+```
+
+```{r}
+cbind(c(-2, -1.5, 1.2, 1, 3, 5, log(1), log(0.5), atanh(0.25)),
+      opt_8.1$par, ## 1e4 pairs
+      opt_8.2$par, ## 25e3
+      opt_8.3$par) ## 50e3
 ```
