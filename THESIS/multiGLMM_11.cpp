@@ -1,6 +1,6 @@
 // multiGLMM: A MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS DATA ====
 // AUTHOR: HENRIQUE LAUREANO (leg.ufpr.br/~henrique)
-// DATE: 11/14/2020 (MONTH / DAY / YEAR)
+// DATE: 11/17/2020 (MONTH / DAY / YEAR)
 #include <TMB.hpp>
 template<class Type>
 Type objective_function<Type>::operator() ()
@@ -20,18 +20,21 @@ Type objective_function<Type>::operator() ()
   PARAMETER(w2);
   PARAMETER_MATRIX(R);
   PARAMETER_VECTOR(logs2);
+  PARAMETER(rhoZ);
   // -------------------------------------------------------------------
   matrix<Type> RE = Z * R;
-  Type eb1 = exp(beta1);
-  Type eb2 = exp(beta2);
-  Type p1_temp = eb1/(1 + eb1 + eb2);
-  Type p2_temp = eb2/(1 + eb1 + eb2);
+  vector<Type> eta1 = beta1 + RE.col(0).array();
+  vector<Type> eta2 = beta2 + RE.col(1).array();
+  vector<Type> eeta1 = exp(eta1);
+  vector<Type> eeta2 = exp(eta2);
+  vector<Type> p1_temp = eeta1/(1 + eeta1 + eeta2);
+  vector<Type> p2_temp = eeta2/(1 + eeta1 + eeta2);
   vector<Type> middle1 = w1 * delta/(2 * T * (delta - T));
   vector<Type> middle2 = w2 * delta/(2 * T * (delta - T));
   vector<Type> x = 2 * T/delta - 1;
   vector<Type> atanh = 0.5 * log((1 + x)/(1 - x));
-  vector<Type> tt1 = w1 * atanh - gama1 - RE.col(0).array();
-  vector<Type> tt2 = w2 * atanh - gama2 - RE.col(1).array();
+  vector<Type> tt1 = w1 * atanh - gama1 - RE.col(2).array();
+  vector<Type> tt2 = w2 * atanh - gama2 - RE.col(3).array();
   vector<Type> ptt1 = dnorm(tt1, 0, 1, false);
   vector<Type> ptt2 = dnorm(tt2, 0, 1, false);
   vector<Type> p1 = p1_temp * middle1 * ptt1;
@@ -42,9 +45,12 @@ Type objective_function<Type>::operator() ()
   ps.col(1) = p2;
   ps.col(2) = p3;
   // -------------------------------------------------------------------
-  matrix<Type> Sigma(2, 2);
-  Sigma.row(0) << exp(logs2(0)), 0;
-  Sigma.row(1) << 0, exp(logs2(1));
+  Type rho = (exp(2 * rhoZ) - 1)/(exp(2 * rhoZ) + 1);
+  matrix<Type> Sigma(4, 4);
+  Sigma.row(0) << exp(logs2(0)), rho * exp(logs2(0)), 0, 0;
+  Sigma.row(1) << rho * exp(logs2(0)), exp(logs2(0)), 0, 0;
+  Sigma.row(2) << 0, 0, exp(logs2(1)), 0;
+  Sigma.row(3) << 0, 0, 0, exp(logs2(1));
   // -------------------------------------------------------------------
   parallel_accumulator<Type> nll(this);
   // TO PARALLELIZE THE CODE THE FOLLOWING LINE MUST BE COMMENTED
