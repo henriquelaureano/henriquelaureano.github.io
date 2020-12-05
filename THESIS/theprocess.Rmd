@@ -32,7 +32,8 @@ pacman::p_load(tidyverse, ## pipes, select()
                TMB, ## template model builder
                Matrix, ## bdiag()
                tmbstan, ## MCMC samp. from TMB model object using Stan
-               patchwork)
+               patchwork
+               )
 ## why not library()?
 ## with p_load(), if the package isn't installed,
 ## install_packages() is automatically loaded
@@ -81,8 +82,8 @@ tmbparsF <- list(beta1 = -2,
 ```
 
 ```{r fixedmodels}
-## compile("SCHEIKEfixed.cpp")
-dyn.load(dynlib("SCHEIKEfixed"))
+## compile("multiGLM.cpp")
+dyn.load(dynlib("multiGLM"))
 openmp(n = 10)
 ## ---------------------------------------------------------------------
 dfF <- datasimuF(J = 1e3)
@@ -92,7 +93,7 @@ tmbdataF <- list(Y = as.matrix(dfF %>% select(y1:y3)),
                  delta = 80)
 objF <- MakeADFun(data = tmbdataF,
                   parameters = tmbparsF,
-                  DLL = "SCHEIKEfixed",
+                  DLL = "multiGLM",
                   hessian = TRUE, silent = TRUE)
 objF$fn()
 tictoc::tic()
@@ -107,7 +108,7 @@ tmbdataF2 <- list(Y = as.matrix(dfF2 %>% select(y1:y3)),
                   delta = 80)
 objF2 <- MakeADFun(data = tmbdataF2,
                    parameters = tmbparsF,
-                   DLL = "SCHEIKEfixed",
+                   DLL = "multiGLM",
                    hessian = TRUE, silent = TRUE)
 objF2$fn()
 tictoc::tic()
@@ -122,7 +123,7 @@ tmbdataF3 <- list(Y = as.matrix(dfF3 %>% select(y1:y3)),
                   delta = 80)
 objF3 <- MakeADFun(data = tmbdataF3,
                    parameters = tmbparsF,
-                   DLL = "SCHEIKEfixed",
+                   DLL = "multiGLM",
                    hessian = TRUE, silent = TRUE)
 objF3$fn()
 tictoc::tic()
@@ -137,7 +138,7 @@ tmbdataF4 <- list(Y = as.matrix(dfF4 %>% select(y1:y3)),
                   delta = 80)
 objF4 <- MakeADFun(data = tmbdataF4,
                    parameters = tmbparsF,
-                   DLL = "SCHEIKEfixed",
+                   DLL = "multiGLM",
                    hessian = TRUE, silent = TRUE)
 objF4$fn()
 tictoc::tic()
@@ -152,7 +153,7 @@ tmbdataF5 <- list(Y = as.matrix(dfF5 %>% select(y1:y3)),
                   delta = 80)
 objF5 <- MakeADFun(data = tmbdataF5,
                    parameters = tmbparsF,
-                   DLL = "SCHEIKEfixed",
+                   DLL = "multiGLM",
                    hessian = TRUE, silent = TRUE)
 objF5$fn()
 tictoc::tic()
@@ -7705,7 +7706,7 @@ cbind(c(-2, -1.5, 1.2, 1, 3, 5,
 ## the strategy
 
 ```{r}
-dyn.load(dynlib("SCHEIKEfixed"))
+dyn.load(dynlib("multiGLM"))
 openmp(n = 10)
 ```
 
@@ -7718,7 +7719,7 @@ obj_22f1 <- MakeADFun(data = tmbdata22f,
                       parameters = list(beta1 = 0, beta2 = 0,
                                         gama1 = 0, gama2 = 0,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_22f1$fn()
 tictoc::tic()
@@ -7729,7 +7730,7 @@ obj_22f2 <- MakeADFun(data = tmbdata22f,
                       parameters = list(beta1 = -5, beta2 = -5,
                                         gama1 = 5, gama2 = 5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_22f2$fn()
 tictoc::tic()
@@ -7740,7 +7741,7 @@ obj_22f3 <- MakeADFun(data = tmbdata22f,
                       parameters = list(beta1 = 5, beta2 = 5,
                                         gama1 = -5, gama2 = -5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_22f3$fn()
 tictoc::tic()
@@ -7760,7 +7761,7 @@ obj_36f1 <- MakeADFun(data = tmbdata36f,
                       parameters = list(beta1 = 0, beta2 = 0,
                                         gama1 = 0, gama2 = 0,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_36f1$fn()
 tictoc::tic()
@@ -7771,7 +7772,7 @@ obj_36f2 <- MakeADFun(data = tmbdata36f,
                       parameters = list(beta1 = -5, beta2 = -5,
                                         gama1 = 5, gama2 = 5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_36f2$fn()
 tictoc::tic()
@@ -7782,7 +7783,7 @@ obj_36f3 <- MakeADFun(data = tmbdata36f,
                       parameters = list(beta1 = 5, beta2 = 5,
                                         gama1 = -5, gama2 = -5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_36f3$fn()
 tictoc::tic()
@@ -7802,7 +7803,7 @@ obj_38f1 <- MakeADFun(data = tmbdata38f,
                       parameters = list(beta1 = 0, beta2 = 0,
                                         gama1 = 0, gama2 = 0,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_38f1$fn()
 tictoc::tic()
@@ -7813,7 +7814,7 @@ obj_38f2 <- MakeADFun(data = tmbdata38f,
                       parameters = list(beta1 = -5, beta2 = -5,
                                         gama1 = 5, gama2 = 5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_38f2$fn()
 tictoc::tic()
@@ -7824,7 +7825,7 @@ obj_38f3 <- MakeADFun(data = tmbdata38f,
                       parameters = list(beta1 = 5, beta2 = 5,
                                         gama1 = -5, gama2 = -5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_38f3$fn()
 tictoc::tic()
@@ -7844,7 +7845,7 @@ obj_40f1 <- MakeADFun(data = tmbdata40f,
                       parameters = list(beta1 = 0, beta2 = 0,
                                         gama1 = 0, gama2 = 0,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_40f1$fn()
 tictoc::tic()
@@ -7855,7 +7856,7 @@ obj_40f2 <- MakeADFun(data = tmbdata40f,
                       parameters = list(beta1 = -5, beta2 = -5,
                                         gama1 = 5, gama2 = 5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_40f2$fn()
 tictoc::tic()
@@ -7866,7 +7867,7 @@ obj_40f3 <- MakeADFun(data = tmbdata40f,
                       parameters = list(beta1 = 5, beta2 = 5,
                                         gama1 = -5, gama2 = -5,
                                         w1 = 1, w2 = 1),
-                      DLL = "SCHEIKEfixed",
+                      DLL = "multiGLM",
                       hessian = TRUE, silent = TRUE)
 obj_40f3$fn()
 tictoc::tic()
