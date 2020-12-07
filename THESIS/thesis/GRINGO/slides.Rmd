@@ -19,7 +19,8 @@ institute: ""
 section-titles: true
 safe-columns: true # enables special latex macros for columns
 output:
-  legtheme::beamer_leg
+  beamer_presentation:
+    template: template.tex
 ---
 
 ```{r, include=FALSE}

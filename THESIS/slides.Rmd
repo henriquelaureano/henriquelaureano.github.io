@@ -21,7 +21,8 @@ institute: ""
 section-titles: true
 safe-columns: true # enables special latex macros for columns
 output:
-  legtheme::beamer_leg
+  beamer_presentation:
+    template: template.tex
 ---
 
 ```{r, include=FALSE}
@@ -114,7 +115,48 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
 \end{minipage}
 
 \begin{center}
- \scalebox{0.85}{\tikzfig{../figures/fig2}}
+ \adjustbox{height=\textwidth,width=\textwidth,keepaspectratio}{
+  \begin{tikzpicture}
+   \begin{pgfonlayer}{nodelayer}
+    \node [style=circle] (2) at (-17.5, 5.5) {0};
+    \node [style=circle] (3) at (-11.5, 5.5) {1};
+    \node [style=circle] (7) at (-1.5, 5.5) {1};
+    \node [style=circle] (9) at (-1.5, 3.5) {2};
+    \node [style=none] (11) at (-1.5, 1.5) {$\vdots$};
+    \node [style=circle] (12) at (-1.5, -0.5) {$m$};
+    \node [style=circle] (14) at (-7.5, 2.5) {0};
+    \node [style=circle] (22) at (2.5, 1.5) {0};
+    \node [style=circle] (23) at (8.5, 1.5) {2};
+    \node [style=circle] (25) at (5.5, 5.5) {1};
+    \node [style=none] (27) at (-16.25, 5.5) {};
+    \node [style=none] (28) at (-12.75, 5.5) {};
+    \node [style=none] (29) at (-6.75, 3.25) {};
+    \node [style=none] (30) at (-2.75, 5.25) {};
+    \node [style=none] (31) at (-2.75, 3.25) {};
+    \node [style=none] (32) at (-2.75, -0.25) {};
+    \node [style=none] (33) at (3.75, 1.5) {};
+    \node [style=none] (34) at (4.75, 4.5) {};
+    \node [style=none] (35) at (7.25, 1.5) {};
+    \node [style=none] (36) at (-6.5, 2.5) {};
+    \node [style=none] (37) at (-6.75, 1.75) {};
+    \node [style=none] (38) at (3.25, 2.5) {};
+    \node [style=none] (39) at (7.75, 2.5) {};
+    \node [style=none] (40) at (6.25, 4.5) {};
+    \node [style=none] (44) at (-14.5, 7.5) {Failure time process};
+    \node [style=none] (45) at (-4.5, 7.5) {Competing risks process};
+    \node [style=none] (47) at (5.5, 7.5) {Multistate process};
+   \end{pgfonlayer}
+   \begin{pgfonlayer}{edgelayer}
+	\draw [style=1side] (27.center) to (28.center);
+	\draw [style=1side] (37.center) to (32.center);
+	\draw [style=1side] (40.center) to (39.center);
+	\draw [style=1side] (33.center) to (35.center);
+	\draw [style=2side] (38.center) to (34.center);
+	\draw [style=1side] (36.center) to (31.center);
+	\draw [style=1side] (29.center) to (30.center);
+   \end{pgfonlayer}
+  \end{tikzpicture}
+ }
 \end{center}
 
 \noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
@@ -349,7 +391,7 @@ Also, key features are
 \begin{columns}
 \begin{column}{.55\linewidth}
 \centering
-\includegraphics[width=\linewidth]{prints/twins.jpg}
+\includegraphics[width=\linewidth]{figures/twins.jpg}
 \end{column}
 \begin{column}{.45\linewidth}
 Clustered competing risks data\newline
