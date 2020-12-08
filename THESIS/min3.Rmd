@@ -1,0 +1,216 @@
+---
+title: "Modeling the cumulative incidence function\\newline
+        of clustered competing risk data: \\newline
+        computational and numerical aspects\\newline
+        of a multinomial GLMM approach"
+subtitle: ""
+short-title: ""
+author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
+         \\hspace{.5\\textwidth}
+         \\includegraphics[width=.25\\textwidth]{logo/ufpr.png}
+         \\vspace{.75cm}\\newline
+         Henrique Ap. Laureano\\hspace{.25\\textwidth}
+         Wagner H. Bonat\\newline
+         \\url{http://leg.ufpr.br/~henrique} $\\mid$
+         \\url{http://leg.ufpr.br/~wagner}"
+short-author: "leg.ufpr.br/~henrique"
+# email: "laureano\\@ufpr.br"
+# date: "*Last modification on* `r Sys.time()`"
+date: "December/2020"
+short-date: "leg.ufpr.br/~henrique"
+department: ""
+institute: ""
+# short-institute: "LEG"
+section-titles: true
+safe-columns: true # enables special latex macros for columns
+output:
+  beamer_presentation:
+    template: template.tex
+---
+
+```{r, include=FALSE}
+library(knitr)
+
+knit_hooks$set(rmdsize = function(before, options, envir) {
+    if (before) "\\footnotesize"
+    else "\\normalsize"
+})
+
+opts_chunk$set(rmdsize = TRUE,
+               warning = FALSE,
+               cache = TRUE,
+               cache_path = "min3_cache/",
+               fig.path = "min3_figures/")
+```
+
+### 
+
+\begin{minipage}{.525\textwidth}
+ \begin{shaded}
+  Context: clustered competing risk data
+ \end{shaded}
+\end{minipage}
+
+Idea: causes competing by the occurence of an event such the
+
+\begin{minipage}{.425\textwidth}
+ \begin{block}{confiability analysis}
+  failure of an industrial or electronic component
+ \end{block}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}{.425\textwidth}
+ \begin{block}{survival analysis}
+  failure or progress of a patient or some biological process
+ \end{block}
+\end{minipage}
+
+\vspace{0.5cm}
+\pause
+
+A typical data set consists of
+
+\begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
+ Group & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
+ \hline
+ 1     & 1  & 1       & 0       & 0          & 10   & A\\
+ 1     & 2  & 0       & 0       & 1          &  8   & A\\
+ 2     & 1  & 0       & 0       & 1          &  7   & B\\
+ 2     & 2  & 0       & 1       & 0          &  5   & A\\
+\end{tabular}
+
+###
+
+\begin{minipage}{.175\textwidth}
+ \begin{shaded}
+  What we do?
+ \end{shaded}
+\end{minipage}
+
+\vspace{0.5cm}
+
+We model the \textcolor{beamer@UIUCblue}{risk} of each competing cause
+along the time and taking into account the possible
+\textcolor{beamer@UIUCblue}{within-group dependence}
+
+\(\dots\) all this in terms of a
+
+\vspace{0.5cm}
+\pause
+```{r cif, echo=FALSE, fig.height=2, fig.width=4}
+pacman::p_load(tidyverse, ## you need the pacman's package
+               ggplot2)
+t <- seq(30, 79.5, by = 0.5)
+delta <- 80
+u <- c(0, 0)
+eta <- c(0, 0)
+beta <- c(-2, -1.5)
+gamma <- c(1.2, 1)
+w <- c(3, 5)
+risk1 <- exp(beta[1] + u[1])
+risk2 <- exp(beta[2] + u[2])
+level <- 1 +  risk1 + risk2
+risklevel1 <- risk1/level
+risklevel2 <- risk2/level
+traj1 <- pnorm(w[1] * atanh(2 * t/delta - 1) - gamma[1] - eta[1])
+traj2 <- pnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
+cif1 <- risklevel1 * traj1
+cif2 <- risklevel2 * traj2
+df <- as.data.frame(cbind(t, cif1, cif2))
+df <- df %>% pivot_longer(cols = cif1:cif2,
+                          names_to = "cif", values_to = "value")
+ggplot(df, aes(t, value, group = cif, color = cif)) +
+    geom_line(size = 1.5) +
+    labs(x = "Time", y = "Incidence",
+         title = 'Cumulative Incidence Function') +
+    scale_color_manual(values = c("#ff7f00", "#0080ff"),
+                       labels = c("Cause 1", "Cause 2")) +
+    theme(legend.title = element_blank(),
+          legend.text = element_text(size = 8),
+          axis.text.x = element_text(size = 7),
+          axis.text.y = element_text(size = 7),
+          plot.title = element_text(
+              size = 9,
+              margin = unit(c(t = 0, r = 0, b = 2, l = 0), 'mm')), 
+          axis.title.x = element_text(
+              size = 8,
+              margin = unit(c(t = 2, r = 0, b = 0, l = 0), "mm")),
+          axis.title.y = element_text(
+              size = 8,
+              margin = unit(c(t = 0, r = 2, b = 0, l = 0), "mm")))
+```
+
+###
+
+\begin{minipage}{.65\textwidth}
+ \begin{shaded} Main focus application: cancer incidence in twins
+ \end{shaded}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{columns}
+ \begin{column}{.55\textwidth}
+  \centering
+   \includegraphics[width=\textwidth]{figures/twins.jpg}
+ \end{column}
+\begin{column}{.45\textwidth}
+ Clustered competing risks data\newline
+ \hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+ Clusters? Families\newline
+ \hspace*{1.35cm}\rotatebox[origin=c]{180}{$\Lsh$}Family studies\newline
+ \hspace*{2.1cm}\rotatebox[origin=c]{180}{$\Lsh$}
+ \textcolor{beamer@UIUCblue}{Twins data}
+ \end{column}
+\end{columns}
+
+\pause
++ Taking into account the within-family dependence may reflect both
+  disease \textbf{heritability} and the impact of shared
+  \textbf{environmental effects}
+
++ A complication is that we have little information to track that
+  \textbf{dependence} since each 'family' consists of only a pair of
+  twins
+
+###
+
+\begin{minipage}{.15\textwidth}
+ \begin{shaded}
+  Challenges
+ \end{shaded}
+\end{minipage}
+
++ Besides
+
+###
+
+\begin{minipage}{.15\textwidth}
+ \begin{shaded}
+  Thank you
+ \end{shaded}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{columns}
+ \begin{column}{.33\textwidth}
+  \centering
+   \includegraphics[width=.9\textwidth]{logo/ppgmne.png}
+ \end{column}
+ \begin{column}{.33\textwidth}
+  \centering
+   \includegraphics[width=.9\textwidth]{logo/capes.jpg}
+ \end{column}
+ \begin{column}{.33\textwidth}
+  \centering
+   \includegraphics[width=.9\textwidth]{logo/ufpr.png}
+ \end{column}
+\end{columns}
+
+\vspace{0.5cm}
+\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+
+\url{http://leg.ufpr.br/~henrique}
+
+[\@hap_laureano](https://twitter.com/hap_laureano)
