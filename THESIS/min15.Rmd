@@ -39,8 +39,8 @@ knit_hooks$set(rmdsize = function(before, options, envir) {
 opts_chunk$set(rmdsize = TRUE,
                warning = FALSE,
                cache = TRUE,
-               cache_path = "min3_cache/",
-               fig.path = "min3_figures/")
+               cache_path = "min15_cache/",
+               fig.path = "min15_figures/")
 ```
 
 ### 
@@ -78,6 +78,66 @@ A typical data set consists of
  2     & 1  & 0       & 0       & 1          &  7   & B\\
  2     & 2  & 0       & 1       & 0          &  5   & A\\
 \end{tabular}
+
+###
+
+\begin{minipage}{.275\textwidth}
+ \begin{shaded}
+  Survival data designs
+ \end{shaded}
+\end{minipage}
+
+\begin{center}
+ \scalebox{0.725}{
+  \begin{tikzpicture}
+   \begin{pgfonlayer}{nodelayer}
+    \node [style=circle] (2) at (-17.5, 5.5) {0};
+    \node [style=circle] (3) at (-13.5, 5.5) {1};
+    \node [style=circle] (7) at (-7.5, 5.5) {1};
+    \node [style=circle] (9) at (-7.5, 4.5) {2};
+    \node [style=none] (11) at (-7.5, 3.5) {$\vdots$};
+    \node [style=circle] (12) at (-7.5, 2.5) {$m$};
+    \node [style=circle] (14) at (-12.25, 4) {0};
+    \node [style=circle] (22) at (-6, 3.5) {0};
+    \node [style=circle] (23) at (-2, 3.5) {2};
+    \node [style=circle] (25) at (-4, 5.5) {1};
+    \node [style=none] (27) at (-17, 5.5) {};
+    \node [style=none] (28) at (-14, 5.5) {};
+    \node [style=none] (29) at (-11.75, 4.25) {};
+    \node [style=none] (30) at (-8, 5.5) {};
+    \node [style=none] (31) at (-8, 4.5) {};
+    \node [style=none] (32) at (-8, 2.5) {};
+    \node [style=none] (33) at (-5.5, 3.5) {};
+    \node [style=none] (34) at (-4.5, 5.25) {};
+    \node [style=none] (35) at (-2.5, 3.5) {};
+    \node [style=none] (36) at (-11.75, 4) {};
+    \node [style=none] (37) at (-11.75, 3.75) {};
+    \node [style=none] (38) at (-5.5, 3.75) {};
+    \node [style=none] (39) at (-2.5, 3.75) {};
+    \node [style=none] (40) at (-3.5, 5.25) {};
+    \node [style=none] (44) at (-15.5, 6.75) {Failure time process};
+    \node [style=none] (45) at (-10, 6.75) {Competing risk process};
+    \node [style=none] (47) at (-4, 6.75) {Multistate process};
+   \end{pgfonlayer}
+   \begin{pgfonlayer}{edgelayer}
+	\draw [style=1side] (27.center) to (28.center);
+	\draw [style=1side] (37.center) to (32.center);
+	\draw [style=1side] (40.center) to (39.center);
+	\draw [style=1side] (33.center) to (35.center);
+	\draw [style=2side] (38.center) to (34.center);
+	\draw [style=1side] (36.center) to (31.center);
+	\draw [style=1side] (29.center) to (30.center);
+   \end{pgfonlayer}
+  \end{tikzpicture}
+ }
+\end{center}
+
+\pause
+\begin{minipage}{.375\textwidth}
+ \begin{shaded}
+  Survival modeling framework
+ \end{shaded}
+\end{minipage}
 
 ###
 
