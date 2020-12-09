@@ -115,9 +115,11 @@ A typical data set consists of
     \node [style=none] (38) at (-5.5, 3.75) {};
     \node [style=none] (39) at (-2.5, 3.75) {};
     \node [style=none] (40) at (-3.5, 5.25) {};
-    \node [style=none] (44) at (-15.5, 6.75) {Failure time process};
-    \node [style=none] (45) at (-10, 6.75) {Competing risk process};
-    \node [style=none] (47) at (-4, 6.75) {Multistate process};
+    \node [style=none] (44) at (-15.5, 6.75) {{\Large
+                                               Failure time process}};
+    \node [style=none] (45) at (-10, 6.75) {{\Large
+                                             Competing risk process}};
+    \node [style=none] (47) at (-4, 6.75) {{\Large Multistate process}};
    \end{pgfonlayer}
    \begin{pgfonlayer}{edgelayer}
 	\draw [style=1side] (27.center) to (28.center);
@@ -139,24 +141,27 @@ A typical data set consists of
  \end{shaded}
 \end{minipage}
 
+We have to choose which \textcolor{mykindofblue}{scale} we model the
+\textbf{survival experience}.\newline
+Usually, is the
+\[
+ \text{\textcolor{mykindofblue}{hazard} (failure rate)
+       \textcolor{mykindofblue}{scale}}: \quad
+ \lambda(t \mid x) = \lambda_{0}(t) \times c(x, \beta)
+\]
+
 ###
 
-\begin{minipage}{.175\textwidth}
+\begin{minipage}{.425\textwidth}
  \begin{shaded}
-  What we do?
+  In the competing risk setting \(\dots\)
  \end{shaded}
 \end{minipage}
 
-\vspace{0.5cm}
+a more attractive possibility is to work on the
+\textcolor{mykindofblue}{probability scale},
+focusing on the cause-specific
 
-We model the \textcolor{mykindofblue}{risk} of each competing cause
-along the time and taking into account the possible
-\textcolor{mykindofblue}{within-group dependence}
-
-\(\dots\) all this in terms of a
-
-\vspace{0.5cm}
-\pause
 ```{r cif, echo=FALSE, fig.height=2, fig.width=4}
 pacman::p_load(tidyverse, ## you need the pacman's package
                ggplot2)
@@ -182,7 +187,7 @@ df <- df %>% pivot_longer(cols = cif1:cif2,
 ggplot(df, aes(t, value, group = cif, color = cif)) +
     geom_line(size = 1.5) +
     labs(x = "Time", y = "Incidence",
-         title = 'Cumulative Incidence Function') +
+         title = 'Cumulative Incidence Function (CIF)') +
     scale_color_manual(values = c("#ff7f00", "#0080ff"),
                        labels = c("Cause 1", "Cause 2")) +
     theme(legend.title = element_blank(),
@@ -199,6 +204,12 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
               size = 8,
               margin = unit(c(t = 0, r = 2, b = 0, l = 0), "mm")))
 ```
+
+i.e.
+\[
+ \text{CIF} = \mathbb{P}[~\text{failure time} \leq t,
+                         ~\text{a given cause} \mid \text{features}~]
+\]
 
 ###
 
