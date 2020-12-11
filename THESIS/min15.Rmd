@@ -1,8 +1,6 @@
 ---
 title: "Modeling the cumulative incidence function\\newline
-        of clustered competing risk data: \\newline
-        computational and numerical aspects\\newline
-        of a multinomial GLMM approach"
+        of clustered competing risk data"
 subtitle: ""
 short-title: ""
 author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
@@ -45,9 +43,9 @@ opts_chunk$set(rmdsize = TRUE,
 
 ### 
 
-\begin{minipage}{.525\textwidth}
+\begin{minipage}{.5\textwidth}
  \begin{shaded}
-  Context: clustered competing risk data
+  Clustered competing risk data
  \end{shaded}
 \end{minipage}
 
@@ -73,10 +71,10 @@ A typical data set consists of
 \begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
  Group & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
  \hline
- 1     & 1  & 1       & 0       & 0          & 10   & A\\
- 1     & 2  & 0       & 0       & 1          &  8   & A\\
- 2     & 1  & 0       & 0       & 1          &  7   & B\\
- 2     & 2  & 0       & 1       & 0          &  5   & A\\
+ 1     & 1  & Yes     & No       & No        & 10   & A\\
+ 1     & 2  & No      & No       & Yes       &  8   & A\\
+ 2     & 1  & No      & No       & Yes       &  7   & B\\
+ 2     & 2  & No      & Yes      & No        &  5   & A\\
 \end{tabular}
 
 ###
@@ -236,13 +234,71 @@ i.e.
 \end{columns}
 
 \pause
-+ Taking into account the within-family dependence may reflect both
-  disease \textbf{heritability} and the impact of shared
-  \textbf{environmental effects}
+\[
+ \text{Family studies}~\Rightarrow~
+ \text{\color{mykindofblue}{within-family dependence}}
+\]
 
-+ A complication is that we have little information to track that
-  \textbf{dependence} since each 'family' consists of only a pair of
-  twins
+\begin{minipage}{.75\textwidth}
+ \begin{itemize}
+  \item Taking into account the
+        \textcolor{mykindofblue}{within-family dependence} may reflect
+        both disease \textbf{heritability} and the impact of shared
+        \textbf{environmental effects}
+ \end{itemize}
+\end{minipage}
+
+###
+
+\begin{minipage}{.55\textwidth}
+ \begin{shaded}
+  And what we do? A hierarchical approach
+ \end{shaded}
+\end{minipage}
+
+Thinking on two competing causes\newline
+\(\dots\) for the outcome \(y_{ijt}\) of a subject \(i\), family \(j\),
+in the time \(t\), we have
+\[
+ \begin{aligned}
+  y_{ijt} \mid
+  \underbrace{\{u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j}\}}_{
+  \substack{\text{\color{mykindofblue}{latent effects}}}
+  } & \sim
+  \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt})\\
+  \begin{bmatrix} u_{1j}\\ u_{2j}\\ \eta_{1j}\\ \eta_{2j} \end{bmatrix}
+  & \sim
+  \parbox{0.155\textwidth}{\centering Multivariate Normal}
+  \left(
+   \begin{bmatrix} 0\\ 0\\ 0\\ 0 \end{bmatrix},
+   \begin{bmatrix}
+    \sigma_{u_{1}}^{2}&
+    \varrho_{u_{1}, u_{2}}&
+    \varrho_{u_{1}, \eta_{1}}&
+    \varrho_{u_{1}, \eta_{2}}\\
+   &\sigma_{u_{2}}^{2}&
+    \varrho_{u_{2}, \eta_{1}}&
+    \varrho_{u_{2}, \eta_{2}}\\
+  &&\sigma_{\eta_{1}}^{2}&
+    \varrho_{\eta_{1}, \eta_{2}}\\
+ &&&\sigma_{\eta_{2}}^{2}
+   \end{bmatrix}
+  \right)\\  
+  p_{{\color{mykindofblue}{k}}ijt} &=
+  \frac{\partial \text{CIF}}{\partial t}\\
+  & = \frac{\partial}{\partial t}
+  \underbrace{
+   \pi_{\color{mykindofblue}{k}}(X, u_{1}, u_{2} \mid \bm{\beta})}_{
+   \substack{\text{\color{mykindofblue}{cluster-specific}}\\
+             \text{\color{mykindofblue}{risk level}}}}
+  \underbrace{\Phi[w_{\color{mykindofblue}{k}} g(t) -
+                   X^{\top}\bm{\gamma}_{\color{mykindofblue}{k}} -
+                   \eta_{\color{mykindofblue}{k}}]}_{
+   \substack{\text{\color{mykindofblue}{cluster-specific}}\\
+             \text{\color{mykindofblue}{failure time trajectory}}}},
+ \end{aligned}
+\]
+\({\color{mykindofblue}{k}} = 1, 2\)
 
 ###
 
@@ -252,9 +308,24 @@ i.e.
  \end{shaded}
 \end{minipage}
 
-Besides the small size groups, the data is very simple \(\dots\)
+Thinking in the \textcolor{mykindofblue}{twins data} application,
+\newline
+the small group/family size is a problem that implies in the following
+\[
+ \text{cycle}: \quad
+ \parbox{0.1\textwidth}{\centering small groups} \Rightarrow
+ \parbox{0.175\textwidth}{\centering little information} \Rightarrow
+ \parbox{0.125\textwidth}{\centering complex model} \Rightarrow
+ \parbox{0.2\textwidth}{\centering bigger number of groups}
+\]
+\(\dots\) with this,\newline
+computational challenges appear and have also to be overcome
+\noindent{\color{notthefruitorange}\rule{.5\linewidth}{0.25mm}}
 
-+ we just know if the event occured (1 or 0) and the time
+\pause
+Besides, the data is very simple \(\dots\)
+
++ we just know if the event occured (yes or no) and the time
 
   + with this, we have to be able to construct the\newline
     \textcolor{mykindofblue}{cumulative incidence curves}
@@ -262,14 +333,7 @@ Besides the small size groups, the data is very simple \(\dots\)
 + and we have to accommodate the
   \textcolor{mykindofblue}{within-family dependency}
 
-  + that can happen in different ways and with different intensities
-
-\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
-
-to accomplish all this a powerful modeling framework is made necessary
-
-\(\dots\) with this,\newline
-computational and numerical challenges has also to be overcome
+  + that can happen in different manners
 
 ###
 

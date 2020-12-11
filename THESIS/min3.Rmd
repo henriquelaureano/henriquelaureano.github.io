@@ -1,8 +1,6 @@
 ---
 title: "Modeling the cumulative incidence function\\newline
-        of clustered competing risk data: \\newline
-        computational and numerical aspects\\newline
-        of a multinomial GLMM approach"
+        of clustered competing risk data"
 subtitle: ""
 short-title: ""
 author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
@@ -45,39 +43,37 @@ opts_chunk$set(rmdsize = TRUE,
 
 ### 
 
-\begin{minipage}{.525\textwidth}
+\begin{minipage}{.4\textwidth}
  \begin{shaded}
-  Context: clustered competing risk data
+  Clustered competing risk data
  \end{shaded}
 \end{minipage}
 
-Idea: causes competing by the occurence of an event such the
++ Clusters: a dependence structure
 
-\begin{minipage}{.425\textwidth}
- \begin{block}{confiability analysis}
-  failure of an industrial or electronic component
- \end{block}
-\end{minipage}
-\hspace{0.5cm}
-\begin{minipage}{.425\textwidth}
- \begin{block}{survival analysis}
-  failure or progress of a patient or some biological process
- \end{block}
-\end{minipage}
++ Causes competing by *something*
 
-\vspace{0.5cm}
-\pause
+Something?
 
++ Failure of an industrial or electronic component
+
++ Occurence or cure of a disease
+
++ Progress of a patient clinic state
+
+\vspace{0.25cm}
 A typical data set consists of
 
-\begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
- Group & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
- \hline
- 1     & 1  & 1       & 0       & 0          & 10   & A\\
- 1     & 2  & 0       & 0       & 1          &  8   & A\\
- 2     & 1  & 0       & 0       & 1          &  7   & B\\
- 2     & 2  & 0       & 1       & 0          &  5   & A\\
-\end{tabular}
+\begin{center}
+ \begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}r}
+  Cluster & ID & Cause 1 & Cause 2 & Censorship & Time\\
+  \hline
+  1     & 1  & Yes     & No       & No        & 10\\
+  1     & 2  & No      & No       & Yes       &  8\\
+  2     & 1  & No      & No       & Yes       &  7\\
+  2     & 2  & No      & Yes      & No        &  5\\
+ \end{tabular}
+\end{center}
 
 ###
 
@@ -89,14 +85,13 @@ A typical data set consists of
 
 \vspace{0.5cm}
 
-We model the \textcolor{mykindofblue}{risk} of each competing cause
-along the time and taking into account the possible
-\textcolor{mykindofblue}{within-group dependence}
+We model the \textcolor{mykindofblue}{probability} of each competing
+cause along the time and taking into account the possible
+\textcolor{mykindofblue}{within-cluster dependence}
 
 \(\dots\) all this in terms of a
 
 \vspace{0.5cm}
-\pause
 ```{r cif, echo=FALSE, fig.height=2, fig.width=4}
 pacman::p_load(tidyverse, ## you need the pacman's package
                ggplot2)
@@ -164,14 +159,13 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
  \end{column}
 \end{columns}
 
-\pause
-+ Taking into account the within-family dependence may reflect both
-  disease \textbf{heritability} and the impact of shared
-  \textbf{environmental effects}
+\vspace{0.5cm}
 
-+ A complication is that we have little information to track that
-  \textbf{dependence} since each 'family' consists of only a pair of
-  twins
++ The \textcolor{mykindofblue}{within-family dependence} may reflect
+  
+  + disease \textbf{heritability}
+  
+  + the impact of shared \textbf{environmental effects}
 
 ###
 
@@ -181,24 +175,20 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
  \end{shaded}
 \end{minipage}
 
-Besides the small size groups, the data is very simple \(\dots\)
+\vspace{0.5cm}
 
-+ we just know if the event occured (1 or 0) and the time
++ We have little information to track that \textbf{dependence}\newline
+  since each \textit{family} consists of only a pair of twins
 
-  + with this, we have to be able to construct the\newline
-    \textcolor{mykindofblue}{cumulative incidence curves}
++ The data is very simple,\newline
+  we just know if the event occured (yes or no)
 
-+ and we have to accommodate the
-  \textcolor{mykindofblue}{within-family dependency}
++ With this, we have to be able to construct the\newline
+  \textcolor{mykindofblue}{cumulative incidence curves}
 
-  + that can happen in different ways and with different intensities
-
-\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
-
-to accomplish all this a powerful modeling framework is made necessary
-
-\(\dots\) with this,\newline
-computational and numerical challenges has also to be overcome
++ And we have to accommodate the
+  \textcolor{mykindofblue}{within-family dependence},\newline
+  that can happen in different manners
 
 ###
 
