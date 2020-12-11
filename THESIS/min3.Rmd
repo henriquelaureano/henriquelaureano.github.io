@@ -7,10 +7,8 @@ author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
          \\hspace{.5\\textwidth}
          \\includegraphics[width=.25\\textwidth]{logo/ufpr.png}
          \\vspace{.75cm}\\newline
-         Henrique Ap. Laureano\\hspace{.25\\textwidth}
-         Wagner H. Bonat\\newline
-         \\url{http://leg.ufpr.br/~henrique} $\\mid$
-         \\url{http://leg.ufpr.br/~wagner}"
+         Henrique Ap. Laureano\\newline
+         \\url{http://leg.ufpr.br/~henrique}"
 short-author: "leg.ufpr.br/~henrique"
 # email: "laureano\\@ufpr.br"
 # date: "*Last modification on* `r Sys.time()`"
@@ -49,31 +47,31 @@ opts_chunk$set(rmdsize = TRUE,
  \end{shaded}
 \end{minipage}
 
-+ Clusters: a dependence structure
+Key terms:
 
-+ Causes competing by *something*
++ \textcolor{mykindofblue}{Clustered}:
+  groups with a dependence structure (e.g. families);
+
++ Causes \textcolor{mykindofblue}{competing} by *something*.
 
 Something?
 
-+ Failure of an industrial or electronic component
++ **Failure** of an industrial or electronic component;
 
-+ Occurence or cure of a disease
++ **Occurence** or **cure** of a disease;
 
-+ Progress of a patient clinic state
++ **Progress** of a patient clinic state.
 
-\vspace{0.25cm}
-A typical data set consists of
+Independent of the application, always the same framework
 
-\begin{center}
- \begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}r}
-  Cluster & ID & Cause 1 & Cause 2 & Censorship & Time\\
-  \hline
-  1     & 1  & Yes     & No       & No        & 10\\
-  1     & 2  & No      & No       & Yes       &  8\\
-  2     & 1  & No      & No       & Yes       &  7\\
-  2     & 2  & No      & Yes      & No        &  5\\
- \end{tabular}
-\end{center}
+\begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}r}
+ Cluster & ID & Cause 1 & Cause 2 & Censorship & Time\\
+ \hline
+ 1     & 1  & Yes     & No       & No        & 10\\
+ 1     & 2  & No      & No       & Yes       &  8\\
+ 2     & 1  & No      & No       & Yes       &  7\\
+ 2     & 2  & No      & Yes      & No        &  5\\
+\end{tabular}
 
 ###
 
@@ -85,8 +83,8 @@ A typical data set consists of
 
 \vspace{0.5cm}
 
-We model the \textcolor{mykindofblue}{probability} of each competing
-cause along the time and taking into account the possible
+We model the \textcolor{mykindofblue}{probability} of each **competing
+cause** along the time and taking into account the possible
 \textcolor{mykindofblue}{within-cluster dependence}
 
 \(\dots\) all this in terms of a
@@ -163,9 +161,12 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
 
 + The \textcolor{mykindofblue}{within-family dependence} may reflect
   
-  + disease \textbf{heritability}
+  + disease \textbf{heritability};
   
-  + the impact of shared \textbf{environmental effects}
+  + the impact of shared \textbf{environmental effects};
+  
+    + **parental effects**:\newline
+      continuity of the phenotype across generations.
 
 ###
 
@@ -177,28 +178,46 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
 
 \vspace{0.5cm}
 
-+ We have little information to track that \textbf{dependence}\newline
-  since each \textit{family} consists of only a pair of twins
-
 + The data is very simple,\newline
-  we just know if the event occured (yes or no)
+  we just know the outcome (**yes** or **no**);
 
 + With this, we have to be able to construct the\newline
-  \textcolor{mykindofblue}{cumulative incidence curves}
+  \textcolor{mykindofblue}{cumulative incidence curves};
 
 + And we have to accommodate the
-  \textcolor{mykindofblue}{within-family dependence},\newline
-  that can happen in different manners
+  \textcolor{mykindofblue}{within-family dependence} properly,\newline
+  that can happen in different manners;
+
++ \(\dots\)
 
 ###
+
+\begin{minipage}{.2\textwidth}
+ \begin{shaded}
+  Joint work with
+ \end{shaded}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{columns}
+ \begin{column}{.5\textwidth}
+   Wagner H. Bonat\newline
+   \url{http://leg.ufpr.br/~wagner}
+ \end{column}
+ \begin{column}{.5\textwidth}
+  Paulo Justiniano Ribeiro Jr.\newline
+  \url{http://leg.ufpr.br/~paulojus}
+ \end{column}
+\end{columns}
+
+\vspace{0.5cm}
 
 \begin{minipage}{.15\textwidth}
  \begin{shaded}
   Thank you
  \end{shaded}
 \end{minipage}
-
-\vspace{0.5cm}
 
 \begin{columns}
  \begin{column}{.33\textwidth}
@@ -216,7 +235,6 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
 \end{columns}
 
 \vspace{0.5cm}
-\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
 
 \url{http://leg.ufpr.br/~henrique}
 

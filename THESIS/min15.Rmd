@@ -7,10 +7,8 @@ author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
          \\hspace{.5\\textwidth}
          \\includegraphics[width=.25\\textwidth]{logo/ufpr.png}
          \\vspace{.75cm}\\newline
-         Henrique Ap. Laureano\\hspace{.25\\textwidth}
-         Wagner H. Bonat\\newline
-         \\url{http://leg.ufpr.br/~henrique} $\\mid$
-         \\url{http://leg.ufpr.br/~wagner}"
+         Henrique Ap. Laureano\\newline
+         \\url{http://leg.ufpr.br/~henrique}"
 short-author: "leg.ufpr.br/~henrique"
 # email: "laureano\\@ufpr.br"
 # date: "*Last modification on* `r Sys.time()`"
@@ -64,7 +62,6 @@ Idea: causes competing by the occurence of an event such the
 \end{minipage}
 
 \vspace{0.5cm}
-\pause
 
 A typical data set consists of
 
@@ -233,7 +230,6 @@ i.e.
  \end{column}
 \end{columns}
 
-\pause
 \[
  \text{Family studies}~\Rightarrow~
  \text{\color{mykindofblue}{within-family dependence}}
@@ -331,19 +327,38 @@ Besides, the data is very simple \(\dots\)
     \textcolor{mykindofblue}{cumulative incidence curves}
 
 + and we have to accommodate the
-  \textcolor{mykindofblue}{within-family dependency}
+  \textcolor{mykindofblue}{within-family dependence}
 
   + that can happen in different manners
 
 ###
+
+\begin{minipage}{.2\textwidth}
+ \begin{shaded}
+  Joint work with
+ \end{shaded}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{columns}
+ \begin{column}{.5\textwidth}
+   Wagner H. Bonat\newline
+   \url{http://leg.ufpr.br/~wagner}
+ \end{column}
+ \begin{column}{.5\textwidth}
+  Paulo Justiniano Ribeiro Jr.\newline
+  \url{http://leg.ufpr.br/~paulojus}
+ \end{column}
+\end{columns}
+
+\vspace{0.5cm}
 
 \begin{minipage}{.15\textwidth}
  \begin{shaded}
   Thank you
  \end{shaded}
 \end{minipage}
-
-\vspace{0.5cm}
 
 \begin{columns}
  \begin{column}{.33\textwidth}
@@ -361,7 +376,6 @@ Besides, the data is very simple \(\dots\)
 \end{columns}
 
 \vspace{0.5cm}
-\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
 
 \url{http://leg.ufpr.br/~henrique}
 
