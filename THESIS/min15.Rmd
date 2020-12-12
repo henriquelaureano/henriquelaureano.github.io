@@ -41,29 +41,28 @@ opts_chunk$set(rmdsize = TRUE,
 
 ### 
 
-\begin{minipage}{.5\textwidth}
+\begin{minipage}{.4\textwidth}
  \begin{shaded}
   Clustered competing risk data
  \end{shaded}
 \end{minipage}
 
-Idea: causes competing by the occurence of an event such the
+Key terms:
 
-\begin{minipage}{.425\textwidth}
- \begin{block}{confiability analysis}
-  failure of an industrial or electronic component
- \end{block}
-\end{minipage}
-\hspace{0.5cm}
-\begin{minipage}{.425\textwidth}
- \begin{block}{survival analysis}
-  failure or progress of a patient or some biological process
- \end{block}
-\end{minipage}
++ \textcolor{mykindofblue}{Clustered}:
+  groups with a dependence structure (e.g. families);
 
-\vspace{0.5cm}
++ Causes \textcolor{mykindofblue}{competing} by *something*.
 
-A typical data set consists of
+Something?
+
++ **Failure** of an industrial or electronic component;
+
++ **Occurence** or **cure** of a disease or some biological process;
+
++ **Progress** of a patient clinic state.
+
+Independent of the application, always the same framework
 
 \begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
  Group & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
@@ -76,9 +75,9 @@ A typical data set consists of
 
 ###
 
-\begin{minipage}{.275\textwidth}
+\begin{minipage}{.175\textwidth}
  \begin{shaded}
-  Survival data designs
+  Data designs
  \end{shaded}
 \end{minipage}
 
@@ -130,20 +129,20 @@ A typical data set consists of
 \end{center}
 
 \pause
-\begin{minipage}{.375\textwidth}
+\begin{minipage}{.275\textwidth}
  \begin{shaded}
-  Survival modeling framework
+  Modeling framework
  \end{shaded}
 \end{minipage}
 
 We have to choose which \textcolor{mykindofblue}{scale} we model the
 \textbf{survival experience}.\newline
 Usually, is the
-\[
- \text{\textcolor{mykindofblue}{hazard} (failure rate)
-       \textcolor{mykindofblue}{scale}}: \quad
- \lambda(t \mid x) = \lambda_{0}(t) \times c(x, \beta)
-\]
+
+\(\text{\textcolor{mykindofblue}{hazard} (failure rate)
+        \textcolor{mykindofblue}{scale}}: \quad
+  \lambda(t \mid \text{features}) =
+  \lambda_{0}(t) \times c(\text{features})\).
 
 ###
 
@@ -234,21 +233,20 @@ i.e.
  \text{Family studies}~\Rightarrow~
  \text{\color{mykindofblue}{within-family dependence}}
 \]
+That may reflect
 
-\begin{minipage}{.75\textwidth}
- \begin{itemize}
-  \item Taking into account the
-        \textcolor{mykindofblue}{within-family dependence} may reflect
-        both disease \textbf{heritability} and the impact of shared
-        \textbf{environmental effects}
- \end{itemize}
-\end{minipage}
++ Disease \textbf{heritability};
+  
++ The impact of shared \textbf{environmental effects};
+  
+  + **Parental effects**:\newline
+    continuity of the phenotype across generations.
 
 ###
 
 \begin{minipage}{.55\textwidth}
  \begin{shaded}
-  And what we do? A hierarchical approach
+  Our contribution: a hierarchical approach
  \end{shaded}
 \end{minipage}
 
@@ -269,14 +267,14 @@ in the time \(t\), we have
    \begin{bmatrix} 0\\ 0\\ 0\\ 0 \end{bmatrix},
    \begin{bmatrix}
     \sigma_{u_{1}}^{2}&
-    \varrho_{u_{1}, u_{2}}&
-    \varrho_{u_{1}, \eta_{1}}&
-    \varrho_{u_{1}, \eta_{2}}\\
+    \sigma_{u_{1}, u_{2}}&
+    \sigma_{u_{1}, \eta_{1}}&
+    \sigma_{u_{1}, \eta_{2}}\\
    &\sigma_{u_{2}}^{2}&
-    \varrho_{u_{2}, \eta_{1}}&
-    \varrho_{u_{2}, \eta_{2}}\\
+    \sigma_{u_{2}, \eta_{1}}&
+    \sigma_{u_{2}, \eta_{2}}\\
   &&\sigma_{\eta_{1}}^{2}&
-    \varrho_{\eta_{1}, \eta_{2}}\\
+    \sigma_{\eta_{1}, \eta_{2}}\\
  &&&\sigma_{\eta_{2}}^{2}
    \end{bmatrix}
   \right)\\  
@@ -294,42 +292,34 @@ in the time \(t\), we have
              \text{\color{mykindofblue}{failure time trajectory}}}},
  \end{aligned}
 \]
-\({\color{mykindofblue}{k}} = 1, 2\)
+\({\color{mykindofblue}{k}} = 1, 2\).
 
 ###
 
-\begin{minipage}{.15\textwidth}
+\begin{minipage}{.35\textwidth}
  \begin{shaded}
-  Challenges
+  Contributions \& challenges
  \end{shaded}
 \end{minipage}
 
-Thinking in the \textcolor{mykindofblue}{twins data} application,
-\newline
-the small group/family size is a problem that implies in the following
-\[
- \text{cycle}: \quad
- \parbox{0.1\textwidth}{\centering small groups} \Rightarrow
- \parbox{0.175\textwidth}{\centering little information} \Rightarrow
- \parbox{0.125\textwidth}{\centering complex model} \Rightarrow
- \parbox{0.2\textwidth}{\centering bigger number of groups}
-\]
-\(\dots\) with this,\newline
-computational challenges appear and have also to be overcome
-\noindent{\color{notthefruitorange}\rule{.5\linewidth}{0.25mm}}
+\vspace{0.5cm}
 
-\pause
-Besides, the data is very simple \(\dots\)
++ A clear and simpler modeling structure;
 
-+ we just know if the event occured (yes or no) and the time
++ **There is no free lunch**\newline
+  Computational challenges overcame via an\newline
+  efficient implementation and estimation routines;
 
-  + with this, we have to be able to construct the\newline
-    \textcolor{mykindofblue}{cumulative incidence curves}
++ The data is very simple,\newline
+  we just know the outcome (**yes** or **no**);
 
-+ and we have to accommodate the
-  \textcolor{mykindofblue}{within-family dependence}
++ We have to be able to build the \textcolor{mykindofblue}{CIF} curves;
 
-  + that can happen in different manners
++ And accommodate the
+  \textcolor{mykindofblue}{within-family dependence} properly,\newline
+  that can happen in different manners;
+
++ \(\dots\)
 
 ###
 

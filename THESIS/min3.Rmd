@@ -157,16 +157,18 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
  \end{column}
 \end{columns}
 
-\vspace{0.5cm}
+\[
+ \text{Family studies}~\Rightarrow~
+ \text{\color{mykindofblue}{within-family dependence}}
+\]
+That may reflect
 
-+ The \textcolor{mykindofblue}{within-family dependence} may reflect
++ Disease \textbf{heritability};
   
-  + disease \textbf{heritability};
++ The impact of shared \textbf{environmental effects};
   
-  + the impact of shared \textbf{environmental effects};
-  
-    + **parental effects**:\newline
-      continuity of the phenotype across generations.
+  + **Parental effects**:\newline
+    continuity of the phenotype across generations.
 
 ###
 
