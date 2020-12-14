@@ -1635,7 +1635,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">multiGLMM: a multinomial GLMM 4 clustered competing risks data</h1>
 <h4 class="author"><a href="http://www.leg.ufpr.br/~henrique">Henrique Ap. Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2020-12-05 11:14:50</h4>
+<h4 class="date"><em>Last modification on</em> 2020-12-13 16:43:15</h4>
 
 </div>
 
@@ -11360,9 +11360,8 @@ rhoZ   0.2907693    0.3226389</code></pre>
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = rep(log(0.5), 4),
                       rhoZ = rep(atanh(0), 4))
-dyn.load(dynlib(&quot;multiGLMM_22&quot;))</code></pre>
-<pre><code>Warning: 4 external pointers will be removed</code></pre>
-<pre class="r"><code>openmp(n = 10)</code></pre>
+dyn.load(dynlib(&quot;multiGLMM_22&quot;))
+openmp(n = 10)</code></pre>
 <pre><code>[1] 10</code></pre>
 <pre class="r"><code>obj_22.3.2 &lt;- MakeADFun(data = tmbdata22.3,
                         parameters = tmbpars22.3.2,
@@ -11376,7 +11375,7 @@ attr(,&quot;logarithm&quot;)
 <pre class="r"><code>tictoc::tic()
 opt_22.3.2 &lt;- nlminb(obj_22.3.2$par, obj_22.3.2$fn, obj_22.3.2$gr)
 tictoc::toc()</code></pre>
-<pre><code>1518.128 sec elapsed</code></pre>
+<pre><code>1528.319 sec elapsed</code></pre>
 <pre class="r"><code>sdr_22.3.2 &lt;- sdreport(obj_22.3.2)</code></pre>
 <pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 14</code></pre>
 <pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
@@ -11741,6 +11740,434 @@ rhoZ   0.2907693   -0.7810843
 rhoZ   0.1423756   -0.8999440
 rhoZ   0.4528807    0.3057144
 rhoZ   0.2907693    0.3431639</code></pre>
+<pre class="r"><code>probs22f &lt;- datasimuF(J=3e4,
+                      beta=opt_22f1$par[1:2],
+                      gamma=opt_22f1$par[3:4],
+                      w=opt_22f1$par[5:6])[, 3:5]
+res22.3 &lt;- rowSums(
+    df22.3[, 6:8]-df22.3[, 6:8]*probs22f
+)
+var(res22.3)/4</code></pre>
+<pre><code>[1] 0.001425878</code></pre>
+<pre class="r"><code>##----------------------------------------------------------------------
+probs36f &lt;- datasimuF(J=3e4,
+                      beta=opt_36f1$par[1:2],
+                      gamma=opt_36f1$par[3:4],
+                      w=opt_36f1$par[5:6])[, 3:5]
+res36.3 &lt;- rowSums(
+    df36.3[, 6:8]-df36.3[, 6:8]*probs36f
+)
+var(res36.3)/4</code></pre>
+<pre><code>[1] 0.001602981</code></pre>
+<pre class="r"><code>##----------------------------------------------------------------------
+probs38f &lt;- datasimuF(J=3e4,
+                      beta=opt_38f1$par[1:2],
+                      gamma=opt_38f1$par[3:4],
+                      w=opt_38f1$par[5:6])[, 3:5]
+res38.3 &lt;- rowSums(
+    df38.3[, 6:8]-df38.3[, 6:8]*probs38f
+)
+var(res38.3)/4</code></pre>
+<pre><code>[1] 0.001619368</code></pre>
+<pre class="r"><code>##----------------------------------------------------------------------
+probs40f &lt;- datasimuF(J=3e4,
+                      beta=opt_40f1$par[1:2],
+                      gamma=opt_40f1$par[3:4],
+                      w=opt_40f1$par[5:6])[, 3:5]
+res40.3 &lt;- rowSums(
+    df40.3[, 6:8]-df40.3[, 6:8]*probs40f
+)
+var(res40.3)/4</code></pre>
+<pre><code>[1] 0.001638786</code></pre>
+<pre class="r"><code>tmbpars22.3.4 &lt;- list(beta1 = opt_22f1$par[&#39;beta1&#39;],
+                      beta2 = opt_22f1$par[&#39;beta2&#39;],
+                      gama1 = opt_22f1$par[&#39;gama1&#39;],
+                      gama2 = opt_22f1$par[&#39;gama2&#39;],
+                      w1 = opt_22f1$par[&#39;w1&#39;],
+                      w2 = opt_22f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = rep(log(0.5), 4),
+                      rhoZ = rep(atanh(0.1), 4))
+dyn.load(dynlib(&quot;multiGLMM_22&quot;))</code></pre>
+<pre><code>Warning: 4 external pointers will be removed</code></pre>
+<pre class="r"><code>openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_22.3.4 &lt;- MakeADFun(data = tmbdata22.3,
+                        parameters = tmbpars22.3.4,
+                        DLL = &quot;multiGLMM_22&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_22.3.4$fn()</code></pre>
+<pre><code>[1] 111930.4
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_22.3.4 &lt;- nlminb(obj_22.3.4$par, obj_22.3.4$fn, obj_22.3.4$gr)
+tictoc::toc()</code></pre>
+<pre><code>2089.32 sec elapsed</code></pre>
+<pre class="r"><code>sdr_22.3.4 &lt;- sdreport(obj_22.3.4)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 14</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.4), atanh(2 * 0.2),
+        atanh(0.2/sqrt(0.5)), atanh(0.1/sqrt(0.5))),
+      opt_22.3.4$par)</code></pre>
+<pre><code>            [,1]       [,2]
+beta1 -2.0000000 -1.7808779
+beta2 -1.5000000 -1.3499426
+gama1  1.2000000  1.2333206
+gama2  1.0000000  0.8358698
+w1     3.0000000  2.7026013
+w2     5.0000000  4.4292380
+logs2  0.0000000 -2.6590879
+logs2  0.0000000 -2.6592178
+logs2 -0.6931472 -2.6592356
+logs2 -0.6931472 -2.6594067
+rhoZ   0.4236489  0.5494114
+rhoZ   0.4236489  0.5493579
+rhoZ   0.2907693  0.5492363
+rhoZ   0.1423756  0.5492190</code></pre>
+<pre class="r"><code>tmbpars36.3.4 &lt;- list(beta1 = opt_36f1$par[&#39;beta1&#39;],
+                      beta2 = opt_36f1$par[&#39;beta2&#39;],
+                      gama1 = opt_36f1$par[&#39;gama1&#39;],
+                      gama2 = opt_36f1$par[&#39;gama2&#39;],
+                      w1 = opt_36f1$par[&#39;w1&#39;],
+                      w2 = opt_36f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = rep(log(0.5), 4),
+                      rhoZ = rep(atanh(0.1), 6))
+dyn.load(dynlib(&quot;multiGLMM_36&quot;))
+openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_36.3.4 &lt;- MakeADFun(data = tmbdata36.3,
+                        parameters = tmbpars36.3.4,
+                        DLL = &quot;multiGLMM_36&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_36.3.4$fn()</code></pre>
+<pre><code>[1] 111991.2
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_36.3.4 &lt;- nlminb(obj_36.3.4$par, obj_36.3.4$fn, obj_36.3.4$gr)
+tictoc::toc()</code></pre>
+<pre><code>722.525 sec elapsed</code></pre>
+<pre class="r"><code>sdr_36.3.4 &lt;- sdreport(obj_36.3.4)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 16</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.4), atanh(2 * 0.2),
+        atanh(0.2/sqrt(0.5)), atanh(0.1/sqrt(0.5)),
+        atanh(0.3/sqrt(0.5)), atanh(0.2/sqrt(0.5))),
+      opt_36.3.4$par)</code></pre>
+<pre><code>            [,1]       [,2]
+beta1 -2.0000000  -1.805654
+beta2 -1.5000000  -1.140801
+gama1  1.2000000   1.143739
+gama2  1.0000000   0.672333
+w1     3.0000000   2.632300
+w2     5.0000000   3.562081
+logs2  0.0000000 -36.154257
+logs2  0.0000000 -36.172997
+logs2 -0.6931472 -36.137291
+logs2 -0.6931472 -36.152075
+rhoZ   0.4236489   9.648934
+rhoZ   0.4236489   9.632367
+rhoZ   0.2907693   9.326699
+rhoZ   0.1423756   9.267621
+rhoZ   0.4528807   9.646412
+rhoZ   0.2907693   9.643734</code></pre>
+<pre class="r"><code>tmbpars38.3.4 &lt;- list(beta1 = opt_38f1$par[&#39;beta1&#39;],
+                      beta2 = opt_38f1$par[&#39;beta2&#39;],
+                      gama1 = opt_38f1$par[&#39;gama1&#39;],
+                      gama2 = opt_38f1$par[&#39;gama2&#39;],
+                      w1 = opt_38f1$par[&#39;w1&#39;],
+                      w2 = opt_38f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = rep(log(0.5), 4),
+                      rhoZ = rep(atanh(0.1), 4))
+dyn.load(dynlib(&quot;multiGLMM_38&quot;))
+openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_38.3.4 &lt;- MakeADFun(data = tmbdata38.3,
+                        parameters = tmbpars38.3.4,
+                        DLL = &quot;multiGLMM_38&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_38.3.4$fn()</code></pre>
+<pre><code>[1] 112195.1
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_38.3.4 &lt;- nlminb(obj_38.3.4$par, obj_38.3.4$fn, obj_38.3.4$gr)
+tictoc::toc()</code></pre>
+<pre><code>2027.11 sec elapsed</code></pre>
+<pre class="r"><code>sdr_38.3.4 &lt;- sdreport(obj_38.3.4)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 14</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.4), atanh(2 * 0.2),
+        atanh(0.3/sqrt(0.5)), atanh(0.2/sqrt(0.5))),
+      opt_38.3.4$par)</code></pre>
+<pre><code>            [,1]       [,2]
+beta1 -2.0000000 -1.6636297
+beta2 -1.5000000 -1.1848673
+gama1  1.2000000  0.7953297
+gama2  1.0000000  0.8170080
+w1     3.0000000  2.3058335
+w2     5.0000000  4.0095932
+logs2  0.0000000 -2.6591403
+logs2  0.0000000 -2.6592589
+logs2 -0.6931472 -2.6591288
+logs2 -0.6931472 -2.6592380
+rhoZ   0.4236489  0.5493331
+rhoZ   0.4236489  0.5492523
+rhoZ   0.4528807  0.5493095
+rhoZ   0.2907693  0.5493297</code></pre>
+<pre class="r"><code>tmbpars40.3.4 &lt;- list(beta1 = opt_40f1$par[&#39;beta1&#39;],
+                      beta2 = opt_40f1$par[&#39;beta2&#39;],
+                      gama1 = opt_40f1$par[&#39;gama1&#39;],
+                      gama2 = opt_40f1$par[&#39;gama2&#39;],
+                      w1 = opt_40f1$par[&#39;w1&#39;],
+                      w2 = opt_40f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = rep(log(0.5), 4),
+                      rhoZ = rep(atanh(0.1), 4))
+dyn.load(dynlib(&quot;multiGLMM_40&quot;))
+openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_40.3.4 &lt;- MakeADFun(data = tmbdata40.3,
+                        parameters = tmbpars40.3.4,
+                        DLL = &quot;multiGLMM_40&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_40.3.4$fn()</code></pre>
+<pre><code>[1] 112231.4
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_40.3.4 &lt;- nlminb(obj_40.3.4$par, obj_40.3.4$fn, obj_40.3.4$gr)
+tictoc::toc()</code></pre>
+<pre><code>2206.78 sec elapsed</code></pre>
+<pre class="r"><code>sdr_40.3.4 &lt;- sdreport(obj_40.3.4)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 14</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.2/sqrt(0.5)), atanh(0.1/sqrt(0.5)),
+        atanh(0.3/sqrt(0.5)), atanh(0.2/sqrt(0.5))),
+      opt_40.3.4$par)</code></pre>
+<pre><code>            [,1]       [,2]
+beta1 -2.0000000 -1.5102930
+beta2 -1.5000000 -1.2431151
+gama1  1.2000000  0.7677136
+gama2  1.0000000  0.8336235
+w1     3.0000000  2.2357380
+w2     5.0000000  4.0662128
+logs2  0.0000000 -2.6592606
+logs2  0.0000000 -2.6593336
+logs2 -0.6931472 -2.6592481
+logs2 -0.6931472 -2.6593122
+rhoZ   0.2907693  0.5490556
+rhoZ   0.1423756  0.5489678
+rhoZ   0.4528807  0.5495907
+rhoZ   0.2907693  0.5496107</code></pre>
+<pre class="r"><code>tmbpars22.3.5 &lt;- list(beta1 = opt_22f1$par[&#39;beta1&#39;],
+                      beta2 = opt_22f1$par[&#39;beta2&#39;],
+                      gama1 = opt_22f1$par[&#39;gama1&#39;],
+                      gama2 = opt_22f1$par[&#39;gama2&#39;],
+                      w1 = opt_22f1$par[&#39;w1&#39;],
+                      w2 = opt_22f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
+                      rhoZ = c(atanh(0.5), atanh(0.5),
+                               atanh(0.2), atanh(0.2)))
+dyn.load(dynlib(&quot;multiGLMM_22&quot;))</code></pre>
+<pre><code>Warning: 4 external pointers will be removed</code></pre>
+<pre class="r"><code>openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_22.3.5 &lt;- MakeADFun(data = tmbdata22.3,
+                        parameters = tmbpars22.3.5,
+                        DLL = &quot;multiGLMM_22&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_22.3.5$fn()</code></pre>
+<pre><code>[1] 115863.8
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_22.3.5 &lt;- nlminb(obj_22.3.5$par, obj_22.3.5$fn, obj_22.3.5$gr)
+tictoc::toc()</code></pre>
+<pre><code>2099.246 sec elapsed</code></pre>
+<pre class="r"><code>sdr_22.3.5 &lt;- sdreport(obj_22.3.5)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 14</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.4), atanh(2 * 0.2),
+        atanh(0.2/sqrt(0.5)), atanh(0.1/sqrt(0.5))),
+      opt_22.3.5$par)</code></pre>
+<pre><code>            [,1]       [,2]
+beta1 -2.0000000 -1.7801730
+beta2 -1.5000000 -1.3492873
+gama1  1.2000000  1.2341733
+gama2  1.0000000  0.8370736
+w1     3.0000000  2.7013918
+w2     5.0000000  4.4282221
+logs2  0.0000000 -0.7959533
+logs2  0.0000000 -0.6136433
+logs2 -0.6931472 -0.4594980
+logs2 -0.6931472 -0.3259890
+rhoZ   0.4236489  0.7376595
+rhoZ   0.4236489  0.7376597
+rhoZ   0.2907693  0.3910606
+rhoZ   0.1423756  0.3910530</code></pre>
+<pre class="r"><code>tmbpars36.3.5 &lt;- list(beta1 = opt_36f1$par[&#39;beta1&#39;],
+                      beta2 = opt_36f1$par[&#39;beta2&#39;],
+                      gama1 = opt_36f1$par[&#39;gama1&#39;],
+                      gama2 = opt_36f1$par[&#39;gama2&#39;],
+                      w1 = opt_36f1$par[&#39;w1&#39;],
+                      w2 = opt_36f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
+                      rhoZ = c(atanh(0.5), atanh(0.5),
+                               atanh(0.2), atanh(0.2),
+                               atanh(0.3), atanh(0.3)))
+dyn.load(dynlib(&quot;multiGLMM_36&quot;))
+openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_36.3.5 &lt;- MakeADFun(data = tmbdata36.3,
+                        parameters = tmbpars36.3.5,
+                        DLL = &quot;multiGLMM_36&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_36.3.5$fn()</code></pre>
+<pre><code>[1] 116622.5
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_36.3.5 &lt;- nlminb(obj_36.3.5$par, obj_36.3.5$fn, obj_36.3.5$gr)
+tictoc::toc()</code></pre>
+<pre><code>1955.753 sec elapsed</code></pre>
+<pre class="r"><code>sdr_36.3.5 &lt;- sdreport(obj_36.3.5)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 16</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.4), atanh(2 * 0.2),
+        atanh(0.2/sqrt(0.5)), atanh(0.1/sqrt(0.5)),
+        atanh(0.3/sqrt(0.5)), atanh(0.2/sqrt(0.5))),
+      opt_36.3.5$par)</code></pre>
+<pre><code>            [,1]        [,2]
+beta1 -2.0000000 -1.79569377
+beta2 -1.5000000 -1.13964102
+gama1  1.2000000  1.16322449
+gama2  1.0000000  0.70958149
+w1     3.0000000  2.61069946
+w2     5.0000000  3.53547888
+logs2  0.0000000 -0.83866507
+logs2  0.0000000 -0.65636542
+logs2 -0.6931472 -0.50220774
+logs2 -0.6931472 -0.36869477
+rhoZ   0.4236489  0.75046006
+rhoZ   0.4236489  0.75045768
+rhoZ   0.2907693  0.08147335
+rhoZ   0.1423756  0.08142098
+rhoZ   0.4528807  0.47950378
+rhoZ   0.2907693  0.47950080</code></pre>
+<pre class="r"><code>tmbpars38.3.5 &lt;- list(beta1 = opt_38f1$par[&#39;beta1&#39;],
+                      beta2 = opt_38f1$par[&#39;beta2&#39;],
+                      gama1 = opt_38f1$par[&#39;gama1&#39;],
+                      gama2 = opt_38f1$par[&#39;gama2&#39;],
+                      w1 = opt_38f1$par[&#39;w1&#39;],
+                      w2 = opt_38f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
+                      rhoZ = c(atanh(0.5), atanh(0.5),
+                               atanh(0.3), atanh(0.3)))
+dyn.load(dynlib(&quot;multiGLMM_38&quot;))
+openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_38.3.5 &lt;- MakeADFun(data = tmbdata38.3,
+                        parameters = tmbpars38.3.5,
+                        DLL = &quot;multiGLMM_38&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_38.3.5$fn()</code></pre>
+<pre><code>[1] 111703.9
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_38.3.5 &lt;- nlminb(obj_38.3.5$par, obj_38.3.5$fn, obj_38.3.5$gr)
+tictoc::toc()</code></pre>
+<pre><code>1915.939 sec elapsed</code></pre>
+<pre class="r"><code>sdr_38.3.5 &lt;- sdreport(obj_38.3.5)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 14</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.4), atanh(2 * 0.2),
+        atanh(0.3/sqrt(0.5)), atanh(0.2/sqrt(0.5))),
+      opt_38.3.5$par)</code></pre>
+<pre><code>            [,1]       [,2]
+beta1 -2.0000000 -1.6632471
+beta2 -1.5000000 -1.1847797
+gama1  1.2000000  0.7967504
+gama2  1.0000000  0.8191549
+w1     3.0000000  2.3043135
+w2     5.0000000  4.0081691
+logs2  0.0000000 -0.7355404
+logs2  0.0000000 -0.5532232
+logs2 -0.6931472 -0.3990695
+logs2 -0.6931472 -0.2655430
+rhoZ   0.4236489  0.6693803
+rhoZ   0.4236489  0.6693802
+rhoZ   0.4528807  0.4421535
+rhoZ   0.2907693  0.4421535</code></pre>
+<pre class="r"><code>tmbpars40.3.5 &lt;- list(beta1 = opt_40f1$par[&#39;beta1&#39;],
+                      beta2 = opt_40f1$par[&#39;beta2&#39;],
+                      gama1 = opt_40f1$par[&#39;gama1&#39;],
+                      gama2 = opt_40f1$par[&#39;gama2&#39;],
+                      w1 = opt_40f1$par[&#39;w1&#39;],
+                      w2 = opt_40f1$par[&#39;w2&#39;],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
+                      rhoZ = c(atanh(0.2), atanh(0.2),
+                               atanh(0.3), atanh(0.3)))
+dyn.load(dynlib(&quot;multiGLMM_40&quot;))
+openmp(n = 10)</code></pre>
+<pre><code>[1] 10</code></pre>
+<pre class="r"><code>obj_40.3.5 &lt;- MakeADFun(data = tmbdata40.3,
+                        parameters = tmbpars40.3.5,
+                        DLL = &quot;multiGLMM_40&quot;,
+                        random = &quot;R&quot;,
+                        hessian = TRUE, silent = TRUE)
+obj_40.3.5$fn()</code></pre>
+<pre><code>[1] 123212.9
+attr(,&quot;logarithm&quot;)
+[1] TRUE</code></pre>
+<pre class="r"><code>tictoc::tic()
+opt_40.3.5 &lt;- nlminb(obj_40.3.5$par, obj_40.3.5$fn, obj_40.3.5$gr)
+tictoc::toc()</code></pre>
+<pre><code>2245.427 sec elapsed</code></pre>
+<pre class="r"><code>sdr_40.3.5 &lt;- sdreport(obj_40.3.5)</code></pre>
+<pre><code>Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 14</code></pre>
+<pre class="r"><code>cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(1), log(1), log(0.5), log(0.5),
+        atanh(0.2/sqrt(0.5)), atanh(0.1/sqrt(0.5)),
+        atanh(0.3/sqrt(0.5)), atanh(0.2/sqrt(0.5))),
+      opt_40.3.5$par)</code></pre>
+<pre><code>            [,1]       [,2]
+beta1 -2.0000000 -1.5098495
+beta2 -1.5000000 -1.2428875
+gama1  1.2000000  0.7691560
+gama2  1.0000000  0.8353260
+w1     3.0000000  2.2342140
+w2     5.0000000  4.0651439
+logs2  0.0000000 -1.1203606
+logs2  0.0000000 -0.9380879
+logs2 -0.6931472 -0.7839083
+logs2 -0.6931472 -0.6504216
+rhoZ   0.2907693  0.4688528
+rhoZ   0.1423756  0.4687672
+rhoZ   0.4528807  0.6368664
+rhoZ   0.2907693  0.6368679</code></pre>
 </div>
 </div>
 
