@@ -7,11 +7,12 @@ author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
          \\hspace{.5\\textwidth}
          \\includegraphics[width=.25\\textwidth]{logo/ufpr.png}
          \\vspace{.75cm}\\newline
-         Henrique Ap. Laureano\\newline
+         Henrique Laureano\\newline
          \\url{http://leg.ufpr.br/~henrique}"
 short-author: "leg.ufpr.br/~henrique"
 # email: "laureano\\@ufpr.br"
 # date: "*Last modification on* `r Sys.time()`"
+classoption: [aspectratio=169]
 date: "December/2020"
 short-date: "leg.ufpr.br/~henrique"
 department: ""
@@ -41,7 +42,7 @@ opts_chunk$set(rmdsize = TRUE,
 
 ### 
 
-\begin{minipage}{.4\textwidth}
+\begin{minipage}{.325\textwidth}
  \begin{shaded}
   Clustered competing risk data
  \end{shaded}
@@ -75,7 +76,7 @@ Independent of the application, always the same framework
 
 ###
 
-\begin{minipage}{.175\textwidth}
+\begin{minipage}{.15\textwidth}
  \begin{shaded}
   Data designs
  \end{shaded}
@@ -129,7 +130,7 @@ Independent of the application, always the same framework
 \end{center}
 
 \pause
-\begin{minipage}{.275\textwidth}
+\begin{minipage}{.225\textwidth}
  \begin{shaded}
   Modeling framework
  \end{shaded}
@@ -207,12 +208,10 @@ i.e.
 
 ###
 
-\begin{minipage}{.65\textwidth}
+\begin{minipage}{.525\textwidth}
  \begin{shaded} Main focus application: cancer incidence in twins
  \end{shaded}
 \end{minipage}
-
-\vspace{0.5cm}
 
 \begin{columns}
  \begin{column}{.55\textwidth}
@@ -228,7 +227,6 @@ i.e.
  \textcolor{mykindofblue}{Twins data}
  \end{column}
 \end{columns}
-
 \[
  \text{Family studies}~\Rightarrow~
  \text{\color{mykindofblue}{within-family dependence}}
@@ -244,7 +242,7 @@ That may reflect
 
 ###
 
-\begin{minipage}{.55\textwidth}
+\begin{minipage}{.425\textwidth}
  \begin{shaded}
   Our contribution: a hierarchical approach
  \end{shaded}
@@ -296,7 +294,7 @@ in the time \(t\), we have
 
 ###
 
-\begin{minipage}{.35\textwidth}
+\begin{minipage}{.275\textwidth}
  \begin{shaded}
   Contributions \& challenges
  \end{shaded}
@@ -323,28 +321,7 @@ in the time \(t\), we have
 
 ###
 
-\begin{minipage}{.2\textwidth}
- \begin{shaded}
-  Joint work with
- \end{shaded}
-\end{minipage}
-
-\vspace{0.5cm}
-
-\begin{columns}
- \begin{column}{.5\textwidth}
-   Wagner H. Bonat\newline
-   \url{http://leg.ufpr.br/~wagner}
- \end{column}
- \begin{column}{.5\textwidth}
-  Paulo Justiniano Ribeiro Jr.\newline
-  \url{http://leg.ufpr.br/~paulojus}
- \end{column}
-\end{columns}
-
-\vspace{0.5cm}
-
-\begin{minipage}{.15\textwidth}
+\begin{minipage}{.125\textwidth}
  \begin{shaded}
   Thank you
  \end{shaded}
@@ -367,6 +344,17 @@ in the time \(t\), we have
 
 \vspace{0.5cm}
 
-\url{http://leg.ufpr.br/~henrique}
+\begin{columns}
+ \begin{column}{.5\textwidth}
+   Wagner H. Bonat\newline
+   \url{http://leg.ufpr.br/~wagner}
+ \end{column}
+ \begin{column}{.5\textwidth}
+  Paulo Justiniano Ribeiro Jr.\newline
+  \url{http://leg.ufpr.br/~paulojus}
+ \end{column}
+\end{columns}
+
+\vspace{1cm}
 
 [\@hap_laureano](https://twitter.com/hap_laureano)

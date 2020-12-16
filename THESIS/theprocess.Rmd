@@ -8282,7 +8282,7 @@ tmbpars22.3.4 <- list(beta1 = opt_22f1$par['beta1'],
                       w2 = opt_22f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = rep(log(0.5), 4),
-                      rhoZ = rep(atanh(0.1), 4))
+                      rhoZ = rep(atanh(2*0.1), 4))
 dyn.load(dynlib("multiGLMM_22"))
 openmp(n = 10)
 obj_22.3.4 <- MakeADFun(data = tmbdata22.3,
@@ -8311,7 +8311,7 @@ tmbpars36.3.4 <- list(beta1 = opt_36f1$par['beta1'],
                       w2 = opt_36f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = rep(log(0.5), 4),
-                      rhoZ = rep(atanh(0.1), 6))
+                      rhoZ = rep(atanh(2*0.1), 6))
 dyn.load(dynlib("multiGLMM_36"))
 openmp(n = 10)
 obj_36.3.4 <- MakeADFun(data = tmbdata36.3,
@@ -8341,7 +8341,7 @@ tmbpars38.3.4 <- list(beta1 = opt_38f1$par['beta1'],
                       w2 = opt_38f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = rep(log(0.5), 4),
-                      rhoZ = rep(atanh(0.1), 4))
+                      rhoZ = rep(atanh(2*0.1), 4))
 dyn.load(dynlib("multiGLMM_38"))
 openmp(n = 10)
 obj_38.3.4 <- MakeADFun(data = tmbdata38.3,
@@ -8370,7 +8370,7 @@ tmbpars40.3.4 <- list(beta1 = opt_40f1$par['beta1'],
                       w2 = opt_40f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = rep(log(0.5), 4),
-                      rhoZ = rep(atanh(0.1), 4))
+                      rhoZ = rep(atanh(2*0.1), 4))
 dyn.load(dynlib("multiGLMM_40"))
 openmp(n = 10)
 obj_40.3.4 <- MakeADFun(data = tmbdata40.3,
@@ -8399,8 +8399,10 @@ tmbpars22.3.5 <- list(beta1 = opt_22f1$par['beta1'],
                       w2 = opt_22f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
-                      rhoZ = c(atanh(0.5), atanh(0.5),
-                               atanh(0.2), atanh(0.2)))
+                      rhoZ = c(atanh(0.5/sqrt(0.5*0.6)),
+                               atanh(0.5/sqrt(0.7*0.8)),
+                               atanh(0.2/sqrt(0.5*0.7)),
+                               atanh(0.2/sqrt(0.6*0.8))))
 dyn.load(dynlib("multiGLMM_22"))
 openmp(n = 10)
 obj_22.3.5 <- MakeADFun(data = tmbdata22.3,
@@ -8429,9 +8431,12 @@ tmbpars36.3.5 <- list(beta1 = opt_36f1$par['beta1'],
                       w2 = opt_36f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
-                      rhoZ = c(atanh(0.5), atanh(0.5),
-                               atanh(0.2), atanh(0.2),
-                               atanh(0.3), atanh(0.3)))
+                      rhoZ = c(atanh(0.5/sqrt(0.5*0.6)),
+                               atanh(0.5/sqrt(0.7*0.8)),
+                               atanh(0.2/sqrt(0.5*0.7)),
+                               atanh(0.2/sqrt(0.6*0.8)),
+                               atanh(0.3/sqrt(0.5*0.8)),
+                               atanh(0.3/sqrt(0.6*0.7))))
 dyn.load(dynlib("multiGLMM_36"))
 openmp(n = 10)
 obj_36.3.5 <- MakeADFun(data = tmbdata36.3,
@@ -8461,8 +8466,10 @@ tmbpars38.3.5 <- list(beta1 = opt_38f1$par['beta1'],
                       w2 = opt_38f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
-                      rhoZ = c(atanh(0.5), atanh(0.5),
-                               atanh(0.3), atanh(0.3)))
+                      rhoZ = c(atanh(0.5/sqrt(0.5*0.6)),
+                               atanh(0.5/sqrt(0.7*0.8)),
+                               atanh(0.3/sqrt(0.5*0.8)),
+                               atanh(0.3/sqrt(0.6*0.7))))
 dyn.load(dynlib("multiGLMM_38"))
 openmp(n = 10)
 obj_38.3.5 <- MakeADFun(data = tmbdata38.3,
@@ -8491,8 +8498,10 @@ tmbpars40.3.5 <- list(beta1 = opt_40f1$par['beta1'],
                       w2 = opt_40f1$par['w2'],
                       R = matrix(0, nrow = 3e4, ncol = 4),
                       logs2 = c(log(0.5), log(0.6), log(0.7), log(0.8)),
-                      rhoZ = c(atanh(0.2), atanh(0.2),
-                               atanh(0.3), atanh(0.3)))
+                      rhoZ = c(atanh(0.2/sqrt(0.5*0.7)),
+                               atanh(0.2/sqrt(0.6*0.8)),
+                               atanh(0.3/sqrt(0.5*0.8)),
+                               atanh(0.3/sqrt(0.6*0.7))))
 dyn.load(dynlib("multiGLMM_40"))
 openmp(n = 10)
 obj_40.3.5 <- MakeADFun(data = tmbdata40.3,
@@ -8510,4 +8519,170 @@ cbind(c(-2, -1.5, 1.2, 1, 3, 5,
         atanh(0.2/sqrt(0.5)), atanh(0.1/sqrt(0.5)),
         atanh(0.3/sqrt(0.5)), atanh(0.2/sqrt(0.5))),
       opt_40.3.5$par)
+```
+
+```{r newdfs}
+newvcov <- matrix(c(0.4, 0.15, 0.05, 0.2,
+                    0.15, 0.4, 0.2, 0.05,
+                    0.05, 0.2, 0.25, 0.1,
+                    0.2, 0.05, 0.1, 0.25), 4, 4) 
+set.seed(110301)
+df22.4 <- datasimu22(J=3e4, S=newvcov)
+set.seed(110302)
+df36.4 <- datasimu36(J=3e4, S=newvcov)
+set.seed(110303)
+df38.4 <- datasimu38(J=3e4, S=newvcov)
+set.seed(110401)
+df40.4 <- datasimu40(J=3e4, S=newvcov)
+```
+
+```{r strategy22.6, error=TRUE, warning=FALSE}
+tmbdata22.4 <- list(
+    Y = as.matrix(df22.4 %>% select(y1:y3)),
+    Z = bdiag(replicate(3e4, rep(1, 2), simplify = FALSE)),
+    T = df22.4$t,
+    delta = 80)
+tmbpars22.4.1 <- list(beta1 = opt_22f1$par['beta1'],
+                      beta2 = opt_22f1$par['beta2'],
+                      gama1 = opt_22f1$par['gama1'],
+                      gama2 = opt_22f1$par['gama2'],
+                      w1 = opt_22f1$par['w1'],
+                      w2 = opt_22f1$par['w2'],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.2), log(0.3), log(0.4), log(0.5)),
+                      rhoZ = c(atanh(0.2/sqrt(0.2*0.3)),
+                               atanh(0.2/sqrt(0.4*0.5)),
+                               atanh(0.1/sqrt(0.2*0.4)),
+                               atanh(0.1/sqrt(0.3*0.5))))
+dyn.load(dynlib("multiGLMM_22"))
+openmp(n = 10)
+obj_22.4.1 <- MakeADFun(data = tmbdata22.4,
+                        parameters = tmbpars22.4.1,
+                        DLL = "multiGLMM_22",
+                        random = "R",
+                        hessian = TRUE, silent = TRUE)
+obj_22.4.1$fn()
+tictoc::tic()
+opt_22.4.1 <- nlminb(obj_22.4.1$par, obj_22.4.1$fn, obj_22.4.1$gr)
+tictoc::toc()
+sdr_22.4.1 <- sdreport(obj_22.4.1)
+cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(0.4), log(0.4), log(0.25), log(0.25),
+        atanh(0.15/0.4), atanh(0.1/0.25),
+        atanh(0.05/sqrt(0.4*0.25)), atanh(0.05/sqrt(0.4*0.25))),
+      opt_22.4.1$par)
+```
+
+```{r strategy36.6, error=TRUE, warning=FALSE}
+tmbdata36.4 <- list(
+    Y = as.matrix(df36.4 %>% select(y1:y3)),
+    Z = bdiag(replicate(3e4, rep(1, 2), simplify = FALSE)),
+    T = df36.4$t,
+    delta = 80)
+tmbpars36.4.1 <- list(beta1 = opt_36f1$par['beta1'],
+                      beta2 = opt_36f1$par['beta2'],
+                      gama1 = opt_36f1$par['gama1'],
+                      gama2 = opt_36f1$par['gama2'],
+                      w1 = opt_36f1$par['w1'],
+                      w2 = opt_36f1$par['w2'],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.2), log(0.3), log(0.4), log(0.5)),
+                      rhoZ = c(atanh(0.2/sqrt(0.2*0.3)),
+                               atanh(0.2/sqrt(0.4*0.5)),
+                               atanh(0.1/sqrt(0.2*0.4)),
+                               atanh(0.1/sqrt(0.3*0.5)),
+                               atanh(0.3/sqrt(0.2*0.5)),
+                               atanh(0.3/sqrt(0.3*0.4))))
+dyn.load(dynlib("multiGLMM_36"))
+openmp(n = 10)
+obj_36.4.1 <- MakeADFun(data = tmbdata36.4,
+                        parameters = tmbpars36.4.1,
+                        DLL = "multiGLMM_36",
+                        random = "R",
+                        hessian = TRUE, silent = TRUE)
+obj_36.4.1$fn()
+tictoc::tic()
+opt_36.4.1 <- nlminb(obj_36.4.1$par, obj_36.4.1$fn, obj_36.4.1$gr)
+tictoc::toc()
+sdr_36.4.1 <- sdreport(obj_36.4.1)
+cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(0.4), log(0.4), log(0.25), log(0.25),
+        atanh(0.15/0.4), atanh(0.1/0.25),
+        atanh(0.05/sqrt(0.4*0.25)), atanh(0.05/sqrt(0.4*0.25)),
+        atanh(0.2/sqrt(0.4*0.25)), atanh(0.2/sqrt(0.4*0.25))),
+      opt_36.4.1$par)
+```
+
+```{r strategy38.6, error=TRUE, warning=FALSE}
+tmbdata38.4 <- list(
+    Y = as.matrix(df38.4 %>% select(y1:y3)),
+    Z = bdiag(replicate(3e4, rep(1, 2), simplify = FALSE)),
+    T = df38.4$t,
+    delta = 80)
+tmbpars38.4.1 <- list(beta1 = opt_38f1$par['beta1'],
+                      beta2 = opt_38f1$par['beta2'],
+                      gama1 = opt_38f1$par['gama1'],
+                      gama2 = opt_38f1$par['gama2'],
+                      w1 = opt_38f1$par['w1'],
+                      w2 = opt_38f1$par['w2'],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.2), log(0.3), log(0.4), log(0.5)),
+                      rhoZ = c(atanh(0.2/sqrt(0.2*0.3)),
+                               atanh(0.2/sqrt(0.4*0.5)),
+                               atanh(0.3/sqrt(0.2*0.5)),
+                               atanh(0.3/sqrt(0.3*0.4))))
+dyn.load(dynlib("multiGLMM_38"))
+openmp(n = 10)
+obj_38.4.1 <- MakeADFun(data = tmbdata38.4,
+                        parameters = tmbpars38.4.1,
+                        DLL = "multiGLMM_38",
+                        random = "R",
+                        hessian = TRUE, silent = TRUE)
+obj_38.4.1$fn()
+tictoc::tic()
+opt_38.4.1 <- nlminb(obj_38.4.1$par, obj_38.4.1$fn, obj_38.4.1$gr)
+tictoc::toc()
+sdr_38.4.1 <- sdreport(obj_38.4.1)
+cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(0.4), log(0.4), log(0.25), log(0.25),
+        atanh(0.15/0.4), atanh(0.1/0.25),
+        atanh(0.2/sqrt(0.4*0.25)), atanh(0.2/sqrt(0.4*0.25))),
+      opt_38.4.1$par)
+```
+
+```{r strategy40.6, error=TRUE, warning=FALSE}
+tmbdata40.4 <- list(
+    Y = as.matrix(df40.4 %>% select(y1:y3)),
+    Z = bdiag(replicate(3e4, rep(1, 2), simplify = FALSE)),
+    T = df40.4$t,
+    delta = 80)
+tmbpars40.4.1 <- list(beta1 = opt_40f1$par['beta1'],
+                      beta2 = opt_40f1$par['beta2'],
+                      gama1 = opt_40f1$par['gama1'],
+                      gama2 = opt_40f1$par['gama2'],
+                      w1 = opt_40f1$par['w1'],
+                      w2 = opt_40f1$par['w2'],
+                      R = matrix(0, nrow = 3e4, ncol = 4),
+                      logs2 = c(log(0.2), log(0.3), log(0.4), log(0.5)),
+                      rhoZ = c(atanh(0.1/sqrt(0.2*0.4)),
+                               atanh(0.1/sqrt(0.3*0.5)),
+                               atanh(0.3/sqrt(0.2*0.5)),
+                               atanh(0.3/sqrt(0.3*0.4))))
+dyn.load(dynlib("multiGLMM_40"))
+openmp(n = 10)
+obj_40.4.1 <- MakeADFun(data = tmbdata40.4,
+                        parameters = tmbpars40.4.1,
+                        DLL = "multiGLMM_40",
+                        random = "R",
+                        hessian = TRUE, silent = TRUE)
+obj_40.4.1$fn()
+tictoc::tic()
+opt_40.4.1 <- nlminb(obj_40.4.1$par, obj_40.4.1$fn, obj_40.4.1$gr)
+tictoc::toc()
+sdr_40.4.1 <- sdreport(obj_40.4.1)
+cbind(c(-2, -1.5, 1.2, 1, 3, 5,
+        log(0.4), log(0.4), log(0.25), log(0.25),
+        atanh(0.05/sqrt(0.4*0.25)), atanh(0.05/sqrt(0.4*0.25)),
+        atanh(0.2/sqrt(0.4*0.25)), atanh(0.2/sqrt(0.4*0.25))),
+      opt_40.4.1$par)
 ```
