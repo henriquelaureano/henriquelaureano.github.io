@@ -51,16 +51,16 @@ opts_chunk$set(rmdsize = TRUE,
 
 \[
 \begin{aligned}
-  \text{for a type}~{\color{beamer@UIUCorange}{k}}~\text{failure},
+  \text{for a type}~{\color{notthefruitorange}{k}}~\text{failure},
   \quad
-  F_{\color{beamer@UIUCorange}{k}}(t\mid\{X, R\})
+  F_{\color{notthefruitorange}{k}}(t\mid\{X, R\})
   &=\mathbb{P}[T\leq t,
-               K = {\color{beamer@UIUCorange}{k}}\mid\{X, R\}]\\
+               K = {\color{notthefruitorange}{k}}\mid\{X, R\}]\\
   &=\underbrace{
-     \pi_{\color{beamer@UIUCorange}{k}}(\{X, R\})}_{
+     \pi_{\color{notthefruitorange}{k}}(\{X, R\})}_{
      \substack{\text{risk level}}}\times
     \underbrace{
-     \Phi[t\mid\{X, R_{\color{beamer@UIUCorange}{k}}\}]}_{
+     \Phi[t\mid\{X, R_{\color{notthefruitorange}{k}}\}]}_{
      \substack{\text{failure time}\\\text{trajectory}}}.
 \end{aligned}
 \]
@@ -159,7 +159,7 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
  }
 \end{center}
 
-\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
 \pause
 
 \begin{minipage}{.275\textwidth}
@@ -170,16 +170,16 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
 
 \[
 \begin{aligned}
-  \text{for a type}~{\color{beamer@UIUCorange}{k}}~\text{failure},
+  \text{for a type}~{\color{notthefruitorange}{k}}~\text{failure},
   \quad
-  F_{\color{beamer@UIUCorange}{k}}(t\mid\{X, R\})
+  F_{\color{notthefruitorange}{k}}(t\mid\{X, R\})
   &=\mathbb{P}[T\leq t,
-               K = {\color{beamer@UIUCorange}{k}}\mid\{X, R\}]\\
+               K = {\color{notthefruitorange}{k}}\mid\{X, R\}]\\
   &=\underbrace{
-     \pi_{\color{beamer@UIUCorange}{k}}(\{X, R\})}_{
+     \pi_{\color{notthefruitorange}{k}}(\{X, R\})}_{
      \substack{\text{risk level}}}\times
     \underbrace{
-     \Phi[t\mid\{X, R_{\color{beamer@UIUCorange}{k}}\}]}_{
+     \Phi[t\mid\{X, R_{\color{notthefruitorange}{k}}\}]}_{
      \substack{\text{failure time}\\\text{trajectory}}}.
 \end{aligned}
 \]
@@ -192,27 +192,27 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
 (CIF)}
 \[
 \begin{aligned}
-  \text{for a type}~{\color{beamer@UIUCorange}{k}}~\text{failure},
+  \text{for a type}~{\color{notthefruitorange}{k}}~\text{failure},
   \quad
-  F_{\color{beamer@UIUCorange}{k}}(t \mid X) &=
+  F_{\color{notthefruitorange}{k}}(t \mid X) &=
   \mathbb{P}[T \leq t,
-  {\color{beamer@UIUCorange}{K}} =
-  {\color{beamer@UIUCorange}{k}} \mid X]\\
-  &= \int_{0}^{t} f_{\color{beamer@UIUCorange}{k}}(a \mid X) da,
+  {\color{notthefruitorange}{K}} =
+  {\color{notthefruitorange}{k}} \mid X]\\
+  &= \int_{0}^{t} f_{\color{notthefruitorange}{k}}(a \mid X) da,
   \quad t > 0,
 \end{aligned}
 \]
-where \(f_{\color{beamer@UIUCorange}{k}}(t \mid X) =
-        \lambda_{\color{beamer@UIUCorange}{k}}(t \mid X) \times
+where \(f_{\color{notthefruitorange}{k}}(t \mid X) =
+        \lambda_{\color{notthefruitorange}{k}}(t \mid X) \times
         S(t \mid X)\) is the (sub)density for the time to a type
-        \(\color{beamer@UIUCorange}{k}\) failure
+        \(\color{notthefruitorange}{k}\) failure
 \end{block}
 
 + We go beyond the independence supposition, having clusters of subjects
   with a possible correlation
 
 + Our latent structure to capture this possible correlation has\newline
-  audacity, allowing for \textcolor{beamer@UIUCblue}{within-cluster
+  audacity, allowing for \textcolor{mykindofblue}{within-cluster
   dependence} of both\newline risk and timing
 
 ###
@@ -220,44 +220,44 @@ where \(f_{\color{beamer@UIUCorange}{k}}(t \mid X) =
 Considering a competing risks setup of three competing causes\dots
 
 \pause
-\dots we want to model the \textcolor{beamer@UIUCblue}{CIF} in the
+\dots we want to model the \textcolor{mykindofblue}{CIF} in the
 following specific manner
 \[
 \begin{aligned}
-  F_{\color{beamer@UIUCorange}{k}}(t \mid X, U) &=
-  \mathbb{P}[T \leq t, {\color{beamer@UIUCorange}{K}} =
-                       {\color{beamer@UIUCorange}{k}} \mid X, U]\\
+  F_{\color{notthefruitorange}{k}}(t \mid X, U) &=
+  \mathbb{P}[T \leq t, {\color{notthefruitorange}{K}} =
+                       {\color{notthefruitorange}{k}} \mid X, U]\\
   &= \underbrace{
-    \pi_{\color{beamer@UIUCorange}{k}}(X, u_{1}, u_{2})}_{
+    \pi_{\color{notthefruitorange}{k}}(X, u_{1}, u_{2})}_{
     \substack{\text{cluster-specific}\\\text{risk level}}}
   \times
   \underbrace{
-    \Phi[w_{\color{beamer@UIUCorange}{k}} g(t) -
-         X^{\top}\gamma_{\color{beamer@UIUCorange}{k}} -
-         \eta_{\color{beamer@UIUCorange}{k}}]}_{
+    \Phi[w_{\color{notthefruitorange}{k}} g(t) -
+         X^{\top}\gamma_{\color{notthefruitorange}{k}} -
+         \eta_{\color{notthefruitorange}{k}}]}_{
          \substack{\text{cluster-specific}\\
                    \text{failure time trajectory}}},
-               \quad {\color{beamer@UIUCorange}{k}} = 1, 2.
+               \quad {\color{notthefruitorange}{k}} = 1, 2.
 \end{aligned}
 \]
 i.e., a product of two functions
 
-+ the first models the \textcolor{beamer@UIUCblue}{absolute risk} of a
++ the first models the \textcolor{mykindofblue}{absolute risk} of a
   competing cause in the presence of another
 
-+ the second models the \textcolor{beamer@UIUCblue}{failure time
++ the second models the \textcolor{mykindofblue}{failure time
   distribution},
 
 both varying between clusters
 
-\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
 \pause
 
 + The third competing cause is left to accommodate\newline
-  the \textcolor{beamer@UIUCblue}{censorship}
+  the \textcolor{mykindofblue}{censorship}
 
 + Which probability distribution fits this setup?
-  \textcolor{beamer@UIUCblue}{Multinomial}
+  \textcolor{mykindofblue}{Multinomial}
 
 ###
 
@@ -281,7 +281,7 @@ approach,
 ```
 \vspace{-0.5cm}
 \normalsize
-\noindent{\color{beamer@UIUCorange}\rule{\linewidth}{0.25mm}}
+\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
 
 And we? We try a hierarchical approach via a GLMM
 
@@ -315,7 +315,7 @@ For an observed response \(y_{ijt}\) of a subject \(i\), with cluster
 \end{aligned}.
 \]
 \pause
-This model structure is connected via a \textcolor{beamer@UIUCblue}{link
+This model structure is connected via a \textcolor{mykindofblue}{link
 function}, i.e., a functional form for the multinomial probabilities.
 
 Here we use the CIF derivative w.r.t. time \(t\),
@@ -323,27 +323,27 @@ Here we use the CIF derivative w.r.t. time \(t\),
 \begin{minipage}{0.8\textwidth}
 \[
 \begin{aligned}
-  p_{{\color{beamer@UIUCorange}{k}}ijt} &=
+  p_{ {\color{notthefruitorange}{k}} ijt} &=
   \frac{\exp\{
-    \bm{x}_{{\color{beamer@UIUCorange}{k}}ij}
-    \bm{\beta}_{{\color{beamer@UIUCorange}{k}}i} +
-    u_{{\color{beamer@UIUCorange}{k}}j}\}}{
-    1 + \sum_{{\color{beamer@UIUCorange}{m}}=1}^{
-      {\color{beamer@UIUCorange}{K}}-1
+    \bm{x}_{ {\color{notthefruitorange}{k}} ij}
+    \bm{\beta}_{ {\color{notthefruitorange}{k}} i} +
+    u_{ {\color{notthefruitorange}{k}} j}\}}{
+    1 + \sum_{ {\color{notthefruitorange}{m}}=1}^{
+      {\color{notthefruitorange}{K}}-1
     }
     \exp\{
-    \bm{x}_{{\color{beamer@UIUCorange}{m}}ij}
-    \bm{\beta}_{{\color{beamer@UIUCorange}{m}}i} +
-    u_{{\color{beamer@UIUCorange}{m}}j}\}}
-  \hspace{1.85cm}\{{\color{beamer@UIUCorange}{k}} = 1, 2\}\\
+    \bm{x}_{ {\color{notthefruitorange}{m}} ij}
+    \bm{\beta}_{ {\color{notthefruitorange}{m}} i} +
+    u_{ {\color{notthefruitorange}{m}} j}\}}
+  \hspace{1.85cm}\{ {\color{notthefruitorange}{k}} = 1, 2\}\\
   &\times
-  w_{\color{beamer@UIUCorange}{k}}\frac{\delta}{2\delta t - 2t^{2}}
+  w_{\color{notthefruitorange}{k}}\frac{\delta}{2\delta t - 2t^{2}}
   \phi[
-  w_{\color{beamer@UIUCorange}{k}}
+  w_{\color{notthefruitorange}{k}}
   \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right) -
-  \bm{x}_{{\color{beamer@UIUCorange}{k}}ij}
-  \bm{\gamma}_{{\color{beamer@UIUCorange}{k}}i} -
-  \eta_{{\color{beamer@UIUCorange}{k}}j}
+  \bm{x}_{ {\color{notthefruitorange}{k}} ij}
+  \bm{\gamma}_{ {\color{notthefruitorange}{k}} i} -
+  \eta_{ {\color{notthefruitorange}{k}} j}
   ].
 \end{aligned}
 \]
@@ -358,7 +358,7 @@ Here we use the CIF derivative w.r.t. time \(t\),
 \pause
 
 \begin{center}
-\textcolor{beamer@UIUCblue}{TMB: Template Model Builder}
+\textcolor{mykindofblue}{TMB: Template Model Builder}
 \end{center}
 
 Quickly implement complex random effect models through simple
@@ -399,7 +399,7 @@ Clustered competing risks data\newline
 Clusters? Families\newline
 \hspace*{1.35cm}\rotatebox[origin=c]{180}{$\Lsh$}Family studies\newline
 \hspace*{2.1cm}\rotatebox[origin=c]{180}{$\Lsh$}
-\textcolor{beamer@UIUCblue}{Twins data}
+\textcolor{mykindofblue}{Twins data}
 \end{column}
 \end{columns}
 
@@ -419,7 +419,7 @@ and\newline the impact of shared \textbf{environmental effects}
 \end{minipage}
 
 + \hypertarget{SCHEIKE}{
-   [\textcolor{beamer@UIUCblue}{Cederkvist et al., 2019}]\newline
+   [\textcolor{mykindofblue}{Cederkvist et al., 2019}]\newline
    L. Cederkvist, K. K. Holst, K. K. Andersen and T. H. Scheike (2019).
    Modeling the cumulative incidence function of multivariate competing
    risks data allowing for within-cluster dependence of risk and timing.
