@@ -62,7 +62,7 @@ $endif$
 \usepackage{pifont}
 \usepackage{framed}
 
-\definecolor{shadecolor}{rgb}{1, .8, .3}
+\definecolor{shadecolor}{rgb}{1,0.8,0.3}
 
 \usepackage{tikz}
 \usepackage{adjustbox}
@@ -71,26 +71,20 @@ $endif$
 \usetheme{Boadilla}
 \usecolortheme{dove}
 
-%redefined colors for beamer
-% \definecolor{mykindofblue}{RGB}{29,38,57}
+% redefined colors for beamer
 \definecolor{mykindofblue}{RGB}{0,128,255}
-% \definecolor{notthefruitorange}{RGB}{215,85,54}
-% \definecolor{notthefruitorange}{RGB}{230,120,23}
 \definecolor{notthefruitorange}{RGB}{255,127,0}
-% taken from
-% http://identitystandards.illinois.edu/graphicstandardsmanual/generalguidelines/colors.html
 
-\definecolor{beamer@UIUCgray}{RGB}{210,210,210}
-\definecolor{beamer@UIUCgray2}{RGB}{244,244,244}
+\definecolor{thegray}{RGB}{210,210,210}
+\definecolor{thegray2}{RGB}{244,244,244}
 
-\definecolor{beamer@henrique}{rgb}{1,.8,.3}
+\definecolor{laurence}{rgb}{1,0.8,0.3}
 
-% \setbeamercolor{frametitle}{fg=mykindofblue,bg=beamer@UIUCgray2}
-\setbeamercolor{frametitle}{fg=black,bg=beamer@henrique}
+%% main title
+\setbeamercolor{title}{fg=black,bg=white}
+\setbeamercolor{frametitle}{fg=white,bg=thegray2}
 \setbeamercolor{normal text}{fg=black}
-% \setbeamercolor{title}{fg=mykindofblue,bg=beamer@UIUCgray2}
-\setbeamercolor{title}{fg=black,bg=beamer@henrique}
-\setbeamercolor{item projected}{fg=black,bg=beamer@UIUCgray2}
+\setbeamercolor{item projected}{fg=black,bg=thegray2}
 
 \setbeamertemplate{itemize items}{>>}
 \setbeamertemplate{enumerate items}{>>}
@@ -100,44 +94,39 @@ $endif$
 \setbeamercolor{enumerate item}{fg=notthefruitorange}
 \setbeamercolor{enumerate subitem}{fg=notthefruitorange}
 
-% Boxes
-\setbeamercolor{block title}{fg=mykindofblue,bg=notthefruitorange}
-\setbeamercolor{block body}{fg=blue,bg=mykindofblue!80}
-% \setbeamercolor{title in head/foot}{fg=mykindofblue,bg=beamer@UIUCgray}
+\setbeamercolor{block title}{fg=white,bg=white}
+\setbeamercolor{block body}{fg=white,bg=white}
 \setbeamercolor{title in head/foot}{fg=white,bg=white}
-% \setbeamercolor{author in head/foot}{fg=white,bg=mykindofblue}
 \setbeamercolor{author in head/foot}{fg=white,bg=white}
-\setbeamercolor{institute in head/foot}{fg=white,bg=notthefruitorange}
-% \setbeamercolor{date in head/foot}{fg=white,bg=notthefruitorange}
+\setbeamercolor{institute in head/foot}{fg=white,bg=white}
 \setbeamercolor{date in head/foot}{fg=black,bg=white}
-% \setbeamercolor{section in head/foot}{fg=white,bg=mykindofblue}
-\setbeamercolor{section in head/foot}{fg=black,bg=white}
-% \setbeamercolor{subsection in head/foot}{fg=white,bg=notthefruitorange}
-\setbeamercolor{subsection in head/foot}{fg=black,bg=white}
+\setbeamercolor{section in head/foot}{fg=white,bg=white}
+\setbeamercolor{subsection in head/foot}{fg=white,bg=white}
 
 \hypersetup{colorlinks=true,urlcolor=mykindofblue,linkcolor=mykindofblue,% link color controls section, subsection, and title
-citecolor = notthefruitorange,
-anchorcolor = notthefruitorange}
+citecolor=notthefruitorange,
+anchorcolor=notthefruitorange}
 
-%override title link color
 \addtobeamertemplate{headline}{\hypersetup{linkcolor=.}}{}
 \addtobeamertemplate{footline}{\hypersetup{linkcolor=.}}{}
 
-% Setup blocks
-\setbeamercolor{block title}{fg = white, bg = mykindofblue}
-\setbeamercolor{block body}{fg=black,bg=beamer@UIUCgray2}
+\setbeamercolor{block title}{fg=white,bg=mykindofblue}
+\setbeamercolor{block body}{fg=black,bg=thegray2}
 
-\setbeamercolor{block title alerted}{fg = white, bg = notthefruitorange}
-\setbeamercolor{block body alerted}{fg=black,bg=beamer@UIUCgray2}
+\setbeamercolor{block title alerted}{fg=white,bg=notthefruitorange}
+\setbeamercolor{block body alerted}{fg=black,bg=thegray2}
 
-\setbeamercolor{block title example}{fg = mykindofblue, bg = beamer@UIUCgray}
-\setbeamercolor{block body example}{fg=black,bg=beamer@UIUCgray2}
+\setbeamercolor{block title example}{fg=mykindofblue,bg=thegray}
+\setbeamercolor{block body example}{fg=black,bg=thegray2}
+
+\usepackage{helvet}
+\usepackage{eulervm}
 
 $if(fonttheme)$
 \usefonttheme{$fonttheme$}
 $endif$
 $if(mainfont)$
-\usefonttheme{structuresmallcapsserif} % use mainfont rather than sansfont for slide text
+%% \usefonttheme{structuresmallcapsserif}
 $endif$
 $if(innertheme)$
 \useinnertheme{$innertheme$}
@@ -316,26 +305,14 @@ $if(license)$
 $endif$
 }
 
-% Include logos
-% \titlegraphic{
-%   \includegraphics[width=.175\textwidth]{logo/leg.pdf}
-%   \hspace{.5\textwidth}
-%   \includegraphics[width=.25\textwidth]{logo/ufpr.png}
-%   % \includegraphics[width=.175\textwidth]{logo/leg.pdf}
-%   % \hspace{.125\textwidth}
-%   % \includegraphics[width=.25\textwidth]{logo/ufpr.pdf}
-%   % \hspace{.125\textwidth}
-%   % \includegraphics[width=.25\textwidth]{logo/cidamo.png}
-% }
+\titlegraphic{
+  \vspace{-1cm}
+  \includegraphics[height=2cm]{logo/ppgmne-logo.png}
+  \hspace{8.75cm}
+  \includegraphics[height=2cm]{logo/ufpr.png}
+}
+\logo{\includegraphics[height=1.5cm]{logo/leg.pdf}}
 
-\logo{\includegraphics[width=.1\textwidth]{logo/leg.pdf}}
-% \logo{\includegraphics[width=.15\textwidth]{logo/cidamo.png}}
-
-% Option to fake out the raw_tex plugin and, thus, enabling the embedding of
-% markdown within a column scheme.
-% See:
-% (1) https://groups.google.com/forum/#!msg/pandoc-discuss/vcy7v9Uk95U/LDgWJTHTRR4J
-% (2) http://stackoverflow.com/questions/15142134/slides-with-columns-in-pandoc
 $if(safe-columns)$
 \def\begincols{\begin{columns}}
 \def\endcols{\end{columns}}
@@ -354,14 +331,13 @@ Missing ``\texttt{short-title}'' field!
 $endif$
 ]{
 $if(title)$
-% \begin{columns}
-% \column{.15\textwidth}
-% \hspace{.2in}
-% \vspace{.1in}
-% \includegraphics{leg.pdf}
-% \column{.85\textwidth}
-$title$
-% \end{columns}
+\begin{columns}
+  \column{0.2\textwidth}
+  \hspace{0.5cm}
+  \includegraphics[height=2cm]{logo/leg.pdf}
+  \column{0.8\textwidth}
+  $title$
+\end{columns}
 $else$
 Need to fill in the ``\texttt{title}'' field!
 $endif$

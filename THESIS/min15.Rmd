@@ -1,23 +1,21 @@
 ---
 title: "Modeling the cumulative incidence function\\newline
         of clustered competing risk data"
-subtitle: ""
-short-title: ""
-author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
-         \\hspace{.5\\textwidth}
-         \\includegraphics[width=.25\\textwidth]{logo/ufpr.png}
-         \\vspace{.75cm}\\newline
-         Henrique Laureano\\newline
+subtitle: ''
+short-title: ''
+author: "Henrique Laureano\\newline
          \\url{http://leg.ufpr.br/~henrique}"
-short-author: "leg.ufpr.br/~henrique"
-# email: "laureano\\@ufpr.br"
-# date: "*Last modification on* `r Sys.time()`"
+short-author: 'laurence'
+email: ''
+# date: '*Last modification on* `r Sys.time()`'
+date: 'December/2020'
+short-date: 'leg.ufpr.br/~henrique'
+department: "Laboratório de Estatística e Geoinformação (LEG)\\newline
+             Programa de Pós-Graduação em
+             Métodos Numéricos em Engenharia (PPGMNE)"
+institute: 'Universidade Federal do Paraná (UFPR)'
+short-institute: ''
 classoption: [aspectratio=169]
-date: "December/2020"
-short-date: "leg.ufpr.br/~henrique"
-department: ""
-institute: ""
-# short-institute: "LEG"
 section-titles: true
 safe-columns: true # enables special latex macros for columns
 output:
@@ -42,7 +40,7 @@ opts_chunk$set(rmdsize = TRUE,
 
 ### 
 
-\begin{minipage}{.325\textwidth}
+\begin{minipage}{5cm}
  \begin{shaded}
   Clustered competing risk data
  \end{shaded}
@@ -66,7 +64,7 @@ Something?
 Independent of the application, always the same framework
 
 \begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
- Group & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
+ Cluster & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
  \hline
  1     & 1  & Yes     & No       & No        & 10   & A\\
  1     & 2  & No      & No       & Yes       &  8   & A\\
@@ -76,14 +74,14 @@ Independent of the application, always the same framework
 
 ###
 
-\begin{minipage}{.15\textwidth}
+\begin{minipage}{2.3cm}
  \begin{shaded}
   Data designs
  \end{shaded}
 \end{minipage}
 
 \begin{center}
- \scalebox{0.725}{
+ \scalebox{0.85}{
   \begin{tikzpicture}
    \begin{pgfonlayer}{nodelayer}
     \node [style=circle] (2) at (-17.5, 5.5) {0};
@@ -130,7 +128,7 @@ Independent of the application, always the same framework
 \end{center}
 
 \pause
-\begin{minipage}{.225\textwidth}
+\begin{minipage}{3.5cm}
  \begin{shaded}
   Modeling framework
  \end{shaded}
@@ -147,7 +145,7 @@ Usually, is the
 
 ###
 
-\begin{minipage}{.425\textwidth}
+\begin{minipage}{5.5cm}
  \begin{shaded}
   In the competing risk setting \(\dots\)
  \end{shaded}
@@ -186,17 +184,17 @@ ggplot(df, aes(t, value, group = cif, color = cif)) +
     scale_color_manual(values = c("#ff7f00", "#0080ff"),
                        labels = c("Cause 1", "Cause 2")) +
     theme(legend.title = element_blank(),
-          legend.text = element_text(size = 8),
-          axis.text.x = element_text(size = 7),
-          axis.text.y = element_text(size = 7),
+          legend.text = element_text(size = 9),
+          axis.text.x = element_text(size = 8),
+          axis.text.y = element_text(size = 8),
           plot.title = element_text(
-              size = 9,
+              size = 10,
               margin = unit(c(t = 0, r = 0, b = 2, l = 0), 'mm')), 
           axis.title.x = element_text(
-              size = 8,
+              size = 9,
               margin = unit(c(t = 2, r = 0, b = 0, l = 0), "mm")),
           axis.title.y = element_text(
-              size = 8,
+              size = 9,
               margin = unit(c(t = 0, r = 2, b = 0, l = 0), "mm")))
 ```
 
@@ -208,8 +206,10 @@ i.e.
 
 ###
 
-\begin{minipage}{.525\textwidth}
- \begin{shaded} Main focus application: cancer incidence in twins
+\begin{minipage}{4.25cm}
+ \begin{shaded}
+  Main focus application:\newline
+  cancer incidence in twins
  \end{shaded}
 \end{minipage}
 
@@ -242,7 +242,7 @@ That may reflect
 
 ###
 
-\begin{minipage}{.425\textwidth}
+\begin{minipage}{7cm}
  \begin{shaded}
   Our contribution: a hierarchical approach
  \end{shaded}
@@ -260,7 +260,7 @@ in the time \(t\), we have
   \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt})\\
   \begin{bmatrix} u_{1j}\\ u_{2j}\\ \eta_{1j}\\ \eta_{2j} \end{bmatrix}
   & \sim
-  \parbox{0.155\textwidth}{\centering Multivariate Normal}
+  \parbox{2cm}{\centering Multivariate Normal}
   \left(
    \begin{bmatrix} 0\\ 0\\ 0\\ 0 \end{bmatrix},
    \begin{bmatrix}
@@ -294,7 +294,7 @@ in the time \(t\), we have
 
 ###
 
-\begin{minipage}{.275\textwidth}
+\begin{minipage}{4.5cm}
  \begin{shaded}
   Contributions \& challenges
  \end{shaded}
@@ -321,35 +321,41 @@ in the time \(t\), we have
 
 ###
 
-\begin{minipage}{.125\textwidth}
+\begin{minipage}{1.75cm}
  \begin{shaded}
   Thank you
  \end{shaded}
 \end{minipage}
 
-\begin{columns}
- \begin{column}{.33\textwidth}
-  \centering
-   \includegraphics[width=.9\textwidth]{logo/ppgmne.png}
- \end{column}
- \begin{column}{.33\textwidth}
-  \centering
-   \includegraphics[width=.9\textwidth]{logo/capes.jpg}
- \end{column}
- \begin{column}{.33\textwidth}
-  \centering
-   \includegraphics[width=.9\textwidth]{logo/ufpr.png}
- \end{column}
-\end{columns}
-
 \vspace{0.5cm}
 
 \begin{columns}
- \begin{column}{.5\textwidth}
-   Wagner H. Bonat\newline
-   \url{http://leg.ufpr.br/~wagner}
+ \begin{column}{0.33\textwidth}
+  \centering
+   \includegraphics[height=2cm]{logo/ppgmne.png}
  \end{column}
- \begin{column}{.5\textwidth}
+ \begin{column}{0.33\textwidth}
+  \centering
+   \includegraphics[height=2.5cm]{logo/capes.jpg}
+ \end{column}
+ \begin{column}{0.33\textwidth}
+  \centering
+   \includegraphics[height=2cm]{logo/ufpr.png}
+ \end{column}
+\end{columns}
+
+\noindent{\color{laurence}\rule{0.955\linewidth}{0.5mm}}
+\vspace{0.8cm}
+
+\begin{columns}
+ \begin{column}{0.5\textwidth}
+  Joint work with
+  \vspace{0.3cm}\newline
+  Wagner H. Bonat\newline
+  \url{http://leg.ufpr.br/~wagner}
+ \end{column}
+ \begin{column}{0.5\textwidth}
+  \vspace{0.5cm}\newline
   Paulo Justiniano Ribeiro Jr.\newline
   \url{http://leg.ufpr.br/~paulojus}
  \end{column}
@@ -357,4 +363,5 @@ in the time \(t\), we have
 
 \vspace{1cm}
 
-[\@hap_laureano](https://twitter.com/hap_laureano)
+\includegraphics[height=0.5cm]{logo/twitter.png}
+\href{https://twitter.com/hap_laureano}{\text{@hap\_laureano}}
