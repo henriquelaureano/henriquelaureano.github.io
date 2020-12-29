@@ -1,6 +1,6 @@
 ## About
 
-NOw IT'S PAI LAURENCE HERE.
+NOW IT'S PAI LAURENCE HERE.
 
 Hi! I'm a PhD student in Computer Science @ Purdue University, where I'm advised by the amazing Prof. [Bruno Ribeiro](https://www.cs.purdue.edu/homes/ribeirob/). Previously, I was a B.Sc. student (also in CS) @ UFMG, Brazil.
 
