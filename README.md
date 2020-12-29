@@ -1,4 +1,4 @@
 c'mon bro, check my page at
-https://henriquelaureano@github.io
+https://henriquelaureano.github.io/
 
 ***
