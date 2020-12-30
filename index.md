@@ -28,8 +28,6 @@ What am I doing right now? (December 20)
 > Minimalism is not a lack of something.\
 > It’s simply the perfect amount of something.
 
-***
-
 <p><a href="mike.html" style="float: right;">Michael Scott</a></p>
 
 oi
