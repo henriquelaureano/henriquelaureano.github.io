@@ -12,16 +12,14 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 
 ***
 
-[Academic courses](academic_courses/) |
-[Stuff (projects, codes)](stuff/) |
-[Presentations](presentations/) |
-[Papers](papers/)
+### [Academic courses](academic_courses/) | [Stuff (projects, codes)](stuff/) | [Presentations](presentations/) | [Papers](papers/)
 
 <span style="background-color: #FFFF00">Accepted at NeurIPS 2020:</span>
 
 ## Contact
 
-<laureano@ufpr.br> | <henriquelaureano@outlook.com>
+[laureano@ufpr.br](laureano@ufpr.br) |
+[henriquelaureano@outlook.com](<henriquelaureano@outlook.com)
 
 
 [Follow me on Twitter](https://twitter.com/cottascience)!
