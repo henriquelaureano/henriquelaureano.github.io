@@ -33,3 +33,5 @@ What am I doing right now? (December 20)
 > It’s simply the perfect amount of something.
 
 ***
+
+<p class="text-right">Look I'm right![<img src="mike.png">](mike.html)</p>
