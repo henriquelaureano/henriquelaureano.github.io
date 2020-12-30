@@ -1,7 +1,7 @@
-### Courses
+## Courses
 
-*Codes, theoretical results, and data analysis from courses taken during\
- my bachelors (@ UFPR), and masters (@ UFMG, UNICAMP, KAUST, UFPR)*
+*Codes, theoretical results, and data analysis from courses taken during
+my bachelors (@ UFPR), and masters (@ UFMG, UNICAMP, KAUST, UFPR)*
 
 ***
 
@@ -107,7 +107,7 @@ Nonparametric Statistics
   [Hw 2](ml-kaust/hw2.pdf) ([Rnw](ml-kaust/hw2.Rnw)) |
   [Hw 3](ml-kaust/hw3.pdf) ([Rnw](ml-kaust/hw3.Rnw)) |
   [Hw 4](ml-kaust/hw4.pdf) ([Rnw](ml-kaust/hw4.Rnw)) |
-  [Hw 5](ml-kaust/hw5.pdf) ([Rnw](ml-kaust/hw5.Rnw)) |
+  [Hw 5](ml-kaust/hw5.pdf) ([Rnw](ml-kaust/hw5.Rnw))
 
 + [Hw 6](ml-kaust/hw6.pdf) ([Rnw](ml-kaust/hw6.Rnw)) |
   [Hw 7](ml-kaust/hw7.pdf) ([Rnw](ml-kaust/hw7.Rnw)) |
