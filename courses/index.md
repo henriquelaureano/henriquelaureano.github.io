@@ -1,6 +1,7 @@
-<script>document.title='Courses'</script>
-
 ### Courses
+
+*Codes, theoretical results, and data analysis from courses taken during\
+ my bachelors (@ UFPR), and masters (@ UFMG, UNICAMP, KAUST, UFPR)*
 
 ***
 
