@@ -31,10 +31,5 @@ What am I doing right now? (December 20)
 > It’s simply the perfect amount of something.
 
 <!-- font-size default: 14px -->
-<p><a href="mike.html" style="float: right; font-size: 12px">
-   Michael Scott</a></p>
-
-oi
-
 <p><a href="mike.html" style="float: right; font-size: 11px">
     Michael Scott</a></p>
