@@ -2,29 +2,13 @@
 
 ***
 
-<div style="float: left; width: 50%;">
- <ul>
-  <img src="light.jpg">
- </ul>
-</div>
+<ul><img align='left' width='435' src='light.jpg'></ul>
 
-<div style='float: right; width: 50%;'>
- <ul>
-  <img src='lua.gif'>
- </ul>
-</div>
+<ul><img align='right' width='435' src='lua.gif'></ul>
 
-<div style='float: right; width: 50%;'>
- <ul>
-  <img src='mauboro.jpg'>
- </ul>
-</div>
+<ul><img align='right' width='435' src='mauboro.jpg'></ul>
 
-<div style='float: left; width: 50%;'>
- <ul>
-  <img src='room.jpg'>
- </ul>
-</div>
+<ul><img align='left' width='435' src='room.jpg'></ul>
 
 <div style='float: right; width: 50%;'>
  <ul>
@@ -392,12 +376,12 @@
  </ul>
 </div>
 
-<div style='float: left; width: 100%;'>
+<div style='float: right; width: 100%; text-align: right;'>
  <ul>
-  <h4>[Return to main page](https://henriquelaureano.github.io/)</h4>
-***  
-```{r}
-Sys.time()
+  ***
+  [Return to main page](http://leg.ufpr.br/~henrique)
+```{r, echo=FALSE}
+date()
 ```
  </ul>
 </div>
