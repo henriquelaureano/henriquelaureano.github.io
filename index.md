@@ -36,4 +36,4 @@ What am I doing right now? (December 20)
 
 <img src="mike.png"
      alt="Which Michael Scott are you today?"
-     style="float: right; margin-right: 10px;" />
+     style="float: right; margin-right: 5px;" />
