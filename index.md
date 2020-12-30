@@ -20,14 +20,14 @@ What am I doing right now? (December 20)
 
 [Courses](academic_courses/) | [Stuff (projects, codes)](stuff/) | [Presentations](presentations/) | [Papers](papers/)
 
-[**Courses**](academic_courses/) | [**Stuff (projects, codes)**](stuff/) | [**Presentations**](presentations/) | [**Papers**](papers/)
-
 <span style="background-color: #FFFF00">Accepted at NeurIPS 2020:</span>
 
 ## Contact
 
 [laureano@ufpr.br](laureano@ufpr.br) |
 [henriquelaureano@outlook.com](<henriquelaureano@outlook.com)
+
+***
 
 > Minimalism is not a lack of something.\
 > It’s simply the perfect amount of something.
