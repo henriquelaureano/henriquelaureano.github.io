@@ -19,10 +19,7 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 
 ## Contact
 
-> \(\href{mailto:laureano@ufpr.br}{\texttt{laureano@ufpr.br}}\mid
-    \href{mailto:henriquelaureano@outlook.com}{
-          \texttt{henriquelaureano@outlook.com}}
-  \)
+> <laureano@ufpr.br> | <henriquelaureano@outlook.com>
 
 cotta [at] purdue [dot] edu
 
