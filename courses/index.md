@@ -84,7 +84,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-### [Computational methods in Statistics](cms/)
+### [Computational Methods in Statistics](cms/)
 
 > Offered by Professor
 > [Benilton S Carvalho](https://bit.ly/2McXGaC)
