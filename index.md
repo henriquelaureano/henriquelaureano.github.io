@@ -10,20 +10,12 @@ student in Numerical Methods in Engineering @ UFPR under the guidance of
 Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 [Paulo Justiniano](http://leg.ufpr.br/~paulojus/).
 
+***
+
 [Academic courses](academic_courses/) |
 [Stuff (projects, codes)](stuff/) |
 [Presentations](presentations/) |
 [Papers](papers/)
-
-## [Academic courses](academic_courses/) |
-   [Stuff (projects, codes)](stuff/) |
-   [Presentations](presentations/) |
-   [Papers](papers/)
-
-### [Academic courses](academic_courses/) |
-    [Stuff (projects, codes)](stuff/) |
-    [Presentations](presentations/) |
-    [Papers](papers/)
 
 <span style="background-color: #FFFF00">Accepted at NeurIPS 2020:</span>
 
