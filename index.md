@@ -32,4 +32,4 @@ What am I doing right now? (December 20)
 
 ***
 
-<p> style="text-align:right"><a href="mike.html">Which Michael Scott are you today?</a></p>
+<p> style="text-align:right"> <a href="mike.html">Which Michael Scott are you today?</a></p>
