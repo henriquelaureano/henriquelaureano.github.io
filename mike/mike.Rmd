@@ -1,0 +1,13 @@
+<img src='mike.jpeg' width='1000'>
+
+```{r, eval=FALSE}
+library(magick)
+
+path <- '.../the_office.jpg'
+mick <- image_read(path) ; print(mick)
+
+text <- 'Which Michael Scott are you today?'
+image_annotate(mick, text,
+               size=45, color='white', location='+25+450')
+```
+
