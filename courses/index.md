@@ -47,16 +47,16 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 > [Eduardo Vargas Ferreira](https://eduardoleg.github.io/)
 > @ UFPR in 2016/1
 
-+ [Gradient descent](intro2ml/gradient_descent/) |
-  [Regularization](intro2ml/regularization/) |
-  [Resampling methods](intro2ml/resampling_methods/)
++ [Gradient descent](intro2ml/grad-desc/) |
+  [Regularization](intro2ml/regularization.html) |
+  [Resampling methods](intro2ml/resampling.html)
 
-+ [Supervisioned classification methods](intro2ml/supervisioned_classification_methods/) |
-  [Support Vector Machines](intro2ml/support_vector_machine/)
++ [Supervisioned classification methods](intro2ml/supervisioned.html) |
+  [Support Vector Machines](intro2ml/svm.html)
   
-+ [Tree based methods](intro2ml/tree_based_methods/) |
-  [Text mining](intro2ml/text_mining/) |
-  [Kobe Bryant shot selection](intro2ml/kobe_bryant_shot_selection/)
++ [Tree based methods](intro2ml/tree.html) |
+  [Text mining](intro2ml/textmining.html) |
+  [Kobe Bryant shot selection](intro2ml/kobe.html)
 
 [Machine learning](https://github.com/henriquelaureano/ML-UFMG)
 
