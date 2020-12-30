@@ -9,33 +9,32 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-### Linear models extensions
+### Linear models extensions (check [GitHub repo](https://github.com/henriquelaureano/lme15))
 
 > Offered by Professor [Paulo Justiniano](https://bit.ly/3hurNG3) @ UFPR
 > in 2015/2
 
-+ [Piecewise models](emr15/piecewise/) |
-  [Nonlinear models](emr15/nls/) |
-  [Nonparametric models](emr15/nonparametric/)
++ [Piecewise models](lme15/piecewise.html) |
+  [Nonlinear models](lme15/nls/html) |
+  [Nonparametric models](lme15/nonparametric.html)
 
-+ Transformed likelihood for transformed random variables,
-  [theory](emr15/trans_likelihood/theory.html) |
-  [application](emr15/trans_likelihood/application.html)
++ Likelihood for transformed random variables,
+  [theory](lme15/likelihood/theory.html) |
+  [application](lme15/likelihood/application.html)
 
 + Linear mixed models, studt cases: 
-  [Poisson](emr15/lme/mixed_poisson_model.html) |
-  [Piecewise](emr15/lme/piecewise_mixed_model.html)
+  [Poisson](lme15/lme/poisson.html) |
+  [Piecewise](lme15/lme/piecewise.html)
 
 + Heteroscedastic models,
-  [theory](emr15/hetero/theory.html) |
-  [application](emr15/hetero/application.html)
+  [theory](lme15/hetero/theory.html) |
+  [application](lme15/hetero/application.html)
 
 
 ### [Markovian models](https://github.com/henriquelaureano/ce064mm)
 
 + [Hw 1](markov/hw1/master.pdf) | [Hw 2](markov/hw2/master.pdf)
 
-***
 
 [Introduction to machine learning](https://github.com/henriquelaureano/ce062)
 
