@@ -87,7 +87,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### [Computational methods in Statistics](cms/)
 
 > Offered by Professor
-> []()
+> [Benilton S Carvalho](https://bit.ly/2McXGaC)
 > @ UNICAMP in 2017/1
 
 ***
@@ -106,7 +106,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-###Nonparametric Statistics
+### Nonparametric Statistics
 
 > offered by Professor
 > [Ying Sun](https://www.kaust.edu.sa/en/study/faculty/ying-sun)
