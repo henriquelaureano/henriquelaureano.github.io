@@ -23,8 +23,8 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
   [application](lme15/likelihood/application.html)
 
 + Linear mixed models, studt cases: 
-  [Poisson](lme15/lme/poisson.html) |
-  [Piecewise](lme15/lme/piecewise.html)
+  [Poisson](lme15/lmm/poisson.html) |
+  [Piecewise](lme15/lmm/piecewise.html)
 
 + Heteroscedastic models,
   [theory](lme15/hetero/theory.html) |
