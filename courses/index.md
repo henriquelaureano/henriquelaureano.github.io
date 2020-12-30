@@ -95,7 +95,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### Applied Statistics and Data Analysis (check [GitHub repo](https://github.com/henriquelaureano/amcs210))
 
 > Offered by Professor
-> []()
+> [Hernando Ombao](https://www.kaust.edu.sa/en/study/faculty/hernando-ombao)
 > @ KAUST in 2017/2
 
 + [hw1](applied_stats/hw1.pdf) |
