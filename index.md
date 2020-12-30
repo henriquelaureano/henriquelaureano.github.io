@@ -34,8 +34,12 @@ What am I doing right now? (December 20)
 
 oi
 
-<p><a href="mike.html" style="float: right; font-size: 16px">Michael Scott</a></p>
+<p><a href="mike.html" style="float: right; font-size: 14px">Michael Scott</a></p>
 
 oi2
+
+<p><a href="mike.html" style="float: right; font-size: 12px">Michael Scott</a></p>
+
+oi3
 
 <p><a href="mike.html" style="float: right; font-size: 10px">Michael Scott</a></p>
