@@ -31,12 +31,13 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
   [application](lme15/hetero/application.html)
 
 
-### [Markovian models](https://github.com/henriquelaureano/ce064mm)
+### Markovian models (check [GitHub repo](https://github.com/henriquelaureano/markov16))
 
-+ [Hw 1](markov/hw1/master.pdf) | [Hw 2](markov/hw2/master.pdf)
+> Offered by Professor @ UFPR in 2016/1
 
++ [hw1](markov/hw1/master.pdf) | [hw2](markov/hw2/master.pdf)
 
-[Introduction to machine learning](https://github.com/henriquelaureano/ce062)
+### [Intro to machine learning](https://github.com/henriquelaureano/ce062)
 
 + [Gradient descent](intro2ml/gradient_descent/) |
   [Regularization](intro2ml/regularization/) |
