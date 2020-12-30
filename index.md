@@ -32,8 +32,5 @@ What am I doing right now? (December 20)
 
 ***
 
-[![alt text](<img src="mike.png"> "Which Michael Scott are you today?")](mike.html)
-
-<img src="mike.png"
-     alt="Which Michael Scott are you today?"
-     style="float: right; width: 25px;" />
+<p class="text-right">
+   [Which Michael Scott are you today?](mike.html)</p>
