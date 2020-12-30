@@ -1,17 +1,21 @@
 ## Courses
 
 *Codes, theoretical results, and data analysis from courses taken during
-my bachelors (@ UFPR), and masters (@ UFMG, UNICAMP, KAUST, UFPR)*
+my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
+(@ [UFMG](http://www.est.ufmg.br/portal/),
+[UNICAMP](https://www.ime.unicamp.br/pos-graduacao/estatistica),
+[KAUST](https://cemse.kaust.edu.sa/stat),
+[UFPR](http://www.prppg.ufpr.br/ppgmne/))*
 
 ***
 
-[Extensions of linear models](https://github.com/henriquelaureano/emr15)
+### Linear models extensions
 
-+ Piecewise models: 
-  [Henrique](emr15/piecewise/) |
-  [Eduardo](emr15/piecewise/piecewise.html)
+> Offered by [Professor Paulo Justiniano](https://bit.ly/3hurNG3) @ UFPR
+> in 2015/2
 
-+ [Nonlinear models](emr15/nls/)
++ [Piecewise models](emr15/piecewise/) |
+  [Nonlinear models](emr15/nls/)
 
 + Transformed likelihood:
   Henrique ([theory](emr15/trans_likelihood/theory.html),
