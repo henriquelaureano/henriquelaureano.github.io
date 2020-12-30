@@ -179,7 +179,3 @@ Computational Methods to Statistical Inference
   [Hw 2](mcie/list_2.pdf) |
   [Hw 3](mcie/list_3.pdf)
 
-***
-
-[Return to main page](https://henriquelaureano.github.io)
-
