@@ -15,7 +15,7 @@ What am I doing right now? (December 20)
 + Working on my master thesis.
 
 <span style="background-color: #FFFF00">
-      [Courses](academic_courses/) |
+      [Courses](courses/) |
       [Stuff](stuff/) |
       [Presentations](presentations/) |
       [Papers](papers/)</span>
