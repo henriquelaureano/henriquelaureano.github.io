@@ -41,7 +41,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 + [hw1](markov16/hw1.pdf) |
   [hw2](markov16/hw2.pdf)
 
-### Intro to machine learning [GitHub repo](https://github.com/henriquelaureano/ce062)
+### Intro to machine learning (check [GitHub repo](https://github.com/henriquelaureano/ce062))
 
 > Offered by Professor
 > [Eduardo Vargas Ferreira](https://eduardoleg.github.io/)
