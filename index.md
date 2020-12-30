@@ -32,8 +32,6 @@ What am I doing right now? (December 20)
 
 ***
 
-<p class="text-right">Look I'm right![<img src="mike.png">](mike.html)</p>
-
 [![alt text](<img src="mike.png"> "Which Michael Scott are you today?")](mike.html)
 
 <img src="mike.png"
