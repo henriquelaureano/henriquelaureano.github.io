@@ -58,48 +58,65 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
   [Text mining](intro2ml/textmining.html) |
   [Kobe Bryant shot selection](intro2ml/kobe.html)
 
-[Machine learning](https://github.com/henriquelaureano/ML-UFMG)
+### Machine learning (check [GitHub repo](https://github.com/henriquelaureano/ml-ufmg))
 
-+ [Hw 1](ml/hw1/master.pdf) | [Hw 2](ml/hw2/master.pdf) |
-  [Hw 3](ml/hw3/master.pdf) | [Hw 4](ml/hw4/master.pdf)
+> Offered by Professor
+> []()
+> @ UFMG in 2016/2
 
-+ [Article presentation](ml/article/master.pdf) |
++ [hw1](ml/hw1/master.pdf) |
+  [hw2](ml/hw2/master.pdf) |
+  [hw3](ml/hw3/master.pdf) |
+  [hw4](ml/hw4/master.pdf) |
+  [Paper](ml/article/master.pdf) |
   [Poster](ml/poster/master.pdf)
 
 ***
 
-[Statistical methods](https://github.com/henriquelaureano/mi404-statistical_methods):
-[Hw 1](stat_methods/hw1.pdf) | [Hw 2](stat_methods/hw2.pdf)
+### Statistical methods (check [GitHub repo](https://github.com/henriquelaureano/mi404-statistical_methods))
+
+> Offered by Professor
+> []()
+> @ UNICAMP in 2017/1
+
++ [hw1](stat_methods/hw1.pdf) |
+  [hw 2](stat_methods/hw2.pdf)
 
 ***
 
-[Computational methods in Statistics](cms/)
+### [Computational methods in Statistics](cms/)
+
+> Offered by Professor
+> []()
+> @ UNICAMP in 2017/1
 
 ***
 
-[Applied Statistics and data analysis](https://github.com/henriquelaureano/amcs210)
+### Applied Statistics and Data Analysis (check [GitHub repo](https://github.com/henriquelaureano/amcs210))
 
-+ [Hw 1](applied_stats/hw1.pdf) |
-  [Hw 2](applied_stats/hw2.pdf) |
-  [Hw 3](applied_stats/hw3.pdf)
+> Offered by Professor
+> []()
+> @ KAUST in 2017/2
 
-+ [Midterm 1: Take-Home Part](applied_stats/md1-thp.pdf) |
++ [hw1](applied_stats/hw1.pdf) |
+  [hw2](applied_stats/hw2.pdf) |
+  [hw3](applied_stats/hw3.pdf) |
+  [Midterm 1: Take-Home Part](applied_stats/md1-thp.pdf) |
   [Project](applied_stats/project.pdf)
 
 ***
 
-Nonparametric Statistics
+###Nonparametric Statistics
 
-> STAT 260. Master level course at [KAUST](https://www.kaust.edu.sa/en)
 > offered by Professor
 > [Ying Sun](https://www.kaust.edu.sa/en/study/faculty/ying-sun)
-> in the Spring of 2018
+> @ KAUST in 2018/1
 
-+ [Hw 1](nonparametric_stat/hw1.pdf) ([Rnw](nonparametric_stat/hw1.Rnw)) |
-  [Hw 2](nonparametric_stat/hw2.pdf) ([Rnw](nonparametric_stat/hw2.Rnw)) |
-  [Hw 3](nonparametric_stat/hw3.pdf) ([Rnw](nonparametric_stat/hw3.Rnw)) |
-  [Hw 4](nonparametric_stat/hw4.pdf) ([Rnw](nonparametric_stat/hw4.Rnw)) |
-  [Hw 5](nonparametric_stat/hw5.pdf) ([Rnw](nonparametric_stat/hw5.Rnw))
++ [hw1](nonparametric_stat/hw1.pdf) ([Rnw](nonparametric_stat/hw1.Rnw)) |
+  [hw2](nonparametric_stat/hw2.pdf) ([Rnw](nonparametric_stat/hw2.Rnw)) |
+  [hw3](nonparametric_stat/hw3.pdf) ([Rnw](nonparametric_stat/hw3.Rnw)) |
+  [hw4](nonparametric_stat/hw4.pdf) ([Rnw](nonparametric_stat/hw4.Rnw)) |
+  [hw5](nonparametric_stat/hw5.pdf) ([Rnw](nonparametric_stat/hw5.Rnw))
 
 + Project: 
   [Presentation](nonparametric_stat/project_slides.pdf)
