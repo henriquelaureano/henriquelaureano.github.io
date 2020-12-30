@@ -39,15 +39,20 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 + [hw1](markov16/hw1.pdf) | [hw2](markov16/hw2.pdf)
 
-### [Intro to machine learning](https://github.com/henriquelaureano/ce062)
+### Intro to machine learning [GitHub repo](https://github.com/henriquelaureano/ce062)
+
+> Offered by Professor
+> []()
+> @ UFPR in /
 
 + [Gradient descent](intro2ml/gradient_descent/) |
   [Regularization](intro2ml/regularization/) |
-  [Resampling methods](intro2ml/resampling_methods/) |
-  [Supervisioned classification methods](intro2ml/supervisioned_classification_methods/)
+  [Resampling methods](intro2ml/resampling_methods/)
 
-+ [Support Vector Machine](intro2ml/support_vector_machine/)
-  [Tree based methods](intro2ml/tree_based_methods/) |
++ [Supervisioned classification methods](intro2ml/supervisioned_classification_methods/) |
+  [Support Vector Machines](intro2ml/support_vector_machine/)
+  
++ [Tree based methods](intro2ml/tree_based_methods/) |
   [Text mining](intro2ml/text_mining/) |
   [Kobe Bryant shot selection](intro2ml/kobe_bryant_shot_selection/)
 
