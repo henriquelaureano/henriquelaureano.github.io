@@ -35,7 +35,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 > Offered by Professor @ UFPR in 2016/1
 
-+ [hw1](markov/hw1/master.pdf) | [hw2](markov/hw2/master.pdf)
++ [hw1](markov16/hw1.pdf) | [hw2](markov16/hw2.pdf)
 
 ### [Intro to machine learning](https://github.com/henriquelaureano/ce062)
 
