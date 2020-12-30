@@ -15,7 +15,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 > in 2015/2
 
 + [Piecewise models](lme15/piecewise.html) |
-  [Nonlinear models](lme15/nls/html) |
+  [Nonlinear models](lme15/nls.html) |
   [Nonparametric models](lme15/nonparametric.html)
 
 + Likelihood for transformed random variables,
