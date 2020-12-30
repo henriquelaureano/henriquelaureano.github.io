@@ -11,8 +11,9 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ### Linear models extensions (check [GitHub repo](https://github.com/henriquelaureano/lme15))
 
-> Offered by Professor [Paulo Justiniano](https://bit.ly/3hurNG3) @ UFPR
-> in 2015/2
+> Offered by Professor
+> [Paulo Justiniano](https://bit.ly/3hurNG3)
+> @ UFPR in 2015/2
 
 + [Piecewise models](lme15/piecewise.html) |
   [Nonlinear models](lme15/nls.html) |
@@ -37,13 +38,14 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 > [Fernando Lucambio Pérez](https://docs.ufpr.br/~lucambio/)
 > @ UFPR in 2016/1
 
-+ [hw1](markov16/hw1.pdf) | [hw2](markov16/hw2.pdf)
++ [hw1](markov16/hw1.pdf) |
+  [hw2](markov16/hw2.pdf)
 
 ### Intro to machine learning [GitHub repo](https://github.com/henriquelaureano/ce062)
 
 > Offered by Professor
-> []()
-> @ UFPR in /
+> [Eduardo Vargas Ferreira](https://eduardoleg.github.io/)
+> @ UFPR in 2016/1
 
 + [Gradient descent](intro2ml/gradient_descent/) |
   [Regularization](intro2ml/regularization/) |
@@ -55,8 +57,6 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 + [Tree based methods](intro2ml/tree_based_methods/) |
   [Text mining](intro2ml/text_mining/) |
   [Kobe Bryant shot selection](intro2ml/kobe_bryant_shot_selection/)
-
-***
 
 [Machine learning](https://github.com/henriquelaureano/ML-UFMG)
 
