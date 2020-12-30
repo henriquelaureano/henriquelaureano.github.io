@@ -33,7 +33,9 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ### Markovian models (check [GitHub repo](https://github.com/henriquelaureano/markov16))
 
-> Offered by Professor @ UFPR in 2016/1
+> Offered by Professor
+> [Fernando Lucambio Pérez](https://docs.ufpr.br/~lucambio/)
+> @ UFPR in 2016/1
 
 + [hw1](markov16/hw1.pdf) | [hw2](markov16/hw2.pdf)
 
