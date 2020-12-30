@@ -28,16 +28,5 @@ What am I doing right now? (December 20)
 > Minimalism is not a lack of something.\
 > It’s simply the perfect amount of something.
 
-<p><a href="mike.html" style="float: right;">Michael Scott</a></p>
-
-oi
-
-<p><a href="mike.html" style="float: right; font-size: 14px">Michael Scott</a></p>
-
-oi2
-
+<!-- font-size default: 14px -->
 <p><a href="mike.html" style="float: right; font-size: 12px">Michael Scott</a></p>
-
-oi3
-
-<p><a href="mike.html" style="float: right; font-size: 10px">Michael Scott</a></p>
