@@ -73,14 +73,14 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-### Statistical methods (check [GitHub repo](https://github.com/henriquelaureano/mi404-statistical_methods))
+### Statistical methods (check [GitHub repo](https://github.com/henriquelaureano/stats-methods))
 
 > Offered by Professor
-> []()
+> [Mariana Rodrigues Motta](https://www.ime.unicamp.br/~marianar/)
 > @ UNICAMP in 2017/1
 
 + [hw1](stat_methods/hw1.pdf) |
-  [hw 2](stat_methods/hw2.pdf)
+  [hw2](stat_methods/hw2.pdf)
 
 ***
 
