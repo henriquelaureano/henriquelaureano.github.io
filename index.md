@@ -25,11 +25,13 @@ What am I doing right now? (December 20)
 [laureano@ufpr.br](laureano@ufpr.br) |
 [henriquelaureano@outlook.com](<henriquelaureano@outlook.com)
 
-***
-
 > Minimalism is not a lack of something.\
 > It’s simply the perfect amount of something.
 
 ***
 
 <p><a href="mike.html" style="float: right;">Michael Scott</a></p>
+
+<p><a href="mike.html" style="float: right; font-size: 16px">Michael Scott</a></p>
+
+<p><a href="mike.html" style="float: right; font-size: 10px">Michael Scott</a></p>
