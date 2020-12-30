@@ -25,6 +25,8 @@ What am I doing right now? (December 20)
 [laureano@ufpr.br](laureano@ufpr.br) |
 [henriquelaureano@outlook.com](<henriquelaureano@outlook.com)
 
+***
+
 > Minimalism is not a lack of something.\
 > It’s simply the perfect amount of something.
 
