@@ -64,12 +64,12 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 > [Marcos Oliveira Prates](http://www.est.ufmg.br/~marcosop/)
 > @ UFMG in 2016/2
 
-+ [hw1](ml/hw1/master.pdf) |
-  [hw2](ml/hw2/master.pdf) |
-  [hw3](ml/hw3/master.pdf) |
-  [hw4](ml/hw4/master.pdf) |
-  [Paper](ml/article/master.pdf) |
-  [Poster](ml/poster/master.pdf)
++ [hw1](ml-ufmg/hw1.pdf) |
+  [hw2](ml-ufmg/hw2.pdf) |
+  [hw3](ml-ufmg/hw3.pdf) |
+  [hw4](ml-ufmg/hw4.pdf) |
+  [Paper](ml-ufmg/paper.pdf) |
+  [Poster](ml-ufmg/poster.pdf)
 
 ***
 
