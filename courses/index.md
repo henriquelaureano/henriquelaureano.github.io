@@ -61,7 +61,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### Machine learning (check [GitHub repo](https://github.com/henriquelaureano/ml-ufmg))
 
 > Offered by Professor
-> []()
+> [Marcos Oliveira Prates](http://www.est.ufmg.br/~marcosop/)
 > @ UFMG in 2016/2
 
 + [hw1](ml/hw1/master.pdf) |
