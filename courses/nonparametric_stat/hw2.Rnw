@@ -1,0 +1,551 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+\title{
+ \normalfont \normalsize 
+ \textsc{STAT 260 - Nonparametric Statistics} \\
+ Ying Sun \\
+ Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\[.4cm]
+ \LARGE HOMEWORK \\
+  II
+ \horrule{2pt} \\[.5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+% \newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold')
+# </r code> ==================================================================== #
+@
+
+\section*{Problem 1} \addcontentsline{toc}{section}{Problem 1}
+
+\horrule{1pt} \\
+
+\textbf{Consider a model with two random effects of the form:}
+
+\[ y_{ij} = \alpha + b_{i} + c_{j} + \epsilon_{ij}, \]
+
+\textbf{where \(i = 1, \dots, I\), \(j = 1, \dots, J\),
+        \(b_{i} \sim {\rm N}(0, \sigma_{b}^{2})\),
+        \(c_{j} \sim {\rm N}(0, \sigma_{c}^{2})\), and
+        \(\epsilon_{ij} \sim {\rm N}(0, \sigma^{2})\) and all these r.v.’s are
+        mutually independent. If the model is fitted by least squares then}
+
+\[ \hat{\sigma}^{2} = \frac{{\rm RSS}}{IJ - I - J + 1} \]
+
+\textbf{is an unbiased estimator of \(\sigma^{2}\), where RSS is the residual sum
+        of squares from the model fit.}
+
+\subsection*{(a)} \addcontentsline{toc}{subsection}{(a)}
+
+\horrule{.5pt} \\
+
+\textbf{Show that, if the above model is correct, the averages
+        \(\bar{y}_{i\cdot} = \frac{1}{J} \sum_{j=1}^{J} y_{ij}/{J}\) are governed
+        by the model:}
+
+\[ \bar{y}_{i\cdot} = a + e_{i}, \]
+
+\textbf{where \(e_{i}\) are i.i.d. \({\rm N}(0, \sigma_{b}^{2} + \sigma^{2}/J)\)
+        and \(a\) is a random intercept term. Hence suggest how to estimate
+        \(\sigma_{b}^{2}\).} \\
+
+\underline{Solution:} \\
+
+By averaging over each \(i\), the random effect \(b_{i}\) is absorved into the
+independent residual term
+
+\[ e_{i} = b_{i} + \frac{1}{J} \sum_{j=1}^{J} \epsilon_{ij}. \]
+
+Adding the random effect \(c_{j}\) to the intercept we have the random intercept
+\(a\).
+
+\begin{align*}
+ \bar{y}_{i\cdot} & = \alpha + c_{j} + e_{i} \\
+                  & = a + e_{i}, \quad \text{ with}
+\end{align*}
+
+\begin{itemize}
+ \item
+  \(e_{i} \overset{\text{i.i.d.}}{\sim}
+    {\rm N}\Big(0, \sigma_{b}^{2} + \frac{\sigma^{2}}{J}\Big)\),
+ \item \(e_{i}\)'s are mutually independent random variables.
+\end{itemize}
+
+From the first model we have
+
+\[ \hat{\sigma}^{2} = \frac{{\rm RSS}}{IJ - I - J + 1}. \]
+
+From the averaged model we have
+
+\[ \hat{\sigma_{b}}^{2} + \frac{\hat{\sigma}^{2}}{J} =
+   \frac{{\rm RSS}^{\star}}{J},
+\]
+
+with \({\rm RSS}^{\star}\) being the residual sum of squares for this averaged
+model. \\
+
+Hence, an unbiased estimator for \(\sigma_{b}^{2}\) is
+
+\[ \hat{\sigma_{b}}^{2} = \frac{{\rm RSS}^{\star}}{J} -
+   \frac{{\rm RSS}}{J(IJ - I - J + 1)}.
+\]
+
+\hfill \(\square\)
+
+\subsection*{(b)} \addcontentsline{toc}{subsection}{(b)}
+
+\horrule{.5pt} \\
+
+\textbf{Show that the averages
+        \(\bar{y}_{\cdot j} = \frac{1}{I} \sum_{i=1}^{J} y_{ij}\) are governed by
+        the model:}
+
+\[ \bar{y}_{\cdot j} = a^{'} + e_{j}^{'}, \]
+
+\textbf{where the \(e_{j}^{'}\) are i.i.d.
+        \({\rm N}(0, \sigma_{c}^{2} + \sigma^{2}/I)\) and \(a^{'}\) is a random
+        intercept parameter. Suggest how to estimate \(\sigma_{c}^{2}\).} \\
+
+\underline{Solution:} \\
+
+By averaging over each \(j\), the random effect \(c_{j}\) is absorved into the
+independent residual term
+
+\[ e_{j}^{'} = c_{j} + \frac{1}{I} \sum_{i=1}^{I} \epsilon_{ij}. \]
+
+Adding the random effect \(b_{i}\) to the intercept we have the random intercept
+\(a^{'}\).
+
+\begin{align*}
+ \bar{y}_{\cdot j} & = \alpha + b_{i} + e_{j}^{'} \\
+                   & = a^{'} + e_{j}^{'}, \quad \text{ with}
+\end{align*}
+
+\begin{itemize}
+ \item
+  \(e_{j}^{'} \overset{\text{i.i.d.}}{\sim}
+    {\rm N}\Big(0, \sigma_{c}^{2} + \frac{\sigma^{2}}{I}\Big)\),
+ \item \(e_{j}^{'}\)'s are mutually independent random variables.
+\end{itemize}
+
+From the first model we have
+
+\[ \hat{\sigma}^{2} = \frac{{\rm RSS}}{IJ - I - J + 1}. \]
+
+From the averaged model we have
+
+\[ \hat{\sigma_{c}}^{2} + \frac{\hat{\sigma}^{2}}{I} =
+   \frac{{\rm RSS}^{\star}}{I},
+\]
+
+with \({\rm RSS}^{\star}\) being the residual sum of squares for this averaged
+model. \\
+
+Hence, an unbiased estimator for \(\sigma_{b}^{2}\) is
+
+\[ \hat{\sigma_{c}}^{2} = \frac{{\rm RSS}^{\star}}{I} -
+   \frac{{\rm RSS}}{I(IJ - I - J + 1)}.
+\]
+
+\hfill \(\square\)
+
+\section*{Problem 2} \addcontentsline{toc}{section}{Problem 2}
+
+\horrule{1pt} \\
+
+\subsection*{(a)} \addcontentsline{toc}{subsection}{(a)}
+
+\horrule{.5pt} \\
+
+\textbf{Show that if \(X\) and \(Z\) are independent random vectors, both of the
+        same dimension, and with covariance matrices \(\Sigma_{x}\) and
+        \(\Sigma_{z}\), then the covariance matrix of \(X + Z\) is
+        \(\Sigma_{x} + \Sigma_{z}\).} \\
+
+\underline{Solution:} \\
+
+In the diagonal of the covariance matrix of \(X + Z\) we have the variance
+\(\mathbb{V}(X + Z)\) and in the off-diagonal we have the covariances. If \(X\)
+and \(Z\) are independent \({\rm Cov}(X + Z) = \Sigma_{x + z} = 0\), so by
+definition
+
+\[ \mathbb{V}(X + Z) = \mathbb{V} X + \mathbb{V} Z + 2 {\rm Cov}(X + Z)
+                     = \mathbb{V} X + \mathbb{V} Z + 2 \cdot 0
+                     = \mathbb{V} X + \mathbb{V} Z,
+\]
+
+that in matrix context is equivalent to write \(\Sigma_{x} + \Sigma_{z}\). \\
+
+Therefore, for the random vectors \(X\) and \(Z\) the covariance matrix of
+\(X + Z\) is \(\Sigma_{x} + \Sigma_{z}\).
+
+\hfill \(\square\)
+
+\subsection*{(b)} \addcontentsline{toc}{subsection}{(b)}
+
+\horrule{.5pt} \\
+
+\textbf{Consider a study examining patients’ blood insulin levels 30 minutes after
+        eating, \(y\), in relation to sugar content, x, of the meal eaten. Suppose
+        that each of 3 patients had their insulin levels measured for each of 3
+        sugar levels, and that an appropriate linear mixed model for the \(j\)-th
+        measurement on the \(i\)-th patient is}
+
+\[ y_{ij} = \alpha + \beta x_{ij} + b_{i} + \epsilon_{ij}, \]
+
+\textbf{where \(b_{i} \sim {\rm N}(0, \sigma^{2})\),
+        \(\epsilon_{ij} \sim {\rm N}(0, \sigma)\), and all the random effects and
+        residuals are mutually independent.}
+
+\subsubsection*{i.} \addcontentsline{toc}{subsubsection}{i.}
+
+\horrule{.25pt} \\
+
+\textbf{Write this model out in matrix vector form.} \\
+
+\underline{Solution:}
+
+\[ \mathbf{y}_{i} = \mathbf{X}_{i} \bm{\beta} + \mathbf{Z}_{i} b_{i} +
+                    \bm{\epsilon}_{i}, \quad i = 1, 2, 3
+\]
+
+with (for \(j = 1, 2, 3\))
+
+\[ \mathbf{y}_{i} = \begin{pmatrix}
+                     y_{i1} \\
+                     y_{i2} \\
+                     y_{i3}
+                    \end{pmatrix}, \quad
+   \mathbf{X}_{i} = \mathbf{I}_{3}, \quad
+   \bm{\beta} = \begin{pmatrix}
+                 \alpha + \beta_{1} \\ 
+                 \alpha + \beta_{2} \\
+                 \alpha + \beta_{3}
+                \end{pmatrix}, \quad
+   \mathbf{Z}_{i} = \begin{pmatrix}
+                     1 \\
+                     1 \\
+                     1
+                    \end{pmatrix}, \quad
+   \bm{\epsilon}_{i} = \begin{pmatrix}
+                        \epsilon_{i1} \\
+                        \epsilon_{i2} \\
+                        \epsilon_{i3}
+                    \end{pmatrix}.
+\]
+
+\hfill \(\square\)
+
+\subsubsection*{ii.} \addcontentsline{toc}{subsubsection}{ii.}
+
+\horrule{.25pt} \\
+
+\textbf{Find the covariance matrix for the response vector \(\mathbf{y}\).} \\
+
+\underline{Solution:}
+
+\begin{align*}
+ {\rm Cov}(\mathbf{y}_{i}, \mathbf{y}_{i^{'}}) & =
+ {\rm Cov}(\mathbf{X}_{i} \bm{\beta} + \mathbf{Z}_{i} b_{i} + \bm{\epsilon}_{i},
+           \mathbf{X}_{i^{'}} \bm{\beta} + \mathbf{Z}_{i^{'}} b_{i^{'}} +
+           \bm{\epsilon}_{i^{'}}
+          ) \\ & = 0, \quad i \neq i^{'}, \\
+ \mathbb{V} \mathbf{y}_{i} & =
+ \mathbb{V}(\mathbf{X}_{i} \bm{\beta} + \mathbf{Z}_{i} b_{i} + \bm{\epsilon}_{i})
+ \\ & = \mathbb{V}(\mathbf{Z}_{i} b_{i} + \bm{\epsilon}_{i}) \\
+ & = \mathbf{Z}_{i} \mathbb{V} b_{i} \mathbf{Z}_{i}^{\top} +
+     \mathbb{V} \bm{\epsilon}_{i} \\
+ & = \mathbf{Z}_{i} \sigma^{2} \mathbf{Z}_{i}^{\top} + \sigma \mathbf{I}_{3} \\
+ & = \begin{pmatrix}
+      \sigma + \sigma^{2} & \sigma^{2} & \sigma^{2} \\
+      \sigma^{2} & \sigma + \sigma^{2} & \sigma^{2} \\
+      \sigma^{2} & \sigma^{2} & \sigma + \sigma^{2}
+     \end{pmatrix}.
+\end{align*}
+
+\hfill \(\square\)
+
+\section*{Problem 3} \addcontentsline{toc}{section}{Problem 3}
+
+\horrule{1pt} \\
+
+\textbf{The data frame \texttt{Gun} (library \texttt{nlme}) is from a trial
+        examining methods for firing naval guns. Two firing methods were compared,
+        with each of a number of teams of 3 gunners; the gunners in each team were
+        matched to have similar physique (Slight, Average or Heavy). The response
+        variable \texttt{rounds} is rounds fired per minute, and there are 3
+        explanatory factor variables, \texttt{Physique} (levels \texttt{Slight},
+        \texttt{Medium} and \texttt{Heavy}); \texttt{Method} (levels \texttt{M1}
+        and \texttt{M2}) and \texttt{Team} with 9 levels. The main interest is in
+        determining which method and/or physique results in the highest firing
+        rate and in quantifying team-to-team variability in firing rate.}
+
+<<>>=
+# <r code> ===================================================================== #
+library(nlme)                                                    # loading package
+data(Gun)                                                        # loading dataset
+# </r code> ==================================================================== #
+@
+
+\subsection*{(a)} \addcontentsline{toc}{subsection}{(a)}
+
+\horrule{.5pt} \\
+
+\textbf{Identify which factors should be treated as random and which as fixed, in
+        the analysis of these data.} \\
+
+\underline{Solution:}
+
+\begin{description}
+ \item[Fixed: \texttt{Method} \& \texttt{Physique}] \hfill \\
+  We have interest in compare the levels of this variables. The interest is do
+  inference about, take conclusions. Therefore, this factors should be treated as
+  fixed effect.
+ \item[Random: \texttt{Team}] \hfill \\
+  The interest about this variable is quantify and control variability. The
+  levels are random, we don't have the interest in expand or generalize the
+  conclusions about this factors to "all the population of possibly teams".
+  Therefore, this factor should be treated as random effect.
+\end{description}
+
+\hfill \(\square\)
+
+\subsection*{(b)} \addcontentsline{toc}{subsection}{(b)}
+
+\horrule{.5pt} \\
+
+\textbf{Write out a suitable mixed model as a starting point for the analysis of
+        these data.} \\
+
+\underline{Solution:}
+
+\[ {\rm rounds}_{ijk} = \mu + {\rm method}_{i} + {\rm physique}_{j}
+                            + a_{k} + b_{ik} + c_{jk} + \epsilon_{ijk}, \qquad
+   i = 1, 2; \quad j = 1, 2, 3; \quad k = 1, \dots, 9;
+\]
+
+with
+
+\begin{itemize}
+ \item \({\rm a}_{k} \sim {\rm N}(0, \sigma_{\rm intercept}^{2})\);
+       \({\rm b}_{ik} \sim {\rm N}(0, \sigma_{\rm method}^{2})\);
+       \({\rm c}_{jk} \sim {\rm N}(0, \sigma_{\rm physique}^{2})\),
+ \item \(\epsilon_{ijk} \sim {\rm N}(0, \sigma^{2})\),
+ \item all the random effects and residuals are mutually independent.
+\end{itemize}
+
+The dataset \texttt{Gun} have a "groupedData" class, the random effect for
+\texttt{Team} is already defined in the object structure. I'm specifying here this
+random effect structure.
+
+\hfill \(\square\)
+
+\subsection*{(c)} \addcontentsline{toc}{subsection}{(c)}
+
+\horrule{.5pt} \\
+
+\textbf{Analyse the data using \texttt{lme} in order to answer the main questions
+        of interest. Include any necessary follow-up multiple comparisons (as in
+        the previous question) and report your conclusions.} \\
+
+\underline{Solution:}
+
+<<>>=
+# <r code> ===================================================================== #
+                                              # fitting the model specified in (b)
+# the dataset Gun have a "groupedData" class, the random effect for Team is alrea-
+model <- lme(rounds ~ Method + Physique, Gun) # dy defined in the object structure
+# </r code> ==================================================================== #
+@
+
+Looking to the goodness of fit:
+
+<<god, fig.width=10, fig.height=8.5, fig.cap="Graphical analysis of goodness of fit.">>=
+# <r code> ===================================================================== #
+library(latticeExtra)                                  # loading graphical library
+res <- residuals(model, type = "pearson")                      # pearson residuals
+fit <- fitted(model)                                               # fitted values
+print(                                     # graphical analysis of goodness of fit
+  xyplot(res ~ fit, col = 1
+         , xlab = "Fittted values", ylab = "Pearson residuals", main = "Model fit"
+         , panel = function(...){
+           panel.xyplot(...)
+           panel.loess(fit, res, lwd = 3, col = "#0080ff")})
+  , position = c(0, .5, .5, 1), more = TRUE)
+print(
+  xyplot(sqrt(abs(res)) ~ fit, col = 1, xlab = "Fitted values"
+         , ylab = "Pearson residuals", main = "Mean/variance relation"
+         , panel = function(...){
+           panel.xyplot(...)
+           panel.loess(fit, sqrt(abs(res)), lwd = 3, col = "#0080ff")})
+  , position = c(.5, .5, 1, 1), more = TRUE)
+print(
+  xyplot(Gun$rounds ~ fit, col = 1, xlab = "Fitted values"
+         , ylab = "Rounds fired per minute", main = "Observed x fitted values"
+         , panel = function(...){
+           panel.xyplot(...)
+           panel.loess(fit, Gun$rounds, lwd = 3, col = "#0080ff")})
+  , position = c(0, 0, .5, .5), more = TRUE)
+print(
+  qqmath(res, col = 1, xlab = "Theoretical quantile", ylab = "Sampling quantile"
+         , main = "Normality") + 
+    layer(panel.qqmathline(res, lwd = 3, col = "#0080ff"))
+  , position = c(.5, 0, 1, .5))
+# </r code> ==================================================================== #
+@
+
+Given the small sample size, 36 observations, the behaviours observed in Figure
+\ref{fig:god} are very satisfatory, with no considerable deviation from the model
+assumptions (homocedasticity, "constant" mean/variance relation, normality of
+residuals). \\
+
+After this verifications we are able to take conclusions about the model
+estimates. \\
+
+Performing a variance analysis tables we see that \texttt{Physique} is not
+significant.
+
+<<>>=
+# <r code> ===================================================================== #
+anova(model)                                             # variance analysis table
+# </r code> ==================================================================== #
+@
+
+Looking to the individual coefficients \(t\)-tests we can see better as we don't
+have a significant difference between the \texttt{Physique} levels.
+
+<<>>=
+# <r code> ===================================================================== #
+round(summary(model)$tTable, 3)                          # fixed effects estimates
+# </r code> ==================================================================== #
+@
+
+In Figure \ref{fig:box} the boxplots for \texttt{Physique} levels are presented.
+The model results confirm what the figure show. The rounds fired per minute from
+one \texttt{Physique} level to the other are very similar.
+
+<<box, fig.height=3.75, fig.cap="Boxplots for $\\texttt{Physique}$ levels.">>=
+# <r code> ===================================================================== #
+bwplot(rounds ~ Physique, Gun                       # boxplots for physique levels
+       , xlab = "Physique", ylab = "Rounds fired per minute"
+       , panel = function(...){
+         panel.grid(v = 0, h = -1)
+         panel.bwplot(...)})
+# </r code> ==================================================================== #
+@
+
+The model present significant differences between the \texttt{Method}'s. \\
+In Figure \ref{fig:box-team}, looking to the data, we see that with the exception
+of T2S (level \texttt{Slight}) the medians don't differ so much. What differ is
+the variability.
+
+<<box-team, fig.height=3.85, fig.cap="Boxplots for $\\texttt{Method}$ levels divided by the $\\texttt{Team}$'s.">>=
+# <r code> ===================================================================== #
+bwplot(rounds ~ Method | Team, Gun, layout = c(9, 1)
+       , xlab = "Method", ylab = "Rounds fired per minute"
+       , strip = strip.custom(bg = "white")
+       , panel = function(...){
+         panel.grid(v = 0, h = -1)
+         panel.bwplot(...)})
+# <r code> ===================================================================== #
+@
+
+The random effects values are presented bellow. In the \texttt{(Intercept)} are
+represented the \texttt{MethodM2} and the \texttt{Physique.S}. The values differ
+from one level to another, which justifies the use of the random effect component.
+
+<<>>=
+# <r code> ===================================================================== #
+ranef(model)                                           # extracting random effects
+# <r code> ===================================================================== #
+@
+
+The biggest variability is observed in the level \texttt{Slight} and the smallest
+in the level \texttt{Average}. \\
+
+About the fixed effect:
+
+<<>>=
+# <r code> ===================================================================== #
+round(summary(model)$tTable[ , 1:2], 3)                  # fixed effects estimates
+# </r code> ==================================================================== #
+@
+
+For the \texttt{Method} 1 and \texttt{Slight Physique} the estimate rounds fired
+per minute is 23.587. If you change for the \texttt{Method} 2 the value decrease
+to \Sexpr{23.587 - 8.511} (23.587 - 8.511). For \texttt{Method} 1 and
+\texttt{Average Physique} the estimate rounds fired
+per minute is \Sexpr{23.587 - 1.149} (23.587 - 1.149). For \texttt{Heavy Physique}
+the estimate is \Sexpr{23.587 - 0.063} (23.587 - 0.063). The same reasoning is
+applied to achieve the other estimates. \\
+The \texttt{Method} 1 and \texttt{Slight Physique} results in the highest firing
+rate.
+
+\hfill \(\blacksquare\)
+
+\horrule{.5pt}
+
+\vspace{\fill}
+
+\horrule{1pt} \\
+
+\end{document}

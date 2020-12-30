@@ -1,0 +1,695 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{xcolor}
+\usepackage{cancel}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{makecell}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\nPerp}{\cancel{\perp \! \! \! \perp}}
+
+\title{  
+ \normalfont \normalsize 
+ \textsc{CS 229 - Machine Learning} \\
+ Xiangliang Zhang \\
+ Computer Science (CS)/Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\ [.4cm]
+ \LARGE Homework IX: \\
+  Unsupervised Learning: PCA and SVD
+ \horrule{2pt} \\[ .5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+%\newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold')
+# </r code> ==================================================================== #
+@
+
+\section*{Question 1: Principal Components Analysis (PCA)}
+\addcontentsline{toc}{section}{Question 1: Principal Components Analysis (PCA)}
+
+\horrule{1pt}
+
+\subsection*{(a) [15pts]} \addcontentsline{toc}{subsection}{(a)}
+
+\horrule{.5pt}
+
+\textbf{Discuss and show the proof of how PCA maximizes the variance of projected
+        data.} \\
+
+\underline{Solution:} \\
+
+PCA can be defined as the orthogonal projection of the data onto a lower
+dimensional linear space, know as the \textit{principal subspace}, such that the
+variance of the projected data is maximized. \\
+
+Consider a dataset of observations \(\{x_{n}\}\) where \(n = 1, \dots, N\)
+(\(x_{n}\) with dimensionality \(D\)). \\
+
+Denote:
+
+\begin{itemize}
+ \item \(D\) the dimensionality;
+ \item \(M\) the fixed dimension of the principal subspace;
+ \item \(\{\mathbf{u}_{i}\}, i = 1, \dots, M\) the basis vectors
+       ((\(D \times 1\)) vectors) of the principal subspace.
+\end{itemize}
+
+Consider a unit \(D\)-dimensional normalized vector \(\mathbf{u}_{1}\)
+(\(\mathbf{u}_{1}^{\top} \mathbf{u}_{1} = 1\)). Each point \(\mathbf{x}_{n}\) is
+then projected onto a scalar value \(\mathbf{u}_{1}^{\top} \mathbf{x}_{n}\). The
+mean of the projected data is \(\mathbf{u}_{1}^{\top} \bar{\mathbf{x}}\) where
+\(\bar{\mathbf{x}}\) is the sample mean given by
+
+\[ \bar{\mathbf{x}} = \frac{1}{N} \sum_{n = 1}^{N} \mathbf{x}_{n}\]
+
+and the variance of the projected data is given by
+
+\[
+ \frac{1}{N} \sum_{n = 1}^{N} \{\mathbf{u}_{1}^{\top} \mathbf{x}_{n} -
+                                \mathbf{u}_{1}^{\top} \bar{\mathbf{x}}
+                              \}^{2} =
+ \mathbf{u}_{1}^{\top} \mathbf{S} \mathbf{u}_{1}
+\]
+
+where \(\mathbf{S}\) is the data covariance matrix defined by
+
+\[
+ \mathbf{S} = \frac{1}{N} \sum_{n = 1}^{N}
+ (\mathbf{x}_{n} - \bar{\mathbf{x}})(\mathbf{x}_{n} - \bar{\mathbf{x}})^{\top}.
+\]
+
+Now we maximize the projected variance
+\(\mathbf{u}_{1}^{\top} \mathbf{S} \mathbf{u}_{1}\) with respect to
+\(\mathbf{u}_{1}\). This has to be a constrained maximization to prevent
+\(\|\mathbf{u}_{1}\| \rightarrow \infty\). The appropriate constraint comes from
+the normalization condition \(\mathbf{u}_{1}^{\top} \mathbf{u}_{1} = 1\). To
+enforce this constraint, we introduce a Lagrange multiplier that we shall denote
+by \(\lambda_{1}\), and then make an unconstrained maximization of
+
+\[
+ \mathbf{u}_{1}^{\top} \mathbf{S} \mathbf{u}_{1} +
+ \lambda_{1} (1 - \mathbf{u}_{1}^{\top} \mathbf{u}_{1}).
+\]
+
+Setting the derivative with respect to \(\mathbf{u}_{1}\) equal to zero, we see
+that this quantity will have a stationary point when
+
+\[ \mathbf{S} \mathbf{u}_{1} = \lambda_{1} \mathbf{u}_{1} \]
+
+which says that \(\mathbf{u}_{1}\) must be an eigenvector of \(\mathbf{S}\). If
+we left-multiply by \(\mathbf{u}_{1}^{\top}\) and make use of
+\(\mathbf{u}_{1}^{\top} \mathbf{u}_{1} = 1\), we see that the variance is given
+by
+
+\[ \mathbf{u}_{1}^{\top} \mathbf{S} \mathbf{u}_{1} = \lambda_{1} \]
+
+and so the variance will be a maximum when we set \(\mathbf{u}_{1}\) equal to the
+eigenvector having the largest eigenvalue \(\lambda_{1}\). This eigenvector is
+known as the first principal component. \\
+
+We can define additional principal components in an incremental fashion by
+choosing each new direction to be that which maximizes the projected variance
+amongst all possible directions orthogonal to those already considered. if we
+consider the general case of an \(M\)-dimensional projection space, the optimal
+linear projection for which the variance of the projected data is maximized is now
+defined by the \(M\) eigenvectors \(\mathbf{u}_{1}, \dots, \mathbf{u}_{M}\) of the
+data covariance matrix \(\mathbf{S}\) corresponding to the \(M\) largest
+eigenvalues \(\lambda_{1}, \dots, \lambda_{M}\).
+
+\hfill \(\square\)
+
+\subsection*{(b) [15pts]} \addcontentsline{toc}{subsection}{(b)}
+
+\horrule{.5pt}
+
+\textbf{Discuss and show the proof of how PCA minimizes the average projection
+        cost - defined as the mean squared distance between the data points and
+        their projections.} \\
+
+\underline{Solution:} \\
+
+PCA can also be defined as the linear projection that minimizes the average 
+projection cost, defined as the mean squared distance between the data points and
+their projections. \\
+
+Denote:
+
+\begin{itemize}
+ \item \(\{\mathbf{u}_{i}\}, i = 1, \dots, D\) as a complete orthonormal set of
+       \(D\)-dimensional basis vectors.
+\end{itemize}
+
+Because this basis is complete, each data point can be represented by a linear
+combination of the basis vectors
+
+\[
+ \mathbf{x}_{n} = \sum_{i = 1}^{D} \alpha_{ni} \mathbf{u}_{i},
+ \quad \text{ where } \quad \alpha_{ni} = \mathbf{x}_{n}^{\top} \mathbf{u}_{i}.
+\]
+
+We can approximate this data point using a representation involving a restricted
+number \(M < D\) of variables corresponding to a projection onto a
+lower-dimensional subspace. The \(M\)-dimensional linear subspace can be
+represented by the first \(M\) of the basis vectors, and so we approximate each
+data point \(\mathbf{x}_{n}\) by
+
+\[
+ \widetilde{\mathbf{x}}_{n} = \sum_{i = 1}^{M} z_{ni} \mathbf{u}_{i} +
+                              \sum_{i = M + 1}^{D} b_{i} \mathbf{u}_{i}
+\]
+
+where the \(\{z_{ni}\}\) depend on the particular data point, whereas the
+\(\{b_{i}\}\) are constants that are the same for all data points. We are free to
+choose the \(\{\mathbf{u}_{i}\}\), the \(\{z_{ni}\}\), and the \(\{b_{i}\}\) so as
+to minimize the distortion introduced by the reduction in dimensionality. As our
+distortion measure, we use the squared distance between the original data point
+\(\mathbf{x}_{n}\) and its approximation \(\widetilde{\mathbf{x}}_{n}\),
+averaged over the dataset, so the goal is to minimize
+
+\[
+ J = \frac{1}{N} \sum_{n = 1}^{N}
+     \|\mathbf{x}_{n} - \widetilde{\mathbf{x}}_{n}\|^{2}
+ \quad \text{ w.r.t. } \quad \{z_{ni}\}, \{b_{i}\}.
+\]
+
+Setting derivative w.r.t.
+
+\begin{itemize}
+ \item \(z_{ni}\) to 0 and making use of the orthonormality relations
+       \(\Rightarrow z_{ni} = \mathbf{x}_{n}^{\top} \mathbf{u}_{i}\) where
+       \(i = 1, \dots, M\);
+ \item \(b_{i}\) to 0 and making use of the orthonormality relations
+       \(\Rightarrow b_{i} = \overline{\mathbf{x}}^{\top} \mathbf{u}_{i}\) where
+       \(i = M + 1, \dots, D\).
+\end{itemize}
+
+Rewriting the distortion \(J\)
+
+\begin{align*}
+ J & = \frac{1}{N} \sum_{n = 1}^{N}
+       \|\sum_{i = 1}^{D} (\mathbf{x}_{n}^{\top} \mathbf{u}_{i}) \mathbf{u}_{i} -
+         \sum_{i = 1}^{M} (\mathbf{x}_{n}^{\top} \mathbf{u}_{i}) \mathbf{u}_{i} - 
+         \sum_{i = M + 1}^{D}
+         (\overline{\mathbf{x}}^{\top} \mathbf{u}_{i}) \mathbf{u}_{i}
+       \|^{2} \\
+   & = \frac{1}{N} \sum_{n = 1}^{N}
+       \|\sum_{i = M + 1}^{D} (\mathbf{x}_{n}^{\top} \mathbf{u}_{i} -
+                               \overline{\mathbf{x}}^{\top} \mathbf{u}_{i}
+                              ) \mathbf{u}_{i}
+       \|^{2} \\
+   & = \frac{1}{N} \sum_{n = 1}^{N} \sum_{i = M + 1}^{D}
+       (\mathbf{x}_{n}^{\top} \mathbf{u}_{i} -
+        \overline{\mathbf{x}}^{\top} \mathbf{u}_{i}
+       )^{2} \\
+   & = \frac{1}{N} \sum_{i = M + 1}^{D} \sum_{n = 1}^{N}
+       \mathbf{u}_{i}^{\top}
+       (\mathbf{x}_{n} - \overline{\mathbf{x}})
+       (\mathbf{x}_{n}^{\top} - \overline{\mathbf{x}}^{\top})
+       \mathbf{u}_{i} \\
+   & = \sum_{i = M + 1}^{D} \mathbf{u}_{i}^{\top} \mathbf{S} \mathbf{u}_{i}.
+\end{align*}
+
+There remains the task of minimizing \(J\) with respect to \(\{\mathbf{u}_{i}\}\),
+which must be a constrained minimization othermise we obtain the vacuous result
+\(\mathbf{u}_{i} = 0\). The constraints
+\(\mathbf{u}_{i}^{\top} \mathbf{u}_{i} = 1\) arise from the orthonormality 
+conditions and the solution is expressed in terms of the eigenvector expansion of
+the covariance matrix. Using a Lagrange multiplier \(\lambda_{i}\) to enforce the
+constraint, we consider the minimization of
+
+\[
+ \mathbf{u}_{i}^{\top} \mathbf{S} \mathbf{u}_{i} +
+ \lambda_{i} (1 - \mathbf{u}_{i}^{\top} \mathbf{u}_{i}).
+\]
+
+Setting the derivative w.r.t. \(\mathbf{u}_{i}\) to zero we obtain
+\(\mathbf{S} \mathbf{u}_{i} = \lambda_{i} \mathbf{u}_{i}\) so that
+\(\mathbf{u}_{i}\) is an eigenvector of \(\mathbf{S}\) with eigenvalue
+\(\lambda_{i}\). Thus any eigenvector will define a stationary point of the
+distortion measure. In order to minimize the average squared projection distance,
+we should choose the principal component subspace to pass through the mean of the
+data points and to be aligned with the directions of maximum variance. For the
+case when the eigenvalues are equal, ay choice of principal direction will rise to
+the same value of \(J\). \\
+
+As usual the eigenvectors \(\{\mathbf{u}_{i}\}\) are chosen to be orthonormal. The
+corresponding value of the distortion measure is then given by
+
+\[
+ J = \sum_{i = M + 1}^{D} \mathbf{u}_{i}^{\top} \mathbf{S} \mathbf{u}_{i}
+   = \sum_{i = M + 1}^{D} \mathbf{u}_{i}^{\top} \lambda_{i} \mathbf{u}_{i}
+   = \sum_{i = M + 1}^{D} \lambda_{i}
+\]
+
+which is simply the sum of the eigenvalues of those eigenvectors that are
+orthogonal to the principal subspace. We therefore obtain the minimum value of
+\(J\) by selecting these eigenvectors to be those having the \(D - M\) smallest
+eigenvalues, and hence the eigenvectors defining the principal subspace are those
+corresponding to the \(M\) largest eigenvalues. \\
+
+Although we considered \(M < D\), if \(M = D\) there is no dimensionality 
+reduction but simply a rotation of the coordinate axes to align with principal
+components.
+
+\hfill \(\square\)
+
+\subsection*{(c) [30pts] Implementation of PCA (Case B)}
+\addcontentsline{toc}{subsection}{(c)}
+
+\horrule{.5pt}
+
+\begin{description}
+ \item
+ \textbf{Take the same wine quality data we used in the SVM homework.}
+<<>>=
+# <r code> ===================================================================== #
+#                                                           choosing the red-wine!
+path <- "~/Dropbox/KAUST/machine_learning/hw9/"                       # files path
+                                              # df: dataframe. reading the dataset
+df <- read.csv(paste0(path, "winequality-red.csv"), header = TRUE, sep = ";")
+
+#     take “quality” as class label, e.g., 1-5 as negative, while 6-10 as positive
+                             # defining class label: 1-5: negative, 6-10: positive
+df$quality <- as.factor(ifelse(df$quality <= 5, "negative", "positive"))
+# </r code> ==================================================================== #
+@
+ \textbf{Apply PCA at first,}
+<<eigen_pca, fig.height=3.5, fig.width=3.5, fig.cap="Eigenvalues distribution. Variance explained by each eigenvector.">>=
+# <r code> ===================================================================== #
+                       # centering the data without the last column, quality label
+df.cent <- as.matrix(df[ , -12])
+for (i in 1:11) df.cent[ , i] <- df.cent[ , i] - mean(df.cent[ , i])
+
+                                                     # computing covariance matrix
+S <- 1/(nrow(df.cent) - 1) * t(df.cent) %*% df.cent
+
+eigens <- eigen(S)                    # computing the eigenvectors and eigenvalues
+
+pcs <- matrix(NA, nrow = nrow(df.cent), ncol = 11)     # empty matrix for the PC's
+
+             # computing the PC's: multiplying the data matrix by the eigenvectors
+for (i in 1:11) pcs[ , i] <- df.cent %*% eigens$vectors[ , i]
+
+par(mar = c(4, 4, 0, 0) + .1)                     # plotting eigenvector variances
+plot(eigens$values, type = "b", xlab = "Eigenvector", ylab = "Variance")
+# </r code> ==================================================================== #
+@
+
+ We see in Figure \ref{fig:eigen_pca} that the first principal component is
+ responsable for almost all the variance explanation.
+ 
+ \textbf{and then learn SVM from the new representation. Show whether PCA is
+         helpful on improving your classification accuracy (choosing any one of
+         the kernels is ok, and parameters can be set according to the search
+         result in SVM homework). How the result will be different if different
+         numbers of PCs are selected for the new representation?}
+<<>>=
+# <r code> ===================================================================== #
+library(e1071)                                   # loading library for the svm fit
+# obs.    by default the method svm uses a classification machine algorithm,
+#         C-classification, and scale the variables to zero mean and unit variance
+svm.original <- svm(quality ~ ., df             # using all 11 available variables
+                    , kernel = "linear"                            # linear kernel
+                    , cross = 5                                        # 5-fold CV
+                    , cost = .5             # chosen cost of constraints violation
+                    , gamma = .001)                                # chosen \gamma
+aucs <- numeric(12)                                     # vector to keep the AUC's
+library(pROC)                                      # loading library for the AUC's
+                                                                   # computing AUC
+aucs[1] <- auc(roc(as.numeric( df$quality ), as.numeric( svm.original$fitted )))
+
+#                                                      doing the same for the PC's
+for (i in 1:11) {
+  model <- svm(df$quality ~ pcs[ , 1:i]
+               , kernel = "linear", cross = 5, cost = .5, gamma = .001)
+  aucs[i + 1] <- auc(roc(as.numeric( df$quality ), as.numeric( model$fitted )))
+}
+# </r code> ==================================================================== #
+@
+
+\begin{table}[H]
+ \centering
+ \caption{AUC obtained with the original data and with different numbers of PC's.}
+ \label{tab:aucs_pca}
+ \vspace{.3cm}
+ \begin{tabular}{l|l}
+  \toprule
+  \textbf{Variable} & \textbf{AUC} \\
+  \midrule
+  Original data & \Sexpr{aucs[1]} \\
+  \midrule
+  1(st) principal component & \Sexpr{aucs[2]} \\
+  2 principal components & \Sexpr{aucs[3]} \\
+  3 principal components & \Sexpr{aucs[4]} \\
+  4 principal components & \Sexpr{aucs[5]} \\
+  5 principal components & \Sexpr{aucs[6]} \\
+  6 principal components & \Sexpr{aucs[7]} \\
+  7 principal components & \Sexpr{aucs[8]} \\
+  8 principal components & \Sexpr{aucs[9]} \\
+  9 principal components & \Sexpr{aucs[10]} \\
+  10 principal components & \Sexpr{aucs[11]} \\
+  11 (all) principal components & \Sexpr{aucs[12]} \\
+  \bottomrule
+ \end{tabular}
+\end{table}
+
+ With the original data, eleven variables, we have an AUC of 0.7509. Using only
+ the first principal component (PC), responsable for almost all the variance, the
+ AUC is 0.5952. \\
+
+ Considering more PC's the AUC increase, but not so much. However, when we
+ consider 5 PC we see a bigger increase in the AUC, reaching a value closer to the
+ value obtained with all the data. With all the PC's the AUC is exactly the same
+ that with the original data. \\
+
+ Conclusion. Here, with five PC's we're already able to reach a result, AUC, 
+ similar to the obtained using  all the data.
+\end{description}
+
+\hfill \(\square\)
+
+\section*{Question 2: Singular Value Decomposition (SVD)}
+\addcontentsline{toc}{section}{Question 2: Singular Value Decomposition (SVD)}
+
+\horrule{1pt}
+
+\subsection*{(a) [10pts]} \addcontentsline{toc}{subsection}{(a)}
+
+\horrule{.5pt}
+
+\textbf{Discuss}
+
+\begin{itemize}
+ \item \textbf{How PCA and SVD are related to each other (with proof).} \\
+
+       \underline{Solution:} \\
+       
+       By SVD we can write X as \(U \Sigma V^{\top}\) and in consequence we can do
+       
+       \[
+        X^{\top} X = (U \Sigma V^{\top})^{\top} (U \Sigma V^{\top})
+                   = V \Sigma^{\top} U^{\top} U \Sigma V^{\top}
+                   = V (\Sigma^{\top} \Sigma) V^{\top},
+       \]
+
+       which means that \(X^{\top} X\) and \(\Sigma^{\top} \Sigma\) are similar.
+       Similar matrices have the same eigenvalues, so the eigenvalues
+       \(\lambda_{i}\) of the covariance matrix \(S = (n-1)^{-1} X^{\top} X\)
+       are related to the singular values \(\sigma_{i}\) of the matrix \(X\) via
+       
+       \[
+        \sigma_{i}^{2} = (n - 1) \lambda_{i}, \quad i = 1, \dots, r,
+        \qquad \text{ where } \quad r = {\rm rank}(X).
+       \]
+
+       To fully relate SVD and PCA we describe the correspondence between  
+       principal components and singular vectors. For the right singular vectors
+       we take
+
+       \[
+        \widehat{V}^{\top} = \left( \begin{array}{ccccc}
+                                     & & v_{1}^{\top} & & \\
+                                     & & \vdots & & \\
+                                     & & v_{r}^{\top} & & \\
+                                    \end{array} \right)
+       \]
+
+       where \(v_{i}\) are the principal components of \(X\). For the left
+       singular vectors we take
+
+       \[ u_i = \frac{1}{\sqrt{(n - 1) \lambda_{i}}} X v_{i}. \]
+
+       Since \(X = U \Sigma V^{\top}\),
+       
+       \[ X = \sum_{i = 1}^{r} \sigma_{i} u_{i} v_{j}^{\top}. \]
+
+       We can prove this by a small example to simplify the notation. Let
+       \(v_{i} = (v_{1i}, v_{2i})^{\top}\) for \(i = 1, 2\) and
+       \(u_{i} = (u_{1i}, u_{2i}, u_{3i})\) for \(i = 1, 2, 3\). Then,
+
+       \[
+        U \Sigma V^{\top} = \left( \begin{array}{cc}
+                                    & \\
+                                    u_{1} & u_{2} \\
+                                    &
+                                   \end{array} \right)
+                            \left( \begin{array}{cc}
+                                    \sigma_{1} & 0 \\
+                                    0 & \sigma_{2}
+                                   \end{array} \right)
+                            \left( \begin{array}{ccc}
+                                    & v_{1}^{\top} & \\
+                                    & v_{2}^{\top} &
+                                   \end{array} \right) \\
+                          = \left( \begin{array}{cc}
+                                    u_{11} & u_{12} \\
+                                    u_{21} & u_{22} \\
+                                    u_{31} & u_{32}
+                                   \end{array} \right)
+                            \left( \begin{array}{cc}
+                                    \sigma_{1} & 0 \\
+                                    0 & \sigma_{2}
+                                   \end{array} \right)
+                            \left( \begin{array}{cc}
+                                    v_{11} & v_{21} \\
+                                    v_{12} & v_{22}
+                                   \end{array} \right).
+       \]
+
+       Now splitting up \(\Sigma\)
+       
+       \[
+        U \Sigma V^{\top} = U \left( \begin{array}{cc}
+                                      \sigma_{1} & 0 \\
+                                      0 & 0
+                                     \end{array} \right)
+                            V^{\top} + U \left( \begin{array}{cc}
+                                                 0 & 0 \\
+                                                 0 & \sigma_{2}
+                                                \end{array} \right)
+                                       V^{\top}
+       \]
+
+       and tackle the terms individually. One way to rewrite the first term is
+
+       \[
+        U \left( \begin{array}{cc}
+                  \sigma_{1} & 0 \\
+                  0 & 0
+                 \end{array} \right)
+        V^{\top} = \left( \begin{array}{cc}
+                           u_{11} \sigma_{1} & \color{red}{0} \\
+                           u_{21} \sigma_{1} & \color{red}{0} \\
+                           u_{31} \sigma_{1} & \color{red}{0}
+                          \end{array} \right)
+                   \left( \begin{array}{cc}
+                           v_{11} & v_{21} \\
+                           \color{red}{v_{12}} & \color{red}{v_{22}}
+                          \end{array} \right) = \sigma_{1} u_{1} v_{1}^{\top},
+       \]
+
+       where the last step follows because the entries highlighted in red do not
+       affect the result of the matrix multiplication. A similar calculation shows
+       that the second term is \(\sigma_{2} u_{2} v_{2}^{\top}\), which proves the
+       claim for the given example. In general some of the singular values could
+       be 0, which makes the sum go only up to \(r = {\rm rank}(X)\). \\
+       
+       Applying this fact to \(X\) we have
+       
+       \[
+        U \Sigma V^{\top} =
+        \sum_{i = 1}^{r} \sigma_{i} u_{i} v_{i} =
+        \sum_{i = 1}^{r} \sqrt{(n - 1) \lambda_{i}}
+                         \frac{1}{\sqrt{(n - 1) \lambda_{i}}} X v_{i} v_{i}^{\top}
+         = X \sum_{i = 1}^{r} v_{i} v_{i}^{\top} = X,
+       \]
+
+       where the last step follows from
+       \(I = V^{\top} V = \sum_{i = 1}^{r} v_{i} v_{i}^{\top}\). Therefore, we
+       established the connection between PCA and SVD.
+
+       \hfill \(\square\)
+ \item \textbf{What’s the difference between PCA and SVD when both of them are
+               used for reduce the dimensionality.} \\
+
+       \underline{Solution:} \\
+       
+       Dimensionality reduction by PCA is given by the representation of the
+       matrix of points by a small number of its eigenvectors, in this form we can
+       approximate the data in a way that minimizes the root-mean-square error for
+       the given number of columns in the representing matrix.
+
+       Using SVD for dimensionality reduction is different. In a complete SVD for
+       a matrix, \(U\) and \(V\) are typically as large as the original. To use
+       fewer columns for \(U\) and \(V\) we delete the columns corresponding to
+       the smallest singular values from \(U\), \(V\) and \(\Sigma\). This choice
+       minimizes the error in reconstructing the original matrix from the modified
+       \(U\), \(V\) and \(\Sigma\).
+
+       \hfill \(\square\)
+\end{itemize}
+
+\subsection*{(b) [30pts] Implementation of SVD (Case B)}
+\addcontentsline{toc}{subsection}{(b)}
+
+\horrule{.5pt}
+
+\begin{description}
+ \item
+ \textbf{Take the same wine quality data we used in the SVM homework. Apply SVD at
+         first,}
+<<eigen_svd, fig.height=3.5, fig.width=3.5, fig.cap="Eigenvalues distribution. Variance explained by each eigenvector.">>=
+# <r code> ===================================================================== #
+#                                                        df.cent = X: U S V^{\top}
+                                     # S: square root of eigenvalues of X^{\top} X
+S <- diag( sqrt(eigen(t(df.cent) %*% df.cent)$values) )
+                                                   # U: eigenvectors of X X^{\top}
+U <- eigen(df.cent %*% t(df.cent))$vectors[ , 1:ncol(df.cent)]
+                                                   # V: eigenvectors of X^{\top} X
+V <- eigen(t(df.cent) %*% df.cent)$vectors
+
+par(mar = c(4, 4, 0, 0) + .1)                     # plotting eigenvector variances
+plot(diag(S), type = "b", xlab = "Eigenvector", ylab = "Variance")
+# </r code> ==================================================================== #
+@
+
+ We see in Figure \ref{fig:eigen_svd} that the first principal component is
+ responsable for almost all the variance explanation.
+ 
+ \textbf{and then learn SVM from the reduced dimension space. Show whether SVD is
+         helpful on improving your classification accuracy (choosing any one of
+         the kernels is ok, and parameters can be set according to the search
+         result in SVM homework).}
+<<>>=
+# <r code> ===================================================================== #
+                                        # AUC for the model with the original data
+aucs[1] <- auc(roc(as.numeric( df$quality ), as.numeric( svm.original$fitted )))
+
+#                      computing the AUC for different numbers of singular vectors
+for (i in 1:11) {
+  s1 <- as.matrix(S[1:i, 1:i])
+  u1 <- as.matrix(U[ , 1:i]) ; v1 <- as.matrix(V[ , 1:i])
+  
+  m.svd <- u1 %*% s1 %*% t(v1)                          # computing the SVD matrix
+  
+  model <- svm(df$quality ~ m.svd                              # fitting the model
+               , kernel = "linear", cross = 5, cost = .5, gamma = .001)
+  aucs[i + 1] <- auc(roc(as.numeric( df$quality ), as.numeric( model$fitted )))
+}
+# </r code> ==================================================================== #
+@
+
+\begin{table}[H]
+ \centering
+ \caption{AUC obtained with the original data and with different numbers of
+          singular vectors.}
+ \label{tab:aucs_svd}
+ \vspace{.3cm}
+ \begin{tabular}{l|l}
+  \toprule
+  \textbf{Variable} & \textbf{AUC} \\
+  \midrule
+  Original data & \Sexpr{aucs[1]} \\
+  \midrule
+  1 singular vector & \Sexpr{aucs[2]} \\
+  2 singular vectors & \Sexpr{aucs[3]} \\
+  3 singular vectors & \Sexpr{aucs[4]} \\
+  4 singular vectors & \Sexpr{aucs[5]} \\
+  5 singular vectors & \Sexpr{aucs[6]} \\
+  6 singular vectors & \Sexpr{aucs[7]} \\
+  7 singular vectors & \Sexpr{aucs[8]} \\
+  8 singular vectors & \Sexpr{aucs[9]} \\
+  9 singular vectors & \Sexpr{aucs[10]} \\
+  10 singular vectors & \Sexpr{aucs[11]} \\
+  11 (all) singular vectors & \Sexpr{aucs[12]} \\
+  \bottomrule
+ \end{tabular}
+\end{table}
+
+ With the original data, eleven variables, we have an AUC of 0.7509. Using only
+ the first singular vector, responsable for almost all the variance, the
+ AUC is 0.5965. \\
+
+ Considering more singular vectors the AUC increase, but not so much. However,
+ when we consider 5 singular vectors we see a bigger increase in the AUC, reaching
+ a value closer to the value obtained with all the data. With all the singular
+ vectors the AUC is exactly the same that with the original data. \\
+
+ Conclusion. Here, with five singular vectors we're already able to reach a
+ result, AUC, similar to the obtained using  all the data.
+ 
+ \horrule{.25pt}
+ 
+ The results, conclusions, for the PCA and SVD methodologies for this dataset are
+ basically equal. With five PC's (in the PCA approach) or singular vectors (in the
+ SVD approach) we're already able to reach a result similar to the obtained using
+ all the data (eleven variables).
+\end{description}
+
+\hfill \(\blacksquare\)
+
+\horrule{.5pt}
+
+\vspace{\fill}
+
+\horrule{1pt} \\
+
+\end{document}

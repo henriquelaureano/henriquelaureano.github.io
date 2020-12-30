@@ -1,0 +1,1009 @@
+\documentclass[12pt]{article}
+\usepackage[top=2cm, bottom=2cm, left=2.25cm, right=2.25cm]{geometry}
+\usepackage{listings}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage{bbding} % checkmarks
+\usepackage{fancyhdr} % change the position of page number
+\usepackage[flushleft]{threeparttable} % footnote in tables
+\usepackage{color, colortbl} % coloring rows or columns in tables
+\definecolor{Gray}{gray}{.9} % coloring rows or columns in tables
+\usepackage{listings}
+\lstset{ 
+ language = R, % the language of the code
+ numbers = left, % where to put the line-numbers
+ numbersep = 6pt, % how far the line-numbers are from the code
+ backgroundcolor = \color{white}, % choose the background color. You must add
+                                  % \usepackage{color}
+ showspaces = false, % show spaces adding particular underscores
+ showstringspaces = false, % underline spaces within strings
+ showtabs = false, % show tabs within strings adding particular underscores
+ frame = single, % adds a frame around the code
+ rulecolor = \color{black}, % if not set, the frame-color may be changed on
+                            % line-breaks within not-black text
+                            % (e.g. commens (green here))
+ tabsize = 2, % sets default tabsize to 2 spaces
+ captionpos = b, % sets the caption-position to bottom
+ breaklines = true, % sets automatic line breaking
+ breakatwhitespace = false, % sets if automatic breaks should only happen at
+                            % whitespace
+ keywordstyle = \color{black}, % keyword style
+ commentstyle = \color{red}, % comment style
+ stringstyle = \color{blue} % string literal style
+}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\fancyhf{} % clear all header and footers
+\renewcommand{\headrulewidth}{0pt} % remove the header rule
+\rfoot{\thepage} % puts the page number on the right side
+\pagestyle{fancy}
+\title{Project Report:\\
+       \textbf{An analysis of the union wages data:\\ GLM's, GAM's and JAGS}\\
+       STAT 260: Nonparametric Statistics}
+\date{Spring Semester\\ 2018}
+\author{Henrique Ap. Laureano\\ ID 158811 \vspace{.2cm}\\
+        \includegraphics[width=.3\textwidth]{logo.pdf}\\
+        \texttt{/KAUST/CEMSE/STAT}}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\vfill
+\noindent \horrule{.5pt} \vspace{-.95cm} \tableofcontents \noindent \horrule{.5pt}
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold'
+               , echo=FALSE)
+# </r code> ==================================================================== #
+@
+
+\section*{Data and goals}\addcontentsline{toc}{section}{Data and goals}
+
+<<>>=
+# <r code> ===================================================================== #
+library(SemiPar)
+
+data(trade.union, package = "SemiPar")
+
+trade.union[ , c(2:3, 5, 8:11)] <- lapply(trade.union[ , c(2:3, 5, 8:11)], factor)
+# </r code> ==================================================================== #
+@
+
+In this project we study the \texttt{union wages data} (\texttt{trade.union} data
+in the \texttt{R}\cite{r} package \texttt{SemiPar}\cite{semipar}). In
+this dataset we have the record of 534 U.S. workers. The main variable, the
+target, is a qualitative variable saying if the worker is a trade union
+membership (or not).
+
+Together with this we have more ten variables/features, briefly described in Table
+\ref{tab:data}. From this ten features, four are quantitative and 6 are
+qualitative. To know the behaviour of this features some descriptive analysis is
+performed, see Figure \ref{fig:pairs} and Figure \ref{fig:barras}.
+
+\begin{table}[H]
+ \centering
+ \caption{Features description of the \texttt{union wages data}.}
+ \label{tab:data}
+ \vspace{.2cm}
+ \begin{tabular}{r|l}
+  \toprule
+  \textbf{Feature} & \textbf{Description} \\
+  \midrule
+  \texttt{union.member} & \makecell[l]{trade union membership indicator
+                                       (target variable):\\
+                                       0 = non-member, 1 = member} \\
+  \midrule
+  \texttt{years.educ} & number of years of education\\
+  \midrule
+  \texttt{south} & indicator of living in southern region of U.S.A.\\
+  \midrule
+  \texttt{female} & gender indicator: 0 = male, 1 = female\\
+  \midrule
+  \texttt{years.experience} & number of years of work experience\\
+  \midrule
+  \texttt{wage} & wages in dollars per hour\\
+  \midrule
+  \texttt{age} & age in years\\
+  \midrule
+  \texttt{race} & 1 = black, 2 = Hispanic, 3 = white\\
+  \midrule
+  \texttt{occupation} & \makecell[l]{1 = management, 2 = sales, 3 = clerical,\\
+                                     4 = service, 5 = professional, 6 = other}\\
+  \midrule
+  \texttt{sector} & 0 = other, 1 = manufacturing, 2 = construction\\
+  \midrule
+  \texttt{married} & indicator of being married: 0 = unmarried, 1 = married\\
+  \bottomrule
+ \end{tabular}
+\end{table}
+
+In Figure \ref{fig:pairs} we see the scatterplots and correlations, two-by-two,
+for the four quantitative features in the \texttt{union wages data}. From the six
+scatterplots generated we just see a clear behavior - relation in this case - in
+two of them, \texttt{years.educ} vs. \texttt{wage} and \texttt{years.experience}
+vs. \texttt{age}. In the first we see a, clear, linear increasing behaviour - that
+makes all the sense, since with more years of education we expect a bigger salary.
+However, we also see a high variability in this salaries, which is reflected in
+the positive, but not high, linear correlation of 0.38. Already in the
+\texttt{years.experience} vs. \texttt{age} scatterplot we see a very strong linear
+relation, reflected in the correlation of 0.98 (almost perfect), which shows a
+small variability. Again the observed behaviour makes all the practical and
+expected sense. In the others scatterplots the aleatority and variability also 
+makes sense - in general is hard to define a common and exactly behaviour between
+features.
+
+Now, in Figure \ref{fig:barras} we have the frequencies for each level of the
+categorical features in the \texttt{union wages data}. First, we see that the
+target variable is unbalanced, with more than 80\% of the observations
+corresponding to non-members of the trade union. By this Figure we see that most
+of the workers, in the dataset, live in the southern region of U.S.
+(\texttt{south} feature), are males (\texttt{female} feature), white
+(\texttt{race} feature), have a job that does not fit into the other (five)
+available categories - management, sales, clerical, service and professional
+(\texttt{occupation} feature), works on the construction \texttt{sector} and are
+\texttt{married}. This is the average profile of the 534 U.S. workers in the
+\texttt{union wages data}.
+
+<<pairs, fig.width=5.5, fig.height=5.5, fig.cap="Scatterplot lower triangular matrix with colors representing the trade union membership status and, correlation upper triangular matrix for the quantitative features in the \\texttt{union wages data}.">>=
+# <r code> ===================================================================== #
+pairs(trade.union[ , c(1, 4, 6, 7)]
+      , upper.panel = function(x, y, ...) {
+        usr <- par("usr") ; on.exit(par(usr)) ; par(usr = c(0, 1, 0, 1))
+        r <- cor(x, y)
+        txt <- format(c(r, 0.123456789), digits = 2)[1]
+        text(.5, .5, txt, cex = 1.5)
+      }
+      , diag.panel = function(a, b, ...) {
+        usr <- par("usr") ; on.exit(par(usr)) ; par(usr = c(0, 1, 0, 1))
+        rect(0, 0, 1, 1, col = "#37B9DA")
+      }
+      , pch = 19, gap = .25, xaxt = "n", yaxt = "n"
+      , col = c("#0080FF", "#F3953E")[trade.union$union.member]
+      , label.pos = .5, oma = c(1, 1, 1, 1))
+# </r code> ==================================================================== #
+@
+
+Using this features, described in Table \ref{tab:data}, the goals here are
+
+\begin{itemize}
+ \item Test/apply, some models to see how good they are to classify the target
+       feature, i.e., classify, given the ten features, if the worker is a trade
+       union membership or not.
+ \item See which features are important, statistically significant, to
+       discriminate the worker in a member or not of the trade union.
+ \item Study the behaviour of the quantitative features. They have a linear
+       behaviour? If they don't have and we fit a model considering a linear
+       relationship, we will get bad results?
+\end{itemize}
+
+The models and algorithms used for this task are described in the next section,
+together with some extra informations about the analysis procedure.
+
+\begin{figure}[p]
+<<barras, fig.width=10, fig.height=11.75, fig.cap="Barplots for the qualitative features in the \\texttt{union wages data}, with original labels.">>=
+# <r code> ===================================================================== #
+library("latticeExtra")
+
+barras <- function(variable, nome, limite) {
+  da = table(variable)
+  barchart(sort(da)
+           , horizontal = FALSE
+           , col = "orange"
+           , border = "transparent"
+           , ylab = NULL
+           , main = nome
+           , scales = list(y = list(draw = FALSE))
+           , ylim = limite
+           , panel = function(...){
+             panel.barchart(...)
+             args <- list(...)
+             panel.text(args$x, args$y, args$y, pos = 3)})
+}
+print(barras(trade.union$south, "south", c(0, 420)),
+      position = c(0, 2/3, 1/3, 1), more = TRUE)
+print(barras(trade.union$female, "female", c(0, 320)),
+      position = c(1/3, 2/3, 2/3, 1), more = TRUE)
+print(barras(trade.union$race, "race", c(0, 485)),
+      position = c(2/3, 2/3, 1, 1), more = TRUE)
+print(barras(trade.union$occupation, "occupation", c(0, 175)),
+      position = c(0, 1/3, 1/3, 2/3), more = TRUE)
+print(barras(trade.union$sector, "sector", c(0, 450)),
+      position = c(1/3, 1/3, 2/3, 2/3), more = TRUE)
+print(barras(trade.union$married, "married", c(0, 385)),
+      position = c(2/3, 1/3, 1, 2/3), more = TRUE)
+print(barras(trade.union$union.member, "union.member", c(0, 485)),
+      position = c(1/3, 0, 2/3, 1/3))
+# </r code> ==================================================================== #
+@
+\end{figure}
+
+\section*{Methods}\addcontentsline{toc}{section}{Methods}
+
+To classify, given the ten features, if the worker is a trade union membership or
+not, five, six model are used. They are
+
+\begin{itemize}
+ \item Four generalized linear models with a Bernoulli response and with different
+       link functions (logit, probit, cauchit and complementary log-log);
+ \item Four generalized additive models with integrated smoothness estimation for
+       the quantitative features (to reach, approach, the last point mentioned in
+       the end of the previous section) and, with a Bernoulli response and
+       different link functions (logit, probit, cauchit and complementary
+       log-log);
+ \item A bayesian model fitted via JAGS (Just Another Gibbs Sampler) -
+       \url{http://mcmc-jags.sourceforge.net/}. To be clear in the explanation,
+       the justification for this last approach will be given in the results
+       section - where the approach introduction will be more didactical and
+       logical.
+\end{itemize}
+
+All the analysis are performed using the \texttt{R}\cite{r} language and
+environment for statistical computing. To take advantage of the most efficient
+available algorithm versions we use some \texttt{R} libraries where the
+algorithms are implemented. A brief description of the algorithms is given below,
+always mentioning the corresponding \texttt{R} library where the algorithm is
+implemented.
+
+To do feature selection and test the significance of the features we use the
+Akaike Information Criterion (AIC). Given a collection of models, the AIC
+estimates the quality of each model, relative to each of the other models. Thus,
+AIC provides a means for model selection. The AIC value of a given model is the
+following:
+
+\[ {\rm AIC} = 2 p - 2 \log \widehat{L}. \]
+
+With \(\widehat{L}\) being the maximum value of the likelihood function for the
+model and \(p\) being the number of estimated parameters in the model.
+
+For more details, a simple and intuive material can be found in this Wikipedia
+page \url{https://en.wikipedia.org/wiki/Akaike_information_criterion}.
+
+\subsection*{Generalized Linear regression Model (GLM) with Bernoulli response}
+\addcontentsline{toc}{subsection}{GLM with Bernoulli response}
+
+The GLM is a flexible generalization of ordinary linear regression that allows
+responses with error distribution models different from the normal distribution.
+The GLM generalizes linear regression by allowing the linear model to be related
+to the response via a link function. In a GLM each outcome \(Y\) of the response
+is assumed to be generated from a particular distribution in the exponential
+family, a large range of probability distributions. The mean, \(\mu\), of the
+distribution depends on the features, \(X\), through:
+
+\[ {\rm E}(Y) = \boldsymbol{\mu} = g^{-1}(X \boldsymbol{\beta}), \]
+
+where \({\rm E}(Y)\) is the expected value of \(Y\); \(X \boldsymbol{\beta}\) is
+the linear predictor, a linear combination of unknown parameters
+\(\boldsymbol{\beta}\); \(g\) is the link function. The unknown parameters,
+\(\boldsymbol{\beta}\), are typically estimated with maximum likelihood.
+
+When the response data, \(Y\), are binary (taking on only values 0 and 1), the
+distribution function is generally chosen to be the Bernoulli distribution and the
+interpretation of \(\mu_{i}\) is then the probability, \(p\), of \(Y_{i}\) taking
+on the value one. The logit is the canonical link function and when used the
+resulting model is called of logistic regression. However, other link function can
+be used. The four most popular link functions, and used here, are:
+
+\begin{itemize}
+ \item Logit function: \(g(p) = \ln \left({p \over 1 - p} \right)\);
+ \item Probit or inverse Normal function: \(g(p) = \Phi^{-1}(p)\);
+ \item Cauchit function: \(g(p) = \tan\left(\pi p - \frac{\pi}{2}\right)\);
+ \item Complementary log-log function: \(g(p) = \log(-\log(1 - p))\).
+\end{itemize}
+
+More details about GLM can be see, for example, in
+\url{https://en.wikipedia.org/wiki/Generalized_linear_model} and, of course, in
+the main reference of the subject, \cite{glm}.
+
+\subsection*{Generalized Additive Model (GAM) with Bernoulli response}
+\addcontentsline{toc}{subsection}{GAM with Bernoulli response}
+
+The GAM is a generalized linear model in which the linear predictor depends
+linearly on unknown smooth functions of some predictor features, and interest
+focuses on inference about these smooth functions. The model relates a univariate
+response, \(Y\), to some predictors, \(\mathbf{x}_{i}\). An exponential family
+distribution is specified for \(Y\) along with a link function \(g\) relating the
+expected value of \(Y\) to the predictors via a structure such as
+
+\[
+ g({\rm E}(Y)) = \beta_{0} + f_{1}(x_{1}) + f_{2}(x_{2}) + \cdots + f_{m}(x_{m}).
+\]
+
+The functions \(f_{i}\) may be functions with a specified parametric form (for
+example a polynomial, or an un-penalized regression spline of a feature) or may be
+specified non-parametrically, or semi-parametrically, simply as
+'smooth functions'. A typical GAM might use a scatterplot smoothing function, such
+as a locally weighted mean, for \(f_{1}(\mathbf{x}_{1})\), and then use a factor
+model for \(f_{2}(\mathbf{x}_{2})\). This flexibility to allow non-parametric fits
+with relaxed assumptions on the actual relationship between response and
+predictor, provides the potential for better fits to data than purely parametric
+models, but arguably with some loss of interpretability.
+
+The original GAM fitting method estimated the smooth components of the model using
+non-parametric smoothers (for example smoothing splines or local linear regression
+smoothers) via the backfitting algorithm. Backfitting works by iterative smoothing
+of partial residuals and provides a very general modular estimation method capable
+of using a wide variety of smoothing methods to estimate the \(f_{j}(x_{j})\)
+terms. A disadvantage is that it is difficult to integrate with the estimation of
+the degree of smoothness of the model terms, so that in practice the user must set
+these, or select between a modest set of pre-defined smoothing levels.
+
+If \(f_{j}(x_{j})\) are represented using smoothing splines then the degree of
+smoothness can be estimated as part of model fitting using generalized cross
+validation, or by REML. Many modern implementations are built around the reduced
+rank smoothing approach, because it allows well founded estimation of the
+smoothness of the component smooths at comparatively modest computational cost,
+and also facilitates implementation of a number of model extensions. At its
+simplest the idea is to replace the unknown smooth functions in the model with
+basis expansions.
+
+When the response \(Y\) is binary the approach idea is the same that with GLM's,
+and the available, and used, link functions are the same four mentioned above in
+the GLM subsection.
+
+In \texttt{R} the recommended package for GAM's, and used here, is the
+\texttt{mgcv} (mixed gam computational vehicle)\cite{mgcv} which is based on the
+reduced rank approach with automatic smoothing parameter selection. 
+ 
+More about GAM's can be found in this, very nice, Wikipedia page
+\url{https://en.wikipedia.org/wiki/Generalized_additive_model} and, mainly, in
+this two references, \cite{mgcv} and \cite{gam}.
+
+\subsection*{Just Another Gibbs Sampler (JAGS)}
+\addcontentsline{toc}{subsection}{Just Another Gibbs Sampler (JAGS)}
+
+JAGS is Just Another Gibbs Sampler. It is a program for analysis of Bayesian
+hierarchical models using Markov Chain Monte Carlo (MCMC) simulation not wholly
+unlike BUGS (\url{https://www.mrc-bsu.cam.ac.uk/software/bugs/}). JAGS was written
+with three aims in mind:
+
+\begin{itemize}
+ \item To have a cross-platform engine for the BUGS language;
+ \item To be extensible, allowing users to write their own functions,
+       distributions and samplers;
+ \item To be a platform for experimentation with ideas in Bayesian modelling.
+\end{itemize}
+
+The main advantage of JAGS in comparison to the members of the original BUGS
+family (WinBUGS and OpenBUGS) is its platform independence. It is written in C++,
+while the BUGS family is written in Component Pascal, a less widely known
+programming language. In addition, JAGS is already part of many repositories of
+Linux distributions. JAGS can be used via the command line or run in batch mode
+through script files. This means that there is no need to redo the settings with
+every run and that the program can be called and controlled from within another
+program (e.g. from \texttt{R} via \texttt{rjags}\cite{rjags}, as we did here).
+
+The main references about JAGS can be found in 
+\url{https://sourceforge.net/projects/mcmc-jags/} and in the JAGS user manual
+\url{https://martynplummer.wordpress.com/2017/06/28/new-manual/}.
+
+\section*{Results}\addcontentsline{toc}{section}{Results}
+
+<<results='hide'>>=
+# <r code> ===================================================================== #
+# ---------------------------------------------------------------- fitting GLM's #
+library(MASS)
+## -------------------------------------------------------- logit link function ##
+glm.logit <- glm(union.member ~ ., family = binomial, trade.union)
+glm.logit <- stepAIC(glm.logit)
+## ------------------------------------------------------  probit link function ##
+glm.probit <- glm(union.member ~ ., family = binomial(link = "probit")
+                  , trade.union)
+glm.probit <- stepAIC(glm.probit)
+## -----------------------------------------------------  cauchit link function ##
+glm.cauchit <- glm(union.member ~ ., family = binomial(link = "cauchit")
+                   , trade.union)
+glm.cauchit <- stepAIC(glm.cauchit)
+## ---------------------------------------- complementary log-log link function ##
+glm.cloglog <- glm(union.member ~ ., family = binomial(link = "cloglog")
+                   , trade.union)
+glm.cloglog <- stepAIC(glm.cloglog)
+## ------------------------------------------------- ~~ international waters ~~ ##
+glm.logit$formula
+glm.probit$formula
+glm.cauchit$formula
+glm.cloglog$formula
+# ---------------------------------------------------------------- fitting GAM's #
+library(mgcv)
+## -------------------------------------------------------- logit link function ##
+f0 = union.member ~
+  s(years.educ) + south + female + s(years.experience, k = 20) +
+  s(wage, k = 20) + s(age, k = 20) + race + occupation + sector + married
+
+gam.logit <- gam(f0, family = binomial, trade.union) ; anova(gam.logit)
+
+f1 = union.member ~
+  south + female +
+  s(wage, k = 20) + age + race + occupation
+
+gam2.logit <- gam(f1, family = binomial, trade.union)
+anova(gam2.logit, gam.logit, test = "Chisq")
+anova(gam2.logit)
+
+gam.logit <- gam2.logit
+## ------------------------------------------------------  probit link function ##
+gam.probit <- gam(f0, family = binomial(link = "probit"), trade.union)
+anova(gam.probit)
+
+gam2.probit <- gam(f1, family = binomial(link = "probit"), trade.union)
+anova(gam2.probit, gam.probit, test = "Chisq")
+anova(gam2.probit)
+
+gam.probit <- gam2.probit
+## -----------------------------------------------------  cauchit link function ##
+gam.cauchit <- gam(f0, family = binomial(link = "cauchit"), trade.union)
+anova(gam.cauchit)
+
+gam2.cauchit <- gam(f1, family = binomial(link = "cauchit"), trade.union)
+anova(gam2.cauchit, gam.cauchit, test = "Chisq")
+anova(gam2.cauchit)
+
+f2 = union.member ~
+  s(wage, k = 20) + age + race + occupation
+
+gam3.cauchit <- gam(f2, family = binomial(link = "cauchit"), trade.union)
+anova(gam3.cauchit, gam2.cauchit, test = "Chisq")
+anova(gam3.cauchit)
+
+gam.cauchit <- gam3.cauchit
+## ---------------------------------------- complementary log-log link function ##
+gam.cloglog <- gam(f0, family = binomial(link = "cloglog"), trade.union)
+anova(gam.cloglog)
+
+gam2.cloglog <- gam(f1, family = binomial(link = "cloglog"), trade.union)
+anova(gam2.cloglog, gam.cloglog, test = "Chisq")
+anova(gam2.cloglog)
+
+f2 = union.member ~
+  female +
+  s(wage, k = 20) + age + race + occupation
+
+gam3.cloglog <- gam(f2, family = binomial(link = "cloglog"), trade.union)
+anova(gam3.cloglog, gam2.cloglog, test = "Chisq")
+anova(gam3.cloglog)
+
+gam.cloglog <- gam3.cloglog
+## ------------------------------------------------- ~~ international waters ~~ ##
+gam.logit$formula
+gam.probit$formula
+gam.cauchit$formula
+gam.cloglog$formula
+# </r code> ==================================================================== #
+@
+
+The fitted GLM's, with ten features each, is represented by the linear predictor
+in Equation \ref{eq:glm}.
+
+\begin{align}
+ g(p_{i}) & = \beta_{0} + \beta_{1} \texttt{years.educ}_{i} + ... +
+                        \beta_{10} \texttt{married}_{i}, \label{eq:glm}\\
+ \texttt{union.member}_{i} & \sim {\rm Bernoulli}(p_{i}), \quad i = 1, \dots 534.
+ \nonumber
+\end{align}
+
+where \(g\) represents the link function (logit, probit, cauchit or complementaty
+log-log) and \(p_{i}\) is the probability of trade union membership. The fitted
+GAM's, also with ten features each, is represented by the linear predictor in
+Equation \ref{eq:gam}.
+
+\begin{align}
+ g(p_{i}) & = \beta_{0} +
+              f_{1}(\texttt{years.educ}_{i}) + ... + f_{4}(\texttt{age}_{i}) +
+              \beta_{1} \texttt{female}_{i} + ... + \beta_{6} \texttt{married}_{i}
+              , \label{eq:gam}\\
+ \texttt{union.member}_{i} & \sim {\rm Bernoulli}(p_{i}), \quad i = 1, \dots 534.
+ \nonumber
+\end{align}
+
+where we have four quantitative features, thus we have four smooth functions.
+
+Doing features selection in this GLM's and GAM's via AIC we arrive in the models
+presented in Table \ref{tab:features_selection}, where we see the keeped (with a
+checkmark) and dropped (without a checkmark) features, and the AIC value of each
+final model.
+
+\newcolumntype{g}{>{\columncolor{Gray}}c}
+\begin{table}[H]
+ \centering
+ \caption{Remaining features in each model (specified by the link function and
+          used approach, GLM or GAM) after features selection by AIC, and the
+          obtained AIC in each final model (smallest AIC in bold).}
+ \label{tab:features_selection}
+ \vspace{.2cm}
+ \begin{tabular}{r|c|g|c|g|c|g|c|g}
+  \toprule
+  \multirow{2}{*}{\textbf{Feature}} & \multicolumn{2}{c}{\textbf{Logit}}
+                                    & \multicolumn{2}{c}{\textbf{Probit}}
+                                    & \multicolumn{2}{c}{\textbf{Cauchit}}
+                                    & \multicolumn{2}{c}{\textbf{Comp. log-log}}\\
+  \cmidrule{2-3} \cmidrule{4-5} \cmidrule{6-7} \cmidrule{8-9}
+  & \textbf{GLM} & \textbf{GAM} & \textbf{GLM} & \textbf{GAM}
+  & \textbf{GLM} & \textbf{GAM} & \textbf{GLM} & \textbf{GAM}\\
+  \midrule
+  \texttt{years.educ} & & & & & & & &\\
+  \midrule
+  \texttt{south} & \Checkmark & \Checkmark & \Checkmark & \Checkmark & \Checkmark
+                 & & \Checkmark &\\
+  \midrule
+  \texttt{female} & \Checkmark & \Checkmark & \Checkmark & \Checkmark & \Checkmark
+                  & & \Checkmark & \Checkmark\\
+  \midrule
+  \texttt{years.experience} & & & & & & & &\\
+  \midrule
+  \texttt{wage} & \Checkmark & \Checkmark & \Checkmark & \Checkmark & \Checkmark
+                & \Checkmark & \Checkmark & \Checkmark\\
+  \midrule
+  \texttt{age} & \Checkmark & \Checkmark & \Checkmark & \Checkmark & \Checkmark
+               & \Checkmark & \Checkmark & \Checkmark\\
+  \midrule
+  \texttt{race} & \Checkmark & \Checkmark & \Checkmark & \Checkmark & \Checkmark
+                & \Checkmark & \Checkmark & \Checkmark\\
+  \midrule
+  \texttt{occupation} & \Checkmark & \Checkmark & \Checkmark & \Checkmark
+                      & \Checkmark & \Checkmark & \Checkmark & \Checkmark\\
+  \midrule
+  \texttt{sector} & & & & & & & &\\
+  \midrule
+  \texttt{married} & \Checkmark & & \Checkmark & & & & \Checkmark &\\
+  \midrule
+  \midrule
+  \textbf{AIC} & \Sexpr{round(AIC(glm.logit), 2)}
+               & \textbf{\Sexpr{round(AIC(gam.logit), 2)}}
+               & \Sexpr{round(AIC(glm.probit), 2)} 
+               & \Sexpr{round(AIC(gam.probit), 2)}
+               & \Sexpr{round(AIC(glm.cauchit), 2)}
+               & \textbf{\Sexpr{round(AIC(gam.cauchit), 2)}}
+               & \Sexpr{round(AIC(glm.cloglog), 2)}
+               & \Sexpr{round(AIC(gam.cloglog), 2)}\\
+  \bottomrule
+ \end{tabular}
+\end{table}
+
+A nice and interesting thing to notice in Table \ref{tab:features_selection} is
+the fact that we have two AIC's virtually equals, but in one model (GAM with
+cauchit link function) we have four features, and in the other model (GAM with
+logit link function) we have six features. To see what's happening we have Table
+\ref{tab:summary-gam.cauchit} and Table \ref{tab:summary-gam.logit} with the
+summaries of this two models, respectively.
+
+The main thing to mention about this summaries is that with the cauchit link
+function the standard erros are hugh. Before take any further conclusion we look
+to the residuals and goodness-of-fit of this models. We present this in Figure
+\ref{fig:gof}. There we see the dispersion of the Pearson and Deviance residuals,
+and the ROC curves for each model. The Receiver Operating Characteristic curve,
+i.e. the ROC curve, illustrates the diagnostic ability of a binary classifier
+system as its discrimination threshold is varied. The ROC curve is created by
+plotting the specificity, true negative rate, against the sensitivity, true
+positive rate, at various threshold/cutoof settings.
+
+More details about can be see, for example, in
+\url{https://en.wikipedia.org/wiki/Receiver_operating_characteristic}. In
+\texttt{R} the main implementation of the ROC curve is found in the \texttt{pROC}
+library \cite{roc}.
+
+In Figure \ref{fig:gof} we see that both models don't present very good
+(values centraded in zero and around -3 and 3) residuals and very high Area Under
+the Curve (AUC), that is equal to the probability that a classifier will rank a
+randomly chosen positive instance higher than a randomly chosen negative one.
+However, the results are also not so bad. The AUC's are bigger than 0.75 in both
+models and the sensitivities and specificities are bigger than 0.65. In the
+residual dispersions, mainly with the model with logit link function, we see that
+most part of the points are centrated in zero and around -3 and 3, with very few
+exceptions.
+
+<<eval=FALSE>>=
+# <r code> ===================================================================== #
+library(itsadug)
+                           #                   (run, copy and paste the tex code.
+                           #  edit the table by yourself in the way that you want)
+gamtabs(gam.cauchit)
+# </r code> ==================================================================== #
+@
+
+\begin{table}[H]
+ \centering
+ \caption{Summary of the GAM with cauchit link function, the best model
+          - by the AIC.}
+ \label{tab:summary-gam.cauchit}
+ \vspace{.2cm}
+ \begin{threeparttable}
+ \begin{tabular}{r|r|r|r|r}
+  \toprule
+  \textbf{Parametric coefficients} & \textbf{Estimate} & \textbf{Std. Error} &
+  \textbf{\(t\)-value} & \textbf{\(p\)-value}\\
+  \midrule
+  Intercept\tnote{1} & -7.0130 & 3.1102 & -2.2548 & 0.0241 \\
+  \texttt{age} & 0.0355 & 0.0144 & 2.4743 & 0.0133 \\
+  \texttt{race} (Hispanic) & -0.3775 & 0.8884 & -0.4249 & 0.6709 \\
+  \texttt{race} (white) & -0.9580 & 0.4352 & -2.2014 & 0.0277 \\
+  \texttt{occupation} (sales) & -2.3917 & 7.9952 & -0.2991 & 0.7648 \\
+  \texttt{occupation} (clerical) & 2.3330 & 3.2347 & 0.7212 & 0.4708 \\
+  \texttt{occupation} (service) & 5.2263 & 3.0506 & 1.7132 & 0.0867 \\
+  \texttt{occupation} (professional) & 4.3119 & 3.0389 & 1.4189 & 0.1559 \\
+  \texttt{occupation} (other) & 5.2294 & 3.0328 & 1.7243 & 0.0847 \\
+  \midrule
+  \midrule
+  \textbf{Smooth terms} & \textbf{edf} & \textbf{Ref.df} & \textbf{\(F\)-value} &
+  \textbf{\(p\)-value}\\
+  \midrule
+  s(\texttt{wage}) & 3.4255 & 4.4079 & 22.1916 & 0.0003 \\ 
+  \bottomrule
+ \end{tabular}
+ \begin{tablenotes}
+  \item[1] Intercept is the reference level, equivalent to a worker black
+           (\texttt{race}) and working (\texttt{occupation}) in management.
+ \end{tablenotes}
+ \end{threeparttable}
+\end{table}
+
+\begin{table}[H]
+ \centering
+ \caption{Summary of the GAM with logit link function, the 2nd best model
+          - by the AIC.}
+ \label{tab:summary-gam.logit}
+ \vspace{.2cm}
+ \begin{threeparttable}
+ \begin{tabular}{r|r|r|r|r}
+  \toprule
+  \textbf{Parametric coefficients} & \textbf{Estimate} & \textbf{Std. Error} &
+  \textbf{\(t\)-value} & \textbf{\(p\)-value}\\
+  \midrule
+  Intercept\tnote{1} & -3.6292 & 0.8164 & -4.4454 & \(<\) 0.0001\\
+  \texttt{south} (yes) & -0.4736 & 0.3047 & -1.5540 & 0.1202\\
+  \texttt{female} (yes) & -0.5001 & 0.3018 & -1.6572 & 0.0975\\
+  \texttt{age} & 0.0275 & 0.0110 & 2.4885 & 0.0128\\
+  \texttt{race} (Hispanic) & 0.0228 & 0.6403 & 0.0356 & 0.9716\\
+  \texttt{race} (white) & -0.7528 & 0.3530 & -2.1327 & 0.0329\\
+  \texttt{occupation} (sales) & -0.3412 & 1.2014 & -0.2840 & 0.7764\\
+  \texttt{occupation} (clerical) & 1.1197 & 0.7409 & 1.5113 & 0.1307\\
+  \texttt{occupation} (service) & 2.3392 & 0.7005 & 3.3395 & 0.0008\\
+  \texttt{occupation} (professional) & 1.8141 & 0.6567 & 2.7623 & 0.0057\\
+  \texttt{occupation} (other) & 2.4219 & 0.6520 & 3.7145 & 0.0002\\
+  \midrule
+  \midrule
+  \textbf{Smooth terms} & \textbf{edf} & \textbf{Ref.df} & \textbf{\(F\)-value} &
+  \textbf{\(p\)-value}\\
+  \midrule
+  s(\texttt{wage}) & 2.7437 & 3.5144 & 25.1623 & $<$ 0.0001\\
+  \bottomrule
+ \end{tabular}
+ \begin{tablenotes}
+  \item[1] Intercept is the reference level, equivalent to a worker not from the
+           \texttt{south}, male, black and working (\texttt{occupation}) in
+           management.
+ \end{tablenotes}
+ \end{threeparttable}
+\end{table}
+
+Given the behaviours presented in Figure \ref{fig:gof}, and together with the fact
+that is very hard to get very nice residual results with binary data, we are able
+to say that we get a better result with the GAM model using the logit link
+function, and that the residual analysis and goodness-of-fit of this model are
+satisfatory. Therefore, from the eight models presented in Table
+\ref{tab:features_selection} the best model is the GAM with logit link function.
+
+<<gof, fig.height=4.575, fig.cap="Residual analysis and goodness-of-fit. First line: GAM with cauchit link function. Second line: GAM with logit link function. Graphs: Dispersion of the Pearson and Deviance residuals, in the left and in the center, respectively. ROC curve in the right, with AUC value, cutoff, specificity and sensitivity.">>=
+# <r code> ===================================================================== #
+pearson.cauchit <- residuals(gam.cauchit, type = "pearson")
+pearson.logit <- residuals(gam.logit, type = "pearson")
+
+deviance.cauchit <- residuals(gam.cauchit, type = "deviance")
+deviance.logit <- residuals(gam.logit, type = "deviance")
+
+library(pROC)
+
+par(mfrow = c(2, 3), mar = c(2, 3, 3, 1))
+
+plot(pearson.cauchit
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Pearson residuals")
+abline(h = 0, col = 2, lwd = 2) ; Axis(c(-2, 6), side = 2, las = 1)
+
+plot(deviance.cauchit
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Deviance residuals")
+abline(h = 0, col = 2, lwd = 2) ; Axis(c(-2, 3), side = 2, las = 1)
+
+plot.roc(roc(trade.union$union.member, fitted(gam.cauchit))
+         , print.auc = TRUE, print.thres = TRUE, las = 1
+         , print.thres.cex = .9, print.auc.cex = 1)
+
+plot(pearson.logit
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Pearson residuals")
+abline(h = 0, col = 2, lwd = 2) ; Axis(c(-2, 10), side = 2, las = 1)
+
+plot(deviance.logit
+     , axes = FALSE, xlab = NA, ylab = NA, main = "Deviance residuals")
+abline(h = 0, col = 2, lwd = 2) ; Axis(c(-2, 3), side = 2, las = 1)
+
+plot.roc(roc(trade.union$union.member, fitted(gam.logit))
+         , print.auc = TRUE, print.thres = TRUE, las = 1
+         , print.thres.cex = .9, print.auc.cex = 1)
+# </r code> ==================================================================== #
+@
+
+In the GAM model with logit link function we have six features, as we saw in Table
+\ref{tab:features_selection}, but from this six just two are quantitative,
+\texttt{wage} and \texttt{age}. As we can see in Table
+\ref{tab:summary-gam.logit}, in this model we have only one smooth term, the
+feature \texttt{wage}. In all GAM's we started considering all the four
+quantitative features as smooth, neverthless, by variable selection via AIC we
+saw that in all models (GAM's and GLM's) the feature \texttt{wage} is the only
+one that present a non-linear relation. All others present a linear relation and,
+from this other three only the feature \texttt{age} is statiscally significant.
+The estimated smooth function for the feature \texttt{wage} by the model with
+logit link function is presented in the Figure \ref{fig:smooth-wage} together with
+a confidence band of two standard errors.
+
+We see in this Figure that we have only one worker with a \texttt{wage} bigger
+than 30, and because of this in that part the standard error is hugh - the
+uncertainty is big. Before this point the uncertainty is very small and we see
+that the smooth function increase until a \texttt{wage} close to 15, from this
+point forward the function is almost constant with the uncertainty increasing
+conform as we are having less observations.
+
+A question of curiosity and to see what happens/the behavior, we can fit a
+Bayesian model, simulate from the model and take a look on some samples from the
+posterior.
+
+As the interest at this point is about this feature with a non-linear behaviour
+described in Figure \ref{fig:smooth-wage}, we fit a Bayesian model using JAGS
+(\url{http://mcmc-jags.sourceforge.net/}) and only considering the feature
+\texttt{wage} - with a smooth function. The model is represented by the linear
+predictor presented Equation \ref{eq:jags}.
+
+\begin{align}
+ {\rm logit}(p_{i}) = f(\texttt{wage}_{i}), \quad
+ \texttt{union.member}_{i} \sim {\rm Bernoulli}(p_{i}), \quad
+ i = 1, \dots 534. \label{eq:jags}
+\end{align}
+
+where \(p_{i}\) is the probability of trade union membership.
+
+In this model we consider the logit link function, since is the link function used
+in the best (Table \ref{tab:summary-gam.logit}) of the eight fitted models (GLM's
+and GAM's). The prior considered for the smoothing parameter is the default prior
+available in JAGS module. In this case, a flat Gamma.
+
+After the model fitting we are able to simulate from the model. In Figure
+\ref{fig:jags} we present the modelled probability of union membership against
+\texttt{wages}, with a credible interval. A sample of twenty curves from the
+posterior is added to provide a better understanding of the smooth shape range.
+We can see in this Figure that even considering in the prediction a interval
+between 0 and 30 the interval is wide at high \texttt{wages}. Now we can also see
+better the behavior, how - in which shape - the function increase until a
+\texttt{wage} of 15, and how it decrease after this value. With the twenty smooth
+curves draw from the posterior we are able to examine better the variability in
+the smooth shape. With very few exceptions in vey specific points we see the
+samples going outside the credibility interval.
+
+\begin{multicols}{2}
+<<smooth-wage, fig.cap="Smooth function for the feature \\texttt{wage} with confidence band of two standard errors, obtained with the GAM model with logit link function.">>=
+# <r code> ===================================================================== #
+par(mar = c(5, 5, 2, 0) + .1)
+plot(gam.logit, xlab = "Wage", ylab = "Smooth function", col = "#0080ff"
+     , shade = TRUE, shade.col = "orange"
+     , lwd = 4, las = 1, cex.lab = 1.75, cex.axis = 1.5)
+# </r code> ==================================================================== #
+@
+
+<<include=FALSE>>=
+# <r code> ===================================================================== #
+library(rjags)
+
+data(trade.union, package = "SemiPar")
+
+jags.gam <- jagam(union.member ~ s(wage, k = 20), trade.union, family = binomial
+                  , file = "trade_union.jags")
+
+union.jags <- jags.model("trade_union.jags"
+                         , data = jags.gam$jags.data, inits = jags.gam$jags.ini
+                         , n.chains = 3)
+
+samp <- jags.samples(union.jags, c("b", "rho", "mu"), n.iter = 1e4, thin = 10)
+
+jam <- sim2jam(samp, jags.gam$pregam)
+# </r code> ==================================================================== #
+@
+
+<<jags, fig.cap="Probability of union membership against \\texttt{wages}, with a credible interval and twenty curves from the posterior.">>=
+# <r code> ===================================================================== #
+par(mar = c(5, 5, 2, 0) + .1)
+plot(jam
+     , shade = TRUE, shade.col = "orange", shift = coef(jam)[1]
+     , trans = binomial()$linkinv, rug = FALSE, seWithMean = TRUE
+     , xlim = c(0, 30), lwd = 4, col = "#0080ff", cex.lab = 1.75, cex.axis = 1.5
+     , xlab = "Wage", ylab = "Smooth function")
+
+nu <- trade.union$union.member == 0
+with(trade.union, points(wage[nu], 0 * wage[nu]
+                         , pch = "|", cex = 1.75, col = "#0080ff"))
+with(trade.union, points(wage[!nu], 0 * wage[!nu] + .5
+                         , pch = "|", cex = 1.75, col = "#0080ff"))
+
+ii <- 1:20 * 50; df.pred <- data.frame(wage = 0:300 / 10)
+Xp <- predict(jam, type = "lpmatrix", newdata = df.pred)
+for (i in ii) {
+  p <- binomial()$linkinv(Xp %*% samp$b[, i, 1])
+  lines(df.pred$wage, p, lty = 2, lwd = 1.5)
+}
+# </r code> ==================================================================== #
+@
+\end{multicols}
+
+Now, with all this results in mind we are able to reach the conclusions in the
+next section.
+
+\section*{Conclusions}\addcontentsline{toc}{section}{Conclusions}
+
+In Table \ref{tab:features_selection} we saw an agreement between the models for
+most of the features. The features \texttt{wage}, \texttt{age}, \texttt{race} and
+\texttt{occupation} are present in all of them. The features \texttt{years.educ},
+\texttt{years.experience} and \texttt{sector} are dropped from all models.
+
+First, let's talk about the quantitative features. \texttt{years.educ} and
+\texttt{years.experience} are not statistically significants to discriminate the
+workers in members of the trade union. In Figure \ref{fig:pairs} we saw a very
+high correlation between the features \texttt{years.experience} and \texttt{age},
+and during the features selection process we confirm that they have the same
+discriminative power, and that in the presence of one, the other is extremely not
+significant. Fitting different models one time with one, and other time with the
+other, we reach the conclusion that the \texttt{age} feature is slightly more
+significant.
+
+All this four features in the GAM's started as smoothing functions, however, as
+the features selection showed, only \texttt{wage} have a non-linear behaviour.
+Even considering as linear, \texttt{wage} is significant in the GLM's. However,
+as the AIC's show in Table \ref{tab:features_selection}, is better/more adequate
+to consider this feature as smooth.
+
+Talking about the qualitative features now. In the final/best obtained model -
+GAM with logit link function, we don't have the features \texttt{sector} and
+\texttt{married}, i.e., to discriminate the workers in members of the trade union,
+the information about work \texttt{sector} and civil status are not important,
+statistically significant. We measured the effect of this features and the result
+was presented in Table \ref{tab:summary-gam.logit}. Workers that don't live in the
+\texttt{south}; males; Hispanics; and with an \texttt{occupation} that is not in
+management, sales, clerical, service and professional field, have the biggest
+probability of trade union membership.
+
+The different used approachs returned coherent results and the last of this
+approachs, the Bayesian model via JAGS, presented very interesting results, as we
+saw in Figure \ref{fig:jags}. In the end, the approachs complemented each other 
+and enabled us to tell a 'story' in a coherent and interesting flow. A last
+detail. In the smooth functions we started considering basis of dimension 10 - the
+default option of the function. After this we tried different values to see with
+which one we obtain a better result. For the feature \texttt{wage} the best result
+was obtained with a basis dimension of 20.
+
+\addcontentsline{toc}{section}{References}
+\bibliographystyle{ieeetr}
+\bibliography{references.bib}
+
+\section*{Appendices: \texttt{R} generic code}
+\addcontentsline{toc}{section}{Appendices: \texttt{R} generic code}
+% limit margin: 69 characters
+
+\subsection*{Reading data}
+
+\begin{lstlisting}
+library(SemiPar) # ======================= loading dataset library #
+data(trade.union, package = "SemiPar") # ========= loading dataset #
+
+# ============== converting qualitative features in R factor class #
+trade.union[ , c(2:3, 5, 8:11)] <-
+  lapply(trade.union[ , c(2:3, 5, 8:11)], factor)
+\end{lstlisting}
+
+\subsection*{Fitting GLM's}
+
+\begin{lstlisting}
+library(MASS) # ======= loading library for the stepAIC() function #
+
+# ===== link_function: logit (default), probit, cauchit or cloglog #
+glm.linkfun <- glm(union.member ~ .,
+                   family = binomial(link = "link_function"),
+                   trade.union)
+
+# =================================== performing fatures selection #
+glm.linkfun <- stepAIC(glm.linkfun)
+\end{lstlisting}
+
+\subsection*{Fitting GAM's}
+
+\begin{lstlisting}
+library(mgcv) # == loading mixed gam computational vehicle library #
+
+# ========================================== general model formula #
+## ================================ default value for 'basis': 10 ##
+formula = union.member ~
+  s(years.educ, k = "basis") + south + female +
+  s(years.experience, k = "basis") + s(wage, k = "basis") +
+  s(age, k = "basis") + race + occupation + sector + married
+# ===== link_function: logit (default), probit, cauchit or cloglog #  
+gam.linkfun <- gam(formula,
+                   family = binomial(link = "link_function"),
+                   trade.union)
+
+# performing features selection comparing two nested models and... #
+anova(gam.linkfun_bigger, gam.linkfun_smaller, test = "Chisq")
+
+gam.linkfun <- gam.linkfun_bigger # ======= or gam.linkfun_smaller #
+\end{lstlisting}
+
+\subsection*{Performing residual analysis and goodness-of-fit}
+
+\begin{lstlisting}
+# ==================== computing and plotting the person residuals #
+pearson.model_linkfun <-
+  residuals(model.linkfun, type = "pearson")
+plot(pearson.model_linkfun)
+
+# ================== computing and plotting the deviance residuals #
+deviance.model_linkfun <-
+  residuals(model.linkfun, type = "deviance")
+plot(deviance.model_linkfun)
+
+library(pROC) # =============== loading library the roc() function #
+# =========================== computing and plotting the roc curve #
+plot.roc(roc(trade.union$union.member, fitted(model.linkfun)))
+\end{lstlisting}
+
+\subsection*{Fitting JAGS}
+
+\begin{lstlisting}
+library(rjags) # ======= loading library that connects JAGS with R #
+data(trade.union, package = "SemiPar") # ==================== data #
+
+# =========================================== setting up the model #
+## ====================== jagam(): function from the mgcv library ##
+jags.gam <- jagam(union.member ~ s(wage, k = 20),
+                  trade.union,
+                  family = binomial(link = "logit"),
+                  file = "file_name.jags")
+##  to look to the model go to the JAGS model specification file: ##
+## =============================================== file_name.jags ##
+
+# ======================== compiling and simulating from the model #
+union.jags <- jags.model("file_name.jags",
+                         data = jags.gam$jags.data,
+                         inits = jags.gam$jags.ini,
+                         n.chains = 3) # ======= value that I used #
+
+## =========================== extracting random samples from the ##
+## ===================== posterior distribution of the parameters ##
+samp <- jags.samples(union.jags, c("b", "rho", "mu"),
+                     n.iter = 1e4, # =========== value that I used #
+                     thin = 10) # =============  value that I used #
+jam <- sim2jam(samp, jags.gam$pregam)
+\end{lstlisting}
+
+\end{document}

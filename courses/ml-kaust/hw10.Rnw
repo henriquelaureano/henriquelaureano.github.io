@@ -1,0 +1,536 @@
+\documentclass[12pt, oldfontcommands]{article}
+\usepackage[english]{babel}
+%\usepackage[brazilian, brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage[top = 2cm, left = 2cm, right = 2cm, bottom = 2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{float}
+\usepackage{multicol}
+\usepackage{vwcol}
+\usepackage[normalem]{ulem}
+\usepackage{breqn}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{xcolor}
+\usepackage{cancel}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{makecell}
+\usepackage{caption} 
+\captionsetup[table]{skip = 7.5pt}
+\setlength\parindent{0pt}
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+\newcommand{\Perp}{\perp \! \! \! \perp}
+\newcommand{\nPerp}{\cancel{\perp \! \! \! \perp}}
+
+\title{  
+ \normalfont \normalsize 
+ \textsc{CS 229 - Machine Learning} \\
+ Xiangliang Zhang \\
+ Computer Science (CS)/Statistics (STAT) Program \\
+ Computer, Electrical and Mathematical Sciences \& Engineering (CEMSE) Division \\
+ King Abdullah University of Science and Technology (KAUST) \\[25pt]
+ \horrule{.5pt} \\ [.4cm]
+ \LARGE Homework X: \\
+  Reinforcement Learning
+ \horrule{2pt} \\[ .5cm]}
+ 
+\author{Henrique Aparecido Laureano}
+\date{\normalsize Spring Semester 2018}
+
+\begin{document}
+
+\maketitle
+
+%\newpage
+
+\vspace{\fill}
+
+\tableofcontents
+
+\horrule{1pt} \\
+
+\newpage
+
+<<setup, include=FALSE>>=
+# <r code> ===================================================================== #
+library(knitr)
+
+tema <- knit_theme$get("acid")
+
+knit_theme$set(tema)
+
+opts_chunk$set(size='small'
+               , cache=TRUE
+               , cache.path='cache/'
+               , comment=NA
+               , warning=FALSE
+               , message=FALSE
+               , fig.align='center'
+               , dpi=100
+               , fig.path='iBagens/'
+               , fig.pos='H'
+               , background='#ffffff'
+               , results='hold'
+               , fig.show='hold')
+# </r code> ==================================================================== #
+@
+
+\section*{Question 1: [70 points] Optimal values and policy}
+\addcontentsline{toc}{section}{Question 1: Optimal values and policy}
+
+\horrule{1pt}
+
+\textbf{Given the grid world in Figure \ref{fig:fig1}, there are 4 deterministic
+        actions: \textit{up}, \textit{down}, \textit{left} and \textit{right}.
+        The goal is to reach the G, starting at S.}
+        
+\begin{figure}[H]
+ \centering \includegraphics[width=.325\textwidth]{fig1.png}
+ \caption{Grid world.} \label{fig:fig1}
+\end{figure}
+ 
+\textbf{The reward on reaching on the goal (G) is 100. The reward on actions that
+        would take the agent off the grid is -1 (agent stays still in this case).
+        The reward on other actions is 0. The discount factor \(\gamma = 0.9\).}
+
+\begin{description}
+ \item
+ \textbf{Use Q learning to learn the optimal values of \(Q^{\ast}(s, a)\).
+         Please submit your own code on calculating the \(Q^{\ast}(s, a)\).}
+
+ \begin{figure}[H]
+  \centering \includegraphics[width=.85\textwidth]{question1.png}
+  \caption{Attributing numbers (names) to the states.} \label{fig:q1}
+ \end{figure}
+
+ By the rewards previously defined we can build the R matrix, given by the
+ following code and presented in Table \ref{tab:r}.
+
+\newpage
+<<>>=
+# <r code> ===================================================================== #
+R <- matrix(
+  c(-1,  0, -1, -1, -1,  0, rep(-1, 14), # ------------------------------------- 1
+     0, -1,  0, -1, -1, -1,  0, rep(-1, 13), # --------------------------------- 2
+    -1,  0, -1,  0, -1, -1, -1,  0, rep(-1, 12), # ----------------------------- 3
+    -1, -1,  0, -1,  0, -1, -1, -1,   0, rep(-1, 11), # ------------------------ 4
+    -1, -1, -1,  0, -1, -1, -1, -1,  -1,   0, rep(-1, 10), # ------------------- 5
+     0, -1, -1, -1, -1, -1,  0, -1,  -1,  -1,  0, rep(-1, 9), # ---------------- 6
+    -1,  0, -1, -1, -1,  0, -1,  0,  -1,  -1, -1,  0, rep(-1, 8), # ------------ 7
+    -1, -1,  0, -1, -1, -1,  0, -1,   0,  -1, -1, -1,  0, rep(-1, 7), # -------- 8
+    -1, -1, -1,  0, -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, rep(-1, 6), # --- 9
+    rep(-1, 4),  0, -1, -1, -1,  0,  -1,  -1, -1, -1, -1,   0, rep(-1, 5), # -- 10
+    rep(-1, 5),  0, -1, -1, -1, -1,  -1,   0, -1, -1, -1,   0, rep(-1, 4), # -- 11
+    rep(-1, 6),  0, -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, -1, -1, # -- 12
+    rep(-1, 7),  0, -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, -1, # ------ 13
+    rep(-1, 8),  0, -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, # ---------- 14
+    rep(-1, 9),  0, -1, -1, -1,  0,  -1,  -1, -1, -1, -1, 100, # -------------- 15
+    rep(-1, 10), 0, -1, -1, -1, -1,  -1,   0, -1, -1, -1, # ------------------- 16
+    rep(-1, 11), 0, -1, -1, -1,  0,  -1,   0, -1, -1, # ----------------------- 17
+    rep(-1, 12), 0, -1, -1, -1,  0,  -1,   0, -1, # --------------------------- 18
+    rep(-1, 13), 0, -1, -1, -1,  0,  -1, 100, # ------------------------------- 19
+    rep(-1, 14), 0, -1, -1, -1,  0, 100), nrow = 20, byrow = TRUE) # ---------- 20
+# </r code> ==================================================================== #
+@
+
+<<echo=FALSE, results='asis'>>=
+# <r code> ===================================================================== #
+library(xtable)
+tabela <- xtable(R, digits = 0
+                 , caption = "Reward table. In the rows we have the states, in the
+                              columns we have the actions."
+                 , label = "tab:r")
+align(tabela) <- "r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|"
+print(tabela, hline.after = 0:20
+      , caption.placement = "top"
+      , sanitize.rownames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , sanitize.colnames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , scalebox = .95)
+# </r code> ==================================================================== #
+@
+
+ \newpage
+ Implementing Q learning
+
+<<>>=
+# <r code> ===================================================================== #
+q.learn <- function(R, iter, gamma, goal) {
+  # this algorithm is build for one or two goal states ------------------------- #
+  # if we have only one, replicate the goal state ------------------------------ #
+  # below, in the while loop break out criterion you can see the why ----------- #
+  if (length(goal) == 1) goal[2] = 1
+  # initialize Q to be zero matrix, same size as R ----------------------------- #
+  Q = matrix(rep(0, length(R)), nrow = nrow(R))
+  # initial state is 1, S, as previously defined ------------------------------- #
+  # cs: current state ---------------------------------------------------------- #
+  cs = 1
+  # loop over episodes --------------------------------------------------------- #
+  for (i in 1:iter) {
+    # iterate until we get to the goal state ----------------------------------- #
+    while (1) {
+      # choose next state from possible actions at current state --------------- #
+      next.states = which(R[cs, ] > -1)
+      # if only one possible action, then choose it ---------------------------- #
+      if (length(next.states) == 1)
+        ns = next.states
+      # otherwise, choose one at random ---------------------------------------- #
+      else
+        ns = sample(next.states, 1)
+      # updating --------------------------------------------------------------- #
+      Q[cs, ns] = R[cs, ns] + gamma * max(Q[ns, which(R[ns ,] > -1)])
+      # break out of while loop if goal state is reached ----------------------- #
+      if (ns == goal[1] | ns == goal[2]) break
+      # otherwise, set next.state as current state and repeat ------------------ #
+      cs = ns
+    }
+    # for each episode, choose an initial state at random ---------------------- #
+    cs = sample(1:nrow(R), 1)
+  }
+  return(100 * Q / max(Q)) # return resulting Q normalized by max value -------- #
+}
+# </r code> ==================================================================== #
+@
+
+ \item[(50pts)] \textbf{What is the \(Q^{\ast}(s, a)\) for each pair of \(s\) and
+                        \(a\)?} \\
+                        
+ Running two thousand, 2e3, iterations:
+
+<<>>=
+# <r code> ===================================================================== #
+Q <- q.learn(R, iter = 2e3, gamma = .9, goal = 20)
+# </r code> ==================================================================== #
+@
+
+ The \(Q^{\ast}(s, a)\) for each pair of \(s\) and \(a\) is given by the code
+ above and presented in the following Table \ref{tab:q}.
+ 
+<<echo=FALSE, results='asis'>>=
+# <r code> ===================================================================== #
+tabela <- xtable(Q, digits = 0
+                 , caption = "\\(\\text{Q}^{\\ast}\\) matrix/table.
+                              In the rows we have the states,
+                              in the columns we have the actions."
+                 , label = "tab:q")
+align(tabela) <- "r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|"
+print(tabela, hline.after = 0:20
+      , caption.placement = "top"
+      , table.placement = "H"
+      , sanitize.rownames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , sanitize.colnames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , scalebox = .95)
+# </r code> ==================================================================== #
+@
+
+ \hfill \(\square\)
+ 
+ \item[(10pts)] \textbf{What is the \(V^{\ast}(s)\) for each \(s\)?} \\
+ 
+ The optimal policies \(V^{\ast}(s)\) is defined by
+ 
+ \[ V^{\ast}(s) = \max_{a \hspace{.05cm} \in A(s)} Q^{\ast}(s). \]    % seriously!
+
+ Therefore, looking to \(Q^{\ast}(s)\) presented in Table \ref{tab:q} we easily
+ see the \(V^{\ast}(s)\) for each state \(s\). We present this in the following
+ Table \ref{tab:vs}.
+
+ \begin{table}[H]
+  \centering
+  \caption{\(V^{\ast}(s)\) for each \(s\).} \label{tab:vs}
+  \scalebox{.975}{
+   \begin{tabular}{|cc|c|c|c|c|c|c|c|c|c|}
+    \hline
+    \(s\): & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} &
+             \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} \\
+    \hline
+    \(a\): & 2 or 6 & 3 or 7 & 4 or 8 & 5 or 9 & 10 & 7 or 11 & 8 or 12 & 9 or 13
+           & 10 or 14 & 15 \\
+    \hline
+    \(V^{\ast}(s)\): & 52 & 59 & 66 & 73 & 81 & 59 & 66 & 73 & 81 & 90 \\
+    \hline
+    \(s\): & \textbf{11} & \textbf{12} & \textbf{13} & \textbf{14} & \textbf{15} &
+             \textbf{16} & \textbf{17} & \textbf{18} & \textbf{19} & \textbf{20}
+    \\
+    \hline
+    \(a\): & 12 or 16 & 13 or 17 & 14 or 18 & 15 or 19 & 20 & 17 & 18 & 19 & 20
+           & 20 \\
+    \hline
+    \(V^{\ast}(s)\): & 66 & 73 & 81 & 90 & 100 & 73 & 81 & 90 & 100 & 100 \\
+    \hline
+   \end{tabular}
+  }
+ \end{table}
+
+ We can see that for several states the
+ \(\max_{a \hspace{.05cm} \in A(s)} Q^{\ast}(s)\) is reached with two states, in
+ this situations one of both can be chosen randomly.
+
+ \hfill \(\square\)
+
+ \item[(10pts)] \textbf{What are the actions of optimal policy?} \\
+ 
+ Starting in \textbf{S}, represented as state 1, the maximum \(Q\) values suggest
+ two alternatives: go to state 2 or 6. Suppose we arbitrarily choose to go to 2.
+ \\
+ 
+ From state 2 the maximum \(Q\) values suggest two alternatives: go to state 3 or
+ 7. Suppose we arbitrarily choose to go to 7. \\
+ 
+ From state 7 the maximum \(Q\) values suggest two alternatives: go to state 8 or
+ 12. Suppose we arbitrarily choose to go to 8. \\
+ 
+ From state 8 the maximum \(Q\) values suggest two alternatives: go to state 9 or
+ 13. Suppose we arbitrarily choose to go to 13. \\
+ 
+ From state 13 the maximum \(Q\) values suggest two alternatives: go to state 14
+ or 18. Suppose we arbitrarily choose to go to 14. \\
+ 
+ From state 14 the maximum \(Q\) values suggest two alternatives: go to state 15
+ or 19. Suppose we arbitrarily choose to go to 19. \\
+ 
+ From state 19 the maximum \(Q\) values suggests the action to go to state 20. \\
+ 
+ Thus, here the sequence is:
+ 1 (\textbf{S}) - 2 - 7 - 8 - 13 - 14 - 19 - 20 (\textbf{G}).
+ A representation is given below in Figure \ref{fig:q1-end}.
+
+ \begin{figure}[H]
+  \centering \includegraphics[width=.4\textwidth]{q1-end.png}
+  \caption{Representation of the actions for the optimal policy.}
+  \label{fig:q1-end}
+ \end{figure}
+
+ \hfill \(\square\)
+\end{description}
+
+\section*{Question 2: [30pts] A change on the gird world}
+\addcontentsline{toc}{section}{Question 2: A change on the gird world}
+
+\horrule{1pt}
+
+\begin{description}
+ \item[(15pts)] \textbf{Add another goal state to the lower-right corner.}
+
+ \begin{figure}[H]
+  \centering \includegraphics[width=.85\textwidth]{question2.png}
+  \caption{Attributing numbers (names) to the states.} \label{fig:q2}
+ \end{figure}
+
+                \textbf{How does the optimal policy change?} \\
+
+ Now we add a reward of 100 on reaching on the (new) goal state 5. The new R
+ matrix is given by the following code and presented in Table \ref{tab:r2}.
+
+<<>>=
+# <r code> ===================================================================== #
+R <- matrix(
+  c(-1,  0, -1,  -1,  -1,  0, rep(-1, 14), # ----------------------------------- 1
+     0, -1,  0,  -1,  -1, -1,  0, rep(-1, 13), # ------------------------------- 2
+    -1,  0, -1,   0,  -1, -1, -1,  0, rep(-1, 12), # --------------------------- 3
+    -1, -1,  0,  -1, 100, -1, -1, -1,   0, rep(-1, 11), # ---------------------- 4
+    -1, -1, -1,   0, 100, -1, -1, -1,  -1,   0, rep(-1, 10), # ----------------- 5
+     0, -1, -1,  -1,  -1, -1,  0, -1,  -1,  -1,  0, rep(-1, 9), # -------------- 6
+    -1,  0, -1,  -1,  -1,  0, -1,  0,  -1,  -1, -1,  0, rep(-1, 8), # ---------- 7
+    -1, -1,  0,  -1,  -1, -1,  0, -1,   0,  -1, -1, -1,  0, rep(-1, 7), # ------ 8
+    -1, -1, -1,   0,  -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, rep(-1, 6), # - 9
+    rep(-1, 4), 100,  -1, -1, -1,  0,  -1,  -1, -1, -1, -1,   0, rep(-1, 5), #  10
+    rep(-1, 5),   0,  -1, -1, -1, -1,  -1,   0, -1, -1, -1,   0, rep(-1, 4), #  11
+    rep(-1, 6),   0,  -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, -1, -1, #  12
+    rep(-1, 7),   0,  -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, -1, # ---- 13
+    rep(-1, 8),   0,  -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, # -------- 14
+    rep(-1, 9),   0,  -1, -1, -1,  0,  -1,  -1, -1, -1, -1, 100, # ------------ 15
+    rep(-1, 10),  0,  -1, -1, -1, -1,  -1,   0, -1, -1, -1, # ----------------- 16
+    rep(-1, 11),  0,  -1, -1, -1,  0,  -1,   0, -1, -1, # --------------------- 17
+    rep(-1, 12),  0,  -1, -1, -1,  0,  -1,   0, -1, # ------------------------- 18
+    rep(-1, 13),  0,  -1, -1, -1,  0,  -1, 100, # ----------------------------- 19
+    rep(-1, 14),  0,  -1, -1, -1,  0, 100), nrow = 20, byrow = TRUE) # -------- 20
+# </r code> ==================================================================== #
+@
+
+<<echo=FALSE, results='asis'>>=
+# <r code> ===================================================================== #
+tabela <- xtable(R, digits = 0
+                 , caption = "Reward table. In the rows we have the states, in the
+                              columns we have the actions."
+                 , label = "tab:r2")
+align(tabela) <- "r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|"
+print(tabela, hline.after = 0:20
+      , caption.placement = "top"
+      , table.placement = "H"
+      , sanitize.rownames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , sanitize.colnames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , scalebox = .95)
+# </r code> ==================================================================== #
+@
+
+ Running the Q learning algorithm two thousand, 2e3, iterations:
+
+<<>>=
+# <r code> ===================================================================== #
+Q <- q.learn(R, iter = 2e3, gamma = .9, goal = c(5, 20))
+# </r code> ==================================================================== #
+@
+
+ The \(Q^{\ast}(s, a)\) for each pair of \(s\) and \(a\) is given by the code
+ above and presented in the following Table \ref{tab:q2}. Through Table
+ \ref{tab:q2} we are able to see which is the new optimal policy. \\
+ 
+<<echo=FALSE, results='asis'>>=
+# <r code> ===================================================================== #
+tabela <- xtable(Q, digits = 0
+                 , caption = "\\(\\text{Q}^{\\ast}\\) matrix/table.
+                              In the rows we have the states,
+                              in the columns we have the actions."
+                 , label = "tab:q2")
+align(tabela) <- "r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|"
+print(tabela, hline.after = 0:20
+      , caption.placement = "top"
+      #, table.placement = "H"
+      , sanitize.rownames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , sanitize.colnames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , scalebox = .95)
+# </r code> ==================================================================== #
+@
+ 
+ Starting in \textbf{S}, represented as state 1, the maximum \(Q\) values suggests
+ the action to go to state 2. \\
+ 
+ From state 2 the maximum \(Q\) values suggests the action to go to state 3. \\
+ 
+ From state 3 the maximum \(Q\) values suggests the action to fo to state 4. \\
+ 
+ From state 4 the maximum \(Q\) values suggests the action to go to state 5, a
+ goal state. \\
+ 
+ Thus, here the sequence is:
+ 1 (\textbf{S}) - 2 - 3 - 4 - 5 (\textbf{G2}).
+ A representation is given in the left hand side of the Figure \ref{fig:q2-a}. \\
+ 
+ Following the maximum \(Q\) values, to reach the goal state 20 (\textbf{G1}) we
+ need/have to start from the state 11 or above (12, 13, \dots). Starting from a
+ state smaller than this we reach the state 5. \\
+ 
+ To ilustrate we have Figure \ref{fig:q2-a}. In the left we start in 
+ \textbf{S} (but we reach \textbf{G2} starting by any other state \(\leq\) 10). In
+ the right we start in 11 (but we reach \textbf{G1} starting by any state \(>\)
+ 10).
+ 
+ \begin{figure}[H]
+ \centering \includegraphics[width=.875\textwidth]{q2-a.png}
+ \caption{Representation of the actions for the optimal policy with two examples.
+          In the left we start from a state \(\leq\) 10, in the right we start
+          from a state \(>\) 10.}
+ \label{fig:q2-a}
+ \end{figure}
+
+ \hfill \(\square\)
+
+ \item[(15pts)] \textbf{If a state of reward -100 (a very bad state) is defined in
+                        the lower-right corner. How does the optimal policy
+                        change?} \\
+
+ First we modify the last R matrix putting a minus in the reward of the
+ lower-right corner state. The new R matrix is given by the following code and
+ presented in Table \ref{tab:r3}.
+
+<<>>=
+# <r code> ===================================================================== #
+R <- matrix(
+  c(-1,  0, -1,   -1,   -1,  0, rep(-1, 14), # --------------------------------- 1
+     0, -1,  0,   -1,   -1, -1,  0, rep(-1, 13), # ----------------------------- 2
+    -1,  0, -1,    0,   -1, -1, -1,  0, rep(-1, 12), # ------------------------- 3
+    -1, -1,  0,   -1, -100, -1, -1, -1,   0, rep(-1, 11), # -------------------- 4
+    -1, -1, -1,    0, -100, -1, -1, -1,  -1,   0, rep(-1, 10), # --------------- 5
+     0, -1, -1,   -1,   -1, -1,  0, -1,  -1,  -1,  0, rep(-1, 9), # ------------ 6
+    -1,  0, -1,   -1,   -1,  0, -1,  0,  -1,  -1, -1,  0, rep(-1, 8), # -------- 7
+    -1, -1,  0,   -1,   -1, -1,  0, -1,   0,  -1, -1, -1,  0, rep(-1, 7), # ---- 8
+    -1, -1, -1,    0,   -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, rep(-1, 6), # 9
+    rep(-1, 4), -100,   -1, -1, -1,  0,  -1,  -1, -1, -1, -1,   0, rep(-1, 5), #10
+    rep(-1, 5),    0,   -1, -1, -1, -1,  -1,   0, -1, -1, -1,   0, rep(-1, 4), #11
+    rep(-1, 6),    0,   -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, -1, -1, #12
+    rep(-1, 7),    0,   -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, -1, # -- 13
+    rep(-1, 8),    0,   -1, -1, -1,  0,  -1,   0, -1, -1, -1,   0, -1, # ------ 14
+    rep(-1, 9),    0,   -1, -1, -1,  0,  -1,  -1, -1, -1, -1, 100, # ---------- 15
+    rep(-1, 10),   0,   -1, -1, -1, -1,  -1,   0, -1, -1, -1, # --------------- 16
+    rep(-1, 11),   0,   -1, -1, -1,  0,  -1,   0, -1, -1, # ------------------- 17
+    rep(-1, 12),   0,   -1, -1, -1,  0,  -1,   0, -1, # ----------------------- 18
+    rep(-1, 13),   0,   -1, -1, -1,  0,  -1, 100, # --------------------------- 19
+    rep(-1, 14),   0,   -1, -1, -1,  0, 100), nrow = 20, byrow = TRUE) # ------ 20
+# </r code> ==================================================================== #
+@
+
+<<echo=FALSE, results='asis'>>=
+# <r code> ===================================================================== #
+tabela <- xtable(R, digits = 0
+                 , caption = "Reward table. In the rows we have the states, in the
+                              columns we have the actions."
+                 , label = "tab:r3")
+align(tabela) <- "r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|"
+print(tabela, hline.after = 0:20
+      , caption.placement = "top"
+      #, table.placement = "H"
+      , sanitize.rownames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , sanitize.colnames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , scalebox = .95)
+# </r code> ==================================================================== #
+@
+
+ Running the Q learning algorithm two thousand, 2e3, iterations:
+
+<<>>=
+# <r code> ===================================================================== #
+Q <- q.learn(R, iter = 2e3, gamma = .9, goal = c(5, 20))
+# </r code> ==================================================================== #
+@
+
+ The \(Q^{\ast}(s, a)\) for each pair of \(s\) and \(a\) is given by the code
+ above and presented in the following Table \ref{tab:q3}. Through Table
+ \ref{tab:q3} we are able to see which is the new optimal policy. \\
+ 
+ With a reward of -100 we'll never have the suggestion of go to the state 5
+ (\textbf{G2}), given by the maximum \(Q\) values. i.e., defining a very bad
+ state, a long term is like if this state doesn't exist. Therefore, the optimal
+ policy here is exactly the same that the one obtained in Table \ref{tab:q}, Table
+ \ref{tab:vs} and Figure \ref{fig:q1-end} (i.e., considering only one goal state).
+ \\
+ 
+ The obtained \(Q^{\ast}(s, a)\) for this state with high and negative reward are
+ all zeros, as we can see in Table \ref{tab:q3}. A representation of the optimal
+ policy is, therefore, the same that the one presented in Figure \ref{fig:q1-end}.
+ 
+<<echo=FALSE, results='asis'>>=
+# <r code> ===================================================================== #
+tabela <- xtable(Q, digits = 0
+                 , caption = "\\(\\text{Q}^{\\ast}\\) matrix/table.
+                              In the rows we have the states,
+                              in the columns we have the actions."
+                 , label = "tab:q3")
+align(tabela) <- "r|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|"
+print(tabela, hline.after = 0:20
+      , caption.placement = "top"
+      , table.placement = "H"
+      , sanitize.rownames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , sanitize.colnames.function = function(x) paste0('{\\textbf{', x, '}}')
+      , scalebox = .95)
+# </r code> ==================================================================== #
+@
+ \vspace{-.225cm}
+ \hfill \(\blacksquare\)
+\end{description}
+
+% \horrule{.5pt}
+% 
+% \vspace{\fill}
+% 
+% \horrule{1pt} \\
+
+\end{document}

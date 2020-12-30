@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Computational Methods in Statistics</title>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <meta name="description" content="Computational Methods in Statistics">
+  <meta name="generator" content="bookdown 0.3 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Computational Methods in Statistics" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Computational Methods in Statistics" />
+  
+  
+  
+
+<meta name="author" content="Henrique Aparecido Laureano">
+
+
+<meta name="date" content="2017-05-06">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="permutation-tests.html">
+
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Computational Methods in Statistics</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>README</a></li>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html"><i class="fa fa-check"></i>Bootstrap</a><ul>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bootstrap-estimation-of-standard-error"><i class="fa fa-check"></i>Bootstrap estimation of standard error</a></li>
+<li class="chapter" data-level="" data-path="bootstrap.html"><a href="bootstrap.html#bootstrap-estimation-of-bias"><i class="fa fa-check"></i>Bootstrap estimation of bias</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html"><i class="fa fa-check"></i>Permutation tests</a><ul>
+<li class="chapter" data-level="" data-path="permutation-tests.html"><a href="permutation-tests.html#approximate-permutation-test-procedure"><i class="fa fa-check"></i>Approximate permutation test procedure</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html"><i class="fa fa-check"></i>Exercises - Chapter 8: Permutation Tests</a><ul>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.1"><i class="fa fa-check"></i>Exercise 8.1</a></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.2"><i class="fa fa-check"></i>Exercise 8.2</a></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.3"><i class="fa fa-check"></i>Exercise 8.3</a></li>
+<li class="chapter" data-level="" data-path="exercises-chapter-8-permutation-tests.html"><a href="exercises-chapter-8-permutation-tests.html#exercise-8.4"><i class="fa fa-check"></i>Exercise 8.4</a></li>
+</ul></li>
+<li class="divider"></li>
+<li></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Computational Methods in Statistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="exercises---chapter-8-permutation-tests" class="section level1 unnumbered">
+<h1>Exercises - Chapter 8: Permutation Tests</h1>
+<hr />
+<p>Students:</p>
+<ul>
+<li>Henrique Aparecido Laureano</li>
+<li>Elainy Marciano Batista</li>
+<li>Heidi Mara do Rosário Souza</li>
+<li>Joubert Miranda Guedes</li>
+<li>Nicolas Romano</li>
+<li>Pedro Luciano de Oliveira Gomes</li>
+<li>Ricardo de Faria Souza</li>
+<li>Telma Tompson</li>
+<li>Thais Castelo Branco Monho</li>
+</ul>
+<hr />
+<p>Exercises from chapter 8 of the book:</p>
+<p><strong>Maria L. Rizzo, 2008. <em>Statistical Computing with R</em>, Chapman &amp; Hall/CRC, ISBN 1-58488-545-9, 393 pages.</strong></p>
+<hr />
+<div id="exercise-8.1" class="section level2 unnumbered">
+<h2>Exercise 8.1</h2>
+<hr />
+<p><strong>Implement the two-sample Cramér-von Mises test for equal distributions as a permutation test. Apply the test to the data in Examples 8.1 and 8.2.</strong></p>
+<hr />
+<p>Solution:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;chickwts&quot;</span>)
+
+## Packages
+<span class="kw">library</span>(latticeExtra)
+
+## function: two-sample Cramér-von Mises test for equal distributions
+cvm &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, data){
+  r &lt;-<span class="st"> </span><span class="dv">10000</span> <span class="co"># Permutation samples</span>
+  reps &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, r)
+  n &lt;-<span class="st"> </span><span class="kw">length</span>(x)
+  m &lt;-<span class="st"> </span><span class="kw">length</span>(y)
+  v.n &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, n) <span class="co"># Replication vectors</span>
+  v1.n &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, n)
+  v.m &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, m)
+  v1.m &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, m)
+  z &lt;-<span class="st"> </span><span class="kw">c</span>(x, y)
+  N &lt;-<span class="st"> </span><span class="kw">length</span>(z)
+  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n) v.n[i] &lt;-<span class="st"> </span>( x[i] <span class="op">-</span><span class="st"> </span>i )<span class="op">**</span><span class="dv">2</span>
+  <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>m) v.m[j] &lt;-<span class="st"> </span>( y[j] <span class="op">-</span><span class="st"> </span>j )<span class="op">**</span><span class="dv">2</span>
+  <span class="co"># Test statistic</span>
+  reps_<span class="dv">0</span> &lt;-<span class="st"> </span>( (n <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(v.n) <span class="op">+</span><span class="st"> </span>m <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(v.m)) <span class="op">/</span><span class="st"> </span>(m <span class="op">*</span><span class="st"> </span>n <span class="op">*</span><span class="st"> </span>N) ) <span class="op">-</span>
+<span class="st">    </span>(<span class="dv">4</span> <span class="op">*</span><span class="st"> </span>m <span class="op">*</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">6</span> <span class="op">*</span><span class="st"> </span>N)
+  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>r) { <span class="co"># Permautation samples</span>
+    w &lt;-<span class="st"> </span><span class="kw">sample</span>(N, <span class="dt">size =</span> n, <span class="dt">replace =</span> <span class="ot">FALSE</span>)
+    x1 &lt;-<span class="st"> </span><span class="kw">sort</span>( z[ w] )
+    y1 &lt;-<span class="st"> </span><span class="kw">sort</span>( z[<span class="op">-</span>w] )
+    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n) { v1.n[i] &lt;-<span class="st"> </span>( x1[i] <span class="op">-</span><span class="st"> </span>i )<span class="op">**</span><span class="dv">2</span> }
+    <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>m) { v1.m[j] &lt;-<span class="st"> </span>( y1[j] <span class="op">-</span><span class="st"> </span>j )<span class="op">**</span><span class="dv">2</span> }
+    reps[k] &lt;-<span class="st"> </span>( (n <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(v1.n) <span class="op">+</span><span class="st"> </span>m <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(v1.m)) <span class="op">/</span><span class="st"> </span>(m <span class="op">*</span><span class="st"> </span>n <span class="op">*</span><span class="st"> </span>N) ) <span class="op">-</span>
+<span class="st">      </span>(<span class="dv">4</span> <span class="op">*</span><span class="st"> </span>m <span class="op">*</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">6</span> <span class="op">*</span><span class="st"> </span>N)
+  }
+  p &lt;-<span class="st"> </span><span class="kw">mean</span>( <span class="kw">c</span>(reps_<span class="dv">0</span>, reps) <span class="op">&gt;=</span><span class="st"> </span>reps_<span class="dv">0</span> )
+  <span class="kw">return</span>(
+    <span class="kw">histogram</span>(<span class="kw">c</span>(reps_<span class="dv">0</span>, reps) <span class="co"># Histogram</span>
+              , <span class="dt">type =</span> <span class="st">&quot;density&quot;</span>
+              , <span class="dt">col =</span> <span class="st">&quot;#0080ff&quot;</span>
+              , <span class="dt">xlab =</span> <span class="st">&quot;Replicates of Cramér-Von Mises (CVM) statistic&quot;</span>
+              , <span class="dt">ylab =</span> <span class="kw">list</span>(<span class="dt">rot =</span> <span class="dv">0</span>)
+              , <span class="dt">main =</span> <span class="kw">paste0</span>(
+                <span class="st">&quot;Data: &quot;</span>, data, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>
+                , <span class="st">&quot;Permutation distribution of CVM statistic&quot;</span>)
+              , <span class="dt">sub =</span> <span class="kw">list</span>(<span class="kw">substitute</span>(<span class="kw">paste</span>(<span class="kw">hat</span>(p), <span class="st">&quot; = &quot;</span>,pvalue)
+                                      , <span class="kw">list</span>(<span class="dt">pvalue =</span> p))
+                           , <span class="dt">col =</span> <span class="dv">2</span>)
+              , <span class="dt">panel =</span> <span class="cf">function</span>(...){
+                <span class="kw">panel.histogram</span>(...)
+                <span class="kw">panel.abline</span>(<span class="dt">v =</span> reps_<span class="dv">0</span>, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)
+              })
+  )
+}
+## Data: Example 8.1
+x &lt;-<span class="st"> </span><span class="kw">with</span>(chickwts, <span class="kw">sort</span>(<span class="kw">as.vector</span>(weight[feed <span class="op">==</span><span class="st"> &quot;soybean&quot;</span>])))
+y &lt;-<span class="st"> </span><span class="kw">with</span>(chickwts, <span class="kw">sort</span>(<span class="kw">as.vector</span>(weight[feed <span class="op">==</span><span class="st"> &quot;linseed&quot;</span>])))
+
+cvm_<span class="fl">8.1</span> &lt;-<span class="st"> </span><span class="kw">cvm</span>(x, y, <span class="st">&quot;Example 8.1&quot;</span>)
+
+## Data: Example 8.2
+x &lt;-<span class="st"> </span><span class="kw">with</span>(chickwts, <span class="kw">sort</span>(<span class="kw">as.vector</span>(weight[feed <span class="op">==</span><span class="st"> &quot;sunflower&quot;</span>])))
+y &lt;-<span class="st"> </span><span class="kw">with</span>(chickwts, <span class="kw">sort</span>(<span class="kw">as.vector</span>(weight[feed <span class="op">==</span><span class="st"> &quot;linseed&quot;</span>])))
+
+cvm_<span class="fl">8.2</span> &lt;-<span class="st"> </span><span class="kw">cvm</span>(x, y, <span class="st">&quot;Example 8.2&quot;</span>)
+
+## Results
+<span class="kw">print</span>(cvm_<span class="fl">8.1</span>, <span class="dt">position =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, .<span class="dv">5</span>, <span class="dv">1</span>), <span class="dt">more =</span> <span class="ot">TRUE</span>)
+<span class="kw">print</span>(cvm_<span class="fl">8.2</span>, <span class="dt">position =</span> <span class="kw">c</span>(.<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>))</code></pre></div>
+<p><img src="mce_files/figure-html/unnamed-chunk-10-1.png" width="960" /></p>
+<hr />
+</div>
+<div id="exercise-8.2" class="section level2 unnumbered">
+<h2>Exercise 8.2</h2>
+<hr />
+<p><strong>Implement the bivariate Spearman rank correlation test for independence [255] as a permutation test. The Spearman rank correlation test statistic can be obtained from function <code>cor</code> with <code>method = &quot;spearman&quot;</code>. Compare the achieved significance level of the permutation test with the <em>p</em>-value reported by <code>cor.test</code> on the same samples.</strong></p>
+<hr />
+<p>Solution:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;iris&quot;</span>)
+
+## Dataset
+z &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(iris[<span class="dv">1</span><span class="op">:</span><span class="dv">50</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>])
+x &lt;-<span class="st"> </span>(z[ , <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>])
+y &lt;-<span class="st"> </span>(z[ , <span class="dv">3</span><span class="op">:</span><span class="dv">4</span>])
+
+<span class="kw">cor</span>(x,y, <span class="dt">method =</span> <span class="st">&quot;spearman&quot;</span>)</code></pre></div>
+<pre><code>             Petal.Length Petal.Width
+Sepal.Length    0.2788849   0.2994989
+Sepal.Width     0.1799110   0.2865359</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cor.test</span>(x, y, <span class="dt">method =</span> <span class="st">&quot;spearman&quot;</span>, <span class="dt">exact =</span> <span class="ot">FALSE</span>)<span class="op">$</span>estimate</code></pre></div>
+<pre><code>      rho 
+0.8292811 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Packages
+<span class="kw">library</span>(boot)
+
+## function: bivariate Spearman rank correlation test for independence
+spear.cor &lt;-<span class="st"> </span><span class="cf">function</span>(z) {
+  rho.est &lt;-<span class="st"> </span><span class="cf">function</span>(z, i) { <span class="co"># Test statistic</span>
+    x &lt;-<span class="st"> </span>z[ , <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>] 
+    y &lt;-<span class="st"> </span>z[i, <span class="dv">3</span><span class="op">:</span><span class="dv">4</span>]
+    <span class="kw">return</span>(<span class="kw">cor.test</span>(x, y, <span class="dt">method =</span> <span class="st">&quot;spearman&quot;</span>, <span class="dt">exact =</span> <span class="ot">FALSE</span>)<span class="op">$</span>estimate)
+  }
+  perm &lt;-<span class="st"> </span><span class="kw">boot</span>(<span class="dt">data =</span> z <span class="co"># 10000 permutation samples</span>
+               , <span class="dt">statistic =</span> rho.est
+               , <span class="dt">sim =</span> <span class="st">&quot;permutation&quot;</span>
+               , <span class="dt">R =</span> <span class="dv">10000</span>)
+  p &lt;-<span class="st"> </span><span class="kw">with</span>(perm, <span class="kw">mean</span>( <span class="kw">c</span>(t, t0) <span class="op">&gt;=</span><span class="st"> </span>t0 )) <span class="co"># p-value</span>
+  <span class="kw">return</span>(
+    <span class="kw">histogram</span>(<span class="kw">with</span>(perm, <span class="kw">c</span>(t, t0)) <span class="co"># Histogram</span>
+              , <span class="dt">type =</span> <span class="st">&quot;density&quot;</span>
+              , <span class="dt">col =</span> <span class="st">&quot;#0080ff&quot;</span>
+              , <span class="dt">xlab =</span> <span class="st">&quot;Replicates correlation&quot;</span>
+              , <span class="dt">ylab =</span> <span class="kw">list</span>(<span class="dt">rot =</span> <span class="dv">0</span>)
+              , <span class="dt">main =</span> <span class="kw">paste</span>(
+                <span class="st">&quot;Permutation distribution of the bivariate Spearman&quot;</span>,
+                <span class="st">&quot;rank correlation test&quot;</span>)
+              , <span class="dt">sub =</span> <span class="kw">list</span>(<span class="kw">substitute</span>(<span class="kw">paste</span>(<span class="kw">hat</span>(p), <span class="st">&quot; = &quot;</span>,pvalue)
+                                      , <span class="kw">list</span>(<span class="dt">pvalue =</span> p))
+                           , <span class="dt">col =</span> <span class="dv">2</span>)
+              , <span class="dt">panel =</span> <span class="cf">function</span>(...){
+                <span class="kw">panel.histogram</span>(...)
+                <span class="kw">panel.abline</span>(<span class="dt">v =</span> perm<span class="op">$</span>t0, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)
+              })
+  )
+}
+<span class="kw">spear.cor</span>(z)</code></pre></div>
+<p><img src="mce_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
+<hr />
+</div>
+<div id="exercise-8.3" class="section level2 unnumbered">
+<h2>Exercise 8.3</h2>
+<hr />
+<p><strong>The Count 5 test for equal variances in Section 6.4 is based on the maximum number of extreme points. Example 6.15 shows that the Count 5 criterion is not applicable for unequal sample sizes. Implement a permutation test for equal variance based on the maximum number of extreme points that applies when sample sizes are not necessarily equal.</strong></p>
+<hr />
+<p>Solution:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Dataset
+n_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="dv">20</span> <span class="co"># Defining the sample sizes</span>
+n_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="dv">30</span>
+x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n_<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">5</span>)
+y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n_<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">5</span>)
+
+## function: permutation test for equal variance based
+##           on the maximum number of extreme points
+count5 &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {
+  count5test &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) { <span class="co"># Test statistic</span>
+    X &lt;-<span class="st"> </span>x <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(x)
+    Y &lt;-<span class="st"> </span>y <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(y)
+    outx &lt;-<span class="st"> </span><span class="kw">sum</span>(X <span class="op">&gt;</span><span class="st"> </span><span class="kw">max</span>(Y)) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(X <span class="op">&lt;</span><span class="st"> </span><span class="kw">min</span>(Y))
+    outy &lt;-<span class="st"> </span><span class="kw">sum</span>(Y <span class="op">&gt;</span><span class="st"> </span><span class="kw">max</span>(X)) <span class="op">+</span><span class="st"> </span><span class="kw">sum</span>(Y <span class="op">&lt;</span><span class="st"> </span><span class="kw">min</span>(X))
+    <span class="co"># Return 1 (reject) or 0 (do not reject H_{0})</span>
+    <span class="kw">return</span>( <span class="kw">as.integer</span>( <span class="kw">max</span>(<span class="kw">c</span>(outx, outy) ) <span class="op">&gt;</span><span class="st"> </span><span class="dv">5</span>) )
+  }
+  r &lt;-<span class="st"> </span><span class="dv">10000</span> <span class="co"># Permutation samples</span>
+  z &lt;-<span class="st"> </span><span class="kw">c</span>(x, y)
+  n &lt;-<span class="st"> </span><span class="kw">length</span>(z)
+  reps &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, r)
+  t0 &lt;-<span class="st"> </span><span class="kw">count5test</span>(x, y)
+  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>r){ <span class="co"># Permutation test</span>
+    k =<span class="st"> </span><span class="kw">sample</span>(n, <span class="dt">size =</span> <span class="kw">length</span>(x), <span class="dt">replace =</span> <span class="ot">FALSE</span>)
+    reps[i] =<span class="st"> </span><span class="kw">count5test</span>(z[k], z[<span class="op">-</span>k])
+  }
+  p &lt;-
+<span class="st">    </span><span class="kw">ifelse</span>(t0 <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="kw">mean</span>( <span class="kw">c</span>(t0, reps) <span class="op">&gt;</span><span class="st"> </span>t0 ), <span class="kw">mean</span>( <span class="kw">c</span>(t0, reps) <span class="op">&gt;=</span><span class="st"> </span>t0 ))
+  <span class="kw">return</span>(
+    <span class="kw">histogram</span>(<span class="kw">c</span>(t0, reps) <span class="co"># Histogram</span>
+              , <span class="dt">type =</span> <span class="st">&quot;density&quot;</span>
+              , <span class="dt">col =</span> <span class="st">&quot;#0080ff&quot;</span>
+              , <span class="dt">xlab =</span> <span class="st">&quot;Replicates of the Count 5 test&quot;</span>
+              , <span class="dt">ylab =</span> <span class="kw">list</span>(<span class="dt">rot =</span> <span class="dv">0</span>)
+              , <span class="dt">main =</span> <span class="st">&quot;Permutation distribution of the Count 5 test&quot;</span>
+              , <span class="dt">sub =</span> <span class="kw">list</span>(<span class="kw">substitute</span>(<span class="kw">paste</span>(<span class="kw">hat</span>(p), <span class="st">&quot; = &quot;</span>,pvalue)
+                                      , <span class="kw">list</span>(<span class="dt">pvalue =</span> p))
+                           , <span class="dt">col =</span> <span class="dv">2</span>)
+              , <span class="dt">panel =</span> <span class="cf">function</span>(...){
+                <span class="kw">panel.histogram</span>(...)
+                <span class="kw">panel.abline</span>(<span class="dt">v =</span> t0, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)
+              })
+  )
+}
+<span class="kw">count5</span>(x, y)</code></pre></div>
+<p><img src="mce_files/figure-html/unnamed-chunk-12-1.png" width="960" /></p>
+<hr />
+</div>
+<div id="exercise-8.4" class="section level2 unnumbered">
+<h2>Exercise 8.4</h2>
+<hr />
+<p><strong>Complete the steps to implement a <span class="math inline">\(r^{th}\)</span> -nearest neighbors test for equal distributions. Write a function to compute the test statistic. The function should take the data matrix as its first argument, and an index vector as the second argument. The number of nearest neighbors r should follow the index argument.</strong></p>
+<hr />
+<p>Solution:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;chickwts&quot;</span>)
+
+## Dataset
+x &lt;-<span class="st"> </span><span class="kw">with</span>(chickwts, <span class="kw">as.vector</span>(weight[feed <span class="op">==</span><span class="st"> &quot;sunflower&quot;</span>]))
+y &lt;-<span class="st"> </span><span class="kw">with</span>(chickwts, <span class="kw">as.vector</span>(weight[feed <span class="op">==</span><span class="st"> &quot;linseed&quot;</span>]))
+z &lt;-<span class="st"> </span><span class="kw">cbind</span>( <span class="kw">c</span>(x, y), <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">length</span>(<span class="kw">c</span>(x, y))) )
+
+## Packages
+<span class="kw">library</span>(boot)
+<span class="kw">library</span>(FNN)
+<span class="kw">library</span>(latticeExtra)
+
+## function: r^{th} -nearest neighbors test for equal distributions
+my.knn &lt;-<span class="st"> </span><span class="cf">function</span>(z, nn) {
+  t_n.i &lt;-<span class="st"> </span><span class="cf">function</span>(z, nn, i) {
+    n_g &lt;-<span class="st"> </span><span class="kw">nrow</span>(z) <span class="op">/</span><span class="st"> </span><span class="dv">2</span> <span class="co"># length x and length y</span>
+    n &lt;-<span class="st"> </span><span class="kw">nrow</span>(z)
+    z &lt;-<span class="st"> </span>z[i, ]
+    z &lt;-<span class="st"> </span><span class="kw">cbind</span>(z, <span class="kw">rep</span>(<span class="dv">0</span>, n))
+    knn &lt;-<span class="st"> </span><span class="kw">get.knn</span>(z, <span class="dt">k =</span> nn) <span class="co"># Obtaining the k nearest neighbors</span>
+    n_<span class="dv">1</span> &lt;-<span class="st"> </span>knn<span class="op">$</span>nn.index[<span class="dv">1</span><span class="op">:</span>n_g, ]       <span class="co"># Dividing x</span>
+    n_<span class="dv">2</span> &lt;-<span class="st"> </span>knn<span class="op">$</span>nn.index[(n_g <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)<span class="op">:</span>n, ] <span class="co"># and y</span>
+    i_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">sum</span>(n_<span class="dv">1</span> <span class="op">&lt;</span><span class="st"> </span>n_g <span class="op">+</span><span class="st"> </span>.<span class="dv">5</span>) <span class="co"># Obtaining the sum of</span>
+    i_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">sum</span>(n_<span class="dv">2</span> <span class="op">&gt;</span><span class="st"> </span>n_g <span class="op">+</span><span class="st"> </span>.<span class="dv">5</span>) <span class="co"># the indicator functions</span>
+    <span class="kw">return</span>( (i_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>i_<span class="dv">2</span>) <span class="op">/</span><span class="st"> </span>(nn <span class="op">*</span><span class="st"> </span>n) ) <span class="co"># Test statistic</span>
+  }
+  perm &lt;-<span class="st"> </span><span class="kw">boot</span>(<span class="dt">data =</span> z <span class="co"># 10000 permutation samples</span>
+               , <span class="dt">statistic =</span> t_n.i
+               , <span class="dt">sim =</span> <span class="st">&quot;permutation&quot;</span>
+               , <span class="dt">R =</span> <span class="dv">10000</span>
+               , <span class="dt">nn =</span> <span class="dv">3</span>)
+  p &lt;-<span class="st"> </span><span class="kw">with</span>(perm, <span class="kw">mean</span>( <span class="kw">c</span>(t, t0) <span class="op">&gt;=</span><span class="st"> </span>t0 )) <span class="co"># p-value</span>
+  <span class="kw">return</span>(
+    <span class="kw">histogram</span>(<span class="kw">with</span>(perm, <span class="kw">c</span>(t, t0)) <span class="co"># Histogram</span>
+              , <span class="dt">type =</span> <span class="st">&quot;density&quot;</span>
+              , <span class="dt">col =</span> <span class="st">&quot;#0080ff&quot;</span>
+              , <span class="dt">xlim =</span> <span class="kw">c</span>(<span class="op">-</span>.<span class="dv">1</span>, <span class="fl">1.1</span>)
+              , <span class="dt">xlab =</span> <span class="kw">paste0</span>(<span class="st">&quot;Replicates of T(n, &quot;</span>, nn, <span class="st">&quot;) statistic&quot;</span>)
+              , <span class="dt">ylab =</span> <span class="kw">list</span>(<span class="dt">rot =</span> <span class="dv">0</span>)
+              , <span class="dt">main =</span> <span class="kw">paste0</span>(<span class="st">&quot;Permutation distribution of T(n, &quot;</span>
+                              , nn, <span class="st">&quot;) statistic&quot;</span>)
+              , <span class="dt">sub =</span> <span class="kw">list</span>(<span class="kw">substitute</span>(<span class="kw">paste</span>(<span class="kw">hat</span>(p), <span class="st">&quot; = &quot;</span>, pvalue)
+                                      , <span class="kw">list</span>(<span class="dt">pvalue =</span> p))
+                           , <span class="dt">col =</span> <span class="dv">2</span>)
+              , <span class="dt">panel =</span> <span class="cf">function</span>(...){
+                <span class="kw">panel.histogram</span>(...)
+                <span class="kw">panel.abline</span>(<span class="dt">v =</span> p, <span class="dt">col =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)
+              })
+  )
+}
+<span class="kw">my.knn</span>(z, <span class="dv">3</span>) <span class="co"># k (or r) nearest neighbors = 3</span></code></pre></div>
+<p><img src="mce_files/figure-html/unnamed-chunk-13-1.png" width="960" /></p>
+<hr />
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="permutation-tests.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/03-exer_chap8.Rmd",
+"text": "Edit"
+},
+"download": ["mce.pdf", "mce.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
