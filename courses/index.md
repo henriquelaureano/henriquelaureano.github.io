@@ -92,17 +92,17 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-### Applied Statistics and Data Analysis (check [GitHub repo](https://github.com/henriquelaureano/amcs210))
+### Applied Statistics and Data Analysis (check [GitHub repo](https://github.com/henriquelaureano/ASDA))
 
 > Offered by Professor
 > [Hernando Ombao](https://www.kaust.edu.sa/en/study/faculty/hernando-ombao)
 > @ KAUST in 2017/2
 
-+ [hw1](applied_stats/hw1.pdf) |
-  [hw2](applied_stats/hw2.pdf) |
-  [hw3](applied_stats/hw3.pdf) |
-  [Midterm 1: Take-Home Part](applied_stats/md1-thp.pdf) |
-  [Project](applied_stats/project.pdf)
++ [hw1](ASDA/hw1.pdf) |
+  [hw2](ASDA/hw2.pdf) |
+  [hw3](ASDA/hw3.pdf) |
+  [Midterm 1: Take-Home Part](ASDA/md1-thp.pdf) |
+  [Project](ASDA/project.pdf)
 
 ***
 
