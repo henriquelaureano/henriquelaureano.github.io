@@ -29,8 +29,7 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 
 ## Contact
 
-> <laureano@ufpr.br> | <henriquelaureano@outlook.com>
+<laureano@ufpr.br> | <henriquelaureano@outlook.com>
 
-cotta [at] purdue [dot] edu
 
 [Follow me on Twitter](https://twitter.com/cottascience)!
