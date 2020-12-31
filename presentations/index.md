@@ -4,18 +4,16 @@
 
 ### [2016-10-05] [Multistate models in survival analysis](multistate_markovian_models.pdf)
 
-<img align='right' height='150' src='multistate_markovian_models.png'>
-
-> Invited presentation in the course\
-> Topics in Survival Analysis @ UFPR,\
+> Invited presentation in the course Topics in Survival Analysis @ UFPR,
 > offered by Professor
 > [Suely Giolo](https://docs.ufpr.br/~giolo/index.html)
 
 ***
 
-### [2017-09-26] Presentation in the Bayesian Computational Statistics and Modeling research group
+### [2017-09-26] [Intro to `RMarkdown` and `knitr`](rmd-rautu/)
 
-> [Introduction to R Markdown and knitr](rmd-rautu/)
+> Presented in the [BAYESCOMP](https://cemse.kaust.edu.sa/bayescomp)
+> research group @ KAUST, when I was a member of it
 
 ***
 
