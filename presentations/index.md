@@ -60,8 +60,9 @@
 
 > Two videos talking about my master thesis research
 
-+ [3min](videos/3min.mp4) ([slides](videos/3min.pdf)),
-  press release style
++ [3min](http://leg.ufpr.br/~henrique/presentations/videos/3min.mp4)
+  ([slides](videos/3min.pdf)), press release style
 
-+ [15min](videos/15min.mp4) ([slides](videos/15min.pdf)),
++ [15min](http://leg.ufpr.br/~henrique/presentations/videos/15min.mp4)
+  ([slides](videos/15min.pdf)),
   approaching the developed methodology
