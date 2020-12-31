@@ -9,6 +9,8 @@
   **H. A. Laureano**\
   *Journal of Forestry Research* 29 (2018), 1489--1496
 
+***
+
 ### Accepted for publication
 
 + [2020]\
@@ -18,12 +20,16 @@
   S. M. Barbosa, E. C. Severiano, N. Curi\
   To appear in [*SEMINA: Ciências Agrárias*](http://www.uel.br/revistas/uel/index.php/semagrarias)
 
+***
+
 ### Submitted for publication
 
 + [2020]\
   Unit gamma mixed regression models for continuous bounded data\
   R R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
   **H. A. Laureano**, W. H. Bonat
+
+***
 
 ### In preparation
 

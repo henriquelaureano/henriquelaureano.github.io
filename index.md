@@ -4,7 +4,7 @@
 [Tumblr](tumblr/) |
 [CV](vitae.pdf)
 
-Hi! I'm brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician
+Hi! I'm a brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician
 (BSc in Statistics @ [UFPR](https://goo.gl/DtVAbi), 2016) and MSc
 student in Numerical Methods in Engineering @ UFPR under the guidance of
 Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor

@@ -4,8 +4,7 @@
 
 ### [2016-10-05] [Multistate models in survival analysis](multistate_markovian_models.pdf)
 
-> Invited presentation in
-> the course Topics in Survival Analysis @ UFPR,\
+> Invited presentation in the course Topics in Survival Analysis @ UFPR,
 > offered by Professor
 > [Suely Giolo](https://docs.ufpr.br/~giolo/index.html)
 
@@ -24,10 +23,10 @@
 
 ### [2019-12-16] [SPDE as a smoothing penalty](spde2smooth/slides.pdf)
 
-> Understanding the Stochastic Partial Differential Equation (SPDE)\
+> Understanding the Stochastic Partial Differential Equation (SPDE)
 > approach to smoothing, presented @ [LEG](http://leg.ufpr.br)
 
-> The `code` in the final slide is [here](spde2smooth/code.html) 
+> The `code` in the final slide may be found [here](spde2smooth/code.html) 
 
 ***
 
@@ -51,6 +50,6 @@
 
 + [2020-04-01] [Paper presentation](failure/paperslides.pdf)
 
-  > Modeling the Cumulative Incidence Function (CIF) of\
-  > multivariate competing risks data allowing for\
-  > within-cluster dependence of risk and timing
+  > Modeling the Cumulative Incidence Function (CIF) of multivariate
+  > competing risks data allowing for within-cluster dependence of risk
+  > and timing

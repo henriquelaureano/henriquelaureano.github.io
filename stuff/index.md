@@ -1,7 +1,7 @@
 ## Stuff
 
-*Codes, reports, case studies,\
-and any other stuff that I would like to keep and show*
+*Codes, reports, case studies, and any other stuff that I would like to
+ keep and show*
 
 ***
 
