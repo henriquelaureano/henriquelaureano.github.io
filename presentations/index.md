@@ -4,9 +4,10 @@
 
 ### [2016-10-05] [Multistate markovian models in survival analysis](multistate_markovian_models.pdf)
 
-<img align="left" height="200" src="multistate_markovian_models.png">
+<img align='right' height='200' src='multistate_markovian_models.png'>
 
-> Invited presentation in the course Topics in Survival Analysis @ UFPR,
+> Invited presentation in the course\
+> Topics in Survival Analysis @ UFPR,\
 > offered by Professor
 > [Suely Giolo](https://docs.ufpr.br/~giolo/index.html)
 
