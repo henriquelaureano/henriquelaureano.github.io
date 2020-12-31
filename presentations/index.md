@@ -53,3 +53,15 @@
   > Modeling the Cumulative Incidence Function (CIF) of multivariate
   > competing risks data allowing for within-cluster dependence of risk
   > and timing
+
+***
+
+### [2020-12] pandemic times = taped presentations
+
+> Two videos talking about my master thesis research
+
++ [3min](videos/3min.mp4) ([slides](videos/3min.pdf)),
+  press release style
+
++ [15min](videos/15min.mp4) ([slides](videos/15min.pdf)),
+  approaching the developed methodology
