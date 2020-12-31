@@ -112,18 +112,18 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 > [Ying Sun](https://www.kaust.edu.sa/en/study/faculty/ying-sun)
 > @ KAUST in 2018/1
 
-+ [hw1](nonparametric/hw1.pdf) ([.Rnw](nonparametric/hw1.Rnw)) |
-  [hw2](nonparametric/hw2.pdf) ([.Rnw](nonparametric/hw2.Rnw)) |
-  [hw3](nonparametric/hw3.pdf) ([.Rnw](nonparametric/hw3.Rnw)) |
-  [hw4](nonparametric/hw4.pdf) ([.Rnw](nonparametric/hw4.Rnw)) |
-  [hw5](nonparametric/hw5.pdf) ([.Rnw](nonparametric/hw5.Rnw))
++ [hw1](nonparametrics/hw1.pdf) ([.Rnw](nonparametrics/hw1.Rnw)) |
+  [hw2](nonparametrics/hw2.pdf) ([.Rnw](nonparametrics/hw2.Rnw)) |
+  [hw3](nonparametrics/hw3.pdf) ([.Rnw](nonparametrics/hw3.Rnw)) |
+  [hw4](nonparametrics/hw4.pdf) ([.Rnw](nonparametrics/hw4.Rnw)) |
+  [hw5](nonparametrics/hw5.pdf) ([.Rnw](nonparametrics/hw5.Rnw))
 
 + Project.
-  [presentation](nonparametric/project_slides.pdf)
-  ([.Rmd](nonparametric/project_slides.Rmd),
-  [template](nonparametric/slides_template.tex)) |
-  [report](nonparametric/project_report.pdf)
-  ([.Rnw](nonparametric/project_report.Rnw))
+  [presentation](nonparametrics/project_slides.pdf)
+  ([.Rmd](nonparametrics/project_slides.Rmd),
+  [template](nonparametrics/slides_template.tex)) |
+  [report](nonparametrics/project_report.pdf)
+  ([.Rnw](nonparametrics/project_report.Rnw))
 
 ***
 
