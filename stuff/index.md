@@ -9,7 +9,7 @@ and any other stuff that I would like to keep and show*
 
 > Scientific initiation program (IC) @ UFPR\
 > under the guidance of Professor
-> [Walmes Zeviani](https://leg.ufpr.br/~walmes)
+> [Walmes Zeviani](http://leg.ufpr.br/~walmes/)
 
 + 2014/2015,
   [report](ic/final_report_14.15.pdf) |
@@ -35,8 +35,8 @@ and any other stuff that I would like to keep and show*
 
 ***
 
-> Template for a pairs() option in `ggplot2`, also showing a good
-> choice for `knit_theme` and `\lslset` definitions
+> Template for a `pairs()` option in `ggplot2`,\
+> also showing a good choice for `knit_theme` and `\lslset` definitions
 
 + [pdf](stuff.pdf) ([.Rnw](stuff.Rnw))
 
