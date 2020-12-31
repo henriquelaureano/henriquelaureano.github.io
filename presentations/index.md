@@ -51,6 +51,6 @@
 
 + [2020-04-01] [Paper presentation](failure/paperslides.pdf)
 
-> Modeling the Cumulative Incidence Function (CIF) of multivariate
-> competing risks data allowing for within-cluster dependence of risk
-> and timing
+  > Modeling the Cumulative Incidence Function (CIF) of multivariate
+  > competing risks data allowing for within-cluster dependence of risk
+  > and timing
