@@ -49,4 +49,8 @@
 
 + [2020-03-20] [Competing Risks and Multistate Models](failure/cap8.pdf)
 
-+ [2020-04-01] [Modeling the CIF of mult. competing risks data allowing for within-cluster dependence of risk and timing](failure/paperslides.pdf)
++ [2020-04-01] [Paper presentation](failure/paperslides.pdf)
+
+> Modeling the Cumulative Incidence Function (CIF) of multivariate
+> competing risks data allowing for within-cluster dependence of risk
+> and timing
