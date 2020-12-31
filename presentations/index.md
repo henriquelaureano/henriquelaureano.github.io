@@ -2,9 +2,9 @@
 
 ***
 
-### [2016-10-05] [Multistate markovian models in survival analysis](multistate_markovian_models.pdf)
+### [2016-10-05] [Multistate models in survival analysis](multistate_markovian_models.pdf)
 
-<img align='right' height='200' src='multistate_markovian_models.png'>
+<img align='right' height='150' src='multistate_markovian_models.png'>
 
 > Invited presentation in the course\
 > Topics in Survival Analysis @ UFPR,\
