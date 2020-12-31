@@ -7,9 +7,8 @@
 
 ### Scientific Initiation (IC, *in portuguese*)
 
-> Scientific initiation program (IC) @ UFPR\
-> under the guidance of Professor
-> [Walmes Zeviani](http://leg.ufpr.br/~walmes/)
+> Scientific initiation program (IC) @ UFPR under the guidance of
+> Professor [Walmes Zeviani](http://leg.ufpr.br/~walmes/)
 
 + 2014/2015,
   [report](ic/final_report_14.15.pdf) |
@@ -35,8 +34,8 @@
 
 ***
 
-> Template for a `pairs()` option in `ggplot2`,\
-> also showing a good choice for `knit_theme` and `\lslset` definitions
+> Template for a `pairs()` option in `ggplot2`, also showing a good
+> choice for `knit_theme` and `\lslset` definitions
 
 + [pdf](stuff.pdf) ([.Rnw](stuff.Rnw))
 
