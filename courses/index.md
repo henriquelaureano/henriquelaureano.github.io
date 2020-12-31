@@ -177,11 +177,8 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ### Computational Methods to Statistical Inference
 
-> Offered by Professor
-> [Paulo Justiniano]()
-> and Professor
-> [Wagner Bonat](http://leg.ufpr.br/~wagner/)
-> @ UFPR in 2019/2
+> Offered by Professors [Paulo Justiniano](https://bit.ly/3hurNG3) and
+> [Wagner Bonat](http://leg.ufpr.br/~wagner/) @ UFPR in 2019/2
 
 + [hw1](mcie/list1.pdf) |
   [hw2](mcie/list2.pdf) |
