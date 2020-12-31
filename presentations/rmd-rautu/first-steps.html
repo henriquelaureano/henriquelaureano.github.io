@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Introduction to R Markdown and knitr</title>
+  <meta name="description" content="Introduction to R Markdown and knitr">
+  <meta name="generator" content="bookdown 0.5.1 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Introduction to R Markdown and knitr" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Introduction to R Markdown and knitr" />
+  
+  
+  
+
+<meta name="author" content="Henrique Aparecido Laureano">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="ideas.html">
+<link rel="next" href="others-languages.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>README</a></li>
+<li class="chapter" data-level="" data-path="ideas.html"><a href="ideas.html"><i class="fa fa-check"></i>Ideas</a><ul>
+<li class="chapter" data-level="" data-path="ideas.html"><a href="ideas.html#whats-markdown"><i class="fa fa-check"></i>What’s Markdown?</a></li>
+<li class="chapter" data-level="" data-path="ideas.html"><a href="ideas.html#whats-r-markdown"><i class="fa fa-check"></i>What’s R Markdown?</a></li>
+<li class="chapter" data-level="" data-path="ideas.html"><a href="ideas.html#and-where-i-do-this"><i class="fa fa-check"></i>And where I do this?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html"><i class="fa fa-check"></i>First steps</a><ul>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html#yaml-header"><i class="fa fa-check"></i>YAML header</a></li>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html#basic-things-in-markdown"><i class="fa fa-check"></i>Basic things in Markdown</a><ul>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html#titles"><i class="fa fa-check"></i>Titles</a></li>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html#lists"><i class="fa fa-check"></i>Lists</a></li>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html#images"><i class="fa fa-check"></i>Images</a></li>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html#links"><i class="fa fa-check"></i>Links</a></li>
+<li class="chapter" data-level="" data-path="first-steps.html"><a href="first-steps.html#tables"><i class="fa fa-check"></i>Tables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="others-languages.html"><a href="others-languages.html"><i class="fa fa-check"></i>Others languages</a><ul>
+<li class="chapter" data-level="" data-path="others-languages.html"><a href="others-languages.html#latex"><i class="fa fa-check"></i>LaTeX</a></li>
+<li class="chapter" data-level="" data-path="others-languages.html"><a href="others-languages.html#r"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="others-languages.html"><a href="others-languages.html#others"><i class="fa fa-check"></i>Others</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="knitr.html"><a href="knitr.html"><i class="fa fa-check"></i>knitr</a></li>
+<li class="chapter" data-level="" data-path="other-possibilities.html"><a href="other-possibilities.html"><i class="fa fa-check"></i>Other possibilities</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Introduction to R Markdown and knitr</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="first-steps" class="section level1 unnumbered">
+<h1>First steps</h1>
+<hr />
+<p>If you are using a editor that’s not <a href="https://www.rstudio.com/">RStudio</a>, you need to create a file with the extention .Rmd and open the file is this editor (or create the file in the editor and save with this extention, the final result is the same).</p>
+<p>You can do this also in RStudio, but RStudio provide to you another way. In the first menu option (first option in the up left), you have the options to easily create a Rmd file (and others types of files and applications<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>).</p>
+<hr />
+<p><strong>Important</strong></p>
+<blockquote>
+<p><strong>To use all the R Markdown features you need the R package <code>rmarkdown</code>.</strong></p>
+</blockquote>
+<p>To install the package you only need to run:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;rmarkdown&quot;</span>)</code></pre></div>
+<p>And to load:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;rmarkdown&quot;</span>)</code></pre></div>
+<hr />
+<div id="yaml-header" class="section level2 unnumbered">
+<h2>YAML header</h2>
+<p><a href="http://yaml.org/">YAML</a> is a human friendly data serialization standard for all programming languages. For each programming language you can find the respective YAML project.</p>
+<p>In simple documents you don’t need to create or use a YAML header, but in general is a good thing to do.</p>
+<p><strong>YAML</strong>:</p>
+<p><em>A YAML header explains what type of document to build from your R Markdown file.</em></p>
+<blockquote>
+<p><strong>A YAML header is a set of key: value pairs at the start of your file. Begin and end the header with a line of three dashes (- - -).</strong></p>
+</blockquote>
+<p>Example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">___
+title<span class="op">:</span><span class="st"> &quot;My first R Markdown document&quot;</span>
+author<span class="op">:</span><span class="st"> &quot;Muhammad Lee&quot;</span>
+output<span class="op">:</span><span class="st"> </span>htm_document
+___</code></pre></div>
+<p>Everything that you write inside the YAML is called “metadata”.</p>
+<p>The output value determines which type of file R will build from your .Rmd file:</p>
+<ul>
+<li><strong>output: html_document</strong> <span class="math inline">\(\Rightarrow\)</span> html file (web page)</li>
+<li><strong>output: pdf_document</strong> <span class="math inline">\(\Rightarrow\)</span> pdf document</li>
+<li><strong>output: word_document</strong> <span class="math inline">\(\Rightarrow\)</span> Microsoft Word .docx</li>
+<li><strong>output: beamer_document</strong> <span class="math inline">\(\Rightarrow\)</span> beamer slideshow (pdf)</li>
+<li><strong>output: ioslides_document</strong> <span class="math inline">\(\Rightarrow\)</span> ioslides slideshow (html)</li>
+</ul>
+<blockquote>
+<p><strong>Here <a href="http://rmarkdown.rstudio.com/html_document_format.html">HTML</a> and here <a href="http://rmarkdown.rstudio.com/pdf_document_format.html">PDF</a> you can found several available YAML options for html and pdf documents.</strong></p>
+</blockquote>
+</div>
+<div id="basic-things-in-markdown" class="section level2 unnumbered">
+<h2>Basic things in Markdown</h2>
+<div id="titles" class="section level3 unnumbered">
+<h3>Titles</h3>
+<p>If you wanna create a big title, generally the principal title of your document, you only need to put a # before the title (if you use the YAML option “title” you are already doing this).</p>
+<p>If you put a double hash mark (##) you will create a section, if put three will create a subsection. The maximum is four.</p>
+</div>
+<div id="lists" class="section level3 unnumbered">
+<h3>Lists</h3>
+<p>To create a list you only need to put a * or a number (1, 2, 3, …) followed by a point, or a dashe, all followed by a space.</p>
+</div>
+<div id="images" class="section level3 unnumbered">
+<h3>Images</h3>
+<p>To insert a image you need to use the command <code>![](~/path/of/the/image.jpg)</code>.</p>
+</div>
+<div id="links" class="section level3 unnumbered">
+<h3>Links</h3>
+<p>To create a link you have to use <code>[Desired link name](http://www.desired-address.com)</code>.</p>
+</div>
+<div id="tables" class="section level3 unnumbered">
+<h3>Tables</h3>
+<p>Create a table in Markdown isn’t complicated, but you still can use a online table generator. In this way you can see the results of your table in real time and copy after the code to your file.</p>
+<p>In the internet you can find several, like <a href="http://www.tablesgenerator.com/markdown_tables">this</a>.</p>
+<hr />
+<blockquote>
+<p><strong>Searching for “markdown tutorial” in <a href="http://www.google.com">Google</a> you can find easily several pages showing how create other things in Markdown, like how to put phrases in italic, bold, blockquotes, etc.</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>In Markown you can also insert <span class="math inline">\(\LaTeX\)</span> and HTML raw code.</strong></p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="2">
+<li id="fn2"><p>Take some time to discovery by yourself this things. Is very simple and intuitive.<a href="first-steps.html#fnref2">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="ideas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="others-languages.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
