@@ -25,7 +25,7 @@
 ### [2019-12-16] [SPDE as a smoothing penalty](spde2smooth/slides.pdf)
 
 > Understanding the Stochastic Partial Differential Equation (SPDE)\
-> approach to smoothing, presented @ [LEG](\http://leg.ufpr.br)
+> approach to smoothing, presented @ [LEG](http://leg.ufpr.br)
 
 > The `code` in the final slide is [here](spde2smooth/code.html) 
 
