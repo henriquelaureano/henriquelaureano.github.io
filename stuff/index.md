@@ -1,19 +1,15 @@
 ## Stuff
 
-*Codes, theoretical results, and data analysis from courses taken during
-my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
-(@ [UFMG](http://www.est.ufmg.br/portal/),
-[UNICAMP](https://www.ime.unicamp.br/pos-graduacao/estatistica),
-[KAUST](https://cemse.kaust.edu.sa/stat),
-[UFPR](http://www.prppg.ufpr.br/ppgmne/))*
+*Codes, reports, case studies, and any other stuff that I would like to
+keep and show*
 
 ***
 
-### IC: scientific initiation program at [UFPR](https://goo.gl/DtVAbi)
+### IC: scientific initiation program @ UFPR [UFPR](https://goo.gl/DtVAbi)
 
 > Activities developed during the years 2014/2015 and 2015/2016 under
-> the supervision of
-> [Prof. Dr. Walmes Marques Zeviani](https://leg.ufpr.br/~walmes)
+> the supervision of Professor
+> [Walmes Zeviani](https://leg.ufpr.br/~walmes)
 
 + 2014/2015
 
