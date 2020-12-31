@@ -27,6 +27,7 @@
 > Understanding the Stochastic Partial Differential Equation (SPDE)
 > approach to smoothing, with some code examples in the end.\
 > Presented @ [LEG](\http://leg.ufpr.br)
+
 ***
 
 ### [2020-02-03/07] [I CiDWeek](http://cidamo.com.br/CiDWeek/)
