@@ -127,27 +127,31 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-[Machine Learning](https://sites.google.com/site/kaust229machinelearning/)
+### [Machine Learning](https://sites.google.com/site/kaust229machinelearning/)
 
-+ [Hw 1](ml-kaust/hw1.pdf) ([Rnw](ml-kaust/hw1.Rnw)) |
-  [Hw 2](ml-kaust/hw2.pdf) ([Rnw](ml-kaust/hw2.Rnw)) |
-  [Hw 3](ml-kaust/hw3.pdf) ([Rnw](ml-kaust/hw3.Rnw)) |
-  [Hw 4](ml-kaust/hw4.pdf) ([Rnw](ml-kaust/hw4.Rnw)) |
-  [Hw 5](ml-kaust/hw5.pdf) ([Rnw](ml-kaust/hw5.Rnw))
+> Offered by Professor
+> [Xiangliang Zhang](https://mine.kaust.edu.sa/Pages/ZhangX.aspx)
+> @ KAUST in 2018/1
 
-+ [Hw 6](ml-kaust/hw6.pdf) ([Rnw](ml-kaust/hw6.Rnw)) |
-  [Hw 7](ml-kaust/hw7.pdf) ([Rnw](ml-kaust/hw7.Rnw)) |
-  [Hw 8](ml-kaust/hw8.pdf) ([Rnw](ml-kaust/hw8.Rnw)) |
-  [Hw 9](ml-kaust/hw9.pdf) ([Rnw](ml-kaust/hw9.Rnw)) |
-  [Hw 10](ml-kaust/hw10.pdf) ([Rnw](ml-kaust/hw10.Rnw))
++ [hw1](ml-kaust/hw1.pdf) ([.Rnw](ml-kaust/hw1.Rnw)) |
+  [hw2](ml-kaust/hw2.pdf) ([.Rnw](ml-kaust/hw2.Rnw)) |
+  [hw3](ml-kaust/hw3.pdf) ([.Rnw](ml-kaust/hw3.Rnw)) |
+  [hw4](ml-kaust/hw4.pdf) ([.Rnw](ml-kaust/hw4.Rnw)) |
+  [hw5](ml-kaust/hw5.pdf) ([.Rnw](ml-kaust/hw5.Rnw))
 
-+ Project:
-  [Report](ml-kaust/project_report.pdf)
-  ([Rnw](ml-kaust/project_report.Rnw))
++ [hw6](ml-kaust/hw6.pdf) ([.Rnw](ml-kaust/hw6.Rnw)) |
+  [hw7](ml-kaust/hw7.pdf) ([.Rnw](ml-kaust/hw7.Rnw)) |
+  [hw8](ml-kaust/hw8.pdf) ([.Rnw](ml-kaust/hw8.Rnw)) |
+  [hw9](ml-kaust/hw9.pdf) ([.Rnw](ml-kaust/hw9.Rnw)) |
+  [hw10](ml-kaust/hw10.pdf) ([.Rnw](ml-kaust/hw10.Rnw))
+
++ Project,
+  [report](ml-kaust/project_report.pdf)
+  ([.Rnw](ml-kaust/project_report.Rnw))
 
 ***
 
-Numerical Optimization
+### Numerical Optimization
 
 > AMCS 211. Master level course at [KAUST](https://www.kaust.edu.sa/en)
 > offered by Professor [Bernard Ghanem](http://www.bernardghanem.com/)
