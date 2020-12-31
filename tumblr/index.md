@@ -1,4 +1,4 @@
-<ul><img align='left' width='435' src='light.jpg'></ul>
+<ul><img align='center' src='light.jpg'></ul>
 
 <ul><img align='right' width='435' src='lua.gif'></ul>
 
