@@ -1,129 +1,128 @@
 <img src='light.jpg'>
-
 <img src='lua.gif'>
 
-<ul><img align='right' width='435' src='mauboro.jpg'></ul>
+<img align='right' width='435' src='mauboro.jpg'>
 
-<ul><img align='left' width='435' src='room.jpg'></ul>
+<img align='left' width='435' src='room.jpg'>
 
-<ul><img align='right' width='435' src='adream.jpg'></ul>
+<img align='right' width='435' src='adream.jpg'>
 
-<ul><img align='left' width='435' src='kitchen.jpg'></ul>
+<img align='left' width='435' src='kitchen.jpg'>
 
-<ul><img align='right' width='435' src='palm_trees.png'></ul>
+<img align='right' width='435' src='palm_trees.png'>
 
-<ul><img align='left' width='435' src='samurai.jpg'></ul>
+<img align='left' width='435' src='samurai.jpg'>
 
-<ul><img align='right' width='435' src='save_the_trees.jpg'></ul>
+<img align='right' width='435' src='save_the_trees.jpg'>
 
-<ul><img align='left' width='435' src='the_possible_dream.jpg'></ul>
+<img align='left' width='435' src='the_possible_dream.jpg'>
 
-<ul><img align='left' width='435' src='yemen.jpg'></ul>
+<img align='left' width='435' src='yemen.jpg'>
 
-<ul><img align='right' width='435' src='coconut_tree.jpg'></ul>
+<img align='right' width='435' src='coconut_tree.jpg'>
 
-<ul><img align='right' width='435' src='important.jpg'></ul>
+<img align='right' width='435' src='important.jpg'>
 
-<ul><img align='left' width='435' src='vibe.jpg'></ul>
+<img align='left' width='435' src='vibe.jpg'>
 
-<ul><img align='right' width='435' src='you_would.jpg'></ul>
+<img align='right' width='435' src='you_would.jpg'>
 
-<ul><img align='left' width='435' src='shoes.gif'></ul>
+<img align='left' width='435' src='shoes.gif'>
 
-<ul><img align='right' width='435' src='tucano.jpg'></ul>
+<img align='right' width='435' src='tucano.jpg'>
 
-<ul><img align='left' width='435' src='eyes.jpg'></ul>
+<img align='left' width='435' src='eyes.jpg'>
 
-<ul><img align='left' width='435' src='john.jpg'></ul>
+<img align='left' width='435' src='john.jpg'>
 
-<ul><img align='right' width='435' src='green.jpg'></ul>
+<img align='right' width='435' src='green.jpg'>
 
-<ul><img align='left' width='435' src='who_i_am.jpg'></ul>
+<img align='left' width='435' src='who_i_am.jpg'>
 
-<ul><img align='right' width='435' src='who.jpg'></ul>
+<img align='right' width='435' src='who.jpg'>
 
-<ul><img align='left' width='435' src='netflix.jpg'></ul>
+<img align='left' width='435' src='netflix.jpg'>
 
-<ul><img align='left' width='435' src='living_room.jpg'></ul>
+<img align='left' width='435' src='living_room.jpg'>
 
-<ul><img align='right' width='435' src='coffee.gif'></ul>
+<img align='right' width='435' src='coffee.gif'>
 
-<ul><img align='right' width='435' src='house.jpg'></ul>
+<img align='right' width='435' src='house.jpg'>
 
-<ul><img align='left' width='435' src='cat_grr.jpg'></ul>
+<img align='left' width='435' src='cat_grr.jpg'>
 
-<ul><img align='left' width='435' src='reservoir_dolls.jpg'></ul>
+<img align='left' width='435' src='reservoir_dolls.jpg'>
 
-<ul><img align='right' width='435' src='twin_peaks.jpg'></ul>
+<img align='right' width='435' src='twin_peaks.jpg'>
 
-<ul><img align='right' width='435' src='drink.jpg'></ul>
+<img align='right' width='435' src='drink.jpg'>
 
-<ul><img align='left' width='435' src='what.jpg'></ul>
+<img align='left' width='435' src='what.jpg'>
 
-<ul><img align='right' width='435' src='house_view.jpg'></ul>
+<img align='right' width='435' src='house_view.jpg'>
 
-<ul><img align='left' width='435' src='weird.png'></ul>
+<img align='left' width='435' src='weird.png'>
 
-<ul><img align='left' width='435' src='newreality.png'></ul>
+<img align='left' width='435' src='newreality.png'>
 
-<ul><img align='right' width='435' src='true.png'></ul>
+<img align='right' width='435' src='true.png'>
 
-<ul><img align='left' width='435' src='ohshit.jpg'></ul>
+<img align='left' width='435' src='ohshit.jpg'>
 
-<ul><img align='right' width='435' src='ohyeah.jpg'></ul>
+<img align='right' width='435' src='ohyeah.jpg'>
 
-<ul><img align='left' width='435' src='tattoo2do.jpg'></ul>
+<img align='left' width='435' src='tattoo2do.jpg'>
 
-<ul><img align='left' width='435' src='kindofblue.jpg'></ul>
+<img align='left' width='435' src='kindofblue.jpg'>
 
-<ul><img align='right' width='435' src='hahafunny.jpg'></ul>
+<img align='right' width='435' src='hahafunny.jpg'>
 
-<ul><img align='left' width='435' src='bath.jpg'></ul>
+<img align='left' width='435' src='bath.jpg'>
 
-<ul><img align='right' width='435' src='wow.jpg'></ul>
+<img align='right' width='435' src='wow.jpg'>
 
-<ul><img align='left' width='435' src='haha.jpg'></ul>
+<img align='left' width='435' src='haha.jpg'>
 
-<ul><img align='right' width='435' src='lookthateyes.jpg'></ul>
+<img align='right' width='435' src='lookthateyes.jpg'>
 
-<ul><img align='left' width='435' src='truly.jpg'></ul>
+<img align='left' width='435' src='truly.jpg'>
 
-<ul><img align='right' width='435' src='maybemynexttattoo.jpg'></ul>
+<img align='right' width='435' src='maybemynexttattoo.jpg'>
 
-<ul><img align='left' width='435' src='niceidea.jpg'></ul>
+<img align='left' width='435' src='niceidea.jpg'>
 
-<ul><img align='right' width='435' src='mjandjack.png'></ul>
+<img align='right' width='435' src='mjandjack.png'>
 
-<ul><img align='right' width='435' src='basketballcourt.jpg'></ul>
+<img align='right' width='435' src='basketballcourt.jpg'>
 
-<ul><img align='left' width='435' src='house2.jpg'></ul>
+<img align='left' width='435' src='house2.jpg'>
 
-<ul><img align='right' width='435' src='whatcanwedo.jpg'></ul>
+<img align='right' width='435' src='whatcanwedo.jpg'>
 
-<ul><img align='right' width='435' src='flower.jpg'></ul>
+<img align='right' width='435' src='flower.jpg'>
 
-<ul><img align='left' width='435' src='theshining.jpg'></ul>
+<img align='left' width='435' src='theshining.jpg'>
 
-<ul><img align='right' width='435' src='wikipediaeditor.jpg'></ul>
+<img align='right' width='435' src='wikipediaeditor.jpg'>
 
-<ul><img align='left' width='435' src='thecity.jpg'></ul>
+<img align='left' width='435' src='thecity.jpg'>
 
-<ul><img align='right' width='435' src='theocean.gif'></ul>
+<img align='right' width='435' src='theocean.gif'>
 
-<ul><img align='left' width='435' src='niceview.jpg'></ul>
+<img align='left' width='435' src='niceview.jpg'>
 
-<ul><img align='right' width='435' src='outsidewindow.png'></ul>
+<img align='right' width='435' src='outsidewindow.png'>
 
-<ul><img align='right' width='435' src='squarehouse.png'></ul>
+<img align='right' width='435' src='squarehouse.png'>
 
-<ul><img align='left' width='435' src='inthewater.png'></ul>
+<img align='left' width='435' src='inthewater.png'>
 
-<ul><img align='right' width='435' src='coffee.jpg'></ul>
+<img align='right' width='435' src='coffee.jpg'>
 
-<ul><img align='left' width='435' src='pasta.png'></ul>
+<img align='left' width='435' src='pasta.png'>
 
-<ul><img align='right' width='435' src='mywater.jpg'></ul>
+<img align='right' width='435' src='mywater.jpg'>
 
-<ul><img align='left' width='435' src='whitejaponesehouse.jpg'></ul>
+<img align='left' width='435' src='whitejaponesehouse.jpg'>
 
-<ul><img align='right' width='435' src='shower.jpg'></ul>
+<img align='right' width='435' src='shower.jpg'>
