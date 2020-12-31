@@ -18,7 +18,6 @@
 <img src='eyes.jpg'>
 <img src='john.jpg'>
 <img src='green.jpg'>
-<img class='center' src='who_i_am.jpg'>
 <img src='who.jpg'>
 <img src='netflix.jpg'>
 <img src='living_room.jpg'>
@@ -41,7 +40,6 @@
 <img src='bath.jpg'>
 <img src='wow.jpg'>
 <img src='haha.jpg'>
-<img src='lookthateyes.jpg'>
 <img src='truly.jpg'>
 <img src='maybemynexttattoo.jpg'>
 <img src='niceidea.jpg'>
