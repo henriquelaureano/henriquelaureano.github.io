@@ -1,6 +1,6 @@
-<img align='center' src='light.jpg'>
+<img src='light.jpg'>
 
-<ul><img align='right' width='435' src='lua.gif'></ul>
+<img src='lua.gif'>
 
 <ul><img align='right' width='435' src='mauboro.jpg'></ul>
 
