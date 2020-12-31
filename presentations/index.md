@@ -2,9 +2,14 @@
 
 ***
 
-### [2016-10-05] Topics in Survival Analysis Course - invited
+### [2016-10-05] [Applications of multistate markovian models in survival analysis](multistate_markovian_models.pdf)
 
-> [Applications of multi-state markovian models in survival analysis](multi-state_markovian_models.pdf)
+<img align="left" width="100" height="100"
+     src="multistate_markovian_models.png">
+
+> Invited presentation in the course Topics in Survival Analysis @ UFPR,
+> offered by Professor
+> [Suely Giolo](https://docs.ufpr.br/~giolo/index.html)
 
 ***
 
