@@ -18,7 +18,7 @@
 <img src='eyes.jpg'>
 <img src='john.jpg'>
 <img src='green.jpg'>
-<img src='who_i_am.jpg'>
+<img align='center' src='who_i_am.jpg'>
 <img src='who.jpg'>
 <img src='netflix.jpg'>
 <img src='living_room.jpg'>
