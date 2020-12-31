@@ -182,5 +182,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 + [hw1](mcie/list1.pdf) |
   [hw2](mcie/list2.pdf) |
-  [hw3](mcie/list3.pdf) |
+  [hw3](mcie/list3.pdf)
+  
++ [Multinomial likelihood](mcie/multinomial.html) |
   [Project](mcie/projectslides.pdf)
