@@ -108,22 +108,22 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ### Nonparametric Statistics
 
-> offered by Professor
+> Offered by Professor
 > [Ying Sun](https://www.kaust.edu.sa/en/study/faculty/ying-sun)
 > @ KAUST in 2018/1
 
-+ [hw1](nonparametric_stat/hw1.pdf) ([Rnw](nonparametric_stat/hw1.Rnw)) |
-  [hw2](nonparametric_stat/hw2.pdf) ([Rnw](nonparametric_stat/hw2.Rnw)) |
-  [hw3](nonparametric_stat/hw3.pdf) ([Rnw](nonparametric_stat/hw3.Rnw)) |
-  [hw4](nonparametric_stat/hw4.pdf) ([Rnw](nonparametric_stat/hw4.Rnw)) |
-  [hw5](nonparametric_stat/hw5.pdf) ([Rnw](nonparametric_stat/hw5.Rnw))
++ [hw1](nonparametric/hw1.pdf) ([.Rnw](nonparametric/hw1.Rnw)) |
+  [hw2](nonparametric/hw2.pdf) ([.Rnw](nonparametric/hw2.Rnw)) |
+  [hw3](nonparametric/hw3.pdf) ([.Rnw](nonparametric/hw3.Rnw)) |
+  [hw4](nonparametric/hw4.pdf) ([.Rnw](nonparametric/hw4.Rnw)) |
+  [hw5](nonparametric/hw5.pdf) ([.Rnw](nonparametric/hw5.Rnw))
 
-+ Project: 
-  [Presentation](nonparametric_stat/project_slides.pdf)
-  ([Rmd](nonparametric_stat/project_slides.Rmd),
-  [template](nonparametric_stat/slides_template.tex)) |
-  [Report](nonparametric_stat/project_report.pdf)
-  ([Rnw](nonparametric_stat/project_report.Rnw))
++ Project.
+  [presentation](nonparametric/project_slides.pdf)
+  ([.Rmd](nonparametric/project_slides.Rmd),
+  [template](nonparametric/slides_template.tex)) |
+  [report](nonparametric/project_report.pdf)
+  ([.Rnw](nonparametric/project_report.Rnw))
 
 ***
 
