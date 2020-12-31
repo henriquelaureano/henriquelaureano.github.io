@@ -31,12 +31,11 @@
 
 ***
 
-### [2020-02-03/07] [I CiDWeek](http://cidamo.com.br/CiDWeek/)
+### [2020-02-03/07] [Naive Bayes and Logistic regression](cidamo/slides.pdf)
 
-> Short Courses @
+> Short courses presented @ [I CiDWeek](http://cidamo.com.br/CiDWeek/)
 
-+ [Naive Bayes and Logistic Regression](cidamo/slides.pdf) |
-  [MSc project](cidamo/20min.pdf)
+> I also presented my [MSc project](cidamo/20min.pdf)
 
 ***
 
