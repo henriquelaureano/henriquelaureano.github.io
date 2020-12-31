@@ -1,7 +1,3 @@
-<script>document.title='tumblr'</script>
-
-***
-
 <ul><img align='left' width='435' src='light.jpg'></ul>
 
 <ul><img align='right' width='435' src='lua.gif'></ul>
@@ -131,15 +127,3 @@
 <ul><img align='left' width='435' src='whitejaponesehouse.jpg'></ul>
 
 <ul><img align='right' width='435' src='shower.jpg'></ul>
-
-<div style='float: right; width: 100%; text-align: right;'>
- 
- ***
- 
- [Return to main page](https://henriquelaureano.github.io)
-
-```{r, echo=FALSE}
-date()
-```
-
-</div>
