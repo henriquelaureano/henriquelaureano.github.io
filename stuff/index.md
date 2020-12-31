@@ -1,4 +1,4 @@
-## Courses
+## Stuff
 
 *Codes, theoretical results, and data analysis from courses taken during
 my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
@@ -9,178 +9,50 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-### Linear models extensions (check [GitHub repo](https://github.com/henriquelaureano/lme15))
+### IC: scientific initiation program at [UFPR](https://goo.gl/DtVAbi)
 
-> Offered by Professor
-> [Paulo Justiniano](https://bit.ly/3hurNG3)
-> @ UFPR in 2015/2
+> Activities developed during the years 2014/2015 and 2015/2016 under
+> the supervision of
+> [Prof. Dr. Walmes Marques Zeviani](https://leg.ufpr.br/~walmes)
 
-+ [Piecewise models](lme15/piecewise.html) |
-  [Nonlinear models](lme15/nls.html) |
-  [Nonparametric models](lme15/nonparametric.html)
++ 2014/2015
 
-+ Likelihood for transformed random variables,
-  [theory](lme15/likelihood/theory.html) |
-  [application](lme15/likelihood/application.html)
+    + [Report](ic/final_report_14.15.pdf)
 
-+ Linear mixed models, studt cases: 
-  [Poisson](lme15/lmm/poisson.html) |
-  [Piecewise](lme15/lmm/piecewise.html)
+    + [Slides](ic/slides_14.15.pdf) (15min presentation)
 
-+ Heteroscedastic models,
-  [theory](lme15/hetero/theory.html) |
-  [application](lme15/hetero/application.html)
++ 2015/2016
 
+    + [Report](ic/final_report_15.16.pdf)
 
-### Markovian models (check [GitHub repo](https://github.com/henriquelaureano/markov16))
-
-> Offered by Professor
-> [Fernando Lucambio](https://docs.ufpr.br/~lucambio/)
-> @ UFPR in 2016/1
-
-+ [hw1](markov16/hw1.pdf) |
-  [hw2](markov16/hw2.pdf)
-
-### Intro to machine learning (check [GitHub repo](https://github.com/henriquelaureano/intro2ml))
-
-> Offered by Professor
-> [Eduardo Ferreira](https://eduardoleg.github.io/)
-> @ UFPR in 2016/1
-
-+ [Gradient descent](intro2ml/grad-desc/) |
-  [Regularization](intro2ml/regularization.html) |
-  [Resampling methods](intro2ml/resampling.html)
-
-+ [Supervisioned classification methods](intro2ml/supervisioned.html) |
-  [Support Vector Machines](intro2ml/svm.html)
-  
-+ [Tree based methods](intro2ml/tree.html) |
-  [Text mining](intro2ml/textmining.html) |
-  [Kobe Bryant shot selection](intro2ml/kobe.html)
-
-### Machine learning (check [GitHub repo](https://github.com/henriquelaureano/ml-ufmg))
-
-> Offered by Professor
-> [Marcos Prates](http://www.est.ufmg.br/~marcosop/)
-> @ UFMG in 2016/2
-
-+ [hw1](ml-ufmg/hw1.pdf) |
-  [hw2](ml-ufmg/hw2.pdf) |
-  [hw3](ml-ufmg/hw3.pdf) |
-  [hw4](ml-ufmg/hw4.pdf) |
-  [Paper](ml-ufmg/paper.pdf) |
-  [Poster](ml-ufmg/poster.pdf)
+    + [Slides](ic/slides_15.16.pdf) (15min presentation)
 
 ***
 
-### Statistical methods (check [GitHub repo](https://github.com/henriquelaureano/statmethods))
-
-> Offered by Professor
-> [Mariana Motta](https://www.ime.unicamp.br/~marianar/)
-> @ UNICAMP in 2017/1
-
-+ [hw1](statmethods/hw1.pdf) |
-  [hw2](statmethods/hw2.pdf)
+### [Curse words and deaths in Quentin Tarantino's films](tarantino/)
 
 ***
 
-### [Computational Methods in Statistics](cms/)
+### [Gaussian Markov Random Fields](http://github.com/mynameislaure/GMRF/)
 
-> Offered by Professor
-> [Benilton Carvalho](https://bit.ly/2McXGaC)
-> @ UNICAMP in 2017/1
++ [Algorithm 2.10](gmrf/helpmepls.html)
 
 ***
 
-### Applied Statistics and Data Analysis (check [GitHub repo](https://github.com/henriquelaureano/ASDA))
-
-> Offered by Professor
-> [Hernando Ombao](https://www.kaust.edu.sa/en/study/faculty/hernando-ombao)
-> @ KAUST in 2017/2
-
-+ [hw1](ASDA/hw1.pdf) |
-  [hw2](ASDA/hw2.pdf) |
-  [hw3](ASDA/hw3.pdf) |
-  [Midterm 1: Take-Home Part](ASDA/md1-thp.pdf) |
-  [Project](ASDA/project.pdf)
+### [How is The Simpsons IMDb rating along the seasons?](simpsons/)
 
 ***
 
-### Nonparametric Statistics
+### Template(?) for a pairs() option in ggplot2 ...also showing a good choice for knit_theme and \\lslset definitions
 
-> Offered by Professor
-> [Ying Sun](https://www.kaust.edu.sa/en/study/faculty/ying-sun)
-> @ KAUST in 2018/1
++ [pdf](stuff.pdf)
 
-+ [hw1](nonparametrics/hw1.pdf) ([.Rnw](nonparametrics/hw1.Rnw)) |
-  [hw2](nonparametrics/hw2.pdf) ([.Rnw](nonparametrics/hw2.Rnw)) |
-  [hw3](nonparametrics/hw3.pdf) ([.Rnw](nonparametrics/hw3.Rnw)) |
-  [hw4](nonparametrics/hw4.pdf) ([.Rnw](nonparametrics/hw4.Rnw)) |
-  [hw5](nonparametrics/hw5.pdf) ([.Rnw](nonparametrics/hw5.Rnw))
-
-+ Project.
-  [presentation](nonparametrics/project_slides.pdf)
-  ([.Rmd](nonparametrics/project_slides.Rmd),
-  [template](nonparametrics/slides_template.tex)) |
-  [report](nonparametrics/project_report.pdf)
-  ([.Rnw](nonparametrics/project_report.Rnw))
++ [Rnw](stuff.Rnw)
 
 ***
 
-### [Machine learning](https://sites.google.com/site/kaust229machinelearning/)
+### Some, computational, exercises about likelihood
 
-> Offered by Professor
-> [Xiangliang Zhang](https://mine.kaust.edu.sa/Pages/ZhangX.aspx)
-> @ KAUST in 2018/1
-
-+ [hw1](ml-kaust/hw1.pdf) ([.Rnw](ml-kaust/hw1.Rnw)) |
-  [hw2](ml-kaust/hw2.pdf) ([.Rnw](ml-kaust/hw2.Rnw)) |
-  [hw3](ml-kaust/hw3.pdf) ([.Rnw](ml-kaust/hw3.Rnw)) |
-  [hw4](ml-kaust/hw4.pdf) ([.Rnw](ml-kaust/hw4.Rnw)) |
-  [hw5](ml-kaust/hw5.pdf) ([.Rnw](ml-kaust/hw5.Rnw))
-
-+ [hw6](ml-kaust/hw6.pdf) ([.Rnw](ml-kaust/hw6.Rnw)) |
-  [hw7](ml-kaust/hw7.pdf) ([.Rnw](ml-kaust/hw7.Rnw)) |
-  [hw8](ml-kaust/hw8.pdf) ([.Rnw](ml-kaust/hw8.Rnw)) |
-  [hw9](ml-kaust/hw9.pdf) ([.Rnw](ml-kaust/hw9.Rnw)) |
-  [hw10](ml-kaust/hw10.pdf) ([.Rnw](ml-kaust/hw10.Rnw))
-
-+ Project,
-  [report](ml-kaust/project_report.pdf)
-  ([.Rnw](ml-kaust/project_report.Rnw))
-
-***
-
-### Numerical optimization
-
-> Offered by Professor
-> [Bernard Ghanem](http://www.bernardghanem.com/)
-> @ KAUST in 2018/1
-
-+ Coding part,
-  [hw2](numopt/hw2.pdf) ([.Rnw](numopt/hw2.Rnw)) |
-  [hw3](numopt/hw3.pdf) ([.Rnw](numopt/hw3.Rnw))
-
-***
-
-### Numerical analysis
-
-> Offered by Professor
-> [Luiz Matioli](https://docs.ufpr.br/~matioli/)
-> @ UFPR in 2019/2
-
-+ Coding part,
-  [hw1](numanal/list1.pdf) |
-  [hw2](numanal/list2.pdf)
-
-***
-
-### Computational Methods to Statistical Inference
-
-> Offered by Professors [Paulo Justiniano](https://bit.ly/3hurNG3) and
-> [Wagner Bonat](http://leg.ufpr.br/~wagner/) @ UFPR in 2019/2
-
-+ [hw1](mcie/list1.pdf) |
-  [hw2](mcie/list2.pdf) |
-  [hw3](mcie/list3.pdf)
-
++ [pdf](likelihood/likelihood.pdf) |
+  [bookdown](likelihood/lkl_ex_bookdown/) |
+  [Rnw](likelihood/likelihood.Rnw)
