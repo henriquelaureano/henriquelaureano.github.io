@@ -35,7 +35,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### Markovian models (check [GitHub repo](https://github.com/henriquelaureano/markov16))
 
 > Offered by Professor
-> [Fernando Lucambio Pérez](https://docs.ufpr.br/~lucambio/)
+> [Fernando Lucambio](https://docs.ufpr.br/~lucambio/)
 > @ UFPR in 2016/1
 
 + [hw1](markov16/hw1.pdf) |
@@ -44,7 +44,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### Intro to machine learning (check [GitHub repo](https://github.com/henriquelaureano/intro2ml))
 
 > Offered by Professor
-> [Eduardo Vargas Ferreira](https://eduardoleg.github.io/)
+> [Eduardo Ferreira](https://eduardoleg.github.io/)
 > @ UFPR in 2016/1
 
 + [Gradient descent](intro2ml/grad-desc/) |
@@ -61,7 +61,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### Machine learning (check [GitHub repo](https://github.com/henriquelaureano/ml-ufmg))
 
 > Offered by Professor
-> [Marcos Oliveira Prates](http://www.est.ufmg.br/~marcosop/)
+> [Marcos Prates](http://www.est.ufmg.br/~marcosop/)
 > @ UFMG in 2016/2
 
 + [hw1](ml-ufmg/hw1.pdf) |
@@ -76,7 +76,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### Statistical methods (check [GitHub repo](https://github.com/henriquelaureano/statmethods))
 
 > Offered by Professor
-> [Mariana Rodrigues Motta](https://www.ime.unicamp.br/~marianar/)
+> [Mariana Motta](https://www.ime.unicamp.br/~marianar/)
 > @ UNICAMP in 2017/1
 
 + [hw1](statmethods/hw1.pdf) |
@@ -87,7 +87,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### [Computational Methods in Statistics](cms/)
 
 > Offered by Professor
-> [Benilton S Carvalho](https://bit.ly/2McXGaC)
+> [Benilton Carvalho](https://bit.ly/2McXGaC)
 > @ UNICAMP in 2017/1
 
 ***
@@ -95,7 +95,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 ### Applied Statistics and Data Analysis (check [GitHub repo](https://github.com/henriquelaureano/ASDA))
 
 > Offered by Professor
-> [Hernando C Ombao](https://www.kaust.edu.sa/en/study/faculty/hernando-ombao)
+> [Hernando Ombao](https://www.kaust.edu.sa/en/study/faculty/hernando-ombao)
 > @ KAUST in 2017/2
 
 + [hw1](ASDA/hw1.pdf) |
@@ -127,7 +127,7 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-### [Machine Learning](https://sites.google.com/site/kaust229machinelearning/)
+### [Machine learning](https://sites.google.com/site/kaust229machinelearning/)
 
 > Offered by Professor
 > [Xiangliang Zhang](https://mine.kaust.edu.sa/Pages/ZhangX.aspx)
@@ -151,35 +151,39 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
 
 ***
 
-### Numerical Optimization
+### Numerical optimization
 
-> AMCS 211. Master level course at [KAUST](https://www.kaust.edu.sa/en)
-> offered by Professor [Bernard Ghanem](http://www.bernardghanem.com/)
-> in the Spring of 2018
+> Offered by Professor
+> [Bernard Ghanem](http://www.bernardghanem.com/)
+> @ KAUST in 2018/1
 
-+ Coding part, [Hw 2](num_optim/hw2.pdf) ([Rnw](num_optim/hw2.Rnw)) |
-  Coding part, [Hw 3](num_optim/hw3.pdf) ([Rnw](num_optim/hw3.Rnw))
-
-***
-
-Numerical Analysis
-
-> MNUM 7009. Graduate level course at [UFPR](https://www.ufpr.br)
-> offered by Professor [Luiz Matioli](https://docs.ufpr.br/~matioli/)
-> in the 2nd Semester of 2019
-
-+ Coding part, [Hw 1](numerical_analysis/list_1.pdf) |
-  Coding part, [Hw 2](numerical_analysis/list_2.pdf)
++ Coding part,
+  [hw2](numopt/hw2.pdf) ([.Rnw](numopt/hw2.Rnw)) |
+  [hw3](numopt/hw3.pdf) ([.Rnw](numopt/hw3.Rnw))
 
 ***
 
-Computational Methods to Statistical Inference
+### Numerical analysis
 
-> MNUM 7095. Graduate level course at [UFPR](https://www.ufpr.br)
-> offered by Professor [Paulo Justiniano](http://leg.ufpr.br/~paulojus/)
-> in the 2nd Semester of 2019</h5>
+> Offered by Professor
+> [Luiz Matioli](https://docs.ufpr.br/~matioli/)
+> @ UFPR in 2019/2
 
-+ [Hw 1](mcie/list_1.pdf) |
-  [Hw 2](mcie/list_2.pdf) |
-  [Hw 3](mcie/list_3.pdf)
++ Coding part,
+  [hw1](numanal/list1.pdf) |
+  [hw2](numanal/list2.pdf)
+
+***
+
+### Computational Methods to Statistical Inference
+
+> Offered by Professor
+> [Paulo Justiniano]()
+> and Professor
+> [Wagner Bonat](http://leg.ufpr.br/~wagner/)
+> @ UFPR in 2019/2
+
++ [hw1](mcie/list1.pdf) |
+  [hw2](mcie/list2.pdf) |
+  [hw3](mcie/list3.pdf)
 
