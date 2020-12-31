@@ -4,16 +4,17 @@
 
 ### [2016-10-05] [Multistate models in survival analysis](multistate_markovian_models.pdf)
 
-> Invited presentation in the course Topics in Survival Analysis @ UFPR,
+> Invited presentation in
+> the course Topics in Survival Analysis @ UFPR,\
 > offered by Professor
 > [Suely Giolo](https://docs.ufpr.br/~giolo/index.html)
 
 ***
 
-### [2017-09-26] [Intro to `RMarkdown` and `knitr`](rmd-rautu/)
+### [2017-09-26] [Intro to RMarkdown and knitr](rmd-rautu/)
 
 > Presented in the [BAYESCOMP](https://cemse.kaust.edu.sa/bayescomp)
-> research group @ KAUST, when I was a member of it
+> research group @ KAUST
 
 ***
 
@@ -21,17 +22,21 @@
 
 ***
 
-### [2019-12-16] LEG presentation
+### [2019-12-16] [SPDE as a smoothing penalty](spde2smooth/slides.pdf)
 
-> [spde2smooth (with a link in the final slide to a html rmd with some code examples)](spde2smooth/slides.pdf)
+> Presented @ [LEG](\http://leg.ufpr.br/)\
+> Understanding the Stochastic Partial Differential Equation (SPDE)
+> Approach to Smoothing\
+> (with some code examples in the end)
 
 ***
 
 ### [2020-02-03/07] [I CiDWeek](http://cidamo.com.br/CiDWeek/)
 
-> [Naive Bayes and Logistic Regression short course](cidamo/slides.pdf)
+> Short Courses @
 
-> [Master project presentation](cidamo/20min.pdf)
++ [Naive Bayes and Logistic Regression](cidamo/slides.pdf) |
+  [Masters project](cidamo/20min.pdf)
 
 ***
 
