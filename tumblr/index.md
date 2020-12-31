@@ -1,128 +1,65 @@
 <img src='light.jpg'>
 <img src='lua.gif'>
-
-<img align='right' width='435' src='mauboro.jpg'>
-
-<img align='left' width='435' src='room.jpg'>
-
-<img align='right' width='435' src='adream.jpg'>
-
-<img align='left' width='435' src='kitchen.jpg'>
-
-<img align='right' width='435' src='palm_trees.png'>
-
-<img align='left' width='435' src='samurai.jpg'>
-
-<img align='right' width='435' src='save_the_trees.jpg'>
-
-<img align='left' width='435' src='the_possible_dream.jpg'>
-
-<img align='left' width='435' src='yemen.jpg'>
-
-<img align='right' width='435' src='coconut_tree.jpg'>
-
-<img align='right' width='435' src='important.jpg'>
-
-<img align='left' width='435' src='vibe.jpg'>
-
-<img align='right' width='435' src='you_would.jpg'>
-
-<img align='left' width='435' src='shoes.gif'>
-
-<img align='right' width='435' src='tucano.jpg'>
-
-<img align='left' width='435' src='eyes.jpg'>
-
-<img align='left' width='435' src='john.jpg'>
-
-<img align='right' width='435' src='green.jpg'>
-
-<img align='left' width='435' src='who_i_am.jpg'>
-
-<img align='right' width='435' src='who.jpg'>
-
-<img align='left' width='435' src='netflix.jpg'>
-
-<img align='left' width='435' src='living_room.jpg'>
-
-<img align='right' width='435' src='coffee.gif'>
-
-<img align='right' width='435' src='house.jpg'>
-
-<img align='left' width='435' src='cat_grr.jpg'>
-
-<img align='left' width='435' src='reservoir_dolls.jpg'>
-
-<img align='right' width='435' src='twin_peaks.jpg'>
-
-<img align='right' width='435' src='drink.jpg'>
-
-<img align='left' width='435' src='what.jpg'>
-
-<img align='right' width='435' src='house_view.jpg'>
-
-<img align='left' width='435' src='weird.png'>
-
-<img align='left' width='435' src='newreality.png'>
-
-<img align='right' width='435' src='true.png'>
-
-<img align='left' width='435' src='ohshit.jpg'>
-
-<img align='right' width='435' src='ohyeah.jpg'>
-
-<img align='left' width='435' src='tattoo2do.jpg'>
-
-<img align='left' width='435' src='kindofblue.jpg'>
-
-<img align='right' width='435' src='hahafunny.jpg'>
-
-<img align='left' width='435' src='bath.jpg'>
-
-<img align='right' width='435' src='wow.jpg'>
-
-<img align='left' width='435' src='haha.jpg'>
-
-<img align='right' width='435' src='lookthateyes.jpg'>
-
-<img align='left' width='435' src='truly.jpg'>
-
-<img align='right' width='435' src='maybemynexttattoo.jpg'>
-
-<img align='left' width='435' src='niceidea.jpg'>
-
-<img align='right' width='435' src='mjandjack.png'>
-
-<img align='right' width='435' src='basketballcourt.jpg'>
-
-<img align='left' width='435' src='house2.jpg'>
-
-<img align='right' width='435' src='whatcanwedo.jpg'>
-
-<img align='right' width='435' src='flower.jpg'>
-
-<img align='left' width='435' src='theshining.jpg'>
-
-<img align='right' width='435' src='wikipediaeditor.jpg'>
-
-<img align='left' width='435' src='thecity.jpg'>
-
-<img align='right' width='435' src='theocean.gif'>
-
-<img align='left' width='435' src='niceview.jpg'>
-
-<img align='right' width='435' src='outsidewindow.png'>
-
-<img align='right' width='435' src='squarehouse.png'>
-
-<img align='left' width='435' src='inthewater.png'>
-
-<img align='right' width='435' src='coffee.jpg'>
-
-<img align='left' width='435' src='pasta.png'>
-
-<img align='right' width='435' src='mywater.jpg'>
-
-<img align='left' width='435' src='whitejaponesehouse.jpg'>
-
-<img align='right' width='435' src='shower.jpg'>
+<img src='mauboro.jpg'>
+<img src='room.jpg'>
+<img src='adream.jpg'>
+<img src='kitchen.jpg'>
+<img src='palm_trees.png'>
+<img src='samurai.jpg'>
+<img src='save_the_trees.jpg'>
+<img src='the_possible_dream.jpg'>
+<img src='yemen.jpg'>
+<img src='coconut_tree.jpg'>
+<img src='important.jpg'>
+<img src='vibe.jpg'>
+<img src='you_would.jpg'>
+<img src='shoes.gif'>
+<img src='tucano.jpg'>
+<img src='eyes.jpg'>
+<img src='john.jpg'>
+<img src='green.jpg'>
+<img src='who_i_am.jpg'>
+<img src='who.jpg'>
+<img src='netflix.jpg'>
+<img src='living_room.jpg'>
+<img src='coffee.gif'>
+<img src='house.jpg'>
+<img src='cat_grr.jpg'>
+<img src='reservoir_dolls.jpg'>
+<img src='twin_peaks.jpg'>
+<img src='drink.jpg'>
+<img src='what.jpg'>
+<img src='house_view.jpg'>
+<img src='weird.png'>
+<img src='newreality.png'>
+<img src='true.png'>
+<img src='ohshit.jpg'>
+<img src='ohyeah.jpg'>
+<img src='tattoo2do.jpg'>
+<img src='kindofblue.jpg'>
+<img src='hahafunny.jpg'>
+<img src='bath.jpg'>
+<img src='wow.jpg'>
+<img src='haha.jpg'>
+<img src='lookthateyes.jpg'>
+<img src='truly.jpg'>
+<img src='maybemynexttattoo.jpg'>
+<img src='niceidea.jpg'>
+<img src='mjandjack.png'>
+<img src='basketballcourt.jpg'>
+<img src='house2.jpg'>
+<img src='whatcanwedo.jpg'>
+<img src='flower.jpg'>
+<img src='theshining.jpg'>
+<img src='wikipediaeditor.jpg'>
+<img src='thecity.jpg'>
+<img src='theocean.gif'>
+<img src='niceview.jpg'>
+<img src='outsidewindow.png'>
+<img src='squarehouse.png'>
+<img src='inthewater.png'>
+<img src='coffee.jpg'>
+<img src='pasta.png'>
+<img src='mywater.jpg'>
+<img src='whitejaponesehouse.jpg'>
+<img src='shower.jpg'>
