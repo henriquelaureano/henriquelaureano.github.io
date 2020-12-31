@@ -7,8 +7,9 @@ and any other stuff that I would like to keep and show*
 
 ### Scientific Initiation (IC, *in portuguese*)
 
-> Scientific initiation program (IC) @ UFPR under the guidance of
-> Professor [Walmes Zeviani](https://leg.ufpr.br/~walmes)
+> Scientific initiation program (IC) @ UFPR\
+> under the guidance of Professor
+> [Walmes Zeviani](https://leg.ufpr.br/~walmes)
 
 + 2014/2015,
   [report](ic/final_report_14.15.pdf) |
