@@ -1,0 +1,392 @@
+\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(handout)$handout,$endif$$if(beamer)$ignorenonframetext,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+
+\beamertemplatenavigationsymbols$if(navigation)$$navigation$$else$empty$endif$
+$if(fontfamily)$
+\usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
+$else$
+\usepackage{lmodern}
+$endif$
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[$if(fontenc)$$fontenc$$else$T1$endif$]{fontenc}
+  \usepackage[utf8]{inputenc}
+$if(euro)$
+  \usepackage{eurosym}
+$endif$
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+$if(euro)$
+  \newcommand{\euro}{€}
+$endif$
+$if(mainfont)$
+    \setmainfont[$for(mainfontoptions)$$mainfontoptions$$sep$,$endfor$]{$mainfont$}
+$endif$
+$if(sansfont)$
+    \setsansfont[$for(sansfontoptions)$$sansfontoptions$$sep$,$endfor$]{$sansfont$}
+$endif$
+$if(monofont)$
+    \setmonofont[Mapping=tex-ansi$if(monofontoptions)$,$for(monofontoptions)$$monofontoptions$$sep$,$endfor$$endif$]{$monofont$}
+$endif$
+$if(mathfont)$
+    \setmathfont(Digits,Latin,Greek)[$for(mathfontoptions)$$mathfontoptions$$sep$,$endfor$]{$mathfont$}
+$endif$
+$if(CJKmainfont)$
+    \usepackage{xeCJK}
+    \setCJKmainfont[$for(CJKoptions)$$CJKoptions$$sep$,$endfor$]{$CJKmainfont$}
+$endif$
+\fi
+
+% Start adding some content
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{beamerthemebars}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{changepage}
+\usepackage{bm}
+\usepackage{animate}
+\usepackage{pifont}
+\usepackage{framed}
+
+\definecolor{shadecolor}{rgb}{1,0.8,0.3}
+
+\usepackage{tikz}
+\usepackage{adjustbox}
+\input{tikzit.sty}
+
+\usetheme{Boadilla}
+\usecolortheme{dove}
+
+% redefined colors for beamer
+\definecolor{mykindofblue}{RGB}{0,128,255}
+\definecolor{notthefruitorange}{RGB}{255,127,0}
+
+\definecolor{thegray}{RGB}{210,210,210}
+\definecolor{thegray2}{RGB}{244,244,244}
+
+\definecolor{laurence}{rgb}{1,0.8,0.3}
+
+%% main title
+\setbeamercolor{title}{fg=black,bg=white}
+\setbeamercolor{frametitle}{fg=white,bg=thegray2}
+\setbeamercolor{normal text}{fg=black}
+\setbeamercolor{item projected}{fg=black,bg=thegray2}
+
+\setbeamertemplate{itemize items}{>>}
+\setbeamertemplate{enumerate items}{>>}
+
+\setbeamercolor{itemize item}{fg=notthefruitorange}
+\setbeamercolor{itemize subitem}{fg=notthefruitorange}
+\setbeamercolor{enumerate item}{fg=notthefruitorange}
+\setbeamercolor{enumerate subitem}{fg=notthefruitorange}
+
+\setbeamercolor{block title}{fg=white,bg=white}
+\setbeamercolor{block body}{fg=white,bg=white}
+\setbeamercolor{title in head/foot}{fg=white,bg=white}
+\setbeamercolor{author in head/foot}{fg=white,bg=white}
+\setbeamercolor{institute in head/foot}{fg=white,bg=white}
+\setbeamercolor{date in head/foot}{fg=black,bg=white}
+\setbeamercolor{section in head/foot}{fg=white,bg=white}
+\setbeamercolor{subsection in head/foot}{fg=white,bg=white}
+
+\hypersetup{colorlinks=true,urlcolor=mykindofblue,linkcolor=mykindofblue,% link color controls section, subsection, and title
+citecolor=notthefruitorange,
+anchorcolor=notthefruitorange}
+
+\addtobeamertemplate{headline}{\hypersetup{linkcolor=.}}{}
+\addtobeamertemplate{footline}{\hypersetup{linkcolor=.}}{}
+
+\setbeamercolor{block title}{fg=white,bg=mykindofblue}
+\setbeamercolor{block body}{fg=black,bg=thegray2}
+
+\setbeamercolor{block title alerted}{fg=white,bg=notthefruitorange}
+\setbeamercolor{block body alerted}{fg=black,bg=thegray2}
+
+\setbeamercolor{block title example}{fg=mykindofblue,bg=thegray}
+\setbeamercolor{block body example}{fg=black,bg=thegray2}
+
+\usepackage{helvet}
+\usepackage{eulervm}
+
+$if(fonttheme)$
+\usefonttheme{$fonttheme$}
+$endif$
+$if(mainfont)$
+%% \usefonttheme{structuresmallcapsserif}
+$endif$
+$if(innertheme)$
+\useinnertheme{$innertheme$}
+$endif$
+$if(outertheme)$
+\useoutertheme{$outertheme$}
+$endif$
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+$if(lang)$
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[shorthands=off,$for(babel-otherlangs)$$babel-otherlangs$,$endfor$main=$babel-lang$]{babel}
+$if(babel-newcommands)$
+  $babel-newcommands$
+$endif$
+\else
+  \usepackage{polyglossia}
+  \setmainlanguage[$polyglossia-lang.options$]{$polyglossia-lang.name$}
+$for(polyglossia-otherlangs)$
+  \setotherlanguage[$polyglossia-otherlangs.options$]{$polyglossia-otherlangs.name$}
+$endfor$
+\fi
+$endif$
+\newif\ifbibliography
+$if(natbib)$
+\usepackage{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+$if(biblatex)$
+\usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+$if(listings)$
+\usepackage{listings}
+$endif$
+$if(lhs)$
+\lstnewenvironment{code}{\lstset{language=Haskell,basicstyle=\small\ttfamily}}{}
+$endif$
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+$if(verbatim-in-note)$
+\usepackage{fancyvrb}
+\VerbatimFootnotes % allows verbatim text in footnotes
+$endif$
+$if(tables)$
+\usepackage{longtable,booktabs}
+\usepackage{caption}
+% These lines are needed to make table captions work with longtable:
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+$endif$
+$if(graphics)$
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight0.8\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+$endif$
+
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+
+$if(section-titles)$
+\AtBeginSection[]
+{
+  \ifbibliography
+  \else
+    \let\insertsectionnumber\relax
+    \let\sectionname\relax
+    \begin{frame}
+      \frametitle{On the Agenda}
+      % \begin{multicols}{2}
+      % \tableofcontents[currentsection]
+      \tableofcontents
+      % \end{multicols}
+    \end{frame}
+  \fi
+}
+$endif$
+
+$if(links-as-notes)$
+% Make links footnotes instead of hotlinks:
+\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
+$endif$
+$if(strikeout)$
+\usepackage[normalem]{ulem}
+% avoid problems with \sout in headers with hyperref:
+\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
+$endif$
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$if(numbersections)$
+\setcounter{secnumdepth}{5}
+$else$
+\setcounter{secnumdepth}{0}
+$endif$
+$if(dir)$
+\ifxetex
+  % load bidi as late as possible as it modifies e.g. graphicx
+  $if(latex-dir-rtl)$
+  \usepackage[RTLdocument]{bidi}
+  $else$
+  \usepackage{bidi}
+  $endif$
+\fi
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \TeXXeTstate=1
+  \newcommand{\RL}[1]{\beginR #1\endR}
+  \newcommand{\LR}[1]{\beginL #1\endL}
+  \newenvironment{RTL}{\beginR}{\endR}
+  \newenvironment{LTR}{\beginL}{\endL}
+\fi
+$endif$
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
+$if(author)$
+\author[
+$if(short-author)$
+$for(short-author)$$short-author$$sep$ \and $endfor$
+$else$
+$for(author)$$author$$sep$ \and $endfor$
+$endif$
+]{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+$if(institute)$
+\institute[
+$if(short-institute)$
+$for(short-institute)$$short-institute$$sep$ \and $endfor$
+$endif$
+]{
+$if(department)$
+$for(department)$$department$$sep$ \and $endfor$ \\
+$endif$
+$for(institute)$$institute$$sep$ \and $endfor$
+$if(email)$
+\\ $for(email)$ \href{mailto:$email$}{\nolinkurl{$email$}}$sep$ \and $endfor$
+$endif$
+}
+$endif$
+\date[
+$if(short-date)$
+$short-date$
+$else$
+$date$
+$endif$]{
+$if(date)$
+$date$
+$if(license)$
+\\ \vspace{5mm}
+$endif$
+$endif$
+$if(license)$
+{\scriptsize $license$}
+$endif$
+}
+
+\titlegraphic{
+  \vspace{-1cm}
+  \includegraphics[height=2cm]{logo/ppgmne-logo.png}
+  \hspace{8.75cm}
+  \includegraphics[height=2cm]{logo/ufpr.png}
+}
+\logo{\includegraphics[height=1.5cm]{logo/leg.pdf}}
+
+$if(safe-columns)$
+\def\begincols{\begin{columns}}
+\def\endcols{\end{columns}}
+$endif$
+
+\begin{document}
+
+% Necessary due to the ignorenonframetext requirement
+% See: http://tex.stackexchange.com/questions/181032/ignorenonframetext-option-breaks-frame-background-color-option
+\mode<all>{
+\title[
+$if(short-title)$
+$short-title$
+$else$
+Missing ``\texttt{short-title}'' field!
+$endif$
+]{
+$if(title)$
+\begin{columns}
+  \column{0.2\textwidth}
+  \hspace{0.5cm}
+  \includegraphics[height=2cm]{logo/leg.pdf}
+  \column{0.8\textwidth}
+  $title$
+\end{columns}
+$else$
+Need to fill in the ``\texttt{title}'' field!
+$endif$
+}
+}
+\mode*
+
+$if(title)$
+% plain is to remove the \logo from the title page
+\frame[plain]{\titlepage}
+$endif$
+
+$for(include-before)$
+$include-before$
+
+$endfor$
+$if(toc)$
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+$endif$
+
+$body$
+
+$if(natbib)$
+$if(bibliography)$
+$if(biblio-title)$
+$if(book-class)$
+\renewcommand\bibname{$biblio-title$}
+$else$
+\renewcommand\refname{$biblio-title$}
+$endif$
+$endif$
+\begin{frame}[allowframebreaks]{$biblio-title$}
+\bibliographytrue
+\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+\end{frame}
+
+$endif$
+$endif$
+$if(biblatex)$
+\begin{frame}[allowframebreaks]{$biblio-title$}
+\bibliographytrue
+\printbibliography[heading=none]
+\end{frame}
+
+$endif$
+$for(include-after)$
+$include-after$
+
+$endfor$
+\end{document}

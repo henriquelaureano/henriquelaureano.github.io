@@ -1,0 +1,432 @@
+---
+title: "Modeling the cumulative incidence function\\newline
+        of clustered competing risk data: \\newline
+        a multinomial GLMM approach"
+subtitle: ""
+short-title: ""
+author: "\\includegraphics[width=.175\\textwidth]{logo/leg.pdf}
+         \\hspace{.5\\textwidth}
+         \\includegraphics[width=.25\\textwidth]{logo/ufpr.png}
+         \\vspace{.75cm}\\newline
+         Henrique Laureano\\hspace{.25\\textwidth} Wagner Bonat\\newline
+         \\url{http://leg.ufpr.br/~henrique} $\\mid$
+         \\url{http://leg.ufpr.br/~wagner}"
+short-author: "leg.ufpr.br/~henrique"
+# email: "laureano\\@ufpr.br"
+# date: "*Last modification on* `r Sys.time()`"
+short-date: "leg.ufpr.br/~henrique"
+department: ""
+institute: ""
+# short-institute: "LEG"
+section-titles: true
+safe-columns: true # enables special latex macros for columns
+output:
+  beamer_presentation:
+    template: template.tex
+---
+
+```{r, include=FALSE}
+library(knitr)
+
+knit_hooks$set(rmdsize = function(before, options, envir) {
+    if (before) "\\footnotesize"
+    else "\\normalsize"
+})
+
+opts_chunk$set(rmdsize = TRUE,
+               warning = FALSE,
+               cache = TRUE,
+               cache_path = "slides_cache/",
+               fig.path = "slides_figures/")
+```
+
+###
+
+\begin{minipage}{.775\textwidth}
+ \begin{shaded}
+  Cause-specific \textbf{cumulative incidence function} (CIF),
+  \(F(\cdot)\)
+ \end{shaded}
+\end{minipage}
+
+\[
+\begin{aligned}
+  \text{for a type}~{\color{notthefruitorange}{k}}~\text{failure},
+  \quad
+  F_{\color{notthefruitorange}{k}}(t\mid\{X, R\})
+  &=\mathbb{P}[T\leq t,
+               K = {\color{notthefruitorange}{k}}\mid\{X, R\}]\\
+  &=\underbrace{
+     \pi_{\color{notthefruitorange}{k}}(\{X, R\})}_{
+     \substack{\text{risk level}}}\times
+    \underbrace{
+     \Phi[t\mid\{X, R_{\color{notthefruitorange}{k}}\}]}_{
+     \substack{\text{failure time}\\\text{trajectory}}}.
+\end{aligned}
+\]
+As proposed by \hyperlink{SCHEIKE}{Cederkvist et al., 2019}.
+
+\pause
+```{r cif, echo=FALSE, fig.height=2, fig.width=4}
+pacman::p_load(tidyverse, ## you need the pacman's package
+               ggplot2)
+t <- seq(30, 79.5, by = 0.5)
+delta <- 80
+u <- c(0, 0)
+eta <- c(0, 0)
+beta <- c(-2, -1.5)
+gamma <- c(1.2, 1)
+w <- c(3, 5)
+risk1 <- exp(beta[1] + u[1])
+risk2 <- exp(beta[2] + u[2])
+level <- 1 +  risk1 + risk2
+risklevel1 <- risk1/level
+risklevel2 <- risk2/level
+traj1 <- pnorm(w[1] * atanh(2 * t/delta - 1) - gamma[1] - eta[1])
+traj2 <- pnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
+cif1 <- risklevel1 * traj1
+cif2 <- risklevel2 * traj2
+df <- as.data.frame(cbind(t, cif1, cif2))
+df <- df %>% pivot_longer(cols = cif1:cif2,
+                          names_to = "cif", values_to = "value")
+ggplot(df, aes(t, value, group = cif, color = cif)) +
+    geom_line(size = 1.5) +
+    labs(x = "Time", y = "Incidence") +
+    scale_color_manual(values = c("#ff7f00", "#0080ff"),
+                       labels = c("Cause 1", "Cause 2")) +
+    theme(legend.title = element_blank(),
+          legend.text = element_text(size = 8),
+          axis.text.x = element_text(size = 7),
+          axis.text.y = element_text(size = 7),
+          axis.title.x = element_text(
+              size = 8,
+              margin = unit(c(t = 2, r = 0, b = 0, l = 0), "mm")),
+          axis.title.y = element_text(
+              size = 8,
+              margin = unit(c(t = 0, r = 2, b = 0, l = 0), "mm")))
+```
+
+###
+
+\begin{minipage}{.275\textwidth}
+ \begin{shaded}
+  Survival data designs
+ \end{shaded}
+\end{minipage}
+
+\begin{center}
+ \adjustbox{height=\textwidth,width=\textwidth,keepaspectratio}{
+  \begin{tikzpicture}
+   \begin{pgfonlayer}{nodelayer}
+    \node [style=circle] (2) at (-17.5, 5.5) {0};
+    \node [style=circle] (3) at (-11.5, 5.5) {1};
+    \node [style=circle] (7) at (-1.5, 5.5) {1};
+    \node [style=circle] (9) at (-1.5, 3.5) {2};
+    \node [style=none] (11) at (-1.5, 1.5) {$\vdots$};
+    \node [style=circle] (12) at (-1.5, -0.5) {$m$};
+    \node [style=circle] (14) at (-7.5, 2.5) {0};
+    \node [style=circle] (22) at (2.5, 1.5) {0};
+    \node [style=circle] (23) at (8.5, 1.5) {2};
+    \node [style=circle] (25) at (5.5, 5.5) {1};
+    \node [style=none] (27) at (-16.25, 5.5) {};
+    \node [style=none] (28) at (-12.75, 5.5) {};
+    \node [style=none] (29) at (-6.75, 3.25) {};
+    \node [style=none] (30) at (-2.75, 5.25) {};
+    \node [style=none] (31) at (-2.75, 3.25) {};
+    \node [style=none] (32) at (-2.75, -0.25) {};
+    \node [style=none] (33) at (3.75, 1.5) {};
+    \node [style=none] (34) at (4.75, 4.5) {};
+    \node [style=none] (35) at (7.25, 1.5) {};
+    \node [style=none] (36) at (-6.5, 2.5) {};
+    \node [style=none] (37) at (-6.75, 1.75) {};
+    \node [style=none] (38) at (3.25, 2.5) {};
+    \node [style=none] (39) at (7.75, 2.5) {};
+    \node [style=none] (40) at (6.25, 4.5) {};
+    \node [style=none] (44) at (-14.5, 7.5) {Failure time process};
+    \node [style=none] (45) at (-4.5, 7.5) {Competing risks process};
+    \node [style=none] (47) at (5.5, 7.5) {Multistate process};
+   \end{pgfonlayer}
+   \begin{pgfonlayer}{edgelayer}
+	\draw [style=1side] (27.center) to (28.center);
+	\draw [style=1side] (37.center) to (32.center);
+	\draw [style=1side] (40.center) to (39.center);
+	\draw [style=1side] (33.center) to (35.center);
+	\draw [style=2side] (38.center) to (34.center);
+	\draw [style=1side] (36.center) to (31.center);
+	\draw [style=1side] (29.center) to (30.center);
+   \end{pgfonlayer}
+  \end{tikzpicture}
+ }
+\end{center}
+
+\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
+\pause
+
+\begin{minipage}{.275\textwidth}
+ \begin{shaded}
+  Survival models
+ \end{shaded}
+\end{minipage}
+
+\[
+\begin{aligned}
+  \text{for a type}~{\color{notthefruitorange}{k}}~\text{failure},
+  \quad
+  F_{\color{notthefruitorange}{k}}(t\mid\{X, R\})
+  &=\mathbb{P}[T\leq t,
+               K = {\color{notthefruitorange}{k}}\mid\{X, R\}]\\
+  &=\underbrace{
+     \pi_{\color{notthefruitorange}{k}}(\{X, R\})}_{
+     \substack{\text{risk level}}}\times
+    \underbrace{
+     \Phi[t\mid\{X, R_{\color{notthefruitorange}{k}}\}]}_{
+     \substack{\text{failure time}\\\text{trajectory}}}.
+\end{aligned}
+\]
+
+###
+
++ We work on the probability scale, modeling the
+
+\begin{block}{Cause-specific \textbf{cumulative incidence function}
+(CIF)}
+\[
+\begin{aligned}
+  \text{for a type}~{\color{notthefruitorange}{k}}~\text{failure},
+  \quad
+  F_{\color{notthefruitorange}{k}}(t \mid X) &=
+  \mathbb{P}[T \leq t,
+  {\color{notthefruitorange}{K}} =
+  {\color{notthefruitorange}{k}} \mid X]\\
+  &= \int_{0}^{t} f_{\color{notthefruitorange}{k}}(a \mid X) da,
+  \quad t > 0,
+\end{aligned}
+\]
+where \(f_{\color{notthefruitorange}{k}}(t \mid X) =
+        \lambda_{\color{notthefruitorange}{k}}(t \mid X) \times
+        S(t \mid X)\) is the (sub)density for the time to a type
+        \(\color{notthefruitorange}{k}\) failure
+\end{block}
+
++ We go beyond the independence supposition, having clusters of subjects
+  with a possible correlation
+
++ Our latent structure to capture this possible correlation has\newline
+  audacity, allowing for \textcolor{mykindofblue}{within-cluster
+  dependence} of both\newline risk and timing
+
+###
+
+Considering a competing risks setup of three competing causes\dots
+
+\pause
+\dots we want to model the \textcolor{mykindofblue}{CIF} in the
+following specific manner
+\[
+\begin{aligned}
+  F_{\color{notthefruitorange}{k}}(t \mid X, U) &=
+  \mathbb{P}[T \leq t, {\color{notthefruitorange}{K}} =
+                       {\color{notthefruitorange}{k}} \mid X, U]\\
+  &= \underbrace{
+    \pi_{\color{notthefruitorange}{k}}(X, u_{1}, u_{2})}_{
+    \substack{\text{cluster-specific}\\\text{risk level}}}
+  \times
+  \underbrace{
+    \Phi[w_{\color{notthefruitorange}{k}} g(t) -
+         X^{\top}\gamma_{\color{notthefruitorange}{k}} -
+         \eta_{\color{notthefruitorange}{k}}]}_{
+         \substack{\text{cluster-specific}\\
+                   \text{failure time trajectory}}},
+               \quad {\color{notthefruitorange}{k}} = 1, 2.
+\end{aligned}
+\]
+i.e., a product of two functions
+
++ the first models the \textcolor{mykindofblue}{absolute risk} of a
+  competing cause in the presence of another
+
++ the second models the \textcolor{mykindofblue}{failure time
+  distribution},
+
+both varying between clusters
+
+\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
+\pause
+
++ The third competing cause is left to accommodate\newline
+  the \textcolor{mykindofblue}{censorship}
+
++ Which probability distribution fits this setup?
+  \textcolor{mykindofblue}{Multinomial}
+
+###
+
+\texttt{Scheike} works out this idea via a pairwise composite likelihood
+approach,
+
+\small
+```
+@article{Scheike,
+  author  = {L. Cederkvist and K. K. Holst and K. K. Andersen and
+             T. H. Scheike},
+  title   = {Modeling the cumulative incidence function of
+             multivariate competing risks data allowing for
+             within-cluster dependence of risk and timing},
+  year    = {2019},
+  journal = {Biostatistics},
+  volume  = {20},
+  number  = {2},
+  pages   = {199--217},
+}
+```
+\vspace{-0.5cm}
+\normalsize
+\noindent{\color{notthefruitorange}\rule{\linewidth}{0.25mm}}
+
+And we? We try a hierarchical approach via a GLMM
+
+###
+
+\begin{minipage}{.35\textwidth}
+ \begin{shaded} Our approach: what we do
+ \end{shaded}
+\end{minipage}
+\pause
+
+For an observed response \(y_{ijt}\) of a subject \(i\), with cluster
+\(j\), in the time \(t\), we have
+\[
+\begin{aligned}
+  y_{ijt} \mid \{u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j}\} &\sim
+  \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt}),\\
+  \begin{bmatrix} u_{1j}\\u_{2j}\\\eta_{1j}\\\eta_{2j} \end{bmatrix}
+  &\sim
+  \mathcal{N}
+  \left[\begin{bmatrix} 0\\0\\0\\0\end{bmatrix},
+    \begin{bmatrix}
+      \sigma_{u_{1}}^{2}&\varrho_{u_{1}, u_{2}}&
+      \varrho_{u_{1}, \eta_{1}}&\varrho_{u_{1}, \eta_{2}}\\
+      &\sigma_{u_{2}}^{2}&
+      \varrho_{u_{2}, \eta_{1}}&\varrho_{u_{2}, \eta_{2}}\\
+      &&\sigma_{\eta_{1}}^{2}&\varrho_{\eta_{1}, \eta_{2}}\\
+      &&&\sigma_{\eta_{2}}^{2}
+    \end{bmatrix}
+  \right]
+\end{aligned}.
+\]
+\pause
+This model structure is connected via a \textcolor{mykindofblue}{link
+function}, i.e., a functional form for the multinomial probabilities.
+
+Here we use the CIF derivative w.r.t. time \(t\),
+
+\begin{minipage}{0.8\textwidth}
+\[
+\begin{aligned}
+  p_{ {\color{notthefruitorange}{k}} ijt} &=
+  \frac{\exp\{
+    \bm{x}_{ {\color{notthefruitorange}{k}} ij}
+    \bm{\beta}_{ {\color{notthefruitorange}{k}} i} +
+    u_{ {\color{notthefruitorange}{k}} j}\}}{
+    1 + \sum_{ {\color{notthefruitorange}{m}}=1}^{
+      {\color{notthefruitorange}{K}}-1
+    }
+    \exp\{
+    \bm{x}_{ {\color{notthefruitorange}{m}} ij}
+    \bm{\beta}_{ {\color{notthefruitorange}{m}} i} +
+    u_{ {\color{notthefruitorange}{m}} j}\}}
+  \hspace{1.85cm}\{ {\color{notthefruitorange}{k}} = 1, 2\}\\
+  &\times
+  w_{\color{notthefruitorange}{k}}\frac{\delta}{2\delta t - 2t^{2}}
+  \phi[
+  w_{\color{notthefruitorange}{k}}
+  \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right) -
+  \bm{x}_{ {\color{notthefruitorange}{k}} ij}
+  \bm{\gamma}_{ {\color{notthefruitorange}{k}} i} -
+  \eta_{ {\color{notthefruitorange}{k}} j}
+  ].
+\end{aligned}
+\]
+\end{minipage}
+
+###
+
+\begin{minipage}{.35\textwidth}
+ \begin{shaded} Our approach: how we do
+ \end{shaded}
+\end{minipage}
+\pause
+
+\begin{center}
+\textcolor{mykindofblue}{TMB: Template Model Builder}
+\end{center}
+
+Quickly implement complex random effect models through simple
+\texttt{C++} templates. The \texttt{R} package combines
+
++ \texttt{CppAD}: \texttt{C++} automatic differentiation
+
++ \texttt{Eigen}: templated matrix-vector library
+
++ \texttt{CHOLMOD}: sparse matrix routines available from \texttt{R}
+
+to obtain an efficient implementation of the applied Laplace
+approximation with exact derivatives.
+
+Also, key features are
+
++ automatic sparseness detection
+
++ parallelism through \texttt{BLAS}
+
++ parallel user templates.
+
+###
+
+\begin{minipage}{.6\textwidth}
+ \begin{shaded} Main application: cancer incidence in twins
+ \end{shaded}
+\end{minipage}
+\vspace{0.75cm}
+\begin{columns}
+\begin{column}{.55\linewidth}
+\centering
+\includegraphics[width=\linewidth]{figures/twins.jpg}
+\end{column}
+\begin{column}{.45\linewidth}
+Clustered competing risks data\newline
+\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+Clusters? Families\newline
+\hspace*{1.35cm}\rotatebox[origin=c]{180}{$\Lsh$}Family studies\newline
+\hspace*{2.1cm}\rotatebox[origin=c]{180}{$\Lsh$}
+\textcolor{mykindofblue}{Twins data}
+\end{column}
+\end{columns}
+
+\begin{center}
+within-cluster dependence \(\Rightarrow\) within-family dependence
+\end{center}
+
+within-family dependence may reflect both disease \textbf{heritability}
+and\newline the impact of shared \textbf{environmental effects}
+
+###
+
+\begin{minipage}{.15\textwidth}
+ \begin{shaded}
+  References
+ \end{shaded}
+\end{minipage}
+
++ \hypertarget{SCHEIKE}{
+   [\textcolor{mykindofblue}{Cederkvist et al., 2019}]\newline
+   L. Cederkvist, K. K. Holst, K. K. Andersen and T. H. Scheike (2019).
+   Modeling the cumulative incidence function of multivariate competing
+   risks data allowing for within-cluster dependence of risk and timing.
+   \textit{Biostatistics}, v. 20, n. 2, p. 199-217}
+
+<!-- ### -->
+
+<!-- \begin{center} -->
+<!--  \includegraphics[width=.9\linewidth]{thank_you.jpg} -->
+<!-- \end{center} -->

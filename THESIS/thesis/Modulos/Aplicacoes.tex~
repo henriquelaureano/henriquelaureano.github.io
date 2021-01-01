@@ -1,0 +1,201 @@
+
+Este Capítulo descreve os dois conjuntos de dados que serão usados como exemplos de aplicação no novo modelo de regressão, proposto no \autoref{cap:multivariatemodel}. O primeiro conjunto se refere ao índice de qualidade da água de reservatórios de usinas hidrelétricas operadas pela COPEL no Estado do Paraná, no qual foi analisado em outros estudos por meio de diferentes modelos de regressão \cite{bonat:2010,Bonat:2015b,Bonat:2018simplex}. É importante ressaltar que nesta dissertação, este particular conjunto de dados será usado apenas como ilustração ao novo método, deixando claro que não existe interesse em reproduzir as análises obtidas por outros autores. Já o segundo conjunto de dados, corresponde ao percentual de gordura corporal de indivíduos avaliados no Hospital de Clínicas da Universidade Federal do Paraná. 
+
+
+% ---------------------------------------------------------
+
+\section{Conjunto de dados I: índice de qualidade da água}
+\label{cap:IQA}
+
+% ---------------------------------------------------------
+
+
+O índice de qualidade da água (IQA) foi desenvolvido em 1970 nos Estados Unidos para avaliar a qualidade da água destinada ao abastecimento após seu tratamento. Em 1975, a CETESB (Companhia Ambiental do Estado de São Paulo) começou a utilizar este índice, sendo adotado mais tarde por outros Estados brasileiros como o principal indicador de qualidade da água. O IQA é calculado por meio de nove parâmetros físico-químicos e biológicos, considerados fundamentais para avaliação da qualidade da água \cite{abbasi2012:water}. São eles: coliformes fecais, pH, demanda bioquímica de oxigênio, nitrogênio total, temperatura da água, fósforo total, turbidez, resíduo total e oxigênio dissolvido. Conforme o estado ou a condição de cada parâmetro, foram estabelecidas curvas de variação de qualidade da água (\refanexo{cap:anexoA}) que mostram um conjunto de curvas médias com seus respectivos pesos $(w)$ e valores de qualidade $(q)$. Desse modo, o IQA é calculado pelo produtório ponderado dos valores de qualidade de cada parâmetro, resultando em uma nota entre zero e cem. Quanto maior for essa nota, melhor é a qualidade da água. Assim, define-se o cálculo do IQA pela~\autoref{eq:IQA}:
+\begin{equation}
+\label{eq:IQA}
+\mathrm{IQA} = \prod_{i = 1}^{9} q_i^{w_i},
+\end{equation}
+\noindent
+onde $q_i$ (valor entre 0 e 100) corresponde a qualidade do $i$-ésimo parâmetro, obtido a partir do resultado das curvas médias e da análise de laboratório, e $w_i$ (valor entre 0 e 1) se refere ao peso do $i$-ésimo parâmetro, de tal forma que $\sum\limits_{i = 1}^{9} w_i = 1$. Logo, o IQA apresenta fácil interpretação, principalmente, para um público leigo. Além disso, ele pode ser comparável com outras localidades. Por esse motivo, o IQA é usado por diversos institutos ambientais, como a Agência Nacional de Águas~(ANA), o Instituto Ambiental do Paraná~(IAP), dentre outros órgãos vinculados ao meio ambiente.
+
+A Companhia Paranaense de Energia (COPEL) opera 16 usinas hidrelétricas no Estado do Paraná. A principal finalidade dessas usinas é geração de energia elétrica por meio de rios e reservatórios de água. Além da geração de energia, a água dos reservatórios também é utilizada para outras finalidades, tais como: pesca, navegação, lazer, irrigação da agricultura e abastecimento das cidades. Para atender as especificações de operação dessas hidrelétricas, a COPEL monitora trimestralmente a qualidade da água a montante, a jusante e nos reservatórios dos rios represados. O principal objetivo desse monitoramento é detectar mudanças na qualidade da água, possivelmente atribuíveis à presença das barragens, além de preservar o meio ambiente e evitar a degradação das águas. A~\autoref{fig:UHE} ilustra uma das usinas operadas pela COPEL e seus respectivos pontos de coleta da água.
+
+
+\begin{figure}[H]
+\vspace{0.2cm}
+%\setlength{\abovecaptionskip}{.0001pt}
+\caption{Usina hidrelétrica da Copel e pontos de coleta da água}
+\includegraphics[width=0.87\textwidth]{UHE.pdf}
+\begin{footnotesize}
+\vspace{0.02cm}
+\centering
+
+FONTE: \citeonline{copel}. 
+
+\vspace{-0.15cm}
+
+\end{footnotesize}
+\label{fig:UHE}
+\end{figure}
+
+
+O presente estudo foi conduzido em 2004, e avaliou 12 medidas (3 locais~$\times$~4 trimestres) em cada uma das 16 usinas, resultando num total de 190 observações com apenas dois dados faltantes (\textit{missing data}). O principal objetivo da análise dos dados foi investigar o relacionamento do IQA com os locais (montante,  reservatório e jusante) controlado pelo efeito dos trimestres e das usinas. Dessa forma, tem-se características de um estudo longitudinal e de dados agrupados. A primeira característica está relacionada com os trimestres, enquanto a segunda está associada com os locais. Geralmente, um estudo longitudinal permite analisar mudanças na variável resposta ao longo do tempo, além de investigar o efeito de covariáveis \cite{diggle:2002}. Além disso, pode-se analisar uma possível correlação intraunidades amostrais, estudando a estrutura da matriz de covariância \cite{diggle:2002,Fitzmaurice:2011}.
+
+
+No problema em questão, a principal abordagem, e sem dúvida a mais comum entre usuários de estatística aplicada é a análise de variância (ANOVA). Porém, deve-se atentar para seus pressupostos, tais como observações independentes, homogeneidade entre grupos e resíduos independentes provenientes de uma distribuição Gaussiana com média zero e variância constante \cite{montgomery2012introduction}. Um dos principais problemas em usar esse método está na forma como os trimestres e locais são avaliados, isto é, eles são tratados como observações independentes na amostra. Outro problema está na natureza da variável resposta, que é limitada ao intervalo unitário e portanto representa particularidades na análise dos dados. 
+
+Possivelmente as observações deste estudo são correlacionadas. Dessa forma, precisa-se de um método estatístico adequado para investigar tal questão. Assim, o modelo de regressão proposto no~\autoref{cap:multivariatemodel} será usado para análise dos dados, uma vez que esse modelo permite considerar uma estrutura de covariância para análise de dados longitudinais e outra para dados agrupados.
+
+
+A~\autoref{tab:descIQA} apresenta a análise descritiva para o IQA, com valores expressos em média e desvio padrão $(\bar{x} \pm s)$, conforme os trimestres e locais. Desta tabela, observa-se que o reservatório foi o local que apresentou os maiores valores do IQA. Além disso, nos trimestres 2 e 3 o IQA apresentou-se superior aos demais trimestres. 
+
+\begin{table}[H]
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Análise descritiva para o IQA por trimestre e local.}
+\label{tab:descIQA}
+\begin{tabular}{cccc}
+\hline
+ \multirow{2}{*}{Trimestre} & \multicolumn{3}{c}{Local} \\
+\cline{2-4}  & Montante & Reservatório & Jusante \\
+\cline{2-4} 1   & $0,75\pm 0,11$   &  $0,80\pm 0,10$  &  $0,78\pm 0,10$  \\
+2  &  $0,79\pm 0,10$  &  $0,83\pm 0,06$   &  $0,83\pm 0,07$     \\
+3   &  $0,81\pm 0,07$   & $0,85\pm 0,05$   &  $0,83\pm 0,06$    \\
+4   & $0,76\pm 0,10$    &  $0,81\pm 0,08$    &  $0,79\pm 0,09$    \\
+\hline
+\end{tabular}
+\begin{footnotesize}
+\vspace{0.05cm}
+
+FONTE: O autor~(2018). \hspace{6.2cm}
+
+\vspace{-0.15cm}
+
+\end{footnotesize}
+\end{table}
+
+\vspace{-0.2cm}
+% width=1\textwidth
+% width=16.2cm,height=11.5cm
+
+
+A~\autoref{fig:iqa1} complementa as informações da~\autoref{tab:descIQA}, apresentando um histograma e diagramas boxplot para o IQA de acordo com as covariáveis do estudo. A~\autoref{fig:iqa1}~(A) sugere distribuição assimétrica à esquerda para o IQA, enquanto a~\autoref{fig:iqa1}~(B) indica valores maiores para o IQA durante os trimestres 2 e 3. Já a \autoref{fig:iqa1}~(C) indica que o IQA foi maior no reservatório do que nos outros locais, confirmando portanto o que foi observado na~\autoref{tab:descIQA}.
+
+
+%% Salvar em PDF 9.0 x 6.0
+\begin{figure}[H]
+\vspace{0.35cm}
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Histograma~(A) e boxplots para o índice de qualidade da água (IQA) por trimestre~(B), local~(C) e usinas~(D)}
+\includegraphics[width=0.95\textwidth]{iqa1b.pdf}
+\begin{footnotesize}
+\vspace{-0.20cm}
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:iqa1}
+\end{figure}
+
+
+Por fim, os resultados apresentados na~\autoref{fig:iqa1}~(D) mostram que o IQA não é homogêneo entre as usinas, com um destaque maior para as usinas 1, 2 e 10. É importante ressaltar que os resultados apresentados na~\autoref{tab:descIQA} e~\autoref{fig:iqa1} se referem apenas a análise descritiva e exploratória dos dados, onde são criadas hipóteses que serão confirmadas somente após ajuste do modelo de regressão proposto no~\autoref{cap:multivariatemodel}. No~\autoref{cap:apendiceA} são apresentados gráficos boxplots para o IQA separado por trimestre e local em função das usinas.
+
+
+% ---------------------------------------------------------
+
+\section{Conjunto de dados II: percentual de gordura corporal}
+\label{cap:gorduraCorporal}
+
+% ---------------------------------------------------------
+
+
+Este estudo foi realizado no Serviço de Endocrinologia e Metabologia (SEMPR) do Hospital de Clínicas (HC) da Universidade Federal do Paraná (UFPR). Trata-se de um estudo observacional, transversal com voluntários saudáveis recrutados após divulgação da pesquisa no HC-UFPR, consultórios, salas de aula e entre familiares. Após informações sobre a pesquisa os participantes assinaram o termo de consentimento livre e esclarecido (TCLE), aprovado pelo Comitê de Ética em Pesquisa do mesmo hospital. Foram incluídos homens e mulheres saudáveis, entre 18 e 90 anos, sem uso de drogas ou derivados hormonais, seja para reposição ou suplementação, com índice de massa corporal (IMC) entre 18,5 e 29,9 Kg/m$^2$, sem qualquer incapacidade física e que andassem sem ajuda de órteses ou próteses. Foram excluídos os indivíduos portadores de doenças crônicas e medicamentos ou drogas lícitas ou ilícitas que, sabidamente, afetem a composição corporal, como diabetes insulino-dependente, corticoesteróides, hormônio tireoidiano em doses supressivas e aqueles com baixo peso, condizente com IMC menor que 18,5 Kg/m$^2$ ou obesos, com IMC de no mínimo 30 Kg/m$^2$. Logo, a amostra utilizada neste estudo contém 298 observações.
+
+Todos os participantes realizaram no mesmo dia medidas antropométricas (peso e altura) e responderam ao questionário sobre dados sociodemográficos, seguida do exame de densitometria de corpo total (Aparelho \textit{Lunar Prodigy Advance} PA+302284) para análise das massas gorda, magra e óssea do corpo total. O exame foi avaliado segundo a recomendação da \textit{International Society for Clinical Densitometry} (ISCD) \cite{petak:2013, kendler:2013}.
+
+Todos os participantes responderam ao IPAQ (\textit{international physical activity questionnaire}), validado em português \cite{matsudo:2001}, que é um instrumento para estimar o nível de atividade física praticada habitualmente. Foi utilizado o IPAQ-curto, composto por oito questões sobre realização, frequência e duração de atividades físicas moderadas, vigorosas ou de caminhada. Levando-se em conta, para as respostas, a última semana ou uma semana habitual de exercícios físicos. O IPAQ foi respondido na forma de autoadministração para a maioria dos voluntários ou como entrevista individual, aplicada pelo investigador ou avaliador treinado, nos casos em que houve dificuldade de entendimento. Os voluntários foram, então, divididos em três grupos, conforme o nível de atividade física realizada \cite{nahas:2001,sonati:2012}: sedentários são aqueles que não realizam nenhuma atividade física por pelo menos 10 minutos contínuos durante a semana; insuficientemente ativos, realizam no mínimo 10 minutos contínuos de atividade física, pelo menos 5 dias na semana ou 150 minutos por semana, porém de maneira insuficiente para serem classificados como ativos. Os ativos são os indivíduos que realizam no mínimo 20 minutos de atividade física vigorosa por sessão, pelo menos 3 vezes na semana ou atividades moderadas, ou caminhada de 30 minutos por sessão, pelo menos 5 vezes na semana ou qualquer atividade somada por 5 dias da semana ou mais, com duração total de 150 minutos por semana~\cite{silva:2007}.
+
+O estudo é composto por quatro covariáveis: sexo (F-feminino ou M-masculino), idade (anos), IMC (Kg/m$^2$) e IPAQ (S-sedentário, IA-insuficientemente ativo ou A-ativo). Nesta dissertação, analisou-se o percentual de gordura corporal que foi medido em cinco regiões do corpo e representam as variáveis respostas. A~\autoref{fig:fig1} apresenta uma ilustração dessas regiões, que estão divididas em braços, pernas, tronco, andróide e ginecóide. Cabe ressaltar, que a imagem apresentada na~\autoref{fig:fig1} é o resultado do exame de densitometria de corpo total, realizado no aparelho \textit{Lunar Prodigy Advance} PA+302284. Por meio de tal exame, foi possível mensurar o percentual de gordura corporal de cada indíviduo, além de outras medidas relativas a composição corporal que não fazem parte deste estudo. Desse modo, os percentuais de massas gorda, magra e óssea foram analisados separadamente em um outro estudo, fazendo-se uso do modelo de regressão beta. Para detalhes, ver~\citeonline{petterle:2018}.
+
+
+A amostra contém 150 mulheres e 148 homens. Os indivíduos têm média de idade de $46$ anos com desvio-padrão de $19,88$. O IMC foi estimado em $24,72 \pm 3,15$ Kg/m$^2$. Segundo o questionário IPAQ, que avalia o nível de atividade física, 76 indivíduos foram classificados em insuficientemente ativos, 60 em sedentários e 162 em ativos.
+
+
+\begin{figure}[H]
+\vspace{0.35cm}
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Resultado do exame de densitometria de corpo total dividido por regiões do corpo}
+\includegraphics[width=0.2\textwidth]{desenhoa.pdf}
+\begin{footnotesize}
+\vspace{0.08cm}
+
+FONTE: O autor~(2018). 
+
+\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:fig1}
+\end{figure}
+
+A~\autoref{fig:corr} apresenta diagramas de dispersão com curvas de suavização estimadas pelo método~\textit{loess}~\cite{cleveland1979}, além de mostrar as correlações entre os percentuais de gordura nas regiões dos braços, pernas, tronco, andróide e ginecóide. De acordo com os resultados apresentados na~\autoref{fig:corr}, todos os coeficientes de correlação estimados são positivos podendo-se observar correlações mais fortes entre os percentuais de gordura nas regiões dos braços e pernas $(\hat{\rho} = 0,92)$, tronco e andróide $(\hat{\rho} = 0,98)$, braços e ginecóide $(\hat{\rho} = 0,91)$ e entre pernas e ginecóide $(\hat{\rho} = 0,98)$. 
+
+
+% Save 9.8 x 6.9
+\begin{figure}[H]
+\vspace{0.3cm}
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Diagramas de dispersão e correlações entre os percentuais de gordura na região dos braços, pernas, tronco, andróide e ginecóide}
+\includegraphics[width=0.99\textwidth]{corr4.pdf}
+\begin{footnotesize}
+\vspace{-0.65cm}
+
+\centering
+FONTE: O autor~(2018). 
+
+\vspace{-0.25cm}
+
+\end{footnotesize}
+\label{fig:corr}
+\end{figure}
+
+
+Por outro lado, correlações mais fracas podem ser observadas entre os percentuais de gordura nas regiões das pernas e andróide $(\hat{\rho} = 0,63)$ e entre andróide e ginecóide $(\hat{\rho} = 0,65)$. É importante ressaltar que essas correlações foram estimadas pelo coeficiente de correlação de Spearman $(\hat{\rho})$ e não levam em conta o efeito das covariáveis presentes no estudo. Adicionalmente, a~\autoref{fig:corr} mostra a distribuição de cada variável resposta por meio de um histograma, indicando distribuições simétricas para a maioria delas. No entanto, distribuições assimétricas à esquerda podem ser vistas para os percentuais de gordura nas regiões do tronco e andróide, respectivamente. 
+
+
+A~\autoref{fig:fig2} apresenta gráficos boxplots e diagramas de dispersão para cada variável resposta em função das covariáveis do estudo. Com base nos resultados apresentados na~\autoref{fig:fig2}~(A-E) tem-se um indicativo de que os percentuais de gordura corporal diferem entre homens e mulheres, com um destaque maior para as regiões dos braços, pernas e ginecóide. A~\autoref{fig:fig2}~(F-J) indica que os percentuais de gordura corporal diminuem a medida que os indivíduos praticam atividade física. A~\autoref{fig:fig2}~(K-O) mostra correlações positivas para o IMC dos indivíduos, destacando-se os percentuais de gordura nas regiões do tronco e andróide que apresentam tendência linear e, possivelmente, correlações mais fortes. Finalmente, a~\autoref{fig:fig2}~(P-T) indica que todos os percentuais de gordural corporal aumentam gradativamente com avançar da idade. 
+
+
+% width=13.5cm,height=7cm
+% width=1\textwidth
+%% Salvar em PDF 10.0 x 6.2
+
+\begin{figure}[H]
+\vspace{0.35cm}
+\centering
+\setlength{\abovecaptionskip}{.0001pt}
+\caption{Gráficos boxplots para sexo (A-E) e IPAQ (F-J). Diagramas de dispersão para os percentuais de gordura na região dos braços, pernas, tronco, andróide e ginecóide por IMC (K-O) e idade (P-T)}
+\vspace{0.25cm}
+\includegraphics[width=0.99\textwidth]{desc.pdf}
+\begin{footnotesize}
+\vspace{-0.45cm}
+
+FONTE: O autor~(2018). 
+
+%\vspace{0.15cm}
+
+\end{footnotesize}
+\label{fig:fig2}
+\end{figure}
+
+
+É importante destacar que os resultados apresentados na~\autoref{fig:fig2} se referem apenas a análise descritiva dos dados, onde são apontadas as principais e possíveis covariáveis associadas com as variáveis respostas. Por meio do modelo de regressão multivariado proposto no \autoref{cap:multivariatemodel}, espera-se avaliar conjuntamente esses resultados, além de investigar possíveis correlações entre as variáveis respostas, dada a presença das covariáveis no modelo.  De acordo com \citeonline{Verbeke:2014}, muitas perguntas de pesquisa podem ser respondidas modelando-se as inúmeras variáveis respostas do estudo separadamente, porém, algumas questões só podem ser respondidas em uma análise conjunta de todas elas.
+
+
+Logo, o principal objetivo da análise dos dados é investigar a relação entre os percentuais de gordura corporal (braços, pernas, tronco, andróide e ginecóide) com sexo, nível de atividade física (IPAQ), IMC e idade dos indivíduos. O objetivo secundário da análise é estimar a matriz de correlação entre as respostas, dada a presença das covariáveis no modelo.
+
+
+
+

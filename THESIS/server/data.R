@@ -1,0 +1,60 @@
+##----------------------------------------------------------------------
+##                                                     Henrique Laureano
+##                      leg.ufpr.br/~henrique · github.com/mynameislaure
+##                                      laureano@ufpr.br · @hap_laureano
+##                     Laboratory of Statistics and Geoinformation (LEG)
+##       2020-dez-23 · Federal University of Paraná · Curitiba/PR/Brazil
+##----------------------------------------------------------------------
+
+## GLM==================================================================
+
+## packages-------------------------------------------------------------
+library(TMB)
+
+## simulating data (just the structure)---------------------------------
+datasimu <- function(J, delta=80, t, 
+                     beta=c(-2, -1.5), gamma=c(1.2, 1), w=c(3, 5),
+                     Z,  S=matrix(c(0.4, 0.15, 0.05, 0,
+                                    0.15, 0.4, 0, 0.05,
+                                    0.05, 0, 0.25, 0.1,
+                                    0, 0.05, 0.1, 0.25), 4, 4)
+                     ){
+    K <- dim(S)[1]/2+1
+    ladim <- 2*(K-1) ## latent effects dimension
+    B <- mvtnorm::rmvnorm(J, mean=rep(0, ladim), sigma=S)
+    R <- Z%*%B
+    risk1 <- exp(beta[1]+R[, 1])
+    risk2 <- exp(beta[2]+R[, 2])
+    level <- 1+risk1+risk2
+    p1 <- risk1/level*w[1]*delta/(2*t*(delta-t))*
+        dnorm(w[1]*atanh(2*t/delta-1)-gamma[1]-R[, 3])
+    p2 <- risk2/level*w[2]*delta/(2*t*(delta-t))*
+        dnorm(w[2]*atanh(2*t/delta-1)-gamma[2]-R[, 4])
+    y <- mc2d::rmultinomial(2*J, 1, prob=cbind(p1, p2, 1-p1-p2))
+    return(y)
+}
+
+## how many models------------------------------------------------------
+hmm <- 5
+## compute one time to not need to compute every time-------------------
+J <- 3e4
+Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
+t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+
+df22 <- vector('list', length=hmm)
+initFixed <- matrix(NA, nrow=hmm, ncol=6)
+dyn.load(dynlib('multiGLM'))
+## loop-----------------------------------------------------------------
+for (i in 1:hmm) {
+    df22[[i]] <- datasimu(J=J, t=t, Z=Z)
+    ## getting the initial guesses--------------------------------------
+    obj <- MakeADFun(
+        data=list(Y=df22[[i]], T=t, delta=80),
+        parameters=list(beta1=0, beta2=0, gama1=0, gama2=0, w1=1, w2=1),
+        DLL = 'multiGLM', silent=TRUE)
+    initFixed[i, ]<- nlminb(obj$par, obj$fn, obj$gr)$par
+    FreeADFun(obj)
+    gc()
+}
+save(df22, initFixed, file='data.RData', version=2)
+## END------------------------------------------------------------------
