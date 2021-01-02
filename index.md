@@ -12,6 +12,8 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 
 What am I doing right now? (Jan 21)
 
+<img align="right" width="100" height="100" src="server.png">
+
 + Working on my master thesis,\
   in reality, studying random stuff while my models run on the
   university's server
