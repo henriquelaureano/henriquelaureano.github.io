@@ -19,7 +19,10 @@ What am I doing right now? (Jan 21)
   university's server
 
 + Making my new slides template\
-  [pdf](aqua/) ([.Rmd](aqua/) | [in_header file](aqua/))
+  [pdf](THESIS/aqua/slides.pdf)
+  ([.Rmd](THESIS/aqua/slides.Rmd) |
+   [in_header file](THESIS/aqua/beamerheader.txt) |
+   [TikZ style](THESIS/aqua/tikzit.sty))
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
