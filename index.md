@@ -12,7 +12,12 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 
 What am I doing right now? (Jan 21)
 
-+ Working on my master thesis.
++ Working on my master thesis,\
+  in reality, studying random stuff while my models run on the
+  university's server
+
++ Making my new slides template\
+  [pdf](aqua/) ([.Rmd](aqua/) | [in_header file](aqua/))
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
