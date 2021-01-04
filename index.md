@@ -2,7 +2,8 @@
 
 [Twitter](https://twitter.com/hap_laureano) |
 [Tumblr](tumblr/) |
-[CV](vitae.pdf)
+[CV](vitae.pdf) |
+[LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/)
 
 Hi! I'm a brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician
 (BSc in Statistics @ [UFPR](https://goo.gl/DtVAbi), 2016) and MSc
