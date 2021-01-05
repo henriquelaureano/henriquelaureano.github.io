@@ -364,13 +364,13 @@ to be maximized in \(\bm{\theta}\).
 \subsection{Parametrization}
 \label{cap:parametrization}
 
-Besides the latent effects variances \(\{\bm{\sigma^{2}}\}\), we have to
-choose if we will estimate its covariances or correlations, i.e. in
-which terms will parameterize the variance-covariance
-matrix \(\Sigma\). By its name, it is natural to think on covariance
-terms. However, this choice is not very attractive since its
-interpretation is not clear. A more attractive choice is in terms of
-correlation.
+We have to choose in which terms we parameterize the variance-covariance
+matrix \(\Sigma\). Besides the latent effects variances
+\(\{\bm{\sigma^{2}}\}\), we have to choose if we will estimate its
+covariances or correlations. By the name \textit{variance-covariance}
+matrix, it is natural to think on covariance terms. However, this option
+is not very attractive since its interpretation is not clear. A more
+attractive choice is in terms of correlation.
 
 The covariance between two terms is defined as a triple product: the two
 terms standard deviations times the correlation, \(\rho\). Still
@@ -390,16 +390,15 @@ matrix with six correlations
            &&&\sigma_{\eta_{2}}^{2}
           \end{bmatrix}.
 \end{align*}
-With the matrix parametrization \(\Sigma\) being chosen, we have that
-the parameters to be estimated are the components of the vector
+With the matrix parametrization being chosen, we have that the
+parameters to be estimated are the components of the vector
 \(\bm{\theta} = [\bm{\beta}~ \bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
-\bm{\rho}]^{\top}\). There we have the fixed effect or mean components
+\bm{\rho}]^{\top}\). There we have the fixed effects or mean components
 \(\{\bm{\beta}~\bm{\gamma}~\bm{w}\}\), the easiest to estimate in a
 statistical modeling framework; we have variance components
-\(\{\bm{\sigma^{2}}\}\), the intermediate ones; and we have the
-correlation components \(\{\bm{\rho}\}\), the hardest ones. This idea
-of easy or hard to estimate may be justified by three, connected,
-arguments.
+\(\{\bm{\sigma^{2}}\}\), the intermediate ones; and the correlation
+components \(\{\bm{\rho}\}\), the hardest ones. This idea of easy or
+hard to estimate may be justified by three, connected, arguments.
 
 The first comes from the fact that we are modeling the mean of a
 probability distribution in a hierarchical and structured fashion,
@@ -451,14 +450,15 @@ i.e. in the main diagonal we now estimate the log variances.
 
 This change has two big advantages
 \begin{itemize}
- \item Since the natural loragithm is a real-valued function, we
+ \item Since the natural lorarithm is a real-valued function, we
        overcome the parametric space constraint;
  \item High variances are problematic for many reasons but in the sense
        of seeing them as the diagonal components of a restricted matrix,
        being able to control its magnitudes is crucial for the stability
        of any optimization routine. With the natural logarithm we shrink
        the parametric space, as illustrated in
-       Figure 8, avoiding some eventual numerical cumbersome.
+       \autoref{fig:parametrization}~A), avoiding some eventual
+       numerical cumbersome.
 \end{itemize}
 For the correlations what we do is to proceed with the estimation of its
 Fischer z-transformation. This transformation, and its inverse, are
@@ -471,81 +471,87 @@ defined as
 \]
 The Fisher z-transformation plays the role here of stretching the small
 correlation parametric space but doing this in a smooth fashion, as
-illustrated on the right panel of Figure 8.
+illustrated in \autoref{fig:parametrization}~B).
 
-The other option is to estimate the elements of a factorization or
-decomposition of the positive-definite matrix. The most common
-parametrization for a positive-definite matrix, \(\Sigma\), is the
-Cholesky factorization or decomposition \cite{cholesky}. Still thinking
-in two competing causes of failure, a standard Cholesky decomposition
-of \(\Sigma\) may be expressed as
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{ILLUSTRATION OF THE PARAMETRIZATION BEHAVIOR FOR THE VARIANCE
+          COMPONENTS, IN A), AND CORRELATION COMPONENTS, IN B)}
+ \vspace{0.3cm}\centering
+ \includegraphics[width=\textwidth]{parametrization-1.png}
+ \\
+ \vspace{0.1cm}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:parametrization}
+\end{figure}
+
+The other option consist in estimate the elements of a factorization or
+decomposition of the positive-definite matrix \(\Sigma\). The most
+common parametrization is the Cholesky factorization or decomposition
+\cite{cholesky}. Still thinking in two competing causes of failure, a
+standard Cholesky decomposition of \(\Sigma\) may be expressed as
 \begin{align*}
-  \Sigma =
-  \begin{bmatrix}
-    \sigma_{u_{1}}^{2}&
-    \varrho_{u_{1},~u_{2}}&
-    \varrho_{u_{1},~\eta_{1}}&\varrho_{u_{1},~\eta_{2}}\\
-    &\sigma_{u_{2}}^{2}&
-    \varrho_{u_{2},~\eta_{1}}&\varrho_{u_{2},~\eta_{2}}\\
-    &&\sigma_{\eta_{1}}^{2}&\varrho_{\eta_{1},~\eta_{2}}\\
-    &&&\sigma_{\eta_{2}}^{2}
-  \end{bmatrix} =
-        \begin{bmatrix}
-          c_{1}&0&0&0\\
-          c_{2}&c_{3}&0&0\\
-          c_{4}&c_{5}&c_{6}&0\\
-          c_{7}&c_{8}&c_{9}&c_{10}
-        \end{bmatrix}\begin{bmatrix}
-          c_{1}&c_{2}&c_{4}&c_{7}\\
-          0&c_{3}&c_{5}&c_{8}\\
-          0&0&c_{6}&c_{9}\\
-          0&0&0&c_{10}
-        \end{bmatrix} = LL^{\top},
+ \Sigma = \begin{bmatrix}
+           c_{1}&0&0&0\\
+           c_{2}&c_{3}&0&0\\
+           c_{4}&c_{5}&c_{6}&0\\
+           c_{7}&c_{8}&c_{9}&c_{10}
+         \end{bmatrix}\begin{bmatrix}
+                       c_{1}&c_{2}&c_{4}&c_{7}\\
+                       0&c_{3}&c_{5}&c_{8}\\
+                       0&0&c_{6}&c_{9}\\
+                       0&0&0&c_{10}
+                      \end{bmatrix} = LL^{\top},
 \end{align*}
-where \(\{c_{i}\}_{i=1}^{10}\) are then the coefficients to be
-estimated.
+where \(\{c_{i}\}_{i=1}^{10}\) are then the coefficients to be estimated.
 
-A disadvantage in the use of decomposition as the Cholesky is the lack
-of a straightforward interpretation of the elements
-\(\{c_{i}\}_{i=1}^{10}\). However, with the help of the delta method,
-already implemented in TMB \cite{TMB}, is straightforward to get the
-estimates of the elements of \(\Sigma\) and to obtain the respective
-standard errors. The main advantage of this parametrization, apart from
-the fact that it ensures positive definiteness, is that it is
-computationally simple and stable.
+A disadvantage in the use of a decomposition as the Cholesky is the lack
+of a straightforward interpretation to the elements
+\(\{c_{i}\}_{i=1}^{10}\). However, with the application of the delta
+method, already implemented in TMB \cite{TMB}, it is straightforward to
+get back the \(\Sigma\) elements together with its respective standard
+errors. The main advantage of this parametrization, apart from the fact
+that it ensures positive definiteness, is that it is computationally
+simple and stable.
 
 Just to mention another viable possibilities, we could use a modified
 Cholesky decomposition \cite{modifiedcholesky} that provides a better
 statistical interpretation of the decomposition elements or, we could
-also parametrize the precision matrix, \(\bm{Q} = \Sigma^{-1}\), instead
-of the variance-covariance matrix, \(\Sigma\). This should be a more
-attractive approach since it is the inverse of the variance-covariance
-matrix that is used in the marginal likelihood of \autoref{eq:loglik}.
+also parametrize the precision matrix, \(\bm{Q} = \Sigma^{-1}\). Since
+we use \(\Sigma^{-1}\) in the marginal likelihood of
+\autoref{eq:loglik}, parametrizing directly its inverse save us some
+computations.
 
-Nonetheless, we do something different here. We use the factorization
-scheme available in TMB, a factorization based on a vector scale
-transformation of an unstructured correlation matrix. For two competing
-causes of failure the decomposition is specified in the following
-fashion
+Besides the popularity of the Cholesky method, there is another
+factorization scheme available and efficiently implemented in TMB. It is
+a factorization based on a vector scale transformation of an
+unstructured correlation matrix. For two competing causes of failure the
+decomposition is specified in the following fashion
 \[
   \Sigma = VD^{-1/2}LL^{\top}D^{-1/2}V^{\top},
 \]
 where
 \[
-  L =
-  \begin{bmatrix}
-    1&0&0&0\\
-    c_{1}&1&0&0\\
-    c_{2}&c_{3}&1&0\\
-    c_{4}&c_{5}&c_{6}&1
-  \end{bmatrix},\quad D = \text{diag}(LL^{\top})\quad
-  \text{ and }\quad W = \text{diag}(\{d_{i=1}^{4}\}).
+ L = \begin{bmatrix}
+      1&0&0&0\\
+      c_{1}&1&0&0\\
+      c_{2}&c_{3}&1&0\\
+      c_{4}&c_{5}&c_{6}&1
+     \end{bmatrix},\quad D = \text{diag}(LL^{\top})
+ \quad\text{ and }\quad W = \text{diag}(\{d_{i=1}^{4}\}).
 \]
 This scheme is based initially on the factorization of a correlation
 matrix (unit diagonal) as \(D^{-1/2}LL^{\top}D^{-1/2}\). The elements
 \(\{c_{i}\}_{i=1}^{6}\) has the advantage of being unconstrained and
 guarantees that the symmetry and positive definiteness constraint is
-respected. The variances are scaled via diagonal matrix V, its elements
-\(\{d_{i}\}_{i=1}^{4}\) are the standard deviations.
+respected. The variances are scaled via the diagonal matrix V, its
+elements \(\{d_{i}\}_{i=1}^{4}\) are then the standard deviations.
+
+Working with this particular factorization has the characteristic that
+we estimate the standard deviations \(\{\bm{\sigma}\}\), instead of the
+variances \(\{\bm{\sigma^{2}}\}\).
+
 
 % END ==================================================================

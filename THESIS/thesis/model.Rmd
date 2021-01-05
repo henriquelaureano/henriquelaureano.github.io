@@ -1,64 +1,24 @@
 ---
-title: "CLUSTER-SPECIFIC CUMULATIVE INCIDENCE FUNCTION (CIF)"
-author: "HENRIQUE LAUREANO (http://leg.ufpr.br/~henrique)"
-date: "*Last modification on* `r Sys.time()`"
+title: 'Figures of chap3: multiGLMM'
+author: HENRIQUE LAUREANO (.github.io)
+date: '*Last modification on* `r Sys.time()`'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
 ---
 
 ```{r echo=FALSE}
 library(knitr)
-opts_chunk$set(fig.path = "figures/")
+opts_chunk$set(fig.path = 'figures/')
 ```
 
-```{r}
-cif1 <- function(mrow) {
-    t <- mrow[ , 1] ; eta1 <- mrow[ , 2] ; u1 <- mrow[ , 3] ; u2 <- 0
-    X <- 1
-    beta1 <- -2 ; beta2 <- -1
-    risklevel1 <- exp(X * beta1 + u1)
-    risklevel <- risklevel1/(1 + risklevel1 + exp(X * beta2 + u2))
-    delta <- 80
-    gamma1 <- 1
-    w1 <- 3
-    trajectory <- pnorm(w1 * atanh(2 * t/delta - 1) - X * gamma1 - eta1)
-    out <- risklevel * trajectory
-    return(out)
-}
-## ---------------------------------------------------------------------
-t <- seq(30, 79.5, length.out = 50)
-u1 <- c(-1, -0.5, 0.5, 1)
-eta1 <- c(-2, -1, 0, 1, 2)
-## ---------------------------------------------------------------------
-cifgrid <- expand.grid(t, eta1, u1)
-names(cifgrid) <- c("t", "eta1", "u1")
-## ---------------------------------------------------------------------
-cifs <- cif1(cifgrid)
-## ---------------------------------------------------------------------
-df <- cbind(cifs, cifgrid)
+```{r packages}
+pacman::p_load(ggplot2, patchwork, tibble)
 ```
 
-```{r cif, fig.height=6}
-pacman::p_load(ggplot2, patchwork)
-## ---------------------------------------------------------------------
-ggplot(df, aes(t, cifs, group = eta1)) +
-    geom_line(aes(linetype = factor(eta1))) +
-    facet_wrap(~ u1, labeller = label_bquote(u[1] : .(u1))) +
-    ## ylim(0, 0.2) +
-    labs(x = "Time", y = "Cluster-specific CIF",
-         linetype = expression(eta[1])) +
-    theme(legend.position = c(0.07, 0.81),
-          legend.text = element_text(size = 11),
-          strip.background = element_rect(colour = "black",
-                                          fill = "white"),
-          strip.text.x = element_text(size = 11),
-          axis.text.x = element_text(size = 10),
-          axis.text.y = element_text(size = 10),
-          axis.title.x = element_text(
-              size = 11,
-              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
-          axis.title.y = element_text(
-              size = 11,
-              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
-```
+## FIGURE 5
 
 ```{r cifcoefs, fig.width=10, fig.height=3.75}
 cifbeta <- function(data) {
@@ -184,4 +144,82 @@ g3 <- ggplot(dfw, aes(Var1, cifsw, group = Var2)) +
 g1 + g2 + g3 +
     plot_annotation(tag_levels = "A", tag_suffix = ")") &
     theme(plot.tag = element_text(size = 14))
+```
+
+## FIGURE 6
+
+```{r}
+cif1 <- function(mrow) {
+    t <- mrow[ , 1] ; eta1 <- mrow[ , 2] ; u1 <- mrow[ , 3] ; u2 <- 0
+    X <- 1
+    beta1 <- -2 ; beta2 <- -1
+    risklevel1 <- exp(X * beta1 + u1)
+    risklevel <- risklevel1/(1 + risklevel1 + exp(X * beta2 + u2))
+    delta <- 80
+    gamma1 <- 1
+    w1 <- 3
+    trajectory <- pnorm(w1 * atanh(2 * t/delta - 1) - X * gamma1 - eta1)
+    out <- risklevel * trajectory
+    return(out)
+}
+## ---------------------------------------------------------------------
+t <- seq(30, 79.5, length.out = 50)
+u1 <- c(-1, -0.5, 0.5, 1)
+eta1 <- c(-2, -1, 0, 1, 2)
+## ---------------------------------------------------------------------
+cifgrid <- expand.grid(t, eta1, u1)
+names(cifgrid) <- c("t", "eta1", "u1")
+## ---------------------------------------------------------------------
+cifs <- cif1(cifgrid)
+## ---------------------------------------------------------------------
+df <- cbind(cifs, cifgrid)
+```
+
+```{r cif, fig.height=6}
+ggplot(df, aes(t, cifs, group = eta1)) +
+    geom_line(aes(linetype = factor(eta1))) +
+    facet_wrap(~ u1, labeller = label_bquote(u[1] : .(u1))) +
+    ## ylim(0, 0.2) +
+    labs(x = "Time", y = "Cluster-specific CIF",
+         linetype = expression(eta[1])) +
+    theme(legend.position = c(0.07, 0.81),
+          legend.text = element_text(size = 11),
+          strip.background = element_rect(colour = "black",
+                                          fill = "white"),
+          strip.text.x = element_text(size = 11),
+          axis.text.x = element_text(size = 10),
+          axis.text.y = element_text(size = 10),
+          axis.title.x = element_text(
+              size = 11,
+              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
+          axis.title.y = element_text(
+              size = 11,
+              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
+```
+
+## FIGURE 7
+
+```{r parametrization, fig.height=3.75}
+df <- tibble(gridvar = seq(0.01, 10, length.out = 100),
+             logvar = log(gridvar),
+             gridcor = seq(-0.99, 0.99, length.out = 100),
+             zcor = atanh(gridcor))
+
+logplot <-
+    ggplot(df, aes(x = gridvar)) +
+    geom_line(aes(y = logvar)) +
+    geom_line(aes(y = gridvar), linetype = 'dashed') +
+    labs(x = 'x', y= 'log(x)',
+         title = 'Natural logarithm, log()',
+         subtitle = 'Identity line in dashed')
+
+zplot <-
+    ggplot(df, aes(x = gridcor)) +
+    geom_line(aes(y = zcor)) +
+    geom_line(aes(y = gridcor), linetype = 'dashed') +
+    labs(x = 'x',  y = 'z(x)',
+         title = 'Fisher z-transformation, z()',
+         subtitle = 'Identity line in dashed')
+
+logplot + zplot + plot_annotation(tag_levels = 'A', tag_suffix = ')')
 ```
