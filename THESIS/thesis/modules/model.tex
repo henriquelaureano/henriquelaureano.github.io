@@ -425,17 +425,16 @@ procedure. To overcome these possible difficulties, parameter
 reparametrizations are more than welcome.
 
 The variance and correlation parameters are modeled in terms of the
-matrix, \(\Sigma\). This matrix is symmetric and more important,
-positive semi-definite. This last characteristic is also the third
-argument to justify why is so difficult to estimate these
-parameters. Since the estimates should lead to a positive semi-definite
-matrix, the employment of a parametrization is welcome to enforces this
-condition.
+matrix \(\Sigma\). This matrix is symmetric and more important, positive
+semi-definite. This last characteristic is also the third argument to
+justify why is so difficult to estimate these parameters. Since the
+estimates should lead to a positive semi-definite matrix, the employment
+of a parametrization is welcome to enforces this condition.
 
 In the subject of choosing the components parametrization for a
-positive-definite matrix, \(\Sigma\), we have basically two big options
-in the statistical modeling literature. One of them consists of just
-change the scale. Just to fit into the page, let us think in a
+positive-definite matrix \(\Sigma\), we have basically two big options
+available in the statistical modeling literature. One of them consists
+of just transform the scale. By practical reasons, let us think in a
 \(2\times 2\) matrix
 \begin{align*}
  \Sigma = \begin{bmatrix}
@@ -446,23 +445,24 @@ change the scale. Just to fit into the page, let us think in a
            &\exp\{\log\sigma_{2}^{2}\}
           \end{bmatrix},
 \end{align*}
-i.e. in the main diagonal we now estimate the log variances.
+i.e. in the main diagonal we now estimate the log variances and in the
+off-diagonal we estimate Fisher z-transformed correlations.
 
-This change has two big advantages
+The estimation of the log variances has two big advantages
 \begin{itemize}
  \item Since the natural lorarithm is a real-valued function, we
-       overcome the parametric space constraint;
- \item High variances are problematic for many reasons but in the sense
-       of seeing them as the diagonal components of a restricted matrix,
-       being able to control its magnitudes is crucial for the stability
-       of any optimization routine. With the natural logarithm we shrink
-       the parametric space, as illustrated in
-       \autoref{fig:parametrization}~A), avoiding some eventual
-       numerical cumbersome.
+       overcome the parametric space constraint problem;
+ \item High variances are problematic for many reasons but in the
+       context of seeing them as the diagonal components of a restricted
+       matrix, being able to control its magnitudes is a crucial task to
+       the stability of any optimization routine. With the natural
+       logarithm transformation we shrink the parametric space, as
+       illustrated in \autoref{fig:parametrization}~A), avoiding some
+       eventual numerical cumbersome.
 \end{itemize}
-For the correlations what we do is to proceed with the estimation of its
-Fischer z-transformation. This transformation, and its inverse, are
-defined as
+With the correlation components what we do is to proceed with the
+estimation of its Fischer z-transformation. This transformation, and its
+inverse, are defined as
 \[
  z(\rho) = \frac{1}{2}\log\Big(\frac{1+\rho}{1-\rho}\Big)
          = \text{arctanh}(\rho),\quad
@@ -487,10 +487,10 @@ illustrated in \autoref{fig:parametrization}~B).
  \label{fig:parametrization}
 \end{figure}
 
-The other option consist in estimate the elements of a factorization or
-decomposition of the positive-definite matrix \(\Sigma\). The most
-common parametrization is the Cholesky factorization or decomposition
-\cite{cholesky}. Still thinking in two competing causes of failure, a
+The other parametrization option consist in estimate the elements of a
+factorization or decomposition of the positive-definite matrix
+\(\Sigma\). The most common is the Cholesky factorization or
+decomposition \cite{cholesky}. For two competing causes of failure, a
 standard Cholesky decomposition of \(\Sigma\) may be expressed as
 \begin{align*}
  \Sigma = \begin{bmatrix}
@@ -540,18 +540,14 @@ where
       c_{2}&c_{3}&1&0\\
       c_{4}&c_{5}&c_{6}&1
      \end{bmatrix},\quad D = \text{diag}(LL^{\top})
- \quad\text{ and }\quad W = \text{diag}(\{d_{i=1}^{4}\}).
+ \quad\text{ and }\quad W = \text{diag}(\{\sigma_{i}\}_{i=1}^{4}).
 \]
 This scheme is based initially on the factorization of a correlation
 matrix (unit diagonal) as \(D^{-1/2}LL^{\top}D^{-1/2}\). The elements
-\(\{c_{i}\}_{i=1}^{6}\) has the advantage of being unconstrained and
-guarantees that the symmetry and positive definiteness constraint is
-respected. The variances are scaled via the diagonal matrix V, its
-elements \(\{d_{i}\}_{i=1}^{4}\) are then the standard deviations.
-
-Working with this particular factorization has the characteristic that
-we estimate the standard deviations \(\{\bm{\sigma}\}\), instead of the
-variances \(\{\bm{\sigma^{2}}\}\).
-
+\(\{c_{i}\}_{i=1}^{6}\) to be estimated has the advantage of being
+unconstrained and guarantees that the symmetry and positive definiteness
+constraint is respected. The variances are scaled via the diagonal
+matrix V, its elements \(\{\sigma_{i}\}_{i=1}^{4}\) are then the
+standard deviations to be estimated.
 
 % END ==================================================================
