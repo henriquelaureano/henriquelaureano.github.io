@@ -335,12 +335,12 @@ sample, the corresponding marginal likelihood functions in given by
   \text{d}\bm{r}_{j}\label{eq:loglik},
 \end{align}
 where \(\bm{\theta} = [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
-\bm{\varrho}]^{\top}\) is the parameters vector to be maximized. In our
+\bm{\rho}]^{\top}\) is the parameters vector to be maximized. In our
 framework, a subject can fail from just one competing cause or get
 censor, at a given time. Thus, the fraction of factorials in the fixed
 effect component is made only by 0's and 1's. Finally, returning the
 value 1. The matrix \(\Sigma\) is the variance-covariance matrix, which
-components are given by \(\bm{\sigma}^{2}\) and \(\bm{\varrho}\).
+components are given by \(\bm{\sigma}^{2}\) and \(\bm{\rho}\).
 
 Now, \autoref{eq:loglik} in words. To each cluster (family) \(j\) we
 have a product of two components. The fixed effect component, given by a
@@ -364,14 +364,41 @@ to be maximized in \(\bm{\theta}\).
 \subsection{Parametrization}
 \label{cap:parametrization}
 
-The parameters to be estimated are the components of the vector
-\(\bm{\theta} = [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
-\bm{\varrho}]^{\top}\). There we have the fixed effect or mean
-components \(\{\bm{\beta}~\bm{\gamma}~\bm{w}\}\), the easiest to
-estimate in a statistical modeling framework; we have variance
-components \(\{\bm{\sigma^{2}}\}\), the intermediate ones; and we have
-the correlation components \(\{\bm{\varrho}\}\), the hardest ones. This
-idea of easy or hard to estimate may be justified by three, connected,
+Besides the latent effects variances \(\{\bm{\sigma^{2}}\}\), we have to
+choose if we will estimate its covariances or correlations, i.e. in
+which terms will parameterize the variance-covariance
+matrix \(\Sigma\). By its name, it is natural to think on covariance
+terms. However, this choice is not very attractive since its
+interpretation is not clear. A more attractive choice is in terms of
+correlation.
+
+The covariance between two terms is defined as a triple product: the two
+terms standard deviations times the correlation, \(\rho\). Still
+thinking in two competing causes of failure, we have an \(\Sigma\)
+matrix with six correlations
+\begin{align*}
+ \Sigma = \begin{bmatrix}
+           \sigma_{u_{1}}^{2}&
+           \rho_{u_{1},u_{2}}~\sigma_{u_{1}}\sigma_{u_{2}}&
+           \rho_{u_{1},\eta_{1}}~\sigma_{u_{1}}\sigma_{\eta_{1}}&
+           \rho_{u_{1},\eta_{2}}~\sigma_{u_{1}}\sigma_{\eta_{2}}\\
+           &\sigma_{u_{2}}^{2}&
+           \rho_{u_{2},\eta_{1}}~\sigma_{u_{2}}\sigma_{\eta_{1}}&
+           \rho_{u_{2},\eta_{2}}~\sigma_{u_{2}}\sigma_{\eta_{2}}\\
+           &&\sigma_{\eta_{1}}^{2}&
+           \rho_{\eta_{1},\eta_{2}}~\sigma_{\eta_{1}}\sigma_{\eta_{2}}\\
+           &&&\sigma_{\eta_{2}}^{2}
+          \end{bmatrix}.
+\end{align*}
+With the matrix parametrization \(\Sigma\) being chosen, we have that
+the parameters to be estimated are the components of the vector
+\(\bm{\theta} = [\bm{\beta}~ \bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
+\bm{\rho}]^{\top}\). There we have the fixed effect or mean components
+\(\{\bm{\beta}~\bm{\gamma}~\bm{w}\}\), the easiest to estimate in a
+statistical modeling framework; we have variance components
+\(\{\bm{\sigma^{2}}\}\), the intermediate ones; and we have the
+correlation components \(\{\bm{\rho}\}\), the hardest ones. This idea
+of easy or hard to estimate may be justified by three, connected,
 arguments.
 
 The first comes from the fact that we are modeling the mean of a
@@ -398,19 +425,60 @@ visited and jeopardize the stability or even the whole optimization
 procedure. To overcome these possible difficulties, parameter
 reparametrizations are more than welcome.
 
-The variance and correlation parameters are modeled in terms of a
-variance-covariance matrix, \(\Sigma\). This matrix is symmetric and
-more important, positive semi-definite. This last characteristic is the
-third argument to justify why is so difficult to estimate these
-parameters. Since the estimates should be positive semi-definite
-matrices, the employment of a parametrization is welcome to enforces
-this condition.
+The variance and correlation parameters are modeled in terms of the
+matrix, \(\Sigma\). This matrix is symmetric and more important,
+positive semi-definite. This last characteristic is also the third
+argument to justify why is so difficult to estimate these
+parameters. Since the estimates should lead to a positive semi-definite
+matrix, the employment of a parametrization is welcome to enforces this
+condition.
 
-In the statistical modeling literature, the most common parametrization
-for a positive-definite matrix, \(\Sigma\), is the Cholesky
-factorization or decomposition \cite{cholesky}. Still thinking in two
-competing causes of failure, a standard Cholesky decomposition of
-\(\Sigma\) may be expressed as
+In the subject of choosing the components parametrization for a
+positive-definite matrix, \(\Sigma\), we have basically two big options
+in the statistical modeling literature. One of them consists of just
+change the scale. Just to fit into the page, let us think in a
+\(2\times 2\) matrix
+\begin{align*}
+ \Sigma = \begin{bmatrix}
+           \exp\{\log\sigma_{1}^{2}\}&
+           z^{-1}(z(\rho_{1,2}))
+           \sqrt{\exp\{\log\sigma_{1}^{2}\}}
+           \sqrt{\exp\{\log\sigma_{1}^{2}\}}\\
+           &\exp\{\log\sigma_{2}^{2}\}
+          \end{bmatrix},
+\end{align*}
+i.e. in the main diagonal we now estimate the log variances.
+
+This change has two big advantages
+\begin{itemize}
+ \item Since the natural loragithm is a real-valued function, we
+       overcome the parametric space constraint;
+ \item High variances are problematic for many reasons but in the sense
+       of seeing them as the diagonal components of a restricted matrix,
+       being able to control its magnitudes is crucial for the stability
+       of any optimization routine. With the natural logarithm we shrink
+       the parametric space, as illustrated in
+       Figure 8, avoiding some eventual numerical cumbersome.
+\end{itemize}
+For the correlations what we do is to proceed with the estimation of its
+Fischer z-transformation. This transformation, and its inverse, are
+defined as
+\[
+ z(\rho) = \frac{1}{2}\log\Big(\frac{1+\rho}{1-\rho}\Big)
+         = \text{arctanh}(\rho),\quad
+ z^{-1}(\rho) = \frac{\exp\{2\rho\}-1}{\exp\{2\rho\}+1}
+             = \text{tanh}(\rho).
+\]
+The Fisher z-transformation plays the role here of stretching the small
+correlation parametric space but doing this in a smooth fashion, as
+illustrated on the right panel of Figure 8.
+
+The other option is to estimate the elements of a factorization or
+decomposition of the positive-definite matrix. The most common
+parametrization for a positive-definite matrix, \(\Sigma\), is the
+Cholesky factorization or decomposition \cite{cholesky}. Still thinking
+in two competing causes of failure, a standard Cholesky decomposition
+of \(\Sigma\) may be expressed as
 \begin{align*}
   \Sigma =
   \begin{bmatrix}
