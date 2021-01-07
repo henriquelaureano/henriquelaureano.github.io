@@ -25,8 +25,8 @@ Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
 R <- matrix(0, nrow=J, ncol=4)
 
 logs2_init <- c(log(0.2), log(0.3), log(0.4), log(0.5))
-rhoZ_init <- c(atanh(0.15/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
-               atanh(0.2/sqrt(0.2*0.5)), atanh(0.2/sqrt(0.3*0.4)))
+rhoZ_init <- c(atanh(0.2/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
+               atanh(0.1/sqrt(0.2*0.5)), atanh(0.1/sqrt(0.3*0.4)))
 
 ## model fitting--------------------------------------------------------
 compile(paste0('cpps/', model, '.cpp'))
