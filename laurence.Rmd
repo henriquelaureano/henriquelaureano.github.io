@@ -54,3 +54,7 @@ plot.ar1 <- myplot(x = x, y = y, model = model.ar1,
                    title = '1st order autoregressive model, AR(1)')
 plot.rw1 | plot.ar1
 ```
+
+```{r}
+print(paste0(sum(y), ' events (', mean(y), ' per day)'))
+```
