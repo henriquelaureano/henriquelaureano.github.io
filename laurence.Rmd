@@ -1,0 +1,56 @@
+---
+title: "Modeling Laurence's 2021 daily activity"
+author: Henrique Laureano (.github.io)
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    code_folding: hide
+---
+
+```{r}
+library(INLA)
+library(ggplot2)
+library(patchwork)
+
+x <- 1:7
+y <- c(0, 0, 0, 1, 1, 2, 0)
+data.inla <- list(y = y, x = x)
+
+formula.rw1 <- y ~ 1 + f(x, model = 'rw1', scale.model = TRUE,
+                         hyper = list(theta = list(prior = 'pc.prec',
+                                                   param = c(1, 0.01))))
+formula.ar1 <- y ~ 1 + f(x, model = 'ar1',
+                         hyper = list(prec = list(param = c(1, 0.01))))
+model.rw1 <- inla(formula.rw1, family = 'poisson', data = data.inla)
+model.ar1 <- inla(formula.ar1, family = 'poisson', data = data.inla)
+```
+
+```{r fig.height=3}
+myplot <- function(x, y, model, title) {
+    f.hat <- model$summary.random$x$mean
+    f.lb <- model$summary.random$x$'0.025quant'
+    f.ub <- model$summary.random$x$'0.975quant'
+    data.plot <- data.frame(y = y, x = x,
+                            f.hat = f.hat,
+                            f.lb = f.lb, f.ub = f.ub)
+    ggplot(data.plot, aes(x = x, y = y)) +
+        geom_line(aes(y = f.hat), col = "#0080ff", size = 1) +
+        geom_ribbon(aes(ymin = f.lb, ymax = f.ub),
+                    alpha = 0.3, size = 0.75,
+                    fill = "orange", col = "#0080ff") +
+        geom_point(aes(y = y)) +
+        theme_minimal() +
+        theme(plot.title = element_text(
+                  margin = unit(c(t = 0, r = 0, b = 3, l = 0), 'mm')),
+              axis.title.x = element_text(
+                  margin = unit(c(t = 2, r = 0, b = 0, l = 0), "mm")),
+              axis.title.y = element_text(
+                  margin = unit(c(t = 0, r = 2, b = 0, l = 0), "mm"))) +
+        labs(x = 'Days', y = 'Count', title = title)
+}
+plot.rw1 <- myplot(x = x, y = y, model = model.rw1,
+                   title = '1st order random walk, RW(1)') 
+plot.ar1 <- myplot(x = x, y = y, model = model.ar1,
+                   title = '1st order autoregressive model, AR(1)')
+plot.rw1 | plot.ar1
+```

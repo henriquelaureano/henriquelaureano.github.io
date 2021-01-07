@@ -17,13 +17,15 @@ What am I doing right now? (Jan 21)
 
 + Working on my master thesis,\
   in reality, studying random stuff while my models run on the
-  university's server
+  university's server;
 
 + Making my new slides template\
   [pdf](THESIS/aqua/slides.pdf)
   ([.Rmd](THESIS/aqua/slides.Rmd) |
    [in_header file](THESIS/aqua/beamerheader.txt) |
-   [TikZ style](THESIS/aqua/tikzit.sty))
+   [TikZ style](THESIS/aqua/tikzit.sty));
+
++ Keeping tracking of my [daily](laurence.html) activities.
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
