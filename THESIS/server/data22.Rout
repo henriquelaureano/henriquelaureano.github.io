@@ -1,0 +1,76 @@
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> ##----------------------------------------------------------------------
+> ##                                                     Henrique Laureano
+> ##                      leg.ufpr.br/~henrique · github.com/mynameislaure
+> ##                                      laureano@ufpr.br · @hap_laureano
+> ##                     Laboratory of Statistics and Geoinformation (LEG)
+> ##       2020-dez-27 · Federal University of Paraná · Curitiba/PR/Brazil
+> ##----------------------------------------------------------------------
+> 
+> ## packages-------------------------------------------------------------
+> library(TMB)
+> library(furrr);plan(multicore)
+Loading required package: future
+> source('dataFunc.R')
+> 
+> ## miscellaneous--------------------------------------------------------
+> model <- 'multiGLM'
+> compile(paste0('cpps/', model, '.cpp'))
+make: Nothing to be done for 'all'.
+[1] 0
+> J <- 3e4
+> t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+> Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
+> S <- matrix(c(0.4, 0.15, 0.05, 0,
++               0.15, 0.4, 0, 0.05,
++               0.05, 0, 0.25, 0.1,
++               0, 0.05, 0.1, 0.25), nrow=4, ncol=4)
+> hmm <- 250
+> 
+> ## simulating data-------------------------------------------------
+> y <- future_map(rep(J, hmm), ~datasimu(.x, t=t, Z=Z, S=S),
++                 .options=furrr_options(seed=NULL))
+> 
+> ## getting initial guesses----------------------------------------------
+> initFixedlist <- future_map(y, ~fitGLM(.x, t=t, model=model))
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+★ Loading DLL
+> initFixed <- matrix(unlist(initFixedlist), nrow=hmm, ncol=6, byrow=TRUE)
+> 
+> ## saving---------------------------------------------------------------
+> save(y, initFixed, file='data22.RData', version=2)
+> ## END------------------------------------------------------------------
+> 
+> proc.time()
+   user  system elapsed 
+859.603  14.619  83.573 

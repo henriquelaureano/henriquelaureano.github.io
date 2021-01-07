@@ -13,12 +13,12 @@ i <- abs(as.numeric(args[7]))
 library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
 
 ## load data and initial guesses----------------------------------------
-load('data22.RData')
+load('data36.RData')
 
 ## miscellaneous--------------------------------------------------------
-model <- 'multiGLMM_22'
+model <- 'multiGLMM_36'
 openmp(28)
-where <- 'coefs22'
+where <- 'coefs36'
 J <- 3e4
 t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
 Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
@@ -26,7 +26,8 @@ R <- matrix(0, nrow=J, ncol=4)
 
 logs2_init <- c(log(0.2), log(0.3), log(0.4), log(0.5))
 rhoZ_init <- c(atanh(0.15/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
-               atanh(0.1/sqrt(0.2*0.4)), atanh(0.1/sqrt(0.3*0.5)))
+               atanh(0.1/sqrt(0.2*0.4)), atanh(0.1/sqrt(0.3*0.5)),
+               atanh(0.2/sqrt(0.2*0.5)), atanh(0.2/sqrt(0.3*0.4)))
 
 ## model fitting--------------------------------------------------------
 compile(paste0('cpps/', model, '.cpp'))
@@ -58,5 +59,5 @@ if (class(opt)!='try-error') {
                     append=TRUE, col.names=FALSE)
     }
 }
-FreeADFun(obj);gc()
+FreeADFun(obj);gc()}
 ## END------------------------------------------------------------------

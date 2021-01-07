@@ -30,7 +30,7 @@ library(TMB)
 fitGLM <- function(y, t, model) {
     if (!model%in%names(getLoadedDLLs())) {
         cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
-        dyn.load(dynlib(model))
+        dyn.load(dynlib(paste0('cpps/', model)))
     }
     obj <- MakeADFun(
         data=list(Y=y, T=t, delta=80),
