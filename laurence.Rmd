@@ -7,7 +7,7 @@ output:
     code_folding: hide
 ---
 
-```{r}
+```{r messages=FALSE}
 library(INLA)
 library(ggplot2)
 library(patchwork)
@@ -25,8 +25,8 @@ model.rw1 <- inla(formula.rw1, family = 'poisson', data = data.inla)
 model.ar1 <- inla(formula.ar1, family = 'poisson', data = data.inla)
 ```
 
-```{r fig.height=3}
-myplot <- function(x, y, model, title) {
+```{r fig.height=3.25}
+myplot <- function(x, y, model, title, subtitle) {
     f.hat <- model$summary.random$x$mean
     f.lb <- model$summary.random$x$'0.025quant'
     f.ub <- model$summary.random$x$'0.975quant'
@@ -40,21 +40,21 @@ myplot <- function(x, y, model, title) {
                     fill = "orange", col = "#0080ff") +
         geom_point(aes(y = y)) +
         theme_minimal() +
-        theme(plot.title = element_text(
-                  margin = unit(c(t = 0, r = 0, b = 3, l = 0), 'mm')),
-              axis.title.x = element_text(
+        theme(axis.title.x = element_text(
                   margin = unit(c(t = 2, r = 0, b = 0, l = 0), "mm")),
               axis.title.y = element_text(
                   margin = unit(c(t = 0, r = 2, b = 0, l = 0), "mm"))) +
-        labs(x = 'Days', y = 'Count', title = title)
+        labs(x = 'Days', y = 'Count', title = title, subtitle = subtitle)
 }
 plot.rw1 <- myplot(x = x, y = y, model = model.rw1,
-                   title = '1st order random walk, RW(1)') 
+                   title = '1st order random walk',
+                   subtitle = 'RW(1) model') 
 plot.ar1 <- myplot(x = x, y = y, model = model.ar1,
-                   title = '1st order autoregressive model, AR(1)')
+                   title = '1st order autoregressive',
+                   subtitle = 'AR(1) model')
 plot.rw1 | plot.ar1
 ```
 
 ```{r}
-print(paste0(sum(y), ' events (', mean(y), ' per day)'))
+print(paste0(sum(y), ' events (', round(mean(y), 2), ' per day)'))
 ```
