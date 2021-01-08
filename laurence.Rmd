@@ -7,7 +7,7 @@ output:
     code_folding: hide
 ---
 
-```{r messages=FALSE}
+```{r message=FALSE}
 library(INLA)
 library(ggplot2)
 library(patchwork)
