@@ -1,9 +1,7 @@
 ---
-title: "Predicting soccer match scores"
-author: "[Henrique Ap. Laureano](http://www.leg.ufpr.br/~henrique)"
+title: Predicting soccer match scores
+author: Henrique Laureano (.github.io)
 date: "*Last modification on* `r Sys.time()`"
-include-before:
-  - '\(\newcommand{\bm}[1]{\boldsymbol{\mathbf{#1}}}\)'
 output:
   html_document:
     toc: true
@@ -13,27 +11,13 @@ output:
 ---
 
 ```{r, echo=FALSE}
-htmltools::img(src = knitr::image_uri("logo_leg.jpg"),
-               alt = 'logo',
-               style = 'position:absolute; top:0; right:0;
-                        padding:10px; width:200px;')
-options(width = 100)
 library(knitr)
-opts_chunk$set(fig.path = "iBagens/",
-               cache = TRUE,
-               cache.path = "cache/",
-               warning = FALSE,
-               comment = NA,
-               prompt = FALSE)
+
+options(width=100)
+
+opts_chunk$set(fig.path='iBagens/', cache=TRUE, cache.path='cache/',
+               warning=FALSE)
 ```
-
-***
-
-# How?
-
-[INLA](http://www.r-inla.org/).
-
-# Show me!
 
 ## Functions
 
