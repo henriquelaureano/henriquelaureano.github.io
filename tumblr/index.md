@@ -61,7 +61,6 @@
 <img src='mywater.jpg'>
 <img src='whitejaponesehouse.jpg'>
 <img src='shower.jpg'>
-<img src='big.gif'>
 <img src='vin.png'>
 <img src='sityourass.png'>
 <img src='donottripdog.jpg'>
