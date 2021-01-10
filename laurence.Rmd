@@ -11,8 +11,8 @@ output:
 library(INLA)
 library(ggplot2)
 library(patchwork)
-x <- 1:9
-y <- c(0, 0, 0, 1, 1, 2, 1, 1, 0)
+x <- 1:10
+y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 0)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
@@ -40,7 +40,7 @@ myplot <- function(x, y, model, title, subtitle) {
         geom_line(aes(y=f.hat), col='#0080ff', size=1)+
         geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
                     alpha=0.3, size=0.75, fill='orange', col='#0080ff')+
-        ylim(c(-1.25, 2))+
+        ylim(c(-1, 2))+
         geom_point(aes(y=y))+
         theme_minimal()+
         theme(axis.title.x=element_text(
