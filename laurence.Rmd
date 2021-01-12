@@ -12,7 +12,7 @@ library(INLA)
 library(ggplot2)
 library(patchwork)
 x <- 1:12
-y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 0)
+y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
