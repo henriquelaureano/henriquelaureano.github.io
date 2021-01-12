@@ -59,5 +59,5 @@ if (class(opt)!='try-error') {
                     append=TRUE, col.names=FALSE)
     }
 }
-FreeADFun(obj);gc()}
+FreeADFun(obj);gc()
 ## END------------------------------------------------------------------
