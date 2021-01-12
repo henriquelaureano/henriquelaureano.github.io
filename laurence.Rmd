@@ -40,7 +40,7 @@ myplot <- function(x, y, model, title, subtitle) {
         geom_line(aes(y=f.hat), col='#0080ff', size=1)+
         geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
                     alpha=0.3, size=0.75, fill='orange', col='#0080ff')+
-        ylim(c(-1, 2))+
+        ylim(c(-1.25, 2))+
         geom_point(aes(y=y))+
         theme_minimal()+
         theme(axis.title.x=element_text(
