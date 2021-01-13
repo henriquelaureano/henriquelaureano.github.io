@@ -64,3 +64,5 @@
 <img src='vin.png'>
 <img src='sityourass.png'>
 <img src='donottripdog.jpg'>
+<img src='bart.png'>
+<img src='houses.jpg'>
