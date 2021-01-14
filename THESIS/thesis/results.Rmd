@@ -1,0 +1,59 @@
+---
+title: 'Figures of chap4: results'
+author: HENRIQUE LAUREANO (.github.io)
+date: '*Last modification on* `r Sys.time()`'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r echo=FALSE}
+library(knitr)
+opts_chunk$set(fig.path = 'figures/')
+```
+
+```{r packages}
+pacman::p_load(tidyverse, patchwork, ggcorrplot)
+```
+
+```{r readdata}
+path <- '../server/'
+coefs22 <- read.table(paste0(path, 'coefs22.txt'))
+coefs36 <- read.table(paste0(path, 'coefs36.txt'))
+coefs38 <- read.table(paste0(path, 'coefs38.txt'))
+
+## convergence 1 to everybody
+table(coefs22$V16)
+table(coefs36$V18)
+table(coefs38$V16)
+
+coefs22 <- as_tibble(coefs22)%>%select(-V1, -V16)%>%
+    `colnames<-`(paste0('p', seq(14)))
+
+coefs36 <- as_tibble(coefs36)%>%select(-V1, -V18)%>%
+    `colnames<-`(paste0('p', seq(16)))
+
+coefs38 <- as_tibble(coefs38)%>%select(-V1, -V16)%>%
+    `colnames<-`(paste0('p', seq(14)))
+```
+
+```{r cor}
+tmp <- round(cor(coefs22), 1)
+## x11()
+ggcorrplot(tmp, 
+           type='lower', 
+           lab=TRUE, 
+           ## lab_size=5, 
+           ## outline.color='white', 
+           colors=RColorBrewer::brewer.pal(n=3, name='Greys'),
+           ggtheme=theme(axis.title.x=element_blank(),
+                         axis.title.y=element_blank(),
+                         panel.background=element_blank(),
+                         axis.ticks=element_blank(),
+                         legend.justification=c(1, 0),
+                         legend.position=c(0.3, 0.9),
+                         legend.direction='horizontal')
+           )
+```
