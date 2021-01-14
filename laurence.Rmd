@@ -8,11 +8,11 @@ output:
 ---
 
 ```{r message=FALSE}
-library(INLA)
-library(ggplot2)
+library(tidyverse)
 library(patchwork)
-x <- 1:13
-y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2)
+library(INLA)
+x <- 1:15
+y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, NA)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
@@ -35,23 +35,32 @@ formula.spde <- y~-1+
                                 prior.sigma=c(1, 0.01)),
       constr=FALSE)
 
-model.rw1 <- inla(formula.rw1, family='poisson', data=data.inla)
-model.ar1 <- inla(formula.ar1, family='poisson', data=data.inla)
-model.spde <- inla(formula.spde, family='poisson', data=data.inla)
+model.rw1 <- inla(formula.rw1,
+                  family='poisson',
+                  data=data.inla,
+                  control.predictor=list(link=1))
+model.ar1 <- inla(formula.ar1,
+                  family='poisson',
+                  data=data.inla,
+                  control.predictor=list(link=1))
+model.spde <- inla(formula.spde,
+                   family='poisson',
+                   data=data.inla,
+                   control.predictor=list(link=1))
 ```
 
-```{r fig.height=3.25,fig.width=10}
+```{r fig.height=3.25,fig.width=10,warning=FALSE}
 myplot <- function(x, y, model, title, subtitle) {
-    f.hat <- model$summary.random$x$mean
-    f.lb <- model$summary.random$x$'0.025quant'
-    f.ub <- model$summary.random$x$'0.975quant'
+    f.hat <- model$summary.fitted.values$mean
+      f.lb <- model$summary.fitted.values$'0.025quant'
+      f.ub <- model$summary.fitted.values$'0.975quant'
     data.plot <- data.frame(y=y, x=x, f.hat=f.hat, f.lb=f.lb, f.ub=f.ub)
     ggplot(data.plot, aes(x=x, y=y))+
         geom_line(aes(y=f.hat), col='#0080ff', size=1)+
         geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
                     alpha=0.3, size=0.75, fill='orange', col='#0080ff')+
-        ylim(c(-2, 3))+
         geom_point(aes(y=y))+
+        geom_vline(xintercept=nth(x, -2L), linetype='dashed', col='red')+
         theme_minimal()+
         theme(axis.title.x=element_text(
                   margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
@@ -69,5 +78,6 @@ plot.rw1 | plot.ar1 | plot.spde
 ```
 
 ```{r}
-print(paste0(sum(y), ' events (', round(mean(y), 2), ' per day)'))
+Y <- y[-which(y%in%NA)]
+print(paste0(sum(Y), ' events (', round(mean(Y), 2), ' per day)'))
 ```
