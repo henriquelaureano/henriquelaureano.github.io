@@ -39,21 +39,79 @@ coefs38 <- as_tibble(coefs38)%>%select(-V1, -V16)%>%
     `colnames<-`(paste0('p', seq(14)))
 ```
 
-```{r cor}
-tmp <- round(cor(coefs22), 1)
-## x11()
-ggcorrplot(tmp, 
-           type='lower', 
-           lab=TRUE, 
-           ## lab_size=5, 
-           ## outline.color='white', 
-           colors=RColorBrewer::brewer.pal(n=3, name='Greys'),
-           ggtheme=theme(axis.title.x=element_blank(),
-                         axis.title.y=element_blank(),
-                         panel.background=element_blank(),
-                         axis.ticks=element_blank(),
-                         legend.justification=c(1, 0),
-                         legend.position=c(0.3, 0.9),
-                         legend.direction='horizontal')
-           )
+```{r cor2plot,fig.height=10}
+coefs22_cor <- round(cor(coefs22), 1)
+coefs36_cor <- round(cor(coefs36), 1)
+coefs38_cor <- round(cor(coefs38), 1)
+
+cor2plot <- function(cor.data, title) {
+    ggcorrplot(cor.data, 
+               type='lower', 
+               lab=TRUE, 
+               ## lab_size=5, 
+               ## outline.color='white', 
+               colors=RColorBrewer::brewer.pal(n=3, name='Greys'),
+               title=title, 
+               ggtheme=theme(axis.title.x=element_blank(),
+                             axis.title.y=element_blank(),
+                             panel.background=element_blank(),
+                             axis.ticks=element_blank(),
+                             legend.justification=c(1, 0),
+                             legend.position=c(0.25, 0.9),
+                             legend.direction='horizontal',
+                             legend.title=element_blank()))
+}
+
+cor2plot(coefs22_cor, title='coefs22 correlation')
+cor2plot(coefs36_cor, title='coefs36 correlation')
+cor2plot(coefs38_cor, title='coefs38 correlation')
+```
+
+```{r}
+true22 <- c(-2, -1.5, 1.2, 1, 3, 5,
+            log(0.4), log(0.4), log(0.25), log(0.25),
+            atanh(0.15/sqrt(0.4*0.4)),
+            atanh(0.1/sqrt(0.25*0.25)),
+            atanh(0.05/sqrt(0.4*0.25)),
+            atanh(0.05/sqrt(0.4*0.25)))
+true36 <- c(-2, -1.5, 1.2, 1, 3, 5,
+            log(0.4), log(0.4), log(0.25), log(0.25),
+            atanh(0.15/sqrt(0.4*0.4)),
+            atanh(0.1/sqrt(0.25*0.25)),
+            atanh(0.05/sqrt(0.4*0.25)),
+            atanh(0.05/sqrt(0.4*0.25)), 
+            atanh(0.2/sqrt(0.4*0.25)),
+            atanh(0.2/sqrt(0.4*0.25)))
+true38 <- c(-2, -1.5, 1.2, 1, 3, 5,
+            log(0.4), log(0.4), log(0.25), log(0.25),
+            atanh(0.15/sqrt(0.4*0.4)),
+            atanh(0.1/sqrt(0.25*0.25)),
+            atanh(0.1/sqrt(0.4*0.25)),
+            atanh(0.1/sqrt(0.4*0.25)))
+true40 <- c(-2, -1.5, 1.2, 1, 3, 5,
+            log(0.4), log(0.4), log(0.25), log(0.25),
+            atanh(0.05/sqrt(0.4*0.25)),
+            atanh(0.05/sqrt(0.4*0.25)),
+            atanh(0.2/sqrt(0.4*0.25)),
+            atanh(0.2/sqrt(0.4*0.25)))
+
+cerror <- function(coefs, true) {
+    error <- coefs
+    for (i in seq(ncol(coefs))) error[i] <- true[i]-coefs[i]
+    return(error)
+}
+error22 <- cerror(coefs22, true22)
+error36 <- cerror(coefs36, true36)
+error38 <- cerror(coefs38, true38)
+
+str(error22)
+
+error22%>%summarize_all(mean)
+error22%>%summarize(across(where(is.numeric), mean))
+
+tmp <- error22%>%summarize_all(quantile, c(0.025, 0.975))
+tmp
+
+error22%>%summarize(across(where(is.numeric),
+                           quantile, c(0.025, 0.975)))
 ```
