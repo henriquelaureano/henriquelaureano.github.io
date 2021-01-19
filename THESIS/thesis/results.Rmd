@@ -23,11 +23,13 @@ path <- '../server/'
 coefs22 <- read.table(paste0(path, 'coefs22.txt'))
 coefs36 <- read.table(paste0(path, 'coefs36.txt'))
 coefs38 <- read.table(paste0(path, 'coefs38.txt'))
+coefs40 <- read.table(paste0(path, 'coefs40.txt'))
 
 ## convergence 1 to everybody
 table(coefs22$V16)
 table(coefs36$V18)
 table(coefs38$V16)
+table(coefs40$V16)
 
 coefs22 <- as_tibble(coefs22)%>%select(-V1, -V16)%>%
     `colnames<-`(paste0('p', seq(14)))
@@ -37,12 +39,18 @@ coefs36 <- as_tibble(coefs36)%>%select(-V1, -V18)%>%
 
 coefs38 <- as_tibble(coefs38)%>%select(-V1, -V16)%>%
     `colnames<-`(paste0('p', seq(14)))
+
+coefs40 <- as_tibble(coefs40)%>%select(-V1, -V16)%>%
+    `colnames<-`(paste0('p', seq(14)))
 ```
+
+# COR
 
 ```{r cor2plot,fig.height=10}
 coefs22_cor <- round(cor(coefs22), 1)
 coefs36_cor <- round(cor(coefs36), 1)
 coefs38_cor <- round(cor(coefs38), 1)
+coefs40_cor <- round(cor(coefs40), 1)
 
 cor2plot <- function(cor.data, title) {
     ggcorrplot(cor.data, 
@@ -51,7 +59,9 @@ cor2plot <- function(cor.data, title) {
                ## lab_size=5, 
                ## outline.color='white', 
                colors=RColorBrewer::brewer.pal(n=3, name='Greys'),
-               title=title, 
+               title=title,
+               p.mat=cor_pmat(cor.data), 
+               insig='blank', 
                ggtheme=theme(axis.title.x=element_blank(),
                              axis.title.y=element_blank(),
                              panel.background=element_blank(),
@@ -65,9 +75,12 @@ cor2plot <- function(cor.data, title) {
 cor2plot(coefs22_cor, title='coefs22 correlation')
 cor2plot(coefs36_cor, title='coefs36 correlation')
 cor2plot(coefs38_cor, title='coefs38 correlation')
+cor2plot(coefs40_cor, title='coefs40 correlation')
 ```
 
-```{r}
+# BIAS
+
+```{r bias2plot,fig.height=7}
 true22 <- c(-2, -1.5, 1.2, 1, 3, 5,
             log(0.4), log(0.4), log(0.25), log(0.25),
             atanh(0.15/sqrt(0.4*0.4)),
@@ -97,21 +110,228 @@ true40 <- c(-2, -1.5, 1.2, 1, 3, 5,
 
 cerror <- function(coefs, true) {
     error <- coefs
-    for (i in seq(ncol(coefs))) error[i] <- true[i]-coefs[i]
-    return(error)
+    for (i in seq(ncol(coefs))) { error[i] <- true[i]-coefs[i] }
+    out <- error%>%
+        summarize_all(mean)%>%
+        add_row(error%>%summarize_all(quantile, c(0.025, 0.975)))%>%
+        mutate(label=c('mean', 'q025', 'q975'))%>%
+        pivot_longer(!label, names_to='par', values_to='value')%>%
+        pivot_wider(names_from=label, values_from=value)
+    out$par <- as_factor(out$par)
+    return(out)
 }
 error22 <- cerror(coefs22, true22)
 error36 <- cerror(coefs36, true36)
 error38 <- cerror(coefs38, true38)
+error40 <- cerror(coefs40, true40)
 
-str(error22)
+bias2plot <- function(data, title){
+    ggplot(data, aes(ymin=q025, ymax=q975, x=par))+
+        geom_linerange(
+            color=RColorBrewer::brewer.pal(n=3, name='Greys')[2],
+            position=position_dodge(width=0.2),
+            size=3)+
+        ylim(c(-1, 1))+
+        geom_point(mapping=aes(x=par, y=mean), size=2)+
+        geom_hline(yintercept=0, linetype='dashed')+
+        labs(x=NULL, y='Bias',
+             title=title, subtitle='with 2.5% and 97.5% quantiles')+
+        coord_flip()+
+        theme_minimal()
+}
+(bias2plot(error22, title='coefs22 bias')+
+ bias2plot(error36, title='coefs36 bias')
+)/(bias2plot(error38, title='coefs38 bias')+
+   bias2plot(error40, title='coefs40 bias'))
+```
 
-error22%>%summarize_all(mean)
-error22%>%summarize(across(where(is.numeric), mean))
+# CIF
 
-tmp <- error22%>%summarize_all(quantile, c(0.025, 0.975))
-tmp
+```{r cifs,fig.height=3.5}
+beta1 <- c(-2,
+           mean(coefs22$p1), mean(coefs36$p1),
+           mean(coefs38$p1), mean(coefs40$p1))
+beta2 <- c(-1.5,
+           mean(coefs22$p2), mean(coefs36$p2),
+           mean(coefs38$p2), mean(coefs40$p2))
+gamma1 <- c(1.2,
+            mean(coefs22$p3), mean(coefs36$p3),
+            mean(coefs38$p3), mean(coefs40$p3))
+gamma2 <- c(1,
+            mean(coefs22$p4), mean(coefs36$p4),
+            mean(coefs38$p4), mean(coefs40$p4))
+w1 <- c(3,
+        mean(coefs22$p5), mean(coefs36$p5),
+        mean(coefs38$p5), mean(coefs40$p5))
+w2 <- c(5,
+        mean(coefs22$p6), mean(coefs36$p6),
+        mean(coefs38$p6), mean(coefs40$p6))
 
-error22%>%summarize(across(where(is.numeric),
-                           quantile, c(0.025, 0.975)))
+t <- seq(30, 70.5, length.out=50)
+delta <- 80
+size <- length(beta1)
+nt <- length(t)
+
+cif1 <- vector(mode='list', length=size)
+cif2 <- vector(mode='list', length=size)
+for (i in seq(size)) {
+    risklevel1 <- exp(beta1[i])
+    risklevel2 <- exp(beta2[i])
+    mlog1 <- risklevel1/(1+risklevel1+risklevel2)
+    mlog2 <- risklevel2/(1+risklevel1+risklevel2)
+    trajectory1 <- pnorm(w1[i]*atanh(2*t/delta-1)-gamma1[i])
+    trajectory2 <- pnorm(w2[i]*atanh(2*t/delta-1)-gamma2[i])
+    cif1[[i]] <- mlog1*trajectory1
+    cif2[[i]] <- mlog2*trajectory2
+}
+
+model <- as_factor(c(rep('True', nt),
+                     rep('model22', nt), rep('model36', nt),
+                     rep('model38', nt), rep('model40', nt)))
+
+data_cif <- tibble(curve=c(rep(1, 5*nt), rep(2, 5*nt)), 
+                   model=rep(model, 2), 
+                   value=c(unlist(cif1), unlist(cif2)),
+                   time=rep(t, 2*5))
+
+ggplot(data_cif, aes(x=time, y=value, group=model))+
+    geom_line(aes(linetype=model))+
+    facet_wrap(~curve, labeller=label_bquote(CIF:.(curve)))+
+    labs(x='Time', y='Cluster-specific CIF', linetype='Model')+
+    theme(legend.position=c(0.1, 0.65),
+          strip.background=element_rect(colour='black', fill='white'))
+```
+
+# VCOV
+
+```{r vcovs,fig.height=6}
+plotS <- function(S, title) {
+    longS <- reshape2::melt(S, na.rm=TRUE)
+    longS$Var1 <- as_factor(longS$Var1)
+    longS$Var2 <- fct_relevel(as_factor(longS$Var2), rev)
+    ggplot(longS, aes(x=Var1, y=Var2, fill=value))+
+        geom_tile(color='black', size=0.5)+
+        geom_text(aes(label=round(value, 2)))+
+        scale_fill_gradient(low='white', high='white')+
+        labs(title=title)+
+        theme_minimal()+
+        theme(axis.text.x=element_blank(),
+              axis.title.x=element_blank(), 
+              axis.text.y=element_blank(),
+              axis.title.y=element_blank(),
+              panel.grid.major=element_blank(),
+              legend.position='none')
+}
+
+p1 <- plotS(S=matrix(c(0.4, 0.15, 0.05, 0,
+                       NA, 0.4, 0, 0.05,
+                       NA, NA, 0.25, 0.1,
+                       NA, NA, NA, 0.25), nrow=4, ncol=4),
+            title='model22: True')
+
+p2 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0,
+                       NA, 0.3, 0, 0.1,
+                       NA, NA, 0.4, 0.15,
+                       NA, NA, NA, 0.5), nrow=4, ncol=4),
+            title='model22: Start')
+
+means22 <- colMeans(coefs22)
+
+p3 <- plotS(
+    S=matrix(c(
+        exp(means22[7]),
+        tanh(means22[11])*sqrt(exp(means22[7]))*sqrt(exp(means22[8])),
+        tanh(means22[13])*sqrt(exp(means22[7]))*sqrt(exp(means22[9])),
+        0,
+        NA, exp(means22[8]), 0,
+        tanh(means22[14])*sqrt(exp(means22[8]))*sqrt(exp(means22[10])),
+        NA, NA, exp(means22[9]),
+        tanh(means22[12])*sqrt(exp(means22[9]))*sqrt(exp(means22[10])),
+        NA, NA, NA, exp(means22[10])),
+        nrow=4, ncol=4),
+    title='model22: Est')
+
+p4 <- plotS(S=matrix(c(0.4, 0.15, 0.05, 0.2,
+                       NA, 0.4, 0.2, 0.05,
+                       NA, NA, 0.25, 0.1,
+                       NA, NA, NA, 0.25), nrow=4, ncol=4),
+            title='model36: True')
+
+p5 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0.2,
+                       NA, 0.3, 0.2, 0.1,
+                       NA, NA, 0.4, 0.15,
+                       NA, NA, NA, 0.5), nrow=4, ncol=4),
+            title='model36: Start')
+
+means36 <- colMeans(coefs36)
+
+p6 <- plotS(
+    S=matrix(c(
+        exp(means36[7]),
+        tanh(means36[11])*sqrt(exp(means36[7]))*sqrt(exp(means36[8])),
+        tanh(means36[13])*sqrt(exp(means36[7]))*sqrt(exp(means36[9])),
+        tanh(means36[15])*sqrt(exp(means36[7]))*sqrt(exp(means36[10])),
+        NA, exp(means36[8]),
+        tanh(means36[16])*sqrt(exp(means36[8]))*sqrt(exp(means36[9])),
+        tanh(means36[14])*sqrt(exp(means36[8]))*sqrt(exp(means36[10])),
+        NA, NA, exp(means36[9]),
+        tanh(means36[12])*sqrt(exp(means36[9]))*sqrt(exp(means36[10])),
+        NA, NA, NA, exp(means36[10])), nrow=4, ncol=4),
+    title='model36: Est')
+
+p7 <- plotS(S=matrix(c(0.4, 0.15, 0, 0.1,
+                       NA, 0.4, 0.1, 0,
+                       NA, NA, 0.25, 0.1,
+                       NA, NA, NA, 0.25), nrow=4, ncol=4),
+            title='model38: True')
+
+p8 <- plotS(S=matrix(c(0.2, 0.2, 0, 0.1,
+                       NA, 0.3, 0.1, 0,
+                       NA, NA, 0.4, 0.15,
+                       NA, NA, NA, 0.5), nrow=4, ncol=4),
+            title='model38: Start')
+
+means38 <- colMeans(coefs38)
+
+p9 <- plotS(
+    S=matrix(c(
+        exp(means38[7]),
+        tanh(means38[11])*sqrt(exp(means38[7]))*sqrt(exp(means38[8])),
+        0,
+        tanh(means38[13])*sqrt(exp(means38[7]))*sqrt(exp(means38[10])),
+        NA, exp(means38[8]),
+        tanh(means38[14])*sqrt(exp(means38[8]))*sqrt(exp(means38[9])),
+        0,
+        NA, NA, exp(means38[9]),
+        tanh(means38[12])*sqrt(exp(means38[9]))*sqrt(exp(means38[10])),
+        NA, NA, NA, exp(means38[10])), nrow=4, ncol=4),
+    title='model38: Est')
+
+p10 <- plotS(S=matrix(c(0.4, 0, 0.05, 0.2,
+                        NA, 0.4, 0.2, 0.05,
+                        NA, NA, 0.25, 0,
+                        NA, NA, NA, 0.25), nrow=4, ncol=4),
+             title='model40: True')
+
+p11 <- plotS(S=matrix(c(0.2, 0, 0.1, 0.2,
+                        NA, 0.3, 0.2, 0.1,
+                        NA, NA, 0.4, 0,
+                        NA, NA, NA, 0.5), nrow=4, ncol=4),
+             title='model40: Start')
+
+means40 <- colMeans(coefs40)
+
+p12 <- plotS(
+    S=matrix(c(
+        exp(means40[7]), 0,
+        tanh(means40[11])*sqrt(exp(means40[7]))*sqrt(exp(means40[9])),
+        tanh(means40[13])*sqrt(exp(means40[7]))*sqrt(exp(means40[10])),
+        NA, exp(means40[8]),
+        tanh(means40[14])*sqrt(exp(means40[8]))*sqrt(exp(means40[9])),
+        tanh(means40[12])*sqrt(exp(means40[8]))*sqrt(exp(means40[10])),
+        NA, NA, exp(means40[9]), 0,
+        NA, NA, NA, exp(means40[10])), nrow=4, ncol=4),
+    title='model40: Est')
+
+(p1|p4|p7|p10)/(p2|p5|p8|p11)/(p3|p6|p9|p12)
 ```
