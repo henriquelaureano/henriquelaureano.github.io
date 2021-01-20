@@ -11,8 +11,9 @@ output:
 library(tidyverse)
 library(patchwork)
 library(INLA)
-x <- 1:19
-y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, NA)
+x <- 1:22
+y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, NA,
+       NA, NA)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
@@ -60,7 +61,7 @@ myplot <- function(x, y, model, title, subtitle) {
         geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
                     alpha=0.3, size=0.75, fill='orange', col='#0080ff')+
         geom_point(aes(y=y))+
-        geom_vline(xintercept=nth(x, -2L), linetype='dashed', col='red')+
+        geom_vline(xintercept=nth(x, -4L), linetype='dashed', col='red')+
         theme_minimal()+
         theme(axis.title.x=element_text(
                   margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
