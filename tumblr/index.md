@@ -67,7 +67,6 @@
 <img src='bart.png'>
 <img src='houses.jpg'>
 <img src='doom2tattoo.jpg'>
-<img src='jordan.gif'>
 <img src='dogs7.png'>
 <img src='underhouse.jpg'>
 <img src='mix.jpg'>
