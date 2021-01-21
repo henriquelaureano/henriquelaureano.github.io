@@ -52,9 +52,6 @@ R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
 [laureano@ufpr.br](laureano@ufpr.br) |
 [henriquelaureano@outlook.com](<henriquelaureano@outlook.com)
 
-> Minimalism is not a lack of something.\
-> It’s simply the perfect amount of something.
-
 <!-- font-size default: 14px -->
 <p><a href="mike.html" style="float: right; font-size: 11px">
     Michael Scott</a></p>
