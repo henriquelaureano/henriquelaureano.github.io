@@ -46,13 +46,13 @@ coefs40 <- as_tibble(coefs40)%>%select(-V1, -V16)%>%
 
 # COR
 
-```{r cor2plot,fig.height=10}
+```{r cor2plot,message=FALSE,fig.height=10,fig.width=10}
 coefs22_cor <- round(cor(coefs22), 1)
 coefs36_cor <- round(cor(coefs36), 1)
 coefs38_cor <- round(cor(coefs38), 1)
 coefs40_cor <- round(cor(coefs40), 1)
 
-cor2plot <- function(cor.data, title) {
+cor2plot <- function(cor.data, title, zrhos) {
     ggcorrplot(cor.data, 
                type='lower', 
                lab=TRUE, 
@@ -62,20 +62,67 @@ cor2plot <- function(cor.data, title) {
                title=title,
                p.mat=cor_pmat(cor.data), 
                insig='blank', 
-               ggtheme=theme(axis.title.x=element_blank(),
-                             axis.title.y=element_blank(),
-                             panel.background=element_blank(),
-                             axis.ticks=element_blank(),
-                             legend.justification=c(1, 0),
-                             legend.position=c(0.25, 0.9),
-                             legend.direction='horizontal',
-                             legend.title=element_blank()))
+               ggtheme=theme(
+                   axis.text.x=element_text(), 
+                   axis.title.x=element_blank(),
+                   axis.title.y=element_blank(),
+                   panel.background=element_blank(),
+                   axis.ticks=element_blank(),
+                   legend.justification=c(1, 0),
+                   legend.position=c(0.4, 0.85),
+                   legend.direction='horizontal',
+                   legend.title=element_blank()))+
+        scale_x_discrete(labels=c(expression(beta[2]),
+                                  expression(gamma[1]),
+                                  expression(gamma[2]),
+                                  expression(w[1]),
+                                  expression(w[2]),
+                                  expression(log(sigma[1]^2)),
+                                  expression(log(sigma[2]^2)),
+                                  expression(log(sigma[3]^2)),
+                                  expression(log(sigma[4]^2)),
+                                  zrhos))+
+        scale_y_discrete(labels=c(expression(beta[1]), 
+                                  expression(beta[2]),
+                                  expression(gamma[1]),
+                                  expression(gamma[2]),
+                                  expression(w[1]),
+                                  expression(w[2]),
+                                  expression(log(sigma[1]^2)),
+                                  expression(log(sigma[2]^2)),
+                                  expression(log(sigma[3]^2)),
+                                  expression(log(sigma[4]^2)),
+                                  head(zrhos, -1)))+
+        coord_cartesian()
 }
 
-cor2plot(coefs22_cor, title='coefs22 correlation')
-cor2plot(coefs36_cor, title='coefs36 correlation')
-cor2plot(coefs38_cor, title='coefs38 correlation')
-cor2plot(coefs40_cor, title='coefs40 correlation')
+p1 <- cor2plot(coefs22_cor,
+               title='coefs22 correlation',
+               zrhos=c(expression(z(rho[12])),
+                       expression(z(rho[34])),
+                       expression(z(rho[13])),
+                       expression(z(rho[24]))))
+p2 <- cor2plot(coefs36_cor,
+               title='coefs36 correlation',
+               zrhos=c(expression(z(rho[12])),
+                       expression(z(rho[34])),
+                       expression(z(rho[13])),
+                       expression(z(rho[24])),
+                       expression(z(rho[14])),
+                       expression(z(rho[23]))))
+p3 <- cor2plot(coefs38_cor,
+               title='coefs38 correlation',
+               zrhos=c(expression(z(rho[12])),
+                       expression(z(rho[34])),
+                       expression(z(rho[14])),
+                       expression(z(rho[23]))))
+p4 <- cor2plot(coefs40_cor,
+               title='coefs40 correlation',
+               zrhos=c(expression(z(rho[13])),
+                       expression(z(rho[24])),
+                       expression(z(rho[14])),
+                       expression(z(rho[23]))))
+(p1|p2)/(p3|p4)
 ```
 
 # BIAS
@@ -125,7 +172,7 @@ error36 <- cerror(coefs36, true36)
 error38 <- cerror(coefs38, true38)
 error40 <- cerror(coefs40, true40)
 
-bias2plot <- function(data, title){
+bias2plot <- function(data, title, zrhos){
     ggplot(data, aes(ymin=q025, ymax=q975, x=par))+
         geom_linerange(
             color=RColorBrewer::brewer.pal(n=3, name='Greys')[2],
@@ -136,13 +183,48 @@ bias2plot <- function(data, title){
         geom_hline(yintercept=0, linetype='dashed')+
         labs(x=NULL, y='Bias',
              title=title, subtitle='with 2.5% and 97.5% quantiles')+
+        scale_x_discrete(labels=c(expression(beta[1]),
+                                  expression(beta[2]),
+                                  expression(gamma[1]),
+                                  expression(gamma[2]),
+                                  expression(w[1]),
+                                  expression(w[2]),
+                                  expression(log(sigma[1]^2)),
+                                  expression(log(sigma[2]^2)),
+                                  expression(log(sigma[3]^2)),
+                                  expression(log(sigma[4]^2)),
+                                  zrhos))+
         coord_flip()+
         theme_minimal()
 }
-(bias2plot(error22, title='coefs22 bias')+
- bias2plot(error36, title='coefs36 bias')
-)/(bias2plot(error38, title='coefs38 bias')+
-   bias2plot(error40, title='coefs40 bias'))
+p1 <- bias2plot(error22,
+                title='coefs22 bias',
+                zrhos=c(expression(z(rho[12])),
+                        expression(z(rho[34])),
+                        expression(z(rho[13])),
+                        expression(z(rho[24]))))
+p2 <- bias2plot(error36,
+                title='coefs36 bias',
+                zrhos=c(expression(z(rho[12])),
+                        expression(z(rho[34])),
+                        expression(z(rho[13])),
+                        expression(z(rho[24])),
+                        expression(z(rho[14])),
+                        expression(z(rho[23]))))
+p3 <- bias2plot(error38,
+                title='coefs38 bias',
+                zrhos=c(expression(z(rho[12])),
+                        expression(z(rho[34])),
+                        expression(z(rho[14])),
+                        expression(z(rho[23]))))
+p4 <- bias2plot(error40,
+                title='coefs40 bias',
+                zrhos=c(expression(z(rho[13])),
+                        expression(z(rho[24])),
+                        expression(z(rho[14])),
+                        expression(z(rho[23]))))
+
+(p1|p2)/(p3|p4)
 ```
 
 # CIF
@@ -214,10 +296,16 @@ plotS <- function(S, title) {
         geom_text(aes(label=round(value, 2)))+
         scale_fill_gradient(low='white', high='white')+
         labs(title=title)+
+        scale_x_discrete(labels=c(expression(u[1]), 
+                                  expression(u[2]), 
+                                  expression(eta[1]),
+                                  expression(eta[2])))+
+        scale_y_discrete(labels=c(expression(eta[2]), 
+                                  expression(eta[1]), 
+                                  expression(u[2]),
+                                  expression(u[1])))+
         theme_minimal()+
-        theme(axis.text.x=element_blank(),
-              axis.title.x=element_blank(), 
-              axis.text.y=element_blank(),
+        theme(axis.title.x=element_blank(), 
               axis.title.y=element_blank(),
               panel.grid.major=element_blank(),
               legend.position='none')

@@ -1,0 +1,122 @@
+WARNING: unknown option '-5'
+
+
+R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> ##----------------------------------------------------------------------
+> ##                                                     Henrique Laureano
+> ##                      leg.ufpr.br/~henrique · github.com/mynameislaure
+> ##                                      laureano@ufpr.br · @hap_laureano
+> ##                     Laboratory of Statistics and Geoinformation (LEG)
+> ##       2021-jan-19 · Federal University of Paraná · Curitiba/PR/Brazil
+> ##----------------------------------------------------------------------
+> 
+> (args <- commandArgs())
+[1] "/usr/lib/R/bin/exec/R" "-f"                    "model22-hybrid2.R"    
+[4] "--restore"             "--save"                "--no-readline"        
+[7] "-5"                   
+> i <- abs(as.numeric(args[7]))
+> 
+> ## packages-------------------------------------------------------------
+> ## library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
+> ## This I'll run on my machine
+> library(TMB)
+> 
+> ## load data and initial guesses----------------------------------------
+> load('../data22.RData')
+> 
+> ## miscellaneous--------------------------------------------------------
+> model <- 'model22_hybrid'
+> openmp(12)
+[1] 12
+> where <- 'coefs22_hybrid2'
+> J <- 3e4
+> t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+> Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
+> R <- matrix(0, nrow=J, ncol=4)
+> 
+> logs2_init <- c(log(0.2), log(0.3), log(0.4), log(0.5))
+> rhoZ_init <- c(atanh(0.15/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
++                atanh(0.1/sqrt(0.2*0.4)), atanh(0.1/sqrt(0.3*0.5)))
+> 
+> ## model fitting--------------------------------------------------------
+> compile(paste0('cpps/', model, '.cpp'))
+make: Nothing to be done for 'all'.
+[1] 0
+> tmbdata <- list(Y=y[[i]], Z=Z, T=t, delta=80,
++                 beta1=-2, beta2=-1.5, gama1=1.2, gama2=1, w1=3, w2=5)
+> tmbpars <- list(R=R, logs2=logs2_init, rhoZ=rhoZ_init)
+> if (!model%in%names(getLoadedDLLs())) {
++     cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
++     dyn.load(dynlib(paste0('cpps/', model)))
++     config(tape.parallel=FALSE, DLL=model)
++ }
+★ Loading DLL
+$trace.atomic
+[1] 1
+
+$trace.optimize
+[1] 1
+
+$trace.parallel
+[1] 1
+
+$tape.parallel
+[1] 0
+
+$optimize.parallel
+[1] 0
+
+$optimize.instantly
+[1] 1
+
+$debug.getListElement
+[1] 0
+
+> obj <- MakeADFun(data=tmbdata, parameters=tmbpars,
++                  DLL=model, random='R', hessian=TRUE, silent=TRUE)
+> opt <- try(nlminb(obj$par, obj$fn, obj$gr, eval.max=1e3, iter.max=500),
++            silent=TRUE)
+There were 37 warnings (use warnings() to see them)
+> if (class(opt)!='try-error') {
++     write.table(rbind(c(opt$par, opt$convergence)),
++                 file=paste0(where, '.txt'),
++                 append=TRUE, col.names=FALSE) 
++     sdr <- try(sdreport(obj, par.fixed=TRUE, hessian.fixed=TRUE),
++                silent=TRUE)
++     if (class(sdr)!='try-error') {
++         eps <- c(summary(sdr, 'fixed')[, 2],
++                  summary(sdr, 'report')[, 2])
++         write.table(rbind(eps),
++                     file=paste0('eps_', where, '_', i, '.txt'),
++                     append=TRUE, col.names=FALSE)
++     }
++ }
+> FreeADFun(obj);gc()
+NULL
+           used  (Mb) gc trigger  (Mb) max used  (Mb)
+Ncells  1484238  79.3    4494712 240.1  4494712 240.1
+Vcells 29637762 226.2   61791392 471.5 61791392 471.5
+> ## END------------------------------------------------------------------
+> 
+> proc.time()
+     user    system   elapsed 
+15629.617    21.449  1792.668 
