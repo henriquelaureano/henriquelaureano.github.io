@@ -24,7 +24,10 @@ What am I doing right now? (Jan 21)
   [pdf](THESIS/aqua/slides.pdf)
   ([.Rmd](THESIS/aqua/slides.Rmd) |
    [in_header file](THESIS/aqua/beamerheader.txt) |
-   [TikZ style](THESIS/aqua/tikzit.sty)).
+   [TikZ style](THESIS/aqua/tikzit.sty));
+
++ Reading
+  [Physics and Beyond, by Heisenberg](https://en.wikipedia.org/wiki/Physics_and_Beyond).
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
