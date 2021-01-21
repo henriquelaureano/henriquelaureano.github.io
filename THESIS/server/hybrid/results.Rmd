@@ -38,19 +38,153 @@ c(table(coefs22_1$V10),
   table(coefs40_1$V10), 
   table(coefs40_2$V10))
 
-coefs22 <- tibble(bind_rows(coefs22_1, coefs22_2))%>%
+coefs22 <-
+    tibble(bind_rows(coefs22_1, coefs22_2))%>%
     select(-V1, -V10)%>%
-    mutate(V10=rep(1:2, each=5))
-
-coefs36 <- tibble(bind_rows(coefs36_1, coefs36_2))%>%
+    mutate(group=rep(1:2, each=5))
+coefs36 <-
+    tibble(bind_rows(coefs36_1, coefs36_2))%>%
     select(-V1, -V12)%>%
-    mutate(V12=rep(1:2, each=5))
-
-coefs38 <- tibble(bind_rows(coefs38_1, coefs38_2))%>%
+    mutate(group=rep(1:2, each=5))
+coefs38 <-
+    tibble(bind_rows(coefs38_1, coefs38_2))%>%
     select(-V1, -V10)%>%
-    mutate(V10=rep(1:2, each=5))
-
-coefs40 <- tibble(bind_rows(coefs40_1, coefs40_2))%>%
+    mutate(group=rep(1:2, each=5))
+coefs40 <-
+    tibble(bind_rows(coefs40_1, coefs40_2))%>%
     select(-V1, -V10)%>%
-    mutate(V10=rep(1:2, each=5))
+    mutate(group=rep(1:2, each=5))
+```
+
+# SUMMARY
+
+```{r checkrange}
+checkrange <- function(data) {
+    out <- bind_rows(data%>%group_by(group)%>%
+                     summarise_all(mean), 
+                     data%>%group_by(group)%>%
+                     summarise_all(quantile, c(0.025, 0.975)))%>%
+        mutate(type=c(rep('mean', 2), rep(c('q025', 'q975'), each=2)))
+    return(out)
+}
+checkrange(coefs22)
+checkrange(coefs36)
+checkrange(coefs38)
+checkrange(coefs40)
+```
+
+# VCOV
+
+```{r vcov,fig.width=10}
+plotS <- function(S, title) {
+    longS <- reshape2::melt(S, na.rm=TRUE)
+    longS$Var1 <- as_factor(longS$Var1)
+    longS$Var2 <- fct_relevel(as_factor(longS$Var2), rev)
+    ggplot(longS, aes(x=Var1, y=Var2, fill=value))+
+        geom_tile(color='black', size=0.5)+
+        geom_text(aes(label=round(value, 2)))+
+        scale_fill_gradient(low='white', high='white')+
+        labs(title=title)+
+        scale_x_discrete(labels=c(expression(u[1]), 
+                                  expression(u[2]), 
+                                  expression(eta[1]),
+                                  expression(eta[2])))+
+        scale_y_discrete(labels=c(expression(eta[2]), 
+                                  expression(eta[1]), 
+                                  expression(u[2]),
+                                  expression(u[1])))+
+        theme_minimal()+
+        theme(axis.title.x=element_blank(), 
+              axis.title.y=element_blank(),
+              panel.grid.major=element_blank(),
+              legend.position='none')
+}
+
+p1 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0,
+                       NA, 0.3, 0, 0.1,
+                       NA, NA, 0.4, 0.15,
+                       NA, NA, NA, 0.5), nrow=4, ncol=4),
+            title='model22: Start')
+
+means22 <- colMeans(coefs22)
+
+p2 <- plotS(
+    S=matrix(c(
+        exp(means22[1]),
+        tanh(means22[5])*sqrt(exp(means22[1]))*sqrt(exp(means22[2])),
+        tanh(means22[7])*sqrt(exp(means22[1]))*sqrt(exp(means22[3])),
+        0,
+        NA, exp(means22[2]), 0,
+        tanh(means22[8])*sqrt(exp(means22[2]))*sqrt(exp(means22[4])),
+        NA, NA, exp(means22[3]),
+        tanh(means22[6])*sqrt(exp(means22[3]))*sqrt(exp(means22[4])),
+        NA, NA, NA, exp(means22[4])),
+        nrow=4, ncol=4),
+    title='model22: End')
+
+p3 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0.2,
+                       NA, 0.3, 0.2, 0.1,
+                       NA, NA, 0.4, 0.15,
+                       NA, NA, NA, 0.5), nrow=4, ncol=4),
+            title='model36: Start')
+
+means36 <- colMeans(coefs36)
+
+p4 <- plotS(
+    S=matrix(c(
+        exp(means36[1]),
+        tanh(means36[5])*sqrt(exp(means36[1]))*sqrt(exp(means36[2])),
+        tanh(means36[7])*sqrt(exp(means36[1]))*sqrt(exp(means36[3])),
+        tanh(means36[9])*sqrt(exp(means36[1]))*sqrt(exp(means36[4])),
+        NA, exp(means36[2]),
+        tanh(means36[10])*sqrt(exp(means36[2]))*sqrt(exp(means36[3])),
+        tanh(means36[8])*sqrt(exp(means36[2]))*sqrt(exp(means36[4])),
+        NA, NA, exp(means36[3]),
+        tanh(means36[6])*sqrt(exp(means36[3]))*sqrt(exp(means36[4])),
+        NA, NA, NA, exp(means36[4])), nrow=4, ncol=4),
+    title='model36: End')
+
+p5 <- plotS(S=matrix(c(0.2, 0.2, 0, 0.1,
+                       NA, 0.3, 0.1, 0,
+                       NA, NA, 0.4, 0.15,
+                       NA, NA, NA, 0.5), nrow=4, ncol=4),
+            title='model38: Start')
+
+means38 <- colMeans(coefs38)
+
+p6 <- plotS(
+    S=matrix(c(
+        exp(means38[1]),
+        tanh(means38[5])*sqrt(exp(means38[1]))*sqrt(exp(means38[2])),
+        0,
+        tanh(means38[7])*sqrt(exp(means38[1]))*sqrt(exp(means38[4])),
+        NA, exp(means38[2]),
+        tanh(means38[8])*sqrt(exp(means38[2]))*sqrt(exp(means38[3])),
+        0,
+        NA, NA, exp(means38[3]),
+        tanh(means38[6])*sqrt(exp(means38[3]))*sqrt(exp(means38[4])),
+        NA, NA, NA, exp(means38[4])), nrow=4, ncol=4),
+    title='model38: End')
+
+p7 <- plotS(S=matrix(c(0.2, 0, 0.1, 0.2,
+                       NA, 0.3, 0.2, 0.1,
+                       NA, NA, 0.4, 0,
+                       NA, NA, NA, 0.5), nrow=4, ncol=4),
+            title='model40: Start')
+
+means40 <- colMeans(coefs40)
+
+p8 <- plotS(
+    S=matrix(c(
+        exp(means40[1]), 0,
+        tanh(means40[5])*sqrt(exp(means40[1]))*sqrt(exp(means40[3])),
+        tanh(means40[7])*sqrt(exp(means40[1]))*sqrt(exp(means40[4])),
+        NA, exp(means40[2]),
+        tanh(means40[8])*sqrt(exp(means40[2]))*sqrt(exp(means40[3])),
+        tanh(means40[6])*sqrt(exp(means40[2]))*sqrt(exp(means40[4])),
+        NA, NA, exp(means40[3]), 0,
+        NA, NA, NA, exp(means40[4])), nrow=4, ncol=4),
+    title='model40: End')
+
+(p1|p3|p5|p7)/(p2|p4|p6|p8)
 ```
