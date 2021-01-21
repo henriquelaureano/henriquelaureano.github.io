@@ -27,7 +27,8 @@ What am I doing right now? (Jan 21)
    [TikZ style](THESIS/aqua/tikzit.sty));
 
 + Reading
-  [Physics and Beyond, by Heisenberg](https://en.wikipedia.org/wiki/Physics_and_Beyond).
+  [Physics and Beyond](https://en.wikipedia.org/wiki/Physics_and_Beyond),
+  by Heisenberg.
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
