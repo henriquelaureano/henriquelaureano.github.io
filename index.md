@@ -2,6 +2,7 @@
 
 [Twitter](https://twitter.com/hap_laureano) |
 [Tumblr](tumblr/) |
+[Spotify](https://open.spotify.com/user/12147941733) |
 [CV](vitae.pdf) |
 [LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/)
 
