@@ -1,0 +1,56 @@
+---
+title: hybrid models, results
+author: HENRIQUE LAUREANO (.github.io)
+date: '*Last modification on* `r Sys.time()`'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r echo=FALSE}
+library(knitr)
+opts_chunk$set(fig.path = 'figures/')
+```
+
+```{r packages}
+pacman::p_load(tidyverse, patchwork, ggcorrplot)
+```
+
+```{r readdata}
+coefs22_1 <- read.table('coefs22_hybrid1.txt')
+coefs22_2 <- read.table('coefs22_hybrid2.txt')
+coefs36_1 <- read.table('coefs36_hybrid1.txt')
+coefs36_2 <- read.table('coefs36_hybrid2.txt')
+coefs38_1 <- read.table('coefs38_hybrid1.txt')
+coefs38_2 <- read.table('coefs38_hybrid2.txt')
+coefs40_1 <- read.table('coefs40_hybrid1.txt')
+coefs40_2 <- read.table('coefs40_hybrid2.txt')
+
+## convergence 1 to everybody
+c(table(coefs22_1$V10), 
+  table(coefs22_2$V10), 
+  table(coefs36_1$V12), 
+  table(coefs36_2$V12), 
+  table(coefs38_1$V10), 
+  table(coefs38_2$V10), 
+  table(coefs40_1$V10), 
+  table(coefs40_2$V10))
+
+coefs22 <- tibble(bind_rows(coefs22_1, coefs22_2))%>%
+    select(-V1, -V10)%>%
+    mutate(V10=rep(1:2, each=5))
+
+coefs36 <- tibble(bind_rows(coefs36_1, coefs36_2))%>%
+    select(-V1, -V12)%>%
+    mutate(V12=rep(1:2, each=5))
+
+coefs38 <- tibble(bind_rows(coefs38_1, coefs38_2))%>%
+    select(-V1, -V10)%>%
+    mutate(V10=rep(1:2, each=5))
+
+coefs40 <- tibble(bind_rows(coefs40_1, coefs40_2))%>%
+    select(-V1, -V10)%>%
+    mutate(V10=rep(1:2, each=5))
+```
