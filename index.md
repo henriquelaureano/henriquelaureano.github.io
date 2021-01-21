@@ -40,7 +40,7 @@ What am I doing right now? (Jan 21)
 
 <span style="background-color: #FFFF00">
       Accepted in
-      [Journal of Statistical Computation and Simulation](https://www.tandfonline.com/toc/gscs20/current?gclid=CjwKCAiA6aSABhApEiwA6Cbm_yvthhvNW-HRZZNoW62ZXgZiUtU7CWUxeqC3X0hWBWyqWZuF9sBRrRoCPtcQAvD_BwE):
+      [Journal of Statistical Computation and Simulation](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation):
       </span>
 
 **Unit gamma mixed regression models for continuous bounded data**\
