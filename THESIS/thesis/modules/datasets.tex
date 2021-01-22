@@ -8,54 +8,39 @@ presented as an application example.
 \label{cap:simu}
 
 Being able to simulate data from a model is a key task, fundamental to
-assess the finite-sample properties and the estimation procedure of a
-given statistical model. Since our model is very similar and was based
-on the one proposed by \citeonline{SCHEIKE}, in the first moment the
-idea was to follow the same guidelines proposed by them. However, after
-an extensive period of thought, we reached the conclusion that they are
-not really simulating from the model. Instead of using the proposed
-framework to generate the failure probabilities, they use just a piece
-of that. Besides, with the excuse of being controlling the censorship
-level, they generate outputs via a Bernoulli process, completely random
-and disconnect of the proposed modeling framework. Thus, the following
-simulation algorithm is from our authorship and is somewhat
-straightforward, since we are just following the hierarchical structure
-stipulated in \autoref{eq:model}.
+assess the finite-sample properties and the estimation procedure
+liability of a given statistical model. The step-by-step describing the
+simulation procedure of our multiGLMM is presented on Algorithm
+\autoref{alg:algo}, following the model hierarchical structure
+stipulated in Formula \autoref{eq:model}.
 
 \begin{algorithm}[H]
-  \caption{SIMULATING FROM THE \(\text{multiGLMM}\) FOR CLUSTERED
-    COMPETING RISKS DATA}
-  \label{alg:algo}
-\begin{algorithmic}[1]
-    \State
-    Set \(J\), the number of clusters/families/pairs of twins
-    \State
-    Set \(n_{j}\), the number of individuals in each cluster
-    \Comment{can be of different sizes}
-    \State
-    Set \(K-1\), the number of competing causes of failure
-    \Comment{with the censorship, \(K\)}
-    \State
-    Set values to the model parameters \(\bm{\theta} =
-    [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~\bm{\varrho}]^{\top}\)
-    \State
-    Sample \(J\) vectors of latent effects from
-    \(\mathcal{N}_{(K-1)\times(K-1)}(\bm{0}, ~\Sigma(\bm{\sigma^{2}},
-    \bm{\varrho}))\)
-    \State
-    Set \(\delta\)
-    \Comment{maximum follow-up time}
-    \State
-    Sample \(\varsigma\sim\text{U}(0,~1)\)
-    \State
-    Compute the cause-specific failure times by solving
-    \[
-      \varsigma = \Phi[w_{k} g(t_{k}) - X^{\top}\gamma_{k} - \eta_{k}]
-      \quad\text{for } t_{k}, \quad k = 1,~2,~\dots,~K - 1
-    \]
-    \State
-    Compute the competing risk probabilities
-    \begin{align*}
+ \caption{SIMULATING FROM A \(\text{multiGLMM}\) FOR CLUSTERED COMPETING
+          RISKS DATA}
+ \label{alg:algo}
+ \begin{algorithmic}[1]
+  \State
+   Set \(J\), the number of clusters
+  \State
+   Set \(n_{j}\), the number of cluster elements
+   \Comment{can be of different sizes}
+  \State
+   Set \(K-1\), the number of competing causes of failure
+  \State
+   Set the model parameter values \(\bm{\theta} =
+   [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~\bm{\varrho}]^{\top}\)
+  \State
+   Sample \(J\) latent effect vectors from a
+   \(\mathcal{N}_{(K-1)\times(K-1)}(\bm{0},~\Sigma(\bm{\sigma^{2}},
+     \bm{\varrho}))\)
+  \State
+   Set \(\delta\)
+   \Comment{maximum follow-up time}
+  \State
+   Set the failure times \(t_{ij}\)
+  \State
+   Compute the competing risks probabilities
+   \begin{align*}
       p_{kijt}
       &= \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{
         1 +
@@ -82,19 +67,28 @@ stipulated in \autoref{eq:model}.
     cause-specific it is
   \end{algorithmic}
 \end{algorithm}
-\vspace{-.75cm}
+\vspace{-1cm}
 \begin{footnotesize}
   \begin{center}
-    SOURCE: The author (2020).
+    SOURCE: The author (2021).
   \end{center}
 \end{footnotesize}
 
-The model described as in \autoref{eq:model} is the most general form,
+Sample \(\varsigma\sim\text{U}(0,~1)\)
+
+Compute the cause-specific failure times by solving
+\[
+ \varsigma = \Phi[w_{k} g(t_{k}) - X^{\top}\gamma_{k} - \eta_{k}]
+ \quad\text{for } t_{k}, \quad k = 1,~2,~\dots,~K - 1
+\]
+
+The model described in \autoref{eq:model} is in its most general form,
 i.e. allowing for multiple measures at each subject and varying
-coefficients. However, at least for now, we focus on a simpler structure
-without covariates, a single measure per subject, and common
-coefficients. Putting in practice Algorithm \autoref{alg:algo}, we use
-the following model configuration
+coefficients. However, we focus on a simpler structure without
+covariates, a single measure per subject, and common coefficients.
+Putting in practice Algorithm \autoref{alg:algo}, we use the following
+model configuration
+
 \begin{align}
   p_{kijt}
   &= \frac{\exp\{\beta_{ki} + u_{kj}\}}{
