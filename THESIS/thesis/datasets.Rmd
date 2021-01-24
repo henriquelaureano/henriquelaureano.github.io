@@ -94,6 +94,15 @@ p1+p2
 ```
 
 ```{r datasimu_cache,cache=TRUE}
+## input ---------------------------------------------------------------
+## [numeric] number of clusters, J
+## [vector] failure/censorship times t
+## [Matrix] latent effects design matrix Z
+## [matrix] variance-covariance matrix S
+## output --------------------------------------------------------------
+## a [tibble] indicating the cluster element (i), the cluster (j), the
+## failure/censorship probabilities (p1:p3), and the multinomial
+## outcomes (y1:y3)
 datasimu <- function(J, t, Z, S,
                      delta=80,
                      beta=c(-2, -1.5), gamma=c(1.2, 1), w=c(3, 5)){
@@ -117,7 +126,6 @@ datasimu <- function(J, t, Z, S,
         rename(y1=V1, y2=V2, y3=V3)
     return(out)
 }
-
 J <- 50e3
 t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
 Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
@@ -149,22 +157,15 @@ ggplot(dat_longp, aes(x=p_value))+
                        round(prop.table(table(dat_longy$y_label)), 3),
                        "%'s of data"),
                    p_label=levels(dat_longp$p_label)),
-               mapping=aes(x=c(0.05, 0.0465, 0.95), y=Inf, label=label),
+               mapping=aes(x=c(0.0625, 0.052, 0.9375), y=Inf, label=label),
                vjust=1.5)+
     theme_minimal()+
     theme(strip.background=element_rect(colour='black', fill='white'),
+          strip.text.x=element_text(size=12), 
+          axis.text.x=element_text(size=11),
           axis.text.y=element_blank(),
           axis.title.y=element_blank(),
           axis.title.x=element_text(
+              size=12, 
               margin=unit(c(t=3, r=0, b=0, l=0), 'mm')))
-
-## theme(strip.text.x=element_text(size=12),
-##       axis.text.x=element_text(size=11),
-##       axis.title.x=element_text(
-##           size=12,
-##           margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
-##       axis.title.y=element_text(
-##           size=12,
-##           margin=unit(c(t=0, r=3, b=0, l=0), 'mm')))
-
 ```

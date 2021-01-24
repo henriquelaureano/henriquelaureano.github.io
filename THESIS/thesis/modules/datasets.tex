@@ -74,13 +74,13 @@ stipulated in \autoref{eq:model}.
 \end{footnotesize}
 
 The model described in \autoref{eq:model} is in a general form, allowing
-varying coefficients between clusters. However, we focus on a simpler
-structure with just fixed intercepts. Fixing the latent effects in its
-distribution mean, zero, and using the following fixed effects
+for varying coefficients between clusters. However, we focus on a
+simpler structure with just fixed intercepts. Fixing the latent effects
+in its distribution mean, zero, and using the following fixed effects
 configuration for two competing causes of failure
 \begin{align}
  \bm{\beta} &= [-2~~~1.5]^{\top}\nonumber\\
- \bm{\gamma} &= [1.2~~~1]^{\top}\label{eq:modelconfig}\\
+ \bm{\gamma} &= [1.2~~~1]^{\top}\label{eq:fixedconfig}\\
  \bm{w} &= [3~~~5]^{\top}\nonumber,
 \end{align}
 we get the CIF's and failure probabilities (CIF derivatives w.r.t. time
@@ -92,17 +92,17 @@ we get the CIF's and failure probabilities (CIF derivatives w.r.t. time
           DERIVATIVES (\(\text{dCIF}\)) W.R.T. TIME FOR A MODEL WITH
           TWO COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES, LATENT
           EFFECTS AT ZERO, AND FIXED EFFECTS AS IN
-          \autoref{eq:modelconfig}}
+          \autoref{eq:fixedconfig}}
  \vspace{0.2cm}\centering
  \includegraphics[width=\textwidth]{datasimucif-1.png}\\
  \begin{footnotesize}
-  SOURCE: The author (2020).
+  SOURCE: The author (2021).
  \end{footnotesize}
  \label{fig:datasimucif}
 \end{figure}
 
 By adding a complete latent structure,
-\[
+\begin{equation}
  \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix}
  \sim\parbox{2.5cm}{\centering Multivariate Normal}
  \left(\begin{bmatrix} 0\\0\\0\\0 \end{bmatrix},
@@ -112,35 +112,57 @@ By adding a complete latent structure,
          &&1&0.4\\
          &&&1
        \end{bmatrix}
- \right),
-\]
-we are able of apply Algorithm \autoref{alg:algo} to generate a complete
-model sample with 500 clusters/pairs of twins, summarized in
-\autoref{fig:datasimu}.
+ \right),\label{eq:latentconfig}
+\end{equation}
+we are able to apply Algorithm \autoref{alg:algo} and generate a
+complete model sample with 50000 clusters of size two (pairs),
+summarized in \autoref{fig:datasimu}. As already expected from
+\autoref{fig:datasimucif}, where the CIF curves maximum are around 15\%,
+the simulated failure probabilities and consequently the failure
+occurrences, are very small. In this way, we have a data sample filled
+with censorship, reflecting the reality of the applications. As disease
+incidences, for instance.
 
 \begin{figure}[H]
-  % \vspace{0.35cm}
-  \setlength{\abovecaptionskip}{.0001pt}
-  \caption{SUMMARY OF A SIMULATED DATASET WITH 500 PAIRS OF TWINS. A)
-    TIME BY TWIN; B) TIMES BOXPLOT; C) PROBABILITIES SCATTERPLOT D)
-    \(y_{3}\)'S \%}
-  \vspace{0.2cm} \centering
-  \includegraphics[width=\textwidth]{datasimu-1.png}
-  \\
-  \vspace{0.2cm}
-  \begin{footnotesize}
-    SOURCE: The author (2021).
-  \end{footnotesize}
-  \label{fig:datasimu}
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{SIMULATED FAILURE CAUSE PROBABILITIES WITH RESPECTIVE OUTPUT
+          PCERCENTAGES FOR A MODEL WITH TWO COMPETING CAUSES AND 50000
+          CLUSTERS OF SIZE TWO. THE SIMULATION FOLLOWED ALGORITHM
+          \autoref{alg:algo} GUIDELINES WITH PARAMETER CONFIGURATIONS
+          SPECIFIED IN \autoref{eq:fixedconfig} AND
+          \autoref{eq:latentconfig}}
+ \vspace{0.2cm}\centering
+ \includegraphics[width=\textwidth]{datasimu-1.png}\\
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:datasimu}
 \end{figure}
 
-Sample \(\varsigma\sim\text{U}(0,~1)\)
+The \texttt{R} function written to simulate the data is available in
+\autoref{cap:appendixC}.
 
-Compute the cause-specific failure times by solving
+In the simulation routine described in this section,the
+failure/censorship times are based on the repetition of an
+equally-spaced grid between 30 and 80-time units. A different approach
+but still non-parametric would be the random sampling of values between
+those limits. Yet, \citeonline{SCHEIKE} does something different through
+the sampling of the censorship times from a \(\text{U}(0,~\delta)\), and
+the sampling of \(\varsigma\sim\text{U}(0,~1)\) and the computation of
+the cause-specific failure times by solving
 \[
- \varsigma = \Phi[w_{k} g(t_{k}) - X^{\top}\gamma_{k} - \eta_{k}]
- \quad\text{for } t_{k}, \quad k = 1,~2,~\dots,~K - 1
+ \varsigma =
+ \Phi\left(w_{k}
+           \text{arctanh}\left(\frac{t_{ij}-\delta/2}{\delta/2}\right) -
+           \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+     \right)
+ \quad\text{for}\quad t_{ij},
 \]
+with \(i\) being the subject, \(j\) the cluster, and \(k\) the failure
+cause.
+
+This approach implies a parametric form for the failure times, which we
+do not know if holds in the real world.
 
 \section{REAL-BASED DATASET}
 \label{cap:data}
