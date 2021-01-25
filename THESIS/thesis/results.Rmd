@@ -63,7 +63,9 @@ cor2plot <- function(cor.data, title, zrhos) {
                p.mat=cor_pmat(cor.data), 
                insig='blank', 
                ggtheme=theme(
-                   axis.text.x=element_text(), 
+                   plot.title=element_text(size=16, face='bold'), 
+                   axis.text.x=element_text(size=15), 
+                   axis.text.y=element_text(size=15), 
                    axis.title.x=element_blank(),
                    axis.title.y=element_blank(),
                    panel.background=element_blank(),
@@ -71,7 +73,8 @@ cor2plot <- function(cor.data, title, zrhos) {
                    legend.justification=c(1, 0),
                    legend.position=c(0.4, 0.85),
                    legend.direction='horizontal',
-                   legend.title=element_blank()))+
+                   legend.title=element_blank(),
+                   legend.text=element_text(size=11)))+
         scale_x_discrete(labels=c(expression(beta[2]),
                                   expression(gamma[1]),
                                   expression(gamma[2]),
@@ -97,13 +100,13 @@ cor2plot <- function(cor.data, title, zrhos) {
 }
 
 p1 <- cor2plot(coefs22_cor,
-               title='coefs22 correlation',
+               title='model22 parameters correlation',
                zrhos=c(expression(z(rho[12])),
                        expression(z(rho[34])),
                        expression(z(rho[13])),
                        expression(z(rho[24]))))
 p2 <- cor2plot(coefs36_cor,
-               title='coefs36 correlation',
+               title='model36 parameters correlation',
                zrhos=c(expression(z(rho[12])),
                        expression(z(rho[34])),
                        expression(z(rho[13])),
@@ -111,13 +114,13 @@ p2 <- cor2plot(coefs36_cor,
                        expression(z(rho[14])),
                        expression(z(rho[23]))))
 p3 <- cor2plot(coefs38_cor,
-               title='coefs38 correlation',
+               title='model38 parameters correlation',
                zrhos=c(expression(z(rho[12])),
                        expression(z(rho[34])),
                        expression(z(rho[14])),
                        expression(z(rho[23]))))
 p4 <- cor2plot(coefs40_cor,
-               title='coefs40 correlation',
+               title='model40 parameters correlation',
                zrhos=c(expression(z(rho[13])),
                        expression(z(rho[24])),
                        expression(z(rho[14])),
@@ -195,16 +198,23 @@ bias2plot <- function(data, title, zrhos){
                                   expression(log(sigma[4]^2)),
                                   zrhos))+
         coord_flip()+
-        theme_minimal()
+        theme_minimal()+
+        theme(plot.title=element_text(size=12, face='bold'),
+              plot.subtitle=element_text(size=11, face='italic'),
+              axis.text.x=element_text(size=11),
+              axis.text.y=element_text(size=11),
+              axis.title.x=element_text(
+                  size=12, 
+                  margin=unit(c(t=3, r=0, b=0, l=0), 'mm')))
 }
 p1 <- bias2plot(error22,
-                title='coefs22 bias',
+                title='model22 parameters bias',
                 zrhos=c(expression(z(rho[12])),
                         expression(z(rho[34])),
                         expression(z(rho[13])),
                         expression(z(rho[24]))))
 p2 <- bias2plot(error36,
-                title='coefs36 bias',
+                title='model36 parameters bias',
                 zrhos=c(expression(z(rho[12])),
                         expression(z(rho[34])),
                         expression(z(rho[13])),
@@ -212,13 +222,13 @@ p2 <- bias2plot(error36,
                         expression(z(rho[14])),
                         expression(z(rho[23]))))
 p3 <- bias2plot(error38,
-                title='coefs38 bias',
+                title='model38 parameters bias',
                 zrhos=c(expression(z(rho[12])),
                         expression(z(rho[34])),
                         expression(z(rho[14])),
                         expression(z(rho[23]))))
 p4 <- bias2plot(error40,
-                title='coefs40 bias',
+                title='model40 parameters bias',
                 zrhos=c(expression(z(rho[13])),
                         expression(z(rho[24])),
                         expression(z(rho[14])),
@@ -279,21 +289,22 @@ data_cif <- tibble(curve=c(rep(1, 5*nt), rep(2, 5*nt)),
 ggplot(data_cif, aes(x=time, y=value, group=model))+
     geom_line(aes(linetype=model))+
     facet_wrap(~curve, labeller=label_bquote(CIF:.(curve)))+
-    labs(x='Time', y='Cluster-specific CIF', linetype='Model')+
+    labs(x='Time', y=NULL, linetype='Model')+
+    theme_minimal()+
     theme(legend.position=c(0.1, 0.65),
           strip.background=element_rect(colour='black', fill='white'))
 ```
 
 # VCOV
 
-```{r vcovs,fig.height=6}
+```{r vcovs,fig.height=10}
 plotS <- function(S, title) {
     longS <- reshape2::melt(S, na.rm=TRUE)
     longS$Var1 <- as_factor(longS$Var1)
     longS$Var2 <- fct_relevel(as_factor(longS$Var2), rev)
     ggplot(longS, aes(x=Var1, y=Var2, fill=value))+
         geom_tile(color='black', size=0.5)+
-        geom_text(aes(label=round(value, 2)))+
+        geom_text(aes(label=round(value, 2)), size=4.5)+
         scale_fill_gradient(low='white', high='white')+
         labs(title=title)+
         scale_x_discrete(labels=c(expression(u[1]), 
@@ -305,23 +316,26 @@ plotS <- function(S, title) {
                                   expression(u[2]),
                                   expression(u[1])))+
         theme_minimal()+
-        theme(axis.title.x=element_blank(), 
+        theme(axis.text.x=element_text(size=12, color='black'),
+              axis.text.y=element_text(size=12, color='black'), 
+              axis.title.x=element_blank(), 
               axis.title.y=element_blank(),
               panel.grid.major=element_blank(),
-              legend.position='none')
+              legend.position='none',
+              plot.title=element_text(size=12, face='bold'))
 }
 
 p1 <- plotS(S=matrix(c(0.4, 0.15, 0.05, 0,
                        NA, 0.4, 0, 0.05,
                        NA, NA, 0.25, 0.1,
                        NA, NA, NA, 0.25), nrow=4, ncol=4),
-            title='model22: True')
+            title='model22: true values')
 
 p2 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0,
                        NA, 0.3, 0, 0.1,
                        NA, NA, 0.4, 0.15,
                        NA, NA, NA, 0.5), nrow=4, ncol=4),
-            title='model22: Start')
+            title='model22: initial guess')
 
 means22 <- colMeans(coefs22)
 
@@ -337,19 +351,19 @@ p3 <- plotS(
         tanh(means22[12])*sqrt(exp(means22[9]))*sqrt(exp(means22[10])),
         NA, NA, NA, exp(means22[10])),
         nrow=4, ncol=4),
-    title='model22: Est')
+    title='model22: estimates')
 
 p4 <- plotS(S=matrix(c(0.4, 0.15, 0.05, 0.2,
                        NA, 0.4, 0.2, 0.05,
                        NA, NA, 0.25, 0.1,
                        NA, NA, NA, 0.25), nrow=4, ncol=4),
-            title='model36: True')
+            title='model36: true values')
 
 p5 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0.2,
                        NA, 0.3, 0.2, 0.1,
                        NA, NA, 0.4, 0.15,
                        NA, NA, NA, 0.5), nrow=4, ncol=4),
-            title='model36: Start')
+            title='model36: initial guess')
 
 means36 <- colMeans(coefs36)
 
@@ -365,19 +379,19 @@ p6 <- plotS(
         NA, NA, exp(means36[9]),
         tanh(means36[12])*sqrt(exp(means36[9]))*sqrt(exp(means36[10])),
         NA, NA, NA, exp(means36[10])), nrow=4, ncol=4),
-    title='model36: Est')
+    title='model36: estimates')
 
 p7 <- plotS(S=matrix(c(0.4, 0.15, 0, 0.1,
                        NA, 0.4, 0.1, 0,
                        NA, NA, 0.25, 0.1,
                        NA, NA, NA, 0.25), nrow=4, ncol=4),
-            title='model38: True')
+            title='model38: true values')
 
 p8 <- plotS(S=matrix(c(0.2, 0.2, 0, 0.1,
                        NA, 0.3, 0.1, 0,
                        NA, NA, 0.4, 0.15,
                        NA, NA, NA, 0.5), nrow=4, ncol=4),
-            title='model38: Start')
+            title='model38: initial guess')
 
 means38 <- colMeans(coefs38)
 
@@ -393,19 +407,19 @@ p9 <- plotS(
         NA, NA, exp(means38[9]),
         tanh(means38[12])*sqrt(exp(means38[9]))*sqrt(exp(means38[10])),
         NA, NA, NA, exp(means38[10])), nrow=4, ncol=4),
-    title='model38: Est')
+    title='model38: estimates')
 
 p10 <- plotS(S=matrix(c(0.4, 0, 0.05, 0.2,
                         NA, 0.4, 0.2, 0.05,
                         NA, NA, 0.25, 0,
                         NA, NA, NA, 0.25), nrow=4, ncol=4),
-             title='model40: True')
+             title='model40: true values')
 
 p11 <- plotS(S=matrix(c(0.2, 0, 0.1, 0.2,
                         NA, 0.3, 0.2, 0.1,
                         NA, NA, 0.4, 0,
                         NA, NA, NA, 0.5), nrow=4, ncol=4),
-             title='model40: Start')
+             title='model40: initial guess')
 
 means40 <- colMeans(coefs40)
 
@@ -419,7 +433,7 @@ p12 <- plotS(
         tanh(means40[12])*sqrt(exp(means40[8]))*sqrt(exp(means40[10])),
         NA, NA, exp(means40[9]), 0,
         NA, NA, NA, exp(means40[10])), nrow=4, ncol=4),
-    title='model40: Est')
+    title='model40: estimates')
 
-(p1|p4|p7|p10)/(p2|p5|p8|p11)/(p3|p6|p9|p12)
+(p1|p2|p3)/(p4|p5|p6)/(p7|p8|p9)/(p10|p11|p12)
 ```
