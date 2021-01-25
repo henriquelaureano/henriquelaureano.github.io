@@ -36,13 +36,15 @@
 % \usepackage{lastpage} % ssado pela ficha catalográfica
 \usepackage{indentfirst} % indenta o primeiro parágrafo de cada seção
 \setlength{\parindent}{1.5cm} % espaçamento de 1.5cm do parágrafo
-\usepackage{color} % controle das cores
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
 \usepackage{graphicx} % inclusão de gráficos
 \usepackage{microtype} % para melhorias de justificação
 \usepackage{setspace}
 \usepackage{pdflscape} % pagina na horizontal
 % \usepackage{lscape} % pagina na horizontal
 \usepackage{wrapfig}
+\usepackage{booktabs}
+\usepackage{makecell}
 \usepackage{pgf} % para geração de dummy text
 \usepackage[english, hyperpageref]{backref} % paginas com as citações
 % ----------------------------------------------------------------------
@@ -163,6 +165,12 @@
  basicstyle=\footnotesize\ttfamily,
 }
 \usepackage{multirow}
+\usepackage{multicol}
+%% nice table ----------------------------------------------------------
+\usepackage{bbding} % checkmarks
+\usepackage{color, colortbl} % coloring rows or columns in tables
+\definecolor{Gray}{gray}{.9} % coloring rows or columns in tables
+%% ---------------------------------------------------------------------
 \usepackage[noend]{algpseudocode}
 \makeatletter
 \renewcommand{\ALG@name}{ALGORITHM}
