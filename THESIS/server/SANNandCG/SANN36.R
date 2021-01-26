@@ -44,7 +44,8 @@ if (!model%in%names(getLoadedDLLs())) {
 obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, T=t, delta=80),
                  parameters=tmbpars,
                  DLL=model, random='R', hessian=TRUE, silent=TRUE)
-opt <- try(optim(obj$par, obj$fn, obj$gr, method='SANN'),
+opt <- try(optim(obj$par, obj$fn, obj$gr, method='SANN',
+                 control=list(maxit=2e4)),
            silent=TRUE)
 if (class(opt)!='try-error') {
     write.table(rbind(c(opt$par, opt$convergence)),
