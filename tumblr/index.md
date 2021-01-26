@@ -73,3 +73,5 @@
 <img src='quasimoto.gif'>
 <img src='lasmeninas.jpg'>
 <img src='mfrick.jpg'>
+<img src='bernie.png'>
+<img src='estante.jpg'>
