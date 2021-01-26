@@ -76,7 +76,7 @@ plot.ar1 <- myplot(x=x, y=y, model=model.ar1,
 plot.spde <- myplot(x=x, y=y, model=model.spde,
                    title='1d Matern model', subtitle='SPDE model')
 (plot.rw1|plot.ar1|plot.spde)+
-    plot_annotation(caption='Gray shadow: 3 days ahead prediction')
+    plot_annotation(caption='Gray shadow: 2 days ahead prediction')
 ```
 
 ```{r}
