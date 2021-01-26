@@ -13,7 +13,7 @@ pacman::p_load(tidyverse, patchwork, INLA)
 x <- 1:28
 ## 22 days per row
 y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
-       1, 1, 2, NA, NA, NA)
+       1, 1, 2, 1, NA, NA)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
@@ -57,7 +57,7 @@ myplot <- function(x, y, model, title, subtitle) {
       f.ub <- model$summary.fitted.values$'0.975quant'
     data.plot <- data.frame(y=y, x=x, f.hat=f.hat, f.lb=f.lb, f.ub=f.ub)
     ggplot(data.plot, aes(x=x, y=y))+
-        geom_ribbon(aes(xmin=nth(x, -4L), xmax=last(x)), alpha=0.25)+
+        geom_ribbon(aes(xmin=nth(x, -3L), xmax=last(x)), alpha=0.25)+
         geom_line(aes(y=f.hat), col='#0080ff', size=1)+
         geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
                     alpha=0.3, size=0.75, fill='orange', col='#0080ff')+
