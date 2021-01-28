@@ -3,7 +3,7 @@
 ##                      leg.ufpr.br/~henrique · github.com/mynameislaure
 ##                                      laureano@ufpr.br · @hap_laureano
 ##                     Laboratory of Statistics and Geoinformation (LEG)
-##       2020-dez-27 · Federal University of Paraná · Curitiba/PR/Brazil
+##       2020-jan-27 · Federal University of Paraná · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 (args <- commandArgs())
@@ -18,7 +18,7 @@ load('data36.RData')
 ## miscellaneous--------------------------------------------------------
 model <- 'multiGLMM_36'
 openmp(28)
-where <- 'coefs36'
+where <- 'cg36'
 J <- 3e4
 t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
 Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
@@ -44,7 +44,8 @@ if (!model%in%names(getLoadedDLLs())) {
 obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, T=t, delta=80),
                  parameters=tmbpars,
                  DLL=model, random='R', hessian=TRUE, silent=TRUE)
-opt <- try(nlminb(obj$par, obj$fn, obj$gr, eval.max=1e3, iter.max=500),
+opt <- try(optim(obj$par, obj$fn, obj$gr, method='CG',
+                 control=list(type=2, maxit=500)),
            silent=TRUE)
 if (class(opt)!='try-error') {
     write.table(rbind(c(opt$par, opt$convergence)),

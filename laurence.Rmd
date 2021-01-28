@@ -10,10 +10,10 @@ output:
 ```{r message=FALSE}
 pacman::p_load(tidyverse, patchwork, INLA)
 
-x <- 1:29
+x <- 1:30
 ## 22 days per row
 y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
-       1, 1, 2, 2, 0, NA, NA)
+       1, 1, 2, 2, 2, 2, NA, NA)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
@@ -50,7 +50,7 @@ model.spde <- inla(formula.spde,
                    control.predictor=list(link=1))
 ```
 
-```{r fig.height=3.25,fig.width=10,warning=FALSE}
+```{r fig.width=10,warning=FALSE}
 myplot <- function(x, y, model, title, subtitle) {
     f.hat <- model$summary.fitted.values$mean
       f.lb <- model$summary.fitted.values$'0.025quant'
@@ -75,7 +75,9 @@ plot.ar1 <- myplot(x=x, y=y, model=model.ar1,
                    title='1st order autoregressive', subtitle='AR(1) model')
 plot.spde <- myplot(x=x, y=y, model=model.spde,
                    title='1d Matern model', subtitle='SPDE model')
-(plot.rw1|plot.ar1|plot.spde)+
+
+plot.rw1+plot.ar1+plot.spde+
+    plot_layout(ncol=2)+
     plot_annotation(caption='Gray shadow: 2 days ahead prediction')
 ```
 
