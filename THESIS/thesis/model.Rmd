@@ -47,8 +47,8 @@ dfbeta <- cbind(cifsbeta, cifbetagrid)
 ## ---------------------------------------------------------------------
 g1 <- ggplot(dfbeta, aes(Var1, cifsbeta, group = Var2)) +
     geom_line(aes(linetype = factor(Var2))) +
-    labs(x = "Time", y = "Cluster-specific CIF",
-         linetype = expression(beta[1])) +
+    labs(x='Time', y=NULL, linetype=expression(beta[1]))+
+    theme_minimal()+
     theme(legend.position = "bottom",
           legend.title = element_text(size = 14),
           legend.text = element_text(size = 14),
@@ -87,8 +87,8 @@ dfgamma <- cbind(cifsgamma, cifgammagrid)
 ## ---------------------------------------------------------------------
 g2 <- ggplot(dfgamma, aes(Var1, cifsgamma, group = Var2)) +
     geom_line(aes(linetype = factor(Var2))) +
-    labs(x = "Time", y = "Cluster-specific CIF",
-         linetype = expression(gamma[1])) +
+    labs(x='Time', y=NULL, linetype=expression(gamma[1]))+
+    theme_minimal()+
     theme(legend.position = "bottom",
           legend.title = element_text(size = 14),
           legend.text = element_text(size = 14),
@@ -127,8 +127,8 @@ dfw <- cbind(cifsw, cifwgrid)
 ## ---------------------------------------------------------------------
 g3 <- ggplot(dfw, aes(Var1, cifsw, group = Var2)) +
     geom_line(aes(linetype = factor(Var2))) +
-    labs(x = "Time", y = "Cluster-specific CIF",
-         linetype = expression(w[1])) +
+    labs(x='Time', y=NULL, linetype=expression(w[1]))+
+    theme_minimal()+
     theme(legend.position = "bottom",
           legend.title = element_text(size = 14),
           legend.text = element_text(size = 14),
@@ -142,8 +142,10 @@ g3 <- ggplot(dfw, aes(Var1, cifsw, group = Var2)) +
               margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
 ## ---------------------------------------------------------------------
 g1 + g2 + g3 +
-    plot_annotation(tag_levels = "A", tag_suffix = ")") &
-    theme(plot.tag = element_text(size = 14))
+    plot_annotation(title='Cumulative Incidence Function (CIF)',
+                    tag_levels='A', tag_suffix=')') &
+    theme(plot.title=element_text(size=14, face='bold'),
+          plot.tag=element_text(size=14))
 ```
 
 ## FIGURE 6
@@ -182,10 +184,11 @@ ggplot(df, aes(t, cifs, group = eta1)) +
     ## ylim(0, 0.2) +
     labs(x = "Time", y = "Cluster-specific CIF",
          linetype = expression(eta[1])) +
+    theme_minimal()+
     theme(legend.position = c(0.07, 0.81),
           legend.text = element_text(size = 11),
-          strip.background = element_rect(colour = "black",
-                                          fill = "white"),
+          legend.box.background=element_rect(color='black'), 
+          strip.background=element_rect(colour='black', fill='white'),
           strip.text.x = element_text(size = 11),
           axis.text.x = element_text(size = 10),
           axis.text.y = element_text(size = 10),
@@ -211,7 +214,8 @@ logplot <-
     geom_line(aes(y = gridvar), linetype = 'dashed') +
     labs(x = 'x', y= 'log(x)',
          title = 'Natural logarithm, log()',
-         subtitle = 'Identity line in dashed')
+         subtitle = 'Identity line in dashed')+
+    theme_minimal()
 
 zplot <-
     ggplot(df, aes(x = gridcor)) +
@@ -219,7 +223,8 @@ zplot <-
     geom_line(aes(y = gridcor), linetype = 'dashed') +
     labs(x = 'x',  y = 'z(x)',
          title = 'Fisher z-transformation, z()',
-         subtitle = 'Identity line in dashed')
+         subtitle = 'Identity line in dashed')+
+    theme_minimal()
 
 logplot + zplot + plot_annotation(tag_levels = 'A', tag_suffix = ')')
 ```
