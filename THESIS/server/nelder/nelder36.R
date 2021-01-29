@@ -3,27 +3,22 @@
 ##                      leg.ufpr.br/~henrique · github.com/mynameislaure
 ##                                      laureano@ufpr.br · @hap_laureano
 ##                     Laboratory of Statistics and Geoinformation (LEG)
-##       2021-jan-27 · Federal University of Paraná · Curitiba/PR/Brazil
+##       2021-jan-28 · Federal University of Paraná · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 (args <- commandArgs())
 i <- abs(as.numeric(args[7]))
 
 ## packages-------------------------------------------------------------
-## library(TMB, lib.loc='/home/est/bonat/nobackup/github/') looks like
-## the server doesn't have enough memory available to me, so let's try
-## locally
-library(TMB)
+library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
 
 ## load data and initial guesses----------------------------------------
-## load('data36.RData')
-load('../data36.RData')
+load('data36.RData')
 
 ## miscellaneous--------------------------------------------------------
 model <- 'multiGLMM_36'
-## openmp(28)
-openmp(12)
-where <- 'SANN36'
+openmp(28)
+where <- 'nelder36'
 J <- 3e4
 t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
 Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
@@ -35,8 +30,7 @@ rhoZ_init <- c(atanh(0.15/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
                atanh(0.2/sqrt(0.2*0.5)), atanh(0.2/sqrt(0.3*0.4)))
 
 ## model fitting--------------------------------------------------------
-## compile(paste0('cpps/', model, '.cpp'))
-compile(paste0('../cpps/', model, '.cpp'))
+compile(paste0('cpps/', model, '.cpp'))
 tmbpars <- list(beta1=initFixed[i, 1], beta2=initFixed[i, 2],
                 gama1=initFixed[i, 3], gama2=initFixed[i, 4],
                 w1=initFixed[i, 5], w2=initFixed[i, 6],
@@ -44,16 +38,13 @@ tmbpars <- list(beta1=initFixed[i, 1], beta2=initFixed[i, 2],
                 )
 if (!model%in%names(getLoadedDLLs())) {
     cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
-    ## dyn.load(dynlib(paste0('cpps/', model)))
-    dyn.load(dynlib(paste0('../cpps/', model)))
+    dyn.load(dynlib(paste0('cpps/', model)))
     config(tape.parallel=FALSE, DLL=model)
 }
 obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, T=t, delta=80),
                  parameters=tmbpars,
                  DLL=model, random='R', hessian=TRUE, silent=TRUE)
-opt <- try(optim(obj$par, obj$fn, obj$gr, method='SANN',
-                 control=list(maxit=2e4)),
-           silent=TRUE)
+opt <- try(optim(obj$par, obj$fn, obj$gr), silent=TRUE)
 if (class(opt)!='try-error') {
     write.table(rbind(c(opt$par, opt$convergence)),
                 file=paste0(where, '.txt'),
@@ -67,5 +58,5 @@ if (class(opt)!='try-error') {
                     append=TRUE, col.names=FALSE)
     }
 }
-FreeADFun(obj);gc()}
+FreeADFun(obj);gc()
 ## END------------------------------------------------------------------
