@@ -10,10 +10,10 @@ output:
 ```{r message=FALSE}
 pacman::p_load(tidyverse, patchwork, INLA)
 
-x <- 1:31
+x <- c(1:31, 1+31)
 ## 22 days per row
 y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
-       1, 1, 2, 2, 2, 3, 1, NA, NA)
+       1, 1, 2, 2, 2, 3, 3, 1, NA, NA)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
@@ -57,6 +57,7 @@ myplot <- function(x, y, model, title, subtitle) {
       f.ub <- model$summary.fitted.values$'0.975quant'
     data.plot <- data.frame(y=y, x=x, f.hat=f.hat, f.lb=f.lb, f.ub=f.ub)
     ggplot(data.plot, aes(x=x, y=y))+
+        geom_vline(xintercept=31, linetype='dashed')+
         geom_ribbon(aes(xmin=nth(x, -3L), xmax=last(x)), alpha=0.25)+
         geom_line(aes(y=f.hat), col='#0080ff', size=1)+
         geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
@@ -75,7 +76,6 @@ plot.ar1 <- myplot(x=x, y=y, model=model.ar1,
                    title='1st order autoregressive', subtitle='AR(1) model')
 plot.spde <- myplot(x=x, y=y, model=model.spde,
                    title='1d Matern model', subtitle='SPDE model')
-
 plot.rw1+plot.ar1+plot.spde+
     plot_layout(ncol=2)+
     plot_annotation(caption='Gray shadow: 2 days ahead prediction')
