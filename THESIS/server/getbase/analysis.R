@@ -113,8 +113,8 @@ for (i in seq(n))
                          beta1=dll0.out[i, 1], beta2=dll0.out[i, 2],
                          gama1=dll0.out[i, 3], gama2=dll0.out[i, 4],
                          w1=dll0.out[i, 5], w2=dll0.out[i, 6], R=R,
-                         ## log(1e-2) and log(0.1) didn't work
-                         logs2=log(0.5)
+                         ## log(1e-2), log(0.1) and log(0.5) didn't work
+                         logs2=log()
                      ),
                      DLL=dll2, random='R', hessian=TRUE, silent=TRUE)
     opt <- try(nlminb(obj$par,
