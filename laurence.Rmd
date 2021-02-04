@@ -10,10 +10,10 @@ output:
 ```{r message=FALSE}
 pacman::p_load(tidyverse, patchwork, INLA)
 
-x <- c(1:31, 1:5+31)
+x <- c(1:31, 1:6+31)
 ## 22 days per row
 y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
-       1, 1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, NA, NA)
+       1, 1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, 1, NA, NA)
 data.inla <- list(y=y, x=x)
 
 formula.rw1 <- y~-1+
@@ -68,7 +68,8 @@ myplot <- function(x, y, model, title, subtitle) {
                   margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
               axis.title.y=element_text(
                   margin=unit(c(t=0, r=2, b=0, l=0), "mm")))+
-        labs(x='Days', y='Count', title=title, subtitle=subtitle)
+        labs(x='Days', y='Count', title=title, subtitle=subtitle)+
+        ylim(c(0, 3.5))
 }
 plot.rw1 <- myplot(x=x, y=y, model=model.rw1,
                    title='1st order random walk', subtitle='RW(1) model') 
