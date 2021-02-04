@@ -1,6 +1,6 @@
 ## henrique laureano (.github.io)
 ## date: 1-fev-2021
-## scheike's pairwise model via CG in the structure 22------------------
+## scheike's pairwise model via SANN in the structure 22----------------
 
 (args <- commandArgs())
 i <- abs(as.numeric(args[7]))
@@ -76,10 +76,10 @@ causes <- y[[i]][, 1:2]
 
 ## scheike(theta=theta, t=t, delta=80, J=J, causes=causes)
 
-where <- 'cg22'
+where <- 'sann22'
 
 opt <- try(optim(theta, scheike, t=t, delta=80, J=J, causes=causes,
-                 method='CG', control=list(type=2, maxit=500)),
+                 method='SANN', control=list(maxit=2e4)),
            silent=TRUE)
 if (class(opt)!='try-error') {
     write.table(rbind(c(opt$par, opt$convergence)),

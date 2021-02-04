@@ -1,64 +1,87 @@
-##----------------------------------------------------------------------
-##                                                     Henrique Laureano
-##                      leg.ufpr.br/~henrique · github.com/mynameislaure
-##                                      laureano@ufpr.br · @hap_laureano
-##                     Laboratory of Statistics and Geoinformation (LEG)
-##       2020-jan-27 · Federal University of Paraná · Curitiba/PR/Brazil
-##----------------------------------------------------------------------
+## henrique laureano (.github.io)
+## date: 1-fev-2021
+## scheike's pairwise model via CG in the structure 36------------------
 
 (args <- commandArgs())
 i <- abs(as.numeric(args[7]))
 
-## packages-------------------------------------------------------------
-library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
+pacman::p_load('Rcpp', 'mets')
 
-## load data and initial guesses----------------------------------------
-load('data36.RData')
+source('kkholst-mcif/inst/examples/helpfunctions_test.R')
+sourceCpp('kkholst-mcif/src/loglik.cpp')
+load('../data36.RData')
 
-## miscellaneous--------------------------------------------------------
-model <- 'multiGLMM_36'
-openmp(28)
-where <- 'cg36'
+scheike <- function(theta, t, delta, J, causes) {
+    vcv <- matrix(0, nrow=4, ncol=4)
+    rhoZ_12 <- tanh(theta['rho_12'])
+    rhoZ_13 <- tanh(theta['rho_13'])
+    rhoZ_14 <- tanh(theta['rho_14'])
+    rhoZ_23 <- tanh(theta['rho_23'])
+    rhoZ_24 <- tanh(theta['rho_24'])
+    rhoZ_34 <- tanh(theta['rho_34'])
+    vcv[1, ] <- c(
+        exp(theta['s2_1']),
+        rhoZ_12*sqrt(exp(theta['s2_1']))*sqrt(exp(theta['s2_2'])),
+        rhoZ_13*sqrt(exp(theta['s2_1']))*sqrt(exp(theta['s2_3'])),
+        rhoZ_14*sqrt(exp(theta['s2_1']))*sqrt(exp(theta['s2_4'])))
+    vcv[2, ] <- c(
+        rhoZ_12*sqrt(exp(theta['s2_2']))*sqrt(exp(theta['s2_1'])),
+        exp(theta['s2_2']),
+        rhoZ_23*sqrt(exp(theta['s2_2']))*sqrt(exp(theta['s2_3'])),
+        rhoZ_24*sqrt(exp(theta['s2_2']))*sqrt(exp(theta['s2_4'])))
+    vcv[3, ] <- c(
+        rhoZ_13*sqrt(exp(theta['s2_3']))*sqrt(exp(theta['s2_1'])),
+        rhoZ_23*sqrt(exp(theta['s2_3']))*sqrt(exp(theta['s2_2'])),
+        exp(theta['s2_3']),
+        rhoZ_34*sqrt(exp(theta['s2_3']))*sqrt(exp(theta['s2_4'])))
+    vcv[4, ] <- c(
+        rhoZ_14*sqrt(exp(theta['s2_4']))*sqrt(exp(theta['s2_1'])),
+        rhoZ_24*sqrt(exp(theta['s2_4']))*sqrt(exp(theta['s2_2'])),
+        rhoZ_34*sqrt(exp(theta['s2_4']))*sqrt(exp(theta['s2_3'])),
+        exp(theta['s2_4']))
+    gt1 <- gt2 <- atanh((t-delta/2)/(delta/2))
+    dgt1 <- dgt2 <- 0.5*delta/(t*(delta-t))
+    alpha <- cbind(gt1*theta['a1'], gt1*theta['a2'],
+                   gt2*theta['a1'], gt2*theta['a2'])
+    dalpha <- cbind(dgt1*theta['a1'], dgt1*theta['a2'],
+                    dgt2*theta['a1'], dgt2*theta['a2'])
+    x.1 <- as.matrix(cbind(rep(1, 2*J)))
+    x.2 <- as.matrix(cbind(rep(1, 2*J)))
+    beta <- cbind(x.1%*%theta['b1'], x.1%*%theta['b2'],
+                  x.2%*%theta['b1'], x.2%*%theta['b2'])
+    gamma <- cbind(x.1%*%theta['g1'], x.1%*%theta['g2'],
+                   x.2%*%theta['g1'], x.2%*%theta['g2'])
+    out <- loglik(sigma=SigmaGen(vcv, 2, old=FALSE),
+                  ncauses=2, causes=causes,
+                  alpha=alpha, dalpha=dalpha,
+                  beta=beta, gamma=gamma,
+                  eb0=t(matrix(0, nrow=2*J, ncol=2)), nq=3)
+    return(-sum(out))
+}
+
+theta <- c(b1=initFixed[i, 1], b2=initFixed[i, 2],
+           g1=initFixed[i, 3], g2=initFixed[i, 4],
+           a1=initFixed[i, 5], a2=initFixed[i, 6],
+           s2_1=log(0.2), s2_2=log(0.3), s2_3=log(0.4), s2_4=log(0.5),
+           rho_12=atanh(0.15/sqrt(0.2*0.3)),
+           rho_13=atanh(0.1/sqrt(0.2*0.4)),
+           rho_14=atanh(0.2/sqrt(0.2*0.5)),
+           rho_23=atanh(0.2/sqrt(0.3*0.4)), 
+           rho_24=atanh(0.1/sqrt(0.3*0.5)),
+           rho_34=atanh(0.15/sqrt(0.4*0.5)))
+
 J <- 3e4
 t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
-Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
-R <- matrix(0, nrow=J, ncol=4)
+causes <- y[[i]][, 1:2]
 
-logs2_init <- c(log(0.2), log(0.3), log(0.4), log(0.5))
-rhoZ_init <- c(atanh(0.15/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
-               atanh(0.1/sqrt(0.2*0.4)), atanh(0.1/sqrt(0.3*0.5)),
-               atanh(0.2/sqrt(0.2*0.5)), atanh(0.2/sqrt(0.3*0.4)))
+## scheike(theta=theta, t=t, delta=80, J=J, causes=causes)
 
-## model fitting--------------------------------------------------------
-compile(paste0('cpps/', model, '.cpp'))
-tmbpars <- list(beta1=initFixed[i, 1], beta2=initFixed[i, 2],
-                gama1=initFixed[i, 3], gama2=initFixed[i, 4],
-                w1=initFixed[i, 5], w2=initFixed[i, 6],
-                R=R, logs2=logs2_init, rhoZ=rhoZ_init
-                )
-if (!model%in%names(getLoadedDLLs())) {
-    cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
-    dyn.load(dynlib(paste0('cpps/', model)))
-    config(tape.parallel=FALSE, DLL=model)
-}
-obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, T=t, delta=80),
-                 parameters=tmbpars,
-                 DLL=model, random='R', hessian=TRUE, silent=TRUE)
-opt <- try(optim(obj$par, obj$fn, obj$gr, method='CG',
-                 control=list(type=2, maxit=500)),
+where <- 'cg36'
+
+opt <- try(optim(theta, scheike, t=t, delta=80, J=J, causes=causes,
+                 method='CG', control=list(type=2, maxit=500)),
            silent=TRUE)
 if (class(opt)!='try-error') {
     write.table(rbind(c(opt$par, opt$convergence)),
-                file=paste0(where, '.txt'),
-                append=TRUE, col.names=FALSE) 
-    sdr <- try(sdreport(obj, par.fixed=TRUE, hessian.fixed=TRUE),
-               silent=TRUE)
-    if (class(sdr)!='try-error') {
-        eps <- c(summary(sdr, 'fixed')[, 2],
-                 summary(sdr, 'report')[, 2])
-        write.table(rbind(eps), file=paste0('eps_', where, '.txt'),
-                    append=TRUE, col.names=FALSE)
-    }
+                file=paste0(where, '.txt'), append=TRUE, col.names=FALSE)
 }
-FreeADFun(obj);gc()
-## END------------------------------------------------------------------

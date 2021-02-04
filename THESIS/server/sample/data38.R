@@ -1,0 +1,35 @@
+##----------------------------------------------------------------------
+##                                                     Henrique Laureano
+##                                            henriquelaureano.github.io
+##                                      2021-fev-01 · Curitiba/PR/Brazil
+##----------------------------------------------------------------------
+
+## packages-------------------------------------------------------------
+library(TMB)
+library(furrr);plan(multicore)
+source('dataFunc.R')
+
+## miscellaneous--------------------------------------------------------
+model <- 'multiGLM'
+compile(paste0('../cpps/', model, '.cpp'))
+J <- 3e4
+## t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+t <- runif(2*J, 30, 79.5)
+Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
+S <- matrix(c(0.4, 0.15, 0.05, 0.2,
+              0.15, 0.4, 0.2, 0.05,
+              0.05, 0.2, 0.25, 0.1,
+              0.2, 0.05, 0.1, 0.25), nrow=4, ncol=4)
+hmm <- 5
+
+## simulating data-------------------------------------------------
+y <- future_map(rep(J, hmm), ~datasimu(.x, t=t, Z=Z, S=S),
+                .options=furrr_options(seed=NULL))
+ 
+## getting initial guesses----------------------------------------------
+initFixedlist <- future_map(y, ~fitGLM(.x, t=t, model=model))
+initFixed <- matrix(unlist(initFixedlist), nrow=hmm, ncol=6, byrow=TRUE)
+ 
+## saving---------------------------------------------------------------
+save(y, initFixed, file='data38.RData', version=2)
+## END------------------------------------------------------------------

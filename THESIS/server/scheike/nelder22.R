@@ -1,5 +1,5 @@
 ## henrique laureano (.github.io)
-## date: 30-jan-2021
+## date: 1-fev-2021
 ## scheike's pairwise model via nelder-mead in the structure 22---------
 
 (args <- commandArgs())
@@ -11,12 +11,10 @@ source('kkholst-mcif/inst/examples/helpfunctions_test.R')
 sourceCpp('kkholst-mcif/src/loglik.cpp')
 load('../data22.RData')
 
-scheike <- function(theta, t, delta=80, J, causes) {
+scheike <- function(theta, t, delta, J, causes) {
     vcv <- matrix(0, nrow=4, ncol=4)
     rhoZ_12 <- tanh(theta['rho_12'])
     rhoZ_13 <- tanh(theta['rho_13'])
-    rhoZ_14 <- tanh(theta['rho_14'])
-    rhoZ_23 <- tanh(theta['rho_23'])
     rhoZ_24 <- tanh(theta['rho_24'])
     rhoZ_34 <- tanh(theta['rho_34'])
     vcv[1, ] <- c(
@@ -63,7 +61,6 @@ scheike <- function(theta, t, delta=80, J, causes) {
     return(-sum(out))
 }
 
-i <- 1
 theta <- c(b1=initFixed[i, 1], b2=initFixed[i, 2],
            g1=initFixed[i, 3], g2=initFixed[i, 4],
            a1=initFixed[i, 5], a2=initFixed[i, 6],
@@ -75,17 +72,15 @@ theta <- c(b1=initFixed[i, 1], b2=initFixed[i, 2],
 
 J <- 3e4
 t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
-
 causes <- y[[i]][, 1:2]
 
-scheike(theta, t, delta=80, J, causes)
+## scheike(theta=theta, t=t, delta=80, J=J, causes=causes)
 
 where <- 'nelder22'
 
-opt <- try(optim(obj$par, obj$fn, obj$gr), silent=TRUE)
+opt <- try(optim(theta, scheike, t=t, delta=80, J=J, causes=causes),
+           silent=TRUE)
 if (class(opt)!='try-error') {
     write.table(rbind(c(opt$par, opt$convergence)),
-                file=paste0(where, '.txt'),
-                append=TRUE, col.names=FALSE)
+                file=paste0(where, '.txt'), append=TRUE, col.names=FALSE)
 }
-## END------------------------------------------------------------------

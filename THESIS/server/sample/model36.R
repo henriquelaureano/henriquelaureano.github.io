@@ -1,40 +1,34 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
-##                      leg.ufpr.br/~henrique · github.com/mynameislaure
-##                                      laureano@ufpr.br · @hap_laureano
-##                     Laboratory of Statistics and Geoinformation (LEG)
-##       2021-jan-27 · Federal University of Paraná · Curitiba/PR/Brazil
+##                                            henriquelaureano.github.io
+##                                      2021-fev-01 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 (args <- commandArgs())
 i <- abs(as.numeric(args[7]))
 
 ## packages-------------------------------------------------------------
-## library(TMB, lib.loc='/home/est/bonat/nobackup/github/') looks like
-## the server doesn't have enough memory available to me, so let's try
-## locally
-library(TMB)
+library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
 
 ## load data and initial guesses----------------------------------------
-## load('data22.RData')
-load('../data22.RData')
+load('data36.RData')
 
 ## miscellaneous--------------------------------------------------------
-model <- 'multiGLMM_22'
-## openmp(28)
-openmp(12)
-where <- 'SANN22'
+model <- 'multiGLMM_36'
+openmp(28)
+where <- 'coefs36'
 J <- 3e4
-t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+## t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+t <- runif(2*J, 30, 79.5)
 Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
 R <- matrix(0, nrow=J, ncol=4)
 
 logs2_init <- c(log(0.2), log(0.3), log(0.4), log(0.5))
 rhoZ_init <- c(atanh(0.15/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
-               atanh(0.1/sqrt(0.2*0.4)), atanh(0.1/sqrt(0.3*0.5)))
+               atanh(0.1/sqrt(0.2*0.4)), atanh(0.1/sqrt(0.3*0.5)),
+               atanh(0.2/sqrt(0.2*0.5)), atanh(0.2/sqrt(0.3*0.4)))
 
 ## model fitting--------------------------------------------------------
-## compile(paste0('cpps/', model, '.cpp'))
 compile(paste0('../cpps/', model, '.cpp'))
 tmbpars <- list(beta1=initFixed[i, 1], beta2=initFixed[i, 2],
                 gama1=initFixed[i, 3], gama2=initFixed[i, 4],
@@ -43,15 +37,13 @@ tmbpars <- list(beta1=initFixed[i, 1], beta2=initFixed[i, 2],
                 )
 if (!model%in%names(getLoadedDLLs())) {
     cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
-    ## dyn.load(dynlib(paste0('cpps/', model)))
     dyn.load(dynlib(paste0('../cpps/', model)))
     config(tape.parallel=FALSE, DLL=model)
 }
 obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, T=t, delta=80),
                  parameters=tmbpars,
                  DLL=model, random='R', hessian=TRUE, silent=TRUE)
-opt <- try(optim(obj$par, obj$fn, obj$gr, method='SANN',
-                 control=list(maxit=2e4)),
+opt <- try(nlminb(obj$par, obj$fn, obj$gr, eval.max=1e3, iter.max=500),
            silent=TRUE)
 if (class(opt)!='try-error') {
     write.table(rbind(c(opt$par, opt$convergence)),

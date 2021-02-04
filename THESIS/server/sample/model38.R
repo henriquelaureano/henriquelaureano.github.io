@@ -1,9 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
-##                      leg.ufpr.br/~henrique · github.com/mynameislaure
-##                                      laureano@ufpr.br · @hap_laureano
-##                     Laboratory of Statistics and Geoinformation (LEG)
-##       2021-jan-06 · Federal University of Paraná · Curitiba/PR/Brazil
+##                                            henriquelaureano.github.io
+##                                      2021-fev-01 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 (args <- commandArgs())
@@ -20,7 +18,8 @@ model <- 'multiGLMM_38'
 openmp(28)
 where <- 'coefs38'
 J <- 3e4
-t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+## t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
+t <- runif(2*J, 30, 79.5)
 Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
 R <- matrix(0, nrow=J, ncol=4)
 
@@ -29,7 +28,7 @@ rhoZ_init <- c(atanh(0.2/sqrt(0.2*0.3)), atanh(0.15/sqrt(0.4*0.5)),
                atanh(0.1/sqrt(0.2*0.5)), atanh(0.1/sqrt(0.3*0.4)))
 
 ## model fitting--------------------------------------------------------
-compile(paste0('cpps/', model, '.cpp'))
+compile(paste0('../cpps/', model, '.cpp'))
 tmbpars <- list(beta1=initFixed[i, 1], beta2=initFixed[i, 2],
                 gama1=initFixed[i, 3], gama2=initFixed[i, 4],
                 w1=initFixed[i, 5], w2=initFixed[i, 6],
@@ -37,7 +36,7 @@ tmbpars <- list(beta1=initFixed[i, 1], beta2=initFixed[i, 2],
                 )
 if (!model%in%names(getLoadedDLLs())) {
     cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
-    dyn.load(dynlib(paste0('cpps/', model)))
+    dyn.load(dynlib(paste0('../cpps/', model)))
     config(tape.parallel=FALSE, DLL=model)
 }
 obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, T=t, delta=80),
