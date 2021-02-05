@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-04 · Curitiba/PR/Brazil
+##                                      2021-fev-05 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ## install.packages('pacman')
@@ -283,5 +283,53 @@ for (i in seq(n))
 }
 ## EVEN with the true values as starting points, the model doesn't work
 dll2.out
+
+## AND if we try to estimate the variance directly? --------------------
+dll3 <- 'multiGLMM_diag1s2'
+compile(paste0(dll3, '.cpp'))
+
+coefs.true <- c(beta1=-2, beta2=-1.5, gama1=1.2, gama2=1, w1=3, w2=5,
+                s2=0.25)
+
+dll3.out <- matrix(
+    NA, nrow=n+1, ncol=8,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true), 'conv'))
+)
+dll3.out[n+1, ] <- c(coefs.true, NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll3)
+    obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
+                     parameters=list(
+                         ## starting in zero doesn't work
+                         ## using dll0.out and dll1.out also doesn't
+                         ## work
+                         beta1=coefs.true['beta1'],
+                         beta2=coefs.true['beta2'],
+                         gama1=coefs.true['gama1'],
+                         gama2=coefs.true['gama2'],
+                         w1=coefs.true['w1'],
+                         w2=coefs.true['w2'],
+                         R=R,
+                         ## log(1e-2), log(0.1), log(0.5), log(1) (TRUE
+                         ## VALUE), and log(2) didn't work
+                         s2=coefs.true['s2']
+                     ),
+                     DLL=dll3, random='R', hessian=TRUE, silent=TRUE)
+    opt <- try(nlminb(obj$par,
+                      obj$fn,
+                      obj$gr, control=list(eval.max=1e3, iter.max=500)),
+               silent=TRUE)
+    if (class(opt)!='try-error')
+    {
+        dll3.out[i, ] <- c(opt$par, opt$convergence)
+    }
+    print(paste('Model', i, 'done'))
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
+## EVEN with the true values as starting points, the model doesn't work
+dll3.out
 
 ## END -----------------------------------------------------------------

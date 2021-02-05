@@ -9,77 +9,112 @@ output:
 
 ```{r message=FALSE}
 pacman::p_load(tidyverse, patchwork, INLA)
-
-x <- c(1:31, 1:7+31)
-## 22 days per row
-y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
-       1, 1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, 2, 1, NA, NA)
-data.inla <- list(y=y, x=x)
-
-formula.rw1 <- y~-1+
-    f(x,
-      model='rw1',
-      scale.model=TRUE,
-      hyper=list(prec=list(prior='pc.prec', param=c(1, 0.01))),
-      constr=FALSE)
-formula.ar1 <- y~-1+
-    f(x,
-      model='ar1',
-      hyper=list(theta1=list(prior='pc.prec', param=c(1, 0.01)),
-                 theta2=list(prior='pc.cor1', param=c(0.1, 0.9))),
-      constr=FALSE)
-formula.spde <- y~-1+
-    f(x,
-      model=inla.spde2.pcmatern(mesh=inla.mesh.1d(x),
-                                alpha=2,
-                                prior.range=c(1, 0.05),
-                                prior.sigma=c(1, 0.01)),
-      constr=FALSE)
-
-model.rw1 <- inla(formula.rw1,
-                  family='poisson',
-                  data=data.inla,
-                  control.predictor=list(link=1))
-model.ar1 <- inla(formula.ar1,
-                  family='poisson',
-                  data=data.inla,
-                  control.predictor=list(link=1))
-model.spde <- inla(formula.spde,
-                   family='poisson',
-                   data=data.inla,
-                   control.predictor=list(link=1))
+x <- c(
+    1:31, 1:7+31
+)
+## 23 days per row
+y <- c(
+    0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2, 1, 
+    1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, 2, 2, NA, NA
+)
+data.inla <- list(
+    y=y, x=x
+)
+formula.rw1 <-
+    y~-1+f(x,
+           model='rw1',
+           scale.model=TRUE,
+           hyper=list(prec=list(prior='pc.prec', param=c(1, 0.01))),
+           constr=FALSE)
+formula.ar1 <-
+    y~-1+f(x,
+           model='ar1',
+           hyper=list(theta1=list(prior='pc.prec', param=c(1, 0.01)),
+                      theta2=list(prior='pc.cor1', param=c(0.1, 0.9))),
+           constr=FALSE)
+formula.spde <-
+    y~-1+f(x,
+           model=inla.spde2.pcmatern(mesh=inla.mesh.1d(x),
+                                     alpha=2,
+                                     prior.range=c(1, 0.05),
+                                     prior.sigma=c(1, 0.01)),
+           constr=FALSE)
+model.rw1 <- inla(
+    formula.rw1,
+    family='poisson',
+    data=data.inla,
+    control.predictor=list(link=1)
+)
+model.ar1 <- inla(
+    formula.ar1,
+    family='poisson',
+    data=data.inla,
+    control.predictor=list(link=1)
+)
+model.spde <- inla(
+    formula.spde,
+    family='poisson',
+    data=data.inla,
+    control.predictor=list(link=1)
+)
 ```
 
-```{r fig.width=10,warning=FALSE}
-myplot <- function(x, y, model, title, subtitle) {
+```{r fig.width=10,fig.height=6,warning=FALSE}
+myplot <- function(x, y, model, title)
+{
     f.hat <- model$summary.fitted.values$mean
-      f.lb <- model$summary.fitted.values$'0.025quant'
-      f.ub <- model$summary.fitted.values$'0.975quant'
-    data.plot <- data.frame(y=y, x=x, f.hat=f.hat, f.lb=f.lb, f.ub=f.ub)
-    ggplot(data.plot, aes(x=x, y=y))+
-        geom_vline(xintercept=31, linetype='dashed')+
-        geom_ribbon(aes(xmin=nth(x, -3L), xmax=last(x)), alpha=0.25)+
-        geom_line(aes(y=f.hat), col='#0080ff', size=1)+
+    f.lb <- model$summary.fitted.values$'0.025quant'
+    f.ub <- model$summary.fitted.values$'0.975quant'
+    data.plot <- data.frame(
+        y=y, x=x, f.hat=f.hat, f.lb=f.lb, f.ub=f.ub
+    )
+    ggplot(data.plot,
+           aes(x=x, y=y))+
+        geom_vline(xintercept=31,
+                   linetype='dashed')+
+        annotate('rect',
+                 xmin=nth(x, -3L), xmax=last(x), ymin=0, ymax=4,
+                 alpha=0.25)+
+        geom_line(aes(y=f.hat),
+                  col='#0080ff',
+                  size=1)+
         geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
-                    alpha=0.3, size=0.75, fill='orange', col='#0080ff')+
+                    alpha=0.3,
+                    size=0.75,
+                    fill='orange',
+                    col='#0080ff')+
         geom_point(aes(y=y))+
         theme_minimal()+
         theme(axis.title.x=element_text(
-                  margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
+                  size=11, 
+                  margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
+              axis.text.x=element_text(size=10), 
               axis.title.y=element_text(
-                  margin=unit(c(t=0, r=2, b=0, l=0), "mm")))+
-        labs(x='Days', y='Count', title=title, subtitle=subtitle)+
-        ylim(c(0, 3.5))
+                  size=11, 
+                  margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
+              axis.text.y=element_text(size=10),
+              plot.title=element_text(size=12,
+                                      face='bold'))+
+        labs(x='Days', y='Count',
+             title=title)+
+        ylim(c(0, 4))
 }
-plot.rw1 <- myplot(x=x, y=y, model=model.rw1,
-                   title='1st order random walk', subtitle='RW(1) model') 
-plot.ar1 <- myplot(x=x, y=y, model=model.ar1,
-                   title='1st order autoregressive', subtitle='AR(1) model')
-plot.spde <- myplot(x=x, y=y, model=model.spde,
-                   title='1d Matern model', subtitle='SPDE model')
+plot.rw1 <- myplot(
+    x=x, y=y,
+    model=model.rw1, title='1st order random walk, RW(1) model'
+) 
+plot.ar1 <- myplot(
+    x=x, y=y,
+    model=model.ar1, title='1st order autoregressive, AR(1) model'
+)
+plot.spde <- myplot(
+    x=x, y=y,
+    model=model.spde, title='1d Matern model, SPDE model'
+)
 plot.rw1+plot.ar1+plot.spde+
     plot_layout(ncol=2)+
-    plot_annotation(caption='Gray shadow: 2 days ahead prediction')
+    plot_annotation(caption='Gray shadow: 2 days ahead prediction')&
+    theme(plot.caption=element_text(size=11))
 ```
 
 ```{r}
