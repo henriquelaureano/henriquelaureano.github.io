@@ -1,4 +1,4 @@
-WARNING: unknown option '-1'
+WARNING: unknown option '-2'
 
 
 R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
@@ -19,6 +19,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > ## henrique laureano (.github.io)
 > ## date: 1-fev-2021
 > ## scheike's pairwise model via nelder-mead in the structure 22---------
@@ -26,7 +28,7 @@ Type 'q()' to quit R.
 > (args <- commandArgs())
 [1] "/usr/lib/R/bin/exec/R" "-f"                    "nelder22.R"           
 [4] "--restore"             "--save"                "--no-readline"        
-[7] "-1"                   
+[7] "-2"                   
 > i <- abs(as.numeric(args[7]))
 > 
 > pacman::p_load('Rcpp', 'mets')
@@ -111,4 +113,4 @@ Type 'q()' to quit R.
 > 
 > proc.time()
     user   system  elapsed 
-6576.614    3.258 6581.247 
+9374.052    5.610 9383.697 

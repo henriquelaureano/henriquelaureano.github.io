@@ -1,4 +1,4 @@
-WARNING: unknown option '-1'
+WARNING: unknown option '-2'
 
 
 R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
@@ -28,7 +28,7 @@ Type 'q()' to quit R.
 > (args <- commandArgs())
 [1] "/usr/lib/R/bin/exec/R" "-f"                    "bfgs36.R"             
 [4] "--restore"             "--save"                "--no-readline"        
-[7] "-1"                   
+[7] "-2"                   
 > i <- abs(as.numeric(args[7]))
 > 
 > pacman::p_load('Rcpp', 'mets')
@@ -116,4 +116,4 @@ error: inv(): matrix seems singular
 > 
 > proc.time()
    user  system elapsed 
-602.200   0.594 602.878 
+600.411   0.455 600.901 

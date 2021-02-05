@@ -1,4 +1,4 @@
-WARNING: unknown option '-1'
+WARNING: unknown option '-2'
 
 
 R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
@@ -28,7 +28,7 @@ Type 'q()' to quit R.
 > (args <- commandArgs())
 [1] "/usr/lib/R/bin/exec/R" "-f"                    "nelder38.R"           
 [4] "--restore"             "--save"                "--no-readline"        
-[7] "-1"                   
+[7] "-2"                   
 > i <- abs(as.numeric(args[7]))
 > 
 > pacman::p_load('Rcpp', 'mets')
@@ -112,5 +112,5 @@ Type 'q()' to quit R.
 + }
 > 
 > proc.time()
-    user   system  elapsed 
-5683.824    4.075 5690.211 
+     user    system   elapsed 
+11081.882     4.082 11088.840 

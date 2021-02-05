@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-03 · Curitiba/PR/Brazil
+##                                      2021-fev-04 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ## install.packages('pacman')
@@ -110,11 +110,18 @@ for (i in seq(n))
     obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
                      parameters=list(
                          ## starting in zero doesn't work
-                         beta1=dll0.out[i, 1], beta2=dll0.out[i, 2],
-                         gama1=dll0.out[i, 3], gama2=dll0.out[i, 4],
-                         w1=dll0.out[i, 5], w2=dll0.out[i, 6], R=R,
-                         ## log(1e-2), log(0.1) and log(0.5) didn't work
-                         logs2=log()
+                         ## using dll0.out and dll1.out also doesn't
+                         ## work
+                         beta1=coefs.true['beta1'],
+                         beta2=coefs.true['beta2'],
+                         gama1=coefs.true['gama1'],
+                         gama2=coefs.true['gama2'],
+                         w1=coefs.true['w1'],
+                         w2=coefs.true['w2'],
+                         R=R,
+                         ## log(1e-2), log(0.1), log(0.5), log(1) (TRUE
+                         ## VALUE), and log(2) didn't work
+                         logs2=coefs.true['logs2']
                      ),
                      DLL=dll2, random='R', hessian=TRUE, silent=TRUE)
     opt <- try(nlminb(obj$par,
@@ -129,6 +136,152 @@ for (i in seq(n))
     ## sdr <- sdreport(obj)
     FreeADFun(obj);gc()
 }
-
+## EVEN with the true values as starting points, the model doesn't work
 dll2.out
+
+##----------------------------------------------------------------------
+
+## NOW, let's try a more 'shy' latent structure variance ---------------
+y <- future_map(rep(J, n), ~datasimu(.x,
+                                     time=time,
+                                     Sigma=diag(rep(0.25, 4))),
+                .options=furrr_options(seed=NULL))
+
+## NEW true parameter values -------------------------------------------
+coefs.true <- c(beta1=-2, beta2=-1.5, gama1=1.2, gama2=1, w1=3, w2=5,
+                logs2=log(0.25))
+
+## AGAIN, first just a GLM (ignoring the latent structure) -------------
+dll0.out <- matrix(
+    NA, nrow=n+1, ncol=7,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true)[1:6], 'conv'))
+)
+dll0.out[n+1, ] <- c(coefs.true[1:6], NaN)
+
+for (i in seq(n))
+{    
+    checkDLL(dll0)
+    obj <- MakeADFun(
+        data=list(Y=y[[i]], time=time, delta=delta),
+        parameters=list(beta1=0, beta2=0, gama1=0, gama2=0, w1=1, w2=1),
+        DLL=dll0, hessian=TRUE, silent=TRUE
+    )
+    opt <- nlminb(
+        obj$par,
+        obj$fn,
+        obj$gr, control=list(eval.max=1e3, iter.max=500)
+    )
+    dll0.out[i, ] <- c(opt$par, opt$convergence) 
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
+## much closer to the true values than with logs2=log(1)
+dll0.out
+
+## FIXING the latent structure parameter -------------------------------
+dll1.out <- matrix(
+    NA, nrow=n+1, ncol=7,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true)[1:6], 'conv'))
+)
+dll1.out[n+1, ] <- c(coefs.true[1:6], NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll1)
+    obj <- MakeADFun(
+        data=list(
+            Y=y[[i]], Z=Z, time=time, delta=delta, logs2=log(0.25)
+        ),
+        parameters=list(
+            beta1=0, beta2=0, gama1=0, gama2=0, w1=1, w2=1, R=R
+        ),
+        DLL=dll1, random='R', hessian=TRUE, silent=TRUE
+    )
+    opt <- nlminb(
+        obj$par,
+        obj$fn,
+        obj$gr, control=list(eval.max=1e3, iter.max=500)
+    )
+    dll1.out[i, ] <- c(opt$par, opt$convergence) 
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
 rbind(dll0.out, dll1.out)
+
+## OKAY, until now we fixed the latent structure parameter in its real
+## value but what happens to the estimates if we fix it in a different
+## value? let's say log(0.75)
+dll1OLD.out <- dll1.out
+dll1.out <- matrix(
+    NA, nrow=n+1, ncol=7,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true)[1:6], 'conv'))
+)
+dll1.out[n+1, ] <- c(coefs.true[1:6], NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll1)
+    obj <- MakeADFun(
+        data=list(
+            Y=y[[i]], Z=Z, time=time, delta=delta, logs2=log(0.75)
+        ),
+        parameters=list(
+            beta1=0, beta2=0, gama1=0, gama2=0, w1=1, w2=1, R=R
+        ),
+        DLL=dll1, random='R', hessian=TRUE, silent=TRUE
+    )
+    opt <- nlminb(
+        obj$par,
+        obj$fn,
+        obj$gr, control=list(eval.max=1e3, iter.max=500)
+    )
+    dll1.out[i, ] <- c(opt$par, opt$convergence) 
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
+## reasonable/expected
+rbind(dll0.out, dll1OLD.out, dll1.out)
+
+## let's try again to estimate the latent structure parameter ----------
+dll2.out <- matrix(
+    NA, nrow=n+1, ncol=8,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true), 'conv'))
+)
+dll2.out[n+1, ] <- c(coefs.true, NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll2)
+    obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
+                     parameters=list(
+                         ## starting in zero doesn't work
+                         ## using dll0.out and dll1.out also doesn't
+                         ## work
+                         beta1=coefs.true['beta1'],
+                         beta2=coefs.true['beta2'],
+                         gama1=coefs.true['gama1'],
+                         gama2=coefs.true['gama2'],
+                         w1=coefs.true['w1'],
+                         w2=coefs.true['w2'],
+                         R=R,
+                         ## log(1e-2), log(0.1), log(0.5), log(1) (TRUE
+                         ## VALUE), and log(2) didn't work
+                         logs2=coefs.true['logs2']
+                     ),
+                     DLL=dll2, random='R', hessian=TRUE, silent=TRUE)
+    opt <- try(nlminb(obj$par,
+                      obj$fn,
+                      obj$gr, control=list(eval.max=1e3, iter.max=500)),
+               silent=TRUE)
+    if (class(opt)!='try-error')
+    {
+        dll2.out[i, ] <- c(opt$par, opt$convergence)
+    }
+    print(paste('Model', i, 'done'))
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
+## EVEN with the true values as starting points, the model doesn't work
+dll2.out
+
+## END -----------------------------------------------------------------

@@ -1,4 +1,4 @@
-WARNING: unknown option '-1'
+WARNING: unknown option '-2'
 
 
 R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
@@ -28,7 +28,7 @@ Type 'q()' to quit R.
 > (args <- commandArgs())
 [1] "/usr/lib/R/bin/exec/R" "-f"                    "port36.R"             
 [4] "--restore"             "--save"                "--no-readline"        
-[7] "-1"                   
+[7] "-2"                   
 > i <- abs(as.numeric(args[7]))
 > 
 > pacman::p_load('Rcpp', 'mets')
@@ -106,8 +106,6 @@ Type 'q()' to quit R.
 > 
 > opt <- try(nlminb(theta, scheike, t=t, delta=80, J=J, causes=causes),
 +            silent=TRUE)
-
-error: inv(): matrix seems singular
 Warning messages:
 1: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
   NA/NaN function evaluation
@@ -119,17 +117,11 @@ Warning messages:
   NA/NaN function evaluation
 5: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
   NA/NaN function evaluation
-6: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
-  NA/NaN function evaluation
-7: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
-  NA/NaN function evaluation
-8: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
-  NA/NaN function evaluation
 > if (class(opt)!='try-error') {
 +     write.table(rbind(c(opt$par, opt$convergence)),
 +                 file=paste0(where, '.txt'), append=TRUE, col.names=FALSE)
 + }
 > 
 > proc.time()
-     user    system   elapsed 
-11603.273     3.701 11608.311 
+    user   system  elapsed 
+6705.120    3.103 6708.689 

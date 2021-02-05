@@ -1,4 +1,4 @@
-WARNING: unknown option '-1'
+WARNING: unknown option '-2'
 
 
 R version 4.0.3 (2020-10-10) -- "Bunny-Wunnies Freak Out"
@@ -28,7 +28,7 @@ Type 'q()' to quit R.
 > (args <- commandArgs())
 [1] "/usr/lib/R/bin/exec/R" "-f"                    "port40.R"             
 [4] "--restore"             "--save"                "--no-readline"        
-[7] "-1"                   
+[7] "-2"                   
 > i <- abs(as.numeric(args[7]))
 > 
 > pacman::p_load('Rcpp', 'mets')
@@ -106,10 +106,20 @@ Type 'q()' to quit R.
 > 
 > opt <- try(nlminb(theta, scheike, t=t, delta=80, J=J, causes=causes),
 +            silent=TRUE)
+
+warning: inv_sympd(): given matrix is not symmetric
+
+error: inv_sympd(): matrix is singular or not positive definite
 Warning messages:
 1: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
   NA/NaN function evaluation
 2: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
+  NA/NaN function evaluation
+3: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
+  NA/NaN function evaluation
+4: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
+  NA/NaN function evaluation
+5: In nlminb(theta, scheike, t = t, delta = 80, J = J, causes = causes) :
   NA/NaN function evaluation
 > if (class(opt)!='try-error') {
 +     write.table(rbind(c(opt$par, opt$convergence)),
@@ -118,4 +128,4 @@ Warning messages:
 > 
 > proc.time()
     user   system  elapsed 
-8215.695    2.834 8219.116 
+7213.771    4.722 7219.830 

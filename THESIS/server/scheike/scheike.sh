@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for i in {2}
+for i in 2
 do
   echo 'R CMD BATCH -$i nelder22.R'
   R CMD BATCH -$i nelder22.R
