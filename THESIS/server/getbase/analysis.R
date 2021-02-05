@@ -302,9 +302,8 @@ for (i in seq(n))
     checkDLL(dll3)
     obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
                      parameters=list(
-                         ## starting in zero doesn't work
-                         ## using dll0.out and dll1.out also doesn't
-                         ## work
+                         ## let's start with the true values as starting
+                         ## points, just to see if the model converges
                          beta1=coefs.true['beta1'],
                          beta2=coefs.true['beta2'],
                          gama1=coefs.true['gama1'],
@@ -312,8 +311,6 @@ for (i in seq(n))
                          w1=coefs.true['w1'],
                          w2=coefs.true['w2'],
                          R=R,
-                         ## log(1e-2), log(0.1), log(0.5), log(1) (TRUE
-                         ## VALUE), and log(2) didn't work
                          s2=coefs.true['s2']
                      ),
                      DLL=dll3, random='R', hessian=TRUE, silent=TRUE)
@@ -329,7 +326,133 @@ for (i in seq(n))
     ## sdr <- sdreport(obj)
     FreeADFun(obj);gc()
 }
-## EVEN with the true values as starting points, the model doesn't work
+## CONVERGENCE 1 AND THE VARIANCE GOT LOST
 dll3.out
+
+## BEFORE we try different starting points is worthy to notice that
+## modeling the crude variance takes much more time. Let's then
+## constraint the optimization and see what's happens
+dll3old.out <- dll3.out
+
+dll3.out <- matrix(
+    NA, nrow=n+1, ncol=8,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true), 'conv'))
+)
+dll3.out[n+1, ] <- c(coefs.true, NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll3)
+    obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
+                     parameters=list(
+                         beta1=coefs.true['beta1'],
+                         beta2=coefs.true['beta2'],
+                         gama1=coefs.true['gama1'],
+                         gama2=coefs.true['gama2'],
+                         w1=coefs.true['w1'],
+                         w2=coefs.true['w2'],
+                         R=R,
+                         s2=coefs.true['s2']
+                     ),
+                     DLL=dll3, random='R', hessian=TRUE, silent=TRUE)
+    opt <- try(
+        nlminb(obj$par,
+               obj$fn,
+               obj$gr, control=list(eval.max=1e3, iter.max=500),
+               lower=c(-Inf, -Inf, -Inf, -Inf, 1e-16, 1e-16, 1e-16)),
+        silent=TRUE)
+    if (class(opt)!='try-error')
+    {
+        dll3.out[i, ] <- c(opt$par, opt$convergence)
+    }
+    print(paste('Model', i, 'done'))
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
+## CONVERGENCE ZERO BUT THE VARIANCE ESTIMATE IS WRONG (MUCH FASTER)
+dll3.out
+
+## DIFFERENT starting point --------------------------------------------
+dll3.out <- matrix(
+    NA, nrow=n+1, ncol=8,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true), 'conv'))
+)
+dll3.out[n+1, ] <- c(coefs.true, NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll3)
+    obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
+                     parameters=list(
+                         beta1=0,
+                         beta2=0,
+                         gama1=0,
+                         gama2=0,
+                         w1=1,
+                         w2=1,
+                         R=R,
+                         s2=1e-16
+                     ),
+                     DLL=dll3, random='R', hessian=TRUE, silent=TRUE)
+    opt <- try(
+        nlminb(obj$par,
+               obj$fn,
+               obj$gr, control=list(eval.max=1e3, iter.max=500),
+               lower=c(-Inf, -Inf, -Inf, -Inf, 1e-16, 1e-16, 1e-16)),
+        silent=TRUE)
+    if (class(opt)!='try-error')
+    {
+        dll3.out[i, ] <- c(opt$par, opt$convergence)
+    }
+    print(paste('Model', i, 'done'))
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
+## THE FIXED EFFECT ESTIMATES ARE QUITE GOOD, THE PROBLEM IS STILL WITH
+## THE VARIANCE COMPONENT
+dll3.out
+
+## a different variance starting guess ---------------------------------
+dll3old.out <- dll3.out
+
+dll3.out <- matrix(
+    NA, nrow=n+1, ncol=8,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true), 'conv'))
+)
+dll3.out[n+1, ] <- c(coefs.true, NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll3)
+    obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
+                     parameters=list(
+                         beta1=0,
+                         beta2=0,
+                         gama1=0,
+                         gama2=0,
+                         w1=1,
+                         w2=1,
+                         R=R,
+                         s2=1
+                     ),
+                     DLL=dll3, random='R', hessian=TRUE, silent=TRUE)
+    opt <- try(
+        nlminb(obj$par,
+               obj$fn,
+               obj$gr, control=list(eval.max=1e3, iter.max=500),
+               lower=c(-Inf, -Inf, -Inf, -Inf, 1e-16, 1e-16, 1e-16)),
+        silent=TRUE)
+    if (class(opt)!='try-error')
+    {
+        dll3.out[i, ] <- c(opt$par, opt$convergence)
+    }
+    print(paste('Model', i, 'done'))
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
+## THE SAME (GOOD AND BAD)
+rbind(dll3old.out, dll3.out)
+
+## ONE MORE TIME -------------------------------------------------------
 
 ## END -----------------------------------------------------------------
