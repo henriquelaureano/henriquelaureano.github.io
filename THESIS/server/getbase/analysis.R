@@ -585,6 +585,45 @@ for (i in seq(n))
     ## sdr <- sdreport(obj)
     FreeADFun(obj);gc()
 }
+## STILL DOESN'T WORK
+dll3.out
+
+## LET'S INCREASE THE LOWER BOUND --------------------------------------
+dll3.out <- matrix(
+    NA, nrow=n+1, ncol=8,
+    dimnames=list(c(seq(n), 'true'), c(names(coefs.true), 'conv'))
+)
+dll3.out[n+1, ] <- c(coefs.true, NaN)
+
+for (i in seq(n))
+{
+    checkDLL(dll3)
+    obj <- MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=delta),
+                     parameters=list(
+                         beta1=0,
+                         beta2=0,
+                         gama1=0,
+                         gama2=0,
+                         w1=1,
+                         w2=1,
+                         R=R,
+                         s2=0.5
+                     ),
+                     DLL=dll3, random='R', hessian=TRUE, silent=TRUE)
+    opt <- try(
+        nlminb(obj$par,
+               obj$fn,
+               obj$gr, control=list(eval.max=1e3, iter.max=500),
+               lower=c(-Inf, -Inf, -Inf, -Inf, 1e-16, 1e-16, 1e-2)),
+        silent=TRUE)
+    if (class(opt)!='try-error')
+    {
+        dll3.out[i, ] <- c(opt$par, opt$convergence)
+    }
+    print(paste('Model', i, 'done'))
+    ## sdr <- sdreport(obj)
+    FreeADFun(obj);gc()
+}
 dll3.out
 
 ## END -----------------------------------------------------------------
