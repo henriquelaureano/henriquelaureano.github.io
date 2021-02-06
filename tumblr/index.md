@@ -75,3 +75,7 @@
 <img src='mfrick.jpg'>
 <img src='bernie.png'>
 <img src='estante.jpg'>
+<img src='oldmexcribstyle.jpg'>
+<img src='broshanging.jpg'>
+<img src='seekprog.jpg'>
+<img src='chil.gif'>
