@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-03 · Curitiba/PR/Brazil
+##                                      2021-fev-07 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 dcif <- function(J, time, delta=80,
@@ -48,12 +48,46 @@ datasimu <- function(J, time, delta=80,
     return(out)
 }
 
+future_datasimu <- function(J, n, time, delta=80,
+                            beta=c(-2, -1.5), gamma=c(1.2, 1), w=c(3, 5),
+                            Sigma=NULL)
+{
+    y <- furrr::future_map(
+                    rep(J, n), ~datasimu(.x,
+                                         time=time,
+                                         delta=delta,
+                                         beta=beta,
+                                         gamma=gamma,
+                                         w=w, 
+                                         Sigma=Sigma),
+                    .options=furrr_options(seed=NULL))
+    return(y)
+}
+
 checkDLL <- function(dll)
 {
     if (!dll%in%names(getLoadedDLLs()))
     {
         cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
-        dyn.load(dynlib(dll))
+        dyn.load(TMB::dynlib(dll))
         invisible(config(tape.parallel=FALSE, DLL=dll))
     }
+}
+
+multiGLMMfit <- function(dll, y, Z, time, delta=80, pars, LB, UB)
+{
+    checkDLL(dll)
+    obj <- TMB::MakeADFun(data=list(
+                              Y=y, Z=Z, time=time, delta=delta
+                          ),
+                          parameters=pars,
+                          DLL=dll,
+                          random='R', hessian=TRUE, silent=TRUE)
+    opt <- nlminb(
+        obj$par,
+        obj$fn,
+        obj$gr,
+        control=list(eval.max=1e3, iter.max=500), lower=LB, upper=UB
+    )
+    return(opt)
 }
