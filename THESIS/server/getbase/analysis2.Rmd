@@ -1,15 +1,31 @@
-##----------------------------------------------------------------------
-##                                                     Henrique Laureano
-##                                            henriquelaureano.github.io
-##                                      2021-fev-07 · Curitiba/PR/Brazil
-##----------------------------------------------------------------------
+---
+title: WORK
+author: Henrique Laureano (.github.io)
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+> Latent structures 22, 36, 38 and 40
+
+> Using a constrained optimization procedure, i.e. trying to estimate
+> the parameters in it original scale
+
 ## install.packages('pacman')
+
+```{r}
 pacman::p_load(Matrix, mvtnorm, mc2d, furrr, crayon, clisymbols, TMB,
                tictoc
                )
 source('functions.R')
+```
 
-## OVERALL DEFINITIONS -------------------------------------------------
+## OVERALL DEFINITIONS
+
+```{r}
 future::plan(multicore)
 TMB::openmp(11)
 
@@ -19,8 +35,11 @@ Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
 R <- matrix(0, nrow=J, ncol=4)
 time <- runif(2*J, 30, 79.5)
 delta <- 80
+```
 
-## generating ``n`` datasets in a parallelized fashion -----------------
+## generating ``n`` datasets in a parallelized fashion
+
+```{r}
 ## lists with n slots
 y.22 <- future_datasimu(
     J=J,
@@ -58,14 +77,20 @@ y.40 <- future_datasimu(
                    0.05, 0.2, 0.25, 0,
                    0.2, 0.05, 0, 0.25), nrow=4, ncol=4)
 )
+```
 
-## loading DLLs --------------------------------------------------------
+## loading DLLs
+
+```{r}
 dll22 <- 'multiGLMM22_par1';TMB::compile(paste0(dll22, '.cpp'))
 dll36 <- 'multiGLMM36_par1';TMB::compile(paste0(dll36, '.cpp'))
 dll38 <- 'multiGLMM38_par1';TMB::compile(paste0(dll38, '.cpp'))
 dll40 <- 'multiGLMM40_par1';TMB::compile(paste0(dll40, '.cpp'))
+```
 
-## REAL ONES -----------------------------------------------------------
+## REAL ONES
+
+```{r}
 ats <- c(
     beta1=-2, beta2=-1.5, gama1=1.2, gama2=1, w1=3, w2=5,
     s2.1=0.4, s2.2=0.4, s2.3=0.25, s2.4=0.25
@@ -91,12 +116,15 @@ true40 <- c(
     rho13=0.05/sqrt(0.4*0.25), rho24=0.05/sqrt(0.4*0.25),
     rho14=0.2/sqrt(0.4*0.25), rho23=0.2/sqrt(0.4*0.25)
 )
+```
 
-## MODEL FITTING -------------------------------------------------------
+## MODEL FITTING
+
+```{r cache=TRUE}
 tictoc::tic()
 opt22 <- multiGLMMfit(
     dll=dll22,
-    y=y[[1]], Z=Z, time=time,
+    y=y.22[[1]], Z=Z, time=time,
     pars=list(
         beta1=true22['beta1'], beta2=true22['beta2'],
         gama1=true22['gama1'], gama2=true22['gama2'],
@@ -109,9 +137,10 @@ opt22 <- multiGLMMfit(
     UB=c(rep(Inf, 10), rep(1, 4))
 )
 tictoc::toc()
+
 opt36 <- multiGLMMfit(
     dll=dll36,
-    y=y[[1]], Z=Z, time=time,
+    y=y.36[[1]], Z=Z, time=time,
     pars=list(
         beta1=true36['beta1'], beta2=true36['beta2'],
         gama1=true36['gama1'], gama2=true36['gama2'],
@@ -124,9 +153,10 @@ opt36 <- multiGLMMfit(
     UB=c(rep(Inf, 10), rep(1, 6))
 )
 tictoc::toc()
+
 opt38 <- multiGLMMfit(
     dll=dll38,
-    y=y[[1]], Z=Z, time=time,
+    y=y.38[[1]], Z=Z, time=time,
     pars=list(
         beta1=true38['beta1'], beta2=true38['beta2'],
         gama1=true38['gama1'], gama2=true38['gama2'],
@@ -139,9 +169,10 @@ opt38 <- multiGLMMfit(
     UB=c(rep(Inf, 10), rep(1, 4))
 )
 tictoc::toc()
+
 opt40 <- multiGLMMfit(
     dll=dll40,
-    y=y[[1]], Z=Z, time=time,
+    y=y.40[[1]], Z=Z, time=time,
     pars=list(
         beta1=true40['beta1'], beta2=true40['beta2'],
         gama1=true40['gama1'], gama2=true40['gama2'],
@@ -154,5 +185,13 @@ opt40 <- multiGLMMfit(
     UB=c(rep(Inf, 10), rep(1, 4))
 )
 tictoc::toc()
+```
 
-## END -----------------------------------------------------------------
+## parameter estimates
+
+```{r}
+dllOut(opt22, true22)
+dllOut(opt36, true36)
+dllOut(opt38, true38)
+dllOut(opt40, true40)
+```

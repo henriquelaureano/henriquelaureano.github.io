@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-07 · Curitiba/PR/Brazil
+##                                      2021-fev-08 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 dcif <- function(J, time, delta=80,
@@ -90,4 +90,21 @@ multiGLMMfit <- function(dll, y, Z, time, delta=80, pars, LB, UB)
         control=list(eval.max=1e3, iter.max=500), lower=LB, upper=UB
     )
     return(opt)
+}
+
+dllOut <- function(optObj, comp2)
+{
+    if (length(optObj$par) != length(comp2))
+        stop("# of parameters don't match")
+    
+    out <- matrix(
+        NA,
+        nrow=2,
+        ncol=length(comp2)+1,
+        dimnames=list(c(1, 'true'), c(names(comp2), 'conv'))
+    )
+    out[1, ] <- c(optObj$par, optObj$convergence)
+    out[2, ] <- c(comp2, NaN)
+    
+    return(out)
 }

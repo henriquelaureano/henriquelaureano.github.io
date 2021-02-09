@@ -1,15 +1,26 @@
-##----------------------------------------------------------------------
-##                                                     Henrique Laureano
-##                                            henriquelaureano.github.io
-##                                      2021-fev-06 · Curitiba/PR/Brazil
-##----------------------------------------------------------------------
+---
+title: WORK
+author: Henrique Laureano (.github.io)
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
 
 ## install.packages('pacman')
-pacman::p_load(TMB, furrr, crayon, clisymbols)
 
+```{r}
+pacman::p_load(
+            TMB, furrr, crayon, clisymbols
+        )
 source('functions.R')
+```
 
-## OVERALL DEFINITIONS -------------------------------------------------
+## OVERALL DEFINITIONS
+
+```{r}
 plan(multicore)
 openmp(11)
 
@@ -19,7 +30,11 @@ Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
 R <- matrix(0, nrow=J, ncol=4)
 time <- runif(2*J, 30, 79.5)
 delta <- 80
+```
 
+## all the stuff
+
+```{r cache=TRUE}
 ## generating ``n`` datasets in a parallelized fashion WITH A LATENT
 ## STRUCTURE
 y <- future_map(rep(J, n), ~datasimu(.x, time=time, Sigma=diag(4)),
@@ -678,5 +693,4 @@ for (i in seq(n))
 ## STILL STOPS IN THE LOWER LIMIT AND NOW THE FIXED EFFECT ESTIMATES ARE
 ## WORST (SINCE WE ADD MORE VARIANCE INTO THE DATA)
 dll3.out
-
-## END -----------------------------------------------------------------
+```
