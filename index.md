@@ -16,7 +16,7 @@ What am I doing right now? (Feb 21)
 
 + Working on the final details of my master thesis;
 
-+ Making my new slides template\
++ Making my new slides template
   [pdf](THESIS/aqua/slides.pdf)
   ([.Rmd](THESIS/aqua/slides.Rmd) |
    [in_header file](THESIS/aqua/beamerheader.txt) |
