@@ -22,10 +22,10 @@ measures <- function(data) {
         mutate(label=c('mean', 'q025', 'q975'))%>%
         select(-V1)
 }
-View(measures(coefs22)%>%select(V8:V15, label))
-View(measures(coefs36)%>%select(V8:V17, label))
-View(measures(coefs38)%>%select(V8:V15, label))
-View(measures(coefs40)%>%select(V8:V15, label))
+measures(coefs22)%>%select(V8:V15, label)
+measures(coefs36)%>%select(V8:V17, label)
+measures(coefs38)%>%select(V8:V15, label)
+measures(coefs40)%>%select(V8:V15, label)
 
 pathPORT <- '../'
 old22 <- read.table(paste0(pathPORT, 'coefs22.txt'))
