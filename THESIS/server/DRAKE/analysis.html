@@ -1592,7 +1592,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">A standard multinomial GLMM with random correlated intercepts</h1>
 <h4 class="author">Henrique Laureano (.github.io)</h4>
-<h4 class="date"><em>Last modification on</em> 2021-02-12 09:14:23</h4>
+<h4 class="date"><em>Last modification on</em> 2021-02-12 10:49:44</h4>
 
 </div>
 
@@ -1620,6 +1620,9 @@ prop.table(colSums(y.0))</code></pre>
 </div>
 <div id="model-0" class="section level2">
 <h2>model 0</h2>
+<blockquote>
+<p>even with an “easy” dataset, i.e. with a good occurrence frequency in all multinomial classes, the model doesn’t converge well - in this first moment I need to be able to get the “random” components in “sdreport()”. Initial guesses at zero don’t work well, so let’s start with a GLM. If it is difficult now imagine later…</p>
+</blockquote>
 <pre class="r"><code>dll &lt;- &#39;GLMM&#39;;TMB::compile(paste0(dll, &#39;.cpp&#39;))</code></pre>
 <pre><code>## [1] 0</code></pre>
 <pre class="r"><code>checkDLL(dll)</code></pre>
@@ -1696,16 +1699,102 @@ sdr0 &lt;- sdreport(obj0)</code></pre>
 <pre class="r"><code>obj0$report()</code></pre>
 <pre><code>## $Sigma
 ##              [,1]         [,2]
-## [1,] 4.341502e-17 3.897637e-17
-## [2,] 3.897637e-17 3.499151e-17</code></pre>
+## [1,] 4.337163e-17 3.895688e-17
+## [2,] 3.895688e-17 3.499151e-17</code></pre>
 <pre class="r"><code>nrow(summary(sdr0, select=&#39;random&#39;))</code></pre>
 <pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr0&#39; not found</code></pre>
 <pre class="r"><code>cbind(
     1:20,
-    summary(sdr, select=&#39;random&#39;)[1:20, ], 
-    summary(sdr, select=&#39;random&#39;)[30001:30020, ]
+    summary(sdr0, select=&#39;random&#39;)[1:20, ], 
+    summary(sdr0, select=&#39;random&#39;)[30001:30020, ]
 )</code></pre>
-<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr&#39; not found</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr0&#39; not found</code></pre>
+<pre class="r"><code>v2dll &lt;- &#39;v2GLMM&#39;;TMB::compile(paste0(v2dll, &#39;.cpp&#39;))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>checkDLL(v2dll)</code></pre>
+<pre><code>## Loading DLL</code></pre>
+<pre class="r"><code>v2obj0 &lt;- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
+                         parameters=list(
+                             beta1=0,
+                             beta2=0,
+                             logs2=c(log(0.1), log(0.1)),
+                             rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                             U=U),
+                         DLL=v2dll,
+                         random=&#39;U&#39;, hessia=TRUE, silent=TRUE)
+tictoc::tic()
+v2opt0 &lt;- nlminb(v2obj0$par,
+                 v2obj0$fn,
+                 v2obj0$gr)</code></pre>
+<pre><code>## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(v2obj0$par, v2obj0$fn, v2obj0$gr): NA/NaN function evaluation</code></pre>
+<pre class="r"><code>tictoc::toc()</code></pre>
+<pre><code>## 2310.415 sec elapsed</code></pre>
+<pre class="r"><code>tictoc::tic()
+v2sdr0 &lt;- sdreport(v2obj0)</code></pre>
+<pre><code>## Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 5</code></pre>
+<pre class="r"><code>tictoc::toc()</code></pre>
+<pre><code>## 314.229 sec elapsed</code></pre>
+<pre class="r"><code>v2opt0</code></pre>
+<pre><code>## $par
+##     beta1     beta2     logs2     logs2      rhoZ 
+##  18.07272   3.58090 -37.67673 -37.89143  35.74389 
+## 
+## $objective
+## [1] -2121401
+## 
+## $convergence
+## [1] 1
+## 
+## $iterations
+## [1] 2
+## 
+## $evaluations
+## function gradient 
+##       25        2 
+## 
+## $message
+## [1] &quot;false convergence (8)&quot;</code></pre>
+<pre class="r"><code>summary(v2sdr0, select=&#39;fixed&#39;)</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;v2sdr0&#39; not found</code></pre>
+<pre class="r"><code>summary(v2sdr0, select=&#39;report&#39;)</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;v2sdr0&#39; not found</code></pre>
+<pre class="r"><code>v2obj0$report()</code></pre>
+<pre><code>## $Sigma
+##              [,1]         [,2]
+## [1,] 4.341502e-17 3.897637e-17
+## [2,] 3.897637e-17 3.499151e-17</code></pre>
+<pre class="r"><code>nrow(summary(v2sdr0, select=&#39;random&#39;))</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;v2sdr0&#39; not found</code></pre>
+<pre class="r"><code>cbind(
+    1:20,
+    summary(v2sdr0, select=&#39;random&#39;)[1:20, ], 
+    summary(v2sdr0, select=&#39;random&#39;)[30001:30020, ]
+)</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;v2sdr0&#39; not found</code></pre>
 </div>
 
 

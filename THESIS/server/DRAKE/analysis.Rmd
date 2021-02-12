@@ -41,6 +41,17 @@ prop.table(colSums(y.0))
 > "sdreport()". Initial guesses at zero don't work well, so let's start
 > with a GLM. If it is difficult now imagine later...
 
+```{r glm}
+glm.dll <- 'GLM';TMB::compile(paste0(glm.dll, '.cpp'))
+checkDLL(glm.dll)
+glm0.obj <- TMB::MakeADFun(data=list(Y=y.0),
+                           parameters=list(beta1=0, beta2=0),
+                           DLL=glm.dll, hessia=TRUE, silent=TRUE)
+glm0.opt <- nlminb(glm0.obj$par,
+                   glm0.obj$fn,
+                   glm0.obj$gr)
+glm0.opt
+```
 
 ```{r m0,cache=TRUE,error=TRUE}
 dll <- 'GLMM';TMB::compile(paste0(dll, '.cpp'))
@@ -48,8 +59,8 @@ dll <- 'GLMM';TMB::compile(paste0(dll, '.cpp'))
 checkDLL(dll)
 obj0 <- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
                        parameters=list(
-                           beta1=0,
-                           beta2=0,
+                           beta1=glm0.opt$par['beta1'],
+                           beta2=glm0.opt$par['beta2'],
                            logs2=c(log(0.1), log(0.1)),
                            rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
                            U=U),
@@ -87,8 +98,8 @@ v2dll <- 'v2GLMM';TMB::compile(paste0(v2dll, '.cpp'))
 checkDLL(v2dll)
 v2obj0 <- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
                          parameters=list(
-                             beta1=0,
-                             beta2=0,
+                             beta1=glm0.opt$par['beta1'],
+                             beta2=glm0.opt$par['beta2'],
                              logs2=c(log(0.1), log(0.1)),
                              rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
                              U=U),
