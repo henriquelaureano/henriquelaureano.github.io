@@ -15,7 +15,7 @@ x <- c(
 ## 23 days per row
 y <- c(
     0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2, 1, 
-    1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 2, 0, 
+    1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2,
     NA, NA, NA, NA, NA, NA, NA
 )
 data.inla <- list(
@@ -60,58 +60,46 @@ model.spde <- inla(
 )
 ```
 
-```{r fig.width=10,fig.height=6,warning=FALSE}
-myplot <- function(x, y, model, title)
+```{r fig.width=10,warning=FALSE}
+data.plots <- function(model)
 {
     f.hat <- model$summary.fitted.values$mean
     f.lb <- model$summary.fitted.values$'0.025quant'
     f.ub <- model$summary.fitted.values$'0.975quant'
-    data.plot <- data.frame(
+    out <- tibble(
         y=y, x=x, f.hat=f.hat, f.lb=f.lb, f.ub=f.ub
     )
-    ggplot(data.plot,
-           aes(x=x, y=y))+
-        geom_vline(xintercept=31,
-                   linetype='dashed')+
-        annotate('rect',
-                 xmin=nth(x, -8L), xmax=last(x), ymin=0, ymax=4.5,
-                 alpha=0.25)+
-        geom_line(aes(y=f.hat),
-                  col='#0080ff',
-                  size=1)+
-        geom_ribbon(aes(ymin=f.lb, ymax=f.ub),
-                    alpha=0.3,
-                    size=0.75,
-                    fill='orange',
-                    col='#0080ff')+
-        geom_point(aes(y=y))+
-        theme_minimal()+
-        theme(axis.title.x=element_text(
-                  size=11, 
-                  margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
-              axis.text.x=element_text(size=10), 
-              axis.title.y=element_text(
-                  size=11, 
-                  margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
-              axis.text.y=element_text(size=10),
-              plot.title=element_text(size=12,
-                                      face='bold'))+
-        labs(x='Days', y='Count',
-             title=title)+
-        ylim(c(0, 4.5))
+    return(out)
 }
-plot.rw1 <- myplot(
-    x=x, y=y,
-    model=model.rw1, title='1st order random walk, RW(1) model'
-) 
-plot.ar1 <- myplot(
-    x=x, y=y,
-    model=model.ar1, title='1st order autoregressive, AR(1) model'
-)
-plot.spde <- myplot(
-    x=x, y=y,
-    model=model.spde, title='1d Matern model, SPDE model'
-)
+data.rw1 <- data.plots(model.rw1)
+data.ar1 <- data.plots(model.ar1)
+data.spde <- data.plots(model.spde)
+data2plot <- bind_rows('RW(1)'=data.rw1,
+                       'AR(1)'=data.ar1,
+                       '1d Matern'=data.spde, .id='Model')
+plot.curves <-
+    ggplot(data2plot, aes(x=x, y=y, color=Model))+
+    geom_vline(xintercept=31, linetype='dashed')+
+    geom_ribbon(aes(ymin=f.lb, ymax=f.ub, fill=Model),
+                alpha=0.15, fill='#8A8D8F', size=1.25, linetype='dashed')+
+    geom_line(aes(y=f.hat), size=2)+
+    scale_fill_manual(values=c('#EF426F','#00B2A9', '#FF8200'),
+                      aesthetics='color')+
+    geom_point(aes(y=y), color='black', size=2)+
+    theme_minimal()+
+    theme(legend.position='bottom',
+          legend.title=element_text(size=12),
+          legend.text=element_text(size=12, face='bold'), 
+          axis.title.x=element_text(
+              size=11, 
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
+          axis.text.x=element_text(size=10), 
+          axis.title.y=element_text(
+              size=11, 
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
+          axis.text.y=element_text(size=10),
+          plot.caption=element_text(size=11))+
+    labs(x='Days', y='Count', caption='With 1 week ahead prediction')
 plot.bars <-
     ggplot(as.data.frame(data.inla), aes(x=y))+
     geom_bar(color='black', fill='white')+
@@ -127,10 +115,7 @@ plot.bars <-
           axis.ticks.y=element_blank(), 
           plot.title=element_text(size=12, face='bold')
           )
-plot.rw1+plot.ar1+plot.spde+plot.bars+
-    plot_layout(ncol=2)+
-    plot_annotation(caption='Gray shadow: 1 week ahead prediction')&
-    theme(plot.caption=element_text(size=11))
+plot.curves+plot.bars+plot_layout(widths=c(2, 1))
 ```
 
 ```{r}

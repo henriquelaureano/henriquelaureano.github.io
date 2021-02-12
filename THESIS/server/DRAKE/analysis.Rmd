@@ -9,87 +9,64 @@ output:
     code_folding: show
 ---
 
-## source
-
-```{r}
+```{r loading}
 source('functions.R')
-```
-
 ## install.packages('pacman')
-
-```{r}
-pacman::p_load(Matrix, mvtnorm, mc2d, furrr, crayon, clisymbols, TMB,
-               tictoc)
-```
-
-## overall defs
-
-```{r}
+pacman::p_load(Matrix, mvtnorm, mc2d, furrr, TMB, tictoc)
 future::plan(multicore);TMB::openmp(11)
 
 J <- 3e4
 Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
-R <- matrix(0, nrow=J, ncol=2)
-
-beta <- c(-4, -3.5)
-Sigma <- matrix(c(1.0, 0.25,
-                  0.25, 0.5), nrow=2, ncol=2)
+U <- matrix(0, nrow=J, ncol=2)
 ```
 
-## data
+## easy data
 
-```{r cache=TRUE}
-y <- datasimu(
-    J=J, beta=beta, Sigma=Sigma
+```{r easy_data}
+beta.easy <- c(1, 0.75) ## what makes it easy is the beta's choice
+Sigma.0 <- matrix(c(1.0, 0.25, 0.25, 0.5), nrow=2, ncol=2)
+## ch0l(Sigma.0) ## checking it positive-definiteness
+set.seed(1237)
+y.0 <- datasimu(
+    J=J, beta=beta.easy, Sigma=Sigma.0
 )
-prop.table(colSums(y))
+prop.table(colSums(y.0))
 ```
 
-## model
+## model 0
 
-```{r}
+```{r m0,cache=TRUE,error=TRUE}
 dll <- 'GLMM';TMB::compile(paste0(dll, '.cpp'))
 
-## the true ones
-tt <- c(
-    beta1=-4, beta2=-3.5,
-    logs2.1=log(1), logs2.2=log(0.5),
-    rhoZ=atanh( 0.25/(sqrt(1)*sqrt(0.5)) )
-)
-```
-
-> eval.max=1e3 (default 200) and iter.max=500 (default 150), with
-> logs2=0=rhoZ resulted in very bad variance estimates -> it took 15min
-
-```{r cache=TRUE}
 checkDLL(dll)
-obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=0,
-                                      beta2=0,
-                                      logs2=c(log(0.1), log(0.1)),
-                                      rhoZ=atanh(0.1),
-                                      R=R),
-                      DLL=dll,
-                      random='R', hessian=TRUE, silent=TRUE)
+obj0 <- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
+                       parameters=list(
+                           beta1=0,
+                           beta2=0,
+                           logs2=c(log(0.1), log(0.1)),
+                           rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                           U=U),
+                       DLL=dll,
+                       random='U', hessia=TRUE, silent=TRUE)
 tictoc::tic()
-opt <- nlminb(obj$par,
-              obj$fn,
-              obj$gr)
+opt0 <- nlminb(obj0$par,
+               obj0$fn,
+               obj0$gr)
 tictoc::toc()
 ```
 
-```{r cache=TRUE}
+```{r m0_sdr,cache=TRUE,error=TRUE}
 tictoc::tic()
-sdr <- sdreport(obj)
+sdr0 <- sdreport(obj0)
 tictoc::toc()
 ```
 
-```{r cache=TRUE}
-opt
-summary(sdr, select='fixed')
-summary(sdr, select='report')
-obj$report()
-nrow(summary(sdr, select='random'))
+```{r m0_results,cache=TRUE,error=TRUE}
+opt0
+summary(sdr0, select='fixed')
+summary(sdr0, select='report')
+obj0$report()
+nrow(summary(sdr0, select='random'))
 cbind(
     1:20,
     summary(sdr, select='random')[1:20, ], 

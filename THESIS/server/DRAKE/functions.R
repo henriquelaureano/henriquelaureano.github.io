@@ -52,7 +52,7 @@ checkDLL <- function(dll)
 {
     if (!dll%in%names(getLoadedDLLs()))
     {
-        cat(crayon::blue(clisymbols::symbol$star), 'Loading DLL\n')
+        cat('Loading DLL\n')
         dyn.load(TMB::dynlib(dll))
         invisible(TMB::config(tape.parallel=FALSE, DLL=dll))
     }

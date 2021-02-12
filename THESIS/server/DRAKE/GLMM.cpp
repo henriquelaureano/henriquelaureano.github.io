@@ -18,13 +18,13 @@ Type objective_function<Type>::operator() ()
   PARAMETER(beta1);
   PARAMETER(beta2);
 
-  PARAMETER_MATRIX(R);
+  PARAMETER_MATRIX(U);
   
   PARAMETER_VECTOR(logs2); vector<Type> s2=exp(logs2);
 
   PARAMETER(rhoZ); Type rho=(exp(2*rhoZ)-1)/(exp(2*rhoZ)+1);
   
-  matrix<Type> LE=Z*R;
+  matrix<Type> LE=Z*U;
   
   vector<Type> risk1=exp(beta1 + LE.col(0).array());
   vector<Type> risk2=exp(beta2 + LE.col(1).array());
@@ -55,12 +55,8 @@ Type objective_function<Type>::operator() ()
   for (int i=0; i<Y.rows(); i++) {
     y=Y.row(i);
     prob=ps.row(i);
-    nll -= dmultinom(y, prob, true);
+    nll -= dmultinom(y, prob, true) - MVNORM(Sigma)(LE.row(i));
   }
-  for (int i=0; i<R.rows(); i++) {
-    nll += 2*MVNORM(Sigma)(R.row(i));
-  }
-
   ADREPORT(s2);
   ADREPORT(rho);
   REPORT(Sigma);

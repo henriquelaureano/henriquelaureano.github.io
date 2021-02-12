@@ -1592,148 +1592,81 @@ div.tocify {
 
 <h1 class="title toc-ignore">A standard multinomial GLMM with random correlated intercepts</h1>
 <h4 class="author">Henrique Laureano (.github.io)</h4>
-<h4 class="date"><em>Last modification on</em> 2021-02-10 23:02:42</h4>
+<h4 class="date"><em>Last modification on</em> 2021-02-11 22:21:22</h4>
 
 </div>
 
 
-<div id="source" class="section level2">
-<h2>source</h2>
-<pre class="r"><code>source(&#39;functions.R&#39;)</code></pre>
-</div>
-<div id="install.packagespacman" class="section level2">
-<h2>install.packages(‘pacman’)</h2>
-<pre class="r"><code>pacman::p_load(Matrix, mvtnorm, mc2d, furrr, crayon, clisymbols, TMB,
-               tictoc)</code></pre>
-</div>
-<div id="overall-defs" class="section level2">
-<h2>overall defs</h2>
-<pre class="r"><code>future::plan(multicore);TMB::openmp(11)</code></pre>
+<pre class="r"><code>source(&#39;functions.R&#39;)
+## install.packages(&#39;pacman&#39;)
+pacman::p_load(Matrix, mvtnorm, mc2d, furrr, TMB, tictoc)
+future::plan(multicore);TMB::openmp(11)</code></pre>
 <pre><code>## [1] 11</code></pre>
 <pre class="r"><code>J &lt;- 3e4
 Z &lt;- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
-R &lt;- matrix(0, nrow=J, ncol=2)
+U &lt;- matrix(0, nrow=J, ncol=2)</code></pre>
+<div id="easy-data" class="section level2">
+<h2>easy data</h2>
+<pre class="r"><code>beta.easy &lt;- c(2, 1.5) ## what makes it easy is the beta&#39;s choice
 
-beta &lt;- c(-4, -3.5)
-Sigma &lt;- matrix(c(1.0, 0.25,
-                  0.25, 0.5), nrow=2, ncol=2)</code></pre>
-</div>
-<div id="data" class="section level2">
-<h2>data</h2>
-<pre class="r"><code>y &lt;- datasimu(
-    J=J, beta=beta, Sigma=Sigma
+Sigma.0 &lt;- matrix(c(1.0, 0.25, 0.25, 0.5), nrow=2, ncol=2)
+## ch0l(Sigma.0) ## checking it positive-definiteness
+
+set.seed(1237)
+y.0 &lt;- datasimu(
+    J=J, beta=beta.easy, Sigma=Sigma.0
 )
-prop.table(colSums(y))</code></pre>
+prop.table(colSums(y.0))</code></pre>
 <pre><code>##         y1         y2         y3 
-## 0.02783333 0.03568333 0.93648333</code></pre>
+## 0.55456667 0.35950000 0.08593333</code></pre>
 </div>
-<div id="model" class="section level2">
-<h2>model</h2>
+<div id="model-0" class="section level2">
+<h2>model 0</h2>
 <pre class="r"><code>dll &lt;- &#39;GLMM&#39;;TMB::compile(paste0(dll, &#39;.cpp&#39;))</code></pre>
 <pre><code>## [1] 0</code></pre>
-<pre class="r"><code>## the true ones
-tt &lt;- c(
-    beta1=-4, beta2=-3.5,
-    logs2.1=log(1), logs2.2=log(0.5),
-    rhoZ=atanh( 0.25/(sqrt(1)*sqrt(0.5)) )
-)</code></pre>
-<blockquote>
-<p>eval.max=1e3 (default 200) and iter.max=500 (default 150), with logs2=0=rhoZ resulted in very bad variance estimates -&gt; it took 15min</p>
-</blockquote>
 <pre class="r"><code>checkDLL(dll)
-obj &lt;- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=0,
-                                      beta2=0,
-                                      logs2=c(log(0.1), log(0.1)),
-                                      rhoZ=atanh(0.1),
-                                      R=R),
-                      DLL=dll,
-                      random=&#39;R&#39;, hessian=TRUE, silent=TRUE)
+obj0 &lt;- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
+                       parameters=list(
+                           beta1=0,
+                           beta2=0,
+                           logs2=c(log(0.1), log(0.1)),
+                           rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                           U=U),
+                       DLL=dll,
+                       random=&#39;U&#39;, hessia=TRUE, silent=TRUE)
 tictoc::tic()
-opt &lt;- nlminb(obj$par,
-              obj$fn,
-              obj$gr)</code></pre>
-<pre><code>## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+opt0 &lt;- nlminb(obj0$par,
+               obj0$fn,
+               obj0$gr)</code></pre>
+<pre><code>## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
 
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 890.25 sec elapsed</code></pre>
+<pre><code>## 1697.309 sec elapsed</code></pre>
 <pre class="r"><code>tictoc::tic()
-sdr &lt;- sdreport(obj)</code></pre>
-<pre><code>## Warning in sqrt(diag(cov)): NaNs produced</code></pre>
+sdr0 &lt;- sdreport(obj0)</code></pre>
+<pre><code>## Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 5</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 122.094 sec elapsed</code></pre>
-<pre class="r"><code>opt</code></pre>
-<pre><code>## $par
-##      beta1      beta2      logs2      logs2       rhoZ 
-##  -4.357575  -4.047700 -14.242790 -14.241525  15.298555 
-## 
-## $objective
-## [1] -771822.3
-## 
-## $convergence
-## [1] 1
-## 
-## $iterations
-## [1] 9
-## 
-## $evaluations
-## function gradient 
-##       49        9 
-## 
-## $message
-## [1] &quot;false convergence (8)&quot;</code></pre>
-<pre class="r"><code>summary(sdr, select=&#39;fixed&#39;)</code></pre>
-<pre><code>## Warning in sqrt(diag(object$cov.fixed)): NaNs produced</code></pre>
-<pre><code>##         Estimate Std. Error
-## beta1  -4.357575 0.01446506
-## beta2  -4.047700 0.02925982
-## logs2 -14.242790        NaN
-## logs2 -14.241525        NaN
-## rhoZ   15.298555        NaN</code></pre>
-<pre class="r"><code>summary(sdr, select=&#39;report&#39;)</code></pre>
-<pre><code>##         Estimate Std. Error
-## s2  6.522810e-07        NaN
-## s2  6.531071e-07        NaN
-## rho 1.000000e+00        NaN</code></pre>
-<pre class="r"><code>obj$report()</code></pre>
+<pre><code>## 279.907 sec elapsed</code></pre>
+<pre class="r"><code>opt0</code></pre>
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;opt0&#39; not found</code></pre>
+<pre class="r"><code>summary(sdr0, select=&#39;fixed&#39;)</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr0&#39; not found</code></pre>
+<pre class="r"><code>summary(sdr0, select=&#39;report&#39;)</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr0&#39; not found</code></pre>
+<pre class="r"><code>obj0$report()</code></pre>
 <pre><code>## $Sigma
 ##              [,1]         [,2]
-## [1,] 6.522810e-07 6.526939e-07
-## [2,] 6.526939e-07 6.531071e-07</code></pre>
-<pre class="r"><code>nrow(summary(sdr, select=&#39;random&#39;))</code></pre>
-<pre><code>## Warning in sqrt(as.numeric(object$diag.cov.random)): NaNs produced</code></pre>
-<pre><code>## [1] 60000</code></pre>
+## [1,] 7.408941e-13 8.280288e-17
+## [2,] 8.280288e-17 9.254112e-21</code></pre>
+<pre class="r"><code>nrow(summary(sdr0, select=&#39;random&#39;))</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr0&#39; not found</code></pre>
 <pre class="r"><code>cbind(
     1:20,
     summary(sdr, select=&#39;random&#39;)[1:20, ], 
     summary(sdr, select=&#39;random&#39;)[30001:30020, ]
 )</code></pre>
-<pre><code>## Warning in sqrt(as.numeric(object$diag.cov.random)): NaNs produced</code></pre>
-<pre><code>## Warning in sqrt(as.numeric(object$diag.cov.random)): NaNs produced</code></pre>
-<pre><code>##           Estimate   Std. Error      Estimate   Std. Error
-## R  1 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R  2 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R  3 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R  4 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R  5  3.073498e-07          NaN  3.075444e-07          NaN
-## R  6 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R  7 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R  8 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R  9 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R 10 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R 11 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R 12 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R 13 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R 14 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R 15 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R 16 -1.919324e-08 0.0004958223 -1.920539e-08 0.0004961362
-## R 17  3.073644e-07          NaN  3.075590e-07          NaN
-## R 18 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R 19 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330
-## R 20 -1.919361e-08 0.0004958191 -1.920576e-08 0.0004961330</code></pre>
+<pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr&#39; not found</code></pre>
 </div>
 
 
