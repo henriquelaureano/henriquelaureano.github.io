@@ -1592,7 +1592,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">A standard multinomial GLMM with random correlated intercepts</h1>
 <h4 class="author">Henrique Laureano (.github.io)</h4>
-<h4 class="date"><em>Last modification on</em> 2021-02-11 22:21:22</h4>
+<h4 class="date"><em>Last modification on</em> 2021-02-12 09:14:23</h4>
 
 </div>
 
@@ -1607,25 +1607,24 @@ Z &lt;- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
 U &lt;- matrix(0, nrow=J, ncol=2)</code></pre>
 <div id="easy-data" class="section level2">
 <h2>easy data</h2>
-<pre class="r"><code>beta.easy &lt;- c(2, 1.5) ## what makes it easy is the beta&#39;s choice
-
+<pre class="r"><code>beta.easy &lt;- c(1, 0.75) ## what makes it easy is the beta&#39;s choice
 Sigma.0 &lt;- matrix(c(1.0, 0.25, 0.25, 0.5), nrow=2, ncol=2)
 ## ch0l(Sigma.0) ## checking it positive-definiteness
-
 set.seed(1237)
 y.0 &lt;- datasimu(
     J=J, beta=beta.easy, Sigma=Sigma.0
 )
 prop.table(colSums(y.0))</code></pre>
-<pre><code>##         y1         y2         y3 
-## 0.55456667 0.35950000 0.08593333</code></pre>
+<pre><code>##        y1        y2        y3 
+## 0.4624667 0.3589167 0.1786167</code></pre>
 </div>
 <div id="model-0" class="section level2">
 <h2>model 0</h2>
 <pre class="r"><code>dll &lt;- &#39;GLMM&#39;;TMB::compile(paste0(dll, &#39;.cpp&#39;))</code></pre>
 <pre><code>## [1] 0</code></pre>
-<pre class="r"><code>checkDLL(dll)
-obj0 &lt;- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
+<pre class="r"><code>checkDLL(dll)</code></pre>
+<pre><code>## Loading DLL</code></pre>
+<pre class="r"><code>obj0 &lt;- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
                        parameters=list(
                            beta1=0,
                            beta2=0,
@@ -1640,16 +1639,56 @@ opt0 &lt;- nlminb(obj0$par,
                obj0$gr)</code></pre>
 <pre><code>## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
 
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation
+
 ## Warning in nlminb(obj0$par, obj0$fn, obj0$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 1697.309 sec elapsed</code></pre>
+<pre><code>## 2400.298 sec elapsed</code></pre>
 <pre class="r"><code>tictoc::tic()
 sdr0 &lt;- sdreport(obj0)</code></pre>
 <pre><code>## Error in optimHess(par.fixed, obj$fn, obj$gr): gradient in optim evaluated to length 1 not 5</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 279.907 sec elapsed</code></pre>
+<pre><code>## 315.362 sec elapsed</code></pre>
 <pre class="r"><code>opt0</code></pre>
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;opt0&#39; not found</code></pre>
+<pre><code>## $par
+##     beta1     beta2     logs2     logs2      rhoZ 
+##  18.07272   3.58090 -37.67673 -37.89143  35.74389 
+## 
+## $objective
+## [1] -2121401
+## 
+## $convergence
+## [1] 1
+## 
+## $iterations
+## [1] 2
+## 
+## $evaluations
+## function gradient 
+##       25        2 
+## 
+## $message
+## [1] &quot;false convergence (8)&quot;</code></pre>
 <pre class="r"><code>summary(sdr0, select=&#39;fixed&#39;)</code></pre>
 <pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr0&#39; not found</code></pre>
 <pre class="r"><code>summary(sdr0, select=&#39;report&#39;)</code></pre>
@@ -1657,8 +1696,8 @@ sdr0 &lt;- sdreport(obj0)</code></pre>
 <pre class="r"><code>obj0$report()</code></pre>
 <pre><code>## $Sigma
 ##              [,1]         [,2]
-## [1,] 7.408941e-13 8.280288e-17
-## [2,] 8.280288e-17 9.254112e-21</code></pre>
+## [1,] 4.341502e-17 3.897637e-17
+## [2,] 3.897637e-17 3.499151e-17</code></pre>
 <pre class="r"><code>nrow(summary(sdr0, select=&#39;random&#39;))</code></pre>
 <pre><code>## Error in h(simpleError(msg, call)): error in evaluating the argument &#39;object&#39; in selecting a method for function &#39;summary&#39;: object &#39;sdr0&#39; not found</code></pre>
 <pre class="r"><code>cbind(

@@ -35,6 +35,13 @@ prop.table(colSums(y.0))
 
 ## model 0
 
+> even with an "easy" dataset, i.e. with a good occurrence frequency in
+> all multinomial classes, the model doesn't converge well - in this
+> first moment I need to be able to get the "random" components in
+> "sdreport()". Initial guesses at zero don't work well, so let's start
+> with a GLM. If it is difficult now imagine later...
+
+
 ```{r m0,cache=TRUE,error=TRUE}
 dll <- 'GLMM';TMB::compile(paste0(dll, '.cpp'))
 
@@ -69,7 +76,46 @@ obj0$report()
 nrow(summary(sdr0, select='random'))
 cbind(
     1:20,
-    summary(sdr, select='random')[1:20, ], 
-    summary(sdr, select='random')[30001:30020, ]
+    summary(sdr0, select='random')[1:20, ], 
+    summary(sdr0, select='random')[30001:30020, ]
+)
+```
+
+```{r v2m0,cache=TRUE,error=TRUE}
+v2dll <- 'v2GLMM';TMB::compile(paste0(v2dll, '.cpp'))
+
+checkDLL(v2dll)
+v2obj0 <- TMB::MakeADFun(data=list(Y=y.0, Z=Z),
+                         parameters=list(
+                             beta1=0,
+                             beta2=0,
+                             logs2=c(log(0.1), log(0.1)),
+                             rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                             U=U),
+                         DLL=v2dll,
+                         random='U', hessia=TRUE, silent=TRUE)
+tictoc::tic()
+v2opt0 <- nlminb(v2obj0$par,
+                 v2obj0$fn,
+                 v2obj0$gr)
+tictoc::toc()
+```
+
+```{r v2m0_sdr,cache=TRUE,error=TRUE}
+tictoc::tic()
+v2sdr0 <- sdreport(v2obj0)
+tictoc::toc()
+```
+
+```{r v2m0_results,cache=TRUE,error=TRUE}
+v2opt0
+summary(v2sdr0, select='fixed')
+summary(v2sdr0, select='report')
+v2obj0$report()
+nrow(summary(v2sdr0, select='random'))
+cbind(
+    1:20,
+    summary(v2sdr0, select='random')[1:20, ], 
+    summary(v2sdr0, select='random')[30001:30020, ]
 )
 ```
