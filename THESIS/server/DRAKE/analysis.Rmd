@@ -12,7 +12,7 @@ output:
 ```{r loading}
 source('functions.R')
 ## install.packages('pacman')
-pacman::p_load(Matrix, mvtnorm, mc2d, furrr, TMB, tictoc)
+pacman::p_load(Matrix, mvtnorm, mc2d, furrr, TMB, tictoc, tidyverse)
 future::plan(multicore);TMB::openmp(11)
 
 J <- 3e4
@@ -129,4 +129,56 @@ cbind(
     summary(v2sdr0, select='random')[1:20, ], 
     summary(v2sdr0, select='random')[30001:30020, ]
 )
+```
+
+```{r fig.height=3.5}
+dat <- tibble(
+    value=summary(sdr0, select='random')[, 1],
+    label=c(rep('u1', 3e4), rep('u2', 3e4))
+)
+dat%>%group_by(label)%>%summarise(mean=mean(value),
+                                  min=min(value), 
+                                  q025=quantile(value, probs=0.025),
+                                  q50=quantile(value, probs=0.5),
+                                  q975=quantile(value, probs=0.975),
+                                  max=max(value))
+ggplot(dat, aes(x=value))+geom_histogram()+facet_wrap(~label)
+dat <- tibble(
+    value=summary(v2sdr0, select='random')[, 1],
+    label=c(rep('u1', 3e4), rep('u2', 3e4))
+)
+dat%>%group_by(label)%>%summarise(mean=mean(value),
+                                  min=min(value), 
+                                  q025=quantile(value, probs=0.025),
+                                  q50=quantile(value, probs=0.5),
+                                  q975=quantile(value, probs=0.975),
+                                  max=max(value))
+ggplot(dat, aes(x=value))+geom_histogram()+facet_wrap(~label)
+```
+
+## model 1
+
+> let's generate 5 datasets from the same distributional scenario and
+> see how the estimates vary
+
+```{r five_data,cache=TRUE}
+ys.5 <- future_datasimu(J=J, n=5, beta=beta.easy, Sigma=Sigma.0)
+prop.table(colSums(ys.5[[1]]))
+prop.table(colSums(ys.5[[2]]))
+prop.table(colSums(ys.5[[3]]))
+prop.table(colSums(ys.5[[4]]))
+prop.table(colSums(ys.5[[5]]))
+```
+
+```{r}
+
+```
+
+```{r five_fits}
+GLMMfit(dll=v2dll, y=ys.5[[1]], Z=Z,
+        pars=list(beta1=glm0.opt$par['beta1'],
+                  beta2=glm0.opt$par['beta2'],
+                  logs2=c(log(0.1), log(0.1)),
+                  rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                  U=U))
 ```

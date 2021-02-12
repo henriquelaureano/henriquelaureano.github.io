@@ -64,11 +64,14 @@ GLMMfit <- function(dll, y, Z, pars)
     obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
                           parameters=pars,
                           DLL=dll,
-                          random='R', hessian=TRUE, silent=TRUE)
-    opt <- nlminb(obj$par,
-                  obj$fn,
-                  obj$gr, control=list(eval.max=1000))
-    return(opt)
+                          random='U', hessian=TRUE, silent=TRUE)
+    out <- NULL
+    opt <- try(
+        nlminb(obj$par, obj$fn, obj$gr), silent=TRUE
+    )
+    if (class(opt) != 'try-error') out <- opt
+    
+    return(out)
 }
 
 dllOut <- function(optObj, comp2)
