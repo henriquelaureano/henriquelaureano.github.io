@@ -170,15 +170,50 @@ prop.table(colSums(ys.5[[4]]))
 prop.table(colSums(ys.5[[5]]))
 ```
 
-```{r}
-
+```{r five_guess}
+guess5 <- getguess(dll=glm.dll,
+                   y=ys.5, beta=c(beta1=beta.easy[1], beta2=beta.easy[2]))
 ```
 
-```{r five_fits}
-GLMMfit(dll=v2dll, y=ys.5[[1]], Z=Z,
-        pars=list(beta1=glm0.opt$par['beta1'],
-                  beta2=glm0.opt$par['beta2'],
-                  logs2=c(log(0.1), log(0.1)),
-                  rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
-                  U=U))
+```{r five_fit,cache=TRUE,error=TRUE}
+tictoc::tic()
+m1.1 <- GLMMfit(dll=v2dll, y=ys.5[[1]], Z=Z,
+                pars=list(beta1=guess5[1, 'beta1'],
+                          beta2=guess5[1, 'beta2'],
+                          logs2=c(log(0.1), log(0.1)),
+                          rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                          U=U))
+tictoc::toc()
+tictoc::tic()
+m1.2 <- GLMMfit(dll=v2dll, y=ys.5[[2]], Z=Z,
+                pars=list(beta1=guess5[2, 'beta1'],
+                          beta2=guess5[2, 'beta2'],
+                          logs2=c(log(0.1), log(0.1)),
+                          rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                          U=U))
+tictoc::toc()
+tictoc::tic()
+m1.3 <- GLMMfit(dll=v2dll, y=ys.5[[3]], Z=Z,
+                pars=list(beta1=guess5[3, 'beta1'],
+                          beta2=guess5[3, 'beta2'],
+                          logs2=c(log(0.1), log(0.1)),
+                          rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                          U=U))
+tictoc::toc()
+tictoc::tic()
+m1.4 <- GLMMfit(dll=v2dll, y=ys.5[[4]], Z=Z,
+                pars=list(beta1=guess5[4, 'beta1'],
+                          beta2=guess5[4, 'beta2'],
+                          logs2=c(log(0.1), log(0.1)),
+                          rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                          U=U))
+tictoc::toc()
+tictoc::tic()
+m1.5 <- GLMMfit(dll=v2dll, y=ys.5[[5]], Z=Z,
+                pars=list(beta1=guess5[5, 'beta1'],
+                          beta2=guess5[5, 'beta2'],
+                          logs2=c(log(0.1), log(0.1)),
+                          rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                          U=U))
+tictoc::toc()
 ```

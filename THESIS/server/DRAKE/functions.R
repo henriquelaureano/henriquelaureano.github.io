@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-08 · Curitiba/PR/Brazil
+##                                      2021-fev-13 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ps <- function(J, beta, Sigma=NULL)
@@ -56,6 +56,32 @@ checkDLL <- function(dll)
         dyn.load(TMB::dynlib(dll))
         invisible(TMB::config(tape.parallel=FALSE, DLL=dll))
     }
+}
+
+getguess <- function(dll, y, beta)
+{
+    if (names(beta)[1] != 'beta1' | names(beta)[2] != 'beta2')
+        stop('Check beta names')
+
+    n <- length(y)
+
+    out <- matrix(NA, nrow=n, ncol=length(beta))
+    colnames(out) <- names(beta)
+    
+    for (i in seq(n))
+    {
+        checkDLL(dll)
+        obj <- TMB::MakeADFun(data=list(Y=y[[i]]),
+                              parameters=list(beta1=beta['beta1'],
+                                              beta2=beta['beta2']),
+                              DLL=dll,
+                              hessian=TRUE, silent=TRUE)
+        
+        opt <- nlminb(obj$par, obj$fn, obj$gr)
+
+        out[i, ] <- opt$par
+    }
+    return(out)
 }
 
 GLMMfit <- function(dll, y, Z, pars)
