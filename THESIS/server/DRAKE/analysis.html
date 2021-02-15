@@ -1592,7 +1592,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">A standard multinomial GLMM with random correlated intercepts</h1>
 <h4 class="author">Henrique Laureano (.github.io)</h4>
-<h4 class="date"><em>Last modification on</em> 2021-02-13 02:26:02</h4>
+<h4 class="date"><em>Last modification on</em> 2021-02-14 12:09:33</h4>
 
 </div>
 
@@ -1965,6 +1965,14 @@ m1.5 &lt;- GLMMfit(dll=v2dll, y=ys.5[[5]], Z=Z,
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
 <pre><code>## 1095.483 sec elapsed</code></pre>
+<pre class="r"><code>matrix(c(with(m1.1, c(par, objective, convergence)), 
+         with(m1.4, c(par, objective, convergence)), 
+         with(m1.5, c(par, objective, convergence))), nrow=3, byrow=TRUE,
+       dimnames=list(c(&#39;1&#39;, &#39;4&#39;, &#39;5&#39;), c(names(m1.1$par), &#39;fn&#39;, &#39;conv&#39;)))</code></pre>
+<pre><code>##       beta1     beta2      logs2      logs2     rhoZ        fn conv
+## 1 0.9372350 0.7541014 -17.122894  -8.541636 12.34848 -596755.9    1
+## 4 0.9293770 0.7292198 -18.393254  -7.292580 12.36640 -597555.8    1
+## 5 0.9338835 0.7290870  -7.779218 -17.637013 12.09725 -585440.0    1</code></pre>
 </div>
 
 

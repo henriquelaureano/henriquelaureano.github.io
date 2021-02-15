@@ -217,3 +217,10 @@ m1.5 <- GLMMfit(dll=v2dll, y=ys.5[[5]], Z=Z,
                           U=U))
 tictoc::toc()
 ```
+
+```{r}
+matrix(c(with(m1.1, c(par, objective, convergence)), 
+         with(m1.4, c(par, objective, convergence)), 
+         with(m1.5, c(par, objective, convergence))), nrow=3, byrow=TRUE,
+       dimnames=list(c('1', '4', '5'), c(names(m1.1$par), 'fn', 'conv')))
+```
