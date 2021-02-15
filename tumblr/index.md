@@ -79,3 +79,8 @@
 <img src='broshanging.jpg'>
 <img src='seekprog.jpg'>
 <img src='chil.gif'>
+<img src='books.jpg'>
+<img src='croissant.jpg'>
+<img src='cafele.jpg'>
+<img src='threedogos.jpg'>
+<img src='deserto.jpg'>

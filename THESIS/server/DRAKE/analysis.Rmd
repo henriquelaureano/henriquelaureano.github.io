@@ -221,6 +221,63 @@ tictoc::toc()
 ```{r}
 matrix(c(with(m1.1, c(par, objective, convergence)), 
          with(m1.4, c(par, objective, convergence)), 
-         with(m1.5, c(par, objective, convergence))), nrow=3, byrow=TRUE,
-       dimnames=list(c('1', '4', '5'), c(names(m1.1$par), 'fn', 'conv')))
+         with(m1.5, c(par, objective, convergence)),
+         beta.easy, log(diag(Sigma.0)),
+         atanh( Sigma.0[1, 2]/prod(sqrt(diag(Sigma.0))) ), NaN, NaN),
+       nrow=4, byrow=TRUE,
+       dimnames=list(c('1', '4', '5', 'true'),
+                     c(names(m1.1$par), 'fn', 'conv')))
+```
+
+## model 2
+
+> let's get even simpler, just a common variance
+
+```{r jvv2_data,error=TRUE,cache=TRUE}
+ys.jvv2 <- future_datasimu(J=J, n=5, beta=beta.easy, Sigma=diag(2))
+```
+
+```{r jvv2_guess}
+guess.jvv2 <- getguess(dll=glm.dll,
+                       y=ys.jvv2, beta=c(beta1=beta.easy[1],
+                                         beta2=beta.easy[2]))
+```
+
+```{r jvv2_fit,error=TRUE,cache=TRUE}
+jvv2 <- 'jvv2GLMM';TMB::compile(paste0(jvv2, '.cpp'))
+tictoc::tic()
+jvv2.1 <- GLMMfit(dll=jvv2, y=ys.jvv2[[1]], Z=Z,
+                  pars=list(beta1=guess.jvv2[1, 'beta1'],
+                            beta2=guess.jvv2[1, 'beta2'],
+                            logs2=log(0.1),
+                            U=U))
+tictoc::toc()
+tictoc::tic()
+jvv2.2 <- GLMMfit(dll=jvv2, y=ys.jvv2[[2]], Z=Z,
+                  pars=list(beta1=guess.jvv2[2, 'beta1'],
+                            beta2=guess.jvv2[2, 'beta2'],
+                            logs2=log(0.1),
+                            U=U))
+tictoc::toc()
+tictoc::tic()
+jvv2.3 <- GLMMfit(dll=jvv2, y=ys.jvv2[[3]], Z=Z,
+                  pars=list(beta1=guess.jvv2[3, 'beta1'],
+                            beta2=guess.jvv2[3, 'beta2'],
+                            logs2=log(0.1),
+                            U=U))
+tictoc::toc()
+tictoc::tic()
+jvv2.4 <- GLMMfit(dll=jvv2, y=ys.jvv2[[4]], Z=Z,
+                  pars=list(beta1=guess.jvv2[4, 'beta1'],
+                            beta2=guess.jvv2[4, 'beta2'],
+                            logs2=log(0.1),
+                            U=U))
+tictoc::toc()
+tictoc::tic()
+jvv2.5 <- GLMMfit(dll=jvv2, y=ys.jvv2[[5]], Z=Z,
+                  pars=list(beta1=guess.jvv2[5, 'beta1'],
+                            beta2=guess.jvv2[5, 'beta2'],
+                            logs2=log(0.1),
+                            U=U))
+tictoc::toc()
 ```
