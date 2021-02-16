@@ -231,20 +231,22 @@ matrix(c(with(m1.1, c(par, objective, convergence)),
 
 ## model 2
 
-> let's get even simpler, just a common variance
+> let's get even simpler, just a common variance. I tried an identity
+> matrix - all optimization failed
 
 ```{r jvv2_data,error=TRUE,cache=TRUE}
-ys.jvv2 <- future_datasimu(J=J, n=5, beta=beta.easy, Sigma=diag(2))
+ys.jvv2 <- future_datasimu(J=J, n=5, beta=beta.easy,
+                           Sigma=matrix(c(0.5, 0, 0, 0.5), nrow=2))
 ```
 
 ```{r jvv2_guess}
-guess.jvv2 <- getguess(dll=glm.dll,
-                       y=ys.jvv2, beta=c(beta1=beta.easy[1],
-                                         beta2=beta.easy[2]))
+## doesn't matter the initial guess, it's *always* works
+guess.jvv2 <- getguess(dll=glm.dll, y=ys.jvv2, beta=c(beta1=0, beta2=0))
 ```
 
 ```{r jvv2_fit,error=TRUE,cache=TRUE}
 jvv2 <- 'jvv2GLMM';TMB::compile(paste0(jvv2, '.cpp'))
+
 tictoc::tic()
 jvv2.1 <- GLMMfit(dll=jvv2, y=ys.jvv2[[1]], Z=Z,
                   pars=list(beta1=guess.jvv2[1, 'beta1'],
@@ -280,4 +282,90 @@ jvv2.5 <- GLMMfit(dll=jvv2, y=ys.jvv2[[5]], Z=Z,
                             logs2=log(0.1),
                             U=U))
 tictoc::toc()
+```
+
+> all failed
+
+```{r}
+jvv2.1
+jvv2.2
+jvv2.3
+jvv2.4
+jvv2.5
+```
+
+## model 3
+
+```{r mcie2_data,cache=TRUE,error=TRUE}
+beta.mcie <- c(beta1=0.85, beta2=1.25)
+Sigma.mcie <- matrix(c(0.2, -0.25,
+                       -0.25, 0.4), nrow=2)
+ys.mcie2 <- future_datasimu(J=J, n=5, beta=beta.mcie, Sigma=Sigma.mcie)
+prop.table(colSums(ys.mcie2[[1]]))
+prop.table(colSums(ys.mcie2[[2]]))
+prop.table(colSums(ys.mcie2[[3]]))
+prop.table(colSums(ys.mcie2[[4]]))
+prop.table(colSums(ys.mcie2[[5]]))
+```
+
+```{r mcie2_guess}
+guess.mcie2 <- getguess(dll=glm.dll,
+                        y=ys.mcie2, beta=c(beta1=0, beta2=0))
+```
+
+```{r mcie2_fit,cache=TRUE,error=TRUE}
+tictoc::tic()
+mcie2.1 <- GLMMfit(dll=v2dll, y=ys.mcie2[[1]], Z=Z,
+                   pars=list(beta1=guess.mcie2[1, 'beta1'],
+                             beta2=guess.mcie2[1, 'beta2'],
+                             logs2=c(log(0.1), log(0.1)),
+                             rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                             U=U))
+tictoc::toc()
+tictoc::tic()
+mcie2.2 <- GLMMfit(dll=v2dll, y=ys.mcie2[[2]], Z=Z,
+                   pars=list(beta1=guess.mcie2[2, 'beta1'],
+                             beta2=guess.mcie2[2, 'beta2'],
+                             logs2=c(log(0.1), log(0.1)),
+                             rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                             U=U))
+tictoc::toc()
+tictoc::tic()
+mcie2.3 <- GLMMfit(dll=v2dll, y=ys.mcie2[[3]], Z=Z,
+                   pars=list(beta1=guess.mcie2[3, 'beta1'],
+                             beta2=guess.mcie2[3, 'beta2'],
+                             logs2=c(log(0.1), log(0.1)),
+                             rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                             U=U))
+tictoc::toc()
+tictoc::tic()
+mcie2.4 <- GLMMfit(dll=v2dll, y=ys.mcie2[[4]], Z=Z,
+                   pars=list(beta1=guess.mcie2[4, 'beta1'],
+                             beta2=guess.mcie2[4, 'beta2'],
+                             logs2=c(log(0.1), log(0.1)),
+                             rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                             U=U))
+tictoc::toc()
+tictoc::tic()
+mcie2.5 <- GLMMfit(dll=v2dll, y=ys.mcie2[[5]], Z=Z,
+                   pars=list(beta1=guess.mcie2[5, 'beta1'],
+                             beta2=guess.mcie2[5, 'beta2'],
+                             logs2=c(log(0.1), log(0.1)),
+                             rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
+                             U=U))
+tictoc::toc()
+```
+
+```{r}
+matrix(c(with(mcie2.1, c(par, objective, convergence)), 
+         with(mcie2.2, c(par, objective, convergence)), 
+         with(mcie2.3, c(par, objective, convergence)), 
+         with(mcie2.4, c(par, objective, convergence)), 
+         with(mcie2.5, c(par, objective, convergence)), 
+         beta.mcie, log(diag(Sigma.mcie)),
+         atanh( Sigma.mcie[1, 2]/prod(sqrt(diag(Sigma.mcie))) ),
+         NaN, NaN),
+       nrow=6, byrow=TRUE,
+       dimnames=list(c(1:5, 'true'),
+                     c(names(mcie2.1$par), 'fn', 'conv')))
 ```
