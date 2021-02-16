@@ -13,6 +13,7 @@ output:
 source('functions.R')
 ## install.packages('pacman')
 pacman::p_load(Matrix, mvtnorm, mc2d, furrr, TMB, tictoc, tidyverse)
+
 future::plan(multicore);TMB::openmp(11)
 
 J <- 3e4
@@ -298,8 +299,10 @@ jvv2.5
 
 ```{r mcie2_data,cache=TRUE,error=TRUE}
 beta.mcie <- c(beta1=0.85, beta2=1.25)
-Sigma.mcie <- matrix(c(0.2, -0.25,
-                       -0.25, 0.4), nrow=2)
+
+Sigma.mcie <- matrix(c(0.2, -0.25*sqrt(0.2)*sqrt(0.4),
+                       -0.25*sqrt(0.2)*sqrt(0.4), 0.4), nrow=2)
+
 ys.mcie2 <- future_datasimu(J=J, n=5, beta=beta.mcie, Sigma=Sigma.mcie)
 prop.table(colSums(ys.mcie2[[1]]))
 prop.table(colSums(ys.mcie2[[2]]))
@@ -322,6 +325,7 @@ mcie2.1 <- GLMMfit(dll=v2dll, y=ys.mcie2[[1]], Z=Z,
                              rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
                              U=U))
 tictoc::toc()
+
 tictoc::tic()
 mcie2.2 <- GLMMfit(dll=v2dll, y=ys.mcie2[[2]], Z=Z,
                    pars=list(beta1=guess.mcie2[2, 'beta1'],
@@ -330,6 +334,7 @@ mcie2.2 <- GLMMfit(dll=v2dll, y=ys.mcie2[[2]], Z=Z,
                              rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
                              U=U))
 tictoc::toc()
+
 tictoc::tic()
 mcie2.3 <- GLMMfit(dll=v2dll, y=ys.mcie2[[3]], Z=Z,
                    pars=list(beta1=guess.mcie2[3, 'beta1'],
@@ -338,6 +343,7 @@ mcie2.3 <- GLMMfit(dll=v2dll, y=ys.mcie2[[3]], Z=Z,
                              rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
                              U=U))
 tictoc::toc()
+
 tictoc::tic()
 mcie2.4 <- GLMMfit(dll=v2dll, y=ys.mcie2[[4]], Z=Z,
                    pars=list(beta1=guess.mcie2[4, 'beta1'],
@@ -346,6 +352,7 @@ mcie2.4 <- GLMMfit(dll=v2dll, y=ys.mcie2[[4]], Z=Z,
                              rhoZ=atanh( 0.05/(sqrt(0.1)*sqrt(0.1)) ),
                              U=U))
 tictoc::toc()
+
 tictoc::tic()
 mcie2.5 <- GLMMfit(dll=v2dll, y=ys.mcie2[[5]], Z=Z,
                    pars=list(beta1=guess.mcie2[5, 'beta1'],
@@ -368,4 +375,124 @@ matrix(c(with(mcie2.1, c(par, objective, convergence)),
        nrow=6, byrow=TRUE,
        dimnames=list(c(1:5, 'true'),
                      c(names(mcie2.1$par), 'fn', 'conv')))
+```
+
+## model 4
+
+```{r mcie10_data,cache=TRUE,error=TRUE}
+datasimu10 <- function(J, beta, Sigma=NULL)
+{
+    Z <- Matrix::bdiag(replicate(J, rep(1, 10), simplify=FALSE))
+    R <- mvtnorm::rmvnorm(J, mean=rep(0, 2), sigma=Sigma)
+    LE <- Z%*%R
+    risk1 <- exp(beta['beta1']+LE[, 1])
+    risk2 <- exp(beta['beta2']+LE[, 2])
+    level <- 1+risk1+risk2
+    p1 <- risk1/level
+    p2 <- risk2/level
+    p3 <- 1-p1-p2
+    ps <- cbind(p1, p2, p3)
+    out <- mc2d::rmultinomial(10*J, 1, prob=ps)
+    colnames(out) <- paste0('y', 1:3)
+    return(out)
+}
+
+ys.mcie10 <- furrr::future_map(
+                        rep(250, 5), ~datasimu10(.x,
+                                                 beta=beta.mcie,
+                                                 Sigma=Sigma.mcie),
+                        .options=furrr_options(seed=NULL))
+
+prop.table(colSums(ys.mcie10[[1]]))
+prop.table(colSums(ys.mcie10[[2]]))
+prop.table(colSums(ys.mcie10[[3]]))
+prop.table(colSums(ys.mcie10[[4]]))
+prop.table(colSums(ys.mcie10[[5]]))
+```
+
+```{r mcie10_guess}
+guess.mcie10 <- getguess(dll=glm.dll,
+                         y=ys.mcie10, beta=c(beta1=0, beta2=0))
+```
+
+```{r mcie10_fit,cache=TRUE,error=TRUE}
+J10 <- 250
+
+tictoc::tic()
+mcie10.1 <- GLMMfit(dll=v2dll, y=ys.mcie10[[1]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))
+tictoc::toc()
+tictoc::tic()
+mcie10.2 <- GLMMfit(dll=v2dll, y=ys.mcie10[[2]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))
+tictoc::toc()
+tictoc::tic()
+mcie10.3 <- GLMMfit(dll=v2dll, y=ys.mcie10[[3]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))
+tictoc::toc()
+tictoc::tic()
+mcie10.4 <- GLMMfit(dll=v2dll, y=ys.mcie10[[4]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))
+tictoc::toc()
+tictoc::tic()
+mcie10.5 <- GLMMfit(dll=v2dll, y=ys.mcie10[[5]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))
+tictoc::toc()
+```
+
+```{r last,cache=TRUE,error=TRUE}
+matrix(c(with(mcie10.2, c(par, objective, convergence)), 
+         beta.mcie, log(diag(Sigma.mcie)),
+         atanh( Sigma.mcie[1, 2]/prod(sqrt(diag(Sigma.mcie))) ),
+         NaN, NaN),
+       nrow=2, byrow=TRUE,
+       dimnames=list(c(1, 'true'),
+                     c(names(mcie10.2$par), 'fn', 'conv')))
+
+checkDLL(v2dll)
+obj <- TMB::MakeADFun(data=list(
+                          Y=ys.mcie10[[2]],
+                          Z=Matrix::bdiag(replicate(
+                                        J10, rep(1, 10), simplify=FALSE)
+                                        )
+                      ),
+                      parameters=list(beta1=0.85, beta2=1.25,
+                                      logs2=c(log(0.2), log(0.4)),
+                                      rhoZ=atanh(-0.25),
+                                      U=matrix(0, nrow=J10, ncol=2)),
+                      DLL=v2dll,
+                      random='U', hessian=TRUE, silent=TRUE)
+opt <- nlminb(obj$par, obj$fn, obj$gr)
+sdr <- sdreport(obj)
+summary(summary(sdr, select='random')[, 1])
 ```

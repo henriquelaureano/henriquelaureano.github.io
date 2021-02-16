@@ -1592,7 +1592,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">A standard multinomial GLMM with random correlated intercepts</h1>
 <h4 class="author">Henrique Laureano (.github.io)</h4>
-<h4 class="date"><em>Last modification on</em> 2021-02-15 17:06:56</h4>
+<h4 class="date"><em>Last modification on</em> 2021-02-16 14:34:12</h4>
 
 </div>
 
@@ -1600,6 +1600,7 @@ div.tocify {
 <pre class="r"><code>source(&#39;functions.R&#39;)
 ## install.packages(&#39;pacman&#39;)
 pacman::p_load(Matrix, mvtnorm, mc2d, furrr, TMB, tictoc, tidyverse)
+
 future::plan(multicore);TMB::openmp(11)</code></pre>
 <pre><code>## [1] 11</code></pre>
 <pre class="r"><code>J &lt;- 3e4
@@ -2122,24 +2123,26 @@ jvv2.5 &lt;- GLMMfit(dll=jvv2, y=ys.jvv2[[5]], Z=Z,
 <div id="model-3" class="section level2">
 <h2>model 3</h2>
 <pre class="r"><code>beta.mcie &lt;- c(beta1=0.85, beta2=1.25)
-Sigma.mcie &lt;- matrix(c(0.2, -0.25,
-                       -0.25, 0.4), nrow=2)
+
+Sigma.mcie &lt;- matrix(c(0.2, -0.25*sqrt(0.2)*sqrt(0.4),
+                       -0.25*sqrt(0.2)*sqrt(0.4), 0.4), nrow=2)
+
 ys.mcie2 &lt;- future_datasimu(J=J, n=5, beta=beta.mcie, Sigma=Sigma.mcie)
 prop.table(colSums(ys.mcie2[[1]]))</code></pre>
 <pre><code>##        y1        y2        y3 
-## 0.3613667 0.5053500 0.1332833</code></pre>
+## 0.3477667 0.5089333 0.1433000</code></pre>
 <pre class="r"><code>prop.table(colSums(ys.mcie2[[2]]))</code></pre>
 <pre><code>##        y1        y2        y3 
-## 0.3590333 0.5068167 0.1341500</code></pre>
+## 0.3481667 0.5100000 0.1418333</code></pre>
 <pre class="r"><code>prop.table(colSums(ys.mcie2[[3]]))</code></pre>
 <pre><code>##        y1        y2        y3 
-## 0.3574667 0.5077500 0.1347833</code></pre>
+## 0.3531500 0.5047333 0.1421167</code></pre>
 <pre class="r"><code>prop.table(colSums(ys.mcie2[[4]]))</code></pre>
 <pre><code>##        y1        y2        y3 
-## 0.3599500 0.5041667 0.1358833</code></pre>
+## 0.3511833 0.5067167 0.1421000</code></pre>
 <pre class="r"><code>prop.table(colSums(ys.mcie2[[5]]))</code></pre>
-<pre><code>##      y1      y2      y3 
-## 0.35795 0.50810 0.13395</code></pre>
+<pre><code>##        y1        y2        y3 
+## 0.3545333 0.5026667 0.1428000</code></pre>
 <pre class="r"><code>guess.mcie2 &lt;- getguess(dll=glm.dll,
                         y=ys.mcie2, beta=c(beta1=0, beta2=0))</code></pre>
 <pre class="r"><code>tictoc::tic()
@@ -2151,33 +2154,9 @@ mcie2.1 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[1]], Z=Z,
                              U=U))</code></pre>
 <pre><code>## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
 
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 3599.678 sec elapsed</code></pre>
+<pre><code>## 798.17 sec elapsed</code></pre>
 <pre class="r"><code>tictoc::tic()
 mcie2.2 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[2]], Z=Z,
                    pars=list(beta1=guess.mcie2[2, &#39;beta1&#39;],
@@ -2209,9 +2188,19 @@ mcie2.2 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[2]], Z=Z,
 
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
 
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 2804.79 sec elapsed</code></pre>
+<pre><code>## 4006.498 sec elapsed</code></pre>
 <pre class="r"><code>tictoc::tic()
 mcie2.3 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[3]], Z=Z,
                    pars=list(beta1=guess.mcie2[3, &#39;beta1&#39;],
@@ -2247,11 +2236,9 @@ mcie2.3 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[3]], Z=Z,
 
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
 
-## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
-
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 3825.191 sec elapsed</code></pre>
+<pre><code>## 3755.394 sec elapsed</code></pre>
 <pre class="r"><code>tictoc::tic()
 mcie2.4 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[4]], Z=Z,
                    pars=list(beta1=guess.mcie2[4, &#39;beta1&#39;],
@@ -2263,7 +2250,7 @@ mcie2.4 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[4]], Z=Z,
 
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 1091.109 sec elapsed</code></pre>
+<pre><code>## 1417.017 sec elapsed</code></pre>
 <pre class="r"><code>tictoc::tic()
 mcie2.5 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[5]], Z=Z,
                    pars=list(beta1=guess.mcie2[5, &#39;beta1&#39;],
@@ -2273,9 +2260,33 @@ mcie2.5 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[5]], Z=Z,
                              U=U))</code></pre>
 <pre><code>## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
 
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
 ## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
 <pre class="r"><code>tictoc::toc()</code></pre>
-<pre><code>## 838.548 sec elapsed</code></pre>
+<pre><code>## 3429.922 sec elapsed</code></pre>
 <pre class="r"><code>matrix(c(with(mcie2.1, c(par, objective, convergence)), 
          with(mcie2.2, c(par, objective, convergence)), 
          with(mcie2.3, c(par, objective, convergence)), 
@@ -2287,13 +2298,183 @@ mcie2.5 &lt;- GLMMfit(dll=v2dll, y=ys.mcie2[[5]], Z=Z,
        nrow=6, byrow=TRUE,
        dimnames=list(c(1:5, &#39;true&#39;),
                      c(names(mcie2.1$par), &#39;fn&#39;, &#39;conv&#39;)))</code></pre>
-<pre><code>##          beta1     beta2      logs2       logs2      rhoZ         fn conv
-## 1    1.5532779 0.6869741 -29.516575 -18.0039528 34.190950 -1113516.0    1
-## 2    0.9261614 1.5212231 -39.660977 -39.6609633 37.791453 -1605629.2    1
-## 3    1.6236910 0.5694760 -25.691988 -25.6865463 37.644954 -1163946.9    1
-## 4    1.0207872 1.2842717 -16.914849  -8.7910794 12.374103  -600995.5    1
-## 5    1.0250789 1.3199371 -16.417725 -14.1266266 14.744706  -744917.1    1
-## true 0.8500000 1.2500000  -1.609438  -0.9162907 -1.393248        NaN  NaN</code></pre>
+<pre><code>##          beta1     beta2      logs2       logs2       rhoZ         fn conv
+## 1    0.9368043 1.2408854 -14.573474 -14.5669983 14.1821253  -706443.9    1
+## 2    0.8313782 1.4811579 -43.811967 -34.7475036 37.4455881 -1582573.3    1
+## 3    1.5160534 0.5515033 -26.078455 -23.0716645 35.8327181 -1128097.4    1
+## 4    0.9479827 1.2482828 -18.776921  -6.7341729 12.1929952  -592350.3    1
+## 5    1.5026015 0.5561393 -25.505572 -23.6839360 35.8675093 -1136415.5    1
+## true 0.8500000 1.2500000  -1.609438  -0.9162907 -0.2554128        NaN  NaN</code></pre>
+</div>
+<div id="model-4" class="section level2">
+<h2>model 4</h2>
+<pre class="r"><code>datasimu10 &lt;- function(J, beta, Sigma=NULL)
+{
+    Z &lt;- Matrix::bdiag(replicate(J, rep(1, 10), simplify=FALSE))
+    R &lt;- mvtnorm::rmvnorm(J, mean=rep(0, 2), sigma=Sigma)
+    LE &lt;- Z%*%R
+    risk1 &lt;- exp(beta[&#39;beta1&#39;]+LE[, 1])
+    risk2 &lt;- exp(beta[&#39;beta2&#39;]+LE[, 2])
+    level &lt;- 1+risk1+risk2
+    p1 &lt;- risk1/level
+    p2 &lt;- risk2/level
+    p3 &lt;- 1-p1-p2
+    ps &lt;- cbind(p1, p2, p3)
+    out &lt;- mc2d::rmultinomial(10*J, 1, prob=ps)
+    colnames(out) &lt;- paste0(&#39;y&#39;, 1:3)
+    return(out)
+}
+
+ys.mcie10 &lt;- furrr::future_map(
+                        rep(250, 5), ~datasimu10(.x,
+                                                 beta=beta.mcie,
+                                                 Sigma=Sigma.mcie),
+                        .options=furrr_options(seed=NULL))
+
+prop.table(colSums(ys.mcie10[[1]]))</code></pre>
+<pre><code>##     y1     y2     y3 
+## 0.3528 0.4980 0.1492</code></pre>
+<pre class="r"><code>prop.table(colSums(ys.mcie10[[2]]))</code></pre>
+<pre><code>##     y1     y2     y3 
+## 0.3500 0.5104 0.1396</code></pre>
+<pre class="r"><code>prop.table(colSums(ys.mcie10[[3]]))</code></pre>
+<pre><code>##     y1     y2     y3 
+## 0.3492 0.5072 0.1436</code></pre>
+<pre class="r"><code>prop.table(colSums(ys.mcie10[[4]]))</code></pre>
+<pre><code>##     y1     y2     y3 
+## 0.3608 0.4992 0.1400</code></pre>
+<pre class="r"><code>prop.table(colSums(ys.mcie10[[5]]))</code></pre>
+<pre><code>##     y1     y2     y3 
+## 0.3584 0.5000 0.1416</code></pre>
+<pre class="r"><code>guess.mcie10 &lt;- getguess(dll=glm.dll,
+                         y=ys.mcie10, beta=c(beta1=0, beta2=0))</code></pre>
+<pre class="r"><code>J10 &lt;- 250
+
+tictoc::tic()
+mcie10.1 &lt;- GLMMfit(dll=v2dll, y=ys.mcie10[[1]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))
+tictoc::toc()</code></pre>
+<pre><code>## 26.063 sec elapsed</code></pre>
+<pre class="r"><code>tictoc::tic()
+mcie10.2 &lt;- GLMMfit(dll=v2dll, y=ys.mcie10[[2]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))</code></pre>
+<pre><code>## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
+<pre class="r"><code>tictoc::toc()</code></pre>
+<pre><code>## 48.906 sec elapsed</code></pre>
+<pre class="r"><code>tictoc::tic()
+mcie10.3 &lt;- GLMMfit(dll=v2dll, y=ys.mcie10[[3]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))
+tictoc::toc()</code></pre>
+<pre><code>## 28.125 sec elapsed</code></pre>
+<pre class="r"><code>tictoc::tic()
+mcie10.4 &lt;- GLMMfit(dll=v2dll, y=ys.mcie10[[4]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))</code></pre>
+<pre><code>## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
+<pre class="r"><code>tictoc::toc()</code></pre>
+<pre><code>## 118.792 sec elapsed</code></pre>
+<pre class="r"><code>tictoc::tic()
+mcie10.5 &lt;- GLMMfit(dll=v2dll, y=ys.mcie10[[5]],
+                    Z=Matrix::bdiag(replicate(
+                                  J10, rep(1, 10), simplify=FALSE)
+                                  ),
+                    pars=list(beta1=0.85, beta2=1.25,
+                              logs2=c(log(0.2), log(0.4)),
+                              rhoZ=atanh(-0.25),
+                              U=matrix(0, nrow=J10, ncol=2)))</code></pre>
+<pre><code>## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
+<pre class="r"><code>tictoc::toc()</code></pre>
+<pre><code>## 30.891 sec elapsed</code></pre>
+<pre class="r"><code>matrix(c(with(mcie10.2, c(par, objective, convergence)), 
+         beta.mcie, log(diag(Sigma.mcie)),
+         atanh( Sigma.mcie[1, 2]/prod(sqrt(diag(Sigma.mcie))) ),
+         NaN, NaN),
+       nrow=2, byrow=TRUE,
+       dimnames=list(c(1, &#39;true&#39;),
+                     c(names(mcie10.2$par), &#39;fn&#39;, &#39;conv&#39;)))</code></pre>
+<pre><code>##          beta1    beta2      logs2       logs2        rhoZ        fn conv
+## 1    0.9534405 1.275876 -16.981949 -16.4805705 -15.3183366 -63378.38    1
+## true 0.8500000 1.250000  -1.609438  -0.9162907  -0.2554128       NaN  NaN</code></pre>
+<pre class="r"><code>checkDLL(v2dll)
+obj &lt;- TMB::MakeADFun(data=list(
+                          Y=ys.mcie10[[2]],
+                          Z=Matrix::bdiag(replicate(
+                                        J10, rep(1, 10), simplify=FALSE)
+                                        )
+                      ),
+                      parameters=list(beta1=0.85, beta2=1.25,
+                                      logs2=c(log(0.2), log(0.4)),
+                                      rhoZ=atanh(-0.25),
+                                      U=matrix(0, nrow=J10, ncol=2)),
+                      DLL=v2dll,
+                      random=&#39;U&#39;, hessian=TRUE, silent=TRUE)
+opt &lt;- nlminb(obj$par, obj$fn, obj$gr)</code></pre>
+<pre><code>## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation
+
+## Warning in nlminb(obj$par, obj$fn, obj$gr): NA/NaN function evaluation</code></pre>
+<pre class="r"><code>sdr &lt;- sdreport(obj)</code></pre>
+<pre><code>## Warning in sqrt(diag(cov)): NaNs produced</code></pre>
+<pre class="r"><code>summary(summary(sdr, select=&#39;random&#39;)[, 1])</code></pre>
+<pre><code>## Warning in sqrt(as.numeric(object$diag.cov.random)): NaNs produced</code></pre>
+<pre><code>##       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+## -5.153e-08 -1.594e-08 -2.237e-10  1.564e-10  1.661e-08  5.446e-08</code></pre>
 </div>
 
 
