@@ -10,8 +10,6 @@
 template<class Type>
 Type objective_function<Type>::operator() ()
 {
-  using namespace density;
-
   DATA_MATRIX(Y);
   DATA_SPARSE_MATRIX(Z); // Matrix::bdiag()
 
@@ -20,7 +18,7 @@ Type objective_function<Type>::operator() ()
   
   PARAMETER(logsd); Type sd=exp(logsd);
 
-  PARAMETER_VECTOR(u); vector<Type> zu=Z*u;
+  PARAMETER_VECTOR(u); vector<Type> Zu=Z*u;
 
   Type risk1=0;
   Type risk2=0; Type level=0;
@@ -34,8 +32,8 @@ Type objective_function<Type>::operator() ()
   
   for (int i=0; i<Y.rows(); i++) {
 
-    risk1=exp(beta1 + zu(i));
-    risk2=exp(beta2 + zu(i)); level=1 + risk1 + risk2;
+    risk1=exp(beta1 + Zu(i));
+    risk2=exp(beta2 + Zu(i)); level=1 + risk1 + risk2;
 
     prob(0)=risk1/level;
     prob(1)=risk2/level; prob(2)=1 - prob(0) - prob(1);

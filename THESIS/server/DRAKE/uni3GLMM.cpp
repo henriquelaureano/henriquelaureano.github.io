@@ -19,8 +19,7 @@ Type objective_function<Type>::operator() ()
   PARAMETER(logsd1); Type sd1=exp(logsd1);
   PARAMETER(logsd2); Type sd2=exp(logsd2);
 
-  PARAMETER_VECTOR(u1); vector<Type> Zu1=Z*u1;
-  PARAMETER_VECTOR(u2); vector<Type> Zu2=Z*u2;
+  PARAMETER_MATRIX(U); matrix<Type> ZU=Z*U; 
 
   Type risk1=0;
   Type risk2=0; Type level=0;
@@ -30,13 +29,17 @@ Type objective_function<Type>::operator() ()
   
   parallel_accumulator<Type> nll(this);
   // Type nll=0;
+
+  vector<Type> u1=U.col(0);
+  vector<Type> u2=U.col(1);
+  
   nll -= dnorm(u1, Type(0), sd1, true).sum();
   nll -= dnorm(u2, Type(0), sd2, true).sum();
   
   for (int i=0; i<Y.rows(); i++) {
 
-    risk1=exp(beta1 + Zu1(i));
-    risk2=exp(beta2 + Zu2(i)); level=1 + risk1 + risk2;
+    risk1=exp(beta1 + ZU(i, 0));
+    risk2=exp(beta2 + ZU(i, 1)); level=1 + risk1 + risk2;
 
     prob(0)=risk1/level;
     prob(1)=risk2/level; prob(2)=1 - prob(0) - prob(1);

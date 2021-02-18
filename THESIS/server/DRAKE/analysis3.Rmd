@@ -1,5 +1,5 @@
 ---
-title: A standard multinomial GLMM with random common intercept
+title: A standard multinomial GLMM
 author: Henrique Laureano (.github.io)
 date: "*Last modification on* `r Sys.time()`"
 output:
@@ -25,7 +25,7 @@ future::plan(multicore);TMB::openmp(11)
 
 > TAKE-HOME MESSAGE: 
 
-```{r uniGLMM}
+```{r uniGLMM,cache=TRUE,fig.height=3.5,fig.width=10}
 J <- 250
 cs <- 10
 beta.mcie <- c(beta1=0.85, beta2=1.25)
@@ -43,21 +43,21 @@ Z <- modelZ(J=J, cs=cs)
 u <- numeric(J)
 
 obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=beta.mcie['beta1'],
-                                      beta2=beta.mcie['beta2'],
-                                      logsd=log(sd),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logsd=log(0.1),
                                       u=u),
                       DLL=uniDLL, ## ----------------------------------
-                      random='u', hessia=TRUE, silent=TRUE)
-opt <- with(obj,
-            nlminb(par, fn, gr))
-
+                      random='u', hessian=TRUE, silent=TRUE)
+(opt <- with(obj,
+             nlminb(par, fn, gr)))
 bind_cols(
     bind_rows(
         opt$par, c(beta.mcie, logsd=log(sd))
     ),
     label=c('model', 'data')
 )
+
 sdr <- sdreport(obj)
 summary(sdr, select='fixed')
 summary(sdr, select='report')
@@ -75,7 +75,9 @@ plot(prof.logsd);abline(v=log(sd), lty=2, col='red')
 
 ## uni2GLMM
 
-```{r uni2GLMM}
+> TAKE-HOME MESSAGE:
+
+```{r uni2GLMM,cache=TRUE,fig.height=6}
 sd <- c(sqrt(0.25), sqrt(0.15))
 
 set.seed(0859)
@@ -83,19 +85,158 @@ y <- datasimu.l1(J=J, cs=cs, beta=beta.mcie, sd=sd)
 prop.table(colSums(y))
 
 uni2DLL <- 'uni2GLMM';invisible(TMB::compile(paste0(uni2DLL, '.cpp')))
-## dyn.load(TMB::dynlib(uniDLL))
+## dyn.load(TMB::dynlib(uni2DLL))
 checkDLL(uni2DLL)
 
-u1 <- numeric(J)
-u2 <- numeric(J)
+u1 <- u2 <- numeric(J)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logsd1=log(0.1),
+                                      logsd2=log(0.1),
+                                      u1=u1,
+                                      u2=u2),
+                      DLL=uni2DLL, ## ----------------------------------
+                      random=c('u1', 'u2'), hessian=TRUE, silent=TRUE)
+(opt <- with(obj,
+             nlminb(par, fn, gr)))
+bind_cols(
+    bind_rows(
+        opt$par, c(beta.mcie, logsd1=log(sd[1]), logsd2=log(sd[2]))
+    ),
+    label=c('model', 'data')
+)
+
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(summary(sdr, select='random'))
+
+prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.logsd1 <- TMB::tmbprofile(obj, name='logsd1', trace=FALSE)
+prof.logsd2 <- TMB::tmbprofile(obj, name='logsd2', trace=FALSE)
+
+par(mfrow=c(2, 2), mar=c(4, 4, 2, 2))
+plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+plot(prof.logsd1);abline(v=log(sd[1]), lty=2, col='red')
+plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
+```
+
+## uni3GLMM
+
+> TAKE-HOME MESSAGE:
+
+```{r uni3GLMM,cache=TRUE,fig.height=6}
+uni3DLL <- 'uni3GLMM';invisible(TMB::compile(paste0(uni3DLL, '.cpp')))
+## dyn.load(TMB::dynlib(uni3DLL))
+checkDLL(uni3DLL)
+
+U <- matrix(0, nrow=J, ncol=2)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logsd1=log(0.1),
+                                      logsd2=log(0.1),
+                                      U=U),
+                      DLL=uni3DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+(opt <- with(obj,
+             nlminb(par, fn, gr)))
+bind_cols(
+    bind_rows(
+        opt$par, c(beta.mcie, logsd1=log(sd[1]), logsd2=log(sd[2]))
+    ),
+    label=c('model', 'data')
+)
+
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(sdr, select='random')[251, ]
+summary(summary(sdr, select='random'))
+
+prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.logsd1 <- TMB::tmbprofile(obj, name='logsd1', trace=FALSE)
+prof.logsd2 <- TMB::tmbprofile(obj, name='logsd2', trace=FALSE)
+
+par(mfrow=c(2, 2), mar=c(4, 4, 2, 2))
+plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+plot(prof.logsd1);abline(v=log(sd[1]), lty=2, col='red')
+plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
+```
+
+## uni4GLMM
+
+> TAKE-HOME MESSAGE:
+
+```{r uni4GLMM,cache=TRUE,fig.height=6}
+uni4DLL <- 'uni4GLMM';invisible(TMB::compile(paste0(uni4DLL, '.cpp')))
+dyn.load(TMB::dynlib(uni4DLL))
+checkDLL(uni4DLL)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logsd1=log(0.1),
+                                      logsd2=log(0.1),
+                                      U=U),
+                      DLL=uni4DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+(opt <- with(obj,
+             nlminb(par, fn, gr)))
+bind_cols(
+    bind_rows(
+        opt$par, c(beta.mcie, logsd1=log(sd[1]), logsd2=log(sd[2]))
+    ),
+    label=c('model', 'data')
+)
+obj$report()
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(sdr, select='random')[251, ]
+summary(summary(sdr, select='random'))
+
+prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.logsd1 <- TMB::tmbprofile(obj, name='logsd1', trace=FALSE)
+prof.logsd2 <- TMB::tmbprofile(obj, name='logsd2', trace=FALSE)
+
+par(mfrow=c(2, 2), mar=c(4, 4, 2, 2))
+plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+plot(prof.logsd1);abline(v=log(sd[1]), lty=2, col='red')
+plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
+```
+
+## uni5GLMM
+
+> TAKE-HOME MESSAGE:
+
+```{r uni5GLMM,cache=TRUE,error=TRUE}
+uni5DLL <- 'uni5GLMM';invisible(TMB::compile(paste0(uni5DLL, '.cpp')))
+dyn.load(TMB::dynlib(uni5DLL))
+checkDLL(uni5DLL)
 
 obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
                       parameters=list(beta1=beta.mcie['beta1'],
                                       beta2=beta.mcie['beta2'],
-                                      logsd=log(sd),
-                                      u=u),
-                      DLL=uniDLL, ## ----------------------------------
-                      random='u', hessia=TRUE, silent=TRUE)
-opt <- with(obj,
-            nlminb(par, fn, gr))
+                                      logs2_1=log(0.25),
+                                      logs2_2=log(0.15),
+                                      U=U),
+                      DLL=uni5DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+(opt <- with(obj,
+             nlminb(par, fn, gr)))
+
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(summary(sdr, select='random'))
 ```
