@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------
 //                                                     Henrique Laureano
 //                                            henriquelaureano.github.io
-//                                      2021-fev-17 · Curitiba/PR/Brazil
+//                                      2021-fev-18 · Curitiba/PR/Brazil
 //----------------------------------------------------------------------
 
 // A STANDARD MULTINOMIAL GLMM WITH A COMMON RANDOM INTERCEPT
@@ -18,9 +18,11 @@ Type objective_function<Type>::operator() ()
   PARAMETER(beta1);
   PARAMETER(beta2);
   
-  PARAMETER(logsd); Type sd=exp(logsd);
+  PARAMETER(logsd1); Type sd1=exp(logsd1);
+  PARAMETER(logsd2); Type sd2=exp(logsd2);
 
-  PARAMETER_VECTOR(u); vector<Type> zu=Z*u;
+  PARAMETER_VECTOR(u1); vector<Type> zu1=Z*u1;
+  PARAMETER_VECTOR(u2); vector<Type> zu2=Z*u2;
 
   Type risk1=0;
   Type risk2=0; Type level=0;
@@ -30,12 +32,13 @@ Type objective_function<Type>::operator() ()
   
   parallel_accumulator<Type> nll(this);
   // Type nll=0;
-  nll -= dnorm(u, Type(0), sd, true).sum();
+  nll -= dnorm(u1, Type(0), sd1, true).sum();
+  nll -= dnorm(u2, Type(0), sd2, true).sum();
   
   for (int i=0; i<Y.rows(); i++) {
 
-    risk1=exp(beta1 + zu(i));
-    risk2=exp(beta2 + zu(i)); level=1 + risk1 + risk2;
+    risk1=exp(beta1 + zu1(i));
+    risk2=exp(beta2 + zu2(i)); level=1 + risk1 + risk2;
 
     prob(0)=risk1/level;
     prob(1)=risk2/level; prob(2)=1 - prob(0) - prob(1);
@@ -43,7 +46,8 @@ Type objective_function<Type>::operator() ()
     y=Y.row(i);
     nll -= dmultinom(y, prob, true);
   }
-  ADREPORT(sd);
+  ADREPORT(sd1);
+  ADREPORT(sd2);
   
   return nll;
 }

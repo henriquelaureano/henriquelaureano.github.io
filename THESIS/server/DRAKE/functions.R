@@ -1,22 +1,35 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-17 · Curitiba/PR/Brazil
+##                                      2021-fev-18 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ps.l1 <- function(J, cs, beta, sd)
 {
+    if (length(sd) > 2)
+        stop('off-grid, fn built for a 3 classes multinomial model')
+    
     blocks <- replicate(J, rep(1, cs), simplify=FALSE)
     Z <- Matrix::bdiag(blocks)
-    u <- rnorm(n=J, mean=0, sd=sd)
 
-    zu <- Z%*%u
+    if (length(sd) == 1)
+    {
+        u <- rnorm(n=J, mean=0, sd=sd);zu <- Z%*%u        
 
-    risk1 <- exp(beta[1] + zu)
-    risk2 <- exp(beta[2] + zu);level <- 1 + risk1 + risk2
-
+        risk1 <- exp(beta[1] + zu)
+        risk2 <- exp(beta[2] + zu)
+    } else
+    {
+        u1 <- rnorm(n=J, mean=0, sd=sd[1]);zu1 <- Z%*%u1
+        u2 <- rnorm(n=J, mean=0, sd=sd[2]);zu2 <- Z%*%u2
+         
+        risk1 <- exp(beta[1] + zu1)
+        risk2 <- exp(beta[2] + zu2)
+    }
+    level <- 1 + risk1 + risk2
     p1 <- risk1/level
-    p2 <- risk2/level;p3 <- 1 - p1 - p2
+    p2 <- risk2/level
+    p3 <- 1 - p1 - p2
 
     return(cbind(p1, p2, p3))
 }

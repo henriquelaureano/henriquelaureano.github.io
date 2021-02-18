@@ -21,7 +21,11 @@ pacman::p_load(Matrix, mvtnorm, mc2d, ## rmultinomial()
 future::plan(multicore);TMB::openmp(11)
 ```
 
-```{r data}
+## uniGLMM
+
+> TAKE-HOME MESSAGE: 
+
+```{r uniGLMM}
 J <- 250
 cs <- 10
 beta.mcie <- c(beta1=0.85, beta2=1.25)
@@ -32,6 +36,7 @@ y <- datasimu.l1(J=J, cs=cs, beta=beta.mcie, sd=sd)
 prop.table(colSums(y))
 
 uniDLL <- 'uniGLMM';invisible(TMB::compile(paste0(uniDLL, '.cpp')))
+## dyn.load(TMB::dynlib(uniDLL))
 checkDLL(uniDLL)
 
 Z <- modelZ(J=J, cs=cs)
@@ -59,43 +64,38 @@ summary(sdr, select='report')
 summary(summary(sdr, select='random'))
 
 prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
-
 prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
 prof.logsd <- TMB::tmbprofile(obj, name='logsd', trace=FALSE)
+
+par(mfrow=c(1, 3))
+plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+plot(prof.logsd);abline(v=log(sd), lty=2, col='red')
 ```
 
-```{r compApp,error=TRUE}
-v2dll <- 'v2GLMM';invisible(TMB::compile(paste0(v2dll, '.cpp')))
-v3dll <- 'v3GLMM';invisible(TMB::compile(paste0(v3dll, '.cpp')))
+## uni2GLMM
 
-checkDLL(v2dll)
-v2obj <- TMB::MakeADFun(data=list(Y=y.mcie10, Z=Z10),
-                        parameters=list(beta1=beta.mcie['beta1'],
-                                        beta2=beta.mcie['beta2'],
-                                        logs2=log(diag(Sigma.mcie)),
-                                        rhoZ =atanh(-0.25),
-                                        U    =U),
-                        DLL=v2dll, ## ----------------------------------
-                        random='U', hessia=TRUE, silent=TRUE)
-checkDLL(v3dll)
-v3obj <- TMB::MakeADFun(data=list(Y=y.mcie10, Z=Z10),
-                        parameters=list(beta1=beta.mcie['beta1'],
-                                        beta2=beta.mcie['beta2'],
-                                        logs2=log(diag(Sigma.mcie)),
-                                        rhoZ =atanh(-0.25),
-                                        U    =U),
-                        DLL=v3dll, ## ----------------------------------
-                        random='U', hessia=TRUE, silent=TRUE)
-v2obj$fn(v2obj$par)
-v3obj$fn(v3obj$par)
+```{r uni2GLMM}
+sd <- c(sqrt(0.25), sqrt(0.15))
 
-v2opt <- with(v2obj, nlminb(par, fn, gr))
-v3opt <- with(v3obj, nlminb(par, fn, gr))
+set.seed(0859)
+y <- datasimu.l1(J=J, cs=cs, beta=beta.mcie, sd=sd)
+prop.table(colSums(y))
 
-v2opt$par
-v3opt$par
+uni2DLL <- 'uni2GLMM';invisible(TMB::compile(paste0(uni2DLL, '.cpp')))
+## dyn.load(TMB::dynlib(uniDLL))
+checkDLL(uni2DLL)
+
+u1 <- numeric(J)
+u2 <- numeric(J)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=beta.mcie['beta1'],
+                                      beta2=beta.mcie['beta2'],
+                                      logsd=log(sd),
+                                      u=u),
+                      DLL=uniDLL, ## ----------------------------------
+                      random='u', hessia=TRUE, silent=TRUE)
+opt <- with(obj,
+            nlminb(par, fn, gr))
 ```
-
-The v3 model is the one were we sum the MVNORM() object. The code above
-show us that the correct written is with the minus sign inside the nll
--=.
