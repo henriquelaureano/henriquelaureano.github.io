@@ -1,5 +1,5 @@
 ---
-title: A standard multinomial GLMM
+title: A standard multinomial GLMM with random common intercept
 author: Henrique Laureano (.github.io)
 date: "*Last modification on* `r Sys.time()`"
 output:
@@ -21,30 +21,47 @@ pacman::p_load(Matrix, mvtnorm, mc2d, ## rmultinomial()
 future::plan(multicore);TMB::openmp(11)
 ```
 
-## Comparing approaches
-
-> An implementation with random correlated intercepts
-
-The same distributional configuration from mine MCIE'19 final-project
-course.
-
-```{r mcie_data}
-beta.mcie <- c(beta1=0.85, beta2=1.25)
-
-Sigma.mcie <- matrix(c(0.2, -0.25*sqrt(0.2)*sqrt(0.4), ## -0.07
-                       -0.25*sqrt(0.2)*sqrt(0.4), 0.4), nrow=2)
+```{r data}
 J <- 250
-U <- matrix(0, nrow=J, ncol=2)
-```
+cs <- 10
+beta.mcie <- c(beta1=0.85, beta2=1.25)
+sd <- sqrt(0.25)
 
-```{r mcie10_data}
-set.seed(0929)
-y.mcie10 <- datasimu.l2(
-    J=J, cs=10, beta=beta.mcie, Sigma=Sigma.mcie
+set.seed(0858)
+y <- datasimu.l1(J=J, cs=cs, beta=beta.mcie, sd=sd)
+prop.table(colSums(y))
+
+uniDLL <- 'uniGLMM';invisible(TMB::compile(paste0(uniDLL, '.cpp')))
+checkDLL(uniDLL)
+
+Z <- modelZ(J=J, cs=cs)
+u <- numeric(J)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=beta.mcie['beta1'],
+                                      beta2=beta.mcie['beta2'],
+                                      logsd=log(sd),
+                                      u=u),
+                      DLL=uniDLL, ## ----------------------------------
+                      random='u', hessia=TRUE, silent=TRUE)
+opt <- with(obj,
+            nlminb(par, fn, gr))
+
+bind_cols(
+    bind_rows(
+        opt$par, c(beta.mcie, logsd=log(sd))
+    ),
+    label=c('model', 'data')
 )
-prop.table(colSums(y.mcie10))
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(summary(sdr, select='random'))
 
-Z10 <- modelZ(J=J, cs=10)
+prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+
+prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.logsd <- TMB::tmbprofile(obj, name='logsd', trace=FALSE)
 ```
 
 ```{r compApp,error=TRUE}

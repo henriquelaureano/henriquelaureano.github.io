@@ -1,51 +1,86 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-13 · Curitiba/PR/Brazil
+##                                      2021-fev-17 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
-ps <- function(J, beta, Sigma=NULL)
+ps.l1 <- function(J, cs, beta, sd)
 {
-    LE <- matrix(0, nrow=2*J, ncol=2)
+    blocks <- replicate(J, rep(1, cs), simplify=FALSE)
+    Z <- Matrix::bdiag(blocks)
+    u <- rnorm(n=J, mean=0, sd=sd)
+
+    zu <- Z%*%u
+
+    risk1 <- exp(beta[1] + zu)
+    risk2 <- exp(beta[2] + zu);level <- 1 + risk1 + risk2
+
+    p1 <- risk1/level
+    p2 <- risk2/level;p3 <- 1 - p1 - p2
+
+    return(cbind(p1, p2, p3))
+}
+
+ps.l2 <- function(J, cs, beta, Sigma=NULL)
+{
+    LE <- matrix(0, nrow=cs*J, ncol=2)
 
     if (!is.null(Sigma)) {
 
         if (!is.matrix(Sigma) | dim(Sigma)[1]!=2 | dim(Sigma)[2]!=2)
-            stop('Sigma must be a 4x4 matrix')
+            stop('Sigma must be a 2x2 matrix')
 
-        Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
+        Z <- Matrix::bdiag(replicate(J, rep(1, cs), simplify=FALSE))
         R <- mvtnorm::rmvnorm(J,
                               mean=rep(0, dim(Sigma)[1]),
                               sigma=Sigma)
         LE <- Z%*%R
     }
     risk1 <- exp(beta[1]+LE[, 1])
-    risk2 <- exp(beta[2]+LE[, 2])
-    level <- 1+risk1+risk2
+    risk2 <- exp(beta[2]+LE[, 2]);level <- 1+risk1+risk2
 
     p1 <- risk1/level
-    p2 <- risk2/level
-    p3 <- 1-p1-p2
+    p2 <- risk2/level;p3 <- 1-p1-p2
 
     return(cbind(p1, p2, p3))
 }
 
-datasimu <- function(J, beta, Sigma=NULL)
+datasimu.l1 <- function(J, cs, beta, sd)
 {
-    ps <- ps(J=J, beta=beta, Sigma=Sigma)
+    ps <- ps.l1(J=J, cs=cs, beta=beta, sd=sd)
 
-    out <- mc2d::rmultinomial(2*J, 1, prob=ps)
+    out <- mc2d::rmultinomial(cs*J, 1, prob=ps)
     colnames(out) <- paste0('y', 1:3)
 
     return(out)
 }
 
-future_datasimu <- function(J, n, beta, Sigma=NULL)
+datasimu.l2 <- function(J, cs, beta, Sigma=NULL)
+{
+    ps <- ps.l2(J=J, cs=cs, beta=beta, Sigma=Sigma)
+
+    out <- mc2d::rmultinomial(cs*J, 1, prob=ps)
+    colnames(out) <- paste0('y', 1:3)
+
+    return(out)
+}
+
+future_datasimu.l2 <- function(J, cs, n, beta, Sigma=NULL)
 {
     y <- furrr::future_map(
-                    rep(J, n), ~datasimu(.x, beta=beta, Sigma=Sigma),
+                    rep(J, n),
+                    ~datasimu(.x, cs=cs, beta=beta, Sigma=Sigma),
                     .options=furrr_options(seed=NULL))
     return(y)
+}
+
+modelZ <- function(J, cs)
+{
+    blocks <- replicate(J, rep(1, cs), simplify=FALSE)
+
+    Z <- Matrix::bdiag(blocks)
+    
+    return(Z)
 }
 
 checkDLL <- function(dll)
