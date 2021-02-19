@@ -341,5 +341,5 @@ plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
 plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
 plot(prof.logs2_1);abline(v=log(0.25), lty=2, col='red')
 plot(prof.logs2_2);abline(v=log(0.15), lty=2, col='red')
-plot(prof.rhoZ);abline(v=log(-0.2), lty=2, col='red')
+plot(prof.rhoZ);abline(v=atanh(-0.2), lty=2, col='red')
 ```

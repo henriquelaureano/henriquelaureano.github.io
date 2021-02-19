@@ -1,0 +1,165 @@
+---
+title: A standard multinomial GLMM with correlated random intercepts
+author: Henrique Laureano (.github.io)
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r loading}
+source('functions.R')
+
+## install.packages('pacman')
+pacman::p_load(Matrix, mvtnorm, mc2d, ## rmultinomial()
+               furrr, ## future + purrr
+               TMB, tictoc, tidyverse ## ggplot2() + dplyr()
+               )
+
+future::plan(multicore);TMB::openmp(11)
+```
+
+## v1
+
+> SOME KIND OF EASY-DATA, GOOD MULTINOMIAL CLASSES FREQUENCY PROPORTIONS
+
+> TAKE-HOME MESSAGE: 250 GROUPS OF SIZE 10, THE MODEL WORKS BUT IT
+> DOESN'T ESTIMATE THE CORRELATION WELL
+
+```{r v1,cache=TRUE}
+J <- 250
+cs <- 10
+beta.mcie <- c(beta1=0.85, beta2=1.25)
+Z <- modelZ(J=J, cs=cs)
+U <- matrix(0, nrow=J, ncol=2)
+
+cov12 <- -0.2*sqrt(0.25)*sqrt(0.15) ## -0.0387
+sigma <- matrix(c(0.25, cov12, cov12, 0.15), nrow=2)
+## chol(sigma) ## PD matrix
+
+set.seed(0948)
+y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
+prop.table(colSums(y))
+
+uni6DLL <- 'uni6GLMM';invisible(TMB::compile(paste0(uni6DLL, '.cpp')))
+## dyn.load(TMB::dynlib(uni6DLL))
+checkDLL(uni6DLL)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logs2_1=log(0.1),
+                                      logs2_2=log(0.1),
+                                      rhoZ=atanh(0.05), 
+                                      U=U),
+                      DLL=uni6DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+opt <- with(obj,
+            nlminb(par, fn, gr))
+bind_cols(
+    bind_rows(
+        c(opt$par, conv=opt$conv),
+        c(beta.mcie,
+          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+          conv=NaN)
+    ),
+    label=c('model', 'data')
+)
+```
+
+## v2
+
+> TAKE-HOME MESSAGE: 500 GROUPS OF SIZE 10, THE RESULTS ARE BETTER THAN
+> ``v1``
+
+```{r v2,cache=TRUE}
+J <- 500
+Z <- modelZ(J=J, cs=cs)
+U <- matrix(0, nrow=J, ncol=2)
+
+set.seed(0949)
+y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logs2_1=log(0.1),
+                                      logs2_2=log(0.1),
+                                      rhoZ=atanh(0.05), 
+                                      U=U),
+                      DLL=uni6DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+opt <- with(obj,
+            nlminb(par, fn, gr))
+
+bind_cols(
+    bind_rows(
+        c(opt$par, conv=opt$conv),
+        c(beta.mcie,
+          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+          conv=NaN)
+    ),
+    label=c('model', 'data')
+)
+```
+
+## v3
+
+> TAKE-HOME MESSAGE: 1000 GROUPS OF SIZE 10, THE RESULTS ARE GOOD /
+> REASONABLE
+
+```{r v3,cache=TRUE,fig.width=10,fig.height=6}
+J <- 1e3
+Z <- modelZ(J=J, cs=cs)
+U <- matrix(0, nrow=J, ncol=2)
+
+set.seed(0950)
+y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logs2_1=log(0.1),
+                                      logs2_2=log(0.1),
+                                      rhoZ=atanh(0.05), 
+                                      U=U),
+                      DLL=uni6DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+opt <- with(obj,
+            nlminb(par, fn, gr))
+opt
+
+bind_cols(
+    bind_rows(
+        c(opt$par, conv=opt$conv),
+        c(beta.mcie,
+          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+          conv=NaN)
+    ),
+    label=c('model', 'data')
+)
+
+sigma
+obj$report()
+
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(summary(sdr, select='random'))
+
+prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.logs2_1 <- TMB::tmbprofile(obj, name='logs2_1', trace=FALSE)
+prof.logs2_2 <- TMB::tmbprofile(obj, name='logs2_2', trace=FALSE)
+prof.rhoZ <- TMB::tmbprofile(obj, name='rhoZ', trace=FALSE)
+
+par(mfrow=c(2, 3), mar=c(4, 4, 2, 2))
+plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+plot(prof.logs2_1);abline(v=log(0.25), lty=2, col='red')
+plot(prof.logs2_2);abline(v=log(0.15), lty=2, col='red')
+plot(prof.rhoZ,
+     xlim=c(-15, 0.5));abline(v=atanh(-0.2), lty=2, col='red')
+```
