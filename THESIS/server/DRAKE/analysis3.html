@@ -1592,7 +1592,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">A standard multinomial GLMM</h1>
 <h4 class="author">Henrique Laureano (.github.io)</h4>
-<h4 class="date"><em>Last modification on</em> 2021-02-18 16:24:17</h4>
+<h4 class="date"><em>Last modification on</em> 2021-02-19 08:50:45</h4>
 
 </div>
 
@@ -1610,7 +1610,10 @@ future::plan(multicore);TMB::openmp(11)</code></pre>
 <div id="uniglmm" class="section level2">
 <h2>uniGLMM</h2>
 <blockquote>
-<p>TAKE-HOME MESSAGE:</p>
+<p>COMMON UNIVARIATE RANDOM INTERCEPT</p>
+</blockquote>
+<blockquote>
+<p>TAKE-HOME MESSAGE: PARALLELIZATION + <code>PARAMETER_VECTOR()</code> + <code>dnorm()</code> + MODELING THE <code>log(sd)</code> WORKS NICELY!</p>
 </blockquote>
 <pre class="r"><code>J &lt;- 250
 cs &lt;- 10
@@ -1698,7 +1701,10 @@ plot(prof.logsd);abline(v=log(sd), lty=2, col=&#39;red&#39;)</code></pre>
 <div id="uni2glmm" class="section level2">
 <h2>uni2GLMM</h2>
 <blockquote>
-<p>TAKE-HOME MESSAGE:</p>
+<p>INDEPENDENT RANDOM INTERCEPTS</p>
+</blockquote>
+<blockquote>
+<p>TAKE-HOME MESSAGE: PARALLELIZATION + MULTIPLE <code>PARAMETER_VECTOR()</code> + MULTIPLE <code>dnorm()</code> + MODELING THE <code>log(sd)</code> WORKS NICELY!</p>
 </blockquote>
 <pre class="r"><code>sd &lt;- c(sqrt(0.25), sqrt(0.15))
 
@@ -1788,7 +1794,10 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col=&#39;red&#39;)</code></pre>
 <div id="uni3glmm" class="section level2">
 <h2>uni3GLMM</h2>
 <blockquote>
-<p>TAKE-HOME MESSAGE:</p>
+<p>INDEPENDENT RANDOM INTERCEPTS</p>
+</blockquote>
+<blockquote>
+<p>TAKE-HOME MESSAGE: PARALLELIZATION + <code>PARAMETER_MATRIX()</code> + MULTIPLE <code>dnorm()</code> + MODELING THE <code>log(sd)</code> WORKS NICELY!</p>
 </blockquote>
 <pre class="r"><code>uni3DLL &lt;- &#39;uni3GLMM&#39;;invisible(TMB::compile(paste0(uni3DLL, &#39;.cpp&#39;)))
 ## dyn.load(TMB::dynlib(uni3DLL))
@@ -1873,7 +1882,10 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col=&#39;red&#39;)</code></pre>
 <div id="uni4glmm" class="section level2">
 <h2>uni4GLMM</h2>
 <blockquote>
-<p>TAKE-HOME MESSAGE:</p>
+<p>INDEPENDENT RANDOM INTERCEPTS</p>
+</blockquote>
+<blockquote>
+<p>TAKE-HOME MESSAGE: PARALLELIZATION + <code>PARAMETER_MATRIX()</code> + <code>MVNORM()</code> + MODELING THE <code>log(sd)</code> WORKS NICELY!</p>
 </blockquote>
 <pre class="r"><code>uni4DLL &lt;- &#39;uni4GLMM&#39;;invisible(TMB::compile(paste0(uni4DLL, &#39;.cpp&#39;)))
 dyn.load(TMB::dynlib(uni4DLL))</code></pre>
@@ -1962,7 +1974,10 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col=&#39;red&#39;)</code></pre>
 <div id="uni5glmm" class="section level2">
 <h2>uni5GLMM</h2>
 <blockquote>
-<p>TAKE-HOME MESSAGE:</p>
+<p>INDEPENDENT RANDOM INTERCEPTS</p>
+</blockquote>
+<blockquote>
+<p>TAKE-HOME MESSAGE: PARALLELIZATION + <code>PARAMETER_MATRIX()</code> + <code>MVNORM()</code> + MODELING THE <code>log(s2)</code> DOESN’T WORK! PROBLEM/DIFFERENCE? WE’RE MODELING THE <code>log(s2)</code> NOT THE <code>log(sd)</code></p>
 </blockquote>
 <pre class="r"><code>uni5DLL &lt;- &#39;uni5GLMM&#39;;invisible(TMB::compile(paste0(uni5DLL, &#39;.cpp&#39;)))
 dyn.load(TMB::dynlib(uni5DLL))</code></pre>

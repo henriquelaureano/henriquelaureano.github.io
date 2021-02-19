@@ -23,7 +23,10 @@ future::plan(multicore);TMB::openmp(11)
 
 ## uniGLMM
 
-> TAKE-HOME MESSAGE: 
+> COMMON UNIVARIATE RANDOM INTERCEPT
+
+> TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_VECTOR()`` +
+> ``dnorm()`` + MODELING THE ``log(sd)`` WORKS NICELY!
 
 ```{r uniGLMM,cache=TRUE,fig.height=3.5,fig.width=10}
 J <- 250
@@ -75,7 +78,10 @@ plot(prof.logsd);abline(v=log(sd), lty=2, col='red')
 
 ## uni2GLMM
 
-> TAKE-HOME MESSAGE:
+> INDEPENDENT RANDOM INTERCEPTS
+
+> TAKE-HOME MESSAGE: PARALLELIZATION + MULTIPLE ``PARAMETER_VECTOR()`` +
+> MULTIPLE ``dnorm()`` + MODELING THE ``log(sd)`` WORKS NICELY!
 
 ```{r uni2GLMM,cache=TRUE,fig.height=6}
 sd <- c(sqrt(0.25), sqrt(0.15))
@@ -127,7 +133,10 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
 
 ## uni3GLMM
 
-> TAKE-HOME MESSAGE:
+> INDEPENDENT RANDOM INTERCEPTS
+
+> TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_MATRIX()`` + MULTIPLE
+> ``dnorm()`` + MODELING THE ``log(sd)`` WORKS NICELY!
 
 ```{r uni3GLMM,cache=TRUE,fig.height=6}
 uni3DLL <- 'uni3GLMM';invisible(TMB::compile(paste0(uni3DLL, '.cpp')))
@@ -173,7 +182,10 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
 
 ## uni4GLMM
 
-> TAKE-HOME MESSAGE:
+> INDEPENDENT RANDOM INTERCEPTS
+
+> TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_MATRIX()`` +
+> ``MVNORM()`` + MODELING THE ``log(sd)`` WORKS NICELY!
 
 ```{r uni4GLMM,cache=TRUE,fig.height=6}
 uni4DLL <- 'uni4GLMM';invisible(TMB::compile(paste0(uni4DLL, '.cpp')))
@@ -217,7 +229,11 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
 
 ## uni5GLMM
 
-> TAKE-HOME MESSAGE:
+> INDEPENDENT RANDOM INTERCEPTS
+
+> TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_MATRIX()`` +
+> ``MVNORM()`` + MODELING THE ``log(s2)`` DOESN'T WORK!
+> PROBLEM/DIFFERENCE? WE'RE MODELING THE ``log(s2)`` NOT THE ``log(sd)``
 
 ```{r uni5GLMM,cache=TRUE,error=TRUE}
 uni5DLL <- 'uni5GLMM';invisible(TMB::compile(paste0(uni5DLL, '.cpp')))

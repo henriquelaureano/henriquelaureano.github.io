@@ -4,7 +4,7 @@
 //                                      2021-fev-18 · Curitiba/PR/Brazil
 //----------------------------------------------------------------------
 
-// A STANDARD MULTINOMIAL GLMM WITH A COMMON RANDOM INTERCEPT
+// A STANDARD MULTINOMIAL GLMM WITH INDEPENDENT RANDOM INTERCEPTS
 
 #include <TMB.hpp>
 template<class Type>
@@ -21,8 +21,6 @@ Type objective_function<Type>::operator() ()
   PARAMETER(logsd1); Type sd1=exp(logsd1);
   PARAMETER(logsd2); Type sd2=exp(logsd2);
 
-  // PARAMETER(rhoZ); Type rho=(exp(2*rhoZ)-1)/(exp(2*rhoZ)+1);
-  
   PARAMETER_MATRIX(U); matrix<Type> ZU=Z*U; 
 
   Type risk1=0;
@@ -34,28 +32,13 @@ Type objective_function<Type>::operator() ()
   parallel_accumulator<Type> nll(this);
   // Type nll=0;
 
-  // vector<Type> u1=U.col(0);
-  // vector<Type> u2=U.col(1);
+  vector<Type> Zu(ZU.cols());
 
-  // vector<Type> u(U.cols());
-  vector<Type> zu(ZU.cols());
-
-  // Type cov12=rho*sd1*sd2;
-  Type cov12=0;
-  
   matrix<Type> Sigma(2, 2);
-  Sigma.row(0) << pow(sd1,2), cov12;
-  Sigma.row(1) << cov12, pow(sd2,2);
+  Sigma.row(0) << pow(sd1,2), 0;
+  Sigma.row(1) << 0, pow(sd2,2);
 
   MVNORM_t<Type> dmvnorm(Sigma);
-  
-  // for (int i=0; i<U.rows(); i++) {
-  // 
-  //   u=U.row(i);
-  //   nll += dmvnorm(u);
-  // }
-  // nll -= dnorm(u1, Type(0), sd1, true).sum();
-  // nll -= dnorm(u2, Type(0), sd2, true).sum();
   
   for (int i=0; i<Y.rows(); i++) {
 
@@ -68,12 +51,11 @@ Type objective_function<Type>::operator() ()
     y=Y.row(i);
     nll -= dmultinom(y, prob, true);
 
-    zu=ZU.row(i);
-    nll += dmvnorm(zu);
+    Zu=ZU.row(i);
+    nll += dmvnorm(Zu);
   }
   ADREPORT(sd1);
   ADREPORT(sd2);
-  // ADREPORT(rho);
   REPORT(Sigma);
   
   return nll;

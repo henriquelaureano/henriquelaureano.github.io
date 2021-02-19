@@ -4,7 +4,7 @@
 //                                      2021-fev-18 · Curitiba/PR/Brazil
 //----------------------------------------------------------------------
 
-// A STANDARD MULTINOMIAL GLMM WITH A COMMON RANDOM INTERCEPT
+// A STANDARD MULTINOMIAL GLMM WITH INDEPENDENT RANDOM INTERCEPTS
 
 #include <TMB.hpp>
 template<class Type>
