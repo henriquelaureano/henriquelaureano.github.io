@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------
 //                                                     Henrique Laureano
 //                                            henriquelaureano.github.io
-//                                      2021-fev-18 · Curitiba/PR/Brazil
+//                                      2021-fev-19 · Curitiba/PR/Brazil
 //----------------------------------------------------------------------
 
-// A STANDARD MULTINOMIAL GLMM WITH INDEPENDENT RANDOM INTERCEPTS
+// A STANDARD MULTINOMIAL GLMM WITH CORRELATED RANDOM INTERCEPTS
 
 #include <TMB.hpp>
 template<class Type>
@@ -20,6 +20,8 @@ Type objective_function<Type>::operator() ()
   
   PARAMETER(logs2_1); Type s2_1=exp(logs2_1);
   PARAMETER(logs2_2); Type s2_2=exp(logs2_2);
+
+  PARAMETER(rhoZ); Type rho=(exp(2*rhoZ) - 1)/(exp(2*rhoZ) + 1);
   
   PARAMETER_MATRIX(U); matrix<Type> ZU=Z*U; 
 
@@ -34,9 +36,11 @@ Type objective_function<Type>::operator() ()
 
   vector<Type> u(U.cols());
 
+  Type cov12=rho * sqrt(s2_1)*sqrt(s2_2);
+  
   matrix<Type> Sigma(2, 2);
-  Sigma.row(0) << s2_1, 0;
-  Sigma.row(1) << 0, s2_2;
+  Sigma.row(0) << s2_1, cov12;
+  Sigma.row(1) << cov12, s2_2;
 
   MVNORM_t<Type> dmvnorm(Sigma);
   
@@ -59,6 +63,7 @@ Type objective_function<Type>::operator() ()
   }
   ADREPORT(s2_1);
   ADREPORT(s2_2);
+  ADREPORT(rho);
   REPORT(Sigma);
   
   return nll;

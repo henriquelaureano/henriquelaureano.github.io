@@ -282,12 +282,15 @@ plot(prof.logs2_2);abline(v=log(sd[2]**2), lty=2, col='red')
 
 > CORRELATED RANDOM INTERCEPTS
 
-> TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_MATRIX()`` +
-> ``MVNORM()`` + MODELING THE ``log(sd)`` ...
+> COMPARING ``uni4GLMM`` WITH ``uni5GLMM``, WORKING ON THE ``log(s2)``
+> TOOK LESS ITERATIONS. THUS, WE FOLLOW THAT
 
-```{r uni6GLMM,eval=FALSE}
-## cov12 <- -0.2*sqrt(0.25)*sqrt(0.15) ## -0.0387
-cov12 <- 0
+> TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_MATRIX()`` +
+> ``MVNORM()`` + MODELING THE ``log(ss)`` WORKS! **PROBABLY** NEED MORE
+> DATA TO BETTER ESTIMATE THE CORRELATION
+
+```{r uni6GLMM,cache=TRUE,fig.width=10,fig.height=6,error=TRUE}
+cov12 <- -0.2*sqrt(0.25)*sqrt(0.15) ## -0.0387
 sigma <- matrix(c(0.25, cov12, cov12, 0.15), nrow=2)
 ## chol(sigma) ## PD matrix
 
@@ -302,9 +305,9 @@ checkDLL(uni6DLL)
 obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
                       parameters=list(beta1=0,
                                       beta2=0,
-                                      logsd1=log(0.1),
-                                      logsd2=log(0.1),
-                                      ## rhoZ=atanh(0.05), 
+                                      logs2_1=log(0.1),
+                                      logs2_2=log(0.1),
+                                      rhoZ=atanh(0.05), 
                                       U=U),
                       DLL=uni6DLL, ## ----------------------------------
                       random='U', hessian=TRUE, silent=TRUE)
@@ -313,7 +316,7 @@ obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
 
 bind_cols(
     bind_rows(
-        opt$par, c(beta.mcie, logsd1=log(sd[1]), logsd2=log(sd[2]),
+        opt$par, c(beta.mcie, logs2_1=log(0.25), logs2_2=log(0.15),
                    rhoZ=atanh(-0.2))
     ),
     label=c('model', 'data')
@@ -324,16 +327,19 @@ summary(sdr, select='fixed')
 summary(sdr, select='report')
 summary(sdr, select='random')[251, ]
 summary(summary(sdr, select='random'))
-## 
-## prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
-## prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
-## prof.logsd1 <- TMB::tmbprofile(obj, name='logsd1', trace=FALSE)
-## prof.logsd2 <- TMB::tmbprofile(obj, name='logsd2', trace=FALSE)
-## 
-## par(mfrow=c(2, 2), mar=c(4, 4, 2, 2))
-## plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
-## plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
-## plot(prof.logsd1);abline(v=log(sd[1]), lty=2, col='red')
-## plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
 
+prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.logs2_1 <- TMB::tmbprofile(obj, name='logs2_1', trace=FALSE)
+prof.logs2_2 <- TMB::tmbprofile(obj, name='logs2_2', trace=FALSE,
+                                parm.range=c(-15, 5))
+prof.rhoZ <- TMB::tmbprofile(obj, name='rhoZ', trace=FALSE,
+                             parm.range=c(-10, 10))
+
+par(mfrow=c(2, 3), mar=c(4, 4, 2, 2))
+plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+plot(prof.logs2_1);abline(v=log(0.25), lty=2, col='red')
+plot(prof.logs2_2);abline(v=log(0.15), lty=2, col='red')
+plot(prof.rhoZ);abline(v=log(-0.2), lty=2, col='red')
 ```
