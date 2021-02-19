@@ -32,13 +32,20 @@ Type objective_function<Type>::operator() ()
   parallel_accumulator<Type> nll(this);
   // Type nll=0;
 
-  vector<Type> Zu(ZU.cols());
+  // vector<Type> Zu(ZU.cols());
+  vector<Type> u(U.cols());
 
   matrix<Type> Sigma(2, 2);
   Sigma.row(0) << pow(sd1,2), 0;
   Sigma.row(1) << 0, pow(sd2,2);
 
   MVNORM_t<Type> dmvnorm(Sigma);
+
+  for (int i=0; i<U.rows(); i++) {
+
+    u=U.row(i);
+    nll += dmvnorm(u);
+  }
   
   for (int i=0; i<Y.rows(); i++) {
 
@@ -51,8 +58,8 @@ Type objective_function<Type>::operator() ()
     y=Y.row(i);
     nll -= dmultinom(y, prob, true);
 
-    Zu=ZU.row(i);
-    nll += dmvnorm(Zu);
+    // Zu=ZU.row(i);
+    // nll += dmvnorm(Zu);
   }
   ADREPORT(sd1);
   ADREPORT(sd2);

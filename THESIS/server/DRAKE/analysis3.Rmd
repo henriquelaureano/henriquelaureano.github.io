@@ -155,6 +155,7 @@ obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
                       random='U', hessian=TRUE, silent=TRUE)
 (opt <- with(obj,
              nlminb(par, fn, gr)))
+
 bind_cols(
     bind_rows(
         opt$par, c(beta.mcie, logsd1=log(sd[1]), logsd2=log(sd[2]))
@@ -189,7 +190,7 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
 
 ```{r uni4GLMM,cache=TRUE,fig.height=6}
 uni4DLL <- 'uni4GLMM';invisible(TMB::compile(paste0(uni4DLL, '.cpp')))
-dyn.load(TMB::dynlib(uni4DLL))
+## dyn.load(TMB::dynlib(uni4DLL))
 checkDLL(uni4DLL)
 
 obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
@@ -202,6 +203,7 @@ obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
                       random='U', hessian=TRUE, silent=TRUE)
 (opt <- with(obj,
              nlminb(par, fn, gr)))
+
 bind_cols(
     bind_rows(
         opt$par, c(beta.mcie, logsd1=log(sd[1]), logsd2=log(sd[2]))
@@ -232,27 +234,106 @@ plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
 > INDEPENDENT RANDOM INTERCEPTS
 
 > TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_MATRIX()`` +
-> ``MVNORM()`` + MODELING THE ``log(s2)`` DOESN'T WORK!
-> PROBLEM/DIFFERENCE? WE'RE MODELING THE ``log(s2)`` NOT THE ``log(sd)``
+> ``MVNORM()`` + MODELING THE ``log(s2)`` WORKS NICELY!
 
-```{r uni5GLMM,cache=TRUE,error=TRUE}
+```{r uni5GLMM,cache=TRUE,fig.height=6}
 uni5DLL <- 'uni5GLMM';invisible(TMB::compile(paste0(uni5DLL, '.cpp')))
-dyn.load(TMB::dynlib(uni5DLL))
+## dyn.load(TMB::dynlib(uni5DLL))
 checkDLL(uni5DLL)
 
 obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=beta.mcie['beta1'],
-                                      beta2=beta.mcie['beta2'],
-                                      logs2_1=log(0.25),
-                                      logs2_2=log(0.15),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logs2_1=log(0.1),
+                                      logs2_2=log(0.1),
                                       U=U),
                       DLL=uni5DLL, ## ----------------------------------
                       random='U', hessian=TRUE, silent=TRUE)
 (opt <- with(obj,
              nlminb(par, fn, gr)))
 
+bind_cols(
+    bind_rows(
+        opt$par, c(beta.mcie,
+                   logs2_1=log(sd[1]**2), logs2_2=log(sd[2]**2))
+    ),
+    label=c('model', 'data')
+)
+obj$report()
 sdr <- sdreport(obj)
 summary(sdr, select='fixed')
 summary(sdr, select='report')
+summary(sdr, select='random')[251, ]
 summary(summary(sdr, select='random'))
+
+prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.logs2_1 <- TMB::tmbprofile(obj, name='logs2_1', trace=FALSE)
+prof.logs2_2 <- TMB::tmbprofile(obj, name='logs2_2', trace=FALSE)
+
+par(mfrow=c(2, 2), mar=c(4, 4, 2, 2))
+plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+plot(prof.logs2_1);abline(v=log(sd[1]**2), lty=2, col='red')
+plot(prof.logs2_2);abline(v=log(sd[2]**2), lty=2, col='red')
+```
+
+## uni6GLMM
+
+> CORRELATED RANDOM INTERCEPTS
+
+> TAKE-HOME MESSAGE: PARALLELIZATION + ``PARAMETER_MATRIX()`` +
+> ``MVNORM()`` + MODELING THE ``log(sd)`` ...
+
+```{r uni6GLMM,eval=FALSE}
+## cov12 <- -0.2*sqrt(0.25)*sqrt(0.15) ## -0.0387
+cov12 <- 0
+sigma <- matrix(c(0.25, cov12, cov12, 0.15), nrow=2)
+## chol(sigma) ## PD matrix
+
+set.seed(0948)
+y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
+prop.table(colSums(y))
+
+uni6DLL <- 'uni6GLMM';invisible(TMB::compile(paste0(uni6DLL, '.cpp')))
+## dyn.load(TMB::dynlib(uni6DLL))
+checkDLL(uni6DLL)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logsd1=log(0.1),
+                                      logsd2=log(0.1),
+                                      ## rhoZ=atanh(0.05), 
+                                      U=U),
+                      DLL=uni6DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+(opt <- with(obj,
+             nlminb(par, fn, gr)))
+
+bind_cols(
+    bind_rows(
+        opt$par, c(beta.mcie, logsd1=log(sd[1]), logsd2=log(sd[2]),
+                   rhoZ=atanh(-0.2))
+    ),
+    label=c('model', 'data')
+)
+obj$report()
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(sdr, select='random')[251, ]
+summary(summary(sdr, select='random'))
+## 
+## prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
+## prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+## prof.logsd1 <- TMB::tmbprofile(obj, name='logsd1', trace=FALSE)
+## prof.logsd2 <- TMB::tmbprofile(obj, name='logsd2', trace=FALSE)
+## 
+## par(mfrow=c(2, 2), mar=c(4, 4, 2, 2))
+## plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
+## plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
+## plot(prof.logsd1);abline(v=log(sd[1]), lty=2, col='red')
+## plot(prof.logsd2);abline(v=log(sd[2]), lty=2, col='red')
+
 ```
