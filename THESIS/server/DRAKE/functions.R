@@ -82,7 +82,7 @@ future_datasimu.l2 <- function(J, cs, n, beta, Sigma=NULL)
 {
     y <- furrr::future_map(
                     rep(J, n),
-                    ~datasimu(.x, cs=cs, beta=beta, Sigma=Sigma),
+                    ~datasimu.l2(.x, cs=cs, beta=beta, Sigma=Sigma),
                     .options=furrr_options(seed=NULL))
     return(y)
 }

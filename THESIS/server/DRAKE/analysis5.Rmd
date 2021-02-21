@@ -23,15 +23,14 @@ future::plan(multicore);TMB::openmp(11)
 
 ## v1
 
-> SOME KIND OF EASY-DATA, GOOD MULTINOMIAL CLASSES FREQUENCY PROPORTIONS
+> TAKE-HOME MESSAGE: 1e4 GROUPS OF SIZE 10 WITH HIGH CENSORSHIP RATE
+> (>95%)
 
-> TAKE-HOME MESSAGE: 250 GROUPS OF SIZE 10, THE MODEL WORKS BUT IT
-> DOESN'T ESTIMATE THE CORRELATION WELL
-
-```{r v1,cache=TRUE}
-J <- 250
+```{r v1,cache=TRUE,fig.width=10,fig.height=6}
+J <- 1e4
 cs <- 10
-beta.mcie <- c(beta1=0.85, beta2=1.25)
+beta <- c(beta1=-4, beta2=-4.5)
+
 Z <- modelZ(J=J, cs=cs)
 U <- matrix(0, nrow=J, ncol=2)
 
@@ -39,8 +38,8 @@ cov12 <- -0.2*sqrt(0.25)*sqrt(0.15) ## -0.0387
 sigma <- matrix(c(0.25, cov12, cov12, 0.15), nrow=2)
 ## chol(sigma) ## PD matrix
 
-set.seed(0948)
-y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
+set.seed(1106)
+y <- datasimu.l2(J=J, cs=cs, beta=beta, Sigma=sigma)
 prop.table(colSums(y))
 
 uni6DLL <- 'uni6GLMM';invisible(TMB::compile(paste0(uni6DLL, '.cpp')))
@@ -56,214 +55,14 @@ obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
                                       U=U),
                       DLL=uni6DLL, ## ----------------------------------
                       random='U', hessian=TRUE, silent=TRUE)
-opt <- with(obj,
-            nlminb(par, fn, gr))
-bind_cols(
-    bind_rows(
-        c(opt$par, conv=opt$conv),
-        c(beta.mcie,
-          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
-          conv=NaN)
-    ),
-    label=c('model', 'data')
-)
-```
-
-## v2
-
-> TAKE-HOME MESSAGE: 500 GROUPS OF SIZE 10, THE RESULTS ARE BETTER THAN
-> ``v1``
-
-```{r v2,cache=TRUE}
-J <- 500
-Z <- modelZ(J=J, cs=cs)
-U <- matrix(0, nrow=J, ncol=2)
-
-set.seed(0949)
-y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
-
-obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=0,
-                                      beta2=0,
-                                      logs2_1=log(0.1),
-                                      logs2_2=log(0.1),
-                                      rhoZ=atanh(0.05), 
-                                      U=U),
-                      DLL=uni6DLL, ## ----------------------------------
-                      random='U', hessian=TRUE, silent=TRUE)
-opt <- with(obj,
-            nlminb(par, fn, gr))
-
-bind_cols(
-    bind_rows(
-        c(opt$par, conv=opt$conv),
-        c(beta.mcie,
-          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
-          conv=NaN)
-    ),
-    label=c('model', 'data')
-)
-```
-
-## v3
-
-> TAKE-HOME MESSAGE: 1000 GROUPS OF SIZE 10, THE RESULTS ARE GOOD /
-> REASONABLE
-
-```{r v3,cache=TRUE,fig.width=10,fig.height=6}
-J <- 1e3
-Z <- modelZ(J=J, cs=cs)
-U <- matrix(0, nrow=J, ncol=2)
-
-set.seed(0950)
-y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
-
-obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=0,
-                                      beta2=0,
-                                      logs2_1=log(0.1),
-                                      logs2_2=log(0.1),
-                                      rhoZ=atanh(0.05), 
-                                      U=U),
-                      DLL=uni6DLL, ## ----------------------------------
-                      random='U', hessian=TRUE, silent=TRUE)
-opt <- with(obj,
-            nlminb(par, fn, gr))
-opt
-
-bind_cols(
-    bind_rows(
-        c(opt$par, conv=opt$conv),
-        c(beta.mcie,
-          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
-          conv=NaN)
-    ),
-    label=c('model', 'data')
-)
-
-sigma
-obj$report()
-
-sdr <- sdreport(obj)
-summary(sdr, select='fixed')
-summary(sdr, select='report')
-summary(summary(sdr, select='random'))
-
-prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
-prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
-prof.logs2_1 <- TMB::tmbprofile(obj, name='logs2_1', trace=FALSE)
-prof.logs2_2 <- TMB::tmbprofile(obj, name='logs2_2', trace=FALSE)
-prof.rhoZ <- TMB::tmbprofile(obj, name='rhoZ', trace=FALSE)
-
-par(mfrow=c(2, 3), mar=c(4, 4, 2, 2))
-plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
-plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
-plot(prof.logs2_1);abline(v=log(0.25), lty=2, col='red')
-plot(prof.logs2_2);abline(v=log(0.15), lty=2, col='red')
-plot(prof.rhoZ,
-     xlim=c(-15, 0.5));abline(v=atanh(-0.2), lty=2, col='red')
-```
-
-## v4
-
-> TAKE-HOME MESSAGE:
-
-```{r v4,cache=TRUE}
-J <- 20e3
-cs <- 2
-Z <- modelZ(J=J, cs=cs)
-U <- matrix(0, nrow=J, ncol=2)
-
-set.seed(1044)
-y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
-
-obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=0,
-                                      beta2=0,
-                                      logs2_1=log(0.1),
-                                      logs2_2=log(0.1),
-                                      rhoZ=atanh(0.05), 
-                                      U=U),
-                      DLL=uni6DLL, ## ----------------------------------
-                      random='U', hessian=TRUE, silent=TRUE)
 tictoc::tic();opt <-
                   with(obj,
                        nlminb(par, fn, gr));tictoc::toc();opt
+
 bind_cols(
     bind_rows(
         c(opt$par, conv=opt$conv),
-        c(beta.mcie,
-          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
-          conv=NaN)
-    ),
-    label=c('model', 'data')
-)
-```
-
-## v5
-
-> TAKE-HOME MESSAGE:
-
-```{r v5,cache=TRUE}
-J <- 30e3
-Z <- modelZ(J=J, cs=cs)
-U <- matrix(0, nrow=J, ncol=2)
-
-set.seed(1045)
-y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
-
-obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=0,
-                                      beta2=0,
-                                      logs2_1=log(0.1),
-                                      logs2_2=log(0.1),
-                                      rhoZ=atanh(0.05), 
-                                      U=U),
-                      DLL=uni6DLL, ## ----------------------------------
-                      random='U', hessian=TRUE, silent=TRUE)
-tictoc::tic();opt <-
-                  with(obj,
-                       nlminb(par, fn, gr));tictoc::toc();opt
-bind_cols(
-    bind_rows(
-        c(opt$par, conv=opt$conv),
-        c(beta.mcie,
-          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
-          conv=NaN)
-    ),
-    label=c('model', 'data')
-)
-```
-
-## v6
-
-> TAKE-HOME MESSAGE:
-
-```{r v6,cache=TRUE,fig.width=10,fig.height=6,error=TRUE}
-J <- 50e3
-Z <- modelZ(J=J, cs=cs)
-U <- matrix(0, nrow=J, ncol=2)
-
-set.seed(1050)
-y <- datasimu.l2(J=J, cs=cs, beta=beta.mcie, Sigma=sigma)
-
-obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
-                      parameters=list(beta1=0,
-                                      beta2=0,
-                                      logs2_1=log(0.1),
-                                      logs2_2=log(0.1),
-                                      rhoZ=atanh(0.05), 
-                                      U=U),
-                      DLL=uni6DLL, ## ----------------------------------
-                      random='U', hessian=TRUE, silent=TRUE)
-tictoc::tic();opt <-
-                  with(obj,
-                       nlminb(par, fn, gr));tictoc::toc();opt
-bind_cols(
-    bind_rows(
-        c(opt$par, conv=opt$conv),
-        c(beta.mcie,
-          logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+        c(beta, logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
           conv=NaN)
     ),
     label=c('model', 'data')
@@ -278,18 +77,166 @@ summary(sdr, select='report')
 summary(summary(sdr, select='random'))
 
 tictoc::tic()
-prof.beta1 <- TMB::tmbprofile(obj, name='beta1', trace=FALSE)
-prof.beta2 <- TMB::tmbprofile(obj, name='beta2', trace=FALSE)
+prof.beta1   <- TMB::tmbprofile(obj, name='beta1',   trace=FALSE)
+prof.beta2   <- TMB::tmbprofile(obj, name='beta2',   trace=FALSE)
 prof.logs2_1 <- TMB::tmbprofile(obj, name='logs2_1', trace=FALSE)
 prof.logs2_2 <- TMB::tmbprofile(obj, name='logs2_2', trace=FALSE)
-prof.rhoZ <- TMB::tmbprofile(obj, name='rhoZ', trace=FALSE)
+prof.rhoZ    <- TMB::tmbprofile(obj, name='rhoZ',    trace=FALSE)
 tictoc::toc()
 
 par(mfrow=c(2, 3), mar=c(4, 4, 2, 2))
-plot(prof.beta1);abline(v=beta.mcie['beta1'], lty=2, col='red')
-plot(prof.beta2);abline(v=beta.mcie['beta2'], lty=2, col='red')
-plot(prof.logs2_1,
-     xlim=c(-2.9, -1.35));abline(v=log(0.25), lty=2, col='red')
-plot(prof.logs2_2);abline(v=log(0.15), lty=2, col='red')
-plot(prof.rhoZ);abline(v=atanh(-0.2), lty=2, col='red')
+plot(prof.beta1, xlim=c(-4.5, -4))
+abline(v=beta['beta1'], lty=2, col='red')
+
+plot(prof.beta2, xlim=c(-5.7, -4.5))
+abline(v=beta['beta2'], lty=2, col='red')
+
+plot(prof.logs2_1, xlim=c(-1.38, 0.28))
+abline(v=log(0.25), lty=2, col='red')
+
+plot(prof.logs2_2, xlim=c(-1.89, 1.2))
+abline(v=log(0.15), lty=2, col='red')
+
+plot(prof.rhoZ)
+abline(v=atanh(-0.2), lty=2, col='red')
+```
+
+## v2
+
+> TAKE-HOME MESSAGE: 2e4 GROUPS OF SIZE 5 WITH HIGH CENSORSHIP RATE
+> (>95%)
+
+```{r v2,cache=TRUE}
+J <- 2e4
+cs <- 5
+Z <- modelZ(J=J, cs=cs)
+U <- matrix(0, nrow=J, ncol=2)
+
+set.seed(1107)
+y <- datasimu.l2(J=J, cs=cs, beta=beta, Sigma=sigma)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logs2_1=log(0.1),
+                                      logs2_2=log(0.1),
+                                      rhoZ=atanh(0.05), 
+                                      U=U),
+                      DLL=uni6DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+tictoc::tic();opt <-
+                  with(obj,
+                       nlminb(par, fn, gr));tictoc::toc();opt
+
+bind_cols(
+    bind_rows(
+        c(opt$par, conv=opt$conv),
+        c(beta, logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+          conv=NaN)
+    ),
+    label=c('model', 'data')
+)
+
+sigma
+obj$report()
+
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(summary(sdr, select='random'))
+```
+
+## v3
+
+> TAKE-HOME MESSAGE: 5e4 GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE
+> (>95%)
+
+ ```{r v3,cache=TRUE}
+J <- 5e4
+cs <- 2
+Z <- modelZ(J=J, cs=cs)
+U <- matrix(0, nrow=J, ncol=2)
+
+set.seed(1108)
+y <- datasimu.l2(J=J, cs=cs, beta=beta, Sigma=sigma)
+
+obj <- TMB::MakeADFun(data=list(Y=y, Z=Z),
+                      parameters=list(beta1=0,
+                                      beta2=0,
+                                      logs2_1=log(0.1),
+                                      logs2_2=log(0.1),
+                                      rhoZ=atanh(0.05), 
+                                      U=U),
+                      DLL=uni6DLL, ## ----------------------------------
+                      random='U', hessian=TRUE, silent=TRUE)
+tictoc::tic();opt <-
+                  with(obj,
+                       nlminb(par, fn, gr));tictoc::toc();opt
+
+bind_cols(
+    bind_rows(
+        c(opt$par, conv=opt$conv),
+        c(beta, logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+          conv=NaN)
+    ),
+    label=c('model', 'data')
+)
+
+sigma
+obj$report()
+
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(summary(sdr, select='random'))
+```
+
+## v4
+
+> TAKE-HOME MESSAGE: 10 DATASETS OF 15e3 GROUPS OF SIZE 2 WITH HIGH
+> CENSORSHIP RATE (>95%)
+
+```{r v4,cache=TRUE}
+J <- 15e3
+Z <- modelZ(J=J, cs=cs)
+U <- matrix(0, nrow=J, ncol=2)
+
+n <- 50
+tictoc::tic()
+y <- future_datasimu.l2(J=J, cs=cs, n=n, beta=beta, Sigma=sigma)
+tictoc::toc()
+
+hatpars <- matrix(
+    NA, nrow=n, ncol=7,
+    dimnames=list(
+        NULL,
+        c('beta1', 'beta2', 'logs2_1', 'logs2_2', 'rhoZ', 'conv', 'fn'))
+)
+for (i in seq(n))
+{
+    checkDLL(uni6DLL)
+    obj <- TMB::MakeADFun(data=list(Y=y[[i]], Z=Z),
+                          parameters=list(beta1=0,
+                                          beta2=0,
+                                          logs2_1=log(0.1),
+                                          logs2_2=log(0.1),
+                                          rhoZ=atanh(0.05), 
+                                          U=U),
+                          DLL=uni6DLL, ## ------------------------------
+                          random='U', hessian=TRUE, silent=TRUE)
+    tictoc::tic()
+    opt <- with(obj, nlminb(par, fn, gr))
+    tictoc::toc()
+    TMB::FreeADFun(obj);gc()
+    hatpars[i, ] <- c(opt$par, opt$conv, opt$obj)
+}
+
+bind_cols(
+    bind_rows(
+        as_tibble(hatpars), 
+        c(beta, logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+          conv=NaN, fn=NaN)
+    ),
+    label=c(rep('model', n), 'data')
+)
 ```
