@@ -15,8 +15,8 @@ source('functions.R')
 ## install.packages('pacman')
 pacman::p_load(Matrix, mvtnorm, mc2d, ## rmultinomial()
                furrr, ## future + purrr
-               TMB, tictoc, tidyverse ## ggplot2() + dplyr()
-               )
+               TMB, tictoc, tidyverse, ## ggplot2() + dplyr()
+               summarytools) ## dfSummary()
 
 future::plan(multicore);TMB::openmp(11)
 ```
@@ -151,7 +151,7 @@ summary(summary(sdr, select='random'))
 > TAKE-HOME MESSAGE: 5e4 GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE
 > (>95%)
 
- ```{r v3,cache=TRUE}
+```{r v3,cache=TRUE}
 J <- 5e4
 cs <- 2
 Z <- modelZ(J=J, cs=cs)
@@ -193,11 +193,11 @@ summary(summary(sdr, select='random'))
 
 ## v4
 
-> TAKE-HOME MESSAGE: 10 DATASETS OF 15e3 GROUPS OF SIZE 2 WITH HIGH
+> TAKE-HOME MESSAGE: 10 DATASETS OF 25e3 GROUPS OF SIZE 2 WITH HIGH
 > CENSORSHIP RATE (>95%)
 
 ```{r v4,cache=TRUE}
-J <- 15e3
+J <- 25e3
 Z <- modelZ(J=J, cs=cs)
 U <- matrix(0, nrow=J, ncol=2)
 
@@ -230,13 +230,21 @@ for (i in seq(n))
     TMB::FreeADFun(obj);gc()
     hatpars[i, ] <- c(opt$par, opt$conv, opt$obj)
 }
-
-bind_cols(
+hatpars <- bind_cols(
     bind_rows(
         as_tibble(hatpars), 
         c(beta, logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
           conv=NaN, fn=NaN)
     ),
     label=c(rep('model', n), 'data')
+)
+hatpars[n+1, 1:5]
+```
+
+```{r dfsummary,results='asis'}
+dfSummary(
+    hatpars[seq(n), ],
+    plain.ascii=FALSE, style="grid", graph.magnif=0.75, valid.col=FALSE,
+    tmp.img.dir="/tmp"
 )
 ```
