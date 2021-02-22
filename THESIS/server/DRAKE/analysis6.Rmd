@@ -1,0 +1,126 @@
+---
+title: "multiGLMM: A multinomial GLMM for clustered competing risks data"
+author: Henrique Laureano (.github.io)
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r loading}
+source('functions2.R')
+
+## install.packages('pacman')
+pacman::p_load(Matrix, mvtnorm, mc2d, ## rmultinomial()
+               furrr, ## future + purrr
+               TMB, tictoc, tidyverse, ## ggplot2() + dplyr()
+               summarytools) ## dfSummary()
+
+future::plan(multicore);TMB::openmp(11)
+```
+
+```{r defs}
+J <- 5e3
+cs <- 2
+time <- runif(cs*J, 30, 79.9)
+delta <- 80
+
+Z <- modelZ(J=J, cs=cs)
+U <- matrix(0, nrow=J, ncol=2)
+
+beta <- c(beta1=-2,  beta2=-1.5)
+gama <- c(gama1=1.2, gama2=1)
+w    <- c(w1   =3,      w2=5)
+
+sigma22 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
+                   rho12=0.20, rho13=-0.10, rho14=0,
+                   rho23=0, rho24=-0.10, rho34=0.15)
+
+sigma36 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
+                   rho12=0.20, rho13=-0.10, rho14=0.10,
+                   rho23=0.10, rho24=-0.10, rho34=0.15)
+
+sigma38 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
+                   rho12=0.20, rho13=0, rho14=0.10,
+                   rho23=0.10, rho24=0, rho34=0.15)
+
+sigma40 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
+                   rho12=0, rho13=-0.10, rho14=0.10,
+                   rho23=0.10, rho24=-0.10, rho34=0)
+```
+
+## #22
+
+> TAKE-HOME MESSAGE: # GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE (>95%)
+
+```{r v22,cache=TRUE,fig.width=10,fig.height=6}
+set.seed(1320)
+y22 <- datasimu(J=J, cs=cs, time=time,
+                beta=beta, gama=gama, w=w, Sigma=sigma22)
+prop.table(colSums(y22))
+
+v22 <- 'multiGLMM_22';invisible(TMB::compile(paste0(v22, '.cpp')))
+## dyn.load(TMB::dynlib(v22))
+checkDLL(v22)
+
+obj22 <- TMB::MakeADFun(
+                  data=list(Y=y22, Z=Z), ## ----------------------------
+                  parameters=list(
+                      beta1=0, beta2=0,
+                      gama1=0, gama2=0,
+                      w1=1, w2=1,
+                      logs2_1=log(0.1), logs2_2=log(0.1),
+                      logs2_3=log(0.1), logs2_4=log(0.1),
+                      rhoZ12=atanh(0.05), rhoZ13=atanh(0.05), 
+                      rhoZ24=atanh(0.05), rhoZ34=atanh(0.05), 
+                      U=U),
+                  DLL=v22, ## ------------------------------------------
+                  random='U', hessian=TRUE, silent=TRUE)
+
+tictoc::tic();opt22 <-
+                  with(obj22,
+                       nlminb(par, fn, gr));tictoc::toc();opt22
+
+bind_cols(
+    bind_rows(
+        c(opt$par, conv=opt$conv),
+        c(beta, logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
+          conv=NaN)
+    ),
+    label=c('model', 'data')
+)
+
+sigma
+obj$report()
+
+sdr <- sdreport(obj)
+summary(sdr, select='fixed')
+summary(sdr, select='report')
+summary(summary(sdr, select='random'))
+
+tictoc::tic()
+prof.beta1   <- TMB::tmbprofile(obj, name='beta1',   trace=FALSE)
+prof.beta2   <- TMB::tmbprofile(obj, name='beta2',   trace=FALSE)
+prof.logs2_1 <- TMB::tmbprofile(obj, name='logs2_1', trace=FALSE)
+prof.logs2_2 <- TMB::tmbprofile(obj, name='logs2_2', trace=FALSE)
+prof.rhoZ    <- TMB::tmbprofile(obj, name='rhoZ',    trace=FALSE)
+tictoc::toc()
+
+par(mfrow=c(2, 3), mar=c(4, 4, 2, 2))
+plot(prof.beta1, xlim=c(-4.5, -4))
+abline(v=beta['beta1'], lty=2, col='red')
+
+plot(prof.beta2, xlim=c(-5.7, -4.5))
+abline(v=beta['beta2'], lty=2, col='red')
+
+plot(prof.logs2_1, xlim=c(-1.38, 0.28))
+abline(v=log(0.25), lty=2, col='red')
+
+plot(prof.logs2_2, xlim=c(-1.89, 1.2))
+abline(v=log(0.15), lty=2, col='red')
+
+plot(prof.rhoZ)
+abline(v=atanh(-0.2), lty=2, col='red')
+```
