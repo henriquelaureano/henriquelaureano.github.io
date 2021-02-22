@@ -21,42 +21,63 @@ pacman::p_load(Matrix, mvtnorm, mc2d, ## rmultinomial()
 future::plan(multicore);TMB::openmp(11)
 ```
 
-```{r defs}
-J <- 5e3
+```{r pardefs}
+beta <- c(beta1=-2,  beta2=-1.5)
+gama <- c(gama1=1.2, gama2=1)
+w    <- c(w1   =3,      w2=5)
+
+s2_1 <- 0.25
+s2_2 <- 0.15
+s2_3 <- 0.05
+s2_4 <- 0.10
+
+rho12 <-  0.20
+rho13 <- -0.10
+rho14 <-  0.10
+rho23 <-  0.10
+rho24 <- -0.10
+rho34 <-  0.15
+
+sigma22 <- sigmaPD(
+    s2_1=s2_1, s2_2=s2_2, s2_3=s2_3, s2_4=s2_4,
+    rho12=rho12, rho13=rho13, rho14=0,
+    rho23=0, rho24=rho24, rho34=rho34
+);sigma22
+
+sigma36 <- sigmaPD(
+    s2_1=s2_1, s2_2=s2_2, s2_3=s2_3, s2_4=s2_4,
+    rho12=rho12, rho13=rho13, rho14=rho14,
+    rho23=rho23, rho24=rho24, rho34=rho34
+);sigma36
+
+sigma38 <- sigmaPD(
+    s2_1=s2_1, s2_2=s2_2, s2_3=s2_3, s2_4=s2_4,
+    rho12=rho12, rho13=0, rho14=rho14,
+    rho23=rho23, rho24=0, rho34=rho34
+);sigma38
+
+sigma40 <- sigmaPD(
+    s2_1=s2_1, s2_2=s2_2, s2_3=s2_3, s2_4=s2_4,
+    rho12=0, rho13=rho13, rho14=rho14,
+    rho23=rho23, rho24=rho24, rho34=0
+);sigma40
+
+J <- 3e4
 cs <- 2
 time <- runif(cs*J, 30, 79.9)
 delta <- 80
 
 Z <- modelZ(J=J, cs=cs)
-U <- matrix(0, nrow=J, ncol=2)
-
-beta <- c(beta1=-2,  beta2=-1.5)
-gama <- c(gama1=1.2, gama2=1)
-w    <- c(w1   =3,      w2=5)
-
-sigma22 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
-                   rho12=0.20, rho13=-0.10, rho14=0,
-                   rho23=0, rho24=-0.10, rho34=0.15)
-
-sigma36 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
-                   rho12=0.20, rho13=-0.10, rho14=0.10,
-                   rho23=0.10, rho24=-0.10, rho34=0.15)
-
-sigma38 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
-                   rho12=0.20, rho13=0, rho14=0.10,
-                   rho23=0.10, rho24=0, rho34=0.15)
-
-sigma40 <- sigmaPD(s2_1=0.25, s2_2=0.15, s2_3=0.05, s2_4=0.10,
-                   rho12=0, rho13=-0.10, rho14=0.10,
-                   rho23=0.10, rho24=-0.10, rho34=0)
+U <- matrix(0, nrow=J, ncol=4)
 ```
 
 ## #22
 
-> TAKE-HOME MESSAGE: # GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE (>95%)
+> TAKE-HOME MESSAGE: 3e4 GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE
+> (>99%)
 
-```{r v22,cache=TRUE,fig.width=10,fig.height=6}
-set.seed(1320)
+```{r v22,cache=TRUE}
+set.seed(1321)
 y22 <- datasimu(J=J, cs=cs, time=time,
                 beta=beta, gama=gama, w=w, Sigma=sigma22)
 prop.table(colSums(y22))
@@ -66,7 +87,7 @@ v22 <- 'multiGLMM_22';invisible(TMB::compile(paste0(v22, '.cpp')))
 checkDLL(v22)
 
 obj22 <- TMB::MakeADFun(
-                  data=list(Y=y22, Z=Z), ## ----------------------------
+                  data=list(Y=y22, Z=Z, time=time, delta=delta), ## ----
                   parameters=list(
                       beta1=0, beta2=0,
                       gama1=0, gama2=0,
@@ -78,49 +99,251 @@ obj22 <- TMB::MakeADFun(
                       U=U),
                   DLL=v22, ## ------------------------------------------
                   random='U', hessian=TRUE, silent=TRUE)
-
+obj22$fn(obj22$par)
 tictoc::tic();opt22 <-
                   with(obj22,
                        nlminb(par, fn, gr));tictoc::toc();opt22
-
-bind_cols(
-    bind_rows(
-        c(opt$par, conv=opt$conv),
-        c(beta, logs2_1=log(0.25), logs2_2=log(0.15), rhoZ=atanh(-0.2),
-          conv=NaN)
-    ),
-    label=c('model', 'data')
+print.data.frame(
+    bind_cols(
+        bind_rows(
+            c(opt22$par, conv=opt22$conv),
+            c(beta, gama, w,
+              logs2_1=log(s2_1), logs2_2=log(s2_2),
+              logs2_3=log(s2_3), logs2_4=log(s2_4), 
+              rhoZ12=atanh(rho12), rhoZ13=atanh(rho13),
+              rhoZ24=atanh(rho24), rhoZ34=atanh(rho34), conv=NaN)
+        ),
+        label=c('model', 'data')
+    )
 )
+sigma22
+obj22$report()
+```
 
-sigma
-obj$report()
+```{r v22sdr,cache=TRUE,error=TRUE}
+sdr22 <- TMB::sdreport(obj22)
+## summary(sdr22, select='fixed')
+## summary(sdr22, select='report')
+## summary(summary(sdr22, select='random'))
+```
 
-sdr <- sdreport(obj)
-summary(sdr, select='fixed')
-summary(sdr, select='report')
-summary(summary(sdr, select='random'))
+## #36
 
-tictoc::tic()
-prof.beta1   <- TMB::tmbprofile(obj, name='beta1',   trace=FALSE)
-prof.beta2   <- TMB::tmbprofile(obj, name='beta2',   trace=FALSE)
-prof.logs2_1 <- TMB::tmbprofile(obj, name='logs2_1', trace=FALSE)
-prof.logs2_2 <- TMB::tmbprofile(obj, name='logs2_2', trace=FALSE)
-prof.rhoZ    <- TMB::tmbprofile(obj, name='rhoZ',    trace=FALSE)
-tictoc::toc()
+> TAKE-HOME MESSAGE: 3e4 GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE
+> (>99%)
 
-par(mfrow=c(2, 3), mar=c(4, 4, 2, 2))
-plot(prof.beta1, xlim=c(-4.5, -4))
-abline(v=beta['beta1'], lty=2, col='red')
+```{r v36,cache=TRUE}
+set.seed(1322)
+y36 <- datasimu(J=J, cs=cs, time=time,
+                beta=beta, gama=gama, w=w, Sigma=sigma36)
+prop.table(colSums(y36))
 
-plot(prof.beta2, xlim=c(-5.7, -4.5))
-abline(v=beta['beta2'], lty=2, col='red')
+v36 <- 'multiGLMM_36';invisible(TMB::compile(paste0(v36, '.cpp')))
+## dyn.load(TMB::dynlib(v36))
+checkDLL(v36)
 
-plot(prof.logs2_1, xlim=c(-1.38, 0.28))
-abline(v=log(0.25), lty=2, col='red')
+obj36 <- TMB::MakeADFun(
+                  data=list(Y=y36, Z=Z, time=time, delta=delta), ## ----
+                  parameters=list(
+                      beta1=0, beta2=0,
+                      gama1=0, gama2=0,
+                      w1=1, w2=1,
+                      logs2_1=log(0.1), logs2_2=log(0.1),
+                      logs2_3=log(0.1), logs2_4=log(0.1),
+                      rhoZ12=atanh(0.05), rhoZ13=atanh(0.05), 
+                      rhoZ14=atanh(0.05), rhoZ23=atanh(0.05), 
+                      rhoZ24=atanh(0.05), rhoZ34=atanh(0.05), 
+                      U=U),
+                  DLL=v36, ## ------------------------------------------
+                  random='U', hessian=TRUE, silent=TRUE)
+obj36$fn(obj36$par)
+tictoc::tic();opt36 <-
+                  with(obj36,
+                       nlminb(par, fn, gr));tictoc::toc();opt36
+print.data.frame(
+    bind_cols(
+        bind_rows(
+            c(opt36$par, conv=opt36$conv),
+            c(beta, gama, w,
+              logs2_1=log(s2_1), logs2_2=log(s2_2),
+              logs2_3=log(s2_3), logs2_4=log(s2_4), 
+              rhoZ12=atanh(rho12), rhoZ13=atanh(rho13),
+              rhoZ14=atanh(rho14), rhoZ23=atanh(rho23),
+              rhoZ24=atanh(rho24), rhoZ34=atanh(rho34), conv=NaN)
+        ),
+        label=c('model', 'data')
+    )
+)
+sigma36
+obj36$report()
+```
 
-plot(prof.logs2_2, xlim=c(-1.89, 1.2))
-abline(v=log(0.15), lty=2, col='red')
+```{r v36sdr,cache=TRUE,error=TRUE}
+sdr36 <- TMB::sdreport(obj36)
+## summary(sdr36, select='fixed')
+## summary(sdr36, select='report')
+## summary(summary(sdr36, select='random'))
+```
 
-plot(prof.rhoZ)
-abline(v=atanh(-0.2), lty=2, col='red')
+```{r v36_2,cache=TRUE}
+set.seed(1900)
+y36.2 <- datasimu(J=J, cs=cs, time=time,
+                  beta=beta, gama=gama, w=w, Sigma=sigma36)
+prop.table(colSums(y36.2))
+
+v36 <- 'multiGLMM_36';invisible(TMB::compile(paste0(v36, '.cpp')))
+## dyn.load(TMB::dynlib(v36))
+checkDLL(v36)
+
+obj36.2 <- TMB::MakeADFun(
+                    data=list(Y=y36.2, Z=Z, time=time, delta=delta),
+                    parameters=list(
+                        beta1=0, beta2=0,
+                        gama1=0, gama2=0,
+                        w1=1, w2=1,
+                        logs2_1=log(0.1), logs2_2=log(0.1),
+                        logs2_3=log(0.1), logs2_4=log(0.1),
+                        rhoZ12=atanh(0.05), rhoZ13=atanh(0.05), 
+                        rhoZ14=atanh(0.05), rhoZ23=atanh(0.05), 
+                        rhoZ24=atanh(0.05), rhoZ34=atanh(0.05), 
+                        U=U),
+                    DLL=v36, ## ----------------------------------------
+                    random='U', hessian=TRUE, silent=TRUE)
+obj36.2$fn(obj36.2$par)
+tictoc::tic();opt36.2 <-
+                  with(obj36.2,
+                       nlminb(par, fn, gr));tictoc::toc();opt36.2
+print.data.frame(
+    bind_cols(
+        bind_rows(
+            c(opt36$par, conv=opt36$conv),
+            c(opt36.2$par, conv=opt36.2$conv),
+            c(beta, gama, w,
+              logs2_1=log(s2_1), logs2_2=log(s2_2),
+              logs2_3=log(s2_3), logs2_4=log(s2_4), 
+              rhoZ12=atanh(rho12), rhoZ13=atanh(rho13),
+              rhoZ14=atanh(rho14), rhoZ23=atanh(rho23),
+              rhoZ24=atanh(rho24), rhoZ34=atanh(rho34), conv=NaN)
+        ),
+        label=c('model1', 'model2', 'data')
+    )
+)
+sigma36
+obj36.2$report()
+```
+
+```{r v36sdr_2,cache=TRUE,error=TRUE}
+sdr36.2 <- TMB::sdreport(obj36.2)
+```
+
+## #38
+
+> TAKE-HOME MESSAGE: 3e4 GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE
+> (>99%)
+
+```{r v38,cache=TRUE}
+set.seed(1323)
+y38 <- datasimu(J=J, cs=cs, time=time,
+                beta=beta, gama=gama, w=w, Sigma=sigma38)
+prop.table(colSums(y38))
+
+v38 <- 'multiGLMM_38';invisible(TMB::compile(paste0(v38, '.cpp')))
+## dyn.load(TMB::dynlib(v38))
+checkDLL(v38)
+
+obj38 <- TMB::MakeADFun(
+                  data=list(Y=y38, Z=Z, time=time, delta=delta), ## ----
+                  parameters=list(
+                      beta1=0, beta2=0,
+                      gama1=0, gama2=0,
+                      w1=1, w2=1,
+                      logs2_1=log(0.1), logs2_2=log(0.1),
+                      logs2_3=log(0.1), logs2_4=log(0.1),
+                      rhoZ12=atanh(0.05), rhoZ14=atanh(0.05),
+                      rhoZ23=atanh(0.05), rhoZ34=atanh(0.05), 
+                      U=U),
+                  DLL=v38, ## ------------------------------------------
+                  random='U', hessian=TRUE, silent=TRUE)
+obj38$fn(obj38$par)
+tictoc::tic();opt38 <-
+                  with(obj38,
+                       nlminb(par, fn, gr));tictoc::toc();opt38
+print.data.frame(
+    bind_cols(
+        bind_rows(
+            c(opt38$par, conv=opt38$conv),
+            c(beta, gama, w,
+              logs2_1=log(s2_1), logs2_2=log(s2_2),
+              logs2_3=log(s2_3), logs2_4=log(s2_4), 
+              rhoZ12=atanh(rho12), rhoZ14=atanh(rho14),
+              rhoZ23=atanh(rho23), rhoZ34=atanh(rho34), conv=NaN)
+        ),
+        label=c('model', 'data')
+    )
+)
+sigma38
+obj38$report()
+```
+
+```{r v38sdr,cache=TRUE,error=TRUE}
+sdr38 <- TMB::sdreport(obj38)
+## summary(sdr38, select='fixed')
+## summary(sdr38, select='report')
+## summary(summary(sdr38, select='random'))
+```
+
+## #40
+
+> TAKE-HOME MESSAGE: 3e4 GROUPS OF SIZE 2 WITH HIGH CENSORSHIP RATE
+> (>99%)
+
+```{r v40,cache=TRUE}
+set.seed(1324)
+y40 <- datasimu(J=J, cs=cs, time=time,
+                beta=beta, gama=gama, w=w, Sigma=sigma40)
+prop.table(colSums(y40))
+
+v40 <- 'multiGLMM_40';invisible(TMB::compile(paste0(v40, '.cpp')))
+## dyn.load(TMB::dynlib(v40))
+checkDLL(v40)
+
+obj40 <- TMB::MakeADFun(
+                  data=list(Y=y40, Z=Z, time=time, delta=delta), ## ----
+                  parameters=list(
+                      beta1=0, beta2=0,
+                      gama1=0, gama2=0,
+                      w1=1, w2=1,
+                      logs2_1=log(0.1), logs2_2=log(0.1),
+                      logs2_3=log(0.1), logs2_4=log(0.1),
+                      rhoZ13=atanh(0.05), rhoZ14=atanh(0.05),
+                      rhoZ23=atanh(0.05), rhoZ24=atanh(0.05),
+                      U=U),
+                  DLL=v40, ## ------------------------------------------
+                  random='U', hessian=TRUE, silent=TRUE)
+obj40$fn(obj40$par)
+tictoc::tic();opt40 <-
+                  with(obj40,
+                       nlminb(par, fn, gr));tictoc::toc();opt40
+print.data.frame(
+    bind_cols(
+        bind_rows(
+            c(opt40$par, conv=opt40$conv),
+            c(beta, gama, w,
+              logs2_1=log(s2_1), logs2_2=log(s2_2),
+              logs2_3=log(s2_3), logs2_4=log(s2_4), 
+              rhoZ13=atanh(rho13), rhoZ14=atanh(rho14),
+              rhoZ23=atanh(rho23), rhoZ24=atanh(rho24), conv=NaN)
+        ),
+        label=c('model', 'data')
+    )
+)
+sigma40
+obj40$report()
+```
+
+```{r v40sdr,cache=TRUE,error=TRUE}
+sdr40 <- TMB::sdreport(obj40)
+## summary(sdr40, select='fixed')
+## summary(sdr40, select='report')
+## summary(summary(sdr40, select='random'))
 ```
