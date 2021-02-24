@@ -15,7 +15,7 @@ pacman::p_load(Matrix, mvtnorm, mc2d, ## rmultinomial()
 future::plan(multicore);TMB::openmp(11)
 
 ## TAKE-HOME MESSAGE ---------------------------------------------------
-## DO ALL INITIAL GUESSES LEAD TO THE SAME PLACE?
+## DO ALL INITIAL GUESSES LEAD TO THE SAME PLACE? KIND OF
 
 ## TESTING WITH THE BIGGER (MOST COMPLICATED?) MODEL IN THE MOST
 ## DIFFICULT SCENARIO (SMALLER GROUPS AND HIGHEST CENSORSHIP)
@@ -45,7 +45,7 @@ Sigma <- sigmaPD4(s2_1=s2_1,
                   rho34=rho34)
 Sigma
 
-J     <- 1e4
+J     <- 3e4
 cs    <- 2
 time  <- runif(cs*J, 30, 79.9)
 delta <- 80
@@ -110,5 +110,4 @@ for (i in seq(3))
     coefs[i+3, ] <- c(opt$par, opt$conv, opt$obj)
     TMB::FreeADFun(obj);gc()
 }
-
 coefs
