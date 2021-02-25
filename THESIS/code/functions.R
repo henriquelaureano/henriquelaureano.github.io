@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-23 · Curitiba/PR/Brazil
+##                                      2021-fev-24 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 ## multiGLMM: A MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS DATA
 
@@ -172,3 +172,46 @@ checkDLL <- function(dll)
         invisible(TMB::config(tape.parallel=FALSE, DLL=dll))
     }
 }
+
+cif <- function(time, delta=80, beta, gama, w)
+{
+    risk1 <- exp(beta[1])
+    risk2 <- exp(beta[2])
+
+    level <- 1 + risk1 + risk2
+
+    gt <- 0.5*log(time/(delta-time))
+
+    x1 <- w[1]*gt - gama[1]
+    x2 <- w[2]*gt - gama[2]
+    
+    cif1 <- risk1/level * pnorm(x1)
+    cif2 <- risk2/level * pnorm(x2)
+
+    label.cif1 <- paste0(
+        'CIF1: beta1=', beta[1], ', gama1=', gama[1], ', w1=', w[1]
+    )
+    label.cif2 <- paste0(
+        'CIF2: beta2=', beta[2], ', gama2=', gama[2], ', w2=', w[2]
+    )
+    n <- length(time)
+
+    dat <- tibble::tibble(time =rep(time, 2),
+                          cif  =c(cif1, cif2),
+                          label=c(rep(label.cif1, n),
+                                  rep(label.cif2, n)))
+
+    dgt <- delta/(2*time*(delta-time))
+
+    p1 <- risk1/level * w[1]*dgt * dnorm(x1)
+    p2 <- risk2/level * w[2]*dgt * dnorm(x2)
+
+    p3 <- 1 - p1 - p2
+
+    y <- mc2d::rmultinomial(n, 1, prob=cbind(p1, p2, p3))
+
+    censorship <- prop.table(colSums(y))[3]
+
+    return(list(dat=dat, censorship=censorship))
+}
+

@@ -105,9 +105,12 @@ for (i in seq(3))
                                           U=U),
                           DLL=dll, random='U', hessian=TRUE, silent=TRUE)
     tictoc::tic()
-    opt <- with(obj, nlminb(par, fn, gr))
+    opt <- try(with(obj, nlminb(par, fn, gr)), silent=TRUE) 
     tictoc::toc()
-    coefs[i+3, ] <- c(opt$par, opt$conv, opt$obj)
+    if (class(opt) != 'try-error')
+    {
+        coefs[i+3, ] <- c(opt$par, opt$conv, opt$obj)
+    }
     TMB::FreeADFun(obj);gc()
 }
 coefs
