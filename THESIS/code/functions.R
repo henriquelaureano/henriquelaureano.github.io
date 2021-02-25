@@ -202,7 +202,7 @@ cif <- function(time, delta=80, beta, gama, w)
                                   rep(label.cif2, n)))
 
     dgt <- delta/(2*time*(delta-time))
-
+    
     p1 <- risk1/level * w[1]*dgt * dnorm(x1)
     p2 <- risk2/level * w[2]*dgt * dnorm(x2)
 
@@ -214,4 +214,3 @@ cif <- function(time, delta=80, beta, gama, w)
 
     return(list(dat=dat, censorship=censorship))
 }
-
