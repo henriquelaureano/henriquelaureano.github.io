@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-24 · Curitiba/PR/Brazil
+##                                      2021-fev-25 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 ## multiGLMM: A MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS DATA
 
@@ -88,7 +88,7 @@ ps2 <- function(J, cs, time, delta=80, beta, gama, w,
 
 ps4 <- function(J, cs, time, delta=80, beta, gama, w, Sigma=NULL)
 {
-    ZU <- matrix(0, nrow=cs*J, ncol=2)
+    ZU <- matrix(0, nrow=cs*J, ncol=4)
 
     if (!is.null(Sigma)) {
 
