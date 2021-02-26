@@ -47,3 +47,20 @@ pc2 <- ggplot()+
         legend.position=c(0.3, 0.85)
     )
 pc1|pc2
+
+## ---------------------------------------------------------------------
+J <- 1e4;cs <- 2
+
+time <- runif(J*cs, 30, 79.9)
+## time <- sample(c(runif(J*cs*0.60, 30, 49.9), 
+##                  runif(J*cs*0.30, 50, 64.9), 
+##                  runif(J*cs*0.10, 65, 79.9)), J*cs)
+tf <- tibble(
+    as_tibble(
+        datasimu(
+            J=J, cs=cs, time=time, beta=beta, gama=gama, w=w,
+            latent='complete'
+        )
+    ),
+    time=time)%>%filter(y3==0)
+hist(tf$time, xlim=c(30, 80), main=nrow(tf))
