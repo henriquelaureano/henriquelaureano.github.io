@@ -9,19 +9,19 @@ i      <- abs(as.numeric(args[7]))
 library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
 
 ## ------------------------------------
-name  <- 'v1_cs1_1'
+name  <- 'v2_cs2_2'
 where <- paste0('coefs', name)
 model <- gsub('_.*', '', name)
 
 TMB::compile(paste0('cpps/', model, '.cpp'))
 
-load(paste0(name, '.RData'))
+load(paste0('data/', name, '.RData'))
 
 TMB::openmp(28)
 
 ## ------------------------------------
-J  <- 30e3
-cs <- 2
+J  <- 12e3
+cs <- 5
 U  <- matrix(0, nrow=J, ncol=2)
 
 blocks <- replicate(J, rep(1, cs), simplify=FALSE)
@@ -58,15 +58,15 @@ if ( !model %in% names(getLoadedDLLs()) ) {
 }
 ## ------------------------------------
 obj <- TMB::MakeADFun(data=list(Y=y[[i]], Z=Z, time=time, delta=80),
-                      parameters=list(beta1  =beta.1['beta1'],
-                                      beta2  =beta.1['beta2'],
-                                      gama1  =gama.1['gama1'],
-                                      gama2  =gama.1['gama2'],
-                                      w1     =w.1['w1'],
-                                      w2     =w.1['w2'],
-                                      logs2_1=log(s2_1),
-                                      logs2_2=log(s2_2),
-                                      rhoZ12 =atanh(rho12),
+                      parameters=list(beta1  =beta.2['beta1'],
+                                      beta2  =beta.2['beta2'],
+                                      gama1  =gama.2['gama1'],
+                                      gama2  =gama.2['gama2'],
+                                      w1     =w.2['w1'],
+                                      w2     =w.2['w2'],
+                                      logs2_3=log(s2_3),
+                                      logs2_4=log(s2_4),
+                                      rhoZ34 =atanh(rho34),
                                       U      =U),
                       DLL=model, random='U', hessian=TRUE, silent=TRUE)
 
