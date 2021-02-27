@@ -6,7 +6,8 @@
 ( args <- commandArgs() )
 i      <- abs(as.numeric(args[7]))
 
-library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
+library(TMB)
+## library(TMB, lib.loc='/home/est/bonat/nobackup/github/')
 
 ## ------------------------------------
 name  <- 'v1_cs2_2'
@@ -17,7 +18,8 @@ TMB::compile(paste0('cpps/', model, '.cpp'))
 
 load(paste0('data/', name, '.RData'))
 
-TMB::openmp(28)
+TMB::openmp(12)
+## TMB::openmp(28)
 
 ## ------------------------------------
 J  <- 12e3
