@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-fev-26 · Curitiba/PR/Brazil
+##                                      2021-mar-02 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 ## multiGLMM: A MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS DATA
 
@@ -153,7 +153,8 @@ future_datasimu <- function(J, cs, n, time, delta=80, beta, gama, w,
                               latent=latent, type=type, Sigma=Sigma),
                     .options=furrr_options(seed=NULL))
 
-    save(y, time, file=paste0(tag, '.RData'), version=2)
+    save(y, time, J, cs, beta, gama, w,
+         file=paste0(tag, '.RData'), version=2)
 
     return( tictoc::toc() )
 }
