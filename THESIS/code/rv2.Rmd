@@ -1,0 +1,375 @@
+---
+title: 'multiGLMM with correlated random intercepts on the trajectory time level'
+author: henrique laureano (.github.io)
+date: '*Last modification on* `r Sys.time()`'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r echo=FALSE}
+library(knitr)
+opts_chunk$set(fig.path = 'rv2_figs/')
+```
+
+```{r packages}
+## install.packages('pacman')
+pacman::p_load(tidyverse, patchwork, ggcorrplot)
+```
+
+```{r data}
+## ~/Git/henriquelaureano.github.io/THESIS/code/
+v2names <- c(
+    'beta1', 'beta2', 'gama1', 'gama2', 'w1', 'w2',
+    'logs2_3', 'logs2_4', 'rhoZ34', 'conv', 'mll'
+)
+v2data <- function(data)
+{
+    out <- as_tibble(read.table(data))%>%select(-V1)%>%
+        `colnames<-`(v2names)
+    return(out)
+}
+v2_cs1_1 <- v2data('coefsv2_cs1_1.txt')
+v2_cs1_2 <- v2data('coefsv2_cs1_2.txt')
+v2_cs2_1 <- v2data('coefsv2_cs2_1.txt')
+v2_cs2_2 <- v2data('coefsv2_cs2_2.txt')
+v2_cs3_1 <- v2data('coefsv2_cs3_1.txt')
+v2_cs3_2 <- v2data('coefsv2_cs3_2.txt')
+```
+
+# COR
+
+```{r cor2plot,message=FALSE,fig.height=15,fig.width=10}
+cor2plot <- function(data, title)
+{
+    cor.data <- round(cor(data), 1)
+    ggcorrplot(cor.data, 
+               type='lower', 
+               lab=TRUE, 
+               ## lab_size=5, 
+               ## outline.color='white', 
+               colors=RColorBrewer::brewer.pal(n=3, name='Greys'),
+               title=title,
+               p.mat=cor_pmat(cor.data), 
+               insig='blank', 
+               ggtheme=theme(
+                   plot.title=element_text(size=16, face='bold'), 
+                   axis.text.x=element_text(size=15), 
+                   axis.text.y=element_text(size=15), 
+                   axis.title.x=element_blank(),
+                   axis.title.y=element_blank(),
+                   panel.background=element_blank(),
+                   axis.ticks=element_blank(),
+                   legend.justification=c(1, 0),
+                   legend.position=c(0.4, 0.85),
+                   legend.direction='horizontal',
+                   legend.title=element_blank(),
+                   legend.text=element_text(size=11)))+
+        scale_x_discrete(labels=c(expression(beta[2]),
+                                  expression(gamma[1]),
+                                  expression(gamma[2]),
+                                  expression(w[1]),
+                                  expression(w[2]),
+                                  expression(log(sigma[3]^2)),
+                                  expression(log(sigma[4]^2)),
+                                  expression(z(rho[34]))))+
+        scale_y_discrete(labels=c(expression(beta[1]), 
+                                  expression(beta[2]),
+                                  expression(gamma[1]),
+                                  expression(gamma[2]),
+                                  expression(w[1]),
+                                  expression(w[2]),
+                                  expression(log(sigma[3]^2)),
+                                  expression(log(sigma[4]^2))))+
+        coord_cartesian()
+}
+
+p1 <- cor2plot(v2_cs1_1[1:9], title='v2_cs1_1')
+p2 <- cor2plot(v2_cs1_2[1:9], title='v2_cs1_2')
+p3 <- cor2plot(v2_cs2_1[1:9], title='v2_cs2_1')
+p4 <- cor2plot(v2_cs2_2[1:9], title='v2_cs2_2')
+p5 <- cor2plot(v2_cs3_1[1:9], title='v2_cs3_1')
+p6 <- cor2plot(v2_cs3_2[1:9], title='v2_cs3_2')
+
+(p1|p2)/(p3|p4)/(p5|p6)
+```
+
+# BIAS
+
+```{r bias2plot,fig.height=12.5,fig.width=10}
+true1 <- c( 3,  2.6, 2.5, 4, 5, 10, log(0.7), log(0.9), atanh(0.2))
+true2 <- c(-2, -1.5, 1, 1.5, 3,  4, log(0.7), log(0.9), atanh(0.2))
+
+cerror <- function(coefs, true)
+{
+    error <- coefs
+    for (i in seq(ncol(coefs))) { error[i] <- true[i]-coefs[i] }
+    out <- error%>%
+        summarize_all(mean)%>%
+        add_row(error%>%summarize_all(quantile, c(0.025, 0.975)))%>%
+        mutate(label=c('mean', 'q025', 'q975'))%>%
+        pivot_longer(!label, names_to='par', values_to='value')%>%
+        pivot_wider(names_from=label, values_from=value)
+    out$par <- as_factor(out$par)
+    return(out)
+}
+ev2_cs1_1 <- cerror(v2_cs1_1[1:9], true1)
+ev2_cs1_2 <- cerror(v2_cs1_2[1:9], true2)
+ev2_cs2_1 <- cerror(v2_cs2_1[1:9], true1)
+ev2_cs2_2 <- cerror(v2_cs2_2[1:9], true2)
+ev2_cs3_1 <- cerror(v2_cs3_1[1:9], true1)
+ev2_cs3_2 <- cerror(v2_cs3_2[1:9], true2)
+
+bias2plot <- function(data, title)
+{
+    ggplot(data, aes(ymin=q025, ymax=q975, x=par))+
+        geom_linerange(
+            color=RColorBrewer::brewer.pal(n=3, name='Greys')[2],
+            position=position_dodge(width=0.2),
+            size=3)+
+        ## ylim(c(-1, 1))+
+        geom_point(mapping=aes(x=par, y=mean), size=2)+
+        geom_hline(yintercept=0, linetype='dashed')+
+        labs(x=NULL, y='Bias',
+             title=title, subtitle='with 2.5% and 97.5% quantiles')+
+        scale_x_discrete(labels=c(expression(beta[1]),
+                                  expression(beta[2]),
+                                  expression(gamma[1]),
+                                  expression(gamma[2]),
+                                  expression(w[1]),
+                                  expression(w[2]),
+                                  expression(log(sigma[3]^2)),
+                                  expression(log(sigma[4]^2)),
+                                  expression(z(rho[34]))))+
+        coord_flip()+
+        theme_minimal()+
+        theme(plot.title=element_text(size=12, face='bold'),
+              plot.subtitle=element_text(size=11, face='italic'),
+              axis.text.x=element_text(size=11),
+              axis.text.y=element_text(size=11),
+              axis.title.x=element_text(
+                  size=12, 
+                  margin=unit(c(t=3, r=0, b=0, l=0), 'mm')))
+}
+
+p1 <- bias2plot(ev2_cs1_1, title='v2_cs1_1 parameters bias')
+p2 <- bias2plot(ev2_cs1_2, title='v2_cs1_2 parameters bias')
+p3 <- bias2plot(ev2_cs2_1, title='v2_cs2_1 parameters bias')
+p4 <- bias2plot(ev2_cs2_2, title='v2_cs2_2 parameters bias')
+p5 <- bias2plot(ev2_cs3_1, title='v2_cs3_1 parameters bias')
+p6 <- bias2plot(ev2_cs3_2, title='v2_cs3_2 parameters bias')
+
+(p1|p2)/(p3|p4)/(p5|p6)
+```
+
+# CIF
+
+```{r cifs,fig.height=7.5,fig.width=7.5}
+beta1 <- c(
+    true1[1],
+    mean(v2_cs1_1$beta1), mean(v2_cs2_1$beta1), mean(v2_cs3_1$beta1), 
+    true2[1],
+    mean(v2_cs1_2$beta1), mean(v2_cs2_2$beta1), mean(v2_cs3_2$beta1)
+)
+beta2 <- c(
+    true1[2],
+    mean(v2_cs1_1$beta2), mean(v2_cs2_1$beta2), mean(v2_cs3_1$beta2), 
+    true2[2],
+    mean(v2_cs1_2$beta2), mean(v2_cs2_2$beta2), mean(v2_cs3_2$beta2)
+)
+gamma1 <- c(
+    true1[3],
+    mean(v2_cs1_1$gama1), mean(v2_cs2_1$gama1), mean(v2_cs3_1$gama1), 
+    true2[3],
+    mean(v2_cs1_2$gama1), mean(v2_cs2_2$gama1), mean(v2_cs3_2$gama1)
+)
+gamma2 <- c(
+    true1[4],
+    mean(v2_cs1_1$gama2), mean(v2_cs2_1$gama2), mean(v2_cs3_1$gama2), 
+    true2[4],
+    mean(v2_cs1_2$gama2), mean(v2_cs2_2$gama2), mean(v2_cs3_2$gama2)
+)
+w1 <- c(
+    true1[5], mean(v2_cs1_1$w1), mean(v2_cs2_1$w1), mean(v2_cs3_1$w1), 
+    true2[5], mean(v2_cs1_2$w1), mean(v2_cs2_2$w1), mean(v2_cs3_2$w1)
+)
+w2 <- c(
+    true1[6], mean(v2_cs1_1$w2), mean(v2_cs2_1$w2), mean(v2_cs3_1$w2), 
+    true2[6], mean(v2_cs1_2$w2), mean(v2_cs2_2$w2), mean(v2_cs3_2$w2)
+)
+t     <- seq(30, 79.9, length.out=100)
+delta <- 80
+size  <- length(beta1)
+nt    <- length(t)
+
+cif1 <- vector(mode='list', length=size)
+cif2 <- vector(mode='list', length=size)
+for (i in seq(size)) {
+    risklevel1 <- exp(beta1[i])
+    risklevel2 <- exp(beta2[i])
+    mlog1 <- risklevel1/(1+risklevel1+risklevel2)
+    mlog2 <- risklevel2/(1+risklevel1+risklevel2)
+    trajectory1 <- pnorm(w1[i]*atanh(2*t/delta-1)-gamma1[i])
+    trajectory2 <- pnorm(w2[i]*atanh(2*t/delta-1)-gamma2[i])
+    cif1[[i]] <- mlog1*trajectory1
+    cif2[[i]] <- mlog2*trajectory2
+}
+model <- as_factor(c(
+    rep('v2true_1', nt),
+    rep('v2_cs1_1', nt), rep('v2_cs2_1', nt), rep('v2_cs3_1', nt),
+    rep('v2true_2', nt),
+    rep('v2_cs1_2', nt), rep('v2_cs2_2', nt), rep('v2_cs3_2', nt)
+))
+
+data_cif <- tibble(curve=c(rep('CIF: Cause 1', 8*nt),
+                           rep('CIF: Cause 2', 8*nt)), 
+                   model=rep(model, 2),
+                   type=rep(c(rep('Configuration 1', 4*nt),
+                              rep('Configuration 2', 4*nt)),
+                            2),
+                   value=c(unlist(cif1), unlist(cif2)),
+                   time=rep(t, 2*8))
+
+ggplot(data_cif, aes(x=time, y=value, group=model))+
+    geom_line(aes(linetype=model))+
+    facet_wrap(~curve+type)+
+    labs(x='Time', y=NULL, linetype='Model')+
+    theme_minimal()+
+    theme(axis.title.x=element_text(
+              size=12,
+              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
+          axis.text.x=element_text(size=11), 
+          axis.text.y=element_text(size=11), 
+          legend.position=c(0.1, 0.8),
+          legend.text=element_text(size=12),
+          legend.title=element_blank(), 
+          legend.box.background=element_rect(color='black'), 
+          strip.background=element_rect(colour='black', fill='white'),
+          strip.text.x=element_text(size=12))
+```
+
+# VCOV
+
+```{r vcovs,fig.height=10,fig.width=10}
+plotS <- function(S, title)
+{
+    longS <- reshape2::melt(S, na.rm=TRUE)
+    longS$Var1 <- as_factor(longS$Var1)
+    longS$Var2 <- fct_relevel(as_factor(longS$Var2), rev)
+    ggplot(longS, aes(x=Var1, y=Var2, fill=value))+
+        geom_tile(color='black', size=0.5)+
+        geom_text(aes(label=round(value, 5)), size=4.5)+
+        scale_fill_gradient(low='white', high='white')+
+        labs(title=title)+
+        scale_x_discrete(labels=c(expression(u[1]), 
+                                  expression(u[2])))+
+        scale_y_discrete(labels=c(expression(u[2]),
+                                  expression(u[1])))+
+        theme_minimal()+
+        theme(axis.text.x=element_text(size=12, color='black'),
+              axis.text.y=element_text(size=12, color='black'), 
+              axis.title.x=element_blank(), 
+              axis.title.y=element_blank(),
+              panel.grid.major=element_blank(),
+              legend.position='none',
+              plot.title=element_text(size=12, face='bold'))
+}
+p0 <- plotS(
+    S=matrix(c(
+        0.7, tanh(0.2)*sqrt(exp(0.7))*sqrt(exp(0.9)), NA, 0.9), nrow=2),
+    title='true values'
+)
+mv2_cs1_1 <- colMeans(v2_cs1_1[7:9])
+p1 <- plotS(
+    S=matrix(c(
+        exp(mv2_cs1_1[1]), tanh(mv2_cs1_1[3])*
+                           sqrt(exp(mv2_cs1_1[1]))*
+                           sqrt(exp(mv2_cs1_1[2])),
+        NA, exp(mv2_cs1_1[2])),
+        nrow=2), title='v2_cs1_1'
+)
+mv2_cs1_2 <- colMeans(v2_cs1_2[7:9])
+p2 <- plotS(
+    S=matrix(c(
+        exp(mv2_cs1_2[1]), tanh(mv2_cs1_2[3])*
+                           sqrt(exp(mv2_cs1_2[1]))*
+                           sqrt(exp(mv2_cs1_2[2])),
+        NA, exp(mv2_cs1_2[2])),
+        nrow=2), title='v2_cs1_2'
+)
+mv2_cs2_1 <- colMeans(v2_cs2_1[7:9])
+p3 <- plotS(
+    S=matrix(c(
+        exp(mv2_cs2_1[1]), tanh(mv2_cs2_1[3])*
+                           sqrt(exp(mv2_cs2_1[1]))*
+                           sqrt(exp(mv2_cs2_1[2])),
+        NA, exp(mv2_cs2_1[2])),
+        nrow=2), title='v2_cs2_1'
+)
+mv2_cs2_2 <- colMeans(v2_cs2_2[7:9])
+p4 <- plotS(
+    S=matrix(c(
+        exp(mv2_cs2_2[1]), tanh(mv2_cs2_2[3])*
+                           sqrt(exp(mv2_cs2_2[1]))*
+                           sqrt(exp(mv2_cs2_2[2])),
+        NA, exp(mv2_cs2_2[2])),
+        nrow=2), title='v2_cs2_2'
+)
+mv2_cs3_1 <- colMeans(v2_cs3_1[7:9])
+p5 <- plotS(
+    S=matrix(c(
+        exp(mv2_cs3_1[1]), tanh(mv2_cs3_1[3])*
+                           sqrt(exp(mv2_cs3_1[1]))*
+                           sqrt(exp(mv2_cs3_1[2])),
+        NA, exp(mv2_cs3_1[2])),
+        nrow=2), title='v2_cs3_1'
+)
+mv2_cs3_2 <- colMeans(v2_cs3_2[7:9])
+p6 <- plotS(
+    S=matrix(c(
+        exp(mv2_cs3_2[1]), tanh(mv2_cs3_2[3])*
+                           sqrt(exp(mv2_cs3_2[1]))*
+                           sqrt(exp(mv2_cs3_2[2])),
+        NA, exp(mv2_cs3_2[2])),
+        nrow=2), title='v2_cs3_2'
+)
+(plot_spacer()+p0+plot_spacer())/(p1+p3+p5)/(p2+p4+p6)
+```
+
+```{r buildingSigma,fig.height=6.5}
+S <- matrix(c(1, 3, 5, 6,
+              NA, 1, 6, 5,
+              NA, NA, 2, 4,
+              NA, NA, NA, 2), nrow=4, ncol=4)
+longS <- reshape2::melt(S, na.rm=TRUE)
+longS$Var1 <- as_factor(longS$Var1)
+longS$Var2 <- fct_relevel(as_factor(longS$Var2), rev)
+ggplot(longS, aes(x=Var1, y=Var2, fill=value))+
+    geom_tile(color='black', size=0.5)+
+    geom_text(aes( label=c('RISK\nLEVEL', 'RISK\nCORRELATION',
+                           '1st ORDER\nRISK/TIME\nINTERACTION',
+                           '2nd ORDER\nRISK/TIME\nINTERACTION',
+                           'RISK\nLEVEL',
+                           '2nd ORDER\nRISK/TIME\nINTERACTION',
+                           '1st ORDER\nRISK/TIME\nINTERACTION',
+                           'TRAJECTORY\nTIME',  'TIME\nCORRELATION',
+                           'TRAJECTORY\nTIME')), size=5)+
+    scale_fill_gradient(low='white', high='white')+
+    scale_x_discrete(labels=c(expression(u[1]), 
+                              expression(u[2]), 
+                              expression(eta[1]),
+                              expression(eta[2])))+
+    scale_y_discrete(labels=c(expression(eta[2]), 
+                              expression(eta[1]), 
+                              expression(u[2]),
+                              expression(u[1])))+
+    theme_minimal()+
+    theme(axis.text.x=element_text(size=15, color='black'),
+          axis.text.y=element_text(size=15, color='black'), 
+          axis.title.x=element_blank(), 
+          axis.title.y=element_blank(),
+          panel.grid.major=element_blank(),
+          legend.position='none')
+```
