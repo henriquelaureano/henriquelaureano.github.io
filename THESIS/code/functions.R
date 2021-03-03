@@ -154,7 +154,7 @@ future_datasimu <- function(J, cs, n, time, delta=80, beta, gama, w,
                     .options=furrr_options(seed=NULL))
 
     save(y, time, J, cs, beta, gama, w,
-         file=paste0(tag, '.RData'), version=2)
+         file=paste0('data/', tag, '.RData'), version=2)
 
     return( tictoc::toc() )
 }
