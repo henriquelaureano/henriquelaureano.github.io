@@ -14,33 +14,32 @@ above is the study of disease incidence in family members, where each
 member is indexed by a random variable and each cluster consists of a
 familiar structure. The inspiration to the study of these kinds of
 problems came from the work developed in \citeonline{SCHEIKE}, where
-they studied breast cancer incidence in mothers and daughters. Based on
-that, the aim of this thesis is to propose a simpler framework to make
-inference on the gender-specific cancer incidence in twins. The twins'
-case is just one more in the range of possible applications to our
-model, but given its intrinsic particularities, becomes the focus
-application. Until now we just contextualized, we still need to
-introduce the methodology. To this, some definitions and theoretical
-contexts are welcome.
+they studied breast cancer incidence in mothers and daughters but using
+a complicated modeling framework. Based on that, the aim of this thesis
+is to propose a simpler framework taking advantage of
+several \textit{state-of-art} computational libraries and see how far
+can we go in several scenarios. Until now we just contextualized, we
+still need to introduce the methodology. To this, some definitions and
+theoretical contexts are welcome.
 
-When the object under study is random variables representing the time
+When the object under study is a random variable representing the time
 until some event occurs, we are in the field of \textit{failure time
-  data} \cite{kalb&prentice}. The occurrence of an event is generally
+data} \cite{kalb&prentice}. The occurrence of an event is generally
 denoted \textit{failure}, and major areas of application are biomedical
 studies and industrial life testing. In this thesis, we maintain our
 focus on the former. As common in science, same methodologies can
-receive different names in different areas. In industrial life testing
-applications is performed what is called a \textit{reliability
-  analysis}; in biomedical studies is performed what is called
-\textit{survival analysis}. Generally, the term survival analysis is
+receive different names depending on the area. In industrial life
+testing is performed what is called a \textit{reliability analysis}; in
+biomedical studies is performed what is called
+\textit{survival analysis}. Generally, the term \textit{survival} is
 applied when we are interested in the occurrence of only one event, a
 \textit{failure time process}. When we are interested in the occurrence
 of more than one event we enter in the yard of \textit{competing risks}
 and \textit{multistate} models. A visual aid is presented on
-\autoref{fig:intro1} and a comprehensive reference
-is~\citeonline{kalb&prentice}.
+\autoref{fig:intro1} and a comprehensive reference is
+\citeonline{kalb&prentice}.
 
-Failure time and competing risk processes may be seen as particular
+Failure time and competing risks processes may be seen as particular
 cases of a multistate model. Besides the number of events (states) of
 interest, the main difference between a multistate model and its
 particular cases is that only in the multistate scenario we may have
@@ -50,103 +49,109 @@ particular cases, all states besides the initial state 0, are absorbents
 that exemplify this behavior is the illness-death model,
 \autoref{fig:intro1}~C), where a patient (initially in state 0) can get
 sick (state 1) or die (state 2); if sick it can recover (returns to
-state 0) or die. We will work only with competing risk processes, and
-to each patient we need the time (age) until the occurrence, or not, of
-cancer (the event).
+state 0) or die. We work in this thesis only with competing risks
+processes, and to each patient we need the time (age) until the
+occurrence, or not, of the event.
 
 \begin{figure}[H]
-  \setlength{\abovecaptionskip}{.0001pt}
-  \caption{ILLUSTRATION OF MULTISTATE MODELS FOR A) FAILURE TIME
-    PROCESS; B) COMPETING RISKS; AND C) ILNESS-DEATH MODEL, THE SIMPLEST
-    MULTISTATE MODEL}
-  \vspace{0.5cm} \centering
-  \tikzfig{fig1}\\
-  \vspace{0.5cm}
-  \begin{footnotesize}
-    SOURCE: The author~(2020).
-  \end{footnotesize}
-  \label{fig:intro1}
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{ILLUSTRATION OF MULTISTATE MODELS FOR A A) FAILURE TIME
+          PROCESS; B) COMPETING RISKS PROCESS; AND C) ILNESS-DEATH
+          MODEL, THE SIMPLEST MULTISTATE MODEL}
+ \vspace{0.5cm}\centering
+ \tikzfig{fig1}\\
+ \vspace{0.5cm}
+ \begin{footnotesize}
+  SOURCE: The author~(2021).
+ \end{footnotesize}
+ \label{fig:intro1}
 \end{figure}
 
 When for some know or unknown reason we are not able to see the
 occurrence of an event, we have what is denoted \textit{censorship}.
 Still in the illness-death model, during the period of follow up the
 patient may not get sick or die, staying at state 0. This is denoted
-\textit{right-censorship}; The same for state 1. If a patient is in
-state 1 at the end of the study, we are \textit{censored} to see him
-reaching the state 2 or returning to state 0. This is the inherent idea
-to censorship and must be present in the modeling framework, in this
-manner, arriving in the so-called \textit{survival models}
-\cite{kalb&prentice}.
+\textit{right-censorship}; If a patient is in state 1 at the end of the
+study, we are \textit{censored} to see him reaching the state 2 or
+returning to state 0. This is the inherent idea to censorship and must
+be present in the modeling framework, thus arriving in the so-called
+\textit{survival models} \cite{kalb&prentice}.
 
-A survival model deals with survival experience. Usually, the survival
-experience is modeled in the \textit{hazard} (failure rate) scale and
-for an individual \(i\) can be expressed as
+A survival model deals with the survival experience. Usually, the
+survival experience is modeled in the \textit{hazard} (failure rate)
+scale and it can be expressed for a subject \(i\) as
 \begin{equation}
   \lambda(t \mid \bm{x}_{i}) =
   \lambda_{0}(t) \times c(\bm{x}_{i} \bm{\beta})
-  \quad \text{at time } t,
+  \quad \text{at time}~t,
   \label{eq:intro1}
 \end{equation}
-i.e. a product of an arbitrary baseline hazard
-function\(\lambda_{0}(\cdot)\), with \(c(\cdot)\), a specific function
-form that will depend on the chosen probability distribution for the
-failure time and on a covariates (explanatory/independent variables)
-vector \(\bm{x}_{i} = [x_{1}~\dots~x_{p}]\), where \(\bm{\beta}^{\top} =
-[\beta_{1}~\dots~\beta_{p}]\) is a vector of parameters. This structure
-is specified for a failure time process, as in~\autoref{fig:intro1}~A).
-Nevertheless, its idea is easy to extend. We basically have the
-\autoref{eq:intro1} model to each cause-specific (in a competing risks
-process) or transition (in a multistate process). A complete and
-extensive detailing can be, again, found in \citeonline{kalb&prentice}.
+i.e. as the product of an arbitrary baseline hazard function
+\(\lambda_{0}(\cdot)\), with a specific function form \(c(\cdot)\), that
+will depend on the probability distribution to be chosen for the failure
+time and on predictors/covariates/explanatory/independent variables
+\(\bm{x}_{i} = [x_{1}~\dots~x_{p}]\), where
+\(\bm{\beta}^{\top} = [\beta_{1}~\dots~\beta_{p}]\) is the parameters
+vector.
+
+This structure is specified for a failure time process, as in
+\autoref{fig:intro1}~A). Nevertheless, the idea is easy to extend. We
+basically have the \autoref{eq:intro1}'s model to each cause-specific
+(in a competing risks process) or transition (in a multistate process).
+A complete and extensive detailing can be, again, found in
+\citeonline{kalb&prentice}.
 
 In this work we approach the case of clustered competing risks. Besides
 the cause-specific structure, we have to deal with the fact that the
-events are happening in related individuals (twins). This configures
-what is denoted \textit{family studies}, i.e. we have a
-cluster/family/pair of twins dependence that needs to be considered and
-modeled. This, possible, dependence is something that we do not actually
-measure, but know (or just suppose) that exists. In the statistical
-modeling language this characteristic receives the name of
-\textit{random} or \textit{latent effect}. A survival model with a
-latent effect, association, or unobserved heterogeneity, is denoted
-\textit{frailty model}~\cite{frailty78, frailty79}. In its simplest
+events are happening in related individuals. This configures what is
+denoted \textit{family studies}, i.e. we have a cluster/group/family
+dependence that needs to be considered, accommodated, and modeled. This,
+possible, dependence is something that we do not actually measure but
+know (or just suppose) that exists. In the statistical modeling language
+this characteristic receives the name of \textit{random} or
+\textit{latent effect}. A survival model with a latent effect,
+association, or unobserved heterogeneity, is denoted
+\textit{frailty model} \cite{frailty78, frailty79}. In its simplest
 form, a frailty is an unobserved random proportionality factor that
 modifies the hazard function of an individual, or of related
-individuals. Frailty models are extensions of the model in
-\autoref{eq:intro1}.
+individuals. Frailty models are extensions of \autoref{eq:intro1}'s
+model.
 
 In the competing risks setting, the hazard scale (focusing on the
 cause-specific hazard) is not the only possible scale to work on. A more
-attractive possibility is to work on the probability scale, focusing on
-the cause-specific cumulative incidence function \cite[CIF]{andersen12}.
-In family studies, there is often a strong interest in describing age at
-disease onset and account for within-family dependence. The point to be
-made is that the distribution of age at disease onset is directly
-described by the cause-specific cumulative incidence. Therefore, the
-probability scale is the logical choice.
+attractive possibility is to work on the probability scale
+\cite{andersen12}, focusing on the cause-specific cumulative
+incidence function, CIF. Besides the within-family dependence, in family
+studies there is often a strong interest in describing age at disease
+onset, which is directly described by the cause-specific CIF. Therefore,
+making the probability scale a more attractive and logical choice. Since
+the CIF plays a central role in this master thesis, it will be formally
+defined later in a place with greater emphasis. With the definitions and
+the theoretical context being made, let us be more specific.
 
-To work with competing risks data on the probability scale, and with a
-latent structure that allows for within-cluster dependence of both risk
-and timing, \citeonline{SCHEIKE} proposed a pairwise composite
-likelihood approach based on the factorization of the cause-specific CIF
-as a product of a cluster-specific risk level and a cluster-specific
-failure time trajectory. A composite approach \cite{lindsay88,
-  cox&reid04, varin11} is a valid alternative to a full likelihood
-analysis in high-dimensional situations when a full approach is too
-computational costly or even inviable. In failure time data problems, a
-composite likelihood is built from the product of marginal densities. A
-clear advantage is that we do not need to care about a joint
-distribution specification, which generally translates into a
-computational advantage. A disadvantage is the model specification,
-which becomes much more complicated. The marginal specification implies
-a pairwise approach since we need to add model layers to be able to
-handle the dependence structure.
+To work with competing risks data on the probability scale plus a latent
+structure allowing for within-cluster dependence of both risk and
+timing, \citeonline{SCHEIKE} proposed a pairwise composite likelihood
+approach based on the factorization of the cause-specific CIF as the
+product of a cluster-specific risk level function with a
+cluster-specific failure time trajectory function. A composite approach
+\cite{lindsay88, cox&reid04, varin11} is a valid alternative to a full
+likelihood analysis in high-dimensional situations when a full approach
+is too computational costly or even inviable. In failure time data
+problems, the composite likelihood function is built from the product of
+marginal densities. The marginal specification implies a pairwise
+approach since we need to add model layers to be able to handle with the
+dependence structure. A clear advantage of this approach is that we do
+not need to care about a joint distribution specification, which
+generally translates also into a computational advantage. A disadvantage
+is the model specification, which becomes much more complicated, besides
+the number of small details to be workaround from the fact of being
+working with not an exact likelihood function.
 
-We do not have any guarantees that a full likelihood analysis is not
-viable here, so what we propose to do is to try to reach the same goal
-of \citeonline{SCHEIKE} albeit with a simpler framework taking advantage
-of state-of-art software, something still not so common in the
+We do not have any guarantees that a full likelihood inference procedure
+is not viable here, so we try to reach the same goal of
+\citeonline{SCHEIKE} albeit with a simpler framework taking advantage of
+\textit{state-of-art} software, something still not so common in the
 statistical modeling community. This simpler framework is a generalized
 linear mixed model \cite[GLMM]{GLMM}. Instead of concentrating on
 failure time data and consequently having a survival/frailty model based
