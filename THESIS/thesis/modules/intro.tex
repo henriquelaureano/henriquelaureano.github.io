@@ -120,12 +120,12 @@ model.
 In the competing risks setting, the hazard scale (focusing on the
 cause-specific hazard) is not the only possible scale to work on. A more
 attractive possibility is to work on the probability scale
-\cite{andersen12}, focusing on the cause-specific cumulative
-incidence function, CIF. Besides the within-family dependence, in family
-studies there is often a strong interest in describing age at disease
-onset, which is directly described by the cause-specific CIF. Therefore,
-making the probability scale a more attractive and logical choice. Since
-the CIF plays a central role in this master thesis, it will be formally
+\cite{andersen12}, focusing on the cause-specific cumulative incidence
+function (CIF). Besides the within-family dependence, in family studies
+there is often a strong interest in describing age at disease onset,
+which is directly described by the cause-specific CIF. Therefore, making
+the probability scale a more attractive and logical choice. Since the
+CIF plays a central role in this master thesis, it will be formally
 defined later in a place with greater emphasis. With the definitions and
 the theoretical context being made, let us be more specific.
 
@@ -153,57 +153,50 @@ is not viable here, so we try to reach the same goal of
 \citeonline{SCHEIKE} albeit with a simpler framework taking advantage of
 \textit{state-of-art} software, something still not so common in the
 statistical modeling community. This simpler framework is a generalized
-linear mixed model \cite[GLMM]{GLMM}. Instead of concentrating on
-failure time data and consequently having a survival/frailty model based
-on the hazard scale, or using a composite approach, we just build the
-joint likelihood function (a multinomial model with a link function
-based on the cause-specific cumulative incidence function (CIF)
-accouting for an appropriate latent effects structure), marginalize
-(integrate out the latent effects) and optimize it. A Fisherian
-approach.
+linear mixed model (GLMM). Instead of concentrating on failure time data
+and consequently having a survival/frailty model based on the hazard
+scale, or using a composite approach, we just build the joint/full
+likelihood function (a multinomial model with its link function based on
+the cause-specific CIF, accouting for an appropriate latent effects
+structure), marginalize (integrate out the latent effects) and optimize
+it. A Fisherian approach per se.
 
-To better contextualize our GLMM approach, lets first just define it
-starting by the start. For a random individual \(i\), in a standard
-linear model we assume that the response variable, \(Y_{i}\),
-conditioned on the (possible) covariates follows a normal (Gaussian)
-distribution and what we do is to model its mean, \(\mu_{i} \equiv
-\mathbb{E}(Y_{i})\), via a linear combination. As much well explained in
-\citeonline{GLM72}, with the support of a \textit{link function},
-\(g(\cdot)\), we are able to generalize this idea to non-Gaussian
-distributions. This extended framework received the name of generalized
-linear model (GLM) and is characterized by the following mean structure
-\[
- g(\mu_{i}) = \bm{x}_{i}\bm{\beta},
-\]
-where \(\bm{x}_{i}\) is the \(i^\text{th}\) vector row of a model matrix
-\(\bm{X}\), and \(\bm{\beta}\) is a vector of unknown parameters. Also,
-in a GLM the \(Y_{i}\) are independent and
-\[
-  Y_{i} \sim \text{some exponential family distribution}.
-\]
-The \textit{exponential family} of distributions includes many
-distributions that are useful for practical modelling, such as the
-Poisson (for counting data), binomial (dichotomic data), gamma
-(continuous but positive) and Gaussian (continuous data) distributions.
-A comprehensive reference for GLMs is \citeonline{GLM89}.
+To a better contextualization of our GLMM approach \cite{GLMM}, consider
+a random suject \(i\). In a standard linear model we assume that the
+response variable \(Y_{i}\), conditioned on the covariates
+\(\bm{x}_{i}\), follows a normal/Gaussian distribution and what we do is
+to model its mean, \(\mu_{i} \equiv \mathbb{E}(Y_{i})\), via a linear
+combination. As much well explained in \citeonline{GLM72}, with the aid
+of a \textit{link function} \(g(\cdot)\), this idea is generalized to
+distributions of the \textit{exponential family}. Many of its members
+are useful for practical modelling, such as the Poisson (for counting
+data), binomial (dichotomic data), gamma (continuous but positive) and
+Gaussian (continuous data) distributions. This extended framework
+received the name of generalized linear model (GLM) and a comprehensive
+reference is \citeonline{GLM89}.
 
 What makes a GLM into a GLMM \cite{GLMM} is the addition of a latent
-effect \(\mathbf{u}\) (then, \textit{m}ixed). The mean structure becomes
+effect \(\bm{u}\) (then, \textit{m}ixed) into the mean structure. The
+mean structure of a standard GLMM is defined as
 \[
-  g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \mathbf{z}_{i}\mathbf{u},
-  \quad \mathbf{u} \sim \mathcal{N}(\mathbf{0},\bm{\Sigma})
+  g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u},
+  \quad \bm{u} \sim \mathcal{N}(\bm{0},\bm{\Sigma})
 \]
 where the latent effect is assumed to follow a multivariate Gaussian
-distribution of zero mean and a given variance-covariance matrix
-\(\bm{\Sigma}\).
+distribution of zero mean and a parametrized variance-covariance matrix
+\(\bm{\Sigma}\). Its correct linkage to the mean structure is made
+through the \(i^\text{th}\) vector row of a design-matrix \(\bm{Z}\).
+The covariates are into \(\bm{x}_{i}\), the \(i^\text{th}\) vector row
+of a model-matrix \(\bm{X}\), with \(\bm{\beta}\) being a vector of
+unknown parameters.
 
 \section{GOALS}
 
 \subsection{General goals}
 
-Propose a multinomial generalized linear mixed model (multiGLMM) to the
-cause-specific cumulative incidence function (CIF) of clustered
-competing risks data.
+Propose and study the estimability of a multinomial generalized linear
+mixed model (multiGLMM) to the cause-specific cumulative incidence
+function (CIF) of clustered competing risks data.
 
 \subsection{Specific goals}
 
