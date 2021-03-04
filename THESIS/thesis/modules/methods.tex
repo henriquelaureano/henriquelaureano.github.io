@@ -1,94 +1,93 @@
 This chapter presents a systematic review of the main theoretical
-aspects involved in the construction, estimation and implementation of a
+aspects involved in the formulation, estimation, and implementation of a
 generalized linear mixed model (GLMM). We start in \autoref{cap:joint}
-with the model construction framework, concluding with the so-called
-joint likelihood function. \autoref{cap:laplace} address the
+with the model formulation framework, concluding with the so-called
+joint or full likelihood function. \autoref{cap:laplace} address the
 marginalization of that joint likelihood, performed here in terms of a
 Laplace approximation technique. \autoref{cap:opt} discusses available
-alternatives for the parameters optimization of the marginal likelihood
-obtained through that marginalization. \autoref{cap:ad} talks about
-automatic differentiation (AD), the most efficent manner of computing
-derivatives, and a key point for us. Last but not least, in
-\autoref{cap:tmb} we present the computational tool used to peform all
-the discussed procedure, the TMB: Template Model Builder. A very
-exciting \texttt{R} \cite{R20} package developed by~\citeonline{TMB}.
+alternatives for the marginal likelihood parameters optimization.
+\autoref{cap:ad} present the automatic differentiation (AD) procedure,
+the most efficent routine for the computation of derivatives, and a key
+point for us. Last but not least, in \autoref{cap:tmb} we present the
+computational tool used to peform all the discussed methodology, a very
+exciting \texttt{R} \cite{R21} package called TMB: Template Model
+Builder, developed by~\citeonline{TMB}.
 
-\section{CONSTRUCTION: JOINT LIKELIHOOD FUNCTION}
+\section{FORMULATION: OBTAINING A JOINT LIKELIHOOD FUNCTION}
 \label{cap:joint}
 
-A GLMM \cite{GLMM} models an \(n\)-vector of exponential family random
-variables, \(\mathbf{Y}\), in terms of its conditional expected value,
-\(\bm{\mu} \equiv \mathbb{E}(\mathbf{Y} \mid \bm{x}, \mathbf{u})\), via
-a linear combination called of linear predictor and generally expressed
-by
+We model an \(n\)-vector of exponential family random variables
+\(\bm{Y}\), in terms of its conditional expected value
+\(\bm{\mu} \equiv \mathbb{E}(\bm{Y} \mid \bm{X,u})\), via a linear
+combination called of linear predictor and generally expressed by
 \begin{equation}
-  g(\bm{\mu}) = \bm{x} \bm{\beta} + \mathbf{Zu}, \quad
-  \mathbf{u} \sim \mathcal{N}(\mathbf{0}, \bm{\Sigma}).
-  \label{eq:gmu}
+ g(\bm{\mu}) = \bm{X\beta} + \bm{Zu}, \quad
+ \bm{u} \sim \mathcal{N}(\bm{0,\Sigma}).
+ \label{eq:gmu}
 \end{equation}
-In other words, a GLMM is a generalized linear model (GLM) in which the
-linear predictor depends on some Gaussian latent effects,
-\(\mathbf{u}\), times a latent effects model matrix \(\mathbf{Z}\).
-Since we do not observe the latent component, an exemplification of the
-idea embedded in matrix \(\mathbf{Z}\) is welcome. Suppose, e.g. three
+In other words, a GLMM \cite{GLMM} is a generalized linear model (GLM)
+in which the linear predictor depends on some Gaussian latent effects,
+\(\bm{u}\), times a latent effects design-matrix \(\bm{Z}\). Since we do
+not observe the latent component, an exemplification of the idea
+embedded in matrix \(\bm{Z}\) is welcome. Suppose e.g., three
 individuals (or clusters) and that each one has two measures. This
 configures a repeated measures context, the most common latent structure
-in family studies.. Also, it is reasonable to admit that each individual
-has its particular latent effect value. Consequently,
+in family studies. Also, it is reasonable to admit that each individual
+has its particular latent effect value. Consequently, we have
 \[
-  \mathbf{Zu} = \begin{bmatrix}
-                 1 & 0 & 0\\1 & 0 & 0\\
-                 0 & 1 & 0\\0 & 1 & 0\\
-                 0 & 0 & 1\\0 & 0 & 1\\
-                \end{bmatrix} \begin{bmatrix}
-                               u_{1}\\u_{2}\\u_{3}\\
-                              \end{bmatrix} = \begin{bmatrix}
-                                               u_{1}\\u_{1}\\
-                                               u_{2}\\u_{2}\\
-                                               u_{3}\\u_{3}\\
-                                              \end{bmatrix},
+ \bm{Zu} = \begin{bmatrix}
+            1 & 0 & 0\\1 & 0 & 0\\
+            0 & 1 & 0\\0 & 1 & 0\\
+            0 & 0 & 1\\0 & 0 & 1\\
+           \end{bmatrix} \begin{bmatrix}
+                          u_{1}\\u_{2}\\u_{3}\\
+                         \end{bmatrix} = \begin{bmatrix}
+                                          u_{1}\\u_{1}\\
+                                          u_{2}\\u_{2}\\
+                                          u_{3}\\u_{3}\\
+                                         \end{bmatrix},
 \]
-where \(\mathbf{u}^{\top} = [u_{1}~u_{2}~u_{3}]\) and \(\mathbf{Z}\) has
-the role of projecting the values of \(\mathbf{u}\) to match the number
-of measures.
+where \(\bm{u}^{\top} = [u_{1}~u_{2}~u_{3}]\) and \(\bm{Z}\) has the
+role of projecting the values of \(\bm{u}\) to match the number of
+measures.
 
-In a mixed model the mean structure is approached into a combination of
+In a mixed model the mean structure is approached as a combination of
 probability distributions. It is a combination since we have to assume
-probabilistic structures for the observed and non-observed (latent)
-data. To each observed variable \(y_{ij}\) we have a probability
-distribution of the exponential family, denoted by \(f(y_{ij} \mid
-\mathbf{u}_{i}, \bm{\theta})\). To the non-observed latent effect we
-have, generally, a (multivariate) Gaussian distribution, denoted by
-\(f(\mathbf{u}_{i} \mid \bm{\Sigma})\). To each individual or unity
-under study, \(i\), and to each measure, \(j\), we have the product of
-these probability densities, a likelihood contribution.
+probabilistic structures for the observed and non-observed/latent data.
+To each observed variable \(y_{ij}\) we have a probability distribution
+of the exponential family, denoted by \(f(y_{ij} \mid \bm{u}_{i},
+\bm{\theta})\). To the latent effect we have, generally, a
+(multivariate) Gaussian distribution, denoted by \(f(\bm{u}_{i} \mid
+\bm{\Sigma})\). To each individual or unity under study \(i\), and to
+each measure \(j\), we have the product of these probability densities,
+a likelihood contribution.
 
 Our goal is to estimate the parameter vector \(\bm{\theta} =
-[\bm{\beta}~\bm{\Sigma}]^{\top}\) of a mean structure, as in
+[\bm{\beta~\Sigma}]^{\top}\) of a mean structure, as in
 \autoref{eq:gmu}. Besides the role of emphasizing the fact that
-\(\bm{\mu}\) is a function of \(\bm{\theta}\) and that we want to
-estimate that \(\bm{\theta}\), the likelihood function ties the
-probability densities. i.e. the likelihood is the product of the product
-of probability densities, to each subject \(i\). Since \(Y_{i}\) are
+\(\bm{\mu}\) is a function of \(\bm{\theta}\), and that we want to
+estimate \(\bm{\theta}\), the likelihood function ties the probability
+densities i.e., the likelihood is the product of the product of
+probability densities, to each subject \(i\). Since \(Y_{i}\) are
 mutually independent, the likelihood for \(\bm{\theta}\) can be written
 as
 \begin{equation}
-  L(\bm{\theta} \mid \mathbf{y}, \mathbf{u}) =
-  \prod_{i=1}^{I}~\prod_{j=1}^{n_{i}}~
-  f(y_{ij} \mid \mathbf{u}_{i}, \bm{\beta}, \bm{\Sigma})~
-  f(\mathbf{u}_{i} \mid \bm{\Sigma}).
-  \label{eq:joint}
+ L(\bm{\theta} \mid \bm{y,u}) =
+ \prod_{i=1}^{I}~\prod_{j=1}^{n_{i}}~
+ f(y_{ij} \mid \bm{u}_{i}, \bm{\beta,\Sigma})~
+ f(\bm{u}_{i} \mid \bm{\Sigma}).
+ \label{eq:joint}
 \end{equation}
 From standard probability theory is easy to see that in the right-hand
 side (r.h.s.) we have a joint density, consequently, \autoref{eq:joint}
-represents what is called a joint likelihood function. What makes
-problematic working with this joint likelihood is that we do not have
-all the necessary information to just maximize it and get the desired
-parameter estimates. The latent effect \(\mathbf{u}\) is
-\textit{latent}, i.e. we do not observe it. To handle this we have
+represents what is called a full or a joint likelihood function. What
+makes problematic working with this joint likelihood is that we do not
+have all the necessary information to just maximize it and get the
+desired parameter estimates. The latent effect \(\bm{u}\) is
+\textit{latent} i.e., we do not observe it. To handle this we have
 basically two available paths.
 
-\section{MARGINALIZATION: LAPLACE APPROXIMATION}
+\section{MARGINALIZATION: LAPLACE APPROXIMATION AND OTHER ALTERNATIVES}
 \label{cap:laplace}
 
 To deal with a joint likelihood function as in \autoref{eq:joint} we
@@ -96,71 +95,73 @@ have a choice to make. Be or not to be Bayesian. Each choice has its own
 difficulties, advantages, and characteristics.
 
 The Bayesian path assumes that all \(\bm{\theta}\) components are random
-variables. With all parameters being treated as random variables and,
+variables. With all parameters being treated as random variables, and
 since we do not observe them, what the Bayesian framework does is try to
 compute the mode of each ``parameter'' marginal distribution, generally,
 via a sampling algorithm called MCMC: Markov chain Monte Carlo
-\cite{MCMC, Diaconis}. The advantage of being Bayesian is that we can
-reach an MCMC algorithm to basically any statistical model, the
-disadvantage is that this approach is very time consuming and we have to
-propose prior distributions to each ``parameter''. These prior proposals
-are not always easy to make and, the resulting marginal distributions
-can be very depending of it.
+\cite{MCMC, Diaconis}.
 
-A Bayesian approach can be applied in basically any context, without
-guarantees that will work - obtain convergence to all parameters is not
-a straightforward task. However, in complex scenarios they can be the
-only available method to ``maximize'' the likelihood function. This is
-not the case here. We have a joint density where one of the random
-variables is not observed, but we are not interested in it, only in the
-variance parameters inherent in it. Again, from standard probability
-theory, if we have a joint density we can just integrate out the
-undesired variable resulting in
+The advantage of being Bayesian is that we can reach an MCMC algorithm
+to basically any statistical model, the disadvantage is that this
+approach is very time consuming and we have to propose prior
+distributions to each ``parameter''. These prior proposals are not
+always easy to make, and the resulting marginal distributions can be
+very depending of it. A Bayesian approach can be applied in basically
+any context, without guarantees that will work - obtain convergence to
+all parameters is not a straightforward task. However, in complex
+scenarios they can be the only available method to ``maximize'' the
+likelihood function. This is not the case here.
+
+We have a joint density where one of the random variables is not
+observed, but we are not interested in it, only in the variance
+parameters inherent in it. Again, from standard probability theory, if
+we have a joint density we can just integrate out the undesired variable
+resulting in
 \begin{equation}
-  \begin{aligned}
-    L(\bm{\theta} \mid \mathbf{y}) &=
-    \prod_{i=1}^{I}~\int_{\mathcal{R}^{\mathbf{u}_{i}}}
-    \left[
-      ~\prod_{j=1}^{n_{i}}~
-      f(y_{ij} \mid \mathbf{u}_{i}, \bm{\beta}, \bm{\Sigma})~
-      f(\mathbf{u}_{i} \mid \bm{\Sigma})
-    \right]\text{d} \mathbf{u}_{i}\\
-    &= \prod_{i=1}^{I}~\int_{\mathcal{R}^{\mathbf{u}_{i}}}~
-    f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})~
-    \text{d} \mathbf{u}_{i},
-    \label{eq:generalmarginal}
-  \end{aligned}
+ \begin{aligned}
+  L(\bm{\theta} \mid \bm{y}) &=
+  \prod_{i=1}^{I}~\int_{\mathcal{R}^{\bm{u}_{i}}}
+  \left[~\prod_{j=1}^{n_{i}}~
+         f(y_{ij} \mid \bm{u}_{i}, \bm{\beta,\Sigma})~
+         f(\bm{u}_{i} \mid \bm{\Sigma})
+  \right]\text{d} \bm{u}_{i}\\
+  &= \prod_{i=1}^{I}~\int_{\mathcal{R}^{\bm{u}_{i}}}~
+  f(\bm{y}_{i}, \bm{u}_{i} \mid \bm{\theta})~\text{d} \bm{u}_{i},
+  \label{eq:generalmarginal}
+ \end{aligned}
 \end{equation}
 a marginal density that keeps the parameters \(\bm{\Sigma}\) of the
 integrated variable.
 
 When the response distribution of a mixed model is Gaussian, is
-analytically tractable to integrate \(\mathbf{u}\) out of the joint
-density. Consequently, it is possible to evaluate the marginal
-likelihood exactly. This is the case of the linear mixed models (LMMs)
-and the main difference to the GLMMs. When the response distribution is
-not Gaussian, generally, it is not anymore analytically tractable to
+analytically tractable to integrate \(\bm{u}\) out of the joint density.
+Consequently, it is possible to evaluate the marginal likelihood
+exactly. This is the case of the linear mixed models (LMMs) and one of
+the main differences to the GLMMs. When the response distribution is not
+Gaussian, generally, it is not anymore analytically tractable to
 integrate out the latent effect. So what do we do? Well, we have
-basically two options.
+basically two options again.
 
-We can avoid the integrals in \autoref{eq:generalmarginal} replacing it
+We can avoid the integrals in \autoref{eq:generalmarginal}, replacing it
 by integrals that are more analytically tractable. This can be performed
-via an algorithm called Expectation-Maximization (EM) proposed by
+via an algorithm called Expectation-Maximization (EM), proposed by
 \citeonline{EM77}. This approach is considered a little bit naive and
 generally is not recommended if you have a better option. The other
-option consists of performing a numerical integration, i.e.
+option consists of performing a numerical integration i.e.,
 approximating the integral. The most common way of doing that in the
 statistical modeling literature is via an importance sampling version of
 the Gaussian quadrature rule, denoted adaptive Gaussian quadrature (AGQ)
 \cite{quadrature}. In general, adaptive Gaussian quadratures are not so
-simple of using (computationally expensive and we have to choose how
-many integration points to use and an importance distribution to
-approximate the integrand). To us, the better option consists in take
-advantage of the exponential family structure and the fact that we are
-dealing with Gaussian latent effects. These ideas converge to an
-adaptive Gaussian quadrature with one integration point, also called as
-\textit{Laplace approximation} \cite{molenberghs&verbeke, LA4H, tierney,
-  corestats}.
+simple to use (computationally expensive; we have to choose how many
+integration points will be used; and we also have to choose an
+importance distribution to approximate the integrand).
+
+To us, the better option consists in take advantage of the exponential
+family structure together with the fact that we are dealing with
+Gaussian latent effects. These ideas converge to an adaptive Gaussian
+quadrature with one integration point, also called as \textit{Laplace
+approximation}
+\cite{molenberghs&verbeke, LA4H, tierney, corestats}.
 
 With an integral that is analytically intractable, we may approximate it
 to obtain a tractable closed-form expression allowing then the numerical
@@ -168,124 +169,119 @@ maximization of the resulting marginal likelihood function
 \cite{patrao}. The Laplace approximation has been designed to
 approximate integrals in the form
 \begin{equation}
-  \int_{\mathcal{R}^{\mathbf{u}_{i}}}
-  \exp\{Q(\mathbf{u}_{i})\} \text{d} \mathbf{u}_{i}\approx
-  (2\pi)^{n_{\mathbf{u}}/2}~
-  |{Q}''(\mathbf{\hat{u}}_{i})|^{-1/2}~\exp\{Q(\mathbf{\hat{u}}_{i})\},
-  \label{eq:laplace}
+ \int_{\mathcal{R}^{\bm{u}_{i}}}
+ \exp\{Q(\bm{u}_{i})\} \text{d} \bm{u}_{i}\approx
+ (2\pi)^{n_{\bm{u}}/2}~
+ |{Q}''(\bm{\hat{u}}_{i})|^{-1/2}~\exp\{Q(\bm{\hat{u}}_{i})\},
+ \label{eq:laplace}
 \end{equation}
-where \(Q(\mathbf{u}_{i})\) is a known, unimodal bounded function and
-\(\mathbf{\hat{u}}_{i}\) is the value for which \(Q(\mathbf{u}_{i})\) is
+where \(Q(\bm{u}_{i})\) is a known, unimodal bounded function, and
+\(\bm{\hat{u}}_{i}\) is the value for which \(Q(\bm{u}_{i})\) is
 maximized. As \citeonline{corestats} shows, a Laplace approximation
-consists of a second order Taylor expansion of \(\log f(\mathbf{y}_{i},
-\mathbf{u}_{i} \mid \bm{\theta})\), about \(\mathbf{\hat{u}}_{i}\), that
-gives
+consists of a second order Taylor expansion of \(\log f(\bm{y}_{i},
+\bm{u}_{i} \mid \bm{\theta})\), about \(\bm{\hat{u}}_{i}\), that gives
 \[
-  \log f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})\approx
-  \log f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta}) -
-  \frac{1}{2}
-  (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
-  (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i}),
+ \log f(\bm{y}_{i}, \bm{u}_{i} \mid \bm{\theta})\approx
+ \log f(\bm{y}_{i}, \bm{\hat{u}}_{i} \mid \bm{\theta}) -
+ \frac{1}{2} (\bm{u}_{i} - \bm{\hat{u}}_{i})^{\top}\bm{H}~
+             (\bm{u}_{i} - \bm{\hat{u}}_{i}),
 \]
-where \(\mathbf{H} = - \nabla_{u}^{2} \log f(\mathbf{y}_{i},
-\mathbf{\hat{u}}_{i} \mid \bm{\theta})\). Hence, we can approximate the
-joint by
+where \(\bm{H} = - \nabla_{u}^{2} \log f(\bm{y}_{i}, \bm{\hat{u}}_{i}
+\mid \bm{\theta})\). Hence, we can approximate the joint by
 \begin{equation}
-  f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})\approx
-  f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta})~\exp
-  \left\{- \frac{1}{2}
-    (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
-    (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})
-  \right\}.
-  \label{eq:taylor}
+ f(\bm{y}_{i}, \bm{u}_{i} \mid \bm{\theta})\approx
+ f(\bm{y}_{i}, \bm{\hat{u}}_{i} \mid \bm{\theta})~\exp
+ \left\{-\frac{1}{2} (\bm{u}_{i} - \bm{\hat{u}}_{i})^{\top}\bm{H}~
+                     (\bm{u}_{i} - \bm{\hat{u}}_{i})
+ \right\}.
+ \label{eq:taylor}
 \end{equation}
 From here we start to take advantage of the points mentioned above.
+
 First, the fact that we are dealing with Gaussian distributed latent
 effects. In \autoref{eq:taylor} we have the core of a Gaussian density,
 that complete is
 \[
-  \int_{\mathcal{R}^{\mathbf{u}_{i}}}
-  \frac{1}{(2\pi)^{n_{\mathbf{u}}/2}~|\mathbf{H}^{-1}|^{1/2}}~\exp
-  \left\{- \frac{1}{2}
-    (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
-    (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})
-  \right\} \text{d}\mathbf{u}_{i} = 1,
+ \int_{\mathcal{R}^{\bm{u}_{i}}}
+ \frac{1}{(2\pi)^{n_{\bm{u}}/2}~|\bm{H}^{-1}|^{1/2}}~\exp
+ \left\{-\frac{1}{2} (\bm{u}_{i} - \bm{\hat{u}}_{i})^{\top}\bm{H}~
+                     (\bm{u}_{i} - \bm{\hat{u}}_{i})
+ \right\} \text{d} \bm{u}_{i} = 1
 \]
-i.e. integrates to 1. Integrating \autoref{eq:taylor} follows that
+i.e., integrates to 1. Integrating \autoref{eq:taylor} follows that
 \begin{align*}
-  \int_{\mathcal{R}^{\mathbf{u}_{i}}}
-  f(\mathbf{y}_{i}, \mathbf{u}_{i} \mid \bm{\theta})
-  ~\text{d}\mathbf{u}_{i}
-  &\approx f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta})
-    \int_{\mathcal{R}^{\mathbf{u}_{i}}} \exp
-    \left\{- \frac{1}{2}
-    (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})^{\top}\mathbf{H}~
-    (\mathbf{u}_{i} - \mathbf{\hat{u}}_{i})
-    \right\} \text{d}\mathbf{u}_{i}\\
-  &= (2\pi)^{n_{\mathbf{u}}/2}~|\mathbf{H}|^{-1/2}~
-    f(\mathbf{y}_{i}, \mathbf{\hat{u}}_{i} \mid \bm{\theta}),
+ \int_{\mathcal{R}^{\bm{u}_{i}}}
+ f(\bm{y}_{i}, \bm{u}_{i} \mid \bm{\theta})~\text{d} \bm{u}_{i}
+ &\approx f(\bm{y}_{i}, \bm{\hat{u}}_{i} \mid \bm{\theta})
+  \int_{\mathcal{R}^{\bm{u}_{i}}}
+  \exp \left\{-\frac{1}{2}
+               (\bm{u}_{i} - \bm{\hat{u}}_{i})^{\top}\bm{H}~
+               (\bm{u}_{i} - \bm{\hat{u}}_{i})
+       \right\} \text{d} \bm{u}_{i}\\
+ &= (2\pi)^{n_{\bm{u}}/2}~|\bm{H}|^{-1/2}~
+    f(\bm{y}_{i}, \bm{\hat{u}}_{i} \mid \bm{\theta})
 \end{align*}
-i.e. we get \autoref{eq:laplace}, a first order Laplace approximation to
-the integral. Careful accounting of the approximation error shows it to
-generally be \(\mathcal{O}(n^{-1})\), where \(n\) is the sample size and
-assuming a fixed length for \(\mathbf{u}_{i}\) \cite{corestats}.
+i.e., we get \autoref{eq:laplace}, a first order Laplace approximation
+to the integral. Careful accounting of the approximation error shows it
+to generally be \(\mathcal{O}(n^{-1})\), where \(n\) is the sample size,
+and assuming a fixed length for \(\bm{u}_{i}\) \cite{corestats}.
 
 The second advantage of a Laplace approximation approach in a GLMM is
-the exponential family structure. In a usual GLMM, the response follows
-a one-parameter exponential family distribution that can be written as
+the exponential family structure. In a usual GLMM the response follows a
+one-parameter exponential family distribution that can be written as
 \[
-  f(\mathbf{y}_{i} \mid \mathbf{u}_{i}, \bm{\theta}) = \exp
-  \left\{\mathbf{y}_{i}^{\top}
-    (\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) -
-    \mathbf{1}_{i}^{\top}
-    b(\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) +
-    \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})
-  \right\},
+ f(\bm{y}_{i} \mid \bm{u}_{i}, \bm{\theta}) =
+ \exp \left\{
+  \bm{y}_{i}^{\top} (\bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u}_{i}) -
+  \bm{1}_{i}^{\top}b(\bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u}_{i}) +
+  \bm{1}_{i}^{\top} c(\bm{y}_{i})
+      \right\},
 \]
-where \(b(\cdot)\) and \(c(\cdot)\) are known functions. This general
-and easy to compute expression, together with a (multivariate) Gaussian
-distribution, highlights the convenience of the Laplace method. The
-\(Q(\mathbf{u}_{i})\) function to be maximized can be expressed as
+where \(b(\cdot)\) and \(c(\cdot)\) are known functions.
+
+This general and easy to compute expression, together with a
+(multivariate) Gaussian distribution, highlights the convenience of the
+Laplace method. The \(Q(\bm{u}_{i})\) function to be maximized can be
+expressed as
 \begin{equation}
-  \begin{aligned}
-    Q(\mathbf{u}_{i}) &= \mathbf{y}_{i}^{\top}
-    (\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) -
-    \mathbf{1}_{i}^{\top}
-    b(\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{u}_{i}) +
-    \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})\\
-    &- \frac{n_{\mathbf{u}}}{2} \log (2\pi) -
-    \frac{1}{2} \log |\bm{\Sigma}| -
-    \frac{1}{2} \mathbf{u}_{i}^{\top}\bm{\Sigma}^{-1}~\mathbf{u}_{i}.
-  \end{aligned}
+ \begin{aligned}
+  Q(\bm{u}_{i}) &=
+  \bm{y}_{i}^{\top} (\bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u}_{i}) -
+  \bm{1}_{i}^{\top}b(\bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u}_{i}) +
+  \bm{1}_{i}^{\top} c(\bm{y}_{i})\\
+  &- \frac{n_{\bm{u}}}{2} \log (2\pi) -
+     \frac{1}{2} \log |\bm{\Sigma}| -
+     \frac{1}{2} \bm{u}_{i}^{\top}\bm{\Sigma}^{-1}~\bm{u}_{i}.
+ \end{aligned}
 \end{equation}
 The approximation in~\autoref{eq:laplace} requires the maximum
-\(\mathbf{\hat{u}}_{i}\) of the function \(Q(\mathbf{u}_{i})\). As we
-assume a Gaussian distribution with a known mean for the latent effects,
-we have the perfect initial guess for a gradient-based maximization
-method as the Newton-Raphson (NR) algorithm. The NR method consists of
-an iterative scheme as follows:
+\(\bm{\hat{u}}_{i}\) of the function \(Q(\bm{u}_{i})\). As we assume a
+Gaussian distribution with a known mean for the latent effects, we have
+the perfect initial guess for a gradient-based maximization method, as
+the Newton-Raphson (NR) algorithm.
+
+The NR method consists of an iterative scheme as follows:
 \[
-  \mathbf{u}_{i}^{(k+1)} = \mathbf{u}_{i}^{(k)} -
-  {Q}''(\mathbf{u}_{i}^{(k)})^{-1}~{Q}'(\mathbf{u}_{i}^{(k)}),
-  \quad k = 0,~1,~\dots
+ \bm{u}_{i}^{(k+1)} =
+ \bm{u}_{i}^{(k)} - {Q}''(\bm{u}_{i}^{(k)})^{-1}~{Q}'(\bm{u}_{i}^{(k)}),
+ \quad k = 0,~1,~\dots
 \]
-until convergence, which gives \(\mathbf{\hat{u}}_{i}\). At this stage,
-all parameters \(\bm{\theta}\) are considered known. \citeonline{patrao}
+until convergence, which gives \(\bm{\hat{u}}_{i}\). At this stage, all
+parameters \(\bm{\theta}\) are considered known. \citeonline{patrao}
 presents the generic expressions for the derivatives required by the NR
 method, given by the following:
 \begin{equation}
-  \begin{aligned}
-    {Q}'(\mathbf{u}_{i}^{(k)}) &= \{\mathbf{y}_{i} -
-    {b}'(\bm{x}_{i}\bm{\beta} +
-    \mathbf{Z}_{i}\mathbf{u}_{i}^{(k)})\}^{\top} -
-    {\mathbf{u}_{i}^{(k)}}^{\top} \bm{\Sigma}^{-1},\\
-    {Q}''(\mathbf{u}_{i}^{(k)}) &=
-    - \text{diag}\{{b}''(\bm{x}_{i}\bm{\beta} +
-    \mathbf{Z}_{i}\mathbf{u}_{i}^{(k)})\} - \bm{\Sigma}^{-1}.
-  \end{aligned}
-  \nonumber
+ \begin{aligned}
+  {Q}'(\bm{u}_{i}^{(k)}) &=
+  \{\bm{y}_{i} - {b}'(\bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u}_{i}^{(k)})
+  \}^{\top} - {\bm{u}_{i}^{(k)}}^{\top} \bm{\Sigma}^{-1},\\
+  {Q}''(\bm{u}_{i}^{(k)}) &=
+  - \text{diag}\{{b}''(\bm{x}_{i}\bm{\beta}
+  + \bm{z}_{i}\bm{u}_{i}^{(k)})\} - \bm{\Sigma}^{-1}.
+ \end{aligned}
+ \nonumber
 \end{equation}
-At \(k = 0\) we have the initial guess.
+We have the initial guesses at \(k = 0\).
 
 Finally, the marginal log-likelihood function returned by the Laplace
 approximation, to each invividual or unit under study \(i\), is as

@@ -157,7 +157,7 @@ linear mixed model (GLMM). Instead of concentrating on failure time data
 and consequently having a survival/frailty model based on the hazard
 scale, or using a composite approach, we just build the joint/full
 likelihood function (a multinomial model with its link function based on
-the cause-specific CIF, accouting for an appropriate latent effects
+the cluster-specific CIF, accouting for an appropriate latent effects
 structure), marginalize (integrate out the latent effects) and optimize
 it. A Fisherian approach per se.
 
@@ -165,15 +165,15 @@ To a better contextualization of our GLMM approach \cite{GLMM}, consider
 a random suject \(i\). In a standard linear model we assume that the
 response variable \(Y_{i}\), conditioned on the covariates
 \(\bm{x}_{i}\), follows a normal/Gaussian distribution and what we do is
-to model its mean, \(\mu_{i} \equiv \mathbb{E}(Y_{i})\), via a linear
-combination. As much well explained in \citeonline{GLM72}, with the aid
-of a \textit{link function} \(g(\cdot)\), this idea is generalized to
-distributions of the \textit{exponential family}. Many of its members
-are useful for practical modelling, such as the Poisson (for counting
-data), binomial (dichotomic data), gamma (continuous but positive) and
-Gaussian (continuous data) distributions. This extended framework
-received the name of generalized linear model (GLM) and a comprehensive
-reference is \citeonline{GLM89}.
+to model its mean, \(\mu_{i} \equiv \mathbb{E}(Y_{i} \mid \bm{x}_{i})\),
+via a linear combination. As much well explained in \citeonline{GLM72},
+with the aid of a \textit{link function} \(g(\cdot)\), this idea is
+generalized to distributions of the \textit{exponential family}. Many of
+its members are useful for practical modelling, such as the Poisson (for
+counting data), binomial (dichotomic data), gamma (continuous but
+positive) and Gaussian (continuous data) distributions. This extended
+framework received the name of generalized linear model (GLM) and a
+comprehensive reference is \citeonline{GLM89}.
 
 What makes a GLM into a GLMM \cite{GLMM} is the addition of a latent
 effect \(\bm{u}\) (then, \textit{m}ixed) into the mean structure. The
@@ -195,31 +195,31 @@ unknown parameters.
 \subsection{General goals}
 
 Propose and study the estimability of a multinomial generalized linear
-mixed model (multiGLMM) to the cause-specific cumulative incidence
-function (CIF) of clustered competing risks data.
+mixed model (multiGLMM) to the cluster and cause-specific cumulative
+incidence function (CIF) of clustered competing risks data.
 
 \subsection{Specific goals}
 
 \begin{enumerate}
-\item Simulate from the model, i.e. generate synthetic data to study
-  statistical properties.
+ \item Simulate from the model, i.e. generate synthetic data to study
+       statistical properties.
 
-\item Write the model in the Template Model Builder (TMB) software,
-  developed by \citeonline{TMB} and possibly the most efficient way of
-  doing such task. Taking advantage of its functionalities with special
-  attention to the computation of gradients and Hessians via an
-  state-of-art \textit{automatic differentiation} (AD), and joint
-  likelihood marginalization via an efficient Laplace approximation
-  implementation.
+ \item Write the model in the Template Model Builder (TMB) software,
+       developed by \citeonline{TMB} and possibly the most efficient
+       likelihood-based way of doing such task.
 
-\item Study the model identifiability through the proposition of models
-  with different complexity levels in terms of parametric space.
+ \item Take advantage of TMB's functionalities with special attention to
+       the computation of gradients and Hessians via a
+       \textit{state-of-art} automatic differentiation (AD)
+       implementation; and a joint likelihood marginalization via an
+       efficient Laplace approximation routine.
 
-\item Apply the model to synthetic data and a real-based dataset.
+ \item Study the model identifiability through the proposition of
+       different complexity level models in terms of parametric space
+       and latent effect structures.
 
-\item Compare the results of our multinomial GLMM for clustered
-  competing risks data with the results obtained with the pairwise
-  composite approach of \citeonline{SCHEIKE}.
+ \item Make exact likelihood-based inference to the cluster and
+       cause-specific CIF of clustered competing risks data.
 \end{enumerate}
 
 \section{JUSTIFICATION}
@@ -232,8 +232,8 @@ reflect both disease heritability and the impact of shared environmental
 effects. The role of different risk factors arrives in the class of
 multivariate models, which options are limited in the statistical
 literature. Thus, the number of statistical models for competing risks
-data that accommodate the within-cluster (family) dependence is even
-more limited. Some modeling options are briefly commented in
+data that accommodate the within-cluster/family dependence is even more
+limited. Some modeling options are briefly commented in
 \citeonline{SCHEIKE}, with his pairwise composite approach being
 proposed as a new and better option to model the cause-specific
 cumulative incidence function (CIF), describing age at disease onset, of
@@ -246,26 +246,25 @@ generalized linear mixed model approach.
 
 \section{LIMITATION}
 
-This work restraint to the proposition and application of a multinomial
-model for the cause-specific cumulative incidence function (CIF) of
-competing risks data, with a latent effect structure to accommodate
-within-family dependence with regard to both risk and timing. Given its
-considerable model complexity, hypothesis tests; residual analysis; and
-good-of-fit measures are not contemplated.
+This work restraint to the proposition and model identifiability study
+of a multinomial model for the cause-specific cumulative incidence
+function (CIF) of competing risks data, with a latent effect structure
+to accommodate within-family dependence with regard to both risk and
+timing. Given its considerable model complexity, hypothesis tests;
+residual analysis; and good-of-fit measures are not contemplated.
 
 \section{THESIS ORGANIZATION}
 
-This thesis contains 6 chapters including this introduction.
+This master thesis contains 6 chapters including this introduction.
 \autoref{cap:methods} presents a systematic review of the main aspects
-involved in the construction and optimzation of a generalized linear
+involved in the formulation and optimzation of a generalized linear
 mixed model (GLMM). Given the modeling framework overview,
 \autoref{cap:model} presents our multinomial GLMM (multiGLMM) to model
 the cause-specific cumulative incidence function (CIF) of clustered
-competing risks data. In \autoref{cap:datasets} we describes how to
-simulate some synthetic data from the proposed model, and presents a
-real-based dataset as an application. In \autoref{cap:results} the
-obtained results are presented, and in \autoref{cap:finalc} we discuss
-the contributions of this thesis and present some suggestions for future
-work.
+competing risks data. In \autoref{cap:datasets} we describes the
+simulation procedure to generate synthetic data and present some model
+particularities. In \autoref{cap:results} the obtained results are
+presented, and in \autoref{cap:finalc} we discuss the contributions of
+this thesis and present some suggestions for future work.
 
 % END ==================================================================
