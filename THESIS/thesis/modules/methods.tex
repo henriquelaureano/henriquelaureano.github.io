@@ -284,30 +284,30 @@ method, given by the following:
 We have the initial guesses at \(k = 0\).
 
 Finally, the marginal log-likelihood function returned by the Laplace
-approximation, to each invividual or unit under study \(i\), is as
+approximation, to each individual or unit under study \(i\), is as
 follows:
 \begin{equation}
-  \begin{aligned}
-    l(\bm{\theta} \mid \mathbf{y}_{i}) =
-    \log L(\bm{\theta} \mid \mathbf{y}_{i}) &=
-    \frac{n}{2} \log (2\pi) - \frac{1}{2} \log
-    \left|
-      \text{diag}\{{b}''(\bm{x}_{i}\bm{\beta} +
-      \mathbf{Z}_{i}\mathbf{\hat{u}}_{i})\} + \bm{\Sigma}^{-1}
-    \right|\\
-    &+ \mathbf{y}_{i}^{\top}
-    (\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) -
-    \mathbf{1}_{i}^{\top}
-    b(\bm{x}_{i}\bm{\beta} + \mathbf{Z}_{i}\mathbf{\hat{u}}_{i}) +
-    \mathbf{1}_{i}^{\top} c(\mathbf{y}_{i})\\
-    &- \frac{n_{\mathbf{u}}}{2} \log (2\pi) -
-    \frac{1}{2} \log |\bm{\Sigma}| - \frac{1}{2}
-    \mathbf{\hat{u}}_{i}^{\top}\bm{\Sigma}^{-1}~\mathbf{\hat{u}}_{i},
-  \end{aligned}
-  \nonumber
+ \begin{aligned}
+  l(\bm{\theta} \mid \bm{y}_{i}) =
+  \log L(\bm{\theta} \mid \bm{y}_{i}) &= \frac{n}{2} \log (2\pi) -
+  \frac{1}{2} \log
+  \left| \text{diag}\{{b}''(\bm{x}_{i}\bm{\beta} +
+                      \bm{z}_{i}\bm{\hat{u}}_{i})
+                    \} + \bm{\Sigma}^{-1}
+  \right|\\
+  &+ \bm{y}_{i}^{\top}
+     (\bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{\hat{u}}_{i}) -
+     \bm{1}_{i}^{\top}
+     b(\bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{\hat{u}}_{i}) +
+     \bm{1}_{i}^{\top} c(\bm{y}_{i})\\
+  &- \frac{n_{\bm{u}}}{2} \log (2\pi) -
+     \frac{1}{2} \log |\bm{\Sigma}| - \frac{1}{2}
+     \bm{\hat{u}}_{i}^{\top}\bm{\Sigma}^{-1}~\bm{\hat{u}}_{i},
+ \end{aligned}
+ \nonumber
 \end{equation}
 that can now be numerically maximized over the model parameters
-\(\bm{\theta} = [\bm{\beta}~\bm{\Sigma}]^{\top}\).
+\(\bm{\theta} = [\bm{\beta~\Sigma}]^{\top}\).
 
 \section{OPTIMIZATION: MARGINAL LIKELIHOOD FUNCTION}
 \label{cap:opt}
@@ -316,24 +316,24 @@ At this point it is already clear that we have two optimizations to be
 performed, an ``inside'' and an ``outside'' optimization. The inside one
 is made into the Laplace approximation layer via a Newton-Raphson
 algorithm, a Newton's method. The outside optimization is made with the
-Laplace approximation outputs, i.e. the maximization step
+Laplace approximation outputs i.e., the maximization of
 \autoref{eq:generalmarginal}'s marginal log-likelihood over its
 parameters \(\bm{\theta}\). This task is usually performed via a
 quasi-Newton method, we focus on two of the most traditional ones: the
 Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm and the PORT routines.
 
 The inside optimization is the numerical maximization of the joint
-log-likelihood w.r.t. its latent effects. This is kind of a simple task
-since all model parameters are considered as fixed and we ``know'' that
-the latent effects are distributed with zero mean, i.e. we have the
-perfect initial guess. In this context, the use of a Newton's method is
-straightforward. When we talk about the outside optimization it is a
-completely different scenario, it is not straightforward to find a good
-initial guess or reach convergence. Thus, more robust methods are a good
-choice.
+log-likelihood with respect to (w.r.t.) its latent effects. This is kind
+of a simple task since all model parameters are considered as fixed, and
+we ``know'' that the latent effects are distributed with zero mean i.e.,
+we have the perfect initial guess. In this context, the use of a
+Newton's method is straightforward. When we talk about the outside
+optimization it is a completely different scenario, it is not
+straightforward to find a good initial guess or reach convergence. Thus,
+more robust methods are a good choice.
 
 In optimization, Newton methods are algorithms for finding local maxima
-and minima of functions, i.e. the search for the zeroes of the gradient
+and minima of functions i.e., the search for the zeroes of the gradient
 of that function. Newton methods are characterized by the use of a
 symmetric matrix of function's second derivatives, the Hessian matrix.
 Quasi-Newton methods are based on Newton's method and are seen as an
@@ -350,104 +350,98 @@ estimate of it directly. As in Newton's method, they use a second-order
 approximation to find the minimum of a function \(f(\bm{x})\). The
 Taylor series of \(f(\bm{x})\) around an iterate is
 \[
-  f(\bm{x}_{k} + \Delta\bm{x})\approx
-  f(\bm{x}_{k}) + \nabla f(\bm{x}_{k})^{\top}\Delta\bm{x} +
-  \frac{1}{2} \Delta\bm{x}^{\top}\mathbf{B}~\Delta\bm{x},
+ f(\bm{x}_{k} + \Delta\bm{x})\approx
+ f(\bm{x}_{k}) + \nabla f(\bm{x}_{k})^{\top}\Delta\bm{x} +
+ \frac{1}{2} \Delta\bm{x}^{\top}\bm{B}~\Delta\bm{x},
 \]
-where \(\nabla f(\cdot)\) is the gradient, and \(\mathbf{B}\) an
+where \(\nabla f(\cdot)\) is the gradient, and \(\bm{B}\) an
 approximation to the Hessian matrix. The gradient of this approximation
 w.r.t. \(\Delta\bm{x}\) is
 \[
-  \nabla f(\bm{x}_{k} + \Delta\bm{x}) \approx
-  \nabla f(\bm{x}_{k}) + \mathbf{B}~\Delta\bm{x},
+ \nabla f(\bm{x}_{k} + \Delta\bm{x}) \approx
+ \nabla f(\bm{x}_{k}) + \bm{B}~\Delta\bm{x},
 \]
 setting this gradient to zero provides the Newton step:
 \[
-  \Delta\bm{x} = - \mathbf{B}^{-1}\nabla f(\bm{x}_{k}).
+ \Delta\bm{x} = - \bm{B}^{-1}\nabla f(\bm{x}_{k}).
 \]
-The Hessian approximation \(\mathbf{B}\) is chosen to satisfy
+The Hessian approximation \(\bm{B}\) is chosen to satisfy
 \[
-  \nabla f(\bm{x}_{k} + \Delta\bm{x}) =
-  \nabla f(\bm{x}_{k}) + \mathbf{B}~\Delta\bm{x},
+ \nabla f(\bm{x}_{k} + \Delta\bm{x}) =
+ \nabla f(\bm{x}_{k}) + \bm{B}~\Delta\bm{x},
 \]
-which is called the \textit{secant} equation, i.e. the Taylor series of
-the gradient itself. Solving for \(\mathbf{B}\) and applying the
-Newton's step with the updated value is equivalent to the
-\textit{secant} method. Quasi-Newton methods are a generalization of the
-secant method to find the root of the first derivative for
-multidimensional problems. The various quasi-Newton methods differ in
-their choice of the solution to the secant equation.
+which is called the \textit{secant} equation i.e., the Taylor series of
+the gradient itself. Solving for \(\bm{B}\) and applying the Newton's
+step with the updated value is equivalent to the \textit{secant} method.
+Quasi-Newton methods are a generalization of the secant method to find
+the root of the first derivative for multidimensional problems. The
+various quasi-Newton methods differ in their choice of the solution to
+the secant equation.
 
 In a general quasi-Newton method, the unknown \(\bm{x}_{k}\) is
 updated applying the Newton's step calculated using the current
-approximate Hessian matrix \(\mathbf{B}_{k}\) in the following fashion:
+approximate Hessian matrix \(\bm{B}_{k}\) in the following fashion:
 \begin{itemize}
-\item \(\Delta \bm{x}_{k} = -\alpha_{k}\mathbf{B}_{k}^{-1}\nabla
-  f(\bm{x}_{k})\), with \(\alpha\) chosen to satisfy the so called
-  Wolfe conditions \cite[p.~34]{nocedal&wright};
+ \item \(\Delta \bm{x}_{k} = -\alpha_{k}\bm{B}_{k}^{-1}\nabla
+       f(\bm{x}_{k})\), with \(\alpha\) chosen to satisfy the so called
+       Wolfe conditions \cite[p.~34]{nocedal&wright};
 
-\item \(\bm{x}_{k+1} = \bm{x}_{k} + \Delta\bm{x}_{k}\);
+ \item \(\bm{x}_{k+1} = \bm{x}_{k} + \Delta\bm{x}_{k}\);
 
-\item The gradient computed at the new point \(\nabla
-  f(\bm{x}_{k+1})\), and \(\mathbf{y}_{k} = \nabla
-  f(\bm{x}_{k+1}) - \nabla f(\bm{x}_{k})\) is used to update the
-  approximate Hessian \(\mathbf{B}_{k+1}\), or directly its inverse
-  \(\mathbf{H}_{k+1} = \mathbf{B}_{k+1}^{-1}\).
+ \item The gradient computed at the new point \(\nabla
+       f(\bm{x}_{k+1})\), and \(\bm{y}_{k} = \nabla f(\bm{x}_{k+1}) -
+       \nabla f(\bm{x}_{k})\) is used to update the approximate Hessian
+       \(\bm{B}_{k+1}\), or directly its inverse
+       \(\bm{H}_{k+1} = \bm{B}_{k+1}^{-1}\).
 \end{itemize}
 
 The most popular quasi-Newton method is the BFGS algorithm, named for
 its discoverers Broyden, Fletcher, Goldfarb, and Shanno. It has the
 following update formula
 \begin{align*}
-  \mathbf{B}_{k+1} &= \mathbf{B}_{k} +
-                     \frac{\mathbf{y}_{k}\mathbf{y}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}} -
-                     \frac{\mathbf{B}_{k}\Delta\bm{x}_{k}
-                     (\mathbf{B}_{k}\Delta\bm{x}_{k})^{\top}}{
-                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\bm{x}_{k}},\\
-  \mathbf{H}_{k+1} = \mathbf{B}_{k+1}^{-1}
-                   &= \left(
-                     \mathbf{I} -
-                     \frac{\Delta\bm{x}_{k}\mathbf{y}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}}
-                     \right) \mathbf{H}_{k}
-                     \left(
-                     \mathbf{I} -
-                     \frac{\mathbf{y}_{k}\Delta\bm{x}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}}
-                     \right) +
-                     \frac{\Delta\bm{x}_{k}
-                     \Delta\bm{x}_{k}^{\top}}{
-                     \mathbf{y}_{k}^{\top}\Delta\bm{x}_{k}}.
+ \bm{B}_{k+1} &= \bm{B}_{k} +
+                \frac{\bm{y}_{k}\bm{y}_{k}^{\top}}{
+                      \bm{y}_{k}^{\top}\Delta\bm{x}_{k}} -
+                \frac{\bm{B}_{k}\Delta\bm{x}_{k}
+                     (\bm{B}_{k}\Delta\bm{x}_{k})^{\top}}{
+                      \Delta\bm{x}_{k}^{\top}\bm{B}_{k}
+                      \Delta\bm{x}_{k}},\\
+ \bm{H}_{k+1} = \bm{B}_{k+1}^{-1}
+            &= \left(\bm{I} -
+                     \frac{\Delta\bm{x}_{k}\bm{y}_{k}^{\top}}{
+                           \bm{y}_{k}^{\top}\Delta\bm{x}_{k}}
+                \right) \bm{H}_{k}
+                \left(\bm{I} -
+                      \frac{\bm{y}_{k}\Delta\bm{x}_{k}^{\top}}{
+                            \bm{y}_{k}^{\top}\Delta\bm{x}_{k}}
+                \right) + \frac{\Delta\bm{x}_{k}
+                                \Delta\bm{x}_{k}^{\top}}{
+                                \bm{y}_{k}^{\top}\Delta\bm{x}_{k}}.
 \end{align*}
-Another quasi-Newton method, popular in the statistical modeling
+Another quasi-Newton method popular in the statistical modeling
 literature, is the one based on the PORT routines
-\url{http://www.netlib.org/port/}. A Fortran mathematical subroutine
-library designed to be \textit{portable} over different types of
-computers, and developed by David Gay in the Bell Labs
-\cite{PORTreport}. It is a quasi-Newton adaptive nonlinear least-squares
-algorithm \cite{PORTpaper} with the following update formula
+\url{http://www.netlib.org/port/}. It is a Fortran mathematical
+subroutine library designed to be \textit{portable} over different types
+of computers, developed by David Gay in the Bell Labs \cite{PORTreport}.
+Is a quasi-Newton adaptive nonlinear least-squares algorithm
+\cite{PORTpaper} with the following update formula
 \begin{align*}
-  \mathbf{B}_{k+1} &= \mathbf{B}_{k}\\
-                   &+ \frac{
-                     \left(\mathbf{y}_{k} -
-                     \mathbf{B}_{k}\Delta\bm{x}_{k}\right)
-                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k} +
-                     \mathbf{B}_{k}\Delta\bm{x}_{k}
-                     \left(\mathbf{y}_{k} -
-                     \mathbf{B}_{k}\Delta\bm{x}_{k}\right)^{\top}}{
-                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\bm{x}_{k}}\\
-                   &- \frac{\Delta\bm{x}_{k}^{\top}
-                     \left(\mathbf{y}_{k} -
-                     \mathbf{B}_{k}\Delta\bm{x}_{k}\right)
-                     \mathbf{B}_{k}\Delta\bm{x}_{k}
-                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}}{
-                     \left(\Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\bm{x}_{k}\right)^{\top}
-                     \Delta\bm{x}_{k}^{\top}\mathbf{B}_{k}
-                     \Delta\bm{x}_{k}}.
+ \bm{B}_{k+1} &= \bm{B}_{k}\\
+             &+ \frac{
+                 \left(\bm{y}_{k} - \bm{B}_{k}\Delta\bm{x}_{k}\right)
+                 \Delta\bm{x}_{k}^{\top}\bm{B}_{k} +
+                 \bm{B}_{k}\Delta\bm{x}_{k}
+                 \left(\bm{y}_{k} - \bm{B}_{k}\Delta\bm{x}_{k}
+                 \right)^{\top}}{
+                 \Delta\bm{x}_{k}^{\top}\bm{B}_{k}\Delta\bm{x}_{k}}\\
+             &- \frac{
+                 \Delta\bm{x}_{k}^{\top}
+                 \left(\bm{y}_{k} - \bm{B}_{k}\Delta\bm{x}_{k}\right)
+                 \bm{B}_{k}\Delta\bm{x}_{k}
+                 \Delta\bm{x}_{k}^{\top}\bm{B}_{k}}{
+                 \left(\Delta\bm{x}_{k}^{\top}\bm{B}_{k}\Delta\bm{x}_{k}
+                 \right)^{\top}
+                 \Delta\bm{x}_{k}^{\top}\bm{B}_{k}\Delta\bm{x}_{k}}.
 \end{align*}
 As \citeonline{nocedal&wright} points out, each quasi-Newton method
 iteration can be performed at a cost of \(\mathcal{O}(n^{2})\)
@@ -457,13 +451,13 @@ linear system solves or matrix-matrix operations. In the BFGS algorithm
 is known that the rate of convergence is superlinear, which is a valid
 assumption to any quasi-Newton method and is fast enough for most
 practical purposes. Even though Newton's method converges more rapidly,
-quadratically, its cost per iteration usually is higher, because of its
+quadratically, its cost per iteration usually is higher because of its
 need for second derivatives and solution of a linear system.
 
 In this thesis, the used BFGS implementation is the one in the
-\texttt{R}~\cite{R20}~function \texttt{optim()}, and the PORT routine
-used is the one implemented in the \texttt{R} function
-\texttt{nlminb()}.
+\texttt{R} \cite{R21} function \texttt{base::optim()}, and the PORT
+routine used is the one implemented in the \texttt{R} function
+\texttt{base::nlminb()}.
 
 \section{A DIFFERENTIAL: AUTOMATIC DIFFERENTIATION}
 \label{cap:ad}
