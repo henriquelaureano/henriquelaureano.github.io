@@ -12,7 +12,7 @@ student in Numerical Methods in Engineering @ UFPR under the guidance of
 Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 [Paulo Justiniano](http://leg.ufpr.br/~paulojus/).
 
-What am I doing right now? (Feb 21)
+What am I doing right now? (Mar 21)
 
 + Working on the final details of my master thesis;
 
