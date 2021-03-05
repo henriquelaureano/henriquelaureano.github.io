@@ -579,48 +579,48 @@ with the corresponding computational graph being displayed in
 The forward mode iterations to compute the derivative w.r.t. \(x\)
 following the computational graph, is given by
 \begin{align*}
-  \frac{\partial x}{\partial x} &= 1, \quad
-  \frac{\partial y}{\partial x} = 0\\
-  \frac{\partial a}{\partial x} &=
-  \frac{\partial a}{\partial x} \frac{\partial x}{\partial x} =
-  \frac{1}{x} \frac{\partial x}{\partial x} \qquad
-  &\{x \mapsto a = \log(x)\}\\
-  \frac{\partial b}{\partial x} &=
-  \frac{\partial b}{\partial a} \frac{\partial a}{\partial x} +
-  \frac{\partial b}{\partial y} \frac{\partial y}{\partial x} =
-  y \frac{\partial a}{\partial x} + 0 \qquad
-  &\{(y, a) \mapsto b = ya\}\\
-  \frac{\partial c}{\partial x} &=
-  \frac{\partial c}{\partial b} \frac{\partial b}{\partial x} =
-  \frac{1}{2\sqrt{b}} \frac{\partial b}{\partial x} \qquad
-  &\{b \mapsto c = \sqrt{b}\}\\
-  \frac{\partial f}{\partial x} &=
-  \frac{\partial f}{\partial b} \frac{\partial b}{\partial x} +
-  \frac{\partial f}{\partial c} \frac{\partial c}{\partial x} =
-  1 \frac{\partial b}{\partial x} + 1 \frac{\partial c}{\partial x}
-  \qquad &\{(b, c) \mapsto f = b + c\}
+ \frac{\partial x}{\partial x} &= 1, \quad
+ \frac{\partial y}{\partial x} = 0\\
+ \frac{\partial a}{\partial x} &=
+ \frac{\partial a}{\partial x} \frac{\partial x}{\partial x} =
+ \frac{1}{x} \frac{\partial x}{\partial x} \qquad
+ &\{x \mapsto a = \log(x)\}\\
+ \frac{\partial b}{\partial x} &=
+ \frac{\partial b}{\partial a} \frac{\partial a}{\partial x} +
+ \frac{\partial b}{\partial y} \frac{\partial y}{\partial x} =
+ y \frac{\partial a}{\partial x} + 0 \qquad
+ &\{(y, a) \mapsto b = ya\}\\
+ \frac{\partial c}{\partial x} &=
+ \frac{\partial c}{\partial b} \frac{\partial b}{\partial x} =
+ \frac{1}{2\sqrt{b}} \frac{\partial b}{\partial x} \qquad
+ &\{b \mapsto c = \sqrt{b}\}\\
+ \frac{\partial f}{\partial x} &=
+ \frac{\partial f}{\partial b} \frac{\partial b}{\partial x} +
+ \frac{\partial f}{\partial c} \frac{\partial c}{\partial x} =
+ 1 \frac{\partial b}{\partial x} + 1 \frac{\partial c}{\partial x}
+ \qquad &\{(b, c) \mapsto f = b + c\}
 \end{align*}
 To compute the derivative w.r.t. \(y\) we run another forward process
 \begin{align*}
-  \frac{\partial x}{\partial y} &= 0, \quad
-  \frac{\partial y}{\partial y} = 1\\
-  \frac{\partial a}{\partial y} &=
-  \frac{\partial a}{\partial x} \frac{\partial x}{\partial y} = 0 \qquad
-  &\{x \mapsto a = \log(x)\}\\
-  \frac{\partial b}{\partial y} &=
-  \frac{\partial b}{\partial a} \frac{\partial a}{\partial y} +
-  \frac{\partial b}{\partial y} \frac{\partial y}{\partial y} =
-  0 + a \frac{\partial y}{\partial y}\qquad
-  &\{(y, a) \mapsto b = ya\}\\
-  \frac{\partial c}{\partial y} &=
-  \frac{\partial c}{\partial b} \frac{\partial b}{\partial y} =
-  \frac{1}{2\sqrt{b}} \frac{\partial b}{\partial y} \qquad
-  &\{b \mapsto c = \sqrt{b}\}\\
-  \frac{\partial f}{\partial y} &=
-  \frac{\partial f}{\partial b} \frac{\partial b}{\partial y} +
-  \frac{\partial f}{\partial c} \frac{\partial c}{\partial y} =
-  1 \frac{\partial b}{\partial y} + 1 \frac{\partial c}{\partial y}
-  \qquad &\{(b, c) \mapsto f = b + c\}
+ \frac{\partial x}{\partial y} &= 0, \quad
+ \frac{\partial y}{\partial y} = 1\\
+ \frac{\partial a}{\partial y} &=
+ \frac{\partial a}{\partial x} \frac{\partial x}{\partial y} = 0 \qquad
+ &\{x \mapsto a = \log(x)\}\\
+ \frac{\partial b}{\partial y} &=
+ \frac{\partial b}{\partial a} \frac{\partial a}{\partial y} +
+ \frac{\partial b}{\partial y} \frac{\partial y}{\partial y} =
+ 0 + a \frac{\partial y}{\partial y}\qquad
+ &\{(y, a) \mapsto b = ya\}\\
+ \frac{\partial c}{\partial y} &=
+ \frac{\partial c}{\partial b} \frac{\partial b}{\partial y} =
+ \frac{1}{2\sqrt{b}} \frac{\partial b}{\partial y} \qquad
+ &\{b \mapsto c = \sqrt{b}\}\\
+ \frac{\partial f}{\partial y} &=
+ \frac{\partial f}{\partial b} \frac{\partial b}{\partial y} +
+ \frac{\partial f}{\partial c} \frac{\partial c}{\partial y} =
+ 1 \frac{\partial b}{\partial y} + 1 \frac{\partial c}{\partial y}
+ \qquad &\{(b, c) \mapsto f = b + c\}
 \end{align*}
 
 \subsection{Reverse Mode}
@@ -632,21 +632,21 @@ the differentials of the output node w.r.t. all the inner nodes.
 The method is based on a backward adjoint chain rule and initialize with
 the derivative of the final node
 \[
-  \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{t}} =
-  \text{Id}_{n_{t} \times n_{t}},
+ \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{t}} =
+ \text{Id}_{n_{t} \times n_{t}},
 \]
-and then, from the last to the first node, iteratively make use of the
+and then from the last to the first node, iteratively make use of the
 following recursion formula
 \begin{align*}
-  &\forall~k = t - 1,~t - 2,~\dots,~1,\\
-  &\frac{\partial\bm{x}_{t}}{\partial\bm{x}_{k}} =
-    \sum_{m~\in~\text{son}(k)}
-    \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{m}}\times
-    \frac{\partial\bm{x}_{m}}{\partial\bm{x}_{k}} =
-    \sum_{m~\in~\text{son}(k)}
-    \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{m}}\times
-    \frac{\partial}{\partial\bm{x}_{k}}
-    f_{m}(\bm{x}_{1}, \dots, \bm{x}_{m}).
+ &\forall~k = t - 1,~t - 2,~\dots,~1,\\
+ &\frac{\partial\bm{x}_{t}}{\partial\bm{x}_{k}} =
+  \sum_{m~\in~\text{son}(k)}
+  \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{m}}\times
+  \frac{\partial\bm{x}_{m}}{\partial\bm{x}_{k}} =
+  \sum_{m~\in~\text{son}(k)}
+  \frac{\partial\bm{x}_{t}}{\partial\bm{x}_{m}}\times
+  \frac{\partial}{\partial\bm{x}_{k}}
+  f_{m}(\bm{x}_{1},~\dots,~\bm{x}_{m}).
 \end{align*}
 The notation ``son(\(k\))'' denotes the nodes \(m < k\) of the graph
 that are connected to \(k\). To be clear, the same simple example.
