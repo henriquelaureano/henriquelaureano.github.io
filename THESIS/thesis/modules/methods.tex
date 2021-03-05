@@ -87,7 +87,7 @@ desired parameter estimates. The latent effect \(\bm{u}\) is
 \textit{latent} i.e., we do not observe it. To handle this we have
 basically two available paths.
 
-\section{MARGINALIZATION: LAPLACE APPROXIMATION AND OTHER ALTERNATIVES}
+\section{MARGINALIZATION: LAPLACE APPROXIMATION AND ALTERNATIVES}
 \label{cap:laplace}
 
 To deal with a joint likelihood function as in \autoref{eq:joint} we
@@ -577,7 +577,7 @@ with the corresponding computational graph being displayed in
 \end{figure}
 
 The forward mode iterations to compute the derivative w.r.t. \(x\)
-following the computational graph, is given by
+following the computational graph, are given by
 \begin{align*}
  \frac{\partial x}{\partial x} &= 1, \quad
  \frac{\partial y}{\partial x} = 0\\
@@ -652,34 +652,32 @@ The notation ``son(\(k\))'' denotes the nodes \(m < k\) of the graph
 that are connected to \(k\). To be clear, the same simple example.
 
 \noindent\textbf{Example.}\hspace{.5cm}
-Consider, again, the function
+Consider again the function
 \[
   f(x, y) = y\log(x) + \sqrt{y\log(x)}.
 \]
-The iterations of the reverse mode is given by
+The iterations of the reverse mode are given by
 \begin{align*}
-  \frac{\partial f}{\partial f} &= 1\\
-  \frac{\partial f}{\partial c} &=
-  \frac{\partial f}{\partial f} \frac{\partial f}{\partial c} =
-  \frac{\partial f}{\partial f} 1\qquad &\{c \mapsto f = b + c\}\\
-  \frac{\partial f}{\partial b} &=
-  \frac{\partial f}{\partial c} \frac{\partial c}{\partial b} +
-  \frac{\partial f}{\partial f} \frac{\partial f}{\partial b} =
-  \frac{\partial f}{\partial c} \frac{1}{2\sqrt{b}} +
-  \frac{\partial f}{\partial f} 1\qquad
-  &\{b \mapsto c = \sqrt{b},~b \mapsto f = b + c\}\\
-  \frac{\partial f}{\partial a} &=
-  \frac{\partial f}{\partial b} \frac{\partial b}{\partial a} =
-  \frac{\partial f}{\partial b} y\qquad &\{a \mapsto b = ya\}\\
-  \frac{\partial f}{\partial y} &=
-  \frac{\partial f}{\partial b} \frac{\partial b}{\partial y} =
-  \frac{\partial f}{\partial b} a \qquad &\{y \mapsto b = ya\}
-\end{align*}
-\begin{align*}
-  \frac{\partial f}{\partial x} &=
-  \frac{\partial f}{\partial a} \frac{\partial a}{\partial x} =
-  \frac{\partial f}{\partial a} \frac{1}{x} \hspace{6.5cm}
-  &\{x \mapsto a = \log(x)\}
+ \frac{\partial f}{\partial f} &= 1\\
+ \frac{\partial f}{\partial c} &=
+ \frac{\partial f}{\partial f} \frac{\partial f}{\partial c} =
+ \frac{\partial f}{\partial f} 1\qquad &\{c \mapsto f = b + c\}\\
+ \frac{\partial f}{\partial b} &=
+ \frac{\partial f}{\partial c} \frac{\partial c}{\partial b} +
+ \frac{\partial f}{\partial f} \frac{\partial f}{\partial b} =
+ \frac{\partial f}{\partial c} \frac{1}{2\sqrt{b}} +
+ \frac{\partial f}{\partial f} 1\qquad
+ &\{b \mapsto c = \sqrt{b},~b \mapsto f = b + c\}\\
+ \frac{\partial f}{\partial a} &=
+ \frac{\partial f}{\partial b} \frac{\partial b}{\partial a} =
+ \frac{\partial f}{\partial b} y\qquad &\{a \mapsto b = ya\}\\
+ \frac{\partial f}{\partial y} &=
+ \frac{\partial f}{\partial b} \frac{\partial b}{\partial y} =
+ \frac{\partial f}{\partial b} a \qquad &\{y \mapsto b = ya\}\\
+ \frac{\partial f}{\partial x} &=
+ \frac{\partial f}{\partial a} \frac{\partial a}{\partial x} =
+ \frac{\partial f}{\partial a} \frac{1}{x} \hspace{6.5cm}
+ &\{x \mapsto a = \log(x)\}
 \end{align*}
 This is the advantage of reverse mode over the forward mode. A single
 traversal over the computational graph allows to compute both
@@ -704,9 +702,9 @@ define and implement this computational graph is make necessary. To
 solve this and many other tasks we have the Template Model Builder
 (TMB), developed by \citeonline{TMB}.
 
-TMB \url{ http://tmb-project.org} is an \texttt{R} \cite{R20} package
+TMB \url{ http://tmb-project.org} is an \texttt{R} \cite{R21} package
 for fitting statistical latent variable models to data, inpired by AD
-Model Builder \cite[ADMB]{ADMB}. ADMB is a statistical application for
+Model Builder (ADMB) \cite{ADMB}. ADMB is a statistical application for
 fitting nonlinear statistical models and solve optimization problems,
 that implements AD using \texttt{C++} classes and a native template
 language. Unlike most \texttt{R} packages, in TMB the model is
@@ -715,6 +713,17 @@ flexibility but requires some familiarity with the
 \texttt{C}/\texttt{C++} programming language. With TMB a user should be
 able to quickly implement complex latent effect models through simple
 \texttt{C++} templates.
+
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{EXAMPLE}
+ \vspace{0.3cm}\centering
+ \lstinputlisting{modules/exampleTMB.R}
+ \begin{footnotesize}
+  SOURCE: The author~(2021).
+ \end{footnotesize}
+ \label{fig:tmbex}
+\end{figure}
 
 In this chapter we describe step-by-step all the processes involved in
 the creation and parameter estimation of a GLMM. With TMB all this is
@@ -733,47 +742,54 @@ available in \texttt{R}. To accomplish all that, TMB combines some
 state-of-art software
 
 \begin{itemize}
-\item \texttt{CppAD}, a \texttt{C++} AD package
-  \url{https://coin-or.github.io/CppAD/};
-\item \texttt{Eigen} \cite{eigen}, a \texttt{C++} templated
-  matrix-vector library;
-\item \texttt{CHOLMOD}, \texttt{C} sparse matrix routines available from
-  \texttt{R}, used to obtain an efficient implementation of the Laplace
-  approximation with exact derivatives
-  \url{https://developer.nvidia.com/cholmod};
-\item Parallelism through \texttt{BLAS}
-  \url{http://www.netlib.org/blas/}, a \texttt{Fortran} tuned set of
-  Basic Linear Algebra Subprograms;
-\item \texttt{Matrix} \cite{Matrix}, a rich hierarchy sparse and dense
-  matrix classes and methods using \texttt{LAPACK}
-  \url{http://www.netlib.org/lapack/} and \texttt{SuiteSparse}
-  \url{https://sparse.tamu.edu/} libraries.
+ \item \texttt{CppAD}, a \texttt{C++} AD
+       package \url{https://coin-or.github.io/CppAD/};
+
+ \item \texttt{Eigen} \cite{eigen}, a \texttt{C++} templated
+       matrix-vector library;
+
+ \item \texttt{CHOLMOD}, \texttt{C} sparse matrix routines available
+       from \texttt{R}, used to obtain an efficient implementation of
+       the Laplace approximation with exact
+       derivatives \url{https://developer.nvidia.com/cholmod};
+
+ \item Parallelism
+       through \texttt{BLAS} \url{http://www.netlib.org/blas/},
+       a \texttt{Fortran} tuned set of Basic Linear Algebra Subprograms;
+
+ \item \texttt{Matrix} \cite{Matrix}, a rich hierarchy sparse and dense
+       matrix classes and methods
+       using \texttt{LAPACK} \url{http://www.netlib.org/lapack/}
+       and \texttt{SuiteSparse} \url{https://sparse.tamu.edu/}
+       libraries.
 \end{itemize}
 Also, some of its key characteristics are
 \begin{itemize}
-\item TMB employs AD to calculate first and second order derivatives of
-  the log-likelihood function or of any objective function written in
-  \texttt{C++};
-\item The objective function, and its derivatives, can be called from
-  \texttt{R}. Hence, parameter estimation via \texttt{optim()} or
-  \texttt{nlminb()} is easy to be performed;
-\item Standard deviations of any parameter, or derived parameter, can be
-  obtained via the \textit{delta method}.
+ \item TMB employs AD to calculate first and second order derivatives of
+       the log-likelihood function or of any objective function written
+       in \texttt{C++};
+
+ \item The objective function, and its derivatives, can be called
+       from \texttt{R}. Hence, parameter estimation
+       via \texttt{base::optim()} or \texttt{base::nlminb()} is easy to
+       be performed;
+
+ \item Standard deviations of any parameter, or derived parameter, can
+       be obtained via the \textit{delta method} \cite{deltamethod}.
 \end{itemize}
 An overview of the pachage design is shown in
 \autoref{fig:tmbpackdesign}.
 
 \begin{figure}[H]
-  \setlength{\abovecaptionskip}{.0001pt}
-  \caption{TMB PACKAGE DESIGN}
-  \vspace{0.35cm} \centering
-  \includegraphics[width=0.85\textwidth]{tmb_package_design.png}
-  \\
-  \vspace{0.1cm}
-  \begin{footnotesize}
-    SOURCE:~\citeonline{TMB}.
-  \end{footnotesize}
-  \label{fig:tmbpackdesign}
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{TMB PACKAGE DESIGN}
+ \vspace{0.35cm}\centering
+ \includegraphics[width=0.85\textwidth]{tmb_package_design.png}\\
+ \vspace{0.1cm}
+ \begin{footnotesize}
+  SOURCE:~\citeonline{TMB}.
+ \end{footnotesize}
+ \label{fig:tmbpackdesign}
 \end{figure}
 
 Here we focus on GLMMs, but basically any statistical model with a
