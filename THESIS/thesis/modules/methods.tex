@@ -459,18 +459,18 @@ In this thesis, the used BFGS implementation is the one in the
 routine used is the one implemented in the \texttt{R} function
 \texttt{base::nlminb()}.
 
-\section{A DIFFERENTIAL: AUTOMATIC DIFFERENTIATION}
+\section{AD: AUTOMATIC DIFFERENTIATION}
 \label{cap:ad}
 
-Computing gradients, \(\nabla f(\bm{x})\), are a fundamental and
-crucial task but also the main computational bottleneck to any Newton
-and quasi-Newton method. We choose to use the most efficient manner of
-computing gradients, one of the best scientific computing techniques but
-still not so famous in the statistical modeling literature, the
-\textit{automatic differentiation} (AD) procedure. AD has two modes, the
-so-called forward and reverse mode. We will talk a bit about both but we
-will use only the reverse mode. The reason can be illustraded by a
-simple example, given later.
+The computation of gradients, \(\nabla f(\bm{x})\), are a fundamental
+and crucial task but also the main computational bottleneck to any
+Newton and quasi-Newton method. We choose to use the most efficient
+manner of computing gradients, and one of the best scientific computing
+techniques but still not so famous in the statistical modeling
+literature, the \textit{automatic differentiation} (AD) procedure. AD
+has two modes, the so-called forward and reverse mode. We will talk a
+bit about both but we will use only the reverse mode. The reason can be
+illustraded by a simple example, given later.
 
 Automatic differentiation, also called algorithmic differentiation or
 computational differentiation, is a set of techniques to numerically and
@@ -495,64 +495,62 @@ to symbolic calculus in the sense that it provides an exact gradient
 computation, up to machine precision. However, symbolic calculus does
 not takes into account the underlying algorithm which compute the
 function, while AD factorizes the computation of the derivative
-according to an efficient algorithm.
-
-The use of AD is inherent to the use of a computational graph,
-\autoref{fig:compgraph}. Assuming that \(f\) is implemented in an
-algorithm, the goal is to compute the derivatives
-\begin{align*}
-  &\frac{\partial f(\bm{x})}{\partial\bm{x}_{k}}\in
-  \mathbb{R}^{n_{t} \times n_{k}},\\
-  &\text{for a numerical algorithm
-         (succession of functions) of the form}\\
-  &\forall~k = s + 1,~\dots,~t,\quad
-    \bm{x}_{k} = f_{k}(\bm{x}_{1},~\dots,~\bm{x}_{k-1}),
-\end{align*}
-where \(f_{k}\) is a function which only depends on the previous
-variables.
+according to an efficient algorithm. The use of AD is inherent to the
+use of a computational graph, as exemplified in \autoref{fig:compgraph}.
 
 \begin{figure}[H]
-  \setlength{\abovecaptionskip}{.0001pt}
-  \caption{A COMPUTATIONAL GRAPH}
-  \vspace{0.3cm} \centering
-  \includegraphics[width=.8\textwidth]{computational_graph.png}
-  \\
-  \vspace{0.3cm}
-  \begin{footnotesize}
-    SOURCE:~\citeonline[p.~31]{peyre}.
-  \end{footnotesize}
-  \label{fig:compgraph}
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{A COMPUTATIONAL GRAPH}
+ \vspace{0.3cm}\centering
+ \includegraphics[width=.8\textwidth]{computational_graph.png}\\
+ \vspace{0.3cm}
+ \begin{footnotesize}
+  SOURCE:~\citeonline[p.~31]{peyre}.
+ \end{footnotesize}
+ \label{fig:compgraph}
 \end{figure}
 
-The computational graph, \autoref{fig:compgraph}, has the role of
-represent the linking of the variables involved in \(f_{k}\) to
-\(\bm{x}_{k}\). The evaluation of \(f(\bm{x})\) corresponds to a
-forward traversal of this graph. Now, how we evaluate \(f\) through the
-graph? Via one of the AD modes.
+Assuming that \(f\) is implemented in an algorithm, the goal is to
+compute the derivatives
+\begin{align*}
+ &\frac{\partial f(\bm{x})}{\partial\bm{x}_{k}}\in
+  \mathbb{R}^{n_{t} \times n_{k}},\\
+ &\text{for a numerical algorithm (succession of functions)
+        of the form}\\
+ &\forall~k = s + 1,~\dots,~t,\quad
+  \bm{x}_{k} = f_{k}(\bm{x}_{1},~\dots,~\bm{x}_{k-1}),
+\end{align*}
+where \(f_{k}\) is a function which only depends on the previous
+variables. The computational graph as in \autoref{fig:compgraph}, has
+the role of represent the linking of the variables involved in \(f_{k}\)
+to \(\bm{x}_{k}\). The evaluation of \(f(\bm{x})\) corresponds to a
+forward traversal of this graph.
+
+Now, how we evaluate \(f\) through the graph? Via one of the AD modes.
 
 \subsection{Forward Mode}
 
 The forward mode correspond to the usual way of computing differentials.
 The method initialize with the derivative of the input nodes
 \[
-  \frac{\partial\bm{x}_{1}}{\partial\bm{x}_{1}} =
-  \text{Id}_{n_{1} \times n_{1}},\quad
-  \frac{\partial\bm{x}_{2}}{\partial\bm{x}_{1}} =
-  \mathbf{0}_{n_{2} \times n_{1}},\quad
-  \frac{\partial\bm{x}_{s}}{\partial\bm{x}_{1}} =
-  \mathbf{0}_{n_{s} \times n_{1}},
+ \frac{\partial\bm{x}_{1}}{\partial\bm{x}_{1}} =
+ \text{Id}_{n_{1} \times n_{1}},\quad
+ \frac{\partial\bm{x}_{2}}{\partial\bm{x}_{1}} =
+ \bm{0}_{n_{2} \times n_{1}},\quad
+ \frac{\partial\bm{x}_{s}}{\partial\bm{x}_{1}} =
+ \bm{0}_{n_{s} \times n_{1}},
 \]
 and then iteratively make use of the following recursion formula
 \begin{align*}
-  &\forall~k = s + 1,~\dots,~t,\\
-  &\frac{\partial\bm{x}_{k}}{\partial\bm{x}_{1}} =
-    \sum_{l~\in~\text{father}(k)}
-    \frac{\partial\bm{x}_{k}}{\partial\bm{x}_{l}}\times
-    \frac{\partial\bm{x}_{l}}{\partial\bm{x}_{1}} =
-    \sum_{l~\in~\text{father}(k)}
-    \frac{\partial}{\partial\bm{x}_{l}}
-    f_{k}(\bm{x}_{1},~\dots,~\bm{x}_{k-1})\times
-    \frac{\partial\bm{x}_{l}}{\partial\bm{x}_{1}}.
+ &\forall~k = s + 1,~\dots,~t,\\
+ &\frac{\partial\bm{x}_{k}}{\partial\bm{x}_{1}} =
+  \sum_{l~\in~\text{father}(k)}
+  \frac{\partial\bm{x}_{k}}{\partial\bm{x}_{l}}\times
+  \frac{\partial\bm{x}_{l}}{\partial\bm{x}_{1}} =
+  \sum_{l~\in~\text{father}(k)}
+  \frac{\partial}{\partial\bm{x}_{l}}
+  f_{k}(\bm{x}_{1},~\dots,~\bm{x}_{k-1})\times
+  \frac{\partial\bm{x}_{l}}{\partial\bm{x}_{1}}.
 \end{align*}
 The notation ``father(\(k\))'' denotes the nodes \(l < k\) of the graph
 that are connected to \(k\). We make use of \citeonline[p.~32]{peyre}'s
@@ -561,22 +559,21 @@ simple example.
 \noindent\textbf{Example.}\hspace{.5cm}
 Consider the function
 \[
-  f(x, y) = y\log(x) + \sqrt{y\log(x)}
+ f(x, y) = y\log(x) + \sqrt{y\log(x)}
 \]
 with the corresponding computational graph being displayed in
 \autoref{fig:excompgraph}.
 
 \begin{figure}[H]
-  \setlength{\abovecaptionskip}{.0001pt}
-  \caption{EXAMPLE OF A SIMPLE COMPUTATIONAL GRAPH}
-  \vspace{0.3cm} \centering
-  \includegraphics[width=.8\textwidth]{ex-computational_graph.png}
-  \\
-  \vspace{0.3cm}
-  \begin{footnotesize}
-    SOURCE:~\citeonline[p.~33]{peyre}.
-  \end{footnotesize}
-  \label{fig:excompgraph}
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{EXAMPLE OF A SIMPLE COMPUTATIONAL GRAPH}
+ \vspace{0.3cm}\centering
+ \includegraphics[width=.8\textwidth]{ex-computational_graph.png}\\
+ \vspace{0.3cm}
+ \begin{footnotesize}
+  SOURCE:~\citeonline[p.~33]{peyre}.
+ \end{footnotesize}
+ \label{fig:excompgraph}
 \end{figure}
 
 The forward mode iterations to compute the derivative w.r.t. \(x\)
