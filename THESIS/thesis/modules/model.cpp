@@ -1,6 +1,4 @@
-dll      <- 'model'
-filename <- paste0(dll, '.cpp')
-writeLines({'// A LOGISTIC GLMM WITH RANDOM INTERCEPT
+// A LOGISTIC GLMM WITH RANDOM INTERCEPT
 #include <TMB.hpp>
 template<class Type>
 Type objective_function<Type>::operator() ()
@@ -18,8 +16,4 @@ Type objective_function<Type>::operator() ()
   // }
   ADREPORT(sd);
   return nll;
-}'}, con=filename)
-
-library(TMB) ## install.packages('TMB')
-TMB::compile(filename)
-dyn.load(TMB::dynlib(dll))
+}
