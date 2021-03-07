@@ -710,19 +710,44 @@ that implements AD using \texttt{C++} classes and a native template
 language. Unlike most \texttt{R} packages, in TMB the model is
 formulated in \texttt{C++}. This characteristic provides great
 flexibility but requires some familiarity with the
-\texttt{C}/\texttt{C++} programming language. With TMB a user should be
-able to quickly implement complex latent effect models through simple
-\texttt{C++} templates.
+\texttt{C}/\texttt{C++} programming language.
+
+With TMB a user should be able to quickly implement complex latent
+effect models through simple \texttt{C++} templates. As an illustrative
+example let us consider an simple mixed logistic regression i.e., a
+binomial GLMM with a logistic link function.
+
+The latent structure is in the context of repeated measures, the same
+subject is observed three times. Trying to keep it simple, no
+covariates. A hierarchical model's description is given by
+\begin{align*}
+ y_{ij} \mid u_{i} &\sim \text{Binomial}(n, p_{ij})\\
+            u_{i} &\sim \text{Normal}(0, 1)\\
+ g(p_{ij}) = \text{logit}(p_{ij}) &= \beta + u_{i}\\
+ p_{ij} &= \frac{\exp\{\beta + u_{i}\}}{1 + \exp\{\beta + u_{i}\}},\quad
+ i~\text{the subject},~j~\text{the subject observation}~(1,2,3),
+\end{align*}
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
- \caption{E}
+ \caption{EX1}
  \vspace{0.3cm}\centering
- \lstinputlisting{modules/exampleTMB.R}
+ \lstinputlisting[lastline=45]{modules/exampleTMB.R}
  \begin{footnotesize}
   SOURCE: The author~(2021).
  \end{footnotesize}
- \label{fig:tmbex}
+ \label{fig:tmbex-p1}
+\end{figure}
+
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{EX2}
+ \vspace{0.3cm}\centering
+ \lstinputlisting[firstline=47]{modules/exampleTMB.R}
+ \begin{footnotesize}
+  SOURCE: The author~(2021).
+ \end{footnotesize}
+ \label{fig:tmbex-p2}
 \end{figure}
 
 In this chapter we describe step-by-step all the processes involved in
