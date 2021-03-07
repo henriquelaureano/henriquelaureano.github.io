@@ -12,10 +12,10 @@ Type objective_function<Type>::operator() ()
   vector<Type> level = 1+risk;
   vector<Type>  prob = risk/level;
   parallel_accumulator<Type> nll(this);
-  nll -= dnorm(u, Type(0), sd, true).sum();
+  nll -=  dnorm(u,   Type(0),   sd, true).sum();
   nll -= dbinom(y, Type(100), prob, true).sum();
   SIMULATE {
-    y = rbinom(Type(10), prob);
+    y = rbinom(Type(100), prob);
     REPORT(y);
   }
   ADREPORT(sd);
