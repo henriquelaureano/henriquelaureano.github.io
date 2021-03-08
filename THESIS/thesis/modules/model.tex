@@ -1,16 +1,15 @@
-The clustered competing risks setting is a complex and specific survival
-data structure. Although, we are using a general statistical modeling
-framework, a generalized linear mixed model (GLMM). Consequently, some
-specific features are necessary into the model construction to properly
-accommodate all the characteristics of the data structure.
+The clustered competing risks setting is a specific survival data
+structure. Although, we are using a general statistical modeling
+framework, a generalized linear mixed model (GLMM). Consequently, the
+data structure characteristics have to be properly accommodated into the
+modeling construction.
 
-To model competing risks data we need a multivariate model (several
-responses, causes of failure) and to choose in which scale to work on.
-We may work on the hazard scale and deal with the cause-specific hazard
-function or on the probability scale and deal with the cause-specific
-cumulative incidence function (CIF). Using the correct link function, we
-are able to construct an appropriate multivariate GLMM to work on the
-probability scale.
+To model competing risks data we need a multivariate model and we have
+to choose in which scale to work on. We may work on the hazard scale and
+deal with the cause-specific hazard function or on the probability scale
+and deal with the cause-specific cumulative incidence function (CIF).
+By choosing the correct link function, we are able to construct an
+appropriate multivariate GLMM to work on the probability scale.
 
 Our goal is to be able to deal with complex family studies, where there
 is generally a strong interest in describing age at disease onset in the
@@ -18,12 +17,12 @@ scenarios of within-cluster dependence. The distribution of age at
 disease onset is directly described by the cause-specific CIF. To build
 a multivariate GLMM for this type of data we need to accommodate the
 cause-specific CIFs and the censorings. Assuming the conditional
-distribution for our model response as multinomial (a multivariate
-distribution) we already deal with both left-truncation and
-right-censoring, avoiding the specification of a censoring distribution.
-The cause-specific CIFs can be modeled via the link function of our,
-then, multinomial GLMM (multiGLMM). The multinomial distribution also
-guarantees that the CIFs of all causes are modeled.
+distribution for our model response as multinomial we already deal with
+both left-truncation and right-censoring, avoiding the specification of
+a censoring distribution.  The cause-specific CIFs can be modeled via
+the link function of our, then, multinomial GLMM (multiGLMM). The
+multinomial distribution also guarantees that the CIFs of all causes are
+modeled.
 
 Our choice for a general framework tries to make the inference of this
 complex model, easier. Besides, taking advantage of all the
@@ -37,26 +36,26 @@ cluster-specific cumulative incidence function (CIF) and in
 \label{cap:cif}
 
 Consider that the observed follow-up time of an individual is given by
-\(T = \min(T^{\ast},~C)\), where \(T^{\ast}\) denote the failure time
+\(T = \min(T^{\ast},C)\), where \(T^{\ast}\) denote the failure time
 and \(C\) denote the censoring time. Given the possible covariates
-\(\bm{x}\), for a cause-specific of failure \(k\) the cumulative
+\(\bm{x}\), for a cause-specific of failure \(k\), the cumulative
 incidence function (CIF) is defined as
 \begin{align*}
-  F_{k}(t \mid \bm{x})
-  &= \mathbb{P}[T \leq t,~K = k \mid \bm{x}]\\
-  &= \int_{0}^{t} f_{k}(z \mid \bm{x})~\text{d}z\\
-  &= \int_{0}^{t} \lambda_{k}(z \mid \bm{x})~S(z \mid \bm{x})
-    ~\text{d}z, \quad t > 0, \quad k = 1,~\dots,~K.
+ F_{k}(t \mid \bm{x})
+ = \mathbb{P}[T \leq t,~K = k \mid \bm{x}]
+ &= \int_{0}^{t} f_{k}(z \mid \bm{x})~\text{d}z\\
+ &= \int_{0}^{t} \lambda_{k}(z \mid \bm{x})~S(z \mid \bm{x})
+  ~\text{d}z, \quad t > 0, \quad k = 1,~\dots,~K,
 \end{align*}
 where \(f_{k}(t \mid \bm{x})\) is the (sub)density for the time to a
 type \(k\) failure. This is the general definition of a CIF, and to
 define it we need to define the functions that compose the subdensity.
 The first is the cause-specific hazard function or process
 \[
-  \lambda_{k}(t \mid \bm{x}) =
-  \lim_{h \rightarrow 0}~\frac{1}{h}~
-  \mathbb{P}[t \leq T < t + h,~K = k \mid T \geq t,~\bm{x}],
-  \quad t > 0, \quad k = 1,~\dots,~K.
+ \lambda_{k}(t \mid \bm{x}) =
+ \lim_{h \rightarrow 0}~\frac{1}{h}~
+ \mathbb{P}[t \leq T < t + h,~K = k \mid T \geq t,~\bm{x}],
+ \quad t > 0, \quad k = 1,~\dots,~K.
 \]
 In words, the cause-specific hazard function, \(\lambda_{k}(t \mid
 \bm{x})\), represents the instantaneous rate for failures of type
