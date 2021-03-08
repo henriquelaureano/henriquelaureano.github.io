@@ -80,6 +80,7 @@ data2plot <- bind_rows('RW(1)'=data.rw1,
                        '1d Matern'=data.spde, .id='Model')
 plot.curves <-
     ggplot(data2plot, aes(x=x, y=y, color=Model))+
+    geom_line(aes(y=y), color='black', alpha=0.25)+
     geom_vline(xintercept=c(31, 28+31), linetype='dashed')+
     geom_ribbon(aes(ymin=f.lb, ymax=f.ub, fill=Model),
                 alpha=0.15, fill='#8A8D8F', size=1.25, linetype='dashed')+
