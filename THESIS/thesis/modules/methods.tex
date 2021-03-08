@@ -22,7 +22,7 @@ We model an \(n\)-vector of exponential family random variables
 combination called of linear predictor and generally expressed by
 \begin{equation}
  g(\bm{\mu}) = \bm{X\beta} + \bm{Zu}, \quad
- \bm{u} \sim \mathcal{N}(\bm{0,\Sigma}).
+ \bm{u} \sim \text{Multivariate Normal}(\bm{0,\Sigma}).
  \label{eq:gmu}
 \end{equation}
 In other words, a GLMM \cite{GLMM} is a generalized linear model (GLM)
@@ -715,57 +715,53 @@ flexibility but requires some familiarity with the
 With TMB a user should be able to quickly implement complex latent
 effect models through simple \texttt{C++} templates. As an illustrative
 example let us consider an simple mixed logistic regression i.e., a
-binomial GLMM with a logistic link function.
-
-The latent structure is in the context of repeated measures, the same
-subject is observed three times. Trying to keep it simple, no
-covariates. A hierarchical model's description is given by
+binomial GLMM with a logistic link function. The latent structure is in
+the context of repeated measures, the same subject is observed three
+times. Trying to keep it simple, no covariates. A hierarchical model's
+description is given by
 \begin{align*}
  y_{ij} \mid u_{i} &\sim \text{Binomial}(n, p_{ij})\\
             u_{i} &\sim \text{Normal}(0, 1)\\
- g(p_{ij}) = \text{logit}(p_{ij}) &= \beta + u_{i}\\
+ g(p_{ij}) = \text{logit}(p_{ij}) &=
+ \log\frac{p_{ij}}{1 - p_{ij}} = \beta + u_{i}\\
  p_{ij} &= \frac{\exp\{\beta + u_{i}\}}{1 + \exp\{\beta + u_{i}\}},\quad
- i~\text{the subject},~j~\text{the subject observation}~(1,2,3),
+ i~\text{the subject},~j~\text{the subject observation}~(1,2,3).
 \end{align*}
+The TMB implementation of this model is provided in Figure
+\autoref{fig:tmbex-p1}.
 
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{EX1}
- \vspace{0.3cm}\centering
- \lstinputlisting[lastline=45]{modules/exampleTMB.R}
- \begin{footnotesize}
-  SOURCE: The author~(2021).
- \end{footnotesize}
- \label{fig:tmbex-p1}
-\end{figure}
-
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{EX2}
- \vspace{0.3cm}\centering
- \lstinputlisting[firstline=47]{modules/exampleTMB.R}
- \begin{footnotesize}
-  SOURCE: The author~(2021).
- \end{footnotesize}
- \label{fig:tmbex-p2}
-\end{figure}
+To keep the coherence would be more adequate to fit here a multinomial
+model. However, I want to show you that in TMB we can also simulate data
+from the model but not all \texttt{r}-distributions are implemented, as
+is the case of the multinomial. For this reason, a binomial model was
+the choice. An even easier implementation of a logistic model is
+available in TMB, called \texttt{dbinom\_robust()}, where we pass
+directly the \(\text{logit}(\cdot)\) but we do not have an
+\texttt{rbinom\_robust()} implementation available. Just for the sake of
+completeness, in Figure \autoref{fig:tmbex-p2} we have the \texttt{R}
+code showing how to manipulate the \texttt{C++} model template in terms
+of object definitions and parameters estimation and extraction for the
+logistic mixed model.
 
 In this chapter we describe step-by-step all the processes involved in
-the creation and parameter estimation of a GLMM. With TMB all this is
-put in practice in an efficient and robust fashion.
+the formulation and parameter estimation of a GLMM. With TMB all this is
+put in practice in an efficient and robust fashion. The user needs to
+provide the negative joint log-likelihood function writing in a
+\texttt{C++} template as exemplified in Figure \autoref{fig:tmbex-p1},
+using specialized macros that pass the parameters, latent effects and
+data from \texttt{R}, as exemplified in Figure \autoref{fig:tmbex-p2}.
 
-The user needs to provide just the negative joint log-likelihood
-function writing in a \texttt{C++} template, using specialized macros
-that pass the parameters, latent effects and data from \texttt{R}. When
-the model presents latent effects, during the compilation the latent
-effects are integrated out via an efficient Laplace approximation
-routine with a Newton algorithm inside, and the negative marginal
-log-likelihood gradient is computed, via AD, and returned. The negative
-marginal log-likelihood is returned into an \texttt{R} object that can
-then be optimized using the user's favorite quasi-Newton routine,
-available in \texttt{R}. To accomplish all that, TMB combines some
-state-of-art software
+When the model presents latent effects, during the model template
+compilation the latent effects are integrated out via an efficient
+Laplace approximation routine with the inner optimization made by a
+Newton algorithm, and the negative marginal log-likelihood gradient is
+computed, via AD. The negative marginal log-likelihood is returned into
+an \texttt{R} object that can then be optimized using the user's
+favorite quasi-Newton routine, available in \texttt{R}. All these
+procedures are briefly exemplified for a logistic mixed model in Figure
+\autoref{fig:tmbex-p1} and Figure \autoref{fig:tmbex-p2}.
 
+To accomplish all that, TMB combines some state-of-art software
 \begin{itemize}
  \item \texttt{CppAD}, a \texttt{C++} AD
        package \url{https://coin-or.github.io/CppAD/};
@@ -781,27 +777,40 @@ state-of-art software
  \item Parallelism
        through \texttt{BLAS} \url{http://www.netlib.org/blas/},
        a \texttt{Fortran} tuned set of Basic Linear Algebra Subprograms;
+\end{itemize}
 
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{\texttt{R} CODE FOR THE TMB IMPLEMENTATION OF A LOGISTIC MIXED
+          MODEL}
+ \vspace{0.3cm}\centering
+ \lstinputlisting[lastline=44]{modules/exampleTMB.R}
+ \begin{footnotesize}
+  SOURCE: The author~(2021).
+ \end{footnotesize}
+ \label{fig:tmbex-p1}
+\end{figure}
+
+\begin{itemize}
  \item \texttt{Matrix} \cite{Matrix}, a rich hierarchy sparse and dense
        matrix classes and methods
        using \texttt{LAPACK} \url{http://www.netlib.org/lapack/}
        and \texttt{SuiteSparse} \url{https://sparse.tamu.edu/}
        libraries.
 \end{itemize}
-Also, some of its key characteristics are
-\begin{itemize}
- \item TMB employs AD to calculate first and second order derivatives of
-       the log-likelihood function or of any objective function written
-       in \texttt{C++};
 
- \item The objective function, and its derivatives, can be called
-       from \texttt{R}. Hence, parameter estimation
-       via \texttt{base::optim()} or \texttt{base::nlminb()} is easy to
-       be performed;
-
- \item Standard deviations of any parameter, or derived parameter, can
-       be obtained via the \textit{delta method} \cite{deltamethod}.
-\end{itemize}
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{\texttt{R} CODE FOR THE MODEL FITTING OF A LOGISTIC MIXED
+          MODEL WRITTEN IN TMB}
+ \vspace{0.3cm}\centering
+ \lstinputlisting[firstline=46]{modules/exampleTMB.R}
+ \begin{footnotesize}
+  SOURCE: The author~(2021).
+ \end{footnotesize}
+ \label{fig:tmbex-p2}
+\end{figure}
+\noindent
 An overview of the pachage design is shown in
 \autoref{fig:tmbpackdesign}.
 
@@ -816,13 +825,29 @@ An overview of the pachage design is shown in
  \end{footnotesize}
  \label{fig:tmbpackdesign}
 \end{figure}
+\noindent
+Reinforcing, some key characteristics are
+\begin{itemize}
+ \item TMB employs AD to calculate first and second order derivatives of
+       the log-likelihood function or of any objective function written
+       in \texttt{C++};
+
+ \item The objective function, and its derivatives, can be called
+       from \texttt{R}. Hence, parameter estimation
+       via \texttt{base::optim()} or \texttt{base::nlminb()} is easy to
+       be performed;
+
+ \item Standard deviations of any parameter, or derived parameter, can
+       be obtained via the \textit{delta method} \cite{deltamethod}
+       implemented in \texttt{TMB::sdreport()}.
+\end{itemize}
 
 Here we focus on GLMMs, but basically any statistical model with a
 latent structure (or not), linear (or not), can be fitted with TMB. In
 times of \textit{big data} and with the TMB's authors having a
-professional preference for state-space and spatial models, TMB has
-also automatic sparseness detection.and some other nice built tools. Pre
-and post-processing of data should be done in \texttt{R}.
+professional preference for state-space and spatial models, TMB has also
+automatic sparseness detection and some other nice built tools. Pre and
+post-processing of data should be done in \texttt{R}.
 
 A TMB Users' mailing list exists, and it is extremely helpful for taking
 doubts and questions \url{https://groups.google.com/g/tmb-users}. Also,

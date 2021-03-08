@@ -1,6 +1,5 @@
-dll      <- 'model'
+dll <- 'model'
 filename <- paste0(dll, '.cpp')
-
 writeLines({'// A LOGISTIC MIXED MODEL (RANDOM INTERCEPT)
 #include <TMB.hpp> 
 template<class Type>
@@ -48,7 +47,7 @@ library(Matrix) ## install.packages('Matrix')
 beta <- 2
 sd   <- 1
 cs   <- 3  ## cluster size
-nc   <- 30 ## number of cluster
+nc   <- 50 ## number of cluster
 n    <- nc * cs
 Z    <- Matrix::bdiag(replicate(nc, rep(1, cs), simplify=FALSE))
 u    <- rnorm(nc, mean=0, sd=sd)
@@ -70,6 +69,6 @@ obj$simulate() ## generating a simulation
 ## obj$simulate(complete=TRUE)
 (opt <- nlminb(obj$par, obj$fn, obj$gr)) ## parameters estimation
  sdr <- TMB::sdreport(obj)               ## standard deviations
-TMB::summary(sdr, select='fixed')        ## extracting model parameters 
+summary(sdr, select='fixed')             ## extracting model parameters 
 summary(sdr, select='report')            ## ... reported variables
 cbind(u, summary(sdr, select='random'))  ## ... random effects
