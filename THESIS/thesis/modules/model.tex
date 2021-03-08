@@ -52,52 +52,50 @@ type \(k\) failure. This is the general definition of a CIF, and to
 define it we need to define the functions that compose the subdensity.
 The first is the cause-specific hazard function or process
 \[
- \lambda_{k}(t \mid \bm{x}) =
- \lim_{h \rightarrow 0}~\frac{1}{h}~
+ \lambda_{k}(t \mid \bm{x}) = \lim_{h \rightarrow 0}~\frac{1}{h}~
  \mathbb{P}[t \leq T < t + h,~K = k \mid T \geq t,~\bm{x}],
  \quad t > 0, \quad k = 1,~\dots,~K.
 \]
-In words, the cause-specific hazard function, \(\lambda_{k}(t \mid
+In words, the cause-specific hazard function \(\lambda_{k}(t \mid
 \bm{x})\), represents the instantaneous rate for failures of type
 \(k\) at time \(t\) given \(\bm{x}\) and all other failure types
-(competing causes). If we sum up all cause-specific hazard function we
+(competing causes). If we sum up all cause-specific hazard functions we
 get the overall hazard function,
 \[
-  \lambda(t \mid \bm{x}) =
-  \sum_{k=1}^{K}\lambda_{k}(t \mid \bm{x}).
+ \lambda(t \mid \bm{x}) = \sum_{k=1}^{K}\lambda_{k}(t \mid \bm{x}).
 \]
 From the overall hazard function we arrive in the overall survival
 function,
 \[
-  S(t \mid \bm{x}) =
-  \mathbb{P}[T > t \mid \bm{x}] =
-  \exp\left\{-\int_{0}^{t} \lambda(z \mid \bm{x})~\text{d}z\right\},
+ S(t \mid \bm{x}) = \mathbb{P}[T > t \mid \bm{x}] =
+ \exp\left\{-\int_{0}^{t} \lambda(z \mid \bm{x})~\text{d}z\right\},
 \]
 the second function that compose the subdensity \(f_{k}(t \mid
 \bm{x})\). A comprehensive reference for all these definitions is
 the book of \citeonline{kalb&prentice}.
 
 Until this point, we were talking about a general CIF's definition. We
-need now a precise framework telling how to take into consideration our
-clustered/family structure. We use the same CIF specification of
-\citeonline{SCHEIKE}, i.e. the approach that motivated this thesis. For
-two competing causes of failure, the cause-specific CIFs are specified
-in the following manner,
+need now a precise framework telling us how to take into consideration
+our clustered/family structure. We use the same CIF specification of
+\citeonline{SCHEIKE} i.e., the approach that motivated this thesis.
+
+For two competing causes of failure, the cause-specific CIFs are
+specified in the following manner
 \begin{equation}
-  F_{k} (t \mid \bm{x},~u_{1},~u_{2},~\eta_{k}) =
-  \underbrace{\pi_{k}(\bm{x},~u_{1},~u_{2})}_{
-    \substack{\text{cluster-specific}\\\text{risk level}}}\times
+ F_{k} (t \mid \bm{x},~u_{1},~u_{2},~\eta_{k}) =
+ \underbrace{\pi_{k}(\bm{x},~u_{1},~u_{2})}_{
+ \substack{\text{cluster-specific}\\\text{risk level}}}\times
   \underbrace{\Phi[w_{k} g(t) - \bm{x}\bm{\gamma}_{k} - \eta_{k}]}_{
-    \substack{\text{cluster-specific}\\\text{failure time trajectory}}
-  }, \quad t > 0, \quad k = 1,~2.
+   \substack{\text{cluster-specific}\\\text{failure time trajectory}}
+  }, \quad t > 0, \quad k = 1,~2,
   \label{eq:cif}
 \end{equation}
-i.e. as a product of a cluster-specific risk level and a
+i.e., as the product of a cluster-specific risk level with a
 cluster-specific failure time trajectory, resulting in a
 cluster-specific CIF. What makes these components cluster-specific are
 \(\bm{u} = \{u_{1},~u_{2}\}\) and \(\bm{\eta} =
 \{\eta_{1},~\eta_{2}\}\), Gaussian distributed latent effects with zero
-mean and potentially correlated, i.e.
+mean and potentially correlated i.e.,
 \[
   \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix} \sim
   \mathcal{N} \left(\begin{bmatrix} 0\\0\\0\\0\end{bmatrix},
