@@ -30,8 +30,9 @@ stipulated in \autoref{eq:model}.
    [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~\bm{\varrho}]^{\top}\)
   \State
    Sample \(J\) latent effect vectors from a
-   \(\mathcal{N}_{(K-1)\times(K-1)}(\bm{0},~\Sigma(\bm{\sigma^{2}},
-     \bm{\varrho}))\)
+   \(\text{Multivariate Normal}_{(K-1)\times(K-1)}(
+      \bm{0},~\Sigma(\bm{\sigma^{2},\varrho})
+     )\)
   \State
    Set \(\delta\)
    \Comment{maximum follow-up time}
@@ -41,14 +42,14 @@ stipulated in \autoref{eq:model}.
    Compute the competing risks probabilities
    \begin{align*}
     p_{kij} &=
-    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{
+    \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{kj} + u_{kj}\}}{
           1 +
-          \sum_{m=1}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}
+          \sum_{m=1}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mj} + u_{mj}\}
          }\\
     &\times w_{k}\frac{\delta}{2\delta t_{ij} - 2t_{ij}^{2}}~
      \phi\left(w_{k}
       \text{arctanh}\left(\frac{t_{ij}-\delta/2}{\delta/2}\right) -
-      \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+      \bm{x}_{kij}\bm{\gamma}_{kj} - \eta_{kj}
      \right),\\
     \text{Censorship}: \quad
     p_{Kij} &=
@@ -62,7 +63,7 @@ stipulated in \autoref{eq:model}.
    \Comment{any failure at time \(\delta\) is a censorship}
   \State
    \Return
-    Multinomial vectors and their respective failure/censoring times
+    multinomial vectors and their respective failure/censoring times
  \end{algorithmic}
 \end{algorithm}
 \vspace{-1cm}
@@ -90,10 +91,10 @@ we get the CIF's and failure probabilities (CIF derivatives w.r.t. time
  \caption{CUMULATIVE INCIDENCE FUNCTIONS (CIF) AND RESPECTIVE
           DERIVATIVES (\(\text{dCIF}\)) W.R.T. TIME FOR A MODEL WITH
           TWO COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES, LATENT
-          EFFECTS AT ZERO, AND FIXED EFFECTS AS IN
+          EFFECTS IN ZERO, AND FIXED EFFECTS IN
           \autoref{eq:fixedconfig}}
  \vspace{0.2cm}\centering
- \includegraphics[width=\textwidth]{datasimucif-1.png}\\
+ \includegraphics[width=0.8\textwidth]{datasimucif-1.png}\\
  \begin{footnotesize}
   SOURCE: The author (2021).
  \end{footnotesize}
@@ -103,13 +104,13 @@ we get the CIF's and failure probabilities (CIF derivatives w.r.t. time
 By adding a complete latent structure,
 \begin{equation}
  \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix}
- \sim\parbox{2.5cm}{\centering Multivariate Normal}
+ \sim\text{Multivariate Normal}
  \left(\begin{bmatrix} 0\\0\\0\\0 \end{bmatrix},
        \begin{bmatrix}
-        1&0.4&0.5&0.4\\
-         &1&0.4&0.3\\
-         &&1&0.4\\
-         &&&1
+        1&0.4&-0.5& 0.4\\
+         &  1& 0.4&-0.3\\
+                &&1&0.4\\
+                   &&&1
        \end{bmatrix}
  \right),\label{eq:latentconfig}
 \end{equation}
@@ -163,7 +164,7 @@ cause.
 This approach implies a parametric form for the failure times, which we
 do not know if holds in the real world.
 
-\section{REAL-BASED DATASET}
+\section{...}
 \label{cap:data}
 
 % END ==================================================================

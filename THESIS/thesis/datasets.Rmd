@@ -71,11 +71,11 @@ p1 <- ggplot(dfcif, aes(t, value, group = cif)) +
     theme_minimal()+
     theme(legend.position = "bottom",
           legend.title = element_blank(),
-          legend.text = element_text(size = 11),
-          axis.text.x = element_text(size = 10),
-          axis.text.y = element_text(size = 10),
+          legend.text = element_text(size = 15),
+          axis.text.x = element_text(size = 14),
+          axis.text.y = element_text(size = 14),
           axis.title.x = element_text(
-              size = 11,
+              size = 15,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")))
 p2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
     geom_line(aes(linetype = dcif)) +
@@ -84,56 +84,73 @@ p2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
     theme_minimal()+
     theme(legend.position = "bottom",
           legend.title = element_blank(),
-          legend.text = element_text(size = 11),
-          axis.text.x = element_text(size = 10),
-          axis.text.y = element_text(size = 10),
+          legend.text = element_text(size = 15),
+          axis.text.x = element_text(size = 14),
+          axis.text.y = element_text(size = 14),
           axis.title.x = element_text(
-              size = 11,
+              size = 15,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")))
 p1+p2
 ```
 
 ```{r datasimu_cache,cache=TRUE}
-## input ---------------------------------------------------------------
-## [numeric] number of clusters, J
-## [vector] failure/censorship times t
-## [Matrix] latent effects design matrix Z
-## [matrix] variance-covariance matrix S
-## output --------------------------------------------------------------
-## a [tibble] indicating the cluster element (i), the cluster (j), the
-## failure/censorship probabilities (p1:p3), and the multinomial
-## outcomes (y1:y3)
-datasimu <- function(J, t, Z, S,
+library(mvtnorm)
+library(tidyverse)
+library(mc2d)
+
+datasimu <- function(J,    ## number of clusters
+                     cs,   ## clusters size (all the same size)  
+                     time, ## failure/censorship times
+                     Z,    ## latent effects design-matrix
+                     S,    ## variance-covariance matrix
                      delta=80,
-                     beta=c(-2, -1.5), gamma=c(1.2, 1), w=c(3, 5)){
-    out <- tibble(i=rep(seq(2), times=J),
-                  j=rep(seq(J), each=2), p1=NA, p2=NA, p3=NA)
-    K <- dim(S)[1]/2+1
+                     beta =c( beta1=-2.0,  beta2=-1.5),
+                     gamma=c(gamma1= 1.2, gamma2= 1.0),
+                     w    =c(    w1= 3.0,     w2= 5.0))
+{
+    out <- tibble::tibble(i=rep(seq(cs), times=J), ## cluster element
+                          j=rep(seq(J),  each=cs), ## cluster
+                          time=time,
+                          p1=NA,
+                          p2=NA,
+                          p3=NA)
+
+    K     <- dim(S)[1]/2 + 1
     ladim <- 2*(K-1) ## latent effects dimension
-    B <- mvtnorm::rmvnorm(J, mean=rep(0, ladim), sigma=S)
-    R <- Z%*%B
-    risk1 <- exp(beta[1]+R[, 1])
-    risk2 <- exp(beta[2]+R[, 2])
-    level <- 1+risk1+risk2
-    out$p1 <- risk1/level*w[1]*delta/(2*t*(delta-t))*
-        dnorm(w[1]*atanh(2*t/delta-1)-gamma[1]-R[, 3])
-    out$p2 <- risk2/level*w[2]*delta/(2*t*(delta-t))*
-        dnorm(w[2]*atanh(2*t/delta-1)-gamma[2]-R[, 4])
-    out <- out%>%mutate(p3=1-p1-p2)
-    y <- mc2d::rmultinomial(2*J, 1, prob=out%>%select(p1:p3))
-    out <- out%>%
-        bind_cols(as_tibble(y))%>%
-        rename(y1=V1, y2=V2, y3=V3)
+    U     <- mvtnorm::rmvnorm(J, mean=rep(0, ladim), sigma=S)
+    ZU    <- Z%*%U
+    risk1 <- exp(beta['beta1'] + ZU[, 1])
+    risk2 <- exp(beta['beta2'] + ZU[, 2])
+    level <- 1 + risk1 + risk2
+    gt    <- atanh(2*time/delta - 1)
+    dgt   <- delta/(2*time*(delta - time))
+    x1    <- w['w1']*gt - gamma['gamma1'] - ZU[, 3]
+    x2    <- w['w2']*gt - gamma['gamma2'] - ZU[, 4]
+    
+    out$p1 <- risk1/level*w['w1']*dgt*dnorm(x1)
+    out$p2 <- risk2/level*w['w2']*dgt*dnorm(x2)
+
+    out    <- out %>% dplyr::mutate(p3=1-p1-p2)
+
+    y      <- mc2d::rmultinomial(cs*J, 1, prob=out%>%select(p1:p3))
+
+    out    <- out %>%
+        dplyr::bind_cols(tibble::as_tibble(y)) %>%
+        dplyr::rename(y1=V1, y2=V2, y3=V3)
     return(out)
 }
-J <- 50e3
-t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
-Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
-S <- matrix(c(1.0, 0.4, 0.5, 0.4,
-              0.4, 1.0, 0.4, 0.3,
-              0.5, 0.4, 1.0, 0.4,
-              0.4, 0.3, 0.4, 1.0), nrow=4, ncol=4)
-dat <- datasimu(J=J, t=t, Z=Z, S=S)
+J    <- 50e3
+cs   <- 2
+time <- rep(seq(from=30, to=79.9, length.out=100), length.out=cs*J)
+Z    <- Matrix::bdiag(replicate(J, rep(1, cs), simplify=FALSE))
+
+S    <- matrix(c( 1.0,  0.4, -0.5,  0.4,
+                  0.4,  1.0,  0.4, -0.3,
+                 -0.5,  0.4,  1.0,  0.4,
+                  0.4, -0.3,  0.4,  1.0), 4)
+chol(S)
+
+dat  <- datasimu(J=J, cs=cs, time=time, Z=Z, S=S)
 ```
 
 ```{r datasimu,fig.width=7.5,fig.height=3}
@@ -146,6 +163,15 @@ dat_longp <- dat%>%
 dat_longy <- dat%>%
     pivot_longer(cols=y1:y3, names_to='y_label', values_to='y_value')%>%
     filter(y_value==1)
+
+dat_nocens <- dat_longy %>% filter(y_label != 'y3') %>%
+    mutate(y_label=forcats::fct_recode(y_label,
+                                       'Failure by cause 1'='y1',
+                                       'Failure by cause 2'='y2'))
+
+ggplot(dat_nocens, aes(x=time))+
+    geom_histogram(binwidth=2.5, color='black', fill='white')+
+    facet_wrap(~y_label)
 
 ggplot(dat_longp, aes(x=p_value))+
     geom_histogram(binwidth=0.0025, color='black', fill='white')+
