@@ -515,19 +515,19 @@ estimated.
 A disadvantage in the use of a decomposition as the Cholesky is the lack
 of a straightforward interpretation to the elements
 \(\{c_{i}\}_{i=1}^{10}\). However, with the application of the delta
-method, already implemented in TMB \cite{TMB}, it is straightforward to
-get back the \(\Sigma\) elements together with its respective standard
-errors. The main advantage of this parametrization, apart from the fact
-that it ensures positive definiteness, is that it is computationally
-simple and stable.
+method, already implemented in TMB's \cite{TMB}
+\texttt{TMB::sdreport()}, it is straightforward to get back the
+\(\Sigma\) elements together with its respective standard errors. The
+main advantage of this parametrization apart from the fact that it
+ensures positive definiteness, is that it is computationally simple and
+stable.
 
 Just to mention another viable possibilities, we could use a modified
-Cholesky decomposition \cite{modifiedcholesky} that provides a better
+Cholesky decomposition \cite{modifiedcholesky} providing a better
 statistical interpretation of the decomposition elements or, we could
-also parametrize the precision matrix, \(\bm{Q} = \Sigma^{-1}\). Since
-we use \(\Sigma^{-1}\) in the marginal likelihood of
-\autoref{eq:loglik}, parametrizing directly its inverse save us some
-computations.
+parametrize the precision matrix, \(\bm{Q} = \Sigma^{-1}\). Since we use
+\(\Sigma^{-1}\) in the marginal likelihood of \autoref{eq:loglik},
+parametrizing directly its inverse save us some computations.
 
 Besides the popularity of the Cholesky method, there is another
 factorization scheme available and efficiently implemented in TMB. It is
