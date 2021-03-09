@@ -200,9 +200,9 @@ ggplot(df, aes(t, cifs, group = eta1)) +
               margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
 ```
 
-## FIGURE 7
+## FIGURE 9
 
-```{r parametrization, fig.height=3.75}
+```{r parametrization, fig.height=3.65}
 df <- tibble(gridvar = seq(0.01, 10, length.out = 100),
              logvar = log(gridvar),
              gridcor = seq(-0.99, 0.99, length.out = 100),
@@ -215,7 +215,17 @@ logplot <-
     labs(x = 'x', y= 'log(x)',
          title = 'Natural logarithm, log()',
          subtitle = 'Identity line in dashed')+
-    theme_minimal()
+    theme_minimal()+
+    theme(axis.text.x=element_text(size=13),
+          axis.text.y=element_text(size=13),
+          axis.title.x=element_text(
+              size=14,
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=14,
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
+          plot.title=element_text(size=14, face='bold'),
+          plot.subtitle=element_text(size=13, face='italic'))
 
 zplot <-
     ggplot(df, aes(x = gridcor)) +
@@ -224,7 +234,19 @@ zplot <-
     labs(x = 'x',  y = 'z(x)',
          title = 'Fisher z-transformation, z()',
          subtitle = 'Identity line in dashed')+
-    theme_minimal()
+    theme_minimal()+
+    theme(axis.text.x=element_text(size=13),
+          axis.text.y=element_text(size=13),
+          axis.title.x=element_text(
+              size=14,
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=14,
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
+          plot.title=element_text(size=14, face='bold'),
+          plot.subtitle=element_text(size=13, face='italic'))
 
-logplot + zplot + plot_annotation(tag_levels = 'A', tag_suffix = ')')
+logplot+zplot+
+    plot_annotation(tag_levels='A', tag_suffix=')')&
+        theme(plot.tag=element_text(size=14))
 ```

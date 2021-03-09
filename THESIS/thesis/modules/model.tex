@@ -378,8 +378,8 @@ is not very attractive since its interpretation is not clear. A more
 attractive choice is in terms of correlation.
 
 The covariance between two terms is defined as a triple product: the two
-terms standard deviations times the correlation, \(\rho\). Still
-thinking in two competing causes of failure, we have an \(\Sigma\)
+terms standard deviations times the correlation \(\rho\). Still
+thinking in two competing causes of failure, we have then an \(\Sigma\)
 matrix with six correlations
 \begin{align*}
  \Sigma = \begin{bmatrix}
@@ -414,20 +414,20 @@ more data (more resources), and to estimate the correlation parameters
 we need much more data (even more resources). The second argument comes
 to also explain the first one via the parametric space constraints.
 
-Generally, the fixed effect components do not present constraints, i.e.
+Generally, the fixed effect components do not present constraints i.e.,
 they can vary in all \(\mathbb{R}\). The same can not be said from the
 variance components, constrained by definition into the
 \(\mathbb{R}_{\ast}^{+}\). Finally, we have the correlation components,
 constrained to the interval \([-1,~1]\). These parametric space
-constraints drive us again to the first argument since we need more data
-(resources, information) to be able to estimate coefficients constrained
-to some interval. Nevertheless, this may not be enough. Without
-providing some extra information, in terms of an constrained algorithm
-e.g., it is very reasonable to expect that during the optimization
-procedure some unrealistic areas of the parametric space could be
-visited and jeopardize the stability or even the whole optimization
-procedure. To overcome these possible difficulties, parameter
-reparametrizations are more than welcome.
+constraints drive us again to the first argument since we need more
+data/resources/information to be able to estimate coefficients
+constrained to some interval. Nevertheless, this may not be enough.
+Without providing some extra information in terms of an e.g.,
+constrained algorithm, it is very reasonable to expect that during the
+optimization procedure some unrealistic areas of the parametric space
+could be visited and jeopardize the stability or even the whole
+optimization procedure. To overcome these possible difficulties,
+parameter reparametrizations are more than welcome.
 
 The variance and correlation parameters are modeled in terms of the
 matrix \(\Sigma\). This matrix is symmetric and more important, positive
@@ -448,33 +448,34 @@ of just transform the scale. By practical reasons, let us think in a
            \sqrt{\exp\{\log\sigma_{1}^{2}\}}
            \sqrt{\exp\{\log\sigma_{1}^{2}\}}\\
            &\exp\{\log\sigma_{2}^{2}\}
-          \end{bmatrix},
+          \end{bmatrix}
 \end{align*}
-i.e. in the main diagonal we now estimate the log variances and in the
-off-diagonal we estimate Fisher z-transformed correlations.
+i.e., in the main diagonal we may now estimate the log-variances and in
+the off-diagonal we may estimate Fisher z-transformed correlations.
 
-The estimation of the log variances has two big advantages
+The estimation of the log-variances has two big advantages
 \begin{itemize}
- \item Since the natural lorarithm is a real-valued function, we
+ \item Since the natural logarithm is a real-valued function, we
        overcome the parametric space constraint problem;
+
  \item High variances are problematic for many reasons but in the
        context of seeing them as the diagonal components of a restricted
        matrix, being able to control its magnitudes is a crucial task to
        the stability of any optimization routine. With the natural
-       logarithm transformation we shrink the parametric space, as
+       logarithm transformation we shrink the parametric space as
        illustrated in \autoref{fig:parametrization}~A), avoiding some
        eventual numerical cumbersome.
 \end{itemize}
-With the correlation components what we do is to proceed with the
-estimation of its Fischer z-transformation. This transformation, and its
-inverse, are defined as
+With the correlation components we proceed with the estimation of its
+Fischer z-transformation. This transformation, and its inverse, are
+defined as
 \[
- z(\rho) = \frac{1}{2}\log\Big(\frac{1+\rho}{1-\rho}\Big)
+ z(\rho) = \frac{1}{2}\log\left(\frac{1+\rho}{1-\rho}\right)
          = \text{arctanh}(\rho),\quad
  z^{-1}(\rho) = \frac{\exp\{2\rho\}-1}{\exp\{2\rho\}+1}
              = \text{tanh}(\rho).
 \]
-The Fisher z-transformation plays the role here of stretching the small
+The Fisher z-transformation plays the role of stretching the small
 correlation parametric space but doing this in a smooth fashion, as
 illustrated in \autoref{fig:parametrization}~B).
 
@@ -482,8 +483,8 @@ illustrated in \autoref{fig:parametrization}~B).
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{ILLUSTRATION OF THE PARAMETRIZATION BEHAVIOR FOR THE VARIANCE
           COMPONENTS, IN A), AND CORRELATION COMPONENTS, IN B)}
- \vspace{0.3cm}\centering
- \includegraphics[width=\textwidth]{parametrization-1.png}\\
+ \vspace{0.2cm}\centering
+ \includegraphics[width=0.8\textwidth]{parametrization-1.png}\\
  \begin{footnotesize}
   SOURCE: The author (2021).
  \end{footnotesize}
@@ -508,7 +509,8 @@ standard Cholesky decomposition of \(\Sigma\) may be expressed as
                        0&0&0&c_{10}
                       \end{bmatrix} = LL^{\top},
 \end{align*}
-where \(\{c_{i}\}_{i=1}^{10}\) are then the coefficients to be estimated.
+where \(\{c_{i}\}_{i=1}^{10}\) are the unconstrained coefficients to be
+estimated.
 
 A disadvantage in the use of a decomposition as the Cholesky is the lack
 of a straightforward interpretation to the elements
