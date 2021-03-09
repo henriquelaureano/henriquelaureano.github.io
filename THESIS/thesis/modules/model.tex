@@ -263,13 +263,14 @@ causes of failure but an extension is straightforward.
 For two competing causes of failure, a subject \(i\), in the
 cluster/family \(j\), in time \(t\), we have
 \begin{align}
-  y_{i j t} \mid \{u_{1j},~u_{2j},~\eta_{1j},~\eta_{2j}\}
-  &\sim\text{Multinomial}(p_{1ijt},~p_{2ijt},~p_{3ijt})\nonumber\\
-  \nonumber\\
-  \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix}
-  &\sim\text{MN}
-  \left(\begin{bmatrix} 0\\0\\0\\0 \end{bmatrix},
-  \begin{bmatrix}
+ y_{i j t} \mid \{u_{1j},~u_{2j},~\eta_{1j},~\eta_{2j}\}
+ &\sim\text{Multinomial}(p_{1ijt},~p_{2ijt},~p_{3ijt})\nonumber\\
+ \nonumber\\
+ \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix}
+ &\sim\text{MN}
+  \left(
+   \begin{bmatrix} 0\\0\\0\\0 \end{bmatrix},
+   \begin{bmatrix}
     \sigma_{u_{1}}^{2}&
     \text{cov}(u_{1},~u_{2})&
     \text{cov}(u_{1},~\eta_{1})&\text{cov}(u_{1},~\eta_{2})\\
@@ -277,21 +278,21 @@ cluster/family \(j\), in time \(t\), we have
     \text{cov}(u_{2},~\eta_{1})&\text{cov}(u_{2},~\eta_{2})\\
     &&\sigma_{\eta_{1}}^{2}&\text{cov}(\eta_{1},~\eta_{2})\\
     &&&\sigma_{\eta_{2}}^{2}
-  \end{bmatrix}\right)\nonumber\\
+   \end{bmatrix}
+  \right)\nonumber\\
+ \nonumber\\
+ p_{kijt}
+ &=\frac{\partial}{\partial t}
+  F_{k} (t \mid \bm{x},~u_{1},~u_{2},~\eta_{k})\label{eq:model}\\
+ &= \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{k} + u_{kj}\}}{
+    1 + \sum_{m=1}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{m} + u_{mj}\}}
   \nonumber\\
-  p_{kijt}
-  &=\frac{\partial}{\partial t}
-    F_{k} (t \mid \bm{x},~u_{1},~u_{2},~\eta_{k})
-  \label{eq:model}\\
-  &= \frac{\exp\{\bm{x}_{kij}\bm{\beta}_{ki} + u_{kj}\}}{
-    1 + \sum_{m=1}^{K-1}\exp\{\bm{x}_{mij}\bm{\beta}_{mi} + u_{mj}\}}
-  \nonumber\\
-  &\times w_{k}\frac{\delta}{2\delta t - 2t^{2}}~
-    \phi\left(
-    w_{k}
-    \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-    - \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
-    \right),\nonumber\\k = 1,~2.\nonumber
+ &\times w_{k}\frac{\delta}{2\delta t - 2t^{2}}~
+  \phi\left(
+   w_{k}
+   \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+   - \bm{x}_{kij}\bm{\gamma}_{k} - \eta_{kj}
+  \right),\nonumber\\k = 1,~2.\nonumber
 \end{align}
 The probabilities are given by the derivative w.r.t. time \(t\) of the
 cluster-specific CIF. The choice of a multinomial logistic regression
@@ -302,14 +303,14 @@ Considering two competing causes of failure, we have a multinomial with
 three classes. The third class exists to handle the censorship and its
 probability is given by the complementary to reach 1. This framework in
 \autoref{eq:model} results in what we call multiGLMM, a multinomial
-GLMM, to handle the CIF of clustered competing risks data. For a random
+GLMM to handle the CIF of clustered competing risks data. For a random
 sample, the corresponding marginal likelihood functions in given by
 \begin{align}
-  L(\bm{\theta}~;~y)
-  &= \prod_{j=1}^{J}~\int_{\Re^{4}}
+ L(\bm{\theta}~;~y)
+ &= \prod_{j=1}^{J}~\int_{\Re^{4}}
     \pi(y_{j} \mid \bm{r}_{j})\times\pi(\bm{r}_{j})~\text{d}\bm{r}_{j}
     \nonumber\\
-  &= \prod_{j=1}^{J}~\int_{\Re^{4}}
+ &= \prod_{j=1}^{J}~\int_{\Re^{4}}
     \Bigg\{
     \underbrace{\prod_{i=1}^{n_{j}}~\prod_{t=1}^{n_{ij}}
     \Bigg(
@@ -317,21 +318,21 @@ sample, the corresponding marginal likelihood functions in given by
     \prod_{k=1}^{K} p_{kijt}^{y_{kijt}}
     \Bigg)}_{\substack{\text{fixed effect component}}}
   \Bigg\}\times\nonumber\\
-  &\hspace{2cm}\underbrace{
-    (2\pi)^{-2} |\Sigma|^{-1/2} \exp
-    \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
-    }_{\substack{\text{latent effect component}}}
-    \text{d}\bm{r}_{j}\nonumber\\
-  &= \prod_{j=1}^{J}~\int_{\Re^{4}}
+ &\hspace{2cm}\underbrace{
+   (2\pi)^{-2} |\Sigma|^{-1/2} \exp
+   \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
+   }_{\substack{\text{latent effect component}}}
+   \text{d}\bm{r}_{j}\nonumber\\
+ &= \prod_{j=1}^{J}~\int_{\Re^{4}}
     \Bigg\{
     \underbrace{\prod_{i=1}^{n_{j}}~\prod_{t=1}^{n_{ij}}
     \prod_{k=1}^{K} p_{kijt}^{y_{kijt}}
     }_{\substack{\text{fixed effect}}}
-  \Bigg\}\underbrace{
-  (2\pi)^{-2} |\Sigma|^{-1/2} \exp
-  \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
-  }_{\substack{\text{latent effect component}}}
-  \text{d}\bm{r}_{j}\label{eq:loglik},
+   \Bigg\}\underbrace{
+   (2\pi)^{-2} |\Sigma|^{-1/2} \exp
+   \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
+   }_{\substack{\text{latent effect component}}}
+   \text{d}\bm{r}_{j}\label{eq:loglik},
 \end{align}
 where \(\bm{\theta} = [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
 \bm{\rho}]^{\top}\) is the parameters vector to be maximized. In our
@@ -339,10 +340,10 @@ framework, a subject can fail from just one competing cause or get
 censor, at a given time. Thus, the fraction of factorials in the fixed
 effect component is made only by 0's and 1's. Finally, returning the
 value 1. The matrix \(\Sigma\) is the variance-covariance matrix, which
-components are given by \(\bm{\sigma}^{2}\) and \(\bm{\rho}\).
+parameters are given by \(\bm{\sigma}^{2}\) and \(\bm{\rho}\).
 
-Now, \autoref{eq:loglik} in words. To each cluster (family) \(j\) we
-have a product of two components. The fixed effect component, given by a
+Now, \autoref{eq:loglik} in words. To each cluster/family \(j\) we have
+a product of two components. The fixed effect component, given by a
 multinomial distribution with its probabilities specified through the
 cluster-specific CIF (\autoref{eq:cif}) and, the latent effect
 component, given by a multivariate Gaussian distribution.
@@ -359,6 +360,11 @@ Gaussian distribution in four dimensions). Consequently, for each
 cluster, we approximate an integral in four dimensions. The product of
 these approximated integrals results in the called marginal likelihood,
 to be maximized in \(\bm{\theta}\).
+
+Independent of the parameters value choice, the probabilities for the
+failure causes will be small, providing always a bigger probability mass
+to the censorship. More will be talked about this model characteristic
+in the next chapter.
 
 \subsection{Parametrization}
 \label{cap:parametrization}
