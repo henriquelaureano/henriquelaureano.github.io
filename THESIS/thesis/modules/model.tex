@@ -545,14 +545,15 @@ where
       c_{2}&c_{3}&1&0\\
       c_{4}&c_{5}&c_{6}&1
      \end{bmatrix},\quad D = \text{diag}(LL^{\top})
- \quad\text{ and }\quad W = \text{diag}(\{\sigma_{i}\}_{i=1}^{4}).
+ \quad\text{ and }
+ \quad W = \text{diag}\left(\{\sigma_{i}\}_{i=1}^{4}\right).
 \]
 This scheme is based initially on the factorization of a correlation
-matrix (unit diagonal) as \(D^{-1/2}LL^{\top}D^{-1/2}\). The elements
+matrix defined as \(D^{-1/2}LL^{\top}D^{-1/2}\). The elements
 \(\{c_{i}\}_{i=1}^{6}\) to be estimated has the advantage of being
-unconstrained and guarantees that the symmetry and positive definiteness
-constraint is respected. The variances are scaled via the diagonal
-matrix V, its elements \(\{\sigma_{i}\}_{i=1}^{4}\) are then the
-standard deviations to be estimated.
+unconstrained and guarantees the matrix symmetry and positive
+definiteness. The variances are scaled via the diagonal matrix \(V\),
+its elements \(\{\sigma_{i}\}_{i=1}^{4}\) are then the standard
+deviations to be estimated.
 
 % END ==================================================================
