@@ -11,11 +11,19 @@ pacman::p_load(tidyverse, ## tibble + ggplot2
 
 plotcif <- function(cif.obj)
 {
-    ggplot(data=cif.obj$dat, aes(x=time, y=cif, color=label))+
-        geom_line(size=2)+
+    ggplot(data=cif.obj$dat, aes(x=time, y=cif, linetype=label))+
+        geom_line()+
         labs(x=NULL, y=NULL, color=NULL,
              title=paste('Censorship %:', cif.obj$censorship))+
-        theme(legend.position=c(0.3, 0.85))
+        theme_minimal()+
+        theme(legend.position='bottom',
+              legend.box='vertical',
+              legend.margin=margin(), 
+              legend.title=element_blank(),
+              legend.text=element_text(size=12),
+              axis.text.x=element_text(size=11),
+              axis.text.y=element_text(size=11),
+              plot.title=element_text(size=12, face='bold'))
 }
 time <- seq(from=30, to=79.9, length.out=100)
 
@@ -32,20 +40,7 @@ set.seed(1487)
 dat2 <- cif(time=time, beta=beta, gama=gama, w=w)
 
 pc1 <- plotcif(dat1)
-pc2 <- ggplot()+
-        geom_line(
-        mapping=aes(x=time, y=cif, group=label), data=dat1$dat, size=2,
-        alpha=0.25
-    )+
-    geom_line(
-        mapping=aes(x=time, y=cif, color=label), data=dat2$dat, size=2
-    )+
-    labs(x=NULL, y=NULL, color=NULL,
-         title=paste('Censorship %:', dat2$censorship)
-         )+
-    theme(
-        legend.position=c(0.3, 0.85)
-    )
+pc2 <- plotcif(dat2)
 pc1|pc2
 
 ## ---------------------------------------------------------------------
