@@ -263,16 +263,14 @@ plotcif <- function(cif.obj)
 {
     ggplot(data=cif.obj$dat, aes(x=time, y=cif, linetype=label))+
         geom_line()+
-        labs(x=NULL, y=NULL, color=NULL,
-             title=paste('Censorship %:', cif.obj$censorship))+
+        labs(x=NULL, y=NULL)+
         theme_minimal()+
         theme(legend.position='bottom',
               legend.box.background=element_rect(color='black'), 
               legend.title=element_blank(),
               legend.text=element_text(size=12),
               axis.text.x=element_text(size=12),
-              axis.text.y=element_text(size=12),
-              plot.title=element_text(size=13, face='bold'))+
+              axis.text.y=element_text(size=12))+
         guides(linetype=guide_legend(nrow=2))
 }
 time <- seq(from=30, to=79.9, length.out=100)

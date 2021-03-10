@@ -172,21 +172,22 @@ which we do not know if holds in the real world.
 \section{SIMULATION STUDIES DESIGN}
 \label{cap:data}
 
-To stress the multiGLMM for clustered competing risks data, and check
-the identifiability of the parameters, we propose seventy-two scenarios.
+To stress the model and check the paramters identifiability, we propose
+seventy-two scenarios. Two CIF configurations, four latent effect
+structures, three sample sizes, and three cluster sizes; \(2 \times
+4 \times 3 \times 3 = 72\). All scenarios are with two competing
+causes. Thus, a three classes multinomial distribution.
 
-We have two CIF configurations, four latent effect structures, three
-sample sizes, and three cluster sizes. \(2 \times 4 \times 3 \times 3 =
-72\). All seventy-two scenarios are with two competing causes (thus, a
-three classes multinomial distribution).
+We consider two CIF scenarios, in summary, a low and a high CIF
+scenario. The parameter configurations are presented together with their
+curves in \autoref{fig:twodiffcifs}. As mentioned before, independent of
+the configuration the censorship level is basically the same.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
- \caption{CUMULATIVE INCIDENCE FUNCTIONS (CIF) AND RESPECTIVE
-          DERIVATIVES (\(\text{dCIF}\)) W.R.T. TIME FOR A MODEL WITH
-          TWO COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES, LATENT
-          EFFECTS IN ZERO, AND FIXED EFFECTS IN
-          \autoref{eq:fixedconfig}}
+ \caption{CUMULATIVE INCIDENCE FUNCTIONS (CIF) FOR A MODEL WITH TWO
+          COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES, AND LATENT
+          EFFECTS IN ZERO}
  \vspace{0.2cm}\centering
  \includegraphics[width=0.8\textwidth]{twodiffcifs-1.png}\\
  \begin{footnotesize}
@@ -194,5 +195,26 @@ three classes multinomial distribution).
  \end{footnotesize}
  \label{fig:twodiffcifs}
 \end{figure}
+
+We use four models, that can be discriminated by their latent effect
+structures. These latent effect structures are basically pieces of the
+following variance-covariance matrix
+\[
+ \Sigma = \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
+ \quad~\text{with}~\quad
+ R = \begin{bmatrix} 1.0 & 0.1\\ & 0.6 \end{bmatrix},\quad
+ T = \begin{bmatrix} 0.7 & 0.2\\ & 0.9 \end{bmatrix},\quad
+ C = \begin{bmatrix} -0.5 & 0.3\\ 0.3 & -0.4 \end{bmatrix}.
+\]
+The models are
+\begin{itemize}
+ \item
+
+ \item
+
+ \item
+
+ \item
+\end{itemize}
 
 % END ==================================================================
