@@ -116,7 +116,19 @@ By adding a complete latent structure,
 \end{equation}
 we are able to apply Algorithm \autoref{alg:algo} and generate a
 complete model sample with 50000 clusters of size two (pairs),
-summarized in \autoref{fig:datasimu}. As already expected from
+summarized in \autoref{fig:datasimu}.
+
+Varying the parameters configuration we are able to build basically any
+CIF's format. However, its dCIF will be always small i.e., the generated
+probabilities for the failure causes will always be really small,
+passing all the probability mass to the censorship.  Low probabilities
+imply few failures, making this model even harder to fit.  All these
+behaviors are seen in Figure 16.
+
+Thinking of epidemiological or public health problems, the reasonable
+CIF behaviors are the ones presented in Figure 15 A).
+
+As already expected from
 \autoref{fig:datasimucif}, where the CIF curves maximum are around 15\%,
 the simulated failure probabilities and consequently the failure
 occurrences, are very small. In this way, we have a data sample filled
@@ -125,13 +137,13 @@ incidences, for instance.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
- \caption{SIMULATED FAILURE CAUSE PROBABILITIES WITH RESPECTIVE OUTPUT
-          PCERCENTAGES FOR A MODEL WITH TWO COMPETING CAUSES AND 50000
-          CLUSTERS OF SIZE TWO. THE SIMULATION FOLLOWED ALGORITHM
-          \autoref{alg:algo} GUIDELINES WITH PARAMETER CONFIGURATIONS
-          SPECIFIED IN \autoref{eq:fixedconfig} AND
-          \autoref{eq:latentconfig}}
- \vspace{0.2cm}\centering
+\caption{HISTOGRAMS FOR SIMULATED PROBABILITIES WITH RESPECTIVE OUTPUT
+          PCERCENTAGES AND FAILURE TIMES FOR A MODEL WITH TWO COMPETING
+          CAUSES AND 50000 CLUSTERS OF SIZE TWO. THE SIMULATION FOLLOWED
+          ALGORITHM \autoref{alg:algo} GUIDELINES WITH PARAMETER
+          CONFIGURATIONS SPECIFIED IN \autoref{eq:fixedconfig}
+          AND \autoref{eq:latentconfig}}
+\vspace{0.2cm}\centering
  \includegraphics[width=\textwidth]{datasimu-1.png}\\
  \begin{footnotesize}
   SOURCE: The author (2021).

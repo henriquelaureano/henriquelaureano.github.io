@@ -71,11 +71,11 @@ p1 <- ggplot(dfcif, aes(t, value, group = cif)) +
     theme_minimal()+
     theme(legend.position = "bottom",
           legend.title = element_blank(),
-          legend.text = element_text(size = 15),
-          axis.text.x = element_text(size = 14),
-          axis.text.y = element_text(size = 14),
+          legend.text = element_text(size = 14),
+          axis.text.x = element_text(size = 13),
+          axis.text.y = element_text(size = 13),
           axis.title.x = element_text(
-              size = 15,
+              size = 14,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")))
 p2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
     geom_line(aes(linetype = dcif)) +
@@ -84,11 +84,11 @@ p2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
     theme_minimal()+
     theme(legend.position = "bottom",
           legend.title = element_blank(),
-          legend.text = element_text(size = 15),
-          axis.text.x = element_text(size = 14),
-          axis.text.y = element_text(size = 14),
+          legend.text = element_text(size = 14),
+          axis.text.x = element_text(size = 13),
+          axis.text.y = element_text(size = 13),
           axis.title.x = element_text(
-              size = 15,
+              size = 14,
               margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")))
 p1+p2
 ```
