@@ -106,7 +106,9 @@ datasimu <- function(J,    ## number of clusters
                      delta=80,
                      beta =c( beta1=-2.0,  beta2=-1.5),
                      gamma=c(gamma1= 1.2, gamma2= 1.0),
-                     w    =c(    w1= 3.0,     w2= 5.0))
+                     w    =c(    w1= 3.0,     w2= 5.0),
+                     seed1,
+                     seed2)
 {
     out <- tibble::tibble(i=rep(seq(cs), times=J), ## cluster element
                           j=rep(seq(J),  each=cs), ## cluster
@@ -117,6 +119,7 @@ datasimu <- function(J,    ## number of clusters
 
     K     <- dim(S)[1]/2 + 1
     ladim <- 2*(K-1) ## latent effects dimension
+    set.seed(seed1)
     U     <- mvtnorm::rmvnorm(J, mean=rep(0, ladim), sigma=S)
     ZU    <- Z%*%U
     risk1 <- exp(beta['beta1'] + ZU[, 1])
@@ -131,7 +134,7 @@ datasimu <- function(J,    ## number of clusters
     out$p2 <- risk2/level*w['w2']*dgt*dnorm(x2)
 
     out    <- out %>% dplyr::mutate(p3=1-p1-p2)
-
+    set.seed(seed2)
     y      <- mc2d::rmultinomial(cs*J, 1, prob=out%>%select(p1:p3))
 
     out    <- out %>%
@@ -143,17 +146,14 @@ J    <- 50e3
 cs   <- 2
 time <- rep(seq(from=30, to=79.9, length.out=100), length.out=cs*J)
 Z    <- Matrix::bdiag(replicate(J, rep(1, cs), simplify=FALSE))
-
-S    <- matrix(c( 1.0,  0.4, -0.5,  0.4,
-                  0.4,  1.0,  0.4, -0.3,
-                 -0.5,  0.4,  1.0,  0.4,
-                  0.4, -0.3,  0.4,  1.0), 4)
-chol(S)
-
-dat  <- datasimu(J=J, cs=cs, time=time, Z=Z, S=S)
+S    <- matrix(c( 1.0,  0.4, -0.1,  0.4,
+                  0.4,  1.0,  0.4, -0.1,
+                 -0.1,  0.4,  1.0,  0.4,
+                  0.4, -0.1,  0.4,  1.0), 4)
+dat  <- datasimu(J=J, cs=cs, time=time, Z=Z, S=S, seed1=1, seed2=2)
 ```
 
-```{r datasimu,fig.width=7.5,fig.height=3}
+```{r datasimu,fig.width=7.5,fig.height=6}
 dat_longp <- dat%>%
     pivot_longer(cols=p1:p3, names_to='p_label', values_to='p_value')%>%
     mutate(p_label=forcats::fct_recode(p_label,
@@ -164,26 +164,18 @@ dat_longy <- dat%>%
     pivot_longer(cols=y1:y3, names_to='y_label', values_to='y_value')%>%
     filter(y_value==1)
 
-dat_nocens <- dat_longy %>% filter(y_label != 'y3') %>%
-    mutate(y_label=forcats::fct_recode(y_label,
-                                       'Failure by cause 1'='y1',
-                                       'Failure by cause 2'='y2'))
-
-ggplot(dat_nocens, aes(x=time))+
-    geom_histogram(binwidth=2.5, color='black', fill='white')+
-    facet_wrap(~y_label)
-
-ggplot(dat_longp, aes(x=p_value))+
+p1 <- ggplot(dat_longp, aes(x=p_value))+
     geom_histogram(binwidth=0.0025, color='black', fill='white')+
     facet_wrap(~p_label, scales='free')+
-    labs(x='Probability')+
+    labs(x='Probability', caption='bindwidth=0.0025')+
     geom_label(data=data.frame(
                    label=paste0(
                        "Turns out in\n",
                        round(prop.table(table(dat_longy$y_label)), 3),
                        "%'s of data"),
                    p_label=levels(dat_longp$p_label)),
-               mapping=aes(x=c(0.0625, 0.052, 0.9375), y=Inf, label=label),
+               mapping=aes(x=c(0.0325, 0.0325, 0.9675),
+                           y=Inf, label=label),
                vjust=1.5)+
     theme_minimal()+
     theme(strip.background=element_rect(colour='black', fill='white'),
@@ -193,5 +185,33 @@ ggplot(dat_longp, aes(x=p_value))+
           axis.title.y=element_blank(),
           axis.title.x=element_text(
               size=12, 
-              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')))
+              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
+          plot.caption=element_text(size=11))
+
+dat_nocens <- dat_longy %>% filter(y_label != 'y3') %>%
+    mutate(y_label=forcats::fct_recode(y_label,
+                                       '226 failures by cause 1'='y1',
+                                       '381 failures by cause 2'='y2'))
+## table(dat_nocens$y_label)
+
+p2 <- ggplot(dat_nocens, aes(x=time))+
+    geom_histogram(binwidth=2.5, color='black', fill='white')+
+    facet_wrap(~y_label, scales='free')+
+    labs(x='Time', caption='bindwidth=2.5')+
+    theme_minimal()+
+    theme(strip.background=element_rect(colour='black', fill='white'),
+          strip.text.x=element_text(size=12), 
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_text(size=11),
+          axis.title.y=element_blank(),
+          axis.title.x=element_text(
+              size=12, 
+              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
+          plot.caption=element_text(size=11))
+
+layout <- '
+AAAAAA
+#BBBB#
+'
+p1+p2+plot_layout(design=layout)
 ```
