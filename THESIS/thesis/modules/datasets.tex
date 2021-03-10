@@ -120,20 +120,10 @@ summarized in \autoref{fig:datasimu}.
 
 Varying the parameters configuration we are able to build basically any
 CIF's format. However, its dCIF will be always small i.e., the generated
-probabilities for the failure causes will always be really small,
-passing all the probability mass to the censorship.  Low probabilities
-imply few failures, making this model even harder to fit.  All these
-behaviors are seen in Figure 16.
-
-Thinking of epidemiological or public health problems, the reasonable
-CIF behaviors are the ones presented in Figure 15 A).
-
-As already expected from
-\autoref{fig:datasimucif}, where the CIF curves maximum are around 15\%,
-the simulated failure probabilities and consequently the failure
-occurrences, are very small. In this way, we have a data sample filled
-with censorship, reflecting the reality of the applications. As disease
-incidences, for instance.
+probabilities for the failure causes will always be (really) small,
+passing all the probability mass to the censorship class. Low
+probabilities imply few failures, making the multiGLMM even harder to
+fit. All these behaviors are seen in \autoref{fig:datasimu}.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
@@ -154,14 +144,12 @@ incidences, for instance.
 The \texttt{R} function written to simulate the data is available in
 \autoref{cap:appendixC}.
 
-In the simulation routine described in this section,the
-failure/censorship times are based on the repetition of an
-equally-spaced grid between 30 and 80-time units. A different approach
-but still non-parametric would be the random sampling of values between
-those limits. Yet, \citeonline{SCHEIKE} does something different through
-the sampling of the censorship times from a \(\text{U}(0,~\delta)\), and
-the sampling of \(\varsigma\sim\text{U}(0,~1)\) and the computation of
-the cause-specific failure times by solving
+In the simulation routine, the failure/censorship times are based on the
+random sampling of values between 30 and 80-time units.
+\citeonline{SCHEIKE} does something different through the sampling of
+the censorship times from a \(\text{U}(0,~\delta)\), and the sampling of
+\(\varsigma\sim\text{U}(0,~1)\) and the computation of the
+cause-specific failure times by solving
 \[
  \varsigma =
  \Phi\left(w_{k}
@@ -175,6 +163,9 @@ cause.
 
 This approach implies a parametric form for the failure times, which we
 do not know if holds in the real world.
+
+Thinking of epidemiological or public health problems, the reasonable
+CIF behaviors are the ones presented in Figure 15 A).
 
 \section{...}
 \label{cap:data}

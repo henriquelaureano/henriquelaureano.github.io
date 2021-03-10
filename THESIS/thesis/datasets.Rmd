@@ -100,7 +100,7 @@ library(mc2d)
 
 datasimu <- function(J,    ## number of clusters
                      cs,   ## clusters size (all the same size)  
-                     time, ## failure/censorship times
+                     time, ## failure, censorship times
                      Z,    ## latent effects design-matrix
                      S,    ## variance-covariance matrix
                      delta=80,
@@ -144,7 +144,7 @@ datasimu <- function(J,    ## number of clusters
 }
 J    <- 50e3
 cs   <- 2
-time <- rep(seq(from=30, to=79.9, length.out=100), length.out=cs*J)
+time <- runif(n=cs*J, min=30, max=79.9)
 Z    <- Matrix::bdiag(replicate(J, rep(1, cs), simplify=FALSE))
 S    <- matrix(c( 1.0,  0.4, -0.1,  0.4,
                   0.4,  1.0,  0.4, -0.1,
@@ -174,7 +174,7 @@ p1 <- ggplot(dat_longp, aes(x=p_value))+
                        round(prop.table(table(dat_longy$y_label)), 3),
                        "%'s of data"),
                    p_label=levels(dat_longp$p_label)),
-               mapping=aes(x=c(0.0325, 0.0325, 0.9675),
+               mapping=aes(x=c(0.045, 0.0325, 0.955),
                            y=Inf, label=label),
                vjust=1.5)+
     theme_minimal()+
@@ -190,8 +190,8 @@ p1 <- ggplot(dat_longp, aes(x=p_value))+
 
 dat_nocens <- dat_longy %>% filter(y_label != 'y3') %>%
     mutate(y_label=forcats::fct_recode(y_label,
-                                       '226 failures by cause 1'='y1',
-                                       '381 failures by cause 2'='y2'))
+                                       '210 failures by cause 1'='y1',
+                                       '355 failures by cause 2'='y2'))
 ## table(dat_nocens$y_label)
 
 p2 <- ggplot(dat_nocens, aes(x=time))+

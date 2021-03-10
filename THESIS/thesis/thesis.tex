@@ -900,55 +900,18 @@ Subject \(i\) at cluster \(j\) and for competing cause \(k\)
 with \(\bm{e_{k}^{\top}}\) begin a vector with \(1\) at the \(k\)-th
 position and zero elsewhere.
 
-\chapter{R CODE TO SIMULATE FROM A \(\text{multiGLMM}\) WITH TWO
-         COMPETING CAUSES AND CLUSTERS OF SIZE TWO. FOR MORE
+\chapter{\texttt{R} CODE TO SIMULATE FROM A \(\text{multiGLMM}\) WITH
+         TWO COMPETING CAUSES AND CLUSTERS OF SIZE TWO. FOR MORE
          INFORMATION CHECK SECTION \ref{cap:simu}}
 \label{cap:appendixC}
 
-\begin{lstlisting}
-## input ------------------------------
-## [numeric] number of clusters, J
-## [vector] failure/censorship times t
-## [Matrix] latent effects design matrix Z
-## [matrix] variance-covariance matrix S
-## output ------------------------------
-## a [tibble] indicating the cluster element (i), the cluster (j), the
-## failure/censorship probabilities (p1:p3), and the multinomial
-## outcomes (y1:y3)
-
-datasimu <- function(J, t, Z, S,
-                     delta=80,
-                     beta=c(-2, -1.5), gamma=c(1.2, 1), w=c(3, 5)){
-    out <- tibble(i=rep(seq(2), times=J),
-                  j=rep(seq(J), each=2), p1=NA, p2=NA, p3=NA)
-    K <- dim(S)[1]/2+1
-    ladim <- 2*(K-1) ## latent effects dimension
-    B <- mvtnorm::rmvnorm(J, mean=rep(0, ladim), sigma=S)
-    R <- Z%*%B
-    risk1 <- exp(beta[1]+R[, 1])
-    risk2 <- exp(beta[2]+R[, 2])
-    level <- 1+risk1+risk2
-    out$p1 <- risk1/level*w[1]*delta/(2*t*(delta-t))*
-        dnorm(w[1]*atanh(2*t/delta-1)-gamma[1]-R[, 3])
-    out$p2 <- risk2/level*w[2]*delta/(2*t*(delta-t))*
-        dnorm(w[2]*atanh(2*t/delta-1)-gamma[2]-R[, 4])
-    out <- out%>%mutate(p3=1-p1-p2)
-    y <- mc2d::rmultinomial(2*J, 1, prob=out%>%select(p1:p3))
-    out <- out%>%
-        bind_cols(as_tibble(y))%>%
-        rename(y1=V1, y2=V2, y3=V3)
-    return(out)
-}
-library(tidyverse)                     
-J <- 50e3
-t <- rep(seq(from=30, to=79.5, by=0.5), length.out=2*J)
-Z <- Matrix::bdiag(replicate(J, rep(1, 2), simplify=FALSE))
-S <- matrix(c(1.0, 0.4, 0.5, 0.4,
-              0.4, 1.0, 0.4, 0.3,
-              0.5, 0.4, 1.0, 0.4,
-              0.4, 0.3, 0.4, 1.0), nrow=4, ncol=4)
-dat <- datasimu(J=J, t=t, Z=Z, S=S)
-\end{lstlisting}
+\lstinputlisting[firstline=97,lastline=153]{datasets.Rmd}
+\vspace{-0.5cm}
+\begin{center}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+\end{center}
 
 \end{apendicesenv}
 % ----------------------------------------------------------------------
