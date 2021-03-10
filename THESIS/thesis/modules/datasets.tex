@@ -116,7 +116,8 @@ By adding a complete latent structure,
 \end{equation}
 we are able to apply Algorithm \autoref{alg:algo} and generate a
 complete model sample with 50000 clusters of size two (pairs),
-summarized in \autoref{fig:datasimu}.
+summarized in \autoref{fig:datasimu}. The \texttt{R} function written to
+simulate the data is available in \autoref{cap:appendixC}.
 
 Varying the parameters configuration we are able to build basically any
 CIF's format. However, its dCIF will be always small i.e., the generated
@@ -141,31 +142,32 @@ fit. All these behaviors are seen in \autoref{fig:datasimu}.
  \label{fig:datasimu}
 \end{figure}
 
-The \texttt{R} function written to simulate the data is available in
-\autoref{cap:appendixC}.
+Thinking of epidemiological or public health problems, the reasonable
+CIF behaviors are the ones presented in \autoref{fig:datasimucif}. In
+the simulation routine, the failure/censorship times are based on the
+random sampling of values between 30 and 80-time units. Another approach
+could be performing this random sampling by age group, to have something
+similar to a realistic population pyramid. However, by performing some
+tests we saw that having a realistic CIF is enough. Even with a uniform
+time distribution, the failure times will not be uniform, as the CIF
+curves impose their form. We can see this happening in the bottom graphs
+of \autoref{fig:datasimu}.
 
-In the simulation routine, the failure/censorship times are based on the
-random sampling of values between 30 and 80-time units.
 \citeonline{SCHEIKE} does something different through the sampling of
-the censorship times from a \(\text{U}(0,~\delta)\), and the sampling of
-\(\varsigma\sim\text{U}(0,~1)\) and the computation of the
+the censorship times from a \(\text{U}(0,~\delta)\), the sampling of
+\(\varsigma\sim\text{U}(0,~1)\), and the computation of the
 cause-specific failure times by solving
 \[
  \varsigma =
  \Phi\left(w_{k}
            \text{arctanh}\left(\frac{t_{ij}-\delta/2}{\delta/2}\right) -
-           \bm{x}_{kij}\bm{\gamma}_{ki} - \eta_{kj}
+           \bm{x}_{kij}\bm{\gamma}_{k} - \eta_{kj}
      \right)
  \quad\text{for}\quad t_{ij},
 \]
 with \(i\) being the subject, \(j\) the cluster, and \(k\) the failure
-cause.
-
-This approach implies a parametric form for the failure times, which we
-do not know if holds in the real world.
-
-Thinking of epidemiological or public health problems, the reasonable
-CIF behaviors are the ones presented in Figure 15 A).
+cause. This approach implies a parametric form for the failure times,
+which we do not know if holds in the real world.
 
 \section{...}
 \label{cap:data}
