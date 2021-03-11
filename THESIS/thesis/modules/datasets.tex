@@ -196,7 +196,7 @@ the configuration the censorship level is basically the same.
  \label{fig:twodiffcifs}
 \end{figure}
 
-We use four models, that can be discriminated by their latent effect
+We use four multiGLMMs, that can be discriminated by their latent effect
 structures.
 \[
  \Sigma = \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
@@ -205,15 +205,31 @@ structures.
  T = \begin{bmatrix} 0.7 & 0.2\\ & 0.9 \end{bmatrix},\quad
  C = \begin{bmatrix} -0.5 & 0.3\\ 0.3 & -0.4 \end{bmatrix}.
 \]
-The models are
-\begin{itemize}
- \item A multiGLMM 
+They are
+\begin{description}
+ \item[risk model] A model with latent effects only on the risk level
+      i.e., \(\Sigma_{~2\times2} = R\);
 
- \item
+ \item[time model] A model with latent effects only on the trajectory
+      time level i.e., \(\Sigma_{~2\times2} = T\);
 
- \item
+ \item[block-diag model] A model with latent effects on the risk and
+      trajectory time level only i.e., \(\Sigma_{~4\times4} =
+      \text{diag}(R, T)\) - a block-diagonal matrix;
 
- \item
-\end{itemize}
+ \item[complete model] A model with a \textit{complete} latent effects
+      structure i.e, \(\Sigma_{~4\times4} = \Sigma\).
+\end{description}
+
+Reinforcing,
+\[
+ \Sigma = \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
+        = \begin{bmatrix}
+            1.0 &  0.1 & -0.5 &  0.3\\
+            0.1 &  0.6 &  0.3 & -0.4\\
+           -0.5 &  0.3 &  0.7 &  0.2\\
+            0.3 & -0.4 &  0.2 &  0.9
+          \end{bmatrix}
+\]
 
 % END ==================================================================
