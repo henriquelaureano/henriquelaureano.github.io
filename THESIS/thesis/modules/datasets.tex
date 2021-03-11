@@ -173,10 +173,8 @@ which we do not know if holds in the real world.
 \label{cap:data}
 
 To stress the model and check the paramters identifiability, we propose
-seventy-two scenarios. Two CIF configurations, four latent effect
-structures, three sample sizes, and three cluster sizes; \(2 \times
-4 \times 3 \times 3 = 72\). All scenarios are with two competing
-causes. Thus, a three classes multinomial distribution.
+seventy-two scenarios. All scenarios with two competing causes. Thus, a
+three classes multinomial distribution.
 
 We consider two CIF scenarios, in summary, a low and a high CIF
 scenario. The parameter configurations are presented together with their
@@ -215,13 +213,12 @@ They are
 
  \item[block-diag model] A model with latent effects on the risk and
       trajectory time level only i.e., \(\Sigma_{~4\times4} =
-      \text{diag}(R, T)\) - a block-diagonal matrix;
+      \text{diag}(R, T)\);
 
  \item[complete model] A model with a \textit{complete} latent effects
       structure i.e, \(\Sigma_{~4\times4} = \Sigma\).
 \end{description}
-
-Reinforcing,
+All models are based on some decomposition of the matrix
 \[
  \Sigma = \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
         = \begin{bmatrix}
@@ -229,7 +226,52 @@ Reinforcing,
             0.1 &  0.6 &  0.3 & -0.4\\
            -0.5 &  0.3 &  0.7 &  0.2\\
             0.3 & -0.4 &  0.2 &  0.9
-          \end{bmatrix}
+          \end{bmatrix}.
 \]
+Propose a \(4\times4\) matrix like this is not so simple since we should
+not only look at the values coherence. The matrix should also be
+positive-definite, and more than that, the submatrices \(R\), \(T\),
+and \(\text{diag}(R, T)\), should also be positive-definite since they
+are also used as variance-covariances matrices.
+
+Three sample sizes are used, 5000; 30000; and 60000 data points. They
+are combined with three cluster sizes, size 2; size 5; and size 10
+clusters. Thus,
+\begin{minipage}{\textwidth/3}
+ \begin{align*}
+          &\textit{5000 data points},\\
+  \bullet~&\text{2500 clusters of size 2}\\
+  \bullet~&\text{1000 clusters of size 5}\\
+  \bullet~&\text{500 clusters of size 10}
+ \end{align*}
+\end{minipage}%
+\begin{minipage}{\textwidth/3}
+ \begin{align*}
+          &\textit{30000 data points},\\
+  \bullet~&\text{15000 clusters of size 2}\\
+  \bullet~&\text{6000 clusters of size 5}\\
+  \bullet~&\text{3000 clusters of size 10}
+ \end{align*}
+\end{minipage}%
+\begin{minipage}{\textwidth/3}
+ \begin{align*}
+          &\textit{60000 data points},\\
+  \bullet~&\text{30000 clusters of size 2}\\
+  \bullet~&\text{12000 clusters of size 5}\\
+  \bullet~&\text{6000 clusters of size 10}
+ \end{align*}
+\end{minipage}\\
+
+Besides the sample size per se, by increasing it we also increase the
+number of Laplace approximations to be performed since each cluster
+implies a Laplace approximation. This affects hugely the computational
+time.
+
+In summary, we have
+
+Two CIF configurations, four latent effect structures, three sample
+sizes, and three cluster sizes; \(2 \times 4 \times 3 \times 3 = 72\)
+scenarios. For each scenario, we simulate 100 samples and fitted the
+corresponding model.
 
 % END ==================================================================
