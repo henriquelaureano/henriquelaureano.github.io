@@ -1,6 +1,6 @@
 ---
-title: 'Figures of chap4: results'
-author: HENRIQUE LAUREANO (.github.io)
+title: 'Figures of chap5: results'
+author: henrique laureano (.github.io)
 date: '*Last modification on* `r Sys.time()`'
 output:
   html_document:
@@ -11,7 +11,7 @@ output:
 
 ```{r echo=FALSE}
 library(knitr)
-opts_chunk$set(fig.path = 'figures/')
+opts_chunk$set(fig.path='figures/')
 ```
 
 ```{r packages}
@@ -19,29 +19,90 @@ pacman::p_load(tidyverse, patchwork, ggcorrplot)
 ```
 
 ```{r readdata}
-path <- '../server/'
-coefs22 <- read.table(paste0(path, 'coefs22.txt'))
-coefs36 <- read.table(paste0(path, 'coefs36.txt'))
-coefs38 <- read.table(paste0(path, 'coefs38.txt'))
-coefs40 <- read.table(paste0(path, 'coefs40.txt'))
+path       <- '~/Git/henriquelaureano.github.io/THESIS/code/coefs/'
+fixednames <- c('beta1', 'beta2', 'gama1', 'gama2', 'w1', 'w2')
+varnames   <- c('logs2_1', 'logs2_2', 'logs2_3', 'logs2_4')
+cornames   <- c(
+    'rhoZ12', 'rhoZ13', 'rhoZ14', 'rhoZ23', 'rhoZ24', 'rhoZ34'
+)
+metnames   <- c('conv', 'mll')
 
-## convergence 1 to everybody
-table(coefs22$V16)
-table(coefs36$V18)
-table(coefs38$V16)
-table(coefs40$V16)
+vdata <- function(data)
+{
+    out <-
+        tibble::as_tibble(read.table(paste0(path, data)))%>%
+        dplyr::select(-V1)
+    type <- substring(data, 6, 7)    
+    switch(type,
+           v1={ out <-
+                    out%>%'colnames<-'(c(
+                              fixednames,
+                              varnames[1:2], cornames[1], metnames)) },
+           v2={ out <-
+                    out%>%'colnames<-'(c(
+                              fixednames,
+                              varnames[3:4], cornames[6], metnames)) },
+           v3={ out <-
+                    out%>%'colnames<-'(c(
+                              fixednames,
+                              varnames, cornames[c(1, 6)], metnames)) },
+           v4={ out <-
+                    out%>%'colnames<-'(c(
+                              fixednames,
+                              varnames, cornames, metnames)) },
+           stop('Invalid type'))
+    return(out)
+}
 
-coefs22 <- as_tibble(coefs22)%>%select(-V1, -V16)%>%
-    `colnames<-`(paste0('p', seq(14)))
+v1data <- v2data <- v3data <- v4data <- vector('list', 18)
+l <- 1
+for (i in 1:3)
+{
+    for (j in 1:2)
+    {
+        for (k in 1:3)
+        {
+            v1data[[l]] <- vdata(
+                paste0('coefsv1_cs', i, '_', j, '_', k, '.txt')
+            )
+            v2data[[l]] <- vdata(
+                paste0('coefsv2_cs', i, '_', j, '_', k, '.txt')
+            )
+            v3data[[l]] <- vdata(
+                paste0('coefsv3_cs', i, '_', j, '_', k, '.txt')
+            )
+            v4data[[l]] <- vdata(
+                paste0('coefsv4_cs', i, '_', j, '_', k, '.txt')
+            )
+            l <- l+1
+        }
+    }
+}
+str(v1data);length(v1data)
+str(v2data);length(v2data)
+str(v3data);length(v3data)
+str(v4data);length(v4data)
 
-coefs36 <- as_tibble(coefs36)%>%select(-V1, -V18)%>%
-    `colnames<-`(paste0('p', seq(16)))
+cif1    <- setNames(c( 3,  2.6, 2.5, 4, 5, 10), fixednames)
+cif2    <- setNames(c(-2, -1.5, 1, 1.5, 3, 4), fixednames)
+logvars <- setNames(log(c(1, 0.6, 0.7, 0.9)), varnames)
+rhoZs   <- setNames(atanh(c(0.1, -0.5, 0.3, 0.3, -0.4, 0.2)), cornames)
 
-coefs38 <- as_tibble(coefs38)%>%select(-V1, -V16)%>%
-    `colnames<-`(paste0('p', seq(14)))
+v1cif1 <- c(cif1, logvars[1:2], rhoZs[1])
+v1cif2 <- c(cif2, logvars[1:2], rhoZs[1])
 
-coefs40 <- as_tibble(coefs40)%>%select(-V1, -V16)%>%
-    `colnames<-`(paste0('p', seq(14)))
+v2cif1 <- c(cif1, logvars[3:4], rhoZs[6])
+v2cif2 <- c(cif2, logvars[3:4], rhoZs[6])
+
+v3cif1 <- c(cif1, logvars, rhoZs[c(1, 6)])
+v3cif2 <- c(cif2, logvars, rhoZs[c(1, 6)])
+
+v4cif1 <- c(cif1, logvars, rhoZs)
+v4cif2 <- c(cif2, logvars, rhoZs)
+```
+
+```{r}
+
 ```
 
 # COR
