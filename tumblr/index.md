@@ -89,3 +89,10 @@
 <img src='iceicebaby.png'>
 <img src='future.jpg'>
 <img src='future2.jpg'>
+<img src='unemployedandbeautiful.jpg'>
+<img src='trying.jpg'>
+<img src='sinceearly.jpg'>
+<img src='woody.jpg'>
+<img src='niceview2.jpg'>
+<img src='goddamn.jpg'>
+<img src='well.gif'>
