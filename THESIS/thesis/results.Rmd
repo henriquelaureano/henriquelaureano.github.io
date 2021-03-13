@@ -55,25 +55,19 @@ vdata <- function(data)
 }
 
 v1data <- v2data <- v3data <- v4data <- vector('list', 18)
-l <- 1
+label  <- numeric(18)
+l      <- 1
 for (i in 1:3)
 {
     for (j in 1:2)
     {
         for (k in 1:3)
         {
-            v1data[[l]] <- vdata(
-                paste0('coefsv1_cs', i, '_', j, '_', k, '.txt')
-            )
-            v2data[[l]] <- vdata(
-                paste0('coefsv2_cs', i, '_', j, '_', k, '.txt')
-            )
-            v3data[[l]] <- vdata(
-                paste0('coefsv3_cs', i, '_', j, '_', k, '.txt')
-            )
-            v4data[[l]] <- vdata(
-                paste0('coefsv4_cs', i, '_', j, '_', k, '.txt')
-            )
+            label[l]    <- paste0('cs', i, '_', j, '_', k)
+            v1data[[l]] <- vdata(paste0('coefsv1_', label[l], '.txt'))
+            v2data[[l]] <- vdata(paste0('coefsv2_', label[l], '.txt'))
+            v3data[[l]] <- vdata(paste0('coefsv3_', label[l], '.txt'))
+            v4data[[l]] <- vdata(paste0('coefsv4_', label[l], '.txt'))
             l <- l+1
         }
     }
@@ -90,18 +84,111 @@ rhoZs   <- setNames(atanh(c(0.1, -0.5, 0.3, 0.3, -0.4, 0.2)), cornames)
 
 v1cif1 <- c(cif1, logvars[1:2], rhoZs[1])
 v1cif2 <- c(cif2, logvars[1:2], rhoZs[1])
-
+v1true <- rep(
+    c(replicate(v1cif1, n=3, simplify=FALSE),
+      replicate(v1cif2, n=3, simplify=FALSE)),
+    3
+)
 v2cif1 <- c(cif1, logvars[3:4], rhoZs[6])
 v2cif2 <- c(cif2, logvars[3:4], rhoZs[6])
-
+v2true <- rep(
+    c(replicate(v2cif1, n=3, simplify=FALSE),
+      replicate(v2cif2, n=3, simplify=FALSE)),
+    3
+)
 v3cif1 <- c(cif1, logvars, rhoZs[c(1, 6)])
 v3cif2 <- c(cif2, logvars, rhoZs[c(1, 6)])
-
+v3true <- rep(
+    c(replicate(v3cif1, n=3, simplify=FALSE),
+      replicate(v3cif2, n=3, simplify=FALSE)),
+    3
+)
 v4cif1 <- c(cif1, logvars, rhoZs)
 v4cif2 <- c(cif2, logvars, rhoZs)
+v4true <- rep(
+    c(replicate(v4cif1, n=3, simplify=FALSE),
+      replicate(v4cif2, n=3, simplify=FALSE)),
+    3
+)
 ```
 
 ```{r}
+cerror <- function(data, true, data_label) {
+    coefs <- data%>%dplyr::select(-c(conv, mll))
+    error <- coefs
+    for (i in seq(ncol(coefs))) { error[i] <- true[i]-coefs[i] }
+    out <- error%>%
+        summarize_all(mean)%>%
+        add_row(error%>%summarize_all(quantile, c(0.025, 0.975)))%>%
+        mutate(label=c('mean', 'q025', 'q975'),
+               conv=1-mean(data$conv), 
+               data=data_label)
+    return(out)
+}
+
+v1error <- v2error <- v3error <- v4error <- NULL
+for (i in seq(18))
+{
+    v1error <-
+        v1error%>%
+        dplyr::bind_rows(cerror(v1data[[i]], v1true[[i]], label[i]))
+    v2error <-
+        v2error%>%
+        dplyr::bind_rows(cerror(v2data[[i]], v2true[[i]], label[i]))
+    v3error <-
+        v3error%>%
+        dplyr::bind_rows(cerror(v3data[[i]], v3true[[i]], label[i]))
+    v4error <-
+        v4error%>%
+        dplyr::bind_rows(cerror(v4data[[i]], v4true[[i]], label[i]))
+}
+
+v1error
+v2error
+v3error
+v4error
+
+bias2plot
+func(data, title, zrhos)
+
+df <- v1error%>%dplyr::select(beta1, label, conv, data)
+ggplot(df, aes(ymin=q025, ymax=q975, x=par))+
+    geom_linerange(
+        color=RColorBrewer::brewer.pal(n=3, name='Greys')[2],
+        position=position_dodge(width=0.2),
+        size=3)+
+    ylim(c(-1, 1))+
+    geom_point(mapping=aes(x=par, y=mean), size=2)+
+    geom_hline(yintercept=0, linetype='dashed')+
+    labs(x=NULL, y='Bias',
+         title=title, subtitle='with 2.5% and 97.5% quantiles')+
+    scale_x_discrete(labels=c(expression(beta[1]),
+                              expression(beta[2]),
+                              expression(gamma[1]),
+                              expression(gamma[2]),
+                              expression(w[1]),
+                              expression(w[2]),
+                              expression(log(sigma[1]^2)),
+                              expression(log(sigma[2]^2)),
+                              expression(log(sigma[3]^2)),
+                              expression(log(sigma[4]^2)),
+                              zrhos))+
+    coord_flip()+
+    theme_minimal()+
+    theme(plot.title=element_text(size=12, face='bold'),
+          plot.subtitle=element_text(size=11, face='italic'),
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_text(size=11),
+          axis.title.x=element_text(
+              size=12, 
+              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')))
+
+bias2plot(error22,
+          title='model22 parameters bias',
+          zrhos=c(expression(z(rho[12])),
+                  expression(z(rho[34])),
+                  expression(z(rho[13])),
+                  expression(z(rho[24]))))
 
 ```
 
