@@ -121,7 +121,8 @@ cerror <- function(data, true, data_label) {
         summarize_all(mean)%>%
         add_row(error%>%summarize_all(quantile, c(0.025, 0.975)))%>%
         mutate(label=c('mean', 'q025', 'q975'),
-               conv=1-mean(data$conv), 
+               conv=1-mean(data$conv),
+               nr=nrow(data), 
                data=data_label)
     return(out)
 }
@@ -151,37 +152,56 @@ v4error
 bias2plot
 func(data, title, zrhos)
 
-df <- v1error%>%dplyr::select(beta1, label, conv, data)
-ggplot(df, aes(ymin=q025, ymax=q975, x=par))+
-    geom_linerange(
-        color=RColorBrewer::brewer.pal(n=3, name='Greys')[2],
-        position=position_dodge(width=0.2),
-        size=3)+
-    ylim(c(-1, 1))+
-    geom_point(mapping=aes(x=par, y=mean), size=2)+
+biasformat <- function(errordata)
+{
+    out <-
+        errordata%>%
+        dplyr::select(beta1, label, conv, nr, data)%>%
+        pivot_wider(names_from=label, values_from=beta1)
+    out$data <- forcats::fct_relevel(forcats::as_factor(out$data), rev)
+    return(out)
+}
+
+df <- dplyr::bind_rows(biasformat(v1error),
+                       biasformat(v2error),
+                       biasformat(v3error),
+                       biasformat(v4error),
+                       .id='v')
+
+ggplot(df, aes(ymin=q025, ymax=q975, x=data, color=conv, size=nr))+
+    geom_linerange(position=position_dodge(width=0.2))+
+    ## scale_fill_brewer(palette='Dark2')+
+    geom_point(mapping=aes(x=data, y=mean), size=3,
+               shape=21, color='black', fill='white', stroke=2)+
+    facet_wrap(~v, scales='free_x')+
     geom_hline(yintercept=0, linetype='dashed')+
     labs(x=NULL, y='Bias',
-         title=title, subtitle='with 2.5% and 97.5% quantiles')+
-    scale_x_discrete(labels=c(expression(beta[1]),
-                              expression(beta[2]),
-                              expression(gamma[1]),
-                              expression(gamma[2]),
-                              expression(w[1]),
-                              expression(w[2]),
-                              expression(log(sigma[1]^2)),
-                              expression(log(sigma[2]^2)),
-                              expression(log(sigma[3]^2)),
-                              expression(log(sigma[4]^2)),
-                              zrhos))+
+         title=expression(beta[1]),
+         subtitle='with 2.5% and 97.5% quantiles')+
+    ## scale_x_discrete(labels=c(expression(beta[1]),
+    ##                           expression(beta[2]),
+    ##                           expression(gamma[1]),
+    ##                           expression(gamma[2]),
+    ##                           expression(w[1]),
+    ##                           expression(w[2]),
+    ##                           expression(log(sigma[1]^2)),
+    ##                           expression(log(sigma[2]^2)),
+    ##                           expression(log(sigma[3]^2)),
+    ##                           expression(log(sigma[4]^2)),
+    ##                           zrhos))+
     coord_flip()+
     theme_minimal()+
-    theme(plot.title=element_text(size=12, face='bold'),
-          plot.subtitle=element_text(size=11, face='italic'),
-          axis.text.x=element_text(size=11),
-          axis.text.y=element_text(size=11),
-          axis.title.x=element_text(
-              size=12, 
-              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')))
+    scale_color_viridis_c(option='plasma', direction=-1)+
+    theme(strip.background=element_rect(colour='black', fill='white'))
+
+plot.title=element_text(size=12, face='bold'),
+plot.subtitle=element_text(size=11, face='italic'),
+axis.text.x=element_text(size=11),
+axis.text.y=element_text(size=11),
+axis.title.x=element_text(
+    size=12, 
+    margin=unit(c(t=3, r=0, b=0, l=0), 'mm'))
+
 
 bias2plot(error22,
           title='model22 parameters bias',
