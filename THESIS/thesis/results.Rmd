@@ -151,18 +151,18 @@ for (i in seq(18))
 ## v3error
 ## v4error
 
+inside <- function(par, errordata)
+{
+    out <-
+        errordata%>%
+        dplyr::select(par, label, conv, nr, data)%>%
+        tidyr::pivot_wider(names_from=label, values_from=par)
+    out$data <-
+        forcats::fct_relevel(forcats::as_factor(out$data), rev)
+    return(out)
+}
 biasformat <- function(par, errordatas)
 {
-    inside <- function(par, errordata)
-    {
-        out <-
-            errordata%>%
-            dplyr::select(par, label, conv, nr, data)%>%
-            tidyr::pivot_wider(names_from=label, values_from=par)
-        out$data <-
-            forcats::fct_relevel(forcats::as_factor(out$data), rev)
-        return(out)
-    }
     out <- dplyr::bind_rows(inside(par, errordatas[[1]]),
                             inside(par, errordatas[[2]]),
                             inside(par, errordatas[[3]]),
@@ -225,19 +225,49 @@ bias('gama2', expression('Parameter:'~gamma[2]))
 bias('w1', expression('Parameter:'~w[1]))
 bias('w2', expression('Parameter:'~w[2]))
 
-bias('logs2_1', expression('Parameter:'~log(sigma[1]^2)))
-
-out <- dplyr::bind_rows(inside(par, errordatas[[1]]),
-                        inside(par, errordatas[[2]]),
-                        inside(par, errordatas[[3]]),
-                        inside(par, errordatas[[4]]),
+par <- 'logs2_1'
+out <- dplyr::bind_rows(inside(par, v1error),
+                        inside(par, v3error),
+                        inside(par, v4error),
                         .id='v')
 out$v <- forcats::fct_recode(out$v,
                              'RISK MODEL'      ='1',
-                             'TIME MODEL'      ='2',
-                             'BLOCK-DIAG MODEL'='3',
-                             'COMPLETE MODEL'  ='4')
+                             'BLOCK-DIAG MODEL'='2',
+                             'COMPLETE MODEL'  ='3')
+bias2plot(out, expression('Parameter:'~log(sigma[1]^2)))
 
+par <- 'logs2_2'
+out <- dplyr::bind_rows(inside(par, v1error),
+                        inside(par, v3error),
+                        inside(par, v4error),
+                        .id='v')
+out$v <- forcats::fct_recode(out$v,
+                             'RISK MODEL'      ='1',
+                             'BLOCK-DIAG MODEL'='2',
+                             'COMPLETE MODEL'  ='3')
+bias2plot(out, expression('Parameter:'~log(sigma[2]^2)))
+
+par <- 'logs2_3'
+out <- dplyr::bind_rows(inside(par, v2error),
+                        inside(par, v3error),
+                        inside(par, v4error),
+                        .id='v')
+out$v <- forcats::fct_recode(out$v,
+                             'TIME MODEL'      ='1',
+                             'BLOCK-DIAG MODEL'='2',
+                             'COMPLETE MODEL'  ='3')
+bias2plot(out, expression('Parameter:'~log(sigma[3]^2)))
+
+par <- 'logs2_4'
+out <- dplyr::bind_rows(inside(par, v2error),
+                        inside(par, v3error),
+                        inside(par, v4error),
+                        .id='v')
+out$v <- forcats::fct_recode(out$v,
+                             'TIME MODEL'      ='1',
+                             'BLOCK-DIAG MODEL'='2',
+                             'COMPLETE MODEL'  ='3')
+bias2plot(out, expression('Parameter:'~log(sigma[4]^2)))
 ```
 
 # COR
