@@ -126,14 +126,22 @@ cerror <- function(data, true, data_label) {
     for (i in seq(ncol(coefs))) { error[i] <- true[i]-coefs[i] }
     out <- error%>%
         dplyr::summarize_all(mean)%>%
-        dplyr::add_row(error%>%
-                dplyr::summarize_all(quantile, c(0.025, 0.975)))%>%
-        dplyr::mutate(label=c('mean', 'q025', 'q975'),
+        dplyr::add_row(
+                   error%>%
+                   dplyr::summarize_all(quantile, c(0.025, 0.975)))%>%
+        dplyr::add_row(
+                   error%>%
+                   dplyr::summarize_all(sd))%>%
+        dplyr::mutate(label=c('mean', 'q025', 'q975', 'sd'),
                       conv=1-mean(data$conv),
                       nr=nrow(data), 
                       data=data_label)
     return(out)
 }
+
+rn <- rnorm(100)
+sd(rn)
+sqrt(var(rn))
 
 label <- sub('cs1_', 'cs02-',  label)
 label <- sub('cs2_', 'cs05-',  label)
@@ -145,6 +153,8 @@ label <- sub('2_', '-low-',  label)
 label <- sub('-1$', '-05k',  label)
 label <- sub('-2$', '-30k', label)
 label <- sub('-3$', '-60k', label)
+
+cerror(v1data[[1]], v1true[[1]], label[1])
 
 v1error <- v2error <- v3error <- v4error <- NULL
 for (i in seq(18))
