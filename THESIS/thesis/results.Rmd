@@ -529,42 +529,67 @@ bias2plot2_rho(out,
 ```
 
 ```{r}
-beta1 <- c(-2,
-           mean(coefs22$p1), mean(coefs36$p1),
-           mean(coefs38$p1), mean(coefs40$p1))
-beta2 <- c(-1.5,
-           mean(coefs22$p2), mean(coefs36$p2),
-           mean(coefs38$p2), mean(coefs40$p2))
-gamma1 <- c(1.2,
-            mean(coefs22$p3), mean(coefs36$p3),
-            mean(coefs38$p3), mean(coefs40$p3))
-gamma2 <- c(1,
-            mean(coefs22$p4), mean(coefs36$p4),
-            mean(coefs38$p4), mean(coefs40$p4))
-w1 <- c(3,
-        mean(coefs22$p5), mean(coefs36$p5),
-        mean(coefs38$p5), mean(coefs40$p5))
-w2 <- c(5,
-        mean(coefs22$p6), mean(coefs36$p6),
-        mean(coefs38$p6), mean(coefs40$p6))
-
-t <- seq(30, 70.5, length.out=50)
-delta <- 80
-size <- length(beta1)
-nt <- length(t)
-
-cif1 <- vector(mode='list', length=size)
-cif2 <- vector(mode='list', length=size)
-for (i in seq(size)) {
-    risklevel1 <- exp(beta1[i])
-    risklevel2 <- exp(beta2[i])
-    mlog1 <- risklevel1/(1+risklevel1+risklevel2)
-    mlog2 <- risklevel2/(1+risklevel1+risklevel2)
-    trajectory1 <- pnorm(w1[i]*atanh(2*t/delta-1)-gamma1[i])
-    trajectory2 <- pnorm(w2[i]*atanh(2*t/delta-1)-gamma2[i])
-    cif1[[i]] <- mlog1*trajectory1
-    cif2[[i]] <- mlog2*trajectory2
+cmean <- function(data, data_label)
+{
+    df  <- data%>%dplyr::select(beta1, beta2, gama1, gama2, w1, w2)
+    out <-
+        df%>%
+        dplyr::summarize_all(mean)%>%
+        dplyr::mutate(data=data_label)
+    return(out)
 }
+lcmean <- function(datas, data_labels)
+{
+    out <- NULL
+    for (i in seq(18))
+    {
+        out <- out%>%bind_rows(cmean(datas[[i]], data_labels[[i]]))
+    }
+    return(out)
+}
+df_cmean <-
+    dplyr::bind_rows(lcmean(v1data, label), 
+                     lcmean(v2data, label), 
+                     lcmean(v3data, label), 
+                     lcmean(v4data, label), .id='v')%>%
+    dplyr::mutate(v=v%>%
+                      forcats::fct_recode('RISK MODEL'      ='1',
+                                          'TIME MODEL'      ='2',
+                                          'BLOCK-DIAG MODEL'='3',
+                                          'COMPLETE MODEL'  ='4'))
+time  <- seq(30, 79.9, length.out=100)
+delta <- 80
+cif1 <- vector(mode='list', length=72)
+cif2 <- vector(mode='list', length=72)
+
+df_cmean.obj <- df_cmean
+
+compCifs <- function(df_cmean.obj)
+{
+    beta1 <- unlist(df_cmean.obj%>%dplyr::select(beta1))
+    beta2 <- unlist(df_cmean.obj%>%dplyr::select(beta2))
+    gama1 <- unlist(df_cmean.obj%>%dplyr::select(gama1))
+    gama2 <- unlist(df_cmean.obj%>%dplyr::select(gama2))
+    w1    <- unlist(df_cmean.obj%>%dplyr::select(w1))
+    w2    <- unlist(df_cmean.obj%>%dplyr::select(w2))
+    for (i in seq(72))
+    {
+        risk1     <- exp(beta1[i])
+        risk2     <- exp(beta2[i])
+        level     <- 1+risk1+risk2
+        gt        <- atanh(2*time/delta-1)
+        traje1    <- pnorm(w1[i]*gt-gama1[i])
+        traje2    <- pnorm(w2[i]*gt-gama2[i])
+        cif1[[i]] <- risk1/level*traje1
+        cif2[[i]] <- risk2/level*traje2
+    }
+    return(list(cif1=cif1, cif2=cif2))
+}
+cifs <- compCifs(df_cmean)
+
+unlist(
+    cifs[['cif1']][1]
+)
 
 model <- as_factor(c(rep('True', nt),
                      rep('model22', nt), rep('model36', nt),
