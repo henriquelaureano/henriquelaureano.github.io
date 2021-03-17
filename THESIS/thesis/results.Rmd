@@ -559,20 +559,19 @@ df_cmean <-
                                           'COMPLETE MODEL'  ='4'))
 time  <- seq(30, 79.9, length.out=100)
 delta <- 80
-cif1 <- vector(mode='list', length=72)
-cif2 <- vector(mode='list', length=72)
-
-df_cmean.obj <- df_cmean
 
 compCifs <- function(df_cmean.obj)
 {
     beta1 <- unlist(df_cmean.obj%>%dplyr::select(beta1))
+    n     <- length(beta1)
     beta2 <- unlist(df_cmean.obj%>%dplyr::select(beta2))
     gama1 <- unlist(df_cmean.obj%>%dplyr::select(gama1))
     gama2 <- unlist(df_cmean.obj%>%dplyr::select(gama2))
     w1    <- unlist(df_cmean.obj%>%dplyr::select(w1))
     w2    <- unlist(df_cmean.obj%>%dplyr::select(w2))
-    for (i in seq(72))
+    cif1  <- vector(mode='list', length=n)
+    cif2  <- vector(mode='list', length=n)
+    for (i in seq(n))
     {
         risk1     <- exp(beta1[i])
         risk2     <- exp(beta2[i])
@@ -585,38 +584,77 @@ compCifs <- function(df_cmean.obj)
     }
     return(list(cif1=cif1, cif2=cif2))
 }
-cifs <- compCifs(df_cmean)
+cifsHigh <- compCifs(dplyr::filter(df_cmean, grepl('high', data)))
+cifsLow  <- compCifs(dplyr::filter(df_cmean, grepl( 'low', data)))
 
-unlist(
-    cifs[['cif1']][1]
-)
+getCIF <- function(compCifs.obj, n)
+{
+    cif1 <- cif2 <- NULL
+    for (i in seq(n))
+    {
+        cif1 <- c(cif1, unlist(compCifs.obj[['cif1']][i]))
+        cif2 <- c(cif2, unlist(compCifs.obj[['cif2']][i]))
+    }
+    return(cbind(cif1, cif2))
+}
+cifs_high <- getCIF(cifsHigh, 36)
+cifs_low  <- getCIF(cifsLow,  36)
 
-model <- as_factor(c(rep('True', nt),
-                     rep('model22', nt), rep('model36', nt),
-                     rep('model38', nt), rep('model40', nt)))
+times <- rep(time, 36)
+model <- rep(c('RISK MODEL',
+               'TIME MODEL',
+               'BLOCK-DIAG MODEL',
+               'COMPLETE MODEL'), each=900)
 
-data_cif <- tibble(curve=c(rep('Cause 1', 5*nt),
-                           rep('Cause 2', 5*nt)), 
-                   model=rep(model, 2), 
-                   value=c(unlist(cif1), unlist(cif2)),
-                   time=rep(t, 2*5))
+labels <- unique(sub('-high|--low', '', label))
+labels <- rep(rep(labels, each=100), 4)
 
-ggplot(data_cif, aes(x=time, y=value, group=model))+
-    geom_line(aes(linetype=model))+
-    facet_wrap(~curve, labeller=label_bquote(CIF:.(curve)))+
-    labs(x='Time', y=NULL, linetype='Model')+
+dfcif_type <- function(data)
+{
+    out <- tibble(cif  =data,
+                  time =times,
+                  model=forcats::as_factor(model),
+                  label=labels)
+    return(out)
+}
+dfcif1_high <- dfcif_type(cifs_high[, 'cif1'])
+dfcif2_high <- dfcif_type(cifs_high[, 'cif2'])
+
+dfcif1_low  <- dfcif_type(cifs_low[, 'cif1'])
+dfcif2_low  <- dfcif_type(cifs_low[, 'cif2'])
+
+cif2plot <- function(dfcif_type, descr)
+{
+    ggplot(dfcif_type, aes(x=time, y=cif, color=label))+
+    geom_line(size=1.5)+
+    facet_grid(~model)+
     theme_minimal()+
-    theme(axis.title.x=element_text(
-              size=12,
-              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
-          axis.text.x=element_text(size=11), 
-          axis.text.y=element_text(size=11), 
-          legend.position=c(0.11, 0.65),
-          legend.text=element_text(size=12),
-          legend.title=element_blank(), 
-          legend.box.background=element_rect(color='black'), 
-          strip.background=element_rect(colour='black', fill='white'),
-          strip.text.x=element_text(size=12))
+    labs(x=NULL, y=NULL, title=descr, color=NULL)+
+        theme(
+            axis.text.x=element_text(size=11), 
+            axis.text.y=element_text(size=11), 
+            ## legend.position=c(0.05, 0.65),
+            legend.position='top',
+            legend.text=element_text(size=12),
+            legend.box.background=element_rect(color='black'), 
+            strip.background=element_rect(colour='black', fill='white'),
+            strip.text.x=element_text(size=12, face='bold'),
+            plot.title=element_text(size=13, face='bold')
+        )+
+        guides(color=guide_legend(nrow=3))
+}
+
+cif2plot(dfcif1_high, descr='CIF1: HIGH SCENARIO')
+cif2plot(dfcif2_high, descr='CIF2: HIGH SCENARIO')
+
+cif2plot(dfcif1_high, descr='CIF1: HIGH SCENARIO')/
+    cif2plot(dfcif2_high, descr='CIF2: HIGH SCENARIO')
+
+cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')
+cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')
+
+cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')/
+    cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')
 
 ```
 
