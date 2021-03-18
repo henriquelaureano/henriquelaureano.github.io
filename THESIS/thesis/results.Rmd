@@ -641,17 +641,17 @@ cif2plot <- function(dfcif_type, descr)
         ## scale_color_fish_d(option='Scarus_quoyi')+
         scale_color_brewer(palette='Spectral')+
         theme(
-            axis.text.x=element_text(size=11), 
-            axis.text.y=element_text(size=11), 
+            axis.text.x=element_text(size=13), 
+            axis.text.y=element_text(size=13), 
             ## legend.position=c(0.05, 0.65),
             legend.position='top',
-            legend.text=element_text(size=12),
+            legend.text=element_text(size=14),
             legend.box.background=element_rect(color='black'), 
             strip.background=element_rect(colour='black', fill='white'),
-            strip.text.x=element_text(size=12, face='bold'),
-            plot.title=element_text(size=13, face='bold'), 
-            plot.subtitle=element_text(size=13, face='italic'),
-            axis.title.x=element_text(size=12,
+            strip.text.x=element_text(size=14, face='bold'),
+            plot.title=element_text(size=15, face='bold'), 
+            plot.subtitle=element_text(size=15, face='italic'),
+            axis.title.x=element_text(size=14,
                                       margin=unit(c(t=3, r=0, b=0, l=0),
                                                   'mm'))
         )+
