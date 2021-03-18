@@ -195,14 +195,37 @@ the configuration the censorship level is basically the same.
 \end{figure}
 
 We use four multiGLMMs, that can be discriminated by their latent effect
-structures.
-\[
- \Sigma = \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
- \quad~\text{with}~\quad
- R = \begin{bmatrix} 1.0 & 0.1\\ & 0.6 \end{bmatrix},\quad
- T = \begin{bmatrix} 0.7 & 0.2\\ & 0.9 \end{bmatrix},\quad
- C = \begin{bmatrix} -0.5 & 0.3\\ 0.3 & -0.4 \end{bmatrix}.
-\]
+structures
+\begin{description}
+ \item[\(\bm{\sigma^{2}}\)] \(= [\sigma_{u_{1}}^{2} = 1~~~
+                                \sigma_{u_{2}}^{2} = 0.6~~~
+                                \sigma_{\eta_{1}}^{2} = 0.7~~~
+                                \sigma_{\eta_{2}}^{2} = 0.9]\);
+ \item[\(\bm{\rho}\)] \(= [\rho_{u_{1},u_{2}} = 0.1~~~
+                           \rho_{u_{1},\eta_{1}} = -0.5~~~
+                           \rho_{u_{1},\eta_{2}} = 0.3~~~
+                           \rho_{u_{2},\eta_{1}} = 0.3~~~
+                           \rho_{u_{2},\eta_{2}} = -0.4~~~
+                           \rho_{\eta_{1},\eta_{2}} = 0.2]\).
+\end{description}
+In
+\begin{align*}
+ \Sigma &= \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
+ \quad~\text{with}\\
+ R &= \begin{bmatrix}
+       \sigma_{u_{1}}^{2} & \text{cov}(\rho_{u_{1},u_{2}})\\
+                      & \sigma_{u_{2}}^{2}
+      \end{bmatrix},\quad
+ T = \begin{bmatrix}
+      \sigma_{\eta_{1}}^{2} & \text{cov}(\rho_{\eta_{1},\eta_{2}})\\
+                         & \sigma_{\eta_{2}}^{2}
+     \end{bmatrix},\quad
+ C = \begin{bmatrix} \text{cov}(\rho_{u_{1},\eta_{1}}) &
+                     \text{cov}(\rho_{u_{1},\eta_{2}})\\
+                     \text{cov}(\rho_{u_{2},\eta_{1}}) &
+                     \text{cov}(\rho_{u_{2},\eta_{2}})
+     \end{bmatrix}.
+\end{align*}
 They are
 \begin{description}
  \item[risk model] A model with latent effects only on the risk level
@@ -218,14 +241,14 @@ They are
  \item[complete model] A model with a \textit{complete} latent effects
       structure i.e, \(\Sigma_{~4\times4} = \Sigma\).
 \end{description}
-All models are based on some decomposition of the matrix
+All models are based on some decomposition of the symmetric matrix
 \[
  \Sigma = \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
         = \begin{bmatrix}
-            1.0 &  0.1 & -0.5 &  0.3\\
-            0.1 &  0.6 &  0.3 & -0.4\\
-           -0.5 &  0.3 &  0.7 &  0.2\\
-            0.3 & -0.4 &  0.2 &  0.9
+            1.0    &  0.0775 & -0.4183 &  0.2846\\
+                   &  0.6    &  0.1944 & -0.2939\\
+                   &         &  0.7    &  0.1587\\
+                   &         &         &  0.9
           \end{bmatrix}.
 \]
 Propose a \(4\times4\) matrix like this is not so simple since we should
