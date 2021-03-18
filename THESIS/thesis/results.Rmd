@@ -611,10 +611,10 @@ labels <- rep(rep(labels, each=100), 4)
 
 dfcif_type <- function(data)
 {
-    out <- tibble(cif  =data,
-                  time =times,
-                  model=forcats::as_factor(model),
-                  label=labels)
+    out <- tibble::tibble(cif  =data,
+                          time =times,
+                          model=forcats::as_factor(model),
+                          label=labels)
     return(out)
 }
 dfcif1_high <- dfcif_type(cifs_high[, 'cif1'])
@@ -629,7 +629,8 @@ cif2plot <- function(dfcif_type, descr)
     geom_line(size=1.5)+
     facet_grid(~model)+
     theme_minimal()+
-    labs(x=NULL, y=NULL, title=descr, color=NULL)+
+        labs(x=NULL, y=NULL, color=NULL,
+             title=descr, subtitle='True curve in dashed black')+
         theme(
             axis.text.x=element_text(size=11), 
             axis.text.y=element_text(size=11), 
@@ -639,22 +640,61 @@ cif2plot <- function(dfcif_type, descr)
             legend.box.background=element_rect(color='black'), 
             strip.background=element_rect(colour='black', fill='white'),
             strip.text.x=element_text(size=12, face='bold'),
-            plot.title=element_text(size=13, face='bold')
+            plot.title=element_text(size=13, face='bold'), 
+            plot.subtitle=element_text(size=13, face='italic')
         )+
         guides(color=guide_legend(nrow=3))
 }
 
-cif2plot(dfcif1_high, descr='CIF1: HIGH SCENARIO')
-cif2plot(dfcif2_high, descr='CIF2: HIGH SCENARIO')
+truefixed <-
+    tibble::tribble(
+                ~beta1, ~beta2, ~gama1, ~gama2, ~w1, ~w2, 
+                     3,    2.6,    2.5,      4,   5,  10,
+                    -2,   -1.5,      1,    1.5,   3,   4, 
+                )
+ciftrue_high <- compCifs(truefixed[1, ])
+ciftrue_low  <- compCifs(truefixed[2, ])
 
-cif2plot(dfcif1_high, descr='CIF1: HIGH SCENARIO')/
-    cif2plot(dfcif2_high, descr='CIF2: HIGH SCENARIO')
+ciftrue <- function(data)
+{
+    out <- tibble::tibble(time=time, cif=unlist(data))
+    return(out)
+}
 
-cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')
-cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')
+cif1true_high <- ciftrue(ciftrue_high[['cif1']])
+cif2true_high <- ciftrue(ciftrue_high[['cif2']])
 
-cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')/
-    cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')
+cif1true_low  <- ciftrue(ciftrue_low[['cif1']])
+cif2true_low  <- ciftrue(ciftrue_low[['cif2']])
+
+(p1 <-
+     cif2plot(dfcif1_high, descr='CIF1: HIGH SCENARIO')+
+     geom_line(cif1true_high, mapping=aes(x=time, y=cif),
+               color='black', size=1.5, linetype='dashed')
+)
+(p2 <-
+     cif2plot(dfcif2_high, descr='CIF2: HIGH SCENARIO')+
+     geom_line(cif2true_high, mapping=aes(x=time, y=cif),
+               color='black', size=1.5, linetype='dashed')
+)
+p1/p2
+
+(p3 <-
+     cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')+
+     geom_line(cif1true_low, mapping=aes(x=time, y=cif),
+               color='black', size=1.5, linetype='dashed')
+)
+
+cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')+
+    geom_line(cif1true_high,
+              mapping=aes(x=time, y=cif), color='black', size=1.5)
+
+cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')+
+    geom_line(cif1true_high,
+              mapping=aes(x=time, y=cif), color='black', size=1.5)/
+    cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')+
+    geom_line(cif1true_high,
+              mapping=aes(x=time, y=cif), color='black', size=1.5)
 
 ```
 
