@@ -675,7 +675,8 @@ cif2true_low  <- ciftrue(ciftrue_low[['cif2']])
 (p2 <-
      cif2plot(dfcif2_high, descr='CIF2: HIGH SCENARIO')+
      geom_line(cif2true_high, mapping=aes(x=time, y=cif),
-               color='black', size=1.5, linetype='dashed')
+               color='black', size=1.5, linetype='dashed')+
+     theme(legend.position='none')
 )
 p1/p2
 
@@ -684,18 +685,13 @@ p1/p2
      geom_line(cif1true_low, mapping=aes(x=time, y=cif),
                color='black', size=1.5, linetype='dashed')
 )
-
-cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')+
-    geom_line(cif1true_high,
-              mapping=aes(x=time, y=cif), color='black', size=1.5)
-
-cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')+
-    geom_line(cif1true_high,
-              mapping=aes(x=time, y=cif), color='black', size=1.5)/
-    cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')+
-    geom_line(cif1true_high,
-              mapping=aes(x=time, y=cif), color='black', size=1.5)
-
+(p4 <-
+     cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')+
+     geom_line(cif2true_low, mapping=aes(x=time, y=cif),
+               color='black', size=1.5, linetype='dashed')+
+     theme(legend.position='none')
+)
+p3/p4
 ```
 
 # COR
