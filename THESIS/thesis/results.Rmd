@@ -15,7 +15,7 @@ opts_chunk$set(fig.path='figures/')
 ```
 
 ```{r packages}
-pacman::p_load(tidyverse, patchwork, ggcorrplot)
+pacman::p_load(tidyverse, fishualize, patchwork, ggcorrplot)
 ```
 
 ```{r readdata}
@@ -212,8 +212,9 @@ bias2plot <- function(df, title)
              size='Number of\nmodels')+
         coord_flip()+
         theme_minimal()+
-        scale_color_viridis_c()+
-        ## scale_color_distiller(palette='Greys', direction=1)+
+        ## scale_color_viridis_c()+
+        ## scale_color_distiller(palette='Spectral')+
+        scale_color_fish(option='Trimma_lantana')+
         guides(color=guide_colorbar(barwidth=20))+
         theme(
             strip.background=element_rect(colour='black', fill='white'),
@@ -231,7 +232,6 @@ bias2plot <- function(df, title)
             strip.text.x=element_text(size=13, face='bold')
         )
 }
-
 bias <- function(par, title)
 {
     out <- biasformat(
@@ -240,7 +240,6 @@ bias <- function(par, title)
     )
     bias2plot(out, title=title)
 }
-
 bias('beta1', expression(bold('Parameter:'~beta[1])))
 bias('beta2', expression(bold('Parameter:'~beta[2])))
 bias('gama1', expression(bold('Parameter:'~gamma[1])))
@@ -329,7 +328,8 @@ bias2plot_rho <- function(df, title)
              size='Number of\nmodels')+
         coord_flip()+
         theme_minimal()+
-        scale_color_viridis_c()+
+        ## scale_color_viridis_c()+
+        scale_color_fish(option='Trimma_lantana')+
         guides(color=guide_colorbar(barwidth=12.5))+
         theme(
             strip.background=element_rect(colour='black', fill='white'),
@@ -379,8 +379,9 @@ bias2plot2 <- function(df, title)
              size='Number of\nmodels')+
         coord_flip()+
         theme_minimal()+
-        scale_color_viridis_c()+
+        ## scale_color_viridis_c()+
         ## scale_color_distiller(palette='Greys', direction=1)+
+        scale_color_fish(option='Trimma_lantana')+
         guides(color=guide_colorbar(barwidth=20))+
         theme(
             strip.background=element_rect(colour='black', fill='white'),
@@ -495,7 +496,8 @@ bias2plot2_rho <- function(df, title)
              size='Number of\nmodels')+
         coord_flip()+
         theme_minimal()+
-        scale_color_viridis_c()+
+        ## scale_color_viridis_c()+
+        scale_color_fish(option='Trimma_lantana')+
         guides(color=guide_colorbar(barwidth=12.5))+
         theme(
             strip.background=element_rect(colour='black', fill='white'),
@@ -528,7 +530,7 @@ bias2plot2_rho(out,
                expression(bold("Complete model's cross-correlations")))
 ```
 
-```{r}
+```{r cifs,fig.width=10,fig.height=10}
 cmean <- function(data, data_label)
 {
     df  <- data%>%dplyr::select(beta1, beta2, gama1, gama2, w1, w2)
@@ -626,11 +628,13 @@ dfcif2_low  <- dfcif_type(cifs_low[, 'cif2'])
 cif2plot <- function(dfcif_type, descr)
 {
     ggplot(dfcif_type, aes(x=time, y=cif, color=label))+
-    geom_line(size=1.5)+
-    facet_grid(~model)+
-    theme_minimal()+
-        labs(x=NULL, y=NULL, color=NULL,
+        geom_line(size=2)+
+        facet_grid(~model)+
+        theme_minimal()+
+        labs(x='Time', y=NULL, color=NULL,
              title=descr, subtitle='True curve in dashed black')+
+        ## scale_color_fish_d(option='Scarus_quoyi')+
+        scale_color_brewer(palette='Spectral')+
         theme(
             axis.text.x=element_text(size=11), 
             axis.text.y=element_text(size=11), 
@@ -641,11 +645,13 @@ cif2plot <- function(dfcif_type, descr)
             strip.background=element_rect(colour='black', fill='white'),
             strip.text.x=element_text(size=12, face='bold'),
             plot.title=element_text(size=13, face='bold'), 
-            plot.subtitle=element_text(size=13, face='italic')
+            plot.subtitle=element_text(size=13, face='italic'),
+            axis.title.x=element_text(size=12,
+                                      margin=unit(c(t=3, r=0, b=0, l=0),
+                                                  'mm'))
         )+
         guides(color=guide_legend(nrow=3))
 }
-
 truefixed <-
     tibble::tribble(
                 ~beta1, ~beta2, ~gama1, ~gama2, ~w1, ~w2, 
@@ -667,31 +673,29 @@ cif2true_high <- ciftrue(ciftrue_high[['cif2']])
 cif1true_low  <- ciftrue(ciftrue_low[['cif1']])
 cif2true_low  <- ciftrue(ciftrue_low[['cif2']])
 
-(p1 <-
-     cif2plot(dfcif1_high, descr='CIF1: HIGH SCENARIO')+
-     geom_line(cif1true_high, mapping=aes(x=time, y=cif),
-               color='black', size=1.5, linetype='dashed')
-)
-(p2 <-
-     cif2plot(dfcif2_high, descr='CIF2: HIGH SCENARIO')+
-     geom_line(cif2true_high, mapping=aes(x=time, y=cif),
-               color='black', size=1.5, linetype='dashed')+
-     theme(legend.position='none')
-)
-p1/p2
+p1 <-
+    cif2plot(dfcif1_high, descr='CIF of failure cause 1')+
+    geom_line(cif1true_high, mapping=aes(x=time, y=cif),
+              color='black', size=2, linetype='dashed')
+p2 <-
+    cif2plot(dfcif2_high, descr='CIF of failure cause 2')+
+    geom_line(cif2true_high, mapping=aes(x=time, y=cif),
+              color='black', size=2, linetype='dashed')+
+    theme(legend.position='none')
+p1/p2+plot_annotation(title='HIGH CIF SCENARIO',
+                      theme=theme(plot.title=element_text(face='bold')))
 
-(p3 <-
-     cif2plot(dfcif1_low, descr='CIF1: LOW SCENARIO')+
-     geom_line(cif1true_low, mapping=aes(x=time, y=cif),
-               color='black', size=1.5, linetype='dashed')
-)
-(p4 <-
-     cif2plot(dfcif2_low, descr='CIF2: LOW SCENARIO')+
-     geom_line(cif2true_low, mapping=aes(x=time, y=cif),
-               color='black', size=1.5, linetype='dashed')+
-     theme(legend.position='none')
-)
-p3/p4
+p3 <-
+    cif2plot(dfcif1_low, descr='CIF of failure cause 1')+
+    geom_line(cif1true_low, mapping=aes(x=time, y=cif),
+              color='black', size=2, linetype='dashed')
+p4 <-
+    cif2plot(dfcif2_low, descr='CIF of failure cause 2')+
+    geom_line(cif2true_low, mapping=aes(x=time, y=cif),
+              color='black', size=2, linetype='dashed')+
+    theme(legend.position='none')
+p3/p4+plot_annotation(title='LOW CIF SCENARIO',
+                      theme=theme(plot.title=element_text(face='bold')))
 ```
 
 # COR
@@ -776,74 +780,6 @@ p4 <- cor2plot(coefs40_cor,
                        expression(z(rho[14])),
                        expression(z(rho[23]))))
 (p1|p2)/(p3|p4)
-```
-
-# CIF
-
-```{r cifs,fig.height=3.25,eval=FALSE}
-beta1 <- c(-2,
-           mean(coefs22$p1), mean(coefs36$p1),
-           mean(coefs38$p1), mean(coefs40$p1))
-beta2 <- c(-1.5,
-           mean(coefs22$p2), mean(coefs36$p2),
-           mean(coefs38$p2), mean(coefs40$p2))
-gamma1 <- c(1.2,
-            mean(coefs22$p3), mean(coefs36$p3),
-            mean(coefs38$p3), mean(coefs40$p3))
-gamma2 <- c(1,
-            mean(coefs22$p4), mean(coefs36$p4),
-            mean(coefs38$p4), mean(coefs40$p4))
-w1 <- c(3,
-        mean(coefs22$p5), mean(coefs36$p5),
-        mean(coefs38$p5), mean(coefs40$p5))
-w2 <- c(5,
-        mean(coefs22$p6), mean(coefs36$p6),
-        mean(coefs38$p6), mean(coefs40$p6))
-
-t <- seq(30, 70.5, length.out=50)
-delta <- 80
-size <- length(beta1)
-nt <- length(t)
-
-cif1 <- vector(mode='list', length=size)
-cif2 <- vector(mode='list', length=size)
-for (i in seq(size)) {
-    risklevel1 <- exp(beta1[i])
-    risklevel2 <- exp(beta2[i])
-    mlog1 <- risklevel1/(1+risklevel1+risklevel2)
-    mlog2 <- risklevel2/(1+risklevel1+risklevel2)
-    trajectory1 <- pnorm(w1[i]*atanh(2*t/delta-1)-gamma1[i])
-    trajectory2 <- pnorm(w2[i]*atanh(2*t/delta-1)-gamma2[i])
-    cif1[[i]] <- mlog1*trajectory1
-    cif2[[i]] <- mlog2*trajectory2
-}
-
-model <- as_factor(c(rep('True', nt),
-                     rep('model22', nt), rep('model36', nt),
-                     rep('model38', nt), rep('model40', nt)))
-
-data_cif <- tibble(curve=c(rep('Cause 1', 5*nt),
-                           rep('Cause 2', 5*nt)), 
-                   model=rep(model, 2), 
-                   value=c(unlist(cif1), unlist(cif2)),
-                   time=rep(t, 2*5))
-
-ggplot(data_cif, aes(x=time, y=value, group=model))+
-    geom_line(aes(linetype=model))+
-    facet_wrap(~curve, labeller=label_bquote(CIF:.(curve)))+
-    labs(x='Time', y=NULL, linetype='Model')+
-    theme_minimal()+
-    theme(axis.title.x=element_text(
-              size=12,
-              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
-          axis.text.x=element_text(size=11), 
-          axis.text.y=element_text(size=11), 
-          legend.position=c(0.11, 0.65),
-          legend.text=element_text(size=12),
-          legend.title=element_blank(), 
-          legend.box.background=element_rect(color='black'), 
-          strip.background=element_rect(colour='black', fill='white'),
-          strip.text.x=element_text(size=12))
 ```
 
 # VCOV
