@@ -9,16 +9,14 @@
   **H. A. Laureano**\
   *Journal of Forestry Research* 29 (2018), 1489--1496
 
++ [Preconsolidation stress of gibbsitic and kaolinitic Oxisols under a multipractice conservationist coffee system](http://www.uel.br/revistas/uel/index.php/semagrarias/article/view/41338)\
+  C. E. Carducci, G. C. de Oliveira, W. M. Zeviani, **H. A. Laureano**,
+  S. M. Barbosa, E. C. Severiano, N. Curi\
+  *SEMINA: Ciências Agrárias* 42(3) (2021), 1049--1068
+
 ***
 
 ### Accepted for publication
-
-+ [2020]\
-  Preconsolidation stress of gibbsitic and kaolinitic oxisols under
-  multi-practice conservationist system of coffee\
-  C. E. Carducci, G. C. de Oliveira, W. M. Zeviani, **H. A. Laureano**,
-  S. M. Barbosa, E. C. Severiano, N. Curi\
-  To appear in [*SEMINA: Ciências Agrárias*](http://www.uel.br/revistas/uel/index.php/semagrarias)
 
 + [2021]\
   Unit gamma mixed regression models for continuous bounded data\

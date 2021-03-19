@@ -216,7 +216,7 @@ bias2plot <- function(df, title)
              color='Convergance\n(%)',
              size='Number of\nmodels')+
         coord_flip()+
-        theme_minimal()+
+        ## theme_minimal()+
         ## scale_color_viridis_c()+
         ## scale_color_distiller(palette='Spectral')+
         scale_color_fish(option='Trimma_lantana')+
@@ -332,7 +332,7 @@ bias2plot_rho <- function(df, title)
              color='Convergance\n(%)',
              size='Number of\nmodels')+
         coord_flip()+
-        theme_minimal()+
+        ## theme_minimal()+
         ## scale_color_viridis_c()+
         scale_color_fish(option='Trimma_lantana')+
         guides(color=guide_colorbar(barwidth=12.5))+
@@ -383,7 +383,7 @@ bias2plot2 <- function(df, title)
              color='Convergance\n(%)',
              size='Number of\nmodels')+
         coord_flip()+
-        theme_minimal()+
+        ## theme_minimal()+
         ## scale_color_viridis_c()+
         ## scale_color_distiller(palette='Greys', direction=1)+
         scale_color_fish(option='Trimma_lantana')+
@@ -500,7 +500,7 @@ bias2plot2_rho <- function(df, title)
              color='Convergance\n(%)',
              size='Number of\nmodels')+
         coord_flip()+
-        theme_minimal()+
+        ## theme_minimal()+
         ## scale_color_viridis_c()+
         scale_color_fish(option='Trimma_lantana')+
         guides(color=guide_colorbar(barwidth=12.5))+
