@@ -49,7 +49,7 @@ label: unnamed-chunk-3
 
 output file: laurence.knit.md
 
-/usr/bin/pandoc +RTS -K512m -RTS laurence.utf8.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.0/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.0/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.0/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable 'theme:bootstrap' --include-in-header /tmp/RtmpbO9jbO/rmarkdown-str2dc011dd90bf.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
+/usr/bin/pandoc +RTS -K512m -RTS laurence.utf8.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.0/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.0/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.0/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable 'theme:bootstrap' --include-in-header /tmp/RtmpR5yJIO/rmarkdown-str47a2280f0f80.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
 
 Output created: laurence.html
 Warning messages:
@@ -60,4 +60,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  5.089   0.356   4.966 
+  4.507   0.210   4.134 
