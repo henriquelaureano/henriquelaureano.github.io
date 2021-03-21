@@ -252,10 +252,28 @@ gradient. However, in complicated optimization scenarios as the one we
 are here, we can reach a convergence based on a metric different from
 the gradient one.
 
-In the \texttt{R}'s \texttt{PORT} implementation in
-\texttt{base::nlmimb()}, 
+In \texttt{base::nlmimb()} \texttt{R}'s \texttt{PORT} implementation,
+when the default gradient-based convergence is reached we get a 0
+message. When the optimization converges but not gradient-based, we get
+a 1 message. Looking at the technical report of \citeonline{PORTreport},
+we see that this convergence style means that the last algorithm iterate
+\(x\) appears to be at a certain scaled distance of the locally optimal
+point \(x^{\ast}\). This scaled distance, \(p(x, x^{\ast})\), is defined
+by
+\[
+ p(x, y) =
+ \underset{1~\leq i~\leq~p}{\text{max}}
+ \left\{d_{i}, |x_{i} - y_{i}|\right\}
+ \Big/
+ \underset{1~\leq j~\leq~p}{\text{max}}
+ \left\{d_{j}, |x_{j}| + |y_{j}|\right\},
+\]
+where \(d\) is a certain scale vector.
 
-\cite{PORTreport}
+In all figures, the considered convergence percentage is from the
+gradient-based one.
+
+Starting from \autoref{fig:biassdbeta1}
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
