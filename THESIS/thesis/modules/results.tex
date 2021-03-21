@@ -231,19 +231,31 @@ they are
 
 In each figure, we have the parameter bias and its uncertainty described
 by a Wald-based interval i.e., \(\pm\) 1.96 the bias standard
-deviation. The seventy-two scenarios are accommodated. We have up to
-four blocks of bars, each one representing a model, and in each block,
-we have eighteen bars each one representing the 300 fits in each of the
-eighteen scenarios (\(4 \times 18 \times 300 = 21600\)). Each scenario
-name consists of a combination of three strings. The cluster size (cs),
-2, 5, and 10; the CIF configuration, high and low; the sample size, 5,
-30, and 60 thousand. We tried to fit a total of 21600 models but not all
-converged. Besides that inconvenience, the ones that converged do not
-all converged in the strict sense of the word. To show these two
+deviation. This is a good uncertainty representation choice since it is
+symmetric and robust to outliers. In the \autoref{cap:appendixD}, we
+have the same parameters bias but with the corresponding 2.5 and 97.5\%
+quantiles.
+
+The seventy-two scenarios are accommodated. We have up to four blocks of
+bars, each block representing a model. In each block we have eighteen
+bars, each bar representing the 300 fits in each of the eighteen
+scenarios (\(4 \times 18 \times 300 = 21600\)). Each scenario name
+consists of a combination of three strings. The cluster size (cs), 2, 5,
+and 10; the CIF configuration, high and low; the sample size, 5, 30, and
+60 thousand. We have tried to fit a total of 21600 models but not all
+converged. Besides that inconvenience, from the ones that converged do
+not all converged in the strict sense of the word. To show these two
 characteristics respectively, we control the bar widths and colors.
 
 The ideal convergence is the traditional one i.e., based on the
-gradient.
+gradient. However, in complicated optimization scenarios as the one we
+are here, we can reach a convergence based on a metric different from
+the gradient one.
+
+In the \texttt{R}'s \texttt{PORT} implementation in
+\texttt{base::nlmimb()}, 
+
+\cite{PORTreport}
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
