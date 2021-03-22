@@ -271,7 +271,39 @@ by
 where \(d\) is a certain scale vector. In all figures, the considered
 convergence percentage is from the gradient-based one.
 
-Starting from \autoref{fig:biassdbeta1}
+For each parameter, each figure, something specific can be said but let
+us keep the focus on the general remarks. Starting from the fixed-effect
+parameters (\autoref{fig:biassdbeta1}, \autoref{fig:biassdbeta2},
+\autoref{fig:biassdgama1}, \autoref{fig:biassdgama2},
+\autoref{fig:biassdw1}, \autoref{fig:biassdw2}), we have some very nice
+results that already show a strong inclination to the choice of the
+complete model.
+
+With a simpler latent structure i.e., a latent structure only in one
+level (risk and time models), the low CIF scenarios present a much
+smaller bias-variance. In general, the mean-bias is small (good), but
+the variances are high. When we have a latent structure on both levels
+but assuming the cross-correlations as zero (block-diag model), the
+results get a little bit better. Nevertheless, when we assume a non-zero
+cross-correlation structure (complete model) basically everything
+changes. The mean biases get closer to zero, the standard deviations
+decrease 50\% or more, and mainly, now the high CIF scenarios are the
+ones with a much smaller bias-variance. All this is accomplished through
+the consideration of the cross-correlations.
+
+In the \textit{simpler} models is hard to see some significant
+difference between the cluster and sample sizes. In the complete model,
+the difference is clear. As we increase the cluster and the sample size
+the bias-variance decreases. The mean-bias is basically always the
+same. In the risk and block-diag models is hard to point-out a scenario
+as the best or worst. For the time model, in two parameters, with the
+scenario of cluster size ten; low CiF; and five thousand data points, we
+get a much bigger standard deviation. Other aspects of the figures will
+be mentioned later since they can be applied to all parameters.
+
+With the log-variances (\autoref{fig:biassdlogs2_1},
+\autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3},
+\autoref{fig:biassdlogs2_4})
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
