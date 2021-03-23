@@ -271,13 +271,13 @@ by
 where \(d\) is a certain scale vector. In all figures, the considered
 convergence percentage is from the gradient-based one.
 
-For each parameter, each figure, something specific can be said but let
-us keep the focus on the general remarks. Starting from the fixed-effect
-parameters (\autoref{fig:biassdbeta1}, \autoref{fig:biassdbeta2},
+Something specific can be said about each parameter but let us keep the
+focus on the general remarks. Starting from the fixed-effect parameters
+(\autoref{fig:biassdbeta1}, \autoref{fig:biassdbeta2},
 \autoref{fig:biassdgama1}, \autoref{fig:biassdgama2},
 \autoref{fig:biassdw1}, \autoref{fig:biassdw2}), we have some very nice
-results that already show a strong inclination to the choice of the
-complete model.
+results that already show a strong inclination to the complete model's
+choice.
 
 With a simpler latent structure i.e., a latent structure only in one
 level (risk and time models), the low CIF scenarios present a much
@@ -293,21 +293,50 @@ the consideration of the cross-correlations.
 
 In the \textit{simpler} models is hard to see some significant
 difference between the cluster and sample sizes. In the complete model,
-the difference is clear. As we increase the cluster and the sample size
-the bias-variance decreases. The mean-bias is basically always the
+the difference is clear: as we increase the cluster and the sample size
+the bias-variance decrease. The mean-bias is basically always the
 same. In the risk and block-diag models is hard to point-out a scenario
 as the best or worst. For the time model, in two parameters, with the
 scenario of cluster size ten; low CiF; and five thousand data points, we
-get a much bigger standard deviation. Other aspects of the figures will
-be mentioned later since they can be applied to all parameters.
+get a much bigger standard deviation.
 
 With the log-variances (\autoref{fig:biassdlogs2_1},
 \autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3},
-\autoref{fig:biassdlogs2_4})
+\autoref{fig:biassdlogs2_4}), we have instead a similar behavior through
+the models. For all models, the high CIF scenarios are the ones with a
+smaller mean and bias-variance. From the risk/time model to the
+block-diag model, we do not see a significant improvement in terms of
+bias reduction. Such improvement, however, is clear when we look at the
+complete model. Again, the magick of considering the cross-correlations.
+
+The same said about the log-variances, can be applied to the risk
+correlation (\autoref{fig:biassdrhoz12}) with one addendum: the bias
+reduction is even bigger. With the time correlation
+(\autoref{fig:biassdrhoz34}), we get the same behavior observed with the
+fixed-effect parameters i.e., in the simpler models, the smaller biases
+are observed with the low CIF scenarios. However, with the complete
+model, we get the opposite. With the cross-correlations
+(\autoref{fig:biassdrhoz4}), the mean and bias-variance are much smaller
+in the high CIF scenarios.
+
+The biggest bias-variances obtained are with the log-variances. A final
+remark to be made is about convergences. With the simpler models, not
+all of them work, having in some scenarios (generally the ones with
+sixty thousand points) a 50\(\sim\)60\% convergence rate. However, from
+this 50\(\sim\)60\%, most reach the ideal gradient-based
+convergence. The complete model is the complete opposite. Basically, all
+fits reach a convergence (\(\sim\)100\% performance) but never the
+desired gradient-based convergence.
+
+After looking at the parameter biases, let us take a look at the implied
+mean-CIF curves. To nicely represent all seventy-two scenarios we split
+the curves by level-CIF. In \autoref{fig:cifshigh} we have the high CIF
+scenario curves and in \autoref{fig:cifslow} the low CIF scenario
+curves.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
- \caption{CUMULATIVE INCIDENCE FUNCTIONS (CIFs) HIGH}
+ \caption{HIGH CUMULATIVE INCIDENCE FUNCTION (CIF) SCENARIO CURVES}
  \vspace{0.2cm}\centering
  \includegraphics[width=\textwidth]{cifs-1.png}\\
  \begin{footnotesize}
@@ -318,7 +347,7 @@ With the log-variances (\autoref{fig:biassdlogs2_1},
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
- \caption{CUMULATIVE INCIDENCE FUNCTIONS (CIFs) LOW}
+ \caption{LOW CUMULATIVE INCIDENCE FUNCTION (CIF) SCENARIO CURVES}
  \vspace{0.2cm}\centering
  \includegraphics[width=\textwidth]{cifs-2.png}\\
  \begin{footnotesize}
