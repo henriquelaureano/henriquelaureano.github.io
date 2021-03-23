@@ -362,19 +362,25 @@ fixed-effect parameter estimates. By taking the average of the
 fixed-effect parameter estimates in each of the seventy-two scenarios,
 we are able to construct the mean CIF curve for each scenario.
 
-In \autoref{fig:cifshigh} we have all thirty-six curves obtained for the
-high CIF scenarios. In dashed black we have the true curve.
+In \autoref{fig:cifshigh} we have all the thirty-six curves obtained in
+the high CIF scenarios. It is clear that with the complete model we get
+a perfect fit in all nine scenarios. With the risk and time models, we
+get right the curve shapes but we fail to learn the max incidence. A
+compensation is clear in the risk model. There is a super estimation of
+\(\beta_{1}\) in all scenarios. For failure cause 2, there is a sub
+estimation.
 
-%% \begin{figure}[H]
-%%  \setlength{\abovecaptionskip}{.0001pt}
-%%  \caption{BUILDING \(\Sigma\)}
-%%  \vspace{0.2cm}\centering
-%%  \includegraphics[width=0.75\textwidth]{buildingSigma-1.png}\\
-%%  \begin{footnotesize}
-%%   SOURCE: The author (2021).
-%%  \end{footnotesize}
-%%  \label{fig:buildingSigma}
-%% \end{figure}
+With the time model, we get much better curves than with the risk
+model. The block-diag model results are a middle term between them. For
+the time model, the scenario with cluster size 10 and sixty-thousand
+points is a highlight. For the block-diag model, the highlight is the
+scenario with cluster size 5 and thirty-thousand points.
+
+In the low CIF scenarios in \autoref{fig:cifslow}, the estimation is
+clearly more difficult. The overall fits are bad, being impossible to
+select a scenario with overall good results. For one of the failure
+causes, the estimation quality is not so bad. The problem is when we
+look to the other. The best joint fit is still with the complete model.
 
 %% \begin{figure}[H]
 %%  \setlength{\abovecaptionskip}{.0001pt}

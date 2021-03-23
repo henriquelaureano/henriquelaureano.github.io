@@ -23,6 +23,8 @@ path1      <-
     '~/Git/henriquelaureano.github.io/THESIS/code/coefs/coefs1to100/'
 path2      <-
     '~/Git/henriquelaureano.github.io/THESIS/code/coefs/coefs101to200/'
+path3      <-
+    '~/Git/henriquelaureano.github.io/THESIS/code/coefs/coefs201to300/'
 fixednames <- c('beta1', 'beta2', 'gama1', 'gama2', 'w1', 'w2')
 varnames   <- c('logs2_1', 'logs2_2', 'logs2_3', 'logs2_4')
 cornames   <- c(
@@ -72,7 +74,9 @@ for (i in 1:3)
                            vdata(paste0('coefsv1_', label[l], '.txt'),
                                  path1),
                            vdata(paste0('coefsv1_', label[l], '.txt'),
-                                 path2)
+                                 path2),
+                           vdata(paste0('coefsv1_', label[l], '.txt'),
+                                 path3)
                        )
             v2data[[l]] <-
                 dplyr::bind_rows(
@@ -638,7 +642,7 @@ dfcif2_low  <- dfcif_type(cifs_low[, 'cif2'])
 cif2plot <- function(dfcif_type, descr)
 {
     ggplot(dfcif_type, aes(x=time, y=cif, color=label))+
-        geom_line(size=2)+
+        geom_line(size=1.5)+
         facet_grid(~model)+
         theme_minimal()+
         labs(x='Time', y=NULL, color=NULL,
@@ -686,11 +690,11 @@ cif2true_low  <- ciftrue(ciftrue_low[['cif2']])
 p1 <-
     cif2plot(dfcif1_high, descr='CIF of failure cause 1')+
     geom_line(cif1true_high, mapping=aes(x=time, y=cif),
-              color='black', size=2, linetype='dashed')
+              color='black', size=1.5, linetype='dashed')
 p2 <-
     cif2plot(dfcif2_high, descr='CIF of failure cause 2')+
     geom_line(cif2true_high, mapping=aes(x=time, y=cif),
-              color='black', size=2, linetype='dashed')+
+              color='black', size=1.5, linetype='dashed')+
     theme(legend.position='none')
 p1/p2+plot_annotation(title='HIGH CIF SCENARIO',
                       theme=theme(plot.title=element_text(face='bold')))
@@ -698,14 +702,112 @@ p1/p2+plot_annotation(title='HIGH CIF SCENARIO',
 p3 <-
     cif2plot(dfcif1_low, descr='CIF of failure cause 1')+
     geom_line(cif1true_low, mapping=aes(x=time, y=cif),
-              color='black', size=2, linetype='dashed')
+              color='black', size=1.5, linetype='dashed')
 p4 <-
     cif2plot(dfcif2_low, descr='CIF of failure cause 2')+
     geom_line(cif2true_low, mapping=aes(x=time, y=cif),
-              color='black', size=2, linetype='dashed')+
+              color='black', size=1.5, linetype='dashed')+
     theme(legend.position='none')
 p3/p4+plot_annotation(title='LOW CIF SCENARIO',
                       theme=theme(plot.title=element_text(face='bold')))
+```
+
+```{r histo}
+data.label <- function(data, label)
+{
+    out <- data%>%dplyr::mutate(scenario=label)
+    return(out)
+}
+logs2pilha <- function(data1, data2, data3, par, label)
+{
+    out1 <- out2 <- out3 <- NULL
+    for (i in seq(18))
+    {
+        out1 <-
+            out1%>%
+            dplyr::bind_rows(data.label(data1[[i]]%>%dplyr::select(par),
+                                        label[[i]]))
+        out2 <-
+            out2%>%
+            dplyr::bind_rows(data.label(data2[[i]]%>%dplyr::select(par),
+                                        label[[i]]))
+        out3 <-
+            out3%>%
+            dplyr::bind_rows(data.label(data3[[i]]%>%dplyr::select(par),
+                                        label[[i]]))
+    }
+    out <-
+        dplyr::bind_rows(out1, out2, out3, .id='v')%>%
+        dplyr::filter(scenario == 'cs02-high-60k' |
+                      scenario == 'cs05-high-60k' |
+                      scenario == 'cs10-high-60k')
+    return(out)
+}
+
+histo <- function(data, true, title)
+{
+    ggplot(data, aes(x=par, fill=scenario))+
+        geom_density(alpha=0.6)+
+        facet_wrap(~v, scales='free')+
+        scale_fill_brewer(palette='Spectral')+
+        ## scale_fill_viridis_d()+
+        geom_vline(xintercept=true, linetype='dashed', size=1)+
+        labs(x=NULL, y=NULL, fill=NULL,
+             title=title, subtitle='True value in dashed black')+
+        theme_minimal()+
+        theme(
+            legend.position='top',
+            legend.box.background=element_rect(color='black'),
+            plot.subtitle=element_text(face='italic'),
+            strip.background=element_rect(color='black', fill='white'),
+            strip.text.x=element_text(face='bold')
+        )
+}
+logs2_1df <-
+    logs2pilha(v1data, v3data, v4data, 'logs2_1', label)%>%
+    dplyr::rename(par=logs2_1)%>%
+    dplyr::mutate(v=v%>%
+                      forcats::fct_recode('RISK MODEL'      ='1',
+                                          'BLOCK-DIAG MODEL'='2',
+                                          'COMPLETE MODEL'  ='3'))
+logs2_2df <-
+    logs2pilha(v1data, v3data, v4data, 'logs2_2', label)%>%
+    dplyr::rename(par=logs2_2)%>%
+    dplyr::mutate(v=v%>%
+                      forcats::fct_recode('RISK MODEL'      ='1',
+                                          'BLOCK-DIAG MODEL'='2',
+                                          'COMPLETE MODEL'  ='3'))
+logs2_3df <-
+    logs2pilha(v2data, v3data, v4data, 'logs2_3', label)%>%
+    dplyr::rename(par=logs2_3)%>%
+    dplyr::mutate(v=v%>%
+                      forcats::fct_recode('TIME MODEL'      ='1',
+                                          'BLOCK-DIAG MODEL'='2',
+                                          'COMPLETE MODEL'  ='3'))
+logs2_4df <-
+    logs2pilha(v2data, v3data, v4data, 'logs2_4', label)%>%
+    dplyr::rename(par=logs2_4)%>%
+    dplyr::mutate(v=v%>%
+                      forcats::fct_recode('TIME MODEL'      ='1',
+                                          'BLOCK-DIAG MODEL'='2',
+                                          'COMPLETE MODEL'  ='3'))
+p1 <-
+    histo(logs2_1df, log(1),
+          expression(bold('Parameter:'~log(sigma[1]^2))))
+p2 <-
+    histo(logs2_2df, log(0.6), 
+          expression(bold('Parameter:'~log(sigma[2]^2))))+
+    theme(legend.position='none')
+p3 <-
+    histo(logs2_3df, log(0.7), 
+          expression(bold('Parameter:'~log(sigma[3]^2))))+
+    theme(legend.position='none')
+p4 <-
+    histo(logs2_4df, log(0.9), 
+          expression(bold('Parameter:'~log(sigma[4]^2))))+
+    theme(legend.position='none')
+p1/p2/p3/p4
+
 ```
 
 # COR
@@ -790,183 +892,4 @@ p4 <- cor2plot(coefs40_cor,
                        expression(z(rho[14])),
                        expression(z(rho[23]))))
 (p1|p2)/(p3|p4)
-```
-
-# VCOV
-
-```{r vcovs,fig.height=10,eval=FALSE}
-plotS <- function(S, title) {
-    longS <- reshape2::melt(S, na.rm=TRUE)
-    longS$Var1 <- as_factor(longS$Var1)
-    longS$Var2 <- fct_relevel(as_factor(longS$Var2), rev)
-    ggplot(longS, aes(x=Var1, y=Var2, fill=value))+
-        geom_tile(color='black', size=0.5)+
-        geom_text(aes(label=round(value, 2)), size=4.5)+
-        scale_fill_gradient(low='white', high='white')+
-        labs(title=title)+
-        scale_x_discrete(labels=c(expression(u[1]), 
-                                  expression(u[2]), 
-                                  expression(eta[1]),
-                                  expression(eta[2])))+
-        scale_y_discrete(labels=c(expression(eta[2]), 
-                                  expression(eta[1]), 
-                                  expression(u[2]),
-                                  expression(u[1])))+
-        theme_minimal()+
-        theme(axis.text.x=element_text(size=12, color='black'),
-              axis.text.y=element_text(size=12, color='black'), 
-              axis.title.x=element_blank(), 
-              axis.title.y=element_blank(),
-              panel.grid.major=element_blank(),
-              legend.position='none',
-              plot.title=element_text(size=12, face='bold'))
-}
-
-p1 <- plotS(S=matrix(c(0.4, 0.15, 0.05, 0,
-                       NA, 0.4, 0, 0.05,
-                       NA, NA, 0.25, 0.1,
-                       NA, NA, NA, 0.25), nrow=4, ncol=4),
-            title='model22: true values')
-
-p2 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0,
-                       NA, 0.3, 0, 0.1,
-                       NA, NA, 0.4, 0.15,
-                       NA, NA, NA, 0.5), nrow=4, ncol=4),
-            title='model22: initial guess')
-
-means22 <- colMeans(coefs22)
-
-p3 <- plotS(
-    S=matrix(c(
-        exp(means22[7]),
-        tanh(means22[11])*sqrt(exp(means22[7]))*sqrt(exp(means22[8])),
-        tanh(means22[13])*sqrt(exp(means22[7]))*sqrt(exp(means22[9])),
-        0,
-        NA, exp(means22[8]), 0,
-        tanh(means22[14])*sqrt(exp(means22[8]))*sqrt(exp(means22[10])),
-        NA, NA, exp(means22[9]),
-        tanh(means22[12])*sqrt(exp(means22[9]))*sqrt(exp(means22[10])),
-        NA, NA, NA, exp(means22[10])),
-        nrow=4, ncol=4),
-    title='model22: estimates')
-
-p4 <- plotS(S=matrix(c(0.4, 0.15, 0.05, 0.2,
-                       NA, 0.4, 0.2, 0.05,
-                       NA, NA, 0.25, 0.1,
-                       NA, NA, NA, 0.25), nrow=4, ncol=4),
-            title='model36: true values')
-
-p5 <- plotS(S=matrix(c(0.2, 0.15, 0.1, 0.2,
-                       NA, 0.3, 0.2, 0.1,
-                       NA, NA, 0.4, 0.15,
-                       NA, NA, NA, 0.5), nrow=4, ncol=4),
-            title='model36: initial guess')
-
-means36 <- colMeans(coefs36)
-
-p6 <- plotS(
-    S=matrix(c(
-        exp(means36[7]),
-        tanh(means36[11])*sqrt(exp(means36[7]))*sqrt(exp(means36[8])),
-        tanh(means36[13])*sqrt(exp(means36[7]))*sqrt(exp(means36[9])),
-        tanh(means36[15])*sqrt(exp(means36[7]))*sqrt(exp(means36[10])),
-        NA, exp(means36[8]),
-        tanh(means36[16])*sqrt(exp(means36[8]))*sqrt(exp(means36[9])),
-        tanh(means36[14])*sqrt(exp(means36[8]))*sqrt(exp(means36[10])),
-        NA, NA, exp(means36[9]),
-        tanh(means36[12])*sqrt(exp(means36[9]))*sqrt(exp(means36[10])),
-        NA, NA, NA, exp(means36[10])), nrow=4, ncol=4),
-    title='model36: estimates')
-
-p7 <- plotS(S=matrix(c(0.4, 0.15, 0, 0.1,
-                       NA, 0.4, 0.1, 0,
-                       NA, NA, 0.25, 0.1,
-                       NA, NA, NA, 0.25), nrow=4, ncol=4),
-            title='model38: true values')
-
-p8 <- plotS(S=matrix(c(0.2, 0.2, 0, 0.1,
-                       NA, 0.3, 0.1, 0,
-                       NA, NA, 0.4, 0.15,
-                       NA, NA, NA, 0.5), nrow=4, ncol=4),
-            title='model38: initial guess')
-
-means38 <- colMeans(coefs38)
-
-p9 <- plotS(
-    S=matrix(c(
-        exp(means38[7]),
-        tanh(means38[11])*sqrt(exp(means38[7]))*sqrt(exp(means38[8])),
-        0,
-        tanh(means38[13])*sqrt(exp(means38[7]))*sqrt(exp(means38[10])),
-        NA, exp(means38[8]),
-        tanh(means38[14])*sqrt(exp(means38[8]))*sqrt(exp(means38[9])),
-        0,
-        NA, NA, exp(means38[9]),
-        tanh(means38[12])*sqrt(exp(means38[9]))*sqrt(exp(means38[10])),
-        NA, NA, NA, exp(means38[10])), nrow=4, ncol=4),
-    title='model38: estimates')
-
-p10 <- plotS(S=matrix(c(0.4, 0, 0.05, 0.2,
-                        NA, 0.4, 0.2, 0.05,
-                        NA, NA, 0.25, 0,
-                        NA, NA, NA, 0.25), nrow=4, ncol=4),
-             title='model40: true values')
-
-p11 <- plotS(S=matrix(c(0.2, 0, 0.1, 0.2,
-                        NA, 0.3, 0.2, 0.1,
-                        NA, NA, 0.4, 0,
-                        NA, NA, NA, 0.5), nrow=4, ncol=4),
-             title='model40: initial guess')
-
-means40 <- colMeans(coefs40)
-
-p12 <- plotS(
-    S=matrix(c(
-        exp(means40[7]), 0,
-        tanh(means40[11])*sqrt(exp(means40[7]))*sqrt(exp(means40[9])),
-        tanh(means40[13])*sqrt(exp(means40[7]))*sqrt(exp(means40[10])),
-        NA, exp(means40[8]),
-        tanh(means40[14])*sqrt(exp(means40[8]))*sqrt(exp(means40[9])),
-        tanh(means40[12])*sqrt(exp(means40[8]))*sqrt(exp(means40[10])),
-        NA, NA, exp(means40[9]), 0,
-        NA, NA, NA, exp(means40[10])), nrow=4, ncol=4),
-    title='model40: estimates')
-
-(p1|p2|p3)/(p4|p5|p6)/(p7|p8|p9)/(p10|p11|p12)
-```
-
-```{r buildingSigma,fig.height=6.5,eval=FALSE}
-S <- matrix(c(1, 3, 5, 6,
-              NA, 1, 6, 5,
-              NA, NA, 2, 4,
-              NA, NA, NA, 2), nrow=4, ncol=4)
-longS <- reshape2::melt(S, na.rm=TRUE)
-longS$Var1 <- as_factor(longS$Var1)
-longS$Var2 <- fct_relevel(as_factor(longS$Var2), rev)
-ggplot(longS, aes(x=Var1, y=Var2, fill=value))+
-    geom_tile(color='black', size=0.5)+
-    geom_text(aes( label=c('RISK\nLEVEL', 'RISK\nCORRELATION',
-                           '1st ORDER\nRISK/TIME\nINTERACTION',
-                           '2nd ORDER\nRISK/TIME\nINTERACTION',
-                           'RISK\nLEVEL',
-                           '2nd ORDER\nRISK/TIME\nINTERACTION',
-                           '1st ORDER\nRISK/TIME\nINTERACTION',
-                           'TRAJECTORY\nTIME',  'TIME\nCORRELATION',
-                           'TRAJECTORY\nTIME')), size=5)+
-    scale_fill_gradient(low='white', high='white')+
-    scale_x_discrete(labels=c(expression(u[1]), 
-                              expression(u[2]), 
-                              expression(eta[1]),
-                              expression(eta[2])))+
-    scale_y_discrete(labels=c(expression(eta[2]), 
-                              expression(eta[1]), 
-                              expression(u[2]),
-                              expression(u[1])))+
-    theme_minimal()+
-    theme(axis.text.x=element_text(size=15, color='black'),
-          axis.text.y=element_text(size=15, color='black'), 
-          axis.title.x=element_blank(), 
-          axis.title.y=element_blank(),
-          panel.grid.major=element_blank(),
-          legend.position='none')
 ```
