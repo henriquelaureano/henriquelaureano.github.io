@@ -744,6 +744,56 @@ logs2pilha <- function(data1, data2, data3, par, label)
     return(out)
 }
 
+crossco <- function()
+{
+    out <- NULL
+    for (i in seq(18))
+    {
+        out <-
+            out%>%
+            dplyr::bind_rows(data.label(
+                       v4data[[i]]%>%
+                       dplyr::select(rhoZ13, rhoZ24, rhoZ14, rhoZ23),
+                       label[[i]]
+                   ))
+    }
+    out <- out%>%
+        tidyr::pivot_longer(
+                   !scenario, names_to='par', values_to='value'
+               )%>%
+        dplyr::mutate(par=forcats::as_factor(par)%>%
+                          forcats::fct_recode(
+                                       'bold(z(rho[13]))'='rhoZ13',
+                                       'bold(z(rho[24]))'='rhoZ24',
+                                       'bold(z(rho[14]))'='rhoZ14',
+                                       'bold(z(rho[23]))'='rhoZ23'))%>%
+        dplyr::filter(scenario == 'cs02-high-60k' |
+                      scenario == 'cs05-high-60k' |
+                      scenario == 'cs10-high-60k')
+    return(out)
+}
+
+rhoZ_df <- crossco()
+
+ggplot(rhoZ_df, aes(x=value, fill=scenario))+
+    geom_density(alpha=0.6)+
+    facet_grid(~par, scales='free', labeller=label_parsed)+
+    scale_fill_brewer(palette='Spectral')+
+    ## scale_fill_viridis_d()+
+    ## geom_vline(xintercept=, linetype='dashed', size=1)+
+    labs(x=NULL, y=NULL, fill=NULL,
+         title="Complete model's cross-correlations",
+         subtitle='True value in dashed black')+
+    ## theme_minimal()+
+    theme(
+        legend.position='none',
+        legend.box.background=element_rect(color='black'),
+        plot.title=element_text(face='bold'),
+        plot.subtitle=element_text(face='italic'),
+        strip.background=element_rect(color='black', fill='white'),
+        strip.text.x=element_text(face='bold')
+    )
+
 histo <- function(data, true, title)
 {
     ggplot(data, aes(x=par, fill=scenario))+
@@ -791,6 +841,20 @@ logs2_4df <-
                       forcats::fct_recode('TIME MODEL'      ='1',
                                           'BLOCK-DIAG MODEL'='2',
                                           'COMPLETE MODEL'  ='3'))
+rhoZ12_df <-
+    logs2pilha(v1data, v3data, v4data, 'rhoZ12', label)%>%
+    dplyr::rename(par=rhoZ12)%>%
+    dplyr::mutate(v=v%>%
+                      forcats::fct_recode('RISK MODEL'      ='1',
+                                          'BLOCK-DIAG MODEL'='2',
+                                          'COMPLETE MODEL'  ='3'))
+rhoZ34_df <-
+    logs2pilha(v2data, v3data, v4data, 'rhoZ34', label)%>%
+    dplyr::rename(par=rhoZ34)%>%
+    dplyr::mutate(v=v%>%
+                      forcats::fct_recode('TIME MODEL'      ='1',
+                                          'BLOCK-DIAG MODEL'='2',
+                                          'COMPLETE MODEL'  ='3'))
 p1 <-
     histo(logs2_1df, log(1),
           expression(bold('Parameter:'~log(sigma[1]^2))))
@@ -806,7 +870,15 @@ p4 <-
     histo(logs2_4df, log(0.9), 
           expression(bold('Parameter:'~log(sigma[4]^2))))+
     theme(legend.position='none')
-p1/p2/p3/p4
+p5 <-
+    histo(rhoZ12_df, atanh(0.1),
+          expression(bold('Parameter:'~z(rho[12]))))+
+    theme(legend.position='none')
+p6 <-
+    histo(rhoZ34_df, atanh(0.2),
+          expression(bold('Parameter:'~z(rho[34]))))+
+    theme(legend.position='none')
+p1/p2/p3/p4/p5/p6
 
 ```
 
