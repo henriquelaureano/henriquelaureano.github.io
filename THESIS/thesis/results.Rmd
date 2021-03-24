@@ -133,6 +133,8 @@ v4cif2 <- c(cif2, logvars, rhoZs)
 v4true <- vtrue(v4cif1, v4cif2)
 ```
 
+# BIAS QUANTILE
+
 ```{r bias2plot,fig.width=10,fig.height=6.5}
 cerror <- function(data, true, data_label) {
     coefs <- data%>%dplyr::select(-c(conv, mll))
@@ -376,6 +378,8 @@ bias2plot_rho(out,
               expression(bold("Complete model's cross-correlations")))
 ```
 
+# BIAS SD
+
 ```{r bias2plotsd,fig.width=10,fig.height=6.75}
 bias2plot2 <- function(df, title)
 {
@@ -543,6 +547,8 @@ out$v <- forcats::fct_recode(out$v,
 bias2plot2_rho(out,
                expression(bold("Complete model's cross-correlations")))
 ```
+
+# CIF
 
 ```{r cifs,fig.width=10,fig.height=10}
 cmean <- function(data, data_label)
@@ -712,7 +718,9 @@ p3/p4+plot_annotation(title='LOW CIF SCENARIO',
                       theme=theme(plot.title=element_text(face='bold')))
 ```
 
-```{r histo}
+# HISTO LOGS2
+
+```{r histologs2,fig.width=10,fig.height=13}
 data.label <- function(data, label)
 {
     out <- data%>%dplyr::mutate(scenario=label)
@@ -743,57 +751,6 @@ logs2pilha <- function(data1, data2, data3, par, label)
                       scenario == 'cs10-high-60k')
     return(out)
 }
-
-crossco <- function()
-{
-    out <- NULL
-    for (i in seq(18))
-    {
-        out <-
-            out%>%
-            dplyr::bind_rows(data.label(
-                       v4data[[i]]%>%
-                       dplyr::select(rhoZ13, rhoZ24, rhoZ14, rhoZ23),
-                       label[[i]]
-                   ))
-    }
-    out <- out%>%
-        tidyr::pivot_longer(
-                   !scenario, names_to='par', values_to='value'
-               )%>%
-        dplyr::mutate(par=forcats::as_factor(par)%>%
-                          forcats::fct_recode(
-                                       'bold(z(rho[13]))'='rhoZ13',
-                                       'bold(z(rho[24]))'='rhoZ24',
-                                       'bold(z(rho[14]))'='rhoZ14',
-                                       'bold(z(rho[23]))'='rhoZ23'))%>%
-        dplyr::filter(scenario == 'cs02-high-60k' |
-                      scenario == 'cs05-high-60k' |
-                      scenario == 'cs10-high-60k')
-    return(out)
-}
-
-rhoZ_df <- crossco()
-
-ggplot(rhoZ_df, aes(x=value, fill=scenario))+
-    geom_density(alpha=0.6)+
-    facet_grid(~par, scales='free', labeller=label_parsed)+
-    scale_fill_brewer(palette='Spectral')+
-    ## scale_fill_viridis_d()+
-    ## geom_vline(xintercept=, linetype='dashed', size=1)+
-    labs(x=NULL, y=NULL, fill=NULL,
-         title="Complete model's cross-correlations",
-         subtitle='True value in dashed black')+
-    ## theme_minimal()+
-    theme(
-        legend.position='none',
-        legend.box.background=element_rect(color='black'),
-        plot.title=element_text(face='bold'),
-        plot.subtitle=element_text(face='italic'),
-        strip.background=element_rect(color='black', fill='white'),
-        strip.text.x=element_text(face='bold')
-    )
-
 histo <- function(data, true, title)
 {
     ggplot(data, aes(x=par, fill=scenario))+
@@ -806,7 +763,7 @@ histo <- function(data, true, title)
              title=title, subtitle='True value in dashed black')+
         theme_minimal()+
         theme(
-            legend.position='top',
+            legend.position='bottom',
             legend.box.background=element_rect(color='black'),
             plot.subtitle=element_text(face='italic'),
             strip.background=element_rect(color='black', fill='white'),
@@ -841,6 +798,61 @@ logs2_4df <-
                       forcats::fct_recode('TIME MODEL'      ='1',
                                           'BLOCK-DIAG MODEL'='2',
                                           'COMPLETE MODEL'  ='3'))
+p1 <-
+    histo(logs2_1df, log(1),
+          expression(bold('Parameter:'~log(sigma[1]^2))))+
+    theme(legend.position='none')
+p2 <-
+    histo(logs2_2df, log(0.6), 
+          expression(bold('Parameter:'~log(sigma[2]^2))))+
+    theme(legend.position='none')
+p3 <-
+    histo(logs2_3df, log(0.7), 
+          expression(bold('Parameter:'~log(sigma[3]^2))))+
+    theme(legend.position='none')
+p4 <-
+    histo(logs2_4df, log(0.9), 
+          expression(bold('Parameter:'~log(sigma[4]^2))))
+p1/p2/p3/p4
+```
+
+# HISTO RHOZ
+
+```{r historhoz,fig.width=10,fig.height=10}
+crossco <- function()
+{
+    out <- NULL
+    for (i in seq(18))
+    {
+        out <-
+            out%>%
+            dplyr::bind_rows(data.label(
+                       v4data[[i]]%>%
+                       dplyr::select(rhoZ13, rhoZ24, rhoZ14, rhoZ23),
+                       label[[i]]
+                   ))
+    }
+    out <- out%>%
+        tidyr::pivot_longer(
+                   !scenario, names_to='par', values_to='value'
+               )%>%
+        dplyr::mutate(par=forcats::as_factor(par)%>%
+                          forcats::fct_recode(
+                                       'bold(z(rho[13]))'='rhoZ13',
+                                       'bold(z(rho[24]))'='rhoZ24',
+                                       'bold(z(rho[14]))'='rhoZ14',
+                                       'bold(z(rho[23]))'='rhoZ23'))%>%
+        dplyr::filter(scenario == 'cs02-high-60k' |
+                      scenario == 'cs05-high-60k' |
+                      scenario == 'cs10-high-60k')
+    return(out)
+}
+rhoZ_df  <- crossco()
+rhoZtrue <-
+    tibble::tibble(
+                par=forcats::as_factor(levels(rhoZ_df$par)),
+                value=atanh(c(-0.5, -0.4, 0.3, 0.3))
+            )
 rhoZ12_df <-
     logs2pilha(v1data, v3data, v4data, 'rhoZ12', label)%>%
     dplyr::rename(par=rhoZ12)%>%
@@ -855,21 +867,6 @@ rhoZ34_df <-
                       forcats::fct_recode('TIME MODEL'      ='1',
                                           'BLOCK-DIAG MODEL'='2',
                                           'COMPLETE MODEL'  ='3'))
-p1 <-
-    histo(logs2_1df, log(1),
-          expression(bold('Parameter:'~log(sigma[1]^2))))
-p2 <-
-    histo(logs2_2df, log(0.6), 
-          expression(bold('Parameter:'~log(sigma[2]^2))))+
-    theme(legend.position='none')
-p3 <-
-    histo(logs2_3df, log(0.7), 
-          expression(bold('Parameter:'~log(sigma[3]^2))))+
-    theme(legend.position='none')
-p4 <-
-    histo(logs2_4df, log(0.9), 
-          expression(bold('Parameter:'~log(sigma[4]^2))))+
-    theme(legend.position='none')
 p5 <-
     histo(rhoZ12_df, atanh(0.1),
           expression(bold('Parameter:'~z(rho[12]))))+
@@ -878,90 +875,87 @@ p6 <-
     histo(rhoZ34_df, atanh(0.2),
           expression(bold('Parameter:'~z(rho[34]))))+
     theme(legend.position='none')
-p1/p2/p3/p4/p5/p6
-
+p7 <-
+    ggplot(rhoZ_df, aes(x=value, fill=scenario))+
+    geom_density(alpha=0.6)+
+    facet_grid(~par, scales='free', labeller=label_parsed)+
+    scale_fill_brewer(palette='Spectral')+
+    ## scale_fill_viridis_d()+
+    geom_vline(rhoZtrue, mapping=aes(xintercept=value),
+               linetype='dashed', size=1)+
+    labs(x=NULL, y=NULL, fill=NULL,
+         title="Complete model's cross-correlations",
+         subtitle='True value in dashed black')+
+    theme_minimal()+
+    theme(
+        legend.position='bottom',
+        legend.box.background=element_rect(color='black'),
+        plot.title=element_text(face='bold'),
+        plot.subtitle=element_text(face='italic'),
+        strip.background=element_rect(color='black', fill='white'),
+        strip.text.x=element_text(face='bold')
+    )
+p5/p6/p7
 ```
 
 # COR
 
-```{r cor2plot,message=FALSE,fig.height=10,fig.width=10,eval=FALSE}
-coefs22_cor <- round(cor(coefs22), 1)
-coefs36_cor <- round(cor(coefs36), 1)
-coefs38_cor <- round(cor(coefs38), 1)
-coefs40_cor <- round(cor(coefs40), 1)
-
-cor2plot <- function(cor.data, title, zrhos) {
-    ggcorrplot(cor.data, 
-               type='lower', 
-               lab=TRUE, 
-               ## lab_size=5, 
-               ## outline.color='white', 
-               colors=RColorBrewer::brewer.pal(n=3, name='Greys'),
-               title=title,
-               p.mat=cor_pmat(cor.data), 
-               insig='blank', 
-               ggtheme=theme(
-                   plot.title=element_text(size=16, face='bold'), 
-                   axis.text.x=element_text(size=15), 
-                   axis.text.y=element_text(size=15), 
-                   axis.title.x=element_blank(),
-                   axis.title.y=element_blank(),
-                   panel.background=element_blank(),
-                   axis.ticks=element_blank(),
-                   legend.justification=c(1, 0),
-                   legend.position=c(0.4, 0.85),
-                   legend.direction='horizontal',
-                   legend.title=element_blank(),
-                   legend.text=element_text(size=11)))+
-        scale_x_discrete(labels=c(expression(beta[2]),
-                                  expression(gamma[1]),
-                                  expression(gamma[2]),
-                                  expression(w[1]),
-                                  expression(w[2]),
-                                  expression(log(sigma[1]^2)),
-                                  expression(log(sigma[2]^2)),
-                                  expression(log(sigma[3]^2)),
-                                  expression(log(sigma[4]^2)),
-                                  zrhos))+
-        scale_y_discrete(labels=c(expression(beta[1]), 
-                                  expression(beta[2]),
-                                  expression(gamma[1]),
-                                  expression(gamma[2]),
-                                  expression(w[1]),
-                                  expression(w[2]),
-                                  expression(log(sigma[1]^2)),
-                                  expression(log(sigma[2]^2)),
-                                  expression(log(sigma[3]^2)),
-                                  expression(log(sigma[4]^2)),
-                                  head(zrhos, -1)))+
-        coord_cartesian()
+```{r cor2plot,message=FALSE,fig.height=10,fig.width=10}
+thepilha <- function()
+{
+    out <- NULL
+    for (i in seq(18))
+    {
+        out <-
+            out%>%
+            dplyr::bind_rows(data.label(v4data[[i]]%>%
+                                        dplyr::select(-c(conv, mll)),
+                                        label[[i]]))
+    }
+    out <-
+        out%>%
+        dplyr::filter(scenario == 'cs10-high-60k')%>%
+        dplyr::select(!scenario)
+    return(out)
 }
+v4pars    <- thepilha()
+v4cor     <- round(cor(v4pars), 1)
+corlabels <- c(expression(beta[1]),
+               expression(beta[2]),
+               expression(gamma[1]),
+               expression(gamma[2]),
+               expression(w[1]),
+               expression(w[2]),
+               expression(log(sigma[1]^2)),
+               expression(log(sigma[2]^2)),
+               expression(log(sigma[3]^2)),
+               expression(log(sigma[4]^2)),
+               expression(z(rho[12])),
+               expression(z(rho[13])),
+               expression(z(rho[14])),
+               expression(z(rho[23])),
+               expression(z(rho[24])),
+               expression(z(rho[34])))
 
-p1 <- cor2plot(coefs22_cor,
-               title='model22 parameters correlation',
-               zrhos=c(expression(z(rho[12])),
-                       expression(z(rho[34])),
-                       expression(z(rho[13])),
-                       expression(z(rho[24]))))
-p2 <- cor2plot(coefs36_cor,
-               title='model36 parameters correlation',
-               zrhos=c(expression(z(rho[12])),
-                       expression(z(rho[34])),
-                       expression(z(rho[13])),
-                       expression(z(rho[24])),
-                       expression(z(rho[14])),
-                       expression(z(rho[23]))))
-p3 <- cor2plot(coefs38_cor,
-               title='model38 parameters correlation',
-               zrhos=c(expression(z(rho[12])),
-                       expression(z(rho[34])),
-                       expression(z(rho[14])),
-                       expression(z(rho[23]))))
-p4 <- cor2plot(coefs40_cor,
-               title='model40 parameters correlation',
-               zrhos=c(expression(z(rho[13])),
-                       expression(z(rho[24])),
-                       expression(z(rho[14])),
-                       expression(z(rho[23]))))
-(p1|p2)/(p3|p4)
+ggcorrplot(v4cor, 
+           ## type='lower', 
+           ## lab=TRUE, 
+           title='cs10-high-60k, complete model',
+           ## p.mat=cor_pmat(v4cor), 
+           ## insig='blank', 
+           ggtheme=theme(
+               plot.title=element_text(face='bold'), 
+               ## axis.text.x=element_text(size=15), 
+               ## axis.text.y=element_text(size=15), 
+               axis.title.x=element_blank(),
+               axis.title.y=element_blank(),
+               axis.ticks=element_blank(),
+               ## legend.text=element_text(size=11),
+               legend.title=element_blank()))+
+    scale_x_discrete(labels=corlabels)+
+    scale_y_discrete(labels=corlabels)+
+    ## scale_fill_viridis_c(option='plasma', direction=-1)
+    scale_fill_fish(option='Trimma_lantana')+
+    guides(fill=guide_colorbar(barheight=15))
+
 ```
