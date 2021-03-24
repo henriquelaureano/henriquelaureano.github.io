@@ -720,7 +720,7 @@ p3/p4+plot_annotation(title='LOW CIF SCENARIO',
 
 # HISTO LOGS2
 
-```{r histologs2,fig.width=10,fig.height=13}
+```{r histologs2,fig.width=10,fig.height=14}
 data.label <- function(data, label)
 {
     out <- data%>%dplyr::mutate(scenario=label)
@@ -765,9 +765,13 @@ histo <- function(data, true, title)
         theme(
             legend.position='bottom',
             legend.box.background=element_rect(color='black'),
-            plot.subtitle=element_text(face='italic'),
+            legend.text=element_text(size=14), 
+            plot.title=element_text(size=15),
+            plot.subtitle=element_text(size=13, face='italic'),
             strip.background=element_rect(color='black', fill='white'),
-            strip.text.x=element_text(face='bold')
+            strip.text.x=element_text(size=13, face='bold'),
+            axis.text.x=element_text(size=12), 
+            axis.text.y=element_text(size=12)
         )
 }
 logs2_1df <-
@@ -818,7 +822,7 @@ p1/p2/p3/p4
 
 # HISTO RHOZ
 
-```{r historhoz,fig.width=10,fig.height=10}
+```{r historhoz,fig.width=10,fig.height=10.5}
 crossco <- function()
 {
     out <- NULL
@@ -890,10 +894,13 @@ p7 <-
     theme(
         legend.position='bottom',
         legend.box.background=element_rect(color='black'),
-        plot.title=element_text(face='bold'),
-        plot.subtitle=element_text(face='italic'),
+        legend.text=element_text(size=14), 
+        plot.title=element_text(size=15, face='bold'),
+        plot.subtitle=element_text(size=13, face='italic'),
         strip.background=element_rect(color='black', fill='white'),
-        strip.text.x=element_text(face='bold')
+        strip.text.x=element_text(size=13, face='bold'),
+        axis.text.x=element_text(size=12), 
+        axis.text.y=element_text(size=12)
     )
 p5/p6/p7
 ```
@@ -944,18 +951,18 @@ ggcorrplot(v4cor,
            ## p.mat=cor_pmat(v4cor), 
            ## insig='blank', 
            ggtheme=theme(
-               plot.title=element_text(face='bold'), 
-               ## axis.text.x=element_text(size=15), 
-               ## axis.text.y=element_text(size=15), 
+               plot.title=element_text(size=19, face='bold'), 
                axis.title.x=element_blank(),
                axis.title.y=element_blank(),
                axis.ticks=element_blank(),
-               ## legend.text=element_text(size=11),
-               legend.title=element_blank()))+
+               legend.title=element_blank(),
+               legend.text=element_text(size=15)
+           ))+
     scale_x_discrete(labels=corlabels)+
     scale_y_discrete(labels=corlabels)+
+    theme(axis.text.x=element_text(size=18), 
+          axis.text.y=element_text(size=18))+
     ## scale_fill_viridis_c(option='plasma', direction=-1)
     scale_fill_fish(option='Trimma_lantana')+
-    guides(fill=guide_colorbar(barheight=15))
-
+    guides(fill=guide_colorbar(barheight=20))
 ```
