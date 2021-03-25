@@ -370,6 +370,18 @@ compensation is clear in the risk model. There is a super estimation of
 \(\beta_{1}\) in all scenarios. For failure cause 2, there is a sub
 estimation.
 
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
+          SIXTY-THOUSAND DATA POINTS}
+ \vspace{0.2cm}\centering
+ \includegraphics[width=\textwidth]{histologs2-1.png}\\
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:histologs2}
+\end{figure}
+
 With the time model, we get much better curves than with the risk
 model. The block-diag model results are a middle term between them. For
 the time model, the scenario with cluster size 10 and sixty-thousand
@@ -381,6 +393,18 @@ clearly more difficult. The overall fits are bad, being impossible to
 select a scenario with overall good results. For one of the failure
 causes, the estimation quality is not so bad. The problem is when we
 look to the other. The best joint fit is still with the complete model.
+
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{CORRELATION PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF
+          AND SIXTY-THOUSAND DATA POINTS}
+ \vspace{0.2cm}\centering
+ \includegraphics[width=\textwidth]{historhoz-1.png}\\
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:historhoz}
+\end{figure}
 
 By bias and CIF, the scenarios with better results are the ones with
 high CIF and bigger sample sizes. Besides looking to mean bias, is
@@ -406,30 +430,7 @@ size the bias-variance decreases. Thus, we chose this scenario to
 compute the parameter estimates correlation. The heat-map is presented
 in \autoref{fig:cor2plot}.
 
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
-          SIXTY-THOUSAND DATA POINTS}
- \vspace{0.2cm}\centering
- \includegraphics[width=\textwidth]{histologs2-1.png}\\
- \begin{footnotesize}
-  SOURCE: The author (2021).
- \end{footnotesize}
- \label{fig:histologs2}
-\end{figure}
-
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{CORRELATION PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF
-          AND SIXTY-THOUSAND DATA POINTS}
- \vspace{0.2cm}\centering
- \includegraphics[width=\textwidth]{historhoz-1.png}\\
- \begin{footnotesize}
-  SOURCE: The author (2021).
- \end{footnotesize}
- \label{fig:historhoz}
-\end{figure}
-
+\begin{center}
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
@@ -443,5 +444,6 @@ in \autoref{fig:cor2plot}.
  \end{footnotesize}
  \label{fig:cor2plot}
 \end{figure}
+\end{center}
 
 % END ==================================================================
