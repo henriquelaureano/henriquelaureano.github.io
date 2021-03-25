@@ -96,3 +96,5 @@
 <img src='niceview2.jpg'>
 <img src='goddamn.jpg'>
 <img src='well.gif'>
+<img src='howdareyou.jpg'>
+<img src='savage.jpg'>
