@@ -383,9 +383,28 @@ causes, the estimation quality is not so bad. The problem is when we
 look to the other. The best joint fit is still with the complete model.
 
 By bias and CIF, the scenarios with better results are the ones with
-high CIF and bigger sample sizes. In \autoref{fig:histologs2} we have
-the densities for the variance parameters in each of these scenarios. In
+high CIF and bigger sample sizes. Besides looking to mean bias, is
+interesting to look at how the latent effect parameter estimates
+distribute. In \autoref{fig:histologs2} we have the densities for the
+variance parameters in each of these scenarios. In
 \autoref{fig:historhoz} we have the same for correlation parameters.
+
+An interesting result is a clear difference between the risk and time
+models' covariance parameters. With the risk model, we have a clear
+super estimation and a bigger variance. With the time model, we get some
+nice results, given the still high variance. The block-diag model
+generally performs better than the risk model and worst than the time
+model. Besides the bias itself, we should also pay attention to the
+values. We model the variances in the log-scale, so a value 5, in
+reality, is implying a variance of \(\exp(4) = 148\) i.e., terrible. All
+these problems do not sound to appear with the complete model. Great.
+
+In the complete model, we do not see any considerable difference between
+the covariance densities. However, looking back to parameters bias we
+see that in general, for the complete model, when we increase the sample
+size the bias-variance decreases. Thus, we chose this scenario to
+compute the parameter estimates correlation. The heat-map is presented
+in \autoref{fig:cor2plot}.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
