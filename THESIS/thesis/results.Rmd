@@ -756,8 +756,9 @@ histo <- function(data, true, title)
     ggplot(data, aes(x=par, fill=scenario))+
         geom_density(alpha=0.6)+
         facet_wrap(~v, scales='free')+
-        scale_fill_brewer(palette='Spectral')+
+        ## scale_fill_brewer(palette='Spectral')+
         ## scale_fill_viridis_d()+
+        scale_fill_fish_d(option='Trimma_lantana')+
         geom_vline(xintercept=true, linetype='dashed', size=1)+
         labs(x=NULL, y=NULL, fill=NULL,
              title=title, subtitle='True value in dashed black')+
@@ -883,8 +884,9 @@ p7 <-
     ggplot(rhoZ_df, aes(x=value, fill=scenario))+
     geom_density(alpha=0.6)+
     facet_grid(~par, scales='free', labeller=label_parsed)+
-    scale_fill_brewer(palette='Spectral')+
+    ## scale_fill_brewer(palette='Spectral')+
     ## scale_fill_viridis_d()+
+    scale_fill_fish_d(option='Trimma_lantana')+
     geom_vline(rhoZtrue, mapping=aes(xintercept=value),
                linetype='dashed', size=1)+
     labs(x=NULL, y=NULL, fill=NULL,
@@ -948,10 +950,12 @@ ggcorrplot(v4cor,
            type='lower', 
            lab=TRUE,
            lab_size=6,
-           tl.cex=18, 
+           tl.cex=18,
            title='cs10-high-60k, complete model',
            legend.title=NULL,
-           colors=c('#91bfdb', '#ffffbf', '#fc8d59'), 
+           ## colors=c('#91bfdb', '#ffffbf', '#fc8d59'), 
+           ## colors=fishualize::fish(n=4, option='Trimma_lantana'), 
+           colors=fishualize::fish(n=3, option='Trimma_lantana'), 
            ggtheme=theme(
                plot.title=element_text(size=18, face='bold'), 
                axis.ticks=element_blank(),
