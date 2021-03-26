@@ -945,24 +945,23 @@ corlabels <- c(expression(beta[1]),
                expression(z(rho[34])))
 
 ggcorrplot(v4cor, 
-           ## type='lower', 
-           ## lab=TRUE, 
+           type='lower', 
+           lab=TRUE,
+           lab_size=6,
+           tl.cex=18, 
            title='cs10-high-60k, complete model',
-           ## p.mat=cor_pmat(v4cor), 
-           ## insig='blank', 
+           legend.title=NULL,
+           colors=c('#91bfdb', '#ffffbf', '#fc8d59'), 
            ggtheme=theme(
-               plot.title=element_text(size=19, face='bold'), 
-               axis.title.x=element_blank(),
-               axis.title.y=element_blank(),
+               plot.title=element_text(size=18, face='bold'), 
                axis.ticks=element_blank(),
-               legend.title=element_blank(),
-               legend.text=element_text(size=15)
+               legend.text=element_text(size=15),
+               panel.background=element_rect(fill='white')
            ))+
-    scale_x_discrete(labels=corlabels)+
-    scale_y_discrete(labels=corlabels)+
-    theme(axis.text.x=element_text(size=18), 
-          axis.text.y=element_text(size=18))+
+    scale_x_discrete(labels=corlabels[-1])+
+    scale_y_discrete(labels=corlabels[-16])+
     ## scale_fill_viridis_c(option='plasma', direction=-1)
-    scale_fill_fish(option='Trimma_lantana')+
-    guides(fill=guide_colorbar(barheight=20))
+    ## scale_fill_distiller(palette='Greys', direction=1)+
+    ## scale_fill_fish(option='Trimma_lantana')+
+    guides(fill=guide_colorbar(barheight=38.5))
 ```

@@ -430,20 +430,24 @@ size the bias-variance decreases. Thus, we chose this scenario to
 compute the parameter estimates correlation. The heat-map is presented
 in \autoref{fig:cor2plot}.
 
-\begin{center}
+All fixed-effect parameters are positive correlated, with an emphasis on
+the correlation between \(\bm{\beta}\)s and \(\bm{\beta}\)s with
+\(\bm{w}\)s. A curious observation is a negative correlation between
+\(\bm{\beta\)s and risk variances, and a positive correlation between
+\(\bm{\beta\)s and trajectory time variances.
+
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
           SCENARIO OF CLUSTER SIZE 10, HIGH CIF, AND SIXTY-THOUSAND DATA
           POINTS}
  \centering
- \includegraphics[width=0.85\textwidth]{cor2plot-1.png}\\
+ \includegraphics[width=\textwidth]{cor2plot-1.png}\\
  \vspace{-0.2cm}
  \begin{footnotesize}
   SOURCE: The author (2021).
  \end{footnotesize}
  \label{fig:cor2plot}
 \end{figure}
-\end{center}
 
 % END ==================================================================
