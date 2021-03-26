@@ -110,26 +110,17 @@ in \autoref{fig:biassdbeta1}, \autoref{fig:biassdbeta2},
 nice results that already show a strong inclination towards the complete
 model's choice.
 
-With a simpler latent structure i.e., a latent structure only in one
-level (risk and time models), the low CIF scenarios present a much
-smaller bias-variance. In general, the mean-bias is small (good), but
-the variances are high. When we have a latent structure on both levels
-but assuming the cross-correlations as zero (block-diag model), the
-results get a little bit better. Nevertheless, when we assume a non-zero
-cross-correlation structure (complete model) basically everything
-changes. The mean biases get closer to zero, the standard deviations
-decrease 50\% or more, and mainly, now the high CIF scenarios are the
-ones with a much smaller bias-variance. All this is accomplished through
-the consideration of the cross-correlations.
-
-In the \textit{simpler} models is hard to see some significant
-difference between the cluster and sample sizes. In the complete model,
-the difference is clear: as we increase the cluster and the sample size
-the bias-variance decrease. The mean-bias is basically always the
-same. In the risk and block-diag models is hard to point-out a scenario
-as the best or worst. For the time model, in two parameters, with the
-scenario of cluster size ten; low CiF; and five thousand data points, we
-get a much bigger standard deviation.
+With a latent structure only in the risk level or in the trajectory time
+level, the low CIF scenarios are the ones with a much smaller
+bias-variance. In general, the mean-bias is small but the variances are
+high. When we have a latent structure on both levels but assuming the
+cross-correlations as zero (block-diag model), the results get a little
+bit better. Nevertheless, when we assume a non-zero cross-correlation
+structure (complete model), basically everything changes. The mean
+biases get even closer to zero, the standard deviations decrease 50\% or
+more, and mainly, now the high CIF scenarios are the ones with a much
+smaller bias-variance. All this is accomplished through the
+consideration of the cross-correlations.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
@@ -286,9 +277,19 @@ get a much bigger standard deviation.
  \label{fig:biassdrhoz4}
 \end{figure}
 
-With the log-variances (\autoref{fig:biassdlogs2_1},
-\autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3},
-\autoref{fig:biassdlogs2_4}), we have instead a similar behavior through
+In the \textit{simpler} models with a latent structure just in one
+level, is hard to see some significant difference between the cluster
+and sample sizes. In the complete model, in the other hand, the
+difference is clear: as we increase the cluster and the sample siz, the
+bias-variance decreases. The mean-bias is basically always the same. In
+the risk and block-diag models is hard to point-out a scenario as the
+best or worst. For the time model, in two of the parameters, with the
+scenario of cluster size 10; low CiF; and 5 thousand data points, we get
+a much bigger standard deviation.
+
+With the log-variances in \autoref{fig:biassdlogs2_1},
+\autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3}, and
+\autoref{fig:biassdlogs2_4}, we have instead a similar behavior through
 the models. For all models, the high CIF scenarios are the ones with a
 smaller mean and bias-variance. From the risk/time model to the
 block-diag model, we do not see a significant improvement in terms of
@@ -296,13 +297,13 @@ bias reduction. Such improvement, however, is clear when we look at the
 complete model. Again, the magick of considering the cross-correlations.
 
 The same said about the log-variances, can be applied to the risk
-correlation (\autoref{fig:biassdrhoz12}) with one addendum: the bias
-reduction is even bigger. With the time correlation
-(\autoref{fig:biassdrhoz34}), we get the same behavior observed with the
+correlation in \autoref{fig:biassdrhoz12}, with one addendum: the bias
+reduction is even bigger. With the time correlation in
+\autoref{fig:biassdrhoz34}, we get the same behavior observed with the
 fixed-effect parameters i.e., in the simpler models, the smaller biases
 are observed with the low CIF scenarios. However, with the complete
-model, we get the opposite. With the cross-correlations
-(\autoref{fig:biassdrhoz4}), the mean and bias-variance are much smaller
+model, we get the opposite. With the cross-correlations in
+\autoref{fig:biassdrhoz4}, the mean and bias-variances are much smaller
 in the high CIF scenarios.
 
 The biggest bias-variances obtained are with the log-variances. A final
@@ -315,10 +316,10 @@ fits reach a convergence (\(\sim\)100\% performance) but never the
 desired gradient-based convergence.
 
 After looking at the parameter biases, let us take a look at the implied
-mean-CIF curves. To nicely represent all seventy-two scenarios we split
-the curves by level-CIF. In \autoref{fig:cifshigh} we have the high CIF
-scenario curves and in \autoref{fig:cifslow} the low CIF scenario
-curves.
+mean-CIF curves. To nicely accommodate all seventy-two scenarios we
+split the curves by level-CIF. In \autoref{fig:cifshigh} we have the
+high CIF scenario curves and in \autoref{fig:cifslow} the low CIF
+scenario curves.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
@@ -344,46 +345,36 @@ curves.
 
 Since in all models we have a latent structure for the within-cluster
 dependency, the inherent idea is that this will also affect the
-fixed-effect parameter estimates. By taking the average of the
-fixed-effect parameter estimates in each of the seventy-two scenarios,
-we are able to construct the mean CIF curve for each scenario.
+fixed-effect parameter estimates. By taking its average in each of the
+seventy-two scenarios, we are able to construct the mean CIF curves.
 
 In \autoref{fig:cifshigh} we have all the thirty-six curves obtained in
 the high CIF scenarios. It is clear that with the complete model we get
-a perfect fit in all nine scenarios. With the risk and time models, we
-get right the curve shapes but we fail to learn the max incidence. A
-compensation is clear in the risk model. There is a super estimation of
-\(\beta_{1}\) in all scenarios. For failure cause 2, there is a sub
-estimation.
-
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
-          SIXTY-THOUSAND DATA POINTS}
- \vspace{0.2cm}\centering
- \includegraphics[width=\textwidth]{histologs2-1.png}\\
- \begin{footnotesize}
-  SOURCE: The author (2021).
- \end{footnotesize}
- \label{fig:histologs2}
-\end{figure}
+a perfect fit in all nine scenarios. The risk and time models estimate
+well the curve shape parameters but they fail to learn the max
+incidence. A compensation between curves is clear. In the risk model,
+there is a super estimation of \(\beta_{1}\) in all scenarios. For
+failure cause 2, there is a sub estimation. With the time model, we
+observe the opposite compensation but on a smaller scale.
 
 With the time model, we get much better curves than with the risk
 model. The block-diag model results are a middle term between them. For
-the time model, the scenario with cluster size 10 and sixty-thousand
-points is a highlight. For the block-diag model, the highlight is the
-scenario with cluster size 5 and thirty-thousand points.
+the time model, the scenario with cluster size 10 and 60 thousand points
+is a highlight. For the block-diag model, the highlight is the scenario
+with cluster size 5 and 30 thousand points.
 
 In the low CIF scenarios in \autoref{fig:cifslow}, the estimation is
-clearly more difficult. The overall fits are bad, being impossible to
-select a scenario with overall good results. For one of the failure
-causes, the estimation quality is not so bad. The problem is when we
-look to the other. The best joint fit is still with the complete model.
+clearly more difficult.
+
+The overall fits are bad, being impossible to select a scenario with
+overall good results. For one of the failure causes, the estimation
+quality is not so bad. The problem is when we look to the other. The
+best joint fit is still with the complete model.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{CORRELATION PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF
-          AND SIXTY-THOUSAND DATA POINTS}
+          AND 60 THOUSAND DATA POINTS}
  \vspace{0.2cm}\centering
  \includegraphics[width=\textwidth]{historhoz-1.png}\\
  \begin{footnotesize}
@@ -392,12 +383,38 @@ look to the other. The best joint fit is still with the complete model.
  \label{fig:historhoz}
 \end{figure}
 
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
+          60 THOUSAND DATA POINTS}
+ \vspace{0.2cm}\centering
+ \includegraphics[width=\textwidth]{histologs2-1.png}\\
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:histologs2}
+\end{figure}
+
 By bias and CIF, the scenarios with better results are the ones with
 high CIF and bigger sample sizes. Besides looking to mean bias, is
 interesting to look at how the latent effect parameter estimates
 distribute. In \autoref{fig:histologs2} we have the densities for the
 variance parameters in each of these scenarios. In
 \autoref{fig:historhoz} we have the same for correlation parameters.
+
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
+          SCENARIO OF CLUSTER SIZE 10, HIGH CIF, AND SIXTY-THOUSAND DATA
+          POINTS}
+ \centering
+ \includegraphics[width=\textwidth]{cor2plot-1.png}\\
+ \vspace{-0.2cm}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:cor2plot}
+\end{figure}
 
 An interesting result is a clear difference between the risk and time
 models' covariance parameters. With the risk model, we have a clear
@@ -421,19 +438,5 @@ the correlation between \(\bm{\beta}\)s and \(\bm{\beta}\)s with
 \(\bm{w}\)s. A curious observation is a negative correlation between
 \(\bm{\beta\)s and risk variances, and a positive correlation between
 \(\bm{\beta\)s and trajectory time variances.
-
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
-          SCENARIO OF CLUSTER SIZE 10, HIGH CIF, AND SIXTY-THOUSAND DATA
-          POINTS}
- \centering
- \includegraphics[width=\textwidth]{cor2plot-1.png}\\
- \vspace{-0.2cm}
- \begin{footnotesize}
-  SOURCE: The author (2021).
- \end{footnotesize}
- \label{fig:cor2plot}
-\end{figure}
 
 % END ==================================================================
