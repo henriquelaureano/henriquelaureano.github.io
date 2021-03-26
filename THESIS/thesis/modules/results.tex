@@ -364,57 +364,26 @@ is a highlight. For the block-diag model, the highlight is the scenario
 with cluster size 5 and 30 thousand points.
 
 In the low CIF scenarios in \autoref{fig:cifslow}, the estimation is
-clearly more difficult.
+clearly more difficult. The overall fits are bad, being impossible to
+select a scenario with overall good results. For one of the failure
+causes, the estimation quality is not so bad. The problem is when we
+look to the other. An interesting scenario is the one with cluster size
+2 and 60 thousand data points. In this scenario we see the worst fits
+for failure cause 1, with a negative highlight in the block-diag
+configuration. However, in this same model, for failure cause 2, this is
+the only scenario, by far, were we learn the true curve. An interesting
+compensation phenomena. The best joint fit is still with the complete
+model.
 
-The overall fits are bad, being impossible to select a scenario with
-overall good results. For one of the failure causes, the estimation
-quality is not so bad. The problem is when we look to the other. The
-best joint fit is still with the complete model.
-
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{CORRELATION PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF
-          AND 60 THOUSAND DATA POINTS}
- \vspace{0.2cm}\centering
- \includegraphics[width=\textwidth]{historhoz-1.png}\\
- \begin{footnotesize}
-  SOURCE: The author (2021).
- \end{footnotesize}
- \label{fig:historhoz}
-\end{figure}
-
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
-          60 THOUSAND DATA POINTS}
- \vspace{0.2cm}\centering
- \includegraphics[width=\textwidth]{histologs2-1.png}\\
- \begin{footnotesize}
-  SOURCE: The author (2021).
- \end{footnotesize}
- \label{fig:histologs2}
-\end{figure}
-
-By bias and CIF, the scenarios with better results are the ones with
-high CIF and bigger sample sizes. Besides looking to mean bias, is
-interesting to look at how the latent effect parameter estimates
-distribute. In \autoref{fig:histologs2} we have the densities for the
-variance parameters in each of these scenarios. In
-\autoref{fig:historhoz} we have the same for correlation parameters.
-
-\begin{figure}[H]
- \setlength{\abovecaptionskip}{.0001pt}
- \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
-          SCENARIO OF CLUSTER SIZE 10, HIGH CIF, AND SIXTY-THOUSAND DATA
-          POINTS}
- \centering
- \includegraphics[width=\textwidth]{cor2plot-1.png}\\
- \vspace{-0.2cm}
- \begin{footnotesize}
-  SOURCE: The author (2021).
- \end{footnotesize}
- \label{fig:cor2plot}
-\end{figure}
+Now we look at how the latent-effect parameter estimates distribute
+themselves. Given the huge number of scenarios and the fact that is
+harder to estimate covariance parameters, we chose to plot the
+parameters just in the scenarios with better performances. By the
+metrics of small bias and CIF shape learning, the scenarios with better
+results are the ones with high CIF and bigger sample sizes. We have the
+densities for the variance parameters, in each of these scenarios,
+presented in \autoref{fig:histologs2}. In \autoref{fig:historhoz} we
+have the same for the correlation parameters.
 
 An interesting result is a clear difference between the risk and time
 models' covariance parameters. With the risk model, we have a clear
@@ -438,5 +407,43 @@ the correlation between \(\bm{\beta}\)s and \(\bm{\beta}\)s with
 \(\bm{w}\)s. A curious observation is a negative correlation between
 \(\bm{\beta\)s and risk variances, and a positive correlation between
 \(\bm{\beta\)s and trajectory time variances.
+
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
+          60 THOUSAND DATA POINTS}
+ \vspace{0.2cm}\centering
+ \includegraphics[width=\textwidth]{histologs2-1.png}\\
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:histologs2}
+\end{figure}
+
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{CORRELATION PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF
+          AND 60 THOUSAND DATA POINTS}
+ \vspace{0.2cm}\centering
+ \includegraphics[width=\textwidth]{historhoz-1.png}\\
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:historhoz}
+\end{figure}
+
+\begin{figure}[H]
+ \setlength{\abovecaptionskip}{.0001pt}
+ \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
+          SCENARIO OF CLUSTER SIZE 10, HIGH CIF, AND SIXTY-THOUSAND DATA
+          POINTS}
+ \centering
+ \includegraphics[width=\textwidth]{cor2plot-1.png}\\
+ \vspace{-0.2cm}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+ \label{fig:cor2plot}
+\end{figure}
 
 % END ==================================================================
