@@ -385,30 +385,32 @@ densities for the variance parameters, in each of these scenarios,
 presented in \autoref{fig:histologs2}. In \autoref{fig:historhoz} we
 have the same for the correlation parameters.
 
-An interesting result is a clear difference between the risk and time
-models' covariance parameters. With the risk model, we have a clear
-super estimation and a bigger variance. With the time model, we get some
-nice results, given the still high variance. The block-diag model
+An interesting result is the clear difference between risk and time
+models' covariance parameters. With the risk model, we have an evident
+super estimation and bigger variances. With the time model we get much
+better results, but still with high variances. The block-diag model
 generally performs better than the risk model and worst than the time
-model. Besides the bias itself, we should also pay attention to the
-values. We model the variances in the log-scale, so a value 5, in
-reality, is implying a variance of \(\exp(4) = 148\) i.e., terrible. All
-these problems do not sound to appear with the complete model. Great.
+model, showing again to be a compromise between them. Besides the bias
+itself, we should also pay attention to the values. We model the
+variances in the log-scale, so a value 5, in reality, implies a variance
+of \(\exp(4) = 148\). Terrible. This kind of problem do not sound to
+appear with the complete model.
 
-In the complete model, we do not see any considerable difference between
-the covariance densities. However, looking back to parameters bias we
-see that in general, for the complete model, when we increase the sample
-size the bias-variance decreases. Thus, we chose this scenario to
-compute the parameter estimates correlation. The heat-map is presented
-in \autoref{fig:cor2plot}.
+All correlations are quite well estimated, in all three scenarios, with
+the complete model. Not only the correlations but the variances
+also. The lack of any considerable difference between the covariance
+densities, indicates no quality divergences in the results for different
+cluster sizes. The densities in \autoref{fig:histologs2} and
+\autoref{fig:historhoz} are the final corroboration indicating the good
+estimability of the complete model. Between the four tested models, the
+complete model was the one with the smallest biases, better CIF shape
+learning, and precisest covariance parameter estimates.
 
-All fixed-effect parameters are positive correlated, with an emphasis on
-the correlation between \(\bm{\beta}\)s and \(\bm{\beta}\)s with
-\(\bm{w}\)s. A curious observation is a negative correlation between
-\(\bm{\beta\)s and risk variances, and a positive correlation between
-\(\bm{\beta\)s and trajectory time variances.
+In \autoref{fig:cor2plot} we have a heat-map of the correlations between
+parameter estimates of the complete model in the scenario with clusters
+of size 10, high CIF, and 60 thousand data points.
 
-\begin{figure}[H]
+\begin{figure}[!htpb]
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
           60 THOUSAND DATA POINTS}
@@ -432,7 +434,19 @@ the correlation between \(\bm{\beta}\)s and \(\bm{\beta}\)s with
  \label{fig:historhoz}
 \end{figure}
 
-\begin{figure}[H]
+We have a little bit of everything in \autoref{fig:cor2plot}. Some
+correlations are very close to zero, but we also have strong positive
+and negative correlations. We can mention some curiosities, but nothing
+pathological appears to happen, at least nothing clear.
+
+All fixed-effect parameters are positive correlated, with an emphasis on
+the correlation between \(\beta_{1}\) and \(\beta_{2}\), and the one of
+the \(\bm{\beta}\)s with the \(\bm{w}\)s. Another interesting
+observation is the negative correlation between the \(\bm{\beta}\)s and
+the risk log-variances, and also the positive correlation between the
+\(\bm{\beta}\)s and the trajectory time log-variances.
+
+\begin{figure}[!htpb]
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
           SCENARIO OF CLUSTER SIZE 10, HIGH CIF, AND SIXTY-THOUSAND DATA
