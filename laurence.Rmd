@@ -10,14 +10,14 @@ output:
 ```{r message=FALSE}
 pacman::p_load(tidyverse, patchwork, INLA)
 x <- c(
-    1:31, 1:28+31, 1:(26+7)+31+28
+    1:31, 1:28+31, 1:(28+7)+31+28
 )
 ## 23 days per row
 y <- c(
     0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2, 1, ## 1/23
     1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, ## 2/15
     3, 2, 1, 1, 1, 1, 1, 1, 3, 1, 2, 1, 1, 3, 2, 2, 2, 2, 1, 3, 1, 3, 2, ## 3/10
-    0, 1, 2, 1, 2, 2, 1, 1, 1, 0, 2, 3, 1, 1, 1, 4, 
+    0, 1, 2, 1, 2, 2, 1, 1, 1, 0, 2, 3, 1, 1, 1, 4, 0, 0, 
     NA, NA, NA, NA, NA, NA, NA
 )
 data.inla <- list(
@@ -62,7 +62,7 @@ model.spde <- inla(
 )
 ```
 
-```{r fig.width=10,fig.height=7.5,warning=FALSE}
+```{r fig.width=10,fig.height=5.25,warning=FALSE}
 data.plots <- function(model)
 {
     f.hat <- model$summary.fitted.values$mean
@@ -81,7 +81,7 @@ data2plot <- bind_rows('RW(1)'=data.rw1,
                        '1d Matern'=data.spde, .id='Model')
 plot.curves <-
     ggplot(data2plot, aes(x=x, y=y, color=Model))+
-    geom_line(aes(y=y), color='black', alpha=0.25)+
+    ## geom_line(aes(y=y), color='black', alpha=0.25)+
     geom_vline(xintercept=c(31, 28+31), linetype='dashed')+
     geom_ribbon(aes(ymin=f.lb, ymax=f.ub, fill=Model),
                 alpha=0.15, fill='#8A8D8F', size=1.25, linetype='dashed')+
@@ -90,7 +90,9 @@ plot.curves <-
                       aesthetics='color')+
     geom_point(aes(y=y), color='black', size=2)+
     theme_minimal()+
-    theme(legend.position='bottom',
+    theme(legend.position='top',
+          legend.box.background=element_rect(color='black'),
+          legend.justification=c(0, 1), 
           legend.title=element_text(size=13),
           legend.text=element_text(size=13, face='bold'), 
           axis.title.x=element_text(
@@ -101,26 +103,25 @@ plot.curves <-
               size=12, 
               margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
           axis.text.y=element_text(size=11),
-          plot.caption=element_text(size=12))+
-    labs(x='Days', y='Count', caption='With 1 week ahead prediction')
+          plot.subtitle=element_text(size=13, face='italic'))+
+    labs(x='Days', y='Count', subtitle='With 1 week ahead prediction')
 plot.bars <-
     ggplot(as.data.frame(data.inla), aes(x=y))+
     geom_bar(color='black', fill='white')+
+    ylim(c(0, max(table(data.inla$y))*1.4))+
     geom_text(stat='count',
-              aes(label=paste(..count.., 'days')), hjust=1.25, size=4)+
-    labs(x='Count', title='Frequency bars')+
+              aes(label=paste(..count.., 'days')), hjust=-0.15, size=4)+
+    labs(x='Count')+
     coord_flip()+
     theme(axis.text.x=element_blank(),
           axis.text.y=element_text(size=11),
           axis.title.x=element_blank(),
           axis.title.y=element_blank(),
           axis.ticks.x=element_blank(), 
-          axis.ticks.y=element_blank(), 
-          plot.title=element_text(size=12, face='bold')
+          axis.ticks.y=element_blank()
           )
 layout <- '
-AAA
-B##
+AAAB
 '
 plot.curves+plot.bars+plot_layout(design=layout)
 ```
