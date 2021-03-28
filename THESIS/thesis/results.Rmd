@@ -92,7 +92,9 @@ for (i in 1:3)
                            vdata(paste0('coefsv3_', label[l], '.txt'),
                                  path1),
                            vdata(paste0('coefsv3_', label[l], '.txt'),
-                                 path2)
+                                 path2),
+                           vdata(paste0('coefsv3_', label[l], '.txt'),
+                                 path3)
                        )
             v4data[[l]] <-
                 dplyr::bind_rows(
