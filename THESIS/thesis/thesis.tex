@@ -425,9 +425,9 @@
 \listoffigures*
 \cleardoublepage
 % ----------------------------------------------------------------------
-\pdfbookmark[0]{\listtablename}{lot}
-\listoftables*
-\cleardoublepage
+%% \pdfbookmark[0]{\listtablename}{lot}
+%% \listoftables*
+%% \cleardoublepage
 % ----------------------------------------------------------------------
 \makeatletter
 \renewcommand\numberline[1]{
@@ -938,8 +938,63 @@ position and zero elsewhere.
  \end{footnotesize}
 \end{center}
 
-\chapter{MODEL PARAMETERS BIAS WITH 2.5\% AND 97.5\% QUANTILES}
+\chapter{\texttt{C++} CODES FOR THE TMB IMPLEMENTATION OF THE
+         \(\text{multiGLMM}\) COMPLETE MODEL'S SPECIAL CASES}
 \label{cap:appendixD}
+
+\section{\texttt{C++} CODE FOR THE TMB IMPLEMENTATION OF A
+         \(\text{multiGLMM}\) WITH A \(2\times2\) LATENT STRUCTURE ON
+         THE RISK LEVEL}
+\label{cap:riskModel}
+
+\lstinputlisting[language=C++]{modules/riskModel.cpp}
+\vspace{-0.5cm}
+\begin{center}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+\end{center}
+
+\section{\texttt{C++} CODE FOR THE TMB IMPLEMENTATION OF A
+         \(\text{multiGLMM}\) WITH A \(2\times2\) LATENT STRUCTURE ON
+         THE TRAJECTORY TIME LEVEL}
+\label{cap:timeModel}
+
+\lstinputlisting[language=C++]{modules/timeModel.cpp}
+\vspace{-0.5cm}
+\begin{center}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+\end{center}
+
+\section{\texttt{C++} CODE FOR THE TMB IMPLEMENTATION OF A
+         \(\text{multiGLMM}\) WITH A BLOCK-DIAG \(4\times4\) LATENT
+         STRUCTURE}
+\label{cap:blockdiagModel}
+
+\lstinputlisting[language=C++]{modules/blockdiagModel.cpp}
+\vspace{-0.5cm}
+\begin{center}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+\end{center}
+
+\section{\texttt{R} CODE SHOWING HOW TO LOAD AND FIT THE
+         \(\text{multiGLMM}\) VERSIONS}
+\label{cap:rscript}
+
+\lstinputlisting{modules/runModel.R}
+\vspace{-0.5cm}
+\begin{center}
+ \begin{footnotesize}
+  SOURCE: The author (2021).
+ \end{footnotesize}
+\end{center}
+
+\chapter{MODEL PARAMETERS BIAS WITH 2.5\% AND 97.5\% QUANTILES}
+\label{cap:appendixE}
 \vspace{-0.65cm}
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}

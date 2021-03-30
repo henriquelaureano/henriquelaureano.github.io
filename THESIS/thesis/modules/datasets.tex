@@ -302,27 +302,27 @@ clusters. Thus,
 Besides the sample size per se, by increasing it we also increase the
 number of Laplace approximations to be performed since each cluster
 implies a Laplace approximation. This affects hugely the computational
-time.
-
-In summary, we have
+time. About the failure/censorship times, we work on a grid between 30
+and 80 years. The times are sampled from a Uniform distribution on that
+grid, as explained in \autoref{cap:simu}. In summary, we have
 
 Two CIF configurations, four latent effect structures, three sample
 sizes, and three cluster sizes; \(2 \times 4 \times 3 \times 3 = 72\)
 scenarios. For each scenario, we simulate 300 samples and fitted the
 corresponding model. Thus, \(72 \times 300 = 21600\) models/fits.
 
-In \autoref{fig:completeModel} we have the \texttt{C++} TMB's
+In \autoref{fig:completeModel} we have the \texttt{C++} code for the TMB
 implementation of the complete model.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
- \caption{COM\texttt{R} CODE FOR THE MODEL FITTING OF A LOGISTIC MIXED
-          MODEL WRITTEN IN TMB}
+ \caption{\texttt{C++} CODE FOR THE TMB IMPLEMENTATION OF A multiGLMM
+          WITH A COMPLETE 4x4 LATENT STRUCTURE}
  \vspace{-0.4cm}
  \label{fig:completeModel}
 \end{figure}
 
-\lstinputlisting{modules/v4.cpp}
+\lstinputlisting[language=C++]{modules/completeModel.cpp}
 \vspace{-0.5cm}
 \begin{center}
  \begin{footnotesize}
@@ -331,9 +331,11 @@ implementation of the complete model.
 \end{center}
 
 Since the other three models can be seen as special cases of the
-complete model, we show their TMB's implementation in the appendix. In
-the appendix, we also have the \texttt{R} code showing how to load and
-fit the models. It is a brief piece of code, which just shows how simple
-is to work with TMB.
+complete model, we show their TMB's implementation in
+the \autoref{cap:appendixD} (\autoref{cap:riskModel},
+\autoref{cap:timeModel}, \autoref{cap:blockdiagModel}). In the
+\autoref{cap:appendixD} (\autoref{cap:rscript}), we also have the
+\texttt{R} code showing how to load and fit the models. It is a brief
+piece of code, which just shows how simple is to work with TMB.
 
 % END ==================================================================
