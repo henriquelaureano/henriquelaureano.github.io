@@ -1,15 +1,26 @@
+The general goal of this master thesis was the proposition of a new
+regression model for the analysis of clustered competing risks
+data. Focused on the modeling of the cumulative incidence function
+(CIF), in the probability scale, instead of the hazard scale usual on
+the survival modeling literature. We model the clustered competing risks
+on a latent-effects framework, a generalized linear mixed model (GLMM),
+with a multinomial distribution for the competing risks and censorship,
+conditioned on the possible covariates and latent-effects. The
+within-cluster dependency is accommodated by a multivariate Gaussian
+distribution and is modeled via its covariance matrix parameters.
 
+The failures by the competing causes and their respective censorship are
+modeled in the probability scale, by means of the CIF. The CIF is
+accommodated in our GLMM framework in terms of the link function, as the
+product of two functions, one responsible to model the immediate risk
+and the other the trajectory time. The shape of these functions is
+described in detail in \autoref{cap:model}. This particular GLMM
+formulation is what makes our model, particular. Thus, we have what we
+call a multiGLMM: a multinomial GLMM for clustered competing risks data.
 
-% O objetivo geral desta dissertação foi propor um novo modelo de
-% regressão para análise de variáveis respostas limitadas multivariada. O
-% modelo foi especificado usando apenas suposições de primeiro e segundo
-% momentos. Para estimação dos parâmetros, adotou-se uma abordagem que
-% combina as funções de estimação quase-score e Pearson para estimação dos
-% parâmetros de regressão e dispersão, respectivamente. Assim, o modelo
-% proposto nesta dissertação segue o estilo de quase-verossimilhança
-% apresentado, onde a especificação do modelo é feita pela combinação da
-% função de variância da distribuição binomial com as tradicionais funções
-% de ligação para dados binários.
+The two-product CIF formulation was taken from \citeonline{SCHEIKE} but
+there they use a different framework, a composite likelihood
+framework. Here we do a full likelihood analysis instead.
 
 \section{FUTURE WORKS}
 \label{cap:future}
