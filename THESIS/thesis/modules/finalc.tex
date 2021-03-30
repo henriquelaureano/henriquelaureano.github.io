@@ -20,7 +20,18 @@ call a multiGLMM: a multinomial GLMM for clustered competing risks data.
 
 The two-product CIF formulation was taken from \citeonline{SCHEIKE} but
 there they use a different framework, a composite likelihood
-framework. Here we do a full likelihood analysis instead.
+framework. Here we do a full likelihood analysis instead. A composite
+approach is generally used when a full likelihood approach is impossible
+or computationally impracticable. Our goal here was to try a full
+likelihood framework taking advantage of state-of-art computational
+libraries and very efficient algorithm implementations. We have all this
+with the \texttt{R} \cite{R21} package TMB \cite{TMB}.
+
+In \autoref{cap:results} our main results are presented, and it is clear
+that the multiGLMM works under certain circumstances. The next step was
+to compare our results with the ones obtained in \citeonline{SCHEIKE}
+with a composite approach. In the GitHub repository
+\url{https://github.com/kkholst/mcif/} the authors provide the code.
 
 \section{FUTURE WORKS}
 \label{cap:future}
