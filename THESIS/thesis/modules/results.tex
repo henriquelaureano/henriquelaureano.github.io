@@ -61,7 +61,10 @@ described by a Wald-based interval i.e., \(\pm\) 1.96 the bias standard
 deviation. This is a good uncertainty representation choice since it is
 symmetric and robust to outliers. In the \autoref{cap:appendixD}, we
 have the same parameters bias but with the corresponding 2.5 and 97.5\%
-quantiles.
+quantiles. We chose to use these uncertainty representations uniquely
+based on the point estimates instead of the standard error
+computations. In several scenarios, the model fails to compute all the
+standard errors, caused by Hessian instability problems.
 
 The seventy-two scenarios are accommodated. We have up to four blocks of
 bars, each block representing a model. In each block we have eighteen
@@ -106,21 +109,21 @@ Something specific can be said about each parameter but let us keep the
 focus on the general remarks. Starting from the fixed-effect parameters
 in \autoref{fig:biassdbeta1}, \autoref{fig:biassdbeta2},
 \autoref{fig:biassdgama1}, \autoref{fig:biassdgama2},
-\autoref{fig:biassdw1}, and \autoref{fig:biassdw2}, we have some very
-nice results that already show a strong inclination towards the complete
+\autoref{fig:biassdw1}, and \autoref{fig:biassdw2}, we have very nice
+results that already show a strong inclination towards the complete
 model's choice.
 
 With a latent structure only in the risk level or in the trajectory time
 level, the low CIF scenarios are the ones with a much smaller
 bias-variance. In general, the mean-bias is small but the variances are
-high. When we have a latent structure on both levels but assuming the
-cross-correlations as zero (block-diag model), the results get a little
-bit better. Nevertheless, when we assume a non-zero cross-correlation
-structure (complete model), basically everything changes. The mean
-biases get even closer to zero, the standard deviations decrease 50\% or
-more, and mainly, now the high CIF scenarios are the ones with a much
-smaller bias-variance. All this is accomplished through the
-consideration of the cross-correlations.
+high. When we have a latent structure on both levels but we still assume
+the cross-correlations as zero (block-diag model), the results get a
+little bit better. Nevertheless, when we assume a non-zero
+cross-correlation structure (complete model), basically everything
+changes for the better. The mean biases get even closer to zero, the
+standard deviations decrease 50\% or more, and mainly, now the high CIF
+scenarios are the ones with a much smaller bias-variance. All this is
+accomplished through the consideration of the cross-correlations.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
@@ -277,15 +280,15 @@ consideration of the cross-correlations.
  \label{fig:biassdrhoz4}
 \end{figure}
 
-In the \textit{simpler} models with a latent structure just in one
-level, is hard to see some significant difference between the cluster
-and sample sizes. In the complete model, in the other hand, the
-difference is clear: as we increase the cluster and the sample siz, the
-bias-variance decreases. The mean-bias is basically always the same. In
-the risk and block-diag models is hard to point-out a scenario as the
-best or worst. For the time model, in two of the parameters, with the
-scenario of cluster size 10; low CiF; and 5 thousand data points, we get
-a much bigger standard deviation.
+In the \textit{simpler} models, with a latent structure just in one
+level, is hard to see some significant difference between the clusters
+and sample sizes. With the complete model, in the other hand, the
+difference is clear: as we increase the clusters and the sample sizes,
+the bias-variance decreases. The mean-bias is basically always the
+same. In the risk and block-diag models is hard to point-out a scenario
+as the best or worst. For the time model, with the scenario of cluster
+size 10; low CiF; and 5 thousand data points, we get a much bigger
+standard deviation in two of the parameters.
 
 With the log-variances in \autoref{fig:biassdlogs2_1},
 \autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3}, and
