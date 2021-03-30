@@ -290,33 +290,33 @@ as the best or worst. For the time model, with the scenario of cluster
 size 10; low CiF; and 5 thousand data points, we get a much bigger
 standard deviation in two of the parameters.
 
-With the log-variances in \autoref{fig:biassdlogs2_1},
+With the log-variances presented in \autoref{fig:biassdlogs2_1},
 \autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3}, and
 \autoref{fig:biassdlogs2_4}, we have instead a similar behavior through
-the models. For all models, the high CIF scenarios are the ones with a
-smaller mean and bias-variance. From the risk/time model to the
+the models. For all the models, the high CIF scenarios are the ones with
+a smaller mean and bias-variances. From the risk/time model to the
 block-diag model, we do not see a significant improvement in terms of
 bias reduction. Such improvement, however, is clear when we look at the
 complete model. Again, the magick of considering the cross-correlations.
 
 The same said about the log-variances, can be applied to the risk
-correlation in \autoref{fig:biassdrhoz12}, with one addendum: the bias
+correlations in \autoref{fig:biassdrhoz12}, with one addendum: the bias
 reduction is even bigger. With the time correlation in
 \autoref{fig:biassdrhoz34}, we get the same behavior observed with the
-fixed-effect parameters i.e., in the simpler models, the smaller biases
-are observed with the low CIF scenarios. However, with the complete
+fixed-effect parameters i.e., with the simpler models, the smaller
+biases are observed in the low CIF scenarios. However, with the complete
 model, we get the opposite. With the cross-correlations in
 \autoref{fig:biassdrhoz4}, the mean and bias-variances are much smaller
 in the high CIF scenarios.
 
-The biggest bias-variances obtained are with the log-variances. A final
+The biggest bias-variances are obtained in the log-variances. A final
 remark to be made is about convergences. With the simpler models, not
-all of them work, having in some scenarios (generally the ones with
-sixty thousand points) a 50\(\sim\)60\% convergence rate. However, from
+all of them work, having in some scenarios (generally the ones with 60
+thousand data points) a 50\(\sim\)60\% convergence rate. However, from
 this 50\(\sim\)60\%, most reach the ideal gradient-based
-convergence. The complete model is the complete opposite. Basically, all
-fits reach a convergence (\(\sim\)100\% performance) but never the
-desired gradient-based convergence.
+convergence. With the complete model is the complete
+opposite. Basically, all fits reach a convergence (\(\sim\)100\%
+performance) but never is the desired gradient-based convergence.
 
 After looking at the parameter biases, let us take a look at the implied
 mean-CIF curves. To nicely accommodate all seventy-two scenarios we
@@ -346,10 +346,10 @@ scenario curves.
  \label{fig:cifslow}
 \end{figure}
 
-Since in all models we have a latent structure for the within-cluster
-dependency, the inherent idea is that this will also affect the
-fixed-effect parameter estimates. By taking its average in each of the
-seventy-two scenarios, we are able to construct the mean CIF curves.
+Since for all the models we have a latent structure for the
+within-cluster dependency, the inherent idea is that this also affect
+the fixed-effect parameter estimates. By taking its average in each of
+the seventy-two scenarios, we are able to construct the mean CIF curves.
 
 In \autoref{fig:cifshigh} we have all the thirty-six curves obtained in
 the high CIF scenarios. It is clear that with the complete model we get
@@ -362,9 +362,9 @@ observe the opposite compensation but on a smaller scale.
 
 With the time model, we get much better curves than with the risk
 model. The block-diag model results are a middle term between them. For
-the time model, the scenario with cluster size 10 and 60 thousand points
-is a highlight. For the block-diag model, the highlight is the scenario
-with cluster size 5 and 30 thousand points.
+the time model, the scenario with cluster size 10 and 60 thousand data
+points is a highlight. For the block-diag model, the highlight is the
+scenario with cluster size 5 and 30 thousand data points.
 
 In the low CIF scenarios in \autoref{fig:cifslow}, the estimation is
 clearly more difficult. The overall fits are bad, being impossible to
@@ -373,7 +373,7 @@ causes, the estimation quality is not so bad. The problem is when we
 look to the other. An interesting scenario is the one with cluster size
 2 and 60 thousand data points. In this scenario we see the worst fits
 for failure cause 1, with a negative highlight in the block-diag
-configuration. However, in this same model, for failure cause 2, this is
+configuration. However, with this same model, for failure cause 2, it is
 the only scenario, by far, were we learn the true curve. An interesting
 compensation phenomena. The best joint fit is still with the complete
 model.
@@ -410,7 +410,7 @@ complete model was the one with the smallest biases, better CIF shape
 learning, and precisest covariance parameter estimates.
 
 In \autoref{fig:cor2plot} we have a heat-map of the correlations between
-parameter estimates of the complete model in the scenario with clusters
+parameter estimates for the complete model in the scenario with clusters
 of size 10, high CIF, and 60 thousand data points.
 
 \begin{figure}[!htpb]
@@ -447,9 +447,12 @@ the correlation between \(\beta_{1}\) and \(\beta_{2}\), and the one of
 the \(\bm{\beta}\)s with the \(\bm{w}\)s. Another interesting
 observation is the negative correlation between the \(\bm{\beta}\)s and
 the risk log-variances, and also the positive correlation between the
-\(\bm{\beta}\)s and the trajectory time log-variances.
+\(\bm{\beta}\)s and the trajectory time log-variances. The risk
+log-variances are positively correlated. So do the time trajectory
+ones. The correlations between the log-variances of different levels are
+negative.
 
-\begin{figure}[!htpb]
+\begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{COMPLETE MODEL'S PARAMETERS CORRELATION HEAT-MAP IN THE
           SCENARIO OF CLUSTER SIZE 10, HIGH CIF, AND SIXTY-THOUSAND DATA
