@@ -755,16 +755,18 @@ logs2pilha <- function(data1, data2, data3, par, label)
                       scenario == 'cs10-high-60k')
     return(out)
 }
+
 histo <- function(data, true, title)
 {
-    ggplot(data, aes(x=par, fill=scenario))+
-        geom_density(alpha=0.6)+
+    ggplot(data, aes(x=par, color=scenario))+
+        ## geom_density(alpha=0.6)+
+        geom_density(size=1)+
         facet_wrap(~v, scales='free')+
         ## scale_fill_brewer(palette='Spectral')+
         ## scale_fill_viridis_d()+
-        scale_fill_fish_d(option='Trimma_lantana')+
+        scale_color_fish_d(option='Trimma_lantana')+
         geom_vline(xintercept=true, linetype='dashed', size=1)+
-        labs(x=NULL, y=NULL, fill=NULL,
+        labs(x=NULL, y=NULL, color=NULL,
              title=title, subtitle='True value in dashed black')+
         theme_minimal()+
         theme(
@@ -885,15 +887,15 @@ p6 <-
           expression(bold('Parameter:'~z(rho[34]))))+
     theme(legend.position='none')
 p7 <-
-    ggplot(rhoZ_df, aes(x=value, fill=scenario))+
-    geom_density(alpha=0.6)+
+    ggplot(rhoZ_df, aes(x=value, color=scenario))+
+    geom_density(size=1)+
     facet_grid(~par, scales='free', labeller=label_parsed)+
     ## scale_fill_brewer(palette='Spectral')+
     ## scale_fill_viridis_d()+
-    scale_fill_fish_d(option='Trimma_lantana')+
+    scale_color_fish_d(option='Trimma_lantana')+
     geom_vline(rhoZtrue, mapping=aes(xintercept=value),
                linetype='dashed', size=1)+
-    labs(x=NULL, y=NULL, fill=NULL,
+    labs(x=NULL, y=NULL, color=NULL,
          title="Complete model's cross-correlations",
          subtitle='True value in dashed black')+
     theme_minimal()+
