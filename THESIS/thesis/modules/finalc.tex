@@ -29,9 +29,33 @@ with the \texttt{R} \cite{R21} package TMB \cite{TMB}.
 
 In \autoref{cap:results} our main results are presented, and it is clear
 that the multiGLMM works under certain circumstances. The next step was
-to compare our results with the ones obtained in \citeonline{SCHEIKE}
+to compare our results with the ones obtained in \citeonline{SCHEIKE},
 with a composite approach. In the GitHub repository
 \url{https://github.com/kkholst/mcif/} the authors provide their code.
+In \texttt{mcif/inst/examples/datasim.R} they show how to simulate from
+the model, and in \texttt{mcif/src/loglik.cpp} they have their marginal
+log-likelihood function.
+
+We tried to optimize the marginal log-likelihood over its parameters
+using basically all base::optim() and base::nlminb() available methods,
+in the paper was used the BFGS, one of them. We made several scenarios,
+using their own simulation scripts and ours, and to our surprise, the
+model basically does not work. The optimization in its majority fails,
+via any gradient-based algorithm (BFGS, PORT, CG), generally by Hessian
+matrix instability problems, a problem which our model also suffers from
+when we try to compute the parameters standard errors. When the model
+works, it is because we are using the parameter true values as initial
+guesses i.e. if the algorithm needs to walk on the log-likelihood
+surface, it fails. We also tried with a SANN and a Nelder-Mead
+algorithm. SANN is a variant of a simulated annealing method, based on a
+Metropolis algorithm. Since it is based on simulation, it takes a lot of
+time and as the gradient-based methods, do not work most of the
+time. The best results were with the Nelder-Mead, a free-gradient
+method. Still, it only works when we use the parameter true values as
+initial guesses. This situation, completely the opposite of what is
+shown in the paper, made any reasonable comparison between the models
+impossible. We will still enter in contact with the authors to try to
+see what is happening.
 
 \section{FUTURE WORKS}
 \label{cap:future}
