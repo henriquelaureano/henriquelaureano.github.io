@@ -90,8 +90,17 @@ bigger than with the risk and time models.
 
 Finally, the complete model. In the biggest scenario, with 60 thousand
 data points and clusters of size 2 i.e., 30 thousand four-dimension (ten
-parameters in the covariance matrix) integral approximations, with TMB
-this takes 30 minutes, parallelizing between the threads.
+parameters in the covariance matrix) integral approximations, the model
+fitting takes 30 minutes with TMB, parallelizing it between the
+threads. To really understand what we were doing, before doing the TMB
+implementation, we did a complete \texttt{R} implementation. We wrote
+the marginal log-likelihood based on our own Laplace approximation and
+Newton-Raphson implementation (the gradients, \autoref{cap:appendixA},
+and Hessian, \autoref{cap:appendixB}, were computed by hand and
+implemented). Running this complete \texttt{R} implementation in a
+scenario with 20 thousand data points and clusters of size 2, took
+around 30 hours, parallelizing it between all threads of the first Linux
+system described above.
 
 \section{FUTURE WORKS}
 \label{cap:future}
