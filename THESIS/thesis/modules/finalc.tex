@@ -73,9 +73,10 @@ fashion, in one of the two following Linux systems
   30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz processors
   and 206GB RAM.
 \end{description}
-The risk and time models are not so time-consuming, generally never
-taking more than 5 minutes to run. The inherent idea is that we are
-always performing two-dimension integral approximations and we have
+
+Each risk and time model run is not so time-consuming, generally never
+taking more than 5 minutes. The inherent idea is that we are always
+performing two-dimension integral approximations and we have
 \textit{just} three covariance parameters. With the block-diag model, we
 are theoretically in four dimensions. However, since the covariance
 matrix is, block-diagonal, we experienced several numerical instability
@@ -102,6 +103,15 @@ system 1. In summary, by using TMB we were able to increase the model
 size 3 times and to decrease the computational time 60 times. An
 incredible performance gain.
 
+An important point to be made here is about memory consumption. As the
+sample size increases, the dimension of the matrices also
+increases. This, summed to a high number of clusters, Laplace
+approximations to be made, is a computational nightmare. in several
+cases, even the 16GB RAM of system 1 was not enough. By default, TMB
+does its AD tape in parallel (if the model is in parallel). Turning this
+option off (line 11 of \autoref{cap:rscript} (\autoref{cap:appendixD}))
+saved a lot of memory, making several model fittings practible.
+
 Still, with the complete model, we performed a Bayesian analysis via
 \texttt{tmbstan} \cite{tmbstan}. \texttt{tmbstan} enables MCMC sampling
 \cite{MCMC, Diaconis} from a TMB model object using Stan \cite{Stan,
@@ -113,7 +123,24 @@ were basically the same as the ones obtained with TMB but this high
 computational time just reinforces the MCMC framework limitation.
 
 It is very hard to model the CIF of clustered competing risks data. The
-formulation in \autoref{eq:cif}
+formulation in \autoref{eq:cif} implies the desired curve behavior
+(\autoref{fig:datasimucif}), in counterpart, its derivative w.r.t. time,
+generates very small probabilities for the failure competing causes,
+concentrating almost everything to the censorship
+(\autoref{fig:datasimu}). For each of these causes with poor data
+representativity, we have three curve shape parameters to estimate. The
+direct consequence is that we need a lot of data to have enough
+information about the competing causes. In epidemiological applications,
+each of our clusters would be a family. So, as we increase the number of
+data points we increase the number of clusters, which increases the
+number of integrals to be approximated (Laplace approximations to be
+performed) and which, finally, increases the computational cost.
+
+As if the low data representativity was not a big enough problem, it is
+also complicated to increase the model in terms of competing
+causes. With two competing causes, we have a 4x4 covariance matrix for
+the latent effects, implying ten covariance parameters, which is already
+a lot.
 
 We proposed a complete formulation, without covariates, for our
 multiGLMM. Correlated latent effects on both levels, immediate risk and
