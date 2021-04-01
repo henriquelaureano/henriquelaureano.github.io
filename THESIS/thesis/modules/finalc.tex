@@ -100,7 +100,12 @@ and Hessian, \autoref{cap:appendixB}, were computed by hand and
 implemented). Running this complete \texttt{R} implementation in a
 scenario with 20 thousand data points and clusters of size 2, took
 around 30 hours, parallelizing it between all threads of the first Linux
-system described above.
+system described above. In summary, we increase the model size 3 times
+and the computational time decreased 60 times. The performance gain by
+using TMB was incredible.
+
+Still, with the complete model, we performed a Bayesian analysis via
+\texttt{tmbstan}.
 
 \section{FUTURE WORKS}
 \label{cap:future}
