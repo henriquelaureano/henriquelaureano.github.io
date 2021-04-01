@@ -112,7 +112,16 @@ around 1 whole week of parallelized processing in system 1. The results
 were basically the same as the ones obtained with TMB but this high
 computational time just reinforces the MCMC framework limitation.
 
-We proposed a complete formulation, without covariates, for our model.
+It is very hard to model the CIF of clustered competing risks data. The
+formulation in \autoref{eq:cif}
+
+We proposed a complete formulation, without covariates, for our
+multiGLMM. Correlated latent effects on both levels, immediate risk and
+trajectory time, The main underlying idea of the performed simulation
+study was to see in which scenarios we would be able to learn all the
+mean and covariance parameters. Thinking in the possible parameter
+non-identifiability, simpler scenarios were proposed. Latent components
+in only one level, or in both but without cross-correlations.
 
 \section{FUTURE WORKS}
 \label{cap:future}
