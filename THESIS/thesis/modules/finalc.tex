@@ -64,50 +64,55 @@ any reasonable comparison between the models. We will enter in contact
 with the authors to see what is happening.
 
 All models from the simulation study were run, in a parallelized
-fashion, or in a Linux system with
-\begin{itemize}
- \item 12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz processors,
- \item 16GB RAM,
-\end{itemize} 
-or in a, also, Linux system with
-\begin{itemize}
- \item 30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz processors,
- \item 206GB RAM.
-\end{itemize}
-
+fashion, in one of the two following Linux systems
+\begin{description}
+ \item[System 1]
+  12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz processors
+  with 16GB RAM;
+ \item[System 2]
+  30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz processors
+  and 206GB RAM.
+\end{description}
 The risk and time models are not so time-consuming, generally never
-taking more than 5 minutes (at max) to run. The inherent idea is that we
-are always performing two-dimension integral approximations and we have
+taking more than 5 minutes to run. The inherent idea is that we are
+always performing two-dimension integral approximations and we have
 \textit{just} three covariance parameters. With the block-diag model, we
 are theoretically in four dimensions. However, since the covariance
 matrix is, block-diagonal, we experienced several numerical instability
-problems. The solution, as can be seen in the code
-in \autoref{cap:blockdiagModel} (\autoref{cap:appendixD}), was to split
-it into two two-dimension matrices, since the \(4\times4\) covariance
-matrix is block-diagonal. This simple solution solved all numerical
-instability problems. The computational time was only a little bit
-bigger than with the risk and time models. 
+problems. The solution, as can be seen in \autoref{cap:blockdiagModel}
+(\autoref{cap:appendixD}) code, was to split it into two two-dimension
+matrices, since the \(4\times4\) covariance matrix is block-diagonal.
+This simple solution solved all numerical instability problems. The
+computational time was only a little bit bigger than with the risk and
+time models.
 
 Finally, the complete model. In the biggest scenario, with 60 thousand
 data points and clusters of size 2 i.e., 30 thousand four-dimension (ten
 parameters in the covariance matrix) integral approximations, the model
 fitting takes 30 minutes with TMB, parallelizing it between the
-threads. To really understand what we were doing, before doing the TMB
-implementation, we did a complete \texttt{R} implementation. We wrote
-the marginal log-likelihood based on our own Laplace approximation and
-Newton-Raphson implementation (the gradients, \autoref{cap:appendixA},
-and Hessian, \autoref{cap:appendixB}, were computed by hand and
-implemented). Running this complete \texttt{R} implementation in a
-scenario with 20 thousand data points and clusters of size 2, took
-around 30 hours, parallelizing it between all threads of the first Linux
-system described above. In summary, we increase the model size 3 times
-and the computational time decreased 60 times. The performance gain by
-using TMB was incredible.
+threads. Before doing the TMB implementation, to really understand what
+we were doing, we did a complete \texttt{R} implementation. We wrote the
+marginal log-likelihood in \texttt{R}, based on our own Laplace
+approximation and Newton-Raphson implementation (the gradients,
+\autoref{cap:appendixA}, and Hessian, \autoref{cap:appendixB}, were
+computed by hand and implemented). Running this complete \texttt{R}
+implementation in a scenario with 20 thousand data points and clusters
+of size 2, took around 30 hours, parallelizing it between all threads of
+system 1. In summary, by using TMB we were able to increase the model
+size 3 times and to decrease the computational time 60 times. An
+incredible performance gain.
 
 Still, with the complete model, we performed a Bayesian analysis via
-\texttt{tmbstan} \cite{tmbstan}.
+\texttt{tmbstan} \cite{tmbstan}. \texttt{tmbstan} enables MCMC sampling
+\cite{MCMC, Diaconis} from a TMB model object using Stan \cite{Stan,
+RStan}. Sampling can be performed with or without Laplace approximation
+for the random effects. We performed just one model fitting in a modest
+scenario with 5 thousand data points and clusters of size 2, it took
+around 1 whole week of parallelized processing in system 1. The results
+were basically the same as the ones obtained with TMB but this high
+computational time just reinforces the MCMC framework limitation.
 
-\cite{Stan, RStan}
+We proposed a complete formulation, without covariates, for our model.
 
 \section{FUTURE WORKS}
 \label{cap:future}
