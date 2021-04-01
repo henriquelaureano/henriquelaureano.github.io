@@ -133,6 +133,13 @@ Computing Science Technical Report 153, AT\&T Bell Laboratories. Murray Hill,
 {MOLENBERGHS, G.; VERBEKE, G. \emph{Models for Discrete Longitudinal Data}. New
   York: Springer, 2005.}
 
+\bibitem[Monnahan \& Kristensen 2018]{tmbstan}
+\abntrefinfo{Monnahan \& Kristensen}{MONNAHAN; KRISTENSEN}{2018}
+{MONNAHAN, C.; KRISTENSEN, K. No-{U}-turn sampling for fast {B}ayesian
+  inference in {ADMB} and {TMB}: {I}ntroducing the \texttt{adnuts} and
+  \texttt{tmbstan} {R} packages.
+\emph{PloS ONE}, v.~13, n.~5, 2018.}
+
 \bibitem[Nelder \& Mead 1965]{neldermead}
 \abntrefinfo{Nelder \& Mead}{NELDER; MEAD}{1965}
 {NELDER, J.~A.; MEAD, R. A simplex algorithm for function minimization.
@@ -188,6 +195,18 @@ R Foundation for Statistical Computing. Vienna, Austria, 2021.
 {SHUN, Z.; MCCULLAGH, P. Laplace approximation of high dimentional integrals.
 \emph{Journal of the Royal Statistical Society, Series B (Methodological)},
   v.~57, n.~4, p. 749--760, 1995.}
+
+\bibitem[{Stan Development Team} 2019]{Stan}
+\abntrefinfo{{Stan Development Team}}{{Stan Development Team}}{2019}
+{{Stan Development Team}. \emph{Stan Modeling Language Users Guide and
+  Reference Manual}.
+Version 2.26, 2019. \url{https://mc-stan.org}.}
+
+\bibitem[{Stan Development Team} 2020]{RStan}
+\abntrefinfo{{Stan Development Team}}{{Stan Development Team}}{2020}
+{{Stan Development Team}. \emph{{RStan}: the {R} interface to {Stan}}. 2020.
+  \url{https://mc-stan.org/}.
+R package version 2.21.2.}
 
 \bibitem[Tierney \& Kadane 1986]{tierney}
 \abntrefinfo{Tierney \& Kadane}{TIERNEY; KADANE}{1986}
