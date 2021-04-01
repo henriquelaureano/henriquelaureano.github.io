@@ -63,7 +63,35 @@ completely the opposite of what is shown in the paper, made impossible
 any reasonable comparison between the models. We will enter in contact
 with the authors to see what is happening.
 
-All the 21600
+All models from the simulation study were run, in a parallelized
+fashion, or in a Linux system with
+\begin{itemize}
+ \item 12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz processors,
+ \item 16GB RAM,
+\end{itemize} 
+or in a, also, Linux system with
+\begin{itemize}
+ \item 30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz processors,
+ \item 206GB RAM.
+\end{itemize}
+
+The risk and time models are not so time-consuming, generally never
+taking more than 5 minutes (at max) to run. The inherent idea is that we
+are always performing two-dimension integral approximations and we have
+\textit{just} three covariance parameters. With the block-diag model, we
+are theoretically in four dimensions. However, since the covariance
+matrix is, block-diagonal, we experienced several numerical instability
+problems. The solution, as can be seen in the code
+in \autoref{cap:blockdiagModel} (\autoref{cap:appendixD}), was to split
+it into two two-dimension matrices, since the \(4\times4\) covariance
+matrix is block-diagonal. This simple solution solved all numerical
+instability problems. The computational time was only a little bit
+bigger than with the risk and time models. 
+
+Finally, the complete model. In the biggest scenario, with 60 thousand
+data points and clusters of size 2 i.e., 30 thousand four-dimension (ten
+parameters in the covariance matrix) integral approximations, with TMB
+this takes 30 minutes, parallelizing between the threads.
 
 \section{FUTURE WORKS}
 \label{cap:future}
