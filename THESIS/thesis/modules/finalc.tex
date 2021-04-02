@@ -14,11 +14,11 @@ The failures by the competing causes and their respective censorships
 are modeled in the probability scale, by means of the CIF
 \cite{kalb&prentice, andersen12}. The CIF is accommodated in our GLMM
 framework in terms of the link function, as the product of two
-functions, one responsible to model the immediate risk and the other the
-trajectory time. The shape of these functions is described in detail in
-\autoref{cap:model}. This particular GLMM formulation is what makes our
-model, particular. Thus, we have what we call a multiGLMM: a multinomial
-GLMM for clustered competing risks data.
+functions, one responsible to model the instantaneous risk and the other
+the trajectory time. The shape of these functions is described in detail
+in \autoref{cap:model}. This particular GLMM formulation is what makes
+our model, particular. Thus, we have what we call a multiGLMM: a
+multinomial GLMM for clustered competing risks data.
 
 The two-function product CIF formulation was taken from
 \citeonline{SCHEIKE} but there they use a different framework, a
@@ -144,12 +144,13 @@ thinking in epidemiological applications where each cluster consists of
 a family, the number of clusters could be big.
 
 We proposed for our multiGLMM an ideally complete latent-effects
-formulation i.e., correlated latent effects on both levels, immediate
-risk and trajectory time, The main underlying idea of the simulation
-study in \autoref{cap:results} was to see in which scenarios we would be
-able to learn all the involved mean and covariance parameters. As part
-of that, simpler formulations were proposed i.e., latent components in
-only one level, or in both but without cross-correlations.
+formulation i.e., correlated latent effects on both levels,
+instantaneous risk and trajectory time, The main underlying idea of the
+simulation study in \autoref{cap:results} was to see in which scenarios
+we would be able to learn all the involved mean and covariance
+parameters. As part of that, simpler formulations were proposed i.e.,
+latent components in only one level, or in both but without
+cross-correlations.
 
 As result, we got that latent effects only in the risk level do not
 work.  The optimization appears to get lost as if something is missing.
