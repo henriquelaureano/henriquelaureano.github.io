@@ -170,15 +170,33 @@ to that.
 \section{FUTURE WORKS}
 \label{cap:future}
 
-A show in chapter 5 results, our model does not work smoothly, always
-presenting a not irrelevant variance. In terms of a traditional GLMM
-specification, we do not have a lot more to do.  We are already using a
-smart quasi-Newton algorithm, the most efficient derivatives computation
-technique (AD), and an also efficient Laplace approximation routine, via
-TMB. This last point is something that we could change to an adaptative
-Gaussian quadrature, but we do not see any good reason to do that.
+A show in \autoref{cap:results} results, our model does not work
+smoothly, always presenting a not irrelevant variance. In terms of a
+traditional GLMM specification \cite{GLMM}, we do not have a lot more to
+do. We are already using a smart quasi-Newton algorithm
+\cite{PORTpaper}, the most efficient derivatives computation technique
+(AD) \cite{peyre}, and an also efficient Laplace approximation routine
+\cite{corestats, patrao}, via TMB \cite{TMB}. This last point is
+something that we could change to an adaptative Gaussian quadrature
+\cite{quadrature}, but we do not see any good reason to do that.
 
-\cite{mcglm}
-\cite{rmcglm}
+There are two possible paths here. One of them is, instead of a
+conditional modeling framework (GLMM/latent-effects model), we employ a
+marginal modeling framework. In this framework, instead of caring
+about the specification of a probability distribution to the competing
+causes conditioned on the latent effects, we just care about the
+specification of a mean and a variance structure. This approach does not
+have a likelihood function per se, but the estimation procedure tends to
+be easier than the GLMM one. A marginal modeling framework that can be
+used is the multivariate covariance generalized linear model (McGLM)
+\cite{mcglm, rmcglm}. How to exactly model the CIF of clustered
+competing risks data in this framework, is something to still be figured
+out.
+
+The other path is the use of copulas. \textit{There are two possible
+paths here. Instead of a conditional modeling framework
+(GLMM/latent-effects model), we can try a marginal modeling
+framework. With this framework, instead of caring about the
+specification of a probability.}
 
 % END ==================================================================
