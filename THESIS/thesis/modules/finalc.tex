@@ -170,6 +170,14 @@ to that.
 \section{FUTURE WORKS}
 \label{cap:future}
 
+A show in chapter 5 results, our model does not work smoothly, always
+presenting a not irrelevant variance. In terms of a traditional GLMM
+specification, we do not have a lot more to do.  We are already using a
+smart quasi-Newton algorithm, the most efficient derivatives computation
+technique (AD), and an also efficient Laplace approximation routine, via
+TMB. This last point is something that we could change to an adaptative
+Gaussian quadrature, but we do not see any good reason to do that.
+
 \cite{mcglm}
 \cite{rmcglm}
 
