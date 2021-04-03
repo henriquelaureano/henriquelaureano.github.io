@@ -1,23 +1,23 @@
 The general goal of this master thesis was the proposition of a new
 regression model for the analysis of clustered competing risks
-data. Focused on the modeling of the cumulative incidence function
-(CIF), in the probability scale, instead of the hazard scale usual on
-the survival modeling literature. We model the clustered competing risks
-on a latent-effects framework, a generalized linear mixed model (GLMM)
-\cite{GLMM}, with a multinomial distribution for the competing risks and
-censorship, conditioned on the possible covariates and
-latent-effects. The within-cluster dependency is accommodated by a
-multivariate Gaussian distribution and is modeled via its covariance
+data. Focused on the probability scale, by means of the cumulative
+incidence function (CIF), instead of the hazard scale usual on the
+survival modeling literature \cite{kalb&prentice}. We model the
+clustered competing risks on a latent-effects framework, a generalized
+linear mixed model (GLMM) \cite{GLMM}, with a multinomial distribution
+for the competing risks and censorship, conditioned on the
+latent-effects. The within-cluster latent dependency is accommodated by
+a multivariate Gaussian distribution and is modeled via its covariance
 matrix parameters.
 
 The failures by the competing causes and their respective censorships
 are modeled in the probability scale, by means of the CIF
 \cite{kalb&prentice, andersen12}. The CIF is accommodated in our GLMM
-framework in terms of the link function, as the product of two
-functions, one responsible to model the instantaneous risk and the other
-the trajectory time. The shape of these functions is described in detail
-in \autoref{cap:model}. This particular GLMM formulation is what makes
-our model, particular. Thus, we have what we call a multiGLMM: a
+framework in terms of the link function \cite{GLM89}, as the product of
+two functions, one responsible to model the instantaneous risk and the
+other the trajectory time. The shape of these functions is described in
+detail in \autoref{cap:model}. This particular GLMM formulation is what
+makes our model, particular. Thus, we have what we call a multiGLMM: a
 multinomial GLMM for clustered competing risks data.
 
 The two-function product CIF formulation was taken from
@@ -26,7 +26,7 @@ composite likelihood framework \cite{lindsay88, cox&reid04, varin11}.
 Here we do a full likelihood analysis instead. A composite approach is
 generally used when a full likelihood approach is impossible or
 computationally impracticable. Our goal here was to try a full
-likelihood framework taking advantage of state-of-art computational
+likelihood framework taking advantage of state-of-the-art computational
 libraries and very efficient algorithm implementations. We have all this
 with the \texttt{R} \cite{R21} package TMB \cite{TMB}.
 
@@ -193,10 +193,12 @@ used is the multivariate covariance generalized linear model (McGLM)
 competing risks data in this framework, is something to still be figured
 out.
 
-The other path is the use of copulas. \textit{There are two possible
-paths here. Instead of a conditional modeling framework
-(GLMM/latent-effects model), we can try a marginal modeling
-framework. With this framework, instead of caring about the
-specification of a probability.}
+The other path is by the use of a different way of modeling the
+dependence. Instead of a latent-effects approach, we could use copulas
+\cite{factorcopulas, cheng&fine12, semiparametricSCHEIKE, copulas}.
+How to do that is something to still be figured out by us, in terms of
+which kind (conditional or marginal) and version (Archimedean-, Gauss-,
+Maltesian-, \(t\)-, hyperbolic-, zebra-, and elliptical-) of copula to
+use, besides the estimability.
 
 % END ==================================================================
