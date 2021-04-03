@@ -351,10 +351,9 @@
  As Moro once said, I am thankful for everything and everyone.
 
  Today is the shadow of tomorrow. Today is the present future of
- yesterday. Yesterday is the shadow of today. The past is certified as a
- finished product. Anything which has ended is finished. The wisdom of
- the past is the light of the past. The light of the future casts the
- shadows of tomorrow.
+ yesterday. Yesterday is the shadow of today. The wisdom of the past is
+ the light of the past. The light of the future casts the shadows of
+ tomorrow.
 \end{agradecimentos}
 
 \begin{epigrafe}
@@ -379,18 +378,55 @@
   \end{center}
   \vspace{0.3cm}
 
-  In the study of failure time data, a special case is the analysis of
-  clustered competing risks data. In this kind of data, besides the
-  presence of multiple response variables competing by the occurrence of
-  an event, a failure, we have a cluster structure implying a
-  within-cluster dependence between its elements.
+  Clustered competing risks data is a special case of failure time
+  data. Besides the cluster structure which implies a within-cluster
+  dependence between its elements, this kind of data is characterized by
+  1) multiple causes/variables competing to be the one responsible for
+  the occurrence of an event, a failure; and 2) censorship, when the
+  event of interest happens for none of the competing causes, in the
+  study period.
+
+  To handle this type of data, we propose a latent-effects framework, a
+  generalized linear mixed model (GLMM), instead of a usual survival
+  model. In survival analysis, the modeling is done by means of the
+  hazard rate, and the within-cluster dependence accommodation generates
+  a complicated likelihood function sometimes intractable. What we do
+  here is to model the clustered competing causes in the probability
+  scale, in terms of the cumulative incidence function (CIF) of each
+  competing cause. In our framework, we suppose a multinomial
+  probability distribution for the competing causes and censorship,
+  conditioned on the latent effects (within-cluster dependence). The
+  latent effects are accommodated by a multivariate Gaussian
+  distribution and are modeled by the parameters of its covariance
+  matrix. These probability distributions are connected by the CIF,
+  modeled here following the specification in \citeonline{SCHEIKE},
+  based on the CIF decomposition as the product of an instantaneous risk
+  level function with a trajectory time level function. The latent
+  effects are inserted in those level functions.  To make the estimation
+  of the parameters of this model the most efficient as possible, we use
+  the template model builder (TMB) \cite{TMB}. With this R \cite{R21}
+  package, we have our log-likelihood function written in C++, we have
+  access to state-of-the-art computational libraries, an efficient
+  Laplace approximation implementation for the latent-effects, and an
+  automatic differentiation (AD) routine, the state-of-the-art in
+  derivatives computation. To check the estimability of our model a
+  large simulation study is performed, based on different latent
+  structure formulations, with the aim to verify which one is most
+  adequate. The model presents to be of difficult estimation, with our
+  results converging to a latent restructure where the risk and
+  trajectory time levels are correlated. In scenarios with high CIF the
+  model exhibits good results, but with an excessive variance, showing
+  that improvements are necessary.
+  
+  In scenarios with high CIF the model exhibits good results, but with
+  an excessive variance, showing that improvements are necessary.
   
   \textbf{Keywords}: Clustered competing risks.
                      Within-cluster dependence.
-                     Multinomial generalized linear mixed model.
+                     Multinomial generalized linear mixed model (GLMM).
                      TMB: Template Model Builder.
                      Laplace approximation.
-                     Automatic differentiation.
+                     Automatic differentiation (AD).
 \end{resumo}
 % ----------------------------------------------------------------------
 \newpage
@@ -408,7 +444,8 @@
 
     \textbf{Palavras-chave}: Riscos competitivos agrupados.
                              Depend\^{e}ncia intra-cluster.
-                             Modelo linear generalizado misto multinomial.
+                             Modelo linear generalizado misto
+                             multinomial (MLGM).
                              TMB: Template Model Builder.
                              Aproxima\c{c}\~{a}o de Laplace.
                              Diferencia\c{c}\~{a}o autom\'{a}tica.
