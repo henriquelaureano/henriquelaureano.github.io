@@ -379,24 +379,24 @@
   \vspace{0.3cm}
 
   Clustered competing risks data is a special case of failure time
-  data. Besides the cluster structure which implies a within-cluster
-  dependence between its elements, this kind of data is characterized by
-  1) multiple causes/variables competing to be the one responsible for
-  the occurrence of an event, a failure; and 2) censorship, when the
-  event of interest happens for none of the competing causes, in the
-  study period.
-
-  To handle this type of data, we propose a latent-effects framework, a
-  generalized linear mixed model (GLMM), instead of a usual survival
-  model. In survival analysis, the modeling is done by means of the
-  hazard rate, and the within-cluster dependence accommodation generates
-  a complicated likelihood function sometimes intractable. What we do
-  here is to model the clustered competing causes in the probability
+  data. Besides the cluster structure which implies a latent
+  within-cluster dependence between its elements, this kind of data is
+  characterized by 1) multiple causes/variables competing to be the one
+  responsible for the occurrence of an event, a failure; and 2)
+  censorship, when the event of interest happens for none of the
+  competing causes, in the study period. To handle this type of data, we
+  propose a generalized linear mixed model (GLMM) i.e., a latent-effects
+  framework, instead of a usual survival model. In survival analysis,
+  the modeling is done by means of the hazard rate, and the
+  within-cluster dependence accommodation ends by generating a
+  complicated likelihood function, sometimes intractable. We, on the
+  other hand, model the clustered competing causes in the probability
   scale, in terms of the cumulative incidence function (CIF) of each
   competing cause. In our framework, we suppose a multinomial
   probability distribution for the competing causes and censorship,
-  conditioned on the latent effects (within-cluster dependence). The
-  latent effects are accommodated by a multivariate Gaussian
+  conditioned on the latent effects.
+
+  The latent effects are accommodated by a multivariate Gaussian
   distribution and are modeled by the parameters of its covariance
   matrix. These probability distributions are connected by the CIF,
   modeled here following the specification in \citeonline{SCHEIKE},
@@ -417,10 +417,7 @@
   trajectory time levels are correlated. In scenarios with high CIF the
   model exhibits good results, but with an excessive variance, showing
   that improvements are necessary.
-  
-  In scenarios with high CIF the model exhibits good results, but with
-  an excessive variance, showing that improvements are necessary.
-  
+    
   \textbf{Keywords}: Clustered competing risks.
                      Within-cluster dependence.
                      Multinomial generalized linear mixed model (GLMM).
