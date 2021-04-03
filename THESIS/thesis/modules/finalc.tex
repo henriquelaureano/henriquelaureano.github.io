@@ -75,130 +75,130 @@ fashion, in one of the two following Linux systems
 \end{description}
 
 Each risk and time model run is not so time-consuming, generally never
-taking more than 5 minutes. The inherent idea is that we are always
-performing two-dimension integral approximations and we have
-\textit{just} three covariance parameters. With the block-diag model, we
-are theoretically in four dimensions. However, since the covariance
-matrix is, block-diagonal, we experienced several numerical instability
-problems. The solution, as can be seen in \autoref{cap:blockdiagModel}
-(\autoref{cap:appendixD}) code, was to split it into two two-dimension
-matrices, since the \(4\times4\) covariance matrix is block-diagonal.
-This simple solution solved all numerical instability problems. The
-computational time was only a little bit bigger than with the risk and
-time models.
+taking more than 5 minutes. The inherent idea is that for each cluster
+we are always performing two-dimension integral approximations and we
+have \textit{just} three covariance parameters. With the block-diag
+model, we are theoretically in four dimensions. However, since the
+covariance matrix is, block-diagonal, we experienced several numerical
+instability problems. The solution, as can be seen in the
+\autoref{cap:blockdiagModel} (\autoref{cap:appendixD}) code, was to
+split it into two two-dimension matrices, since the \(4\times4\)
+covariance matrix is block-diagonal.  This simple solution solved all
+numerical instability problems. The computational time was only a little
+bit bigger than with the risk and time models.
 
 Finally, the complete model. In the biggest scenario, with 60 thousand
-data points and clusters of size 2 i.e., 30 thousand four-dimension
+data points and clusters of size 2 i.e., with 30 thousand four-dimension
 integral approximations (ten parameters in the covariance matrix), the
 model fitting takes 30 minutes, in parallel, with TMB. Before doing the
 TMB implementation, to really understand what we were doing, we did a
 complete \texttt{R} implementation. We wrote the marginal log-likelihood
-in \texttt{R}, based on our own Laplace approximation and Newton-Raphson
-implementation (the gradients, \autoref{cap:appendixA}, and Hessian,
-\autoref{cap:appendixB}, were computed by hand and implemented). Running
-this complete \texttt{R} implementation in a scenario with 20 thousand
-data points and clusters of size 2, took around 30 hours, parallelizing
-it between all threads of system 1. In summary, by using TMB we were
-able to increase the model size 3 times and to decrease the
-computational time 60 times. An incredible performance gain.
+in \texttt{R}, based on our own Laplace approximation \cite{patrao} and
+Newton-Raphson implementation (the gradients, \autoref{cap:appendixA},
+and Hessian, \autoref{cap:appendixB}, were computed by hand and
+implemented). Running this complete \texttt{R} implementation in a
+scenario with 20 thousand data points and clusters of size 2, took
+around 30 hours, parallelizing it between all threads of system 1. In
+summary, by using TMB we were able to increase the model size 3 times
+and to decrease the computational time 60 times. An incredible
+performance gain.
 
 Still, with the complete model, we performed a Bayesian analysis via
 \texttt{tmbstan} \cite{tmbstan}. \texttt{tmbstan} enables MCMC sampling
 \cite{MCMC, Diaconis} from a TMB model object using Stan \cite{Stan,
-RStan}. Sampling can be performed with or without Laplace approximation
-for the random effects. We performed just one model fitting in a modest
-scenario with 5 thousand data points and clusters of size 2, it took
-around 1 whole week of parallelized processing in system 1. The results
-were basically the same as the ones obtained with TMB but this high
-computational time just reinforces the MCMC framework limitation.
+RStan}. Sampling can be performed with or without a Laplace
+approximation for the random effects. We performed just one Bayesian
+model fitting in a modest scenario with 5 thousand data points and
+clusters of size 2, it took around 1 whole week of parallelized
+processing in system 1. The results were basically the same as the ones
+obtained with TMB but this high computational time just reinforces the
+MCMC framework limitation.
 
 An important point to be made here is about TMB's memory consumption. As
-the sample size increases, the dimension of the matrices also
+the sample size increases, the dimension of the model matrices also
 increases. This, summed to a high number of clusters (Laplace
-approximations to be made), turns out to be a computational
+approximations to be performed), turns out to be a computational
 nightmare. For several models, even the 16GB RAM of system 1 was not
 enough. The bottleneck appears to be in the AD tape, which is made in
-parallel, by default, if the model is in parallel. By turning this
-option off (line 11 of \autoref{cap:rscript} (\autoref{cap:appendixD})),
-we were able to save a lot of memory, making several model fittings
-practible.
+parallel, by default, if the model fitting is in parallel. By turning
+this option off (line 11 of \autoref{cap:rscript}
+(\autoref{cap:appendixD}) code), we were able to save a lot of memory,
+making several models practicable.
 
-Model the CIF of clustered competing risks data is hard. The formulation
-in \autoref{eq:cif} implies the desired curve
-behavior, \autoref{fig:datasimucif}, but in counterpart, its derivatives
-w.r.t. time, generates very small probabilities for the failure
-competing causes, which ends by concentrating almost everything on
-censorship, \autoref{fig:datasimu}. For each of these competing causes
-with poor data representativity, we have three curve shape parameters to
-estimate, which implies the necessity of having a lot of data to then
-have enough information about the causes.
+Model the CIF of clustered competing risks data is far from being
+trivial or straightforward. The formulation in \autoref{eq:cif} implies
+the desired curve behavior, \autoref{fig:datasimucif}. However, in
+counterpart, its derivatives w.r.t. time, generates very small
+probabilities for the failure competing causes, ending by concentrating
+almost everything on censorship, \autoref{fig:datasimu}. For each
+competing cause with poor data representativity, we have three curve
+shape parameters to estimate, implying the necessity of having a lot of
+data to then have enough information about the causes.
 
-As if the low data representativity was not a big enough problem, it is
+As if the low data representativity is not a big enough problem, it is
 also complicated to increase the model in terms of competing
 causes. With two competing causes, we have a \(4\times4\) covariance
-matrix for the latent effects, implying ten covariance parameters, which
-is already a lot. Besides that, by increasing the number of competing
-causes we also increase the dimension of the integral to be
-approximated/Laplace approximation to be performed in each cluster, and
-thinking in epidemiological applications where each cluster consists of
-a family, the number of clusters could be big.
+matrix for the latent effects, which implies ten covariance parameters,
+which is already a lot. Besides that, by increasing the number of
+competing causes we also increase the dimension of the integral to be
+approximated/Laplace approximation, in each cluster. Also, thinking in
+epidemiological applications, the number of clusters/families tends to
+be generally big.
 
 We proposed for our multiGLMM an ideally complete latent-effects
 formulation i.e., correlated latent effects on both levels,
-instantaneous risk and trajectory time, The main underlying idea of the
-simulation study in \autoref{cap:results} was to see in which scenarios
+instantaneous risk and trajectory time. The main underlying idea of the
+\autoref{cap:results} simulation study was to see in which scenarios
 we would be able to learn all the involved mean and covariance
 parameters. As part of that, simpler formulations were proposed i.e.,
-latent components in only one level, or in both but without
-cross-correlations.
-
-As result, we got that latent effects only in the risk level do not
-work.  The optimization appears to get lost as if something is missing.
-Inserting latent effects only in the trajectory time sounds to be a lot
-better, but still. In most of the evaluated scenarios, the
-block-diagonal model appeared to be in the middle of them, a
-compromise. The best results were obtained with the complete model
-i.e. when we consider the cross-correlations between levels. In general,
-we still observe some high variances between the parameter estimates,
-but given all the problem characteristics mentioned earlier, sounds to
-be reasonable. On average, the complete model works fine, mainly in the
-scenarios of high CIF configuration, and also as expected, as the sample
-size increases. We can also say that as the cluster size increase, the
-estimates get better but we do not have very strong results conforming
-to that.
+latent-effects in only one level, or in both but without
+cross-correlations. As result, we got that latent effects only in the
+risk level do not work. The optimization appears to get lost as if
+something is missing. Inserting latent effects only in the trajectory
+time sounds to be a lot better, but still. In most of the evaluated
+scenarios, the block-diagonal model appeared to be in the middle of
+them, as a compromise. The best results were obtained with the complete
+model i.e. when we consider the cross-correlations between levels. In
+general, we still observe some high variances between the parameter
+estimates, but given all the problem characteristics mentioned earlier,
+sounds to be reasonable. On average, the complete model works fine,
+mainly in the scenarios of high CIF configuration, and also as expected,
+as the sample size increases. We can also say that as the cluster size
+increase, the estimates get better but we do not have very strong
+results supporting that.
 
 \section{FUTURE WORKS}
 \label{cap:future}
 
-A show in \autoref{cap:results} results, our model does not work
+As show in \autoref{cap:results} results, our model does not work
 smoothly, always presenting a not irrelevant variance. In terms of a
 traditional GLMM specification \cite{GLMM}, we do not have a lot more to
 do. We are already using a smart quasi-Newton algorithm
 \cite{PORTpaper}, the most efficient derivatives computation technique
 (AD) \cite{peyre}, and an also efficient Laplace approximation routine
-\cite{corestats, patrao}, via TMB \cite{TMB}. This last point is
-something that we could change to an adaptative Gaussian quadrature
+\cite{corestats, patrao}, via TMB \cite{TMB}. We could change the
+Laplace approximation for an adaptative Gaussian quadrature
 \cite{quadrature}, but we do not see any good reason to do that.
 
-There are two possible paths here. One of them is, instead of a
-conditional modeling framework (GLMM/latent-effects model), we employ a
-marginal modeling framework. In this framework, instead of caring
-about the specification of a probability distribution to the competing
-causes conditioned on the latent effects, we just care about the
-specification of a mean and a variance structure. This approach does not
-have a likelihood function per se, but the estimation procedure tends to
-be easier than the GLMM one. A marginal modeling framework that can be
-used is the multivariate covariance generalized linear model (McGLM)
-\cite{mcglm, rmcglm}. How to exactly model the CIF of clustered
+There are two possible paths here. We could instead of a conditional
+modeling framework (GLMM/latent-effects model), employ a marginal
+modeling framework. In this framework, instead of caring about the
+specification of a probability distribution to the competing causes
+conditioned on the latent effects, we just care about the specification
+of a mean and a variance structure. This approach does not have a
+likelihood function per se, but the estimation procedure tends to be
+easier than with the GLMM one. A marginal modeling framework that can be
+used here is the multivariate covariance generalized linear model
+(McGLM) \cite{mcglm, rmcglm}. How to exactly model the CIF of clustered
 competing risks data in this framework, is something to still be figured
 out.
 
 The other path is by the use of a different way of modeling the
-dependence. Instead of a latent-effects approach, we could use copulas
-\cite{factorcopulas, cheng&fine12, semiparametricSCHEIKE, copulas}.
-How to do that is something to still be figured out by us, in terms of
-which kind (conditional or marginal) and version (Archimedean-, Gauss-,
-Maltesian-, \(t\)-, hyperbolic-, zebra-, and elliptical-) of copula to
-use, besides the estimability.
+dependence structure. Instead of a latent-effects approach, we could use
+copulas \cite{factorcopulas, cheng&fine12, semiparametricSCHEIKE,
+copulas}. How to do that is something to still be figured out by us, in
+terms of which kind (conditional or marginal) and version (Archimedean-,
+Gauss-, Maltesian-, \(t\)-, hyperbolic-, zebra-, and elliptical-) of
+copula to use, besides the estimability issue.
 
 % END ==================================================================
