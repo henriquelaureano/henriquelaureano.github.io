@@ -89,6 +89,8 @@ plot.curves <-
              x=28/2+31, y=4, color='#8A8D8F', size=5)+
     annotate('text', label='MAR',
              x=31/2+28+31, y=4, color='#8A8D8F', size=5)+
+    annotate('text', label='APR',
+             x=10+31+28+31, y=4, color='#8A8D8F', size=5)+
     geom_ribbon(aes(ymin=f.lb, ymax=f.ub, fill=Model),
                 alpha=0.15, fill='#8A8D8F', size=1.25, linetype='dashed')+
     geom_line(aes(y=f.hat), size=2)+
