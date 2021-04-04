@@ -7,6 +7,7 @@ author: Henrique Laureano ([.github.io](https://henriquelaureano.github.io))
 date: \today
 institute: LEG @ UFPR
 classoption: [aspectratio=169]
+bibliography: ../thesis/references.bib
 output:
   beamer_presentation:
     includes:
@@ -119,7 +120,7 @@ Independent of the application, always the same framework
 
 \bigskip
 \includegraphics[height=0.3cm]{logo/twitter.png}
-A comprehensive reference is
+A comprehensive reference is @kalb&prentice
 
 ###
 
@@ -318,8 +319,6 @@ Also, key features are
 
 # Final considerations
 
-# References
-
 ### Thanks for watching and have a great day
 
 Special thanks to
@@ -355,3 +354,7 @@ Special thanks to
 \vfill
 \includegraphics[height=0.3cm]{logo/twitter.png}
 \href{https://twitter.com/hap_laureano}{\text{@hap\_laureano}}
+
+# References
+
+### References
