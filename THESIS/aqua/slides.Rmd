@@ -3,7 +3,7 @@ title: "Modeling the cumulative incidence function of clustered competing
         risk data: \\newline
         a multinomial GLMM approach"
 subtitle: master thesis defense
-author: Henrique Laureano (.github.io)
+author: Henrique Laureano ([.github.io](https://henriquelaureano.github.io))
 date: \today
 institute: LEG @ UFPR
 classoption: [aspectratio=169]
@@ -55,8 +55,10 @@ Independent of the application, always the same framework
  2     & 2  & No      & Yes      & No        &  5   & A\\
 \end{tabular}
 
-### Data designs
+### Big picture: Failure time data
 
+\bigskip
+####
 \begin{center}
  \scalebox{0.9}{
   \begin{tikzpicture}
@@ -104,7 +106,23 @@ Independent of the application, always the same framework
  }
 \end{center}
 
-\pause
+\bigskip
+\begin{columns}
+ \column{4cm}
+  \textit{Same methodologies, different names.}
+  \column{9cm}
+   \begin{description}
+    \item[Survival analysis] Industrial life testing;
+    \item[Reliability analysis] Biomedical studies.
+   \end{description}
+\end{columns}
+
+\bigskip
+\includegraphics[height=0.3cm]{logo/twitter.png}
+A comprehensive reference is
+
+###
+
 #### Modeling framework
 
 We have to choose which \textcolor{UniBlue}{scale} we model the
@@ -293,6 +311,14 @@ Also, key features are
 + parallelism through \texttt{BLAS};
 
 + parallel user templates.
+
+# Simulation study
+
+# Results
+
+# Final considerations
+
+# References
 
 ### Thanks for watching and have a great day
 
