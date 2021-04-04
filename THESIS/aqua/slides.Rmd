@@ -119,12 +119,32 @@ Independent of the application, always the same framework
 \end{columns}
 
 \bigskip
-\includegraphics[height=0.3cm]{logo/twitter.png}
-A comprehensive reference is @kalb&prentice
+A comprehensive reference is @kalb&prentice's book.
 
-###
+# Modeling
 
-#### Modeling framework
+### Modeling clustered competing risks data
+
+\bigskip
+\begin{columns}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/what.png}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{What?}}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/why.jpg}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{Why?}}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/roll_safe.png}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{How?}}
+\end{columns}
+
+### Context
 
 We have to choose which \textcolor{UniBlue}{scale} we model the
 \textbf{survival experience}.\newline
