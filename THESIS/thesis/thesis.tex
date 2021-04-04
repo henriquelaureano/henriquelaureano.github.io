@@ -349,11 +349,6 @@
 % ----------------------------------------------------------------------
 \begin{agradecimentos}
  As Moro once said, I am thankful for everything and everyone.
-
- Today is the shadow of tomorrow. Today is the present future of
- yesterday. Yesterday is the shadow of today. The wisdom of the past is
- the light of the past. The light of the future casts the shadows of
- tomorrow.
 \end{agradecimentos}
 
 \begin{epigrafe}
@@ -377,47 +372,46 @@
     \bfseries{\large{\textsf{ABSTRACT}}}
   \end{center}
   \vspace{0.3cm}
-
+  
   Clustered competing risks data is a special case of failure time
   data. Besides the cluster structure which implies a latent
   within-cluster dependence between its elements, this kind of data is
   characterized by 1) multiple causes/variables competing to be the one
   responsible for the occurrence of an event, a failure; and 2)
-  censorship, when the event of interest happens for none of the
+  censorship, when the event of interest happens or not for none of the
   competing causes, in the study period. To handle this type of data, we
   propose a generalized linear mixed model (GLMM) i.e., a latent-effects
   framework, instead of a usual survival model. In survival analysis,
-  the modeling is done by means of the hazard rate, and the
+  the modeling is usually done by means of the hazard rate, and the
   within-cluster dependence accommodation ends by generating a
   complicated likelihood function, sometimes intractable. We, on the
   other hand, model the clustered competing causes in the probability
   scale, in terms of the cumulative incidence function (CIF) of each
   competing cause. In our framework, we suppose a multinomial
   probability distribution for the competing causes and censorship,
-  conditioned on the latent effects.
+  conditioned on the latent effects. The latent effects are accommodated
+  via a multivariate Gaussian distribution and are modeled by the
+  parameters of its covariance matrix. The probability distributions are
+  connected via CIF, modeled here following \citeonline{SCHEIKE}
+  specification, based on its decomposition as the product of an
+  instantaneous risk level function with a trajectory time level
+  function. The latent effects are inserted in those level functions. To
+  make the model parameters estimation the most efficient as possible,
+  we use the template model builder (TMB) \cite{TMB}. With this
+  \texttt{R} \cite{R21} package, we have 1) the log-likelihood function
+  written in \texttt{C++}; 2) access to efficient linear algebra
+  libraries; 3) efficient Laplace approximation implementation for the
+  latent-effects; and 4) an automatic differentiation (AD) routine, the
+  state-of-the-art in derivatives computation. To check the estimability
+  of our model a large simulation study is performed, based on different
+  latent structure formulations, with the aim to verify which one is
+  most adequate to real scenarios. The model presents to be of difficult
+  estimation, with our results converging to a latent structure where
+  the risk and trajectory time levels are correlated. In scenarios with
+  high CIF the model exhibits the better results, but still with an
+  excessive variance, showing that improvements are necessary.
 
-  The latent effects are accommodated by a multivariate Gaussian
-  distribution and are modeled by the parameters of its covariance
-  matrix. These probability distributions are connected by the CIF,
-  modeled here following the specification in \citeonline{SCHEIKE},
-  based on the CIF decomposition as the product of an instantaneous risk
-  level function with a trajectory time level function. The latent
-  effects are inserted in those level functions.  To make the estimation
-  of the parameters of this model the most efficient as possible, we use
-  the template model builder (TMB) \cite{TMB}. With this R \cite{R21}
-  package, we have our log-likelihood function written in C++, we have
-  access to state-of-the-art computational libraries, an efficient
-  Laplace approximation implementation for the latent-effects, and an
-  automatic differentiation (AD) routine, the state-of-the-art in
-  derivatives computation. To check the estimability of our model a
-  large simulation study is performed, based on different latent
-  structure formulations, with the aim to verify which one is most
-  adequate. The model presents to be of difficult estimation, with our
-  results converging to a latent restructure where the risk and
-  trajectory time levels are correlated. In scenarios with high CIF the
-  model exhibits good results, but with an excessive variance, showing
-  that improvements are necessary.
-    
+  \vfill
   \textbf{Keywords}: Clustered competing risks.
                      Within-cluster dependence.
                      Multinomial generalized linear mixed model (GLMM).
@@ -439,6 +433,55 @@
     \end{center}
     \vspace{0.3cm}
 
+    Dados de riscos competitivos agrupados s\~{a}o um caso especial de
+    dados de tempo de falha. Al\'{e}m da estrutura de grupo que implica
+    uma depend\^{e}ncia latente intra-grupo entre seus elementos, esse
+    tipo de dado \'{e} caracterizado por 1) m\'{u}ltiplas
+    causas/vari\'{a}veis ​​competindo para ser a respons\'{a}vel pela
+    ocorr\^{e}ncia de um evento, uma falha; e 2) censura, quando o
+    evento de interesse ocorre ou n\~{a}o por nenhuma das causas
+    concorrentes, no per\'{i}odo de estudo. Para lidar com este tipo de
+    dados, propomos um modelo linear generalizado misto (GLMM), ou seja,
+    um modelo de efeitos latentes/aleat\'{o}rios, em vez de um modelo de
+    sobreviv\^{e}ncia usual. Em an\'{a}lise de sobreviv\^{e}ncia, a
+    modelagem \'{e} usualmente feita por meio da taxa de risco, e a
+    acomodação da depend\^{e}ncia intra-grupo acaba por gerar uma
+    complicada fun\c{c}\~{a}o de verossimilhan\c{c}a, \`{a}s vezes
+    intrat\'{a}vel. N\'{o}s, por outro lado, modelamos as causas
+    competidoras agrupadas na escala da probabilidada, por meio da
+    fun\c{c}\~{a}o de incid\^{e}ncia acumulada (CIF, em ingl\^{e}s) de
+    cada causa competidora. Em nossa modelagem, supomos uma
+    distribui\c{c}\~{a}o de probabilidade multinomial para as causas
+    competidoras e censura, condicionado aos efeitos latentes. Os
+    efeitos latentes são acomodados por meio de uma distribui\c{c}\~{a}o
+    Gaussiana multivariada e s\~{a}o modelados via os par\^{a}metros de
+    sua matriz de covari\^{a}ncia. As distribui\c{c}\~{o}es de
+    probabilidade s\~{a}o conectadas por meio da CIF, modeladas aqui
+    seguindo a especifica\c{c}~{a}o em \citeonline{SCHEIKE}, com base em
+    sua decomposi\c{c}\~{a}o como o produto de uma fun\c{c}\~{a}o de
+    n\'{i}vel de risco instant\^{a}neo com uma fun\c{c}\~{a}o de
+    n\'{i}vel de tempo de trajet\'{o}ria. Os efeitos latentes são
+    inseridos nestas fun\c{c}\~{o}es. Para tornar a estimativa dos
+    par\^{a}metros do modelo o mais eficiente poss\'{i}vel, usamos o
+    template model builder (TMB) \cite{TMB}. Com este pacote \texttt{R}
+    \cite{R21}, temos 1) a fun\c{c}\~{a}o de log-verossimilhan\c{c}a
+    escrita em \texttt{C++}; 2) acesso a eficientes bibliotecas de
+    \'{a}lgebra linear; 3) implementa\c{c}\~{a}o eficiente da
+    aproxima\c{c}\~{a}o de Laplace para os efeitos latentes; e 4) uma
+    rotina computacional de diferencia\c{c}\~{a}o autom\'{a}tica, o
+    estado da arte em computa\c{c}\~{a}o de derivadas. Para verificar a
+    estimabilidade do nosso modelo \'{e} realizado um amplo estudo de
+    simula\c{c}\~{a}o, baseado em diferentes formula\c{c}\~{o}es de
+    estruturas latentes, com o objetivo de verificar qual delas \'{e} a
+    mais adequada a um cen\'{a}rio real. O modelo se apresenta de
+    dif\'{i}cil estimati\c{c}\~{a}o, com nossos resultados convergindo
+    para uma estrutura latente onde os n\'{i}veis de risco e de
+    trajet\'{o}ria est\~{a}o correlacionados. Em cen\'{a}rios de CIF
+    alta o modelo apresenta os melhores resultados, mas ainda com uma
+    excessiva variablidade, mostrando que melhorias s\~{a}o
+    necess\'{a}rias.
+    
+    \vfill
     \textbf{Palavras-chave}: Riscos competitivos agrupados.
                              Depend\^{e}ncia intra-cluster.
                              Modelo linear generalizado misto
