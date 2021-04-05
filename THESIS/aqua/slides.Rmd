@@ -144,17 +144,27 @@ A comprehensive reference is @kalb&prentice's book.
    \textcolor{UniBlue}{\textbf{How?}}
 \end{columns}
 
-### Context
+### Failure time data \(\rightarrow\) Survival models
 
-We have to choose which \textcolor{UniBlue}{scale} we model the
-\textbf{survival experience}.\newline
-Usually, the
+First of all, we have to choose which \textcolor{UniBlue}{scale} we
+model the \textbf{survival experience}.\newline
+Usually, is in the
 
-\bigskip
-\(\text{\textcolor{UniBlue}{hazard} (failure rate)
-        \textcolor{UniBlue}{scale}}: \quad
-  \lambda(t \mid \text{features}) =
-  \lambda_{0}(t) \times c(\text{features})\).
+\begin{equation}
+ \text{\textcolor{UniBlue}{hazard} (failure rate)
+       \textcolor{UniBlue}{scale}}: \quad
+ \lambda(t \mid \text{features}) =
+ \lambda_{0}(t) \times c(\text{features}).\label{fig:hazard}
+\end{equation}
+
+We have a Equation \ref{fig:hazard} for each competing cause.
+
+The cluster dependence is something actually not measured\dots
+\[
+ \text{Not measured dependence}~\rightarrow~
+ \text{random/latent effects}~\rightarrow~
+ \text{Frailty models}.
+\]
 
 ### In the competing risk setting \(\dots\)
 
