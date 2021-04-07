@@ -59,7 +59,7 @@ Independent of the application, always the same framework
 ### Big picture: Failure time data
 
 \bigskip
-####
+\begin{block}{}
 \begin{center}
  \scalebox{0.9}{
   \begin{tikzpicture}
@@ -117,8 +117,9 @@ Independent of the application, always the same framework
     \item[Reliability analysis] Biomedical studies.
    \end{description}
 \end{columns}
+\end{block}
 
-\bigskip
+\includegraphics[height=0.5cm]{logo/book.png}
 A comprehensive reference is @kalb&prentice's book.
 
 # Modeling
@@ -147,29 +148,41 @@ A comprehensive reference is @kalb&prentice's book.
 ### Failure time data \(\rightarrow\) Survival models
 
 First of all, we have to choose which \textcolor{UniBlue}{scale} we
-model the \textbf{survival experience}.\newline
-Usually, is in the
+model the \textbf{survival experience}.
 
-\begin{equation}
- \text{\textcolor{UniBlue}{hazard} (failure rate)
-       \textcolor{UniBlue}{scale}}: \quad
- \lambda(t \mid \text{features}) =
- \lambda_{0}(t) \times c(\text{features}).\label{fig:hazard}
-\end{equation}
+\begin{itemize}
+ \item Usually, is in the
+  \begin{equation}
+   \text{\textcolor{UniBlue}{hazard} (failure rate)
+         \textcolor{UniBlue}{scale}}: \quad
+   \lambda(t \mid \text{features}) =
+   \lambda_{0}(t) \times c(\text{features}).\label{fig:hazard}
+  \end{equation}
+\end{itemize}
 
 We have a Equation \ref{fig:hazard} for each competing cause.
 
 The cluster dependence is something actually not measured\dots
-\[
- \text{Not measured dependence}~\rightarrow~
- \text{random/latent effects}~\rightarrow~
- \text{Frailty models}.
-\]
+\begin{block}{}
+ \begin{center}
+  Not measured dependence~\(\rightarrow\)
+  \textbf{random/latent effects}~\(\rightarrow\)
+  Frailty models.
+ \end{center}
+\end{block}
 
-### In the competing risk setting \(\dots\)
+Full likelihood analysis with frailty models for competing risks data is
+generally complicated, when not impracticable.
 
-a more attractive possibility is to work on the
-\textcolor{UniBlue}{probability scale}, focusing on the cause-specific
+\begin{itemize}
+ \item \textit{Not} usually, the \textcolor{UniBlue}{probability scale}.
+\end{itemize}
+
+### Clustered competing risks in the probability scale
+
+for us, is more attractive possibility is to work on the
+\textcolor{UniBlue}{probability scale},\newline focusing on the
+cause-specific
 
 ```{r cif, echo=FALSE, fig.height=2, fig.width=4}
 pacman::p_load(tidyverse, ## you need the pacman's package
@@ -351,6 +364,7 @@ Also, key features are
 
 ### Thanks for watching and have a great day
 
+\vspace{0.5cm}
 Special thanks to
 
 \bigskip
@@ -381,9 +395,14 @@ Special thanks to
   \url{http://leg.ufpr.br/~paulojus}
 \end{columns}
 
-\vfill
-\includegraphics[height=0.3cm]{logo/twitter.png}
-\href{https://twitter.com/hap_laureano}{\text{@hap\_laureano}}
+\vspace{1.5cm}
+\begin{columns}
+ \column{10cm}
+ \column{5cm}
+  \includegraphics[height=0.3cm,angle=90]{../../laurence.jpg}
+  \hspace{0.05cm}
+  \href{https://henriquelaureano.github.io}{henriquelaureano.github.io}
+\end{columns}
 
 # References
 
