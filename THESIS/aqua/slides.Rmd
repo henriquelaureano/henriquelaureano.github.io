@@ -184,16 +184,17 @@ for us, is more attractive possibility is to work on the
 \textcolor{UniBlue}{probability scale},\newline focusing on the
 cause-specific
 
-```{r cif, echo=FALSE, fig.height=2, fig.width=4}
+```{r cif, echo=FALSE,fig.height=2,fig.width=4}
 pacman::p_load(tidyverse, ## you need the pacman's package
-               ggplot2)
-t <- seq(30, 79.5, by = 0.5)
+               ggplot2,
+               patchwork)
+t     <- seq(30, 79.5, by=0.5)
 delta <- 80
-u <- c(0, 0)
-eta <- c(0, 0)
-beta <- c(-2, -1.5)
+u     <- c(0, 0)
+eta   <- c(0, 0)
+beta  <- c(-2, -1.5)
 gamma <- c(1.2, 1)
-w <- c(3, 5)
+w     <- c(3, 5)
 risk1 <- exp(beta[1] + u[1])
 risk2 <- exp(beta[2] + u[2])
 level <- 1 +  risk1 + risk2
@@ -204,27 +205,31 @@ traj2 <- pnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
 cif1 <- risklevel1 * traj1
 cif2 <- risklevel2 * traj2
 df <- as.data.frame(cbind(t, cif1, cif2))
-df <- df %>% pivot_longer(cols = cif1:cif2,
-                          names_to = "cif", values_to = "value")
-ggplot(df, aes(t, value, group = cif, color = cif)) +
-    geom_line(size = 1.5) +
-    labs(x = "Time", y = "Incidence",
-         title = 'Cumulative Incidence Function (CIF)') +
-    scale_color_manual(values = c("#0096c8", "#262626"),
-                       labels = c("Cause 1", "Cause 2")) +
-    theme(legend.title = element_blank(),
-          legend.text = element_text(size = 9),
-          axis.text.x = element_text(size = 8),
-          axis.text.y = element_text(size = 8),
-          plot.title = element_text(
-              size = 10,
-              margin = unit(c(t = 0, r = 0, b = 2, l = 0), 'mm')), 
-          axis.title.x = element_text(
-              size = 9,
-              margin = unit(c(t = 2, r = 0, b = 0, l = 0), "mm")),
-          axis.title.y = element_text(
-              size = 9,
-              margin = unit(c(t = 0, r = 2, b = 0, l = 0), "mm")))
+df <- df%>%
+    pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
+g1 <-
+    ggplot(df, aes(t, value, group=cif, color=cif))+
+    geom_line(size=1.5)+
+    labs(x="Time", y="Incidence",
+         title='Cumulative Incidence Function (CIF)')+
+    scale_color_manual(values=c("#0096c8", "#262626"),
+                       labels=c("Cause 1", "Cause 2"))+
+    theme(legend.title=element_blank(),
+          legend.text=element_text(size=9),
+          legend.position='bottom',
+          ## legend.box.background=element_rect(color='black'), 
+          axis.text.x=element_text(size=8),
+          axis.text.y=element_text(size=8),
+          plot.title=element_text(
+              size=10,
+              margin=unit(c(t=0, r=0, b=2, l=0), 'mm')), 
+          axis.title.x=element_text(
+              size=9,
+              margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=9,
+              margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
+g1+grid::textGrob('CIF=P[failure time, a given cause | features]')
 ```
 
 i.e.
