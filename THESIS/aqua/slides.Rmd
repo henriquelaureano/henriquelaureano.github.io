@@ -239,34 +239,53 @@ ggplot(df, aes(t, value, group=cif, color=cif))+
 
 ### Formally,
 
-for a cause-specific of failure \(k\), the cumulative
-incidence function (CIF) is defined as
+for a cause-specific of failure \(k\),\newline
+the cumulative incidence function (CIF) is defined as
+\begin{block}{}
+\vspace{-0.5cm}
 \begin{align*}
  F_{k}(t \mid \bm{x})
- = \mathbb{P}[T \leq t,~K = k \mid \bm{x}]
- &= \int_{0}^{t} f_{k}(z \mid \bm{x})~\text{d}z\\
- &= \int_{0}^{t} \lambda_{k}(z \mid \bm{x})~S(z \mid \bm{x})
-  ~\text{d}z, \quad t > 0, \quad k = 1,~\dots,~K,
+ &= \mathbb{P}[T \leq t,~K = k \mid \bm{x}]\\
+ &= \int_{0}^{t} f_{k}(z \mid \bm{x})~\text{d}z\quad
+ (f_{k}(t \mid \bm{x})
+ ~\text{is the (sub)density for the time to a type}~k~\text{failure})\\
+ &= \int_{0}^{t}
+ \underbrace{\lambda_{k}(z \mid \bm{x})}_{\substack{
+                                           \text{cause-specific}\\
+                                           \text{hazard function}}}
+ \underbrace{S(z \mid \bm{x})}_{\substack{\text{overall}\\
+                                          \text{survival}\\
+                                          \text{function}}}
+ \text{d}z, \quad t > 0, \quad k = 1,~\dots,~K.
 \end{align*}
+\end{block}
 
-### Cancer incidence in twins
+\includegraphics[height=0.5cm]{logo/book.png}
+Again, a comprehensive reference is @kalb&prentice's book.
 
-\begin{columns}
- \column{8.5cm}
-  \centering
-   \includegraphics[width=\textwidth]{figures/twins.jpg}
- \column{5.25cm}
-  Clustered competing risks data\newline
-  \hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
-  Clusters? Families\newline
-  \hspace*{1.35cm}\rotatebox[origin=c]{180}{$\Lsh$}Family studies\newline
-  \hspace*{2.1cm}\rotatebox[origin=c]{180}{$\Lsh$}
-  \textcolor{UniBlue}{Twins data}
-\end{columns}
-\[
- \text{Family studies}~\Rightarrow~
- \text{\color{UniBlue}{within-family dependence}}
-\]
+\includegraphics[height=0.5cm]{logo/lightbulb.jpg}
+\textit{Here}, we use the same CIF specification of @SCHEIKE.
+
+### @SCHEIKE's CIF specification
+
+For two competing causes of failure,\newline
+the cause-specific CIFs are specified in the following manner
+\begin{block}{}
+\vspace{-0.5cm}
+\begin{equation}
+ F_{k} (t \mid \bm{x},~u_{1},~u_{2},~\eta_{k}) =
+ \underbrace{\pi_{k}(\bm{x},~u_{1},~u_{2})}_{
+ \substack{\text{cluster-specific}\\\text{risk level}}}\times
+  \underbrace{\Phi[w_{k} g(t) - \bm{x}\bm{\gamma}_{k} - \eta_{k}]}_{
+   \substack{\text{cluster-specific}\\\text{failure time trajectory}}
+  }, \quad t > 0, \quad k = 1,~2,
+  \label{eq:cif}
+\end{equation}
+\end{block}
+i.e., as the product of a cluster-specific risk level with a
+cluster-specific failure time trajectory, resulting in a
+cluster-specific CIF.
+
 That may reflect
 
 + Disease \textbf{heritability};
