@@ -58,13 +58,13 @@ annealing method, based on a Metropolis algorithm. Since it is based on
 simulation, it takes a lot of time and as the gradient-based methods, do
 not work most of the time. The best results were with the Nelder-Mead
 \cite{neldermead}, a free-gradient method. Still, it only works when we
-use the parameter true values as initial guesses. This situation,
-completely the opposite of what is shown in the paper, made impossible
+use the parameter true values as initial guesses. This situation is
+completely the opposite of what is shown in the paper, making impossible
 any reasonable comparison between the models. We will enter in contact
 with the authors to see what is happening.
 
 All models from the simulation study were run, in a parallelized
-fashion, in one of the two following Linux systems
+fashion, in one of the two following Linux systems:
 \begin{description}
  \item[System 1]
   12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz processors
@@ -109,7 +109,7 @@ Still, with the complete model, we performed a Bayesian analysis via
 RStan}. Sampling can be performed with or without a Laplace
 approximation for the random effects. We performed just one Bayesian
 model fitting in a modest scenario with 5 thousand data points and
-clusters of size 2, it took around 1 whole week of parallelized
+clusters of size 2. It took around 1 whole week of parallelized
 processing in system 1. The results were basically the same as the ones
 obtained with TMB but this high computational time just reinforces the
 MCMC framework limitation.
@@ -153,7 +153,7 @@ we would be able to learn all the involved mean and covariance
 parameters. As part of that, simpler formulations were proposed i.e.,
 latent-effects in only one level, or in both but without
 cross-correlations. As result, we got that latent effects only in the
-risk level do not work. The optimization appears to get lost as if
+risk level did not work. The optimization appears to get lost as if
 something is missing. Inserting latent effects only in the trajectory
 time sounds to be a lot better, but still. In most of the evaluated
 scenarios, the block-diagonal model appeared to be in the middle of
@@ -164,7 +164,7 @@ estimates, but given all the problem characteristics mentioned earlier,
 sounds to be reasonable. On average, the complete model works fine,
 mainly in the scenarios of high CIF configuration, and also as expected,
 as the sample size increases. We can also say that as the cluster size
-increase, the estimates get better but we do not have very strong
+increases, the estimates get better but we did not have very strong
 results supporting that.
 
 \section{FUTURE WORKS}

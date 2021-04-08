@@ -113,8 +113,8 @@ Independent of the application, always the same framework
   \textit{Same methodologies, different names.}
   \column{9cm}
    \begin{description}
-    \item[Survival analysis] Industrial life testing;
-    \item[Reliability analysis] Biomedical studies.
+    \item[Survival analysis] Biomedical studies;
+    \item[Reliability analysis] Industrial life testing.
    \end{description}
 \end{columns}
 \end{block}
@@ -122,7 +122,7 @@ Independent of the application, always the same framework
 \includegraphics[height=0.5cm]{logo/book.png}
 A comprehensive reference is @kalb&prentice's book.
 
-# Modeling
+# Model
 
 ### Modeling clustered competing risks data
 
@@ -178,16 +178,15 @@ generally complicated, when not impracticable.
  \item \textit{Not} usually, the \textcolor{UniBlue}{probability scale}.
 \end{itemize}
 
-### Clustered competing risks in the probability scale
+### Probability scale \(\rightarrow\) Cause-specific CIF
 
-for us, is more attractive possibility is to work on the
-\textcolor{UniBlue}{probability scale},\newline focusing on the
-cause-specific
+Besides the within-cluster dependence, there is an often interest\newline
+in describing the time at event onset, directly described by\newline
+the cause-specific
 
 ```{r cif, echo=FALSE,fig.height=2,fig.width=4}
 pacman::p_load(tidyverse, ## you need the pacman's package
-               ggplot2,
-               patchwork)
+               ggplot2)
 t     <- seq(30, 79.5, by=0.5)
 delta <- 80
 u     <- c(0, 0)
@@ -207,8 +206,7 @@ cif2 <- risklevel2 * traj2
 df <- as.data.frame(cbind(t, cif1, cif2))
 df <- df%>%
     pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
-g1 <-
-    ggplot(df, aes(t, value, group=cif, color=cif))+
+ggplot(df, aes(t, value, group=cif, color=cif))+
     geom_line(size=1.5)+
     labs(x="Time", y="Incidence",
          title='Cumulative Incidence Function (CIF)')+
@@ -216,8 +214,6 @@ g1 <-
                        labels=c("Cause 1", "Cause 2"))+
     theme(legend.title=element_blank(),
           legend.text=element_text(size=9),
-          legend.position='bottom',
-          ## legend.box.background=element_rect(color='black'), 
           axis.text.x=element_text(size=8),
           axis.text.y=element_text(size=8),
           plot.title=element_text(
@@ -229,15 +225,29 @@ g1 <-
           axis.title.y=element_text(
               size=9,
               margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
-g1+grid::textGrob('CIF=P[failure time, a given cause | features]')
 ```
 
-i.e.
+\begin{block}{}
+\[
+ \text{i.e.},\quad
+ \text{CIF} =
+ \mathbb{P}[~\text{failure time} \leq t,
+            ~\text{a given cause} \mid \text{features \& latent effects}
+            ~].
+\]
+\end{block}
 
-\(\text{CIF} = \mathbb{P}[~\text{failure time} \leq t,
-                          ~\text{a given cause} \mid \text{features}~]\)
+### Formally,
 
-# Application
+for a cause-specific of failure \(k\), the cumulative
+incidence function (CIF) is defined as
+\begin{align*}
+ F_{k}(t \mid \bm{x})
+ = \mathbb{P}[T \leq t,~K = k \mid \bm{x}]
+ &= \int_{0}^{t} f_{k}(z \mid \bm{x})~\text{d}z\\
+ &= \int_{0}^{t} \lambda_{k}(z \mid \bm{x})~S(z \mid \bm{x})
+  ~\text{d}z, \quad t > 0, \quad k = 1,~\dots,~K,
+\end{align*}
 
 ### Cancer incidence in twins
 
@@ -265,8 +275,6 @@ That may reflect
   
   + **Parental effects**:
     continuity of the phenotype across generations.
-
-# Model
 
 ### Our contribution: a hierarchical approach
 

@@ -17,10 +17,10 @@ problems came from the work developed in \citeonline{SCHEIKE}, where
 they studied breast cancer incidence in mothers and daughters but using
 a complicated modeling framework. Based on that, the aim of this thesis
 is to propose a simpler framework taking advantage of
-several \textit{state-of-art} computational libraries and see how far
-can we go in several scenarios. Until now we just contextualized, we
-still need to introduce the methodology. To this, some definitions and
-theoretical contexts are welcome.
+several \textit{state-of-art} computational libraries and see how far we
+can go in several scenarios. Until now we have just contextualized, we
+still need to introduce the methodology. To do this, some definitions
+and theoretical contexts are welcome.
 
 When the object under study is a random variable representing the time
 until some event occurs, we are in the field of \textit{failure time
@@ -50,7 +50,7 @@ that exemplify this behavior is the illness-death model,
 \autoref{fig:intro1}~C), where a patient (initially in state 0) can get
 sick (state 1) or die (state 2); if sick it can recover (returns to
 state 0) or die. We work in this thesis only with competing risks
-processes, and to each patient we need the time (age) until the
+processes, and for each patient we need the time (age) until the
 occurrence, or not, of the event.
 
 \begin{figure}[H]
@@ -67,11 +67,11 @@ occurrence, or not, of the event.
  \label{fig:intro1}
 \end{figure}
 
-When for some know or unknown reason we are not able to see the
+When for some known or unknown reason we are not able to see the
 occurrence of an event, we have what is denoted \textit{censorship}.
 Still in the illness-death model, during the period of follow up the
 patient may not get sick or die, staying at state 0. This is denoted
-\textit{right-censorship}; If a patient is in state 1 at the end of the
+\textit{right-censorship}; if a patient is in state 1 at the end of the
 study, we are \textit{censored} to see him reaching the state 2 or
 returning to state 0. This is the inherent idea to censorship and must
 be present in the modeling framework, thus arriving in the so-called
@@ -144,8 +144,8 @@ dependence structure. A clear advantage of this approach is that we do
 not need to care about a joint distribution specification, which
 generally translates also into a computational advantage. A disadvantage
 is the model specification, which becomes much more complicated, besides
-the number of small details to be workaround from the fact of being
-working with not an exact likelihood function.
+the number of small details to workaround from the fact of being working
+with not an exact likelihood function.
 
 We do not have any guarantees that a full likelihood inference procedure
 is not viable here, so we try to reach the same goal of
@@ -260,7 +260,7 @@ involved in the formulation, optimzation, and implementation of a
 generalized linear mixed model (GLMM). Given the modeling framework
 overview, \autoref{cap:model} presents our multinomial GLMM (multiGLMM)
 to model the cause-specific cumulative incidence function (CIF) of
-clustered competing risks data. In \autoref{cap:datasets} we describes
+clustered competing risks data. In \autoref{cap:datasets} we describe
 the simulation procedure to generate synthetic data and present some
 model particularities. In \autoref{cap:results} the obtained results are
 presented, and in \autoref{cap:finalc} we discuss the contributions of
