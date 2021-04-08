@@ -8,6 +8,7 @@ date: \today
 institute: LEG @ UFPR
 classoption: [aspectratio=169]
 bibliography: ../thesis/references.bib
+link-citations: yes
 output:
   beamer_presentation:
     includes:
@@ -150,15 +151,13 @@ A comprehensive reference is @kalb&prentice's book.
 First of all, we have to choose which \textcolor{UniBlue}{scale} we
 model the \textbf{survival experience}.
 
-\begin{itemize}
- \item Usually, is in the
-  \begin{equation}
-   \text{\textcolor{UniBlue}{hazard} (failure rate)
-         \textcolor{UniBlue}{scale}}: \quad
-   \lambda(t \mid \text{features}) =
-   \lambda_{0}(t) \times c(\text{features}).\label{fig:hazard}
-  \end{equation}
-\end{itemize}
+1. Usually, is in the
+   \begin{equation}
+    \text{\textcolor{UniBlue}{hazard} (failure rate)
+          \textcolor{UniBlue}{scale}}: \quad
+    \lambda(t \mid \text{features}) =
+    \lambda_{0}(t) \times c(\text{features}).\label{fig:hazard}
+   \end{equation}
 
 We have a Equation \ref{fig:hazard} for each competing cause.
 
@@ -174,9 +173,7 @@ The cluster dependence is something actually not measured\dots
 Full likelihood analysis with frailty models for competing risks data is
 generally complicated, when not impracticable.
 
-\begin{itemize}
- \item \textit{Not} usually, the \textcolor{UniBlue}{probability scale}.
-\end{itemize}
+2. \textit{Not} usually, the \textcolor{UniBlue}{probability scale}.
 
 ### Probability scale \(\rightarrow\) Cause-specific CIF
 
@@ -282,86 +279,124 @@ the cause-specific CIFs are specified in the following manner
   \label{eq:cif}
 \end{equation}
 \end{block}
-i.e., as the product of a cluster-specific risk level with a
-cluster-specific failure time trajectory, resulting in a
-cluster-specific CIF.
 
-That may reflect
+with
 
-+ Disease \textbf{heritability};
-  
-+ The impact of shared \textbf{environmental effects};
-  
-  + **Parental effects**:
-    continuity of the phenotype across generations.
+1. \(\pi_{k}(\bm{x}, \bm{u}) =
+     \exp\{\bm{x}\bm{\beta}_{k} + u_{k}\} \Big/
+     \left(1 + \sum_{m=1}^{K-1} \exp\{\bm{x}\bm{\beta}_{m} + u_{m}\}
+     \right),
+     \quad k = 1,~2, \quad K = 3;\)
 
-### Our contribution: a hierarchical approach
+2. \(\Phi(\cdot)\) is the cumulative distribution function of a standard
+   Gaussian distribution;
 
-Thinking on two competing causes\newline
-\(\dots\) for the outcome \(y_{ijt}\) of a subject \(i\), family \(j\),
-in the time \(t\), we have
-\[
+3. \(g(t) = \text{arctanh}(2t/\delta - 1),
+     \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty).\)
+
+\includegraphics[height=0.5cm]{logo/book.png}
+In @SCHEIKE, this CIF specification is modeled under a *complicated*
+pairwise composite likelihood approach [@lindsay88; @varin11].
+
+### Our contribution: a full likelihood analysis
+
+\vspace{-0.3cm}
+For two competing causes of failure, a subject \(i\), in the cluster
+\(j\), in time \(t\), we have
+\begin{block}{}
+\vspace{-0.5cm}
+\begin{equation}
  \begin{aligned}
   y_{ijt} \mid
   \underbrace{\{u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j}\}}_{
   \substack{\text{\color{UniBlue}{latent effects}}}
   } & \sim
   \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt})\\
-  \begin{bmatrix} u_{1j}\\ u_{2j}\\ \eta_{1j}\\ \eta_{2j} \end{bmatrix}
+  \begin{bmatrix} u_{1}\\ u_{2}\\ \eta_{1}\\ \eta_{2} \end{bmatrix}
   & \sim
   \parbox{2cm}{\centering Multivariate Normal}
   \left(
    \begin{bmatrix} 0\\ 0\\ 0\\ 0 \end{bmatrix},
    \begin{bmatrix}
     \sigma_{u_{1}}^{2}&
-    \sigma_{u_{1}, u_{2}}&
-    \sigma_{u_{1}, \eta_{1}}&
-    \sigma_{u_{1}, \eta_{2}}\\
-   &\sigma_{u_{2}}^{2}&
-    \sigma_{u_{2}, \eta_{1}}&
-    \sigma_{u_{2}, \eta_{2}}\\
-  &&\sigma_{\eta_{1}}^{2}&
-    \sigma_{\eta_{1}, \eta_{2}}\\
- &&&\sigma_{\eta_{2}}^{2}
+    \text{cov}(u_{1}, u_{2})&
+    \text{cov}(u_{1}, \eta_{1})&\text{cov}(u_{1}, \eta_{2})\\
+    &\sigma_{u_{2}}^{2}&
+    \text{cov}(u_{2}, \eta_{1})&\text{cov}(u_{2}, \eta_{2})\\
+    &&\sigma_{\eta_{1}}^{2}&\text{cov}(\eta_{1}, \eta_{2})\\
+    &&&\sigma_{\eta_{2}}^{2}
    \end{bmatrix}
   \right)\\  
   p_{ {\color{UniBlue}{k}} ijt} &=
-  \frac{\partial \text{CIF}}{\partial t}\\
-  & = \frac{\partial}{\partial t}
-  \underbrace{
-   \pi_{\color{UniBlue}{k}}(X, u_{1}, u_{2} \mid \bm{\beta})}_{
-   \substack{\text{\color{UniBlue}{cluster-specific}}\\
-             \text{\color{UniBlue}{risk level}}}}
-  \underbrace{\Phi[w_{\color{UniBlue}{k}} g(t) -
-                   X^{\top}\bm{\gamma}_{\color{UniBlue}{k}} -
-                   \eta_{\color{UniBlue}{k}}]}_{
-   \substack{\text{\color{UniBlue}{cluster-specific}}\\
-             \text{\color{UniBlue}{failure time trajectory}}}},
+  \frac{\partial}{\partial t}
+  F_{\color{UniBlue}{k}}
+  (t \mid \bm{x}, \bm{u}, \eta_{\color{UniBlue}{k}})\label{eq:model}\\
+  &= \frac{\exp\{\bm{x}_{{\color{UniBlue}{k}} ij}
+                 \bm{\beta}_{\color{UniBlue}{k}} +
+                 u_{{\color{UniBlue}{k}} j}\}}{
+  1 + \sum_{{\color{UniBlue}{m}}=1}^{K-1}
+      \exp\{\bm{x}_{{\color{UniBlue}{m}} ij}
+            \bm{\beta}_{\color{UniBlue}{m}} +
+            u_{{\color{UniBlue}{m}} j}\}}\\
+  &\times w_{\color{UniBlue}{k}}\frac{\delta}{2\delta t - 2t^{2}}~
+  \phi\left(
+   w_{\color{UniBlue}{k}}
+   \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+   - \bm{x}_{{\color{UniBlue}{k}} ij}
+     \bm{\gamma}_{\color{UniBlue}{k}} -
+     \eta_{{\color{UniBlue}{k}} j}
+  \right), \quad {\color{UniBlue}{k}} = 1,~2.
  \end{aligned}
-\]
-\({\color{UniBlue}{k}} = 1, 2\).
+\end{equation}
+\end{block}
 
-# Contributions \& challenges
+### Simulating from the model
 
-### Contributions \& challenges
-
-+ A clear and simpler modeling structure;
-
-+ **There is no free lunch**\newline
-  Computational challenges overcame via an\newline
-  efficient implementation and estimation routines,
-  the \textcolor{UniBlue}{TMB};
-
-+ The data is very simple,\newline
-  we just know the outcome (**yes** or **no**);
-
-+ We have to be able to build the \textcolor{UniBlue}{CIF} curves;
-
-+ And accommodate the
-  \textcolor{UniBlue}{within-family dependence} properly,\newline
-  that can happen in different manners;
-
-+ \(\dots\)
+```{r simu,echo=FALSE,fig.height=5}
+pacman::p_load(tidyverse, ## you need the pacman's package
+               ggplot2,
+               patchwork)
+t     <- seq(30, 79.5, by=0.5)
+delta <- 80
+u     <- c(0, 0)
+eta   <- c(0, 0)
+beta  <- c(-2, -1.5)
+gamma <- c(1.2, 1)
+w     <- c(3, 5)
+risk1 <- exp(beta[1] + u[1])
+risk2 <- exp(beta[2] + u[2])
+level <- 1 +  risk1 + risk2
+risklevel1 <- risk1/level
+risklevel2 <- risk2/level
+traj1 <- pnorm(w[1] * atanh(2 * t/delta - 1) - gamma[1] - eta[1])
+traj2 <- pnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
+cif1 <- risklevel1 * traj1
+cif2 <- risklevel2 * traj2
+df <- as.data.frame(cbind(t, cif1, cif2))
+df <- df%>%
+    pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
+g1 <-
+    ggplot(df, aes(t, value, group=cif, color=cif))+
+    geom_line(size=1.5)+
+    labs(x="Time", y="Incidence",
+         title='Cumulative Incidence Function (CIF)')+
+    scale_color_manual(values=c("#0096c8", "#262626"),
+                       labels=c("Cause 1", "Cause 2"))+
+    theme(legend.title=element_blank(),
+          legend.text=element_text(size=13),
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_text(size=11),
+          plot.title=element_text(
+              size=13,
+              margin=unit(c(t=0, r=0, b=2, l=0), 'mm')), 
+          axis.title.x=element_text(
+              size=12,
+              margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=12,
+              margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
+(g1+g1)/(g1+g1+g1)
+```
 
 # Template Model Builder
 
