@@ -380,8 +380,8 @@ df <- df%>%
     pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
 x1 <- w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1]
 x2 <- w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2]
-dtraj1 <- w[1] * delta/(2 * time * (delta - t)) * dnorm(x1)
-dtraj2 <- w[2] * delta/(2 * time * (delta - t)) * dnorm(x2)
+dtraj1 <- w[1] * delta/(2 * time * (delta - time)) * dnorm(x1)
+dtraj2 <- w[2] * delta/(2 * time * (delta - time)) * dnorm(x2)
 dcif1 <- risklevel1 * dtraj1
 dcif2 <- risklevel2 * dtraj2
 ddf <- as.data.frame(cbind(time, dcif1, dcif2))
