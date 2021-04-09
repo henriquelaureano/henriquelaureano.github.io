@@ -184,7 +184,7 @@ the cause-specific
 ```{r cif, echo=FALSE,fig.height=2,fig.width=4}
 pacman::p_load(tidyverse, ## you need the pacman's package
                ggplot2)
-t     <- seq(30, 79.5, by=0.5)
+time  <- seq(30, 79.5, by=0.5)
 delta <- 80
 u     <- c(0, 0)
 eta   <- c(0, 0)
@@ -196,14 +196,14 @@ risk2 <- exp(beta[2] + u[2])
 level <- 1 +  risk1 + risk2
 risklevel1 <- risk1/level
 risklevel2 <- risk2/level
-traj1 <- pnorm(w[1] * atanh(2 * t/delta - 1) - gamma[1] - eta[1])
-traj2 <- pnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
+traj1 <- pnorm(w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1])
+traj2 <- pnorm(w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2])
 cif1 <- risklevel1 * traj1
 cif2 <- risklevel2 * traj2
-df <- as.data.frame(cbind(t, cif1, cif2))
+df <- as.data.frame(cbind(time, cif1, cif2))
 df <- df%>%
     pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
-ggplot(df, aes(t, value, group=cif, color=cif))+
+ggplot(df, aes(time, value, group=cif, color=cif))+
     geom_line(size=1.5)+
     labs(x="Time", y="Incidence",
          title='Cumulative Incidence Function (CIF)')+
@@ -352,11 +352,14 @@ For two competing causes of failure, a subject \(i\), in the cluster
 
 ### Simulating from the model
 
-```{r simu,echo=FALSE,fig.height=5}
+\vspace{0.2cm}
+```{r simu,echo=FALSE,fig.height=4.9}
 pacman::p_load(tidyverse, ## you need the pacman's package
                ggplot2,
+               mvtnorm,
+               mc2d, 
                patchwork)
-t     <- seq(30, 79.5, by=0.5)
+time  <- seq(30, 79.5, by=0.5)
 delta <- 80
 u     <- c(0, 0)
 eta   <- c(0, 0)
@@ -368,21 +371,31 @@ risk2 <- exp(beta[2] + u[2])
 level <- 1 +  risk1 + risk2
 risklevel1 <- risk1/level
 risklevel2 <- risk2/level
-traj1 <- pnorm(w[1] * atanh(2 * t/delta - 1) - gamma[1] - eta[1])
-traj2 <- pnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
+traj1 <- pnorm(w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1])
+traj2 <- pnorm(w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2])
 cif1 <- risklevel1 * traj1
 cif2 <- risklevel2 * traj2
-df <- as.data.frame(cbind(t, cif1, cif2))
+df <- as.data.frame(cbind(time, cif1, cif2))
 df <- df%>%
     pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
+x1 <- w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1]
+x2 <- w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2]
+dtraj1 <- w[1] * delta/(2 * time * (delta - t)) * dnorm(x1)
+dtraj2 <- w[2] * delta/(2 * time * (delta - t)) * dnorm(x2)
+dcif1 <- risklevel1 * dtraj1
+dcif2 <- risklevel2 * dtraj2
+ddf <- as.data.frame(cbind(time, dcif1, dcif2))
+ddf <- ddf%>%
+    pivot_longer(cols=dcif1:dcif2, names_to="dcif", values_to="value")
 g1 <-
-    ggplot(df, aes(t, value, group=cif, color=cif))+
+    ggplot(df, aes(time, value, group=cif, color=cif))+
     geom_line(size=1.5)+
-    labs(x="Time", y="Incidence",
-         title='Cumulative Incidence Function (CIF)')+
+    labs(x="Time", y=NULL)+
     scale_color_manual(values=c("#0096c8", "#262626"),
-                       labels=c("Cause 1", "Cause 2"))+
+                       labels=c("CIF 1", "CIF 2"))+
     theme(legend.title=element_blank(),
+          ## legend.position=c(0.15, 0.65),
+          ## legend.box.background=element_rect(color='black'), 
           legend.text=element_text(size=13),
           axis.text.x=element_text(size=11),
           axis.text.y=element_text(size=11),
@@ -395,7 +408,94 @@ g1 <-
           axis.title.y=element_text(
               size=12,
               margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
-(g1+g1)/(g1+g1+g1)
+g2 <-
+    ggplot(ddf, aes(time, value, group=dcif, color=dcif))+
+    geom_line(size=1.5)+
+    labs(x="Time", y=NULL)+
+    scale_color_manual(values=c("#0096c8", "#262626"),
+                       labels=c("dCIF 1", "dCIF 2"))+
+    theme(legend.title=element_blank(),
+          ## legend.position=c(0.85, 0.65),
+          ## legend.box.background=element_rect(color='black'), 
+          legend.text=element_text(size=13),
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_text(size=11),
+          plot.title=element_text(
+              size=13,
+              margin=unit(c(t=0, r=0, b=2, l=0), 'mm')), 
+          axis.title.x=element_text(
+              size=12,
+              margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=12,
+              margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
+J    <- 10e3
+cs   <- 2
+time <- runif(n=cs*J, min=30, max=79.9)
+Z    <- Matrix::bdiag(replicate(J, rep(1, cs), simplify=FALSE))
+S    <- matrix(c( 1.0,  0.4, -0.1,  0.4,
+                  0.4,  1.0,  0.4, -0.1,
+                 -0.1,  0.4,  1.0,  0.4,
+                  0.4, -0.1,  0.4,  1.0), 4)
+out <- tibble::tibble(i=rep(seq(cs), times=J),
+                      j=rep(seq(J),  each=cs),
+                      time=time,
+                      p1=NA, p2=NA, p3=NA)
+K     <- dim(S)[1]/2 + 1
+ladim <- 2*(K-1) ## latent effects dimension
+set.seed(11)
+U     <- mvtnorm::rmvnorm(J, mean=rep(0, ladim), sigma=S)
+ZU    <- Z%*%U
+risk1 <- exp(beta[1] + ZU[, 1])
+risk2 <- exp(beta[2] + ZU[, 2])
+level <- 1 + risk1 + risk2
+gt    <- atanh(2*time/delta - 1)
+dgt   <- delta/(2*time*(delta - time))
+x1    <- w[1]*gt - gamma[1] - ZU[, 3]
+x2    <- w[2]*gt - gamma[2] - ZU[, 4]
+out$p1 <- risk1/level*w[1]*dgt*dnorm(x1)
+out$p2 <- risk2/level*w[2]*dgt*dnorm(x2)
+out    <- out%>%dplyr::mutate(p3=1-p1-p2)
+set.seed(31)
+y      <- mc2d::rmultinomial(cs*J, 1, prob=out%>%select(p1:p3))
+out    <- out%>%
+    dplyr::bind_cols(tibble::as_tibble(y))%>%
+    dplyr::rename(y1=V1, y2=V2, y3=V3)
+datp   <- out%>%
+    pivot_longer(cols=p1:p3, names_to='p_label', values_to='p_value')%>%
+    mutate(p_label=forcats::fct_recode(p_label,
+                                       'Cause 1'='p1',
+                                       'Cause 2'='p2',
+                                       'Censorship'='p3'))
+daty   <- out%>%
+    pivot_longer(cols=y1:y3, names_to='y_label', values_to='y_value')%>%
+    filter(y_value==1)
+g3 <- 
+    ggplot(datp, aes(x=p_value))+
+    ## geom_histogram(binwidth=0.0025, color='black', fill="#0096c8")+
+    geom_histogram(binwidth=0.0025, color='white', fill="#0096c8")+
+    facet_wrap(~p_label, scales='free')+
+    labs(x='Probability', caption='bindwidth=0.0025')+
+    geom_label(data=data.frame(
+                   label=paste0(
+                       "Turns out in\n",
+                       round(prop.table(table(daty$y_label)), 3),
+                       "%'s of data"),
+                   p_label=levels(datp$p_label)),
+               mapping=aes(x=c(0.029, 0.035, 0.9655),
+                           y=Inf, label=label),
+               vjust=1.5)+
+    ## theme_minimal()+
+    theme(strip.background=element_rect(colour='black', fill='white'),
+          strip.text.x=element_text(size=12), 
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_blank(),
+          axis.title.y=element_blank(),
+          axis.title.x=element_text(
+              size=12, 
+              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
+          plot.caption=element_text(size=11))
+(g1+g2)/g3
 ```
 
 # Template Model Builder
