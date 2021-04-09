@@ -21,10 +21,10 @@ output:
 
 Key terms:
 
-+ \textcolor{AlertOrange}{Clustered}:
-  groups with a dependence structure (e.g. families);
+1. \textcolor{AlertOrange}{Clustered}:
+   groups with a dependence structure (e.g. families);
 
-+ Causes \textcolor{AlertOrange}{competing} by *something*.
+2. Causes \textcolor{AlertOrange}{competing} by *something*.
 
 \bigskip
 Something?
@@ -559,6 +559,19 @@ For details about TMB, AD, and Laplace approximation: @laurence.
 ### Simulation study design
 
 Four models
+
+\begin{equation}
+ \left(\begin{array}{*{2}{>{\columncolor{gray!50}}c}
+                     *{2}{>{\columncolor{green!80}}c}}
+\text{var}(u_{1})&
+    \text{cov}(u_{1}, u_{2})&
+    \text{cov}(u_{1}, \eta_{1})&\text{cov}(u_{1}, \eta_{2})\\
+    &\sigma_{u_{2}}^{2}&
+    \text{cov}(u_{2}, \eta_{1})&\text{cov}(u_{2}, \eta_{2})\\
+    &&\sigma_{\eta_{1}}^{2}&\text{cov}(\eta_{1}, \eta_{2})\\
+    \cellcolor{green!10} &  & \cellcolor{green!10} & \sigma_{\eta_{2}}^{2}\\
+  \end{array}\right)
+\end{equation}
 
 # Conclusion
 
