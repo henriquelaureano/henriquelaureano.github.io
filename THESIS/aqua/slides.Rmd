@@ -309,7 +309,7 @@ For two competing causes of failure, a subject \(i\), in the cluster
  \begin{aligned}
   y_{ijt} \mid
   \underbrace{\{u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j}\}}_{
-  \substack{\text{{\color{UniBlue}{latent effects}}}}
+  \substack{\text{\color{UniBlue}{latent effects}}}
   } & \sim
   \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt})\\
   \begin{bmatrix} u_{1}\\ u_{2}\\ \eta_{1}\\ \eta_{2} \end{bmatrix}
@@ -558,20 +558,26 @@ For details about TMB, AD, and Laplace approximation: @laurence.
 
 ### Simulation study design
 
-Four models
+\[
+ \begin{aligned}
+  \Sigma &= \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
+  \quad\text{with}\\
+  R &= \begin{bmatrix}
+        \text{var}(u_{1}) & \text{cov}(u_{1}, u_{2})\\
+                          & \text{var}(u_{2})
+       \end{bmatrix},\\
+  T &= \begin{bmatrix}
+        \text{var}(\eta_{1}) & \text{cov}(\eta_{1}, \eta_{2})\\
+                             & \text{var}(\eta_{2})
+       \end{bmatrix},\\
+  C &= \begin{bmatrix}
+        \text{cov}(u_{1}, \eta_{1}) & \text{cov}(u_{1}, \eta_{2})\\
+        \text{cov}(u_{2}, \eta_{1}) & \text{cov}(u_{2}, \eta_{2})
+       \end{bmatrix}.
+ \end{aligned}
+\]
 
-\begin{equation}
- \left(\begin{array}{*{2}{>{\columncolor{gray!50}}c}
-                     *{2}{>{\columncolor{green!80}}c}}
-\text{var}(u_{1})&
-    \text{cov}(u_{1}, u_{2})&
-    \text{cov}(u_{1}, \eta_{1})&\text{cov}(u_{1}, \eta_{2})\\
-    &\sigma_{u_{2}}^{2}&
-    \text{cov}(u_{2}, \eta_{1})&\text{cov}(u_{2}, \eta_{2})\\
-    &&\sigma_{\eta_{1}}^{2}&\text{cov}(\eta_{1}, \eta_{2})\\
-    \cellcolor{green!10} &  & \cellcolor{green!10} & \sigma_{\eta_{2}}^{2}\\
-  \end{array}\right)
-\end{equation}
+In terms of latent effects structure, \(\Sigma\), we have
 
 # Conclusion
 
