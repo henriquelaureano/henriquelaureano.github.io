@@ -556,28 +556,62 @@ For details about TMB, AD, and Laplace approximation: @laurence.
 
 # Simulation study
 
-### Simulation study design
+### Simulation study model designs
 
-\[
- \begin{aligned}
-  \Sigma &= \begin{bmatrix} R & C\\ C^{\top} & T \end{bmatrix}
-  \quad\text{with}\\
-  R &= \begin{bmatrix}
-        \text{var}(u_{1}) & \text{cov}(u_{1}, u_{2})\\
-                          & \text{var}(u_{2})
-       \end{bmatrix},\\
-  T &= \begin{bmatrix}
-        \text{var}(\eta_{1}) & \text{cov}(\eta_{1}, \eta_{2})\\
-                             & \text{var}(\eta_{2})
-       \end{bmatrix},\\
-  C &= \begin{bmatrix}
-        \text{cov}(u_{1}, \eta_{1}) & \text{cov}(u_{1}, \eta_{2})\\
-        \text{cov}(u_{2}, \eta_{1}) & \text{cov}(u_{2}, \eta_{2})
-       \end{bmatrix}.
- \end{aligned}
-\]
+\begin{columns}
+ \column{5.5cm}
+  \begin{block}{Risk model}
+   Latent effects only on the risk level i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{u_{1}} & \text{cov}(u_{1}, u_{2})\\
+                             & \sigma_{u_{2}}
+             \end{bmatrix}.
+   \]
+  \end{block}
+ \column{5.5cm}
+  \begin{block}{Time model}
+   Latent effects only on the failure time trajectory level i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{\eta_{1}} & \text{cov}(\eta_{1}, \eta_{2})\\
+                                & \sigma_{\eta_{2}}
+              \end{bmatrix}.
+   \]
+  \end{block}
+\end{columns}
 
-In terms of latent effects structure, \(\Sigma\), we have
+\begin{columns}
+ \column{7cm}
+  \begin{block}{Block-diag model}
+   Latent effects on the risk and time levels without cross-correlations
+   i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{u_{1}}^{2} & \text{cov}_{u_{1}, u_{2}} & 0 & 0\\
+              & \sigma_{u_{2}}^{2} & 0 & 0\\
+              & & \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
+              & & & \sigma_{\eta_{2}}^{2}
+             \end{bmatrix}.
+   \]
+  \end{block}
+ \column{7cm}
+  \begin{block}{Complete model}
+   A \textit{complete} latent effects structure\newline
+   i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{u_{1}}^{2} &
+              \text{cov}_{u_{1}, u_{2}} &
+              \text{cov}_{u_{1}, \eta_{1}} & \text{cov}_{u_{1}, \eta_{2}}\\
+              & \sigma_{u_{2}}^{2} &
+              \text{cov}_{u_{2}, \eta_{1}} & \text{cov}_{u_{2}, \eta_{2}}\\
+              & & \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
+              & & & \sigma_{\eta_{2}}^{2}
+              \end{bmatrix}.
+   \]
+  \end{block}
+\end{columns}
 
 # Conclusion
 
