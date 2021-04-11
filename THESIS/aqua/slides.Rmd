@@ -559,23 +559,23 @@ For details about TMB, AD, and Laplace approximation: @laurence.
 ### Simulation study model designs
 
 \begin{columns}
- \column{5.5cm}
+ \column{5.75cm}
   \begin{block}{Risk model}
    Latent effects only on the risk level i.e.,
    \[
     \Sigma = \begin{bmatrix}
-              \sigma_{u_{1}} & \text{cov}(u_{1}, u_{2})\\
-                             & \sigma_{u_{2}}
+              \sigma_{u_{1}}^{2} & \text{cov}_{u_{1}, u_{2}}\\
+                                 & \sigma_{u_{2}}^{2}
              \end{bmatrix}.
    \]
   \end{block}
- \column{5.5cm}
+ \column{5.75cm}
   \begin{block}{Time model}
    Latent effects only on the failure time trajectory level i.e.,
    \[
     \Sigma = \begin{bmatrix}
-              \sigma_{\eta_{1}} & \text{cov}(\eta_{1}, \eta_{2})\\
-                                & \sigma_{\eta_{2}}
+              \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
+                                    & \sigma_{\eta_{2}}^{2}
               \end{bmatrix}.
    \]
   \end{block}
@@ -612,6 +612,8 @@ For details about TMB, AD, and Laplace approximation: @laurence.
    \]
   \end{block}
 \end{columns}
+
+### Simulation study setup
 
 # Conclusion
 
