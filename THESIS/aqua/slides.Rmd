@@ -331,20 +331,20 @@ For two competing causes of failure, a subject \(i\), in the cluster
   \frac{\partial}{\partial t}
   F_{\color{UniBlue}{k}}
   (t \mid \bm{x}, \bm{u}, \eta_{\color{UniBlue}{k}})\label{eq:model}\\
-  &= \frac{\exp\{\bm{x}_{{\color{UniBlue}{k}} ij}
+  &= \frac{\exp\{\bm{x}_{{\color{UniBlue}{k}}ij}
                  \bm{\beta}_{\color{UniBlue}{k}} +
-                 u_{{\color{UniBlue}{k}} j}\}}{
+                 u_{{\color{UniBlue}{k}}j}\}}{
   1 + \sum_{{\color{UniBlue}{m}}=1}^{K-1}
-      \exp\{\bm{x}_{{\color{UniBlue}{m}} ij}
+      \exp\{\bm{x}_{{\color{UniBlue}{m}}ij}
             \bm{\beta}_{\color{UniBlue}{m}} +
-            u_{{\color{UniBlue}{m}} j}\}}\\
+            u_{{\color{UniBlue}{m}}j}\}}\\
   &\times w_{\color{UniBlue}{k}}\frac{\delta}{2\delta t - 2t^{2}}~
   \phi\left(
    w_{\color{UniBlue}{k}}
    \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-   - \bm{x}_{{\color{UniBlue}{k}} ij}
+   - \bm{x}_{{\color{UniBlue}{k}}ij}
      \bm{\gamma}_{\color{UniBlue}{k}} -
-     \eta_{{\color{UniBlue}{k}} j}
+     \eta_{{\color{UniBlue}{k}}j}
   \right), \quad {\color{UniBlue}{k}} = 1,~2.
  \end{aligned}
 \end{equation}
