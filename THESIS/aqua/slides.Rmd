@@ -701,13 +701,52 @@ Model **identifiability**.
   They appear to be *not structured enough* to capture the data
   characteristics.
 
+### Some simulation study results
+
+\vspace{-0.3cm}
+\begin{center}
+ \includegraphics[height=8cm]{../thesis/figures/bias2plotsd-2.png}
+\end{center}
+
+### Some simulation study results
+
 # Conclusion
 
 ### Final remarks
 
-The complete model works. It's not magnificent, but it works.
+\vspace{-0.55cm}
+\begin{minipage}{13.25cm}
+ \begin{block}{}
+  \textbf{The complete model works}. It's not magnificent, but it works.
+  \vspace{0.2cm}
+  \begin{enumerate}
+   \item It works better in the high CIF scenarios;
+   \vspace{0.15cm}
+   \item As expected, as the sample size increases the results get
+         better;
+   \vspace{0.15cm}
+   \item Given the low data representativity,\newline
+         the model needs a considerable amount of data to perform well;
+   \vspace{0.15cm}
+   \item In standard multinomial GLMMs, as bigger the clusters better
+         the results.\newline
+         In our CIF-based formulation, this characteristic is not so
+         clear.
+  \end{enumerate}
+ \end{block}
+\end{minipage}
+\vspace{0.1cm}
+What else can we do?
 
-What else we can do?
+1. Instead of a conditional approach (latent effects model),\newline
+   we can try a marginal approach e.g., an McGLM [@mcglm];
+
+2. We can also try a copula [@copulas], on maybe two fronts:\newline 1)
+   for a full specification; 2) to accommodate the within-cluster
+   dependence.
+
+\includegraphics[height=0.5cm]{logo/book.png}
+For more read @laurence master thesis.
 
 ### Thanks for watching and have a great day
 
@@ -755,4 +794,4 @@ Special thanks to
 
 ### References
 
-\small
+\scriptsize
