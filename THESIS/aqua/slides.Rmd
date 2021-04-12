@@ -679,7 +679,35 @@ fittings.
 
 ### Simulation study results
 
+First of all, the **time**.
+
++ The *non-complete* models (2D Laplace aprox.) are kind of fast,\newline
+  taking always **less than 5 min**.
+
++ In the most expensive scenarios (30K 4D Laplaces),\newline
+  **the complete model takes 30 min**.\newline
+  In a **full R** implementation with 10K 4D Laplaces, it **took
+  30hrs**. \textcolor{UniBlue}{\textbf{TMB is fast}}.
+ 
++ We also did a Bayesian analysis via Stan/NUTS-HMC [@RStan].
+
+  - **1 week of parallelized processing** for a 2500 size 2 clusters
+    scenario with tuned NUTS. This just reinforces the MCMC
+    impracticability for some complex models.
+
+Model **identifiability**.
+
++ The *non-complete* models fail to learn the data.\newline
+  They appear to be *not structured enough* to capture the data
+  characteristics.
+
 # Conclusion
+
+### Final remarks
+
+The complete model works. It's not magnificent, but it works.
+
+What else we can do?
 
 ### Thanks for watching and have a great day
 
