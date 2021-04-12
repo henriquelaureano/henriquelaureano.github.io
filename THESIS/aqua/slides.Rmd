@@ -615,6 +615,70 @@ For details about TMB, AD, and Laplace approximation: @laurence.
 
 ### Simulation study setup
 
+\vspace{-0.3cm}
+\begin{description}
+ \item[Four] latent effects structures:
+  \begin{multicols}{4}
+   \begin{enumerate}
+    \item Risk model;
+    \item Time model;
+    \item Block-diag model;
+    \item Complete model.
+   \end{enumerate}
+  \end{multicols}
+ \vspace{-0.6cm}
+ \item[Two] CIF configurations:
+  \begin{multicols}{2}
+   \begin{description}
+    \item[Low] max incidence \(\approx 0.15\);
+    \item[High] max incidence \(\approx 0.60\).
+   \end{description}
+  \end{multicols}
+\end{description}
+
+\vspace{-0.3cm}
+For each of those \({\color{UniBlue}{\bm{4}}} \times
+{\color{UniBlue}{\bm{2}}} = {\color{UniBlue}{\bm{8}}}\) scenarios, we
+vary the sample and cluster sizes:
+
+\vspace{-0.2cm}
+\begin{columns}
+ \column{5cm}
+  \begin{align*}
+   &\textbf{\textit{\color{UniBlue}{5000 data points}}}\\
+   \bullet~&\text{2500 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
+   \bullet~&\text{1000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
+   \bullet~&\text{500 clusters of}~\textbf{\color{UniBlue}{size 10}}.
+  \end{align*}
+ \column{5cm}
+  \begin{align*}
+   &\textbf{\textit{\color{UniBlue}{30000 data points}}}\\
+   \bullet~&\text{15000 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
+   \bullet~&\text{6000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
+   \bullet~&\text{3000 clusters of}~\textbf{\color{UniBlue}{size 10}}.
+  \end{align*}
+ \column{5cm}
+  \begin{align*}
+   &\textbf{\textit{\color{UniBlue}{60000 data points}}}\\
+   \bullet~&\text{30000 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
+   \bullet~&\text{12000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
+   \bullet~&\text{6000 clusters of}~\textbf{\color{UniBlue}{size 10}}.
+  \end{align*}
+\end{columns}
+
+\vspace{-0.1cm}
+\begin{block}{}
+Totalizing, \({\color{UniBlue}{\bm{8}}} \times {\color{UniBlue}{\bm{3}}}
+\times {\color{UniBlue}{\bm{3}}} = {\color{UniBlue}{\bm{72}}}\)
+scenarios.\newline
+For each scenario, we simulate \(\color{UniBlue}{\bm{400}}\) samples,
+totalizing \({\color{UniBlue}{\bm{72}}} \times
+{\color{UniBlue}{\bm{400}}} = {\color{UniBlue}{\bm{28800}}}\) model
+fittings.
+\end{block}
+
+### Simulation study results
+
 # Conclusion
 
 ### Thanks for watching and have a great day
