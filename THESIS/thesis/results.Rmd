@@ -724,6 +724,27 @@ p3/p4+plot_annotation(title='LOW CIF SCENARIO',
                       theme=theme(plot.title=element_text(face='bold')))
 ```
 
+```{r cifsaqua,fig.width=10,fig.height=7.5}
+p5 <-
+    p1+
+    theme(legend.position='right', 
+          strip.text.x=element_text(size=13.25, face='bold'))+
+    guides(color=guide_legend(ncol=1))
+p6 <-
+    p2+
+    theme(strip.text.x=element_text(size=13.25, face='bold'))
+p7 <-
+    p3+
+    theme(legend.position='right', 
+          strip.text.x=element_text(size=13.25, face='bold'))+
+    guides(color=guide_legend(ncol=1))
+p8 <-
+    p4+
+    theme(strip.text.x=element_text(size=13.25, face='bold'))
+p5/p6
+p7/p8
+```
+
 # HISTO LOGS2
 
 ```{r histologs2,fig.width=10,fig.height=14}
