@@ -14,9 +14,10 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 
 What am I doing right now? (Apr 21)
 
-+ Working on the final details of my master thesis;
++ The [master thesis](THESIS/thesis/thesis.pdf) is *ready*,
+  [Wagner](http://www.leg.ufpr.br/~wagner/) is reading it;
 
-+ Making my new slides template\
++ Master thesis defense slides are ready\
   [pdf](THESIS/aqua/slides.pdf)
   ([.Rmd](THESIS/aqua/slides.Rmd) |
    [in_header file](THESIS/aqua/beamerheader.txt) |
@@ -34,10 +35,8 @@ What am I doing right now? (Apr 21)
 
 ## News
 
-<span style="background-color: #FFFF00">
-      Accepted in
-      [Journal of Statistical Computation and Simulation](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation):
-      </span>
+Accepted in
+[Journal of Statistical Computation and Simulation](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation):
 
 **Unit gamma mixed regression models for continuous bounded data**\
 R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
