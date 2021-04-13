@@ -465,7 +465,7 @@ g3 <-
                        round(prop.table(table(daty$y_label)), 3),
                        "%'s of data"),
                    p_label=levels(datp$p_label)),
-               mapping=aes(x=c(0.025, 0.035, 0.962),
+               mapping=aes(x=c(0.0275, 0.0345, 0.966),
                            y=Inf, label=label),
                vjust=1.5)+
     ## theme_minimal()+
