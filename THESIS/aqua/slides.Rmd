@@ -415,6 +415,7 @@ g2 <-
               margin=unit(c(t=2, r=0, b=0, l=0), "mm")))
 J    <- 10e3
 cs   <- 2
+set.seed(3)
 time <- runif(n=cs*J, min=30, max=79.9)
 Z    <- Matrix::bdiag(replicate(J, rep(1, cs), simplify=FALSE))
 S    <- matrix(c( 1.0,  0.4, -0.1,  0.4,
@@ -704,7 +705,7 @@ Model **identifiability**.
 ### Some simulation study results
 
 \vspace{-0.3cm}
-\includegraphics[height=8cm]{../thesis/figures/bias2plotsd-2.png}
+\includegraphics[height=8cm]{../thesis/figures/bias2plotsd-1.png}
 
 ### Some simulation study results
 
