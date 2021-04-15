@@ -85,85 +85,75 @@
  Automatic differentiation (AD).                    
 \end{flushleft}
 
-% -----------------------------
 \section{Introduction}
-% -----------------------------
 
 Regression models are the main statistical tool for investigating the
 relationship between a response variable and a set of explanatory
-variables. The class of generalized linear
-models~(GLMs)~\citep{Nelder1972} is probably the most popular
-statistical modelling framework to deal with Gaussian and non-Gaussian
-outcomes. Despite its flexibility, the GLMs are not suitable for
-response variables with support limited to the interval $(0,1)$. In
-general, continuous bounded variables appear in the form of rates,
-proportions, indexes and percentages and they can be used in many
-research areas.
+variables. The class of generalized linear models~(GLMs)~\citep{GLM72}
+is probably the most popular statistical modelling framework to deal
+with Gaussian and non-Gaussian outcomes. Despite its flexibility, the
+GLMs are not suitable for response variables with support limited to the
+interval \((0, 1)\). In general, continuous bounded variables appear in
+the form of rates, proportions, indexes and percentages and they can be
+used in many research areas.
 
 The analysis of bounded variables is generally performed by the
-beta~\citep{Ferrari2004} and simplex~\citep{Barndorff:1991} regression
-models. Besides that, other regression models were proposed to analyze
-continuous bounded variables on the interval $(0,1)$. Some examples are
-the unit-Weibull~\citep{mazucheli2019}, Johnson
-$S_B$~\citep{lemonte2016new}, Kumaraswamy~\citep{Mitnik:2013} and unit
-gamma~\citep{mousa2016gamma} regression models. Additionally, using
-second-moment assumptions~\cite{bonatetal2018} developed a flexible
-class of regression models to deal with continuous bounded variables on
-the interval $[0,1]$.
+beta~\citep{} and simplex~\citep{} regression models. Besides that,
+other regression models were proposed to analyze continuous bounded
+variables on the interval \((0, 1)\). Some examples are the
+unit-Weibull~\citep{}, Johnson \(S_{B}\)~\citep{}, Kumaraswamy~\citep{}
+and unit gamma~\citep{} regression models. Additionally, using
+second-moment assumptions~\cite{} developed a flexible class of
+regression models to deal with continuous bounded variables on the
+interval \([0, 1]\).
 
 Although these models are useful in many applications, they are usually
 limited to analyze independent data. In the case of longitudinal data,
 it is essential that the regression model take into account the
-longitudinal and/or grouped data structure. According to
-\cite{diggle:2002} longitudinal data are repeated measures evaluated on
-the same subjects over time, that are potentially correlated. Dependent
-data can also arises in studies with block designs, spatial and
-multilevel data~\citep{Verbeke:2001,Fitzmaurice:2008}. For the analysis
-of such data several methods have been proposed over the last four
-decades.
+longitudinal and/or grouped data structure. According to \cite{}
+longitudinal data are repeated measures evaluated on the same subjects
+over time, that are potentially correlated. Dependent data can also
+arises in studies with block designs, spatial and multilevel
+data~\citep{}. For the analysis of such data several methods have been
+proposed over the last four decades.
 
-\cite{laird1982} proposed the random effects regression models for
-longitudinal data analysis. \cite{Breslow:1993} presented the
-generalized linear mixed models~(GLMMs) for the analysis of non-Gaussian
-outcomes. \cite{LiangZeger:1986} and \cite{Zeger:1988} extended the GLMs
-for the analysis of longitudinal data using a generalized estimating
-equation~(GEE) approach. \cite{masarotto2012gaussian} developed a class
-of marginal models for modelling dependence structures in the analysis
-of longitudinal data, time series and spatial based on Gaussian copula
-models.
+\cite{} proposed the random effects regression models for longitudinal
+data analysis. \cite{} presented the generalized linear mixed
+models~(GLMMs) for the analysis of non-Gaussian outcomes. \cite{} and
+\cite{} extended the GLMs for the analysis of longitudinal data using a
+generalized estimating equation~(GEE) approach. \cite{gcmr} developed a
+class of marginal models for modelling dependence structures in the
+analysis of longitudinal data, time series and spatial based on Gaussian
+copula models.
 
 Based on the aforementioned approaches, some regression models have been
 proposed to deal with longitudinal continuous bounded outcomes. GLMMs
-based on beta distribution were employed in medical
-research~\citep{hunger2012}, social
-sciences~\citep{Bonatbetamix,Bonat:2015b} and behavioral
-studies~\citep{verkuilen2012mixed}. Other regression models based on the
-simplex distribution were proposed for modelling longitudinal
-data~\citep{song2000marginal,song2004,qiu2008simplex}. Under the
-likelihood paradigm, the simplex mixed models with applications is
-discussed in~\cite{bonatetal2018simplex}.
+based on beta distribution were employed in medical research~\citep{},
+social sciences~\citep{} and behavioral studies~\citep{}. Other
+regression models based on the simplex distribution were proposed for
+modelling longitudinal data~\citep{}. Under the likelihood paradigm, the
+simplex mixed models with applications is discussed in~\cite{}.
 
 The main goal of this study is to propose the unit gamma mixed model to
 deal with longitudinal continuous bounded outcomes. The unit gamma
 distribution is new in the literature and has been explored in other
-contexts, like control charts~\citep{lee2019}, comparison between
-different methods for parameter estimation~\citep{dey2019} and
-likelihood ratio tests~\citep{guedes2020}. In this paper, we will
-investigate the unit gamma distribution as an alternative to beta
-distributions for the analysis of dependent data bounded on the interval
-$(0,1)$. We considered this distribution into the GLMM framework in
-order to fit regression models with random effects. We use automatic
-differentiation~\citep{griewank2008} and Laplace
-approximation~\citep{tierney1986} for efficient estimation of the
-proposed model through the \texttt{R}~\citep{R} package
-\texttt{TMB}~\citep{kristensen2016}.
+contexts, like control charts~\citep{}, comparison between different
+methods for parameter estimation~\citep{} and likelihood ratio
+tests~\citep{}. In this paper, we will investigate the unit gamma
+distribution as an alternative to beta distributions for the analysis of
+dependent data bounded on the interval \((0, 1)\). We considered this
+distribution into the GLMM framework in order to fit regression models
+with random effects. We use automatic differentiation~\citep{} and
+Laplace approximation~\citep{tierney} for efficient estimation of the
+proposed model through the \texttt{R}~\citep{R21} package
+\texttt{TMB}~\citep{TMb}.
 
 The main contributions of this article are: (i) introducing the unit
 gamma distribution into the GLMMs framework; (ii) performing a extensive
 simulation study to check the properties of the the maximum likelihood
 estimator to deal with longitudinal continuous bounded outcomes; (iii)
 applying the proposed model in two data sets from different fields of
-application; (iv) providing \texttt{R} code and \textrm{C++}
+application; (iv) providing \texttt{R} code and \texttt{C++}
 implementation for the unit gamma mixed models.
 
 The work are organized as follows. Section~\ref{} presents the unit
@@ -173,84 +163,28 @@ are reported in Section~\ref{}. Section~\ref{} ilustrates the
 application of the model in two data sets. Finally, the main
 contributions of the article are discussed in Section~\ref{}.
 
-
-% -----------------------------
 \section{Unit gamma mixed models}
 \label{mixedmodel}
-% -----------------------------
 
-% -----------------------------
 \section{Estimation and inference}
 \label{inference}
-% -----------------------------
 
-\begin{fleqn}[\parindent]
-\begin{equation}
-\begin{split}
-\label{eq:LAlogLik}
-\ell(\boldsymbol{\theta}) & = \dfrac{q}{2} \log(2 \pi) - \dfrac{1}{2} \mathrm{det}\big( \mathcal{H}(\boldsymbol{\theta})\big) + \phi \log(z) - \log(\Gamma(\phi)) + (z - 1) \log(y) \nonumber \\
-                          & \quad + (\phi - 1) \log( - \log(y)) - \dfrac{q}{2} \log(2 \pi) - \dfrac{ \hat{\mathbf{u}}^{\top}\hat{\mathbf{u}} }{2\tau^2},
-\end{split}
-\end{equation}
-\end{fleqn}
-
-% -----------------------------
 \section{Simulation studies}
 \label{simulation}
-% ----------------------------- 
-
-% -----------------------------
-\subsection{Unit gamma mixed model with varying precision}
-\label{simul3}
-% -----------------------------
-
-% -----------------------------
-\section{Applications}
-\label{results}
-% -----------------------------
-
-% -----------------------------
-\subsection{Body fat percentage data set}
-\label{bodyfat}
-% -----------------------------
-
-\begin{equation}
-\mathrm{logit}(\mu_{ijk}) = \beta_{0} + \beta_{1}~\mbox{\texttt{age}}_i + \beta_{2}~\mbox{\texttt{BMI}}_i + \beta_{3}~\mbox{\texttt{sex}}_i + \beta_{4k}~\mbox{\texttt{IPAQ}}_{ki} + \beta_{5j}~\mbox{\texttt{regions}}_{ji} + u_{i1}, \nonumber \\
-\end{equation}
-and
-\begin{equation}
-\log(\phi_{ij})  = \gamma_{0} + \gamma_{1}~\mbox{\texttt{BMI}}_i + \gamma_{2j}~\mbox{\texttt{regions}}_{ji} + u_{i2}. \nonumber \\
-\end{equation}
-
-\begin{align}
-\label{eq:linearprediqa}
-& Y_{ijk} | u_i, u_{i,j} \sim \mathrm{UG}(\mu_{ijk}, \phi),   \nonumber \\
-\mathrm{logit}(\mu_{ijk}) & =  \beta_0 + \beta_{1j}\texttt{quarter}_{ij} + \beta_{2k}\texttt{location}_{ik} + u_{i} + u_{i,j}, \nonumber \\
- &  \quad  u_i \sim \mathcal{N}(0, \tau_1^2)~~\mbox{and}~~u_{i,j} \sim \mathcal{N}(0, \tau_2^2),  \nonumber 
-\end{align} 
 
 \begin{figure}[H]
  \centering
  \includegraphics[width=.99\textwidth]{}
- \caption{Fitted values by quarters, locations, random intercept$^1$ and
-          nested models$^2$.}
+ \caption{Fitted values by quarters, locations, random intercept.}
  \label{fig:FittedIQA}
 \end{figure}
 
-% -----------------------------
 \section{Discussion}
 \label{discussion}
-% -----------------------------
 
-% --------------------------------
 \section*{Supplementary material}
-% --------------------------------
 
 \bibliographystyle{dcu}
 \bibliography{references}
-
-% ----------------------------------------------
-% Appendix
-% ----------------------------------------------
 
 \end{document}
