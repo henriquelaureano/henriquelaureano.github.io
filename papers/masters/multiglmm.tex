@@ -1,0 +1,256 @@
+\documentclass[a4paper,12pt]{article}
+%% \usepackage[brazil,brazilian]{babel}
+\usepackage{amsmath, nccmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}  
+\usepackage{float}
+\usepackage{pdflscape} % horizontal page
+\usepackage{tabularx}
+\usepackage[english,vlined,ruled]{algorithm2e}
+\usepackage{booktabs}
+
+\title{
+  
+  Modeling the cumulative incidence function of clustered competing
+  risks data: a multinomial GLMM approach
+
+}
+\author{
+  Henrique Aparecido Laureano
+  \thanks{Laboratory of Statistics and Goeinformation,
+    Departament of Statistics,
+    Paran\'{a} Federal University, Curitiba, Brazil.
+    E-mail: laureano@ufpr.br
+  }~
+  Wagner Hugo Bonat$^\ast$}
+ 
+\begin{document}
+\maketitle
+\medskip
+
+\begin{abstract}
+
+  Clustered competing risks data is a special case of failure time
+  data. Besides the cluster structure which implies a latent
+  within-cluster dependence between its elements, this kind of data is
+  characterized by 1) multiple causes/variables competing to be the one
+  responsible for the occurrence of an event, a failure; and 2)
+  censorship, when the event of interest happens or not for none of the
+  competing causes, in the study period. To handle this type of data, we
+  propose a generalized linear mixed model (GLMM) i.e., a latent-effects
+  framework, instead of a usual survival model. In survival analysis,
+  the modeling is usually done by means of the hazard rate, and the
+  within-cluster dependence accommodation ends by generating a
+  complicated likelihood function, sometimes intractable. We, on the
+  other hand, model the clustered competing causes in the probability
+  scale, in terms of the cumulative incidence function (CIF) of each
+  competing cause. In our framework, we suppose a multinomial
+  probability distribution for the competing causes and censorship,
+  conditioned on the latent effects. The latent effects are accommodated
+  via a multivariate Gaussian distribution and are modeled by the
+  parameters of its covariance matrix. The probability distributions are
+  connected via CIF, modeled here following \citeonline{} specification,
+  based on its decomposition as the product of an instantaneous risk
+  level function with a trajectory time level function. The latent
+  effects are inserted in those level functions. To make the model
+  parameters estimation the most efficient as possible, we use the
+  template model builder (TMB) \cite{}. With this \texttt{R} \cite{}
+  package, we have 1) the log-likelihood function written in
+  \texttt{C++}; 2) access to efficient linear algebra libraries; 3)
+  efficient Laplace approximation implementation for the latent-effects;
+  and 4) an automatic differentiation (AD) routine, the state-of-the-art
+  in derivatives computation. To check the estimability of our model a
+  large simulation study is performed, based on different latent
+  structure formulations, with the aim to verify which one is most
+  adequate to real scenarios. The model presents to be of difficult
+  estimation, with our results converging to a latent structure where
+  the risk and trajectory time levels are correlated. In scenarios with
+  high CIF the model exhibits the better results, but still with an
+  excessive variance, showing that improvements are necessary.
+
+\end{abstract}
+
+\begin{flushleft}
+ \textbf{Keywords}: 
+ Clustered competing risks;
+ Within-cluster dependence;
+ Multinomial generalized linear mixed model (GLMM);
+ TMB: Template Model Builder;
+ Laplace approximation;
+ Automatic differentiation (AD).                    
+\end{flushleft}
+
+% -----------------------------
+\section{Introduction}
+% -----------------------------
+
+Regression models are the main statistical tool for investigating the
+relationship between a response variable and a set of explanatory
+variables. The class of generalized linear
+models~(GLMs)~\citep{Nelder1972} is probably the most popular
+statistical modelling framework to deal with Gaussian and non-Gaussian
+outcomes. Despite its flexibility, the GLMs are not suitable for
+response variables with support limited to the interval $(0,1)$. In
+general, continuous bounded variables appear in the form of rates,
+proportions, indexes and percentages and they can be used in many
+research areas.
+
+The analysis of bounded variables is generally performed by the
+beta~\citep{Ferrari2004} and simplex~\citep{Barndorff:1991} regression
+models. Besides that, other regression models were proposed to analyze
+continuous bounded variables on the interval $(0,1)$. Some examples are
+the unit-Weibull~\citep{mazucheli2019}, Johnson
+$S_B$~\citep{lemonte2016new}, Kumaraswamy~\citep{Mitnik:2013} and unit
+gamma~\citep{mousa2016gamma} regression models. Additionally, using
+second-moment assumptions~\cite{bonatetal2018} developed a flexible
+class of regression models to deal with continuous bounded variables on
+the interval $[0,1]$.
+
+Although these models are useful in many applications, they are usually
+limited to analyze independent data. In the case of longitudinal data,
+it is essential that the regression model take into account the
+longitudinal and/or grouped data structure. According to
+\cite{diggle:2002} longitudinal data are repeated measures evaluated on
+the same subjects over time, that are potentially correlated. Dependent
+data can also arises in studies with block designs, spatial and
+multilevel data~\citep{Verbeke:2001,Fitzmaurice:2008}. For the analysis
+of such data several methods have been proposed over the last four
+decades.
+
+\cite{laird1982} proposed the random effects regression models for
+longitudinal data analysis. \cite{Breslow:1993} presented the
+generalized linear mixed models~(GLMMs) for the analysis of non-Gaussian
+outcomes. \cite{LiangZeger:1986} and \cite{Zeger:1988} extended the GLMs
+for the analysis of longitudinal data using a generalized estimating
+equation~(GEE) approach. \cite{masarotto2012gaussian} developed a class
+of marginal models for modelling dependence structures in the analysis
+of longitudinal data, time series and spatial based on Gaussian copula
+models.
+
+Based on the aforementioned approaches, some regression models have been
+proposed to deal with longitudinal continuous bounded outcomes. GLMMs
+based on beta distribution were employed in medical
+research~\citep{hunger2012}, social
+sciences~\citep{Bonatbetamix,Bonat:2015b} and behavioral
+studies~\citep{verkuilen2012mixed}. Other regression models based on the
+simplex distribution were proposed for modelling longitudinal
+data~\citep{song2000marginal,song2004,qiu2008simplex}. Under the
+likelihood paradigm, the simplex mixed models with applications is
+discussed in~\cite{bonatetal2018simplex}.
+
+The main goal of this study is to propose the unit gamma mixed model to
+deal with longitudinal continuous bounded outcomes. The unit gamma
+distribution is new in the literature and has been explored in other
+contexts, like control charts~\citep{lee2019}, comparison between
+different methods for parameter estimation~\citep{dey2019} and
+likelihood ratio tests~\citep{guedes2020}. In this paper, we will
+investigate the unit gamma distribution as an alternative to beta
+distributions for the analysis of dependent data bounded on the interval
+$(0,1)$. We considered this distribution into the GLMM framework in
+order to fit regression models with random effects. We use automatic
+differentiation~\citep{griewank2008} and Laplace
+approximation~\citep{tierney1986} for efficient estimation of the
+proposed model through the \texttt{R}~\citep{R} package
+\texttt{TMB}~\citep{kristensen2016}.
+
+The main contributions of this article are: (i) introducing the unit
+gamma distribution into the GLMMs framework; (ii) performing a extensive
+simulation study to check the properties of the the maximum likelihood
+estimator to deal with longitudinal continuous bounded outcomes; (iii)
+applying the proposed model in two data sets from different fields of
+application; (iv) providing \texttt{R} code and \textrm{C++}
+implementation for the unit gamma mixed models.
+
+The work are organized as follows. Section~\ref{} presents the unit
+gamma mixed models. Section~\ref{} describes the method proposed for
+parameter estimation and inference. The results of simulation studies
+are reported in Section~\ref{}. Section~\ref{} ilustrates the
+application of the model in two data sets. Finally, the main
+contributions of the article are discussed in Section~\ref{}.
+
+
+% -----------------------------
+\section{Unit gamma mixed models}
+\label{mixedmodel}
+% -----------------------------
+
+% -----------------------------
+\section{Estimation and inference}
+\label{inference}
+% -----------------------------
+
+\begin{fleqn}[\parindent]
+\begin{equation}
+\begin{split}
+\label{eq:LAlogLik}
+\ell(\boldsymbol{\theta}) & = \dfrac{q}{2} \log(2 \pi) - \dfrac{1}{2} \mathrm{det}\big( \mathcal{H}(\boldsymbol{\theta})\big) + \phi \log(z) - \log(\Gamma(\phi)) + (z - 1) \log(y) \nonumber \\
+                          & \quad + (\phi - 1) \log( - \log(y)) - \dfrac{q}{2} \log(2 \pi) - \dfrac{ \hat{\mathbf{u}}^{\top}\hat{\mathbf{u}} }{2\tau^2},
+\end{split}
+\end{equation}
+\end{fleqn}
+
+% -----------------------------
+\section{Simulation studies}
+\label{simulation}
+% ----------------------------- 
+
+% -----------------------------
+\subsection{Unit gamma mixed model with varying precision}
+\label{simul3}
+% -----------------------------
+
+% -----------------------------
+\section{Applications}
+\label{results}
+% -----------------------------
+
+% -----------------------------
+\subsection{Body fat percentage data set}
+\label{bodyfat}
+% -----------------------------
+
+\begin{equation}
+\mathrm{logit}(\mu_{ijk}) = \beta_{0} + \beta_{1}~\mbox{\texttt{age}}_i + \beta_{2}~\mbox{\texttt{BMI}}_i + \beta_{3}~\mbox{\texttt{sex}}_i + \beta_{4k}~\mbox{\texttt{IPAQ}}_{ki} + \beta_{5j}~\mbox{\texttt{regions}}_{ji} + u_{i1}, \nonumber \\
+\end{equation}
+and
+\begin{equation}
+\log(\phi_{ij})  = \gamma_{0} + \gamma_{1}~\mbox{\texttt{BMI}}_i + \gamma_{2j}~\mbox{\texttt{regions}}_{ji} + u_{i2}. \nonumber \\
+\end{equation}
+
+\begin{align}
+\label{eq:linearprediqa}
+& Y_{ijk} | u_i, u_{i,j} \sim \mathrm{UG}(\mu_{ijk}, \phi),   \nonumber \\
+\mathrm{logit}(\mu_{ijk}) & =  \beta_0 + \beta_{1j}\texttt{quarter}_{ij} + \beta_{2k}\texttt{location}_{ik} + u_{i} + u_{i,j}, \nonumber \\
+ &  \quad  u_i \sim \mathcal{N}(0, \tau_1^2)~~\mbox{and}~~u_{i,j} \sim \mathcal{N}(0, \tau_2^2),  \nonumber 
+\end{align} 
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=.99\textwidth]{}
+ \caption{Fitted values by quarters, locations, random intercept$^1$ and
+          nested models$^2$.}
+ \label{fig:FittedIQA}
+\end{figure}
+
+% -----------------------------
+\section{Discussion}
+\label{discussion}
+% -----------------------------
+
+% --------------------------------
+\section*{Supplementary material}
+% --------------------------------
+
+\bibliographystyle{dcu}
+\bibliography{references}
+
+% ----------------------------------------------
+% Appendix
+% ----------------------------------------------
+
+\end{document}
