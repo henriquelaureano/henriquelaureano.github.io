@@ -13,6 +13,10 @@
 \usepackage{tabularx}
 \usepackage[english,vlined,ruled]{algorithm2e}
 \usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows}
+\usepackage{adjustbox}
+\input{tikzit.sty}
 
 \title{
   
@@ -21,8 +25,8 @@
 
 }
 \author{
-  Henrique Aparecido Laureano
-  \thanks{Laboratory of Statistics and Goeinformation,
+  Henrique Aparecido Laureano\thanks{
+    Laboratory of Statistics and Goeinformation,
     Departament of Statistics,
     Paran\'{a} Federal University, Curitiba, Brazil.
     E-mail: laureano@ufpr.br
@@ -31,38 +35,29 @@
  
 \begin{document}
 \maketitle
-\medskip
 
 \begin{abstract}
 
   Clustered competing risks data are a complex failure time data
   scheme. Its main characteristics are the cluster structure, which
   implies a latent within-cluster dependence between its elements, and
-  its multiple causes/variables competing to be the one responsible for
-  the occurrence of an event, the failure. To handle this kind of data,
-  we propose a generalized linear mixed model (GLMM) approach, i.e. a
-  latent-effects framework based on the modeling of conditional
-  distributions, instead of a usual complex frailty model. We do the
-  modeling in the probability scale, in terms of the cumulative
-  incidence function (CIF) of each competing cause. A multinomial
-  distribution is supposed for the competing causes and censorship,
-  conditioned on the latent effects. The latent effects are accommodated
-  via a multivariate Gaussian distribution and are modeled by the
-  parameters of its covariance matrix. The CIF is specified as the
-  product of an instantaneous risk level function with a failure time
-  trajectory level function. The estimation procedure is done via the R
-  package TMB (Template Model Builder), an \texttt{C++} based framework
-  with efficient linear algebra, Laplace approximation, and automatic
-  differentiation routines.
-  
-  To check the estimability of our model a large simulation study is
-  performed, based on different latent structure formulations, with the
-  aim to verify which one is most adequate to real scenarios. The model
-  presents to be of difficult estimation, with our results converging to
-  a latent structure where the risk and trajectory time levels are
-  correlated. In scenarios with high CIF the model exhibits the better
-  results, but still with an excessive variance, showing that
-  improvements are necessary.
+  its multiple variables competing to be the one responsible for the
+  occurrence of an event, the failure. To handle this kind of data, we
+  propose a full likelihood approach, based on a generalized linear
+  mixed model instead a usual complex frailty model. We model the
+  competing causes in the probability scale, in terms of the cumulative
+  incidence function (CIF). A multinomial distribution is assumed for
+  the competing causes and censorship, conditioned on the latent
+  effects. The latent effects are accommodated via a multivariate
+  Gaussian distribution. The CIF is specified as the product of an
+  instantaneous risk level function with a failure time trajectory level
+  function. The estimation procedure is performed through the R package
+  TMB (Template Model Builder), an \texttt{C++} based framework with
+  efficient Laplace approximation and automatic differentiation
+  routines. A large simulation study is performed, based on different
+  latent structure formulations. The model presents to be of difficult
+  estimation, with our results converging to a latent structure where
+  the risk and failure time trajectory levels are correlated.
 
 \end{abstract}
 
@@ -83,20 +78,10 @@ relationship between a response variable and a set of explanatory
 variables. The class of generalized linear models~(GLMs)~\citep{GLM72}
 is probably the most popular statistical modelling framework to deal
 with Gaussian and non-Gaussian outcomes. Despite its flexibility, the
-GLMs are not suitable for response variables with support limited to the
-interval \((0, 1)\). In general, continuous bounded variables appear in
-the form of rates, proportions, indexes and percentages and they can be
-used in many research areas.
+GLMs are not suitable for . In general, .
 
-The analysis of bounded variables is generally performed by the
-beta~\citep{} and simplex~\citep{} regression models. Besides that,
-other regression models were proposed to analyze continuous bounded
-variables on the interval \((0, 1)\). Some examples are the
-unit-Weibull~\citep{}, Johnson \(S_{B}\)~\citep{}, Kumaraswamy~\citep{}
-and unit gamma~\citep{} regression models. Additionally, using
-second-moment assumptions~\cite{} developed a flexible class of
-regression models to deal with continuous bounded variables on the
-interval \([0, 1]\).
+The analysis of is generally performed by the . Besides that, other
+. Some examples are the . Additionally, .
 
 Although these models are useful in many applications, they are usually
 limited to analyze independent data. In the case of longitudinal data,
@@ -104,55 +89,31 @@ it is essential that the regression model take into account the
 longitudinal and/or grouped data structure. According to \cite{}
 longitudinal data are repeated measures evaluated on the same subjects
 over time, that are potentially correlated. Dependent data can also
-arises in studies with block designs, spatial and multilevel
-data~\citep{}. For the analysis of such data several methods have been
-proposed over the last four decades.
+arises in studies with block designs, spatial and multilevel data. For
+the analysis of such data several methods have been proposed over the
+last four decades.
 
-\cite{} proposed the random effects regression models for longitudinal
-data analysis. \cite{} presented the generalized linear mixed
-models~(GLMMs) for the analysis of non-Gaussian outcomes. \cite{} and
-\cite{} extended the GLMs for the analysis of longitudinal data using a
-generalized estimating equation~(GEE) approach. \cite{gcmr} developed a
-class of marginal models for modelling dependence structures in the
-analysis of longitudinal data, time series and spatial based on Gaussian
-copula models.
+\cite{laird82} proposed the random effects regression models for
+longitudinal data analysis. \cite{breslow93} presented the generalized
+linear mixed models~(GLMMs) for the analysis of non-Gaussian
+outcomes. \cite{gcmr} developed a class of marginal models for modelling
+dependence structures in the analysis of longitudinal data, time series
+and spatial based on Gaussian copula models.
 
-Based on the aforementioned approaches, some regression models have been
-proposed to deal with longitudinal continuous bounded outcomes. GLMMs
-based on beta distribution were employed in medical research~\citep{},
-social sciences~\citep{} and behavioral studies~\citep{}. Other
-regression models based on the simplex distribution were proposed for
-modelling longitudinal data~\citep{}. Under the likelihood paradigm, the
-simplex mixed models with applications is discussed in~\cite{}.
-
-The main goal of this study is to propose the unit gamma mixed model to
-deal with longitudinal continuous bounded outcomes. The unit gamma
-distribution is new in the literature and has been explored in other
-contexts, like control charts~\citep{}, comparison between different
-methods for parameter estimation~\citep{} and likelihood ratio
-tests~\citep{}. In this paper, we will investigate the unit gamma
-distribution as an alternative to beta distributions for the analysis of
-dependent data bounded on the interval \((0, 1)\). We considered this
-distribution into the GLMM framework in order to fit regression models
-with random effects. We use automatic differentiation~\citep{} and
-Laplace approximation~\citep{tierney} for efficient estimation of the
-proposed model through the \texttt{R}~\citep{R21} package
-\texttt{TMB}~\citep{TMb}.
+The main goal of this study is to propose the . In this paper, we will
+investigate the as an alternative to . R \citep{R21} package
+\texttt{TMB} \citep{TMb}.
 
 The main contributions of this article are: (i) introducing the unit
 gamma distribution into the GLMMs framework; (ii) performing a extensive
 simulation study to check the properties of the the maximum likelihood
 estimator to deal with longitudinal continuous bounded outcomes; (iii)
 applying the proposed model in two data sets from different fields of
-application; (iv) providing \texttt{R} code and \texttt{C++}
-implementation for the unit gamma mixed models.
+application; (iv) providing R code and \texttt{C++} implementation for
+the unit gamma mixed models.
 
-The work are organized as follows. Section~\ref{} presents the unit
-gamma mixed models. Section~\ref{} describes the method proposed for
-parameter estimation and inference. The results of simulation studies
-are reported in Section~\ref{}. Section~\ref{} ilustrates the
-application of the model in two data sets. Finally, the main
-contributions of the article are discussed in Section~\ref{}.
+The work are organized as follows. Finally, the main contributions of
+the article are discussed in Section .
 
 \section{Unit gamma mixed models}
 \label{mixedmodel}
@@ -165,9 +126,59 @@ contributions of the article are discussed in Section~\ref{}.
 
 \begin{figure}[H]
  \centering
- \includegraphics[width=.99\textwidth]{}
- \caption{Fitted values by quarters, locations, random intercept.}
- \label{fig:FittedIQA}
+ \scalebox{0.9}{
+  \begin{tikzpicture}
+   \begin{pgfonlayer}{nodelayer}
+    \node [style=circle] (2) at (-17.5, 5.5) {0};
+    \node [style=circle] (3) at (-13.5, 5.5) {1};
+    \node [style=circle] (7) at (-7.5, 5.5) {1};
+    \node [style=circle] (9) at (-7.5, 4.5) {2};
+    \node [style=none] (11) at (-7.5, 3.5) {$\vdots$};
+    \node [style=circle] (12) at (-7.5, 2.5) {$m$};
+    \node [style=circle] (14) at (-12.25, 4) {0};
+    \node [style=circle] (22) at (-6, 3.5) {0};
+    \node [style=circle] (23) at (-2, 3.5) {2};
+    \node [style=circle] (25) at (-4, 5.5) {1};
+    \node [style=none] (27) at (-17, 5.5) {};
+    \node [style=none] (28) at (-14, 5.5) {};
+    \node [style=none] (29) at (-11.75, 4.25) {};
+    \node [style=none] (30) at (-8, 5.5) {};
+    \node [style=none] (31) at (-8, 4.5) {};
+    \node [style=none] (32) at (-8, 2.5) {};
+    \node [style=none] (33) at (-5.5, 3.5) {};
+    \node [style=none] (34) at (-4.5, 5.25) {};
+    \node [style=none] (35) at (-2.5, 3.5) {};
+    \node [style=none] (36) at (-11.75, 4) {};
+    \node [style=none] (37) at (-11.75, 3.75) {};
+    \node [style=none] (38) at (-5.5, 3.75) {};
+    \node [style=none] (39) at (-2.5, 3.75) {};
+    \node [style=none] (40) at (-3.5, 5.25) {};
+    \node [style=none] (44) at (-15.5, 6.75) {{\large
+                                               Failure time process}};
+    \node [style=none] (45) at (-10, 6.75) {{\large
+                                             Competing risk process}};
+    \node [style=none] (47) at (-4, 6.75) {{\large Multistate process}};
+   \end{pgfonlayer}
+   \begin{pgfonlayer}{edgelayer}
+	\draw [style=1side] (27.center) to (28.center);
+	\draw [style=1side] (37.center) to (32.center);
+	\draw [style=1side] (40.center) to (39.center);
+	\draw [style=1side] (33.center) to (35.center);
+	\draw [style=2side] (38.center) to (34.center);
+	\draw [style=1side] (36.center) to (31.center);
+	\draw [style=1side] (29.center) to (30.center);
+   \end{pgfonlayer}
+  \end{tikzpicture}
+ }
+ \caption{.}
+ \label{fig:}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[]{}
+ \caption{.}
+ \label{fig:}
 \end{figure}
 
 \section{Discussion}
