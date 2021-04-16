@@ -35,43 +35,34 @@
 
 \begin{abstract}
 
-  Clustered competing risks data is a special case of failure time
-  data. Besides the cluster structure which implies a latent
-  within-cluster dependence between its elements, this kind of data is
-  characterized by 1) multiple causes/variables competing to be the one
-  responsible for the occurrence of an event, a failure; and 2)
-  censorship, when the event of interest happens or not for none of the
-  competing causes, in the study period. To handle this type of data, we
-  propose a generalized linear mixed model (GLMM) i.e., a latent-effects
-  framework, instead of a usual survival model. In survival analysis,
-  the modeling is usually done by means of the hazard rate, and the
-  within-cluster dependence accommodation ends by generating a
-  complicated likelihood function, sometimes intractable. We, on the
-  other hand, model the clustered competing causes in the probability
-  scale, in terms of the cumulative incidence function (CIF) of each
-  competing cause. In our framework, we suppose a multinomial
-  probability distribution for the competing causes and censorship,
+  Clustered competing risks data are a complex failure time data
+  scheme. Its main characteristics are the cluster structure, which
+  implies a latent within-cluster dependence between its elements, and
+  its multiple causes/variables competing to be the one responsible for
+  the occurrence of an event, the failure. To handle this kind of data,
+  we propose a generalized linear mixed model (GLMM) approach, i.e. a
+  latent-effects framework based on the modeling of conditional
+  distributions, instead of a usual complex frailty model. We do the
+  modeling in the probability scale, in terms of the cumulative
+  incidence function (CIF) of each competing cause. A multinomial
+  distribution is supposed for the competing causes and censorship,
   conditioned on the latent effects. The latent effects are accommodated
   via a multivariate Gaussian distribution and are modeled by the
-  parameters of its covariance matrix. The probability distributions are
-  connected via CIF, modeled here following \citeonline{} specification,
-  based on its decomposition as the product of an instantaneous risk
-  level function with a trajectory time level function. The latent
-  effects are inserted in those level functions. To make the model
-  parameters estimation the most efficient as possible, we use the
-  template model builder (TMB) \cite{}. With this \texttt{R} \cite{}
-  package, we have 1) the log-likelihood function written in
-  \texttt{C++}; 2) access to efficient linear algebra libraries; 3)
-  efficient Laplace approximation implementation for the latent-effects;
-  and 4) an automatic differentiation (AD) routine, the state-of-the-art
-  in derivatives computation. To check the estimability of our model a
-  large simulation study is performed, based on different latent
-  structure formulations, with the aim to verify which one is most
-  adequate to real scenarios. The model presents to be of difficult
-  estimation, with our results converging to a latent structure where
-  the risk and trajectory time levels are correlated. In scenarios with
-  high CIF the model exhibits the better results, but still with an
-  excessive variance, showing that improvements are necessary.
+  parameters of its covariance matrix. The CIF is specified as the
+  product of an instantaneous risk level function with a failure time
+  trajectory level function. The estimation procedure is done via the R
+  package TMB (Template Model Builder), an \texttt{C++} based framework
+  with efficient linear algebra, Laplace approximation, and automatic
+  differentiation routines.
+  
+  To check the estimability of our model a large simulation study is
+  performed, based on different latent structure formulations, with the
+  aim to verify which one is most adequate to real scenarios. The model
+  presents to be of difficult estimation, with our results converging to
+  a latent structure where the risk and trajectory time levels are
+  correlated. In scenarios with high CIF the model exhibits the better
+  results, but still with an excessive variance, showing that
+  improvements are necessary.
 
 \end{abstract}
 
