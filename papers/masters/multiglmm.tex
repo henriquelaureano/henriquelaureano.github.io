@@ -75,58 +75,19 @@
 
 Regression models are the main statistical tool for investigating the
 relationship between a response variable and a set of explanatory
-variables. The class of generalized linear models~(GLMs)~\citep{GLM72}
-is probably the most popular statistical modelling framework to deal
-with Gaussian and non-Gaussian outcomes. Despite its flexibility, the
-GLMs are not suitable for . In general, .
-
-The analysis of is generally performed by the . Besides that, other
-. Some examples are the . Additionally, .
-
-Although these models are useful in many applications, they are usually
-limited to analyze independent data. In the case of longitudinal data,
-it is essential that the regression model take into account the
-longitudinal and/or grouped data structure. According to \cite{}
-longitudinal data are repeated measures evaluated on the same subjects
-over time, that are potentially correlated. Dependent data can also
-arises in studies with block designs, spatial and multilevel data. For
-the analysis of such data several methods have been proposed over the
-last four decades.
-
-\cite{laird82} proposed the random effects regression models for
-longitudinal data analysis. \cite{breslow93} presented the generalized
-linear mixed models~(GLMMs) for the analysis of non-Gaussian
-outcomes. \cite{gcmr} developed a class of marginal models for modelling
-dependence structures in the analysis of longitudinal data, time series
-and spatial based on Gaussian copula models.
-
-The main goal of this study is to propose the . In this paper, we will
-investigate the as an alternative to . R \citep{R21} package
-\texttt{TMB} \citep{TMb}.
-
-The main contributions of this article are: (i) introducing the unit
-gamma distribution into the GLMMs framework; (ii) performing a extensive
-simulation study to check the properties of the the maximum likelihood
-estimator to deal with longitudinal continuous bounded outcomes; (iii)
-applying the proposed model in two data sets from different fields of
-application; (iv) providing R code and \texttt{C++} implementation for
-the unit gamma mixed models.
-
-The work are organized as follows. Finally, the main contributions of
-the article are discussed in Section .
-
-\section{Unit gamma mixed models}
-\label{mixedmodel}
-
-\section{Estimation and inference}
-\label{inference}
-
-\section{Simulation studies}
-\label{simulation}
+variables. When the response is the time until the occurrence of some
+event, we are in the field of failure time data with the corresponding
+regression models being called survival models
+\citep{kalb&prentice}. The word \textit{survival} is used in those
+models since the survival experience is the modeling focus. We could be
+interested in the occurrence of an event for multiple causes or even in
+systematic occurrences, having then multiple survival experiences. These
+possibilities imply different failure time data designs. They can be of
+three classes, as schematized in Figure \ref{fig:failuretimedata}.
 
 \begin{figure}[H]
  \centering
- \scalebox{0.9}{
+ \scalebox{0.8}{
   \begin{tikzpicture}
    \begin{pgfonlayer}{nodelayer}
     \node [style=circle] (2) at (-17.5, 5.5) {0};
@@ -170,16 +131,88 @@ the article are discussed in Section .
    \end{pgfonlayer}
   \end{tikzpicture}
  }
- \caption{.}
- \label{fig:}
+ \caption{Illustration of failure time designs.}
+ \label{fig:failuretimedata}
+\end{figure}
+
+The first two are special cases of the last, a multistate process. The
+special cases are characterized by the presence of only absorbent
+states, besides the initial state 0. A multistate process is
+characterized by the presence of at least one intermediate state.
+
+The class of generalized linear models~(GLMs)~\citep{GLM72}
+is probably the most popular statistical modelling framework to deal
+with Gaussian and non-Gaussian outcomes. Despite its flexibility, the
+GLMs are not suitable for . In general, .
+
+The analysis of is generally performed by the . Besides that, other
+. Some examples are the . Additionally, .
+
+Although these models are useful in many applications, they are usually
+limited to analyze independent data. In the case of longitudinal data,
+it is essential that the regression model take into account the
+longitudinal and/or grouped data structure. According to \cite{}
+longitudinal data are repeated measures evaluated on the same subjects
+over time, that are potentially correlated. Dependent data can also
+arises in studies with block designs, spatial and multilevel data. For
+the analysis of such data several methods have been proposed over the
+last four decades.
+
+\cite{laird82} proposed the random effects regression models for
+longitudinal data analysis. \cite{breslow93} presented the generalized
+linear mixed models~(GLMMs) for the analysis of non-Gaussian
+outcomes. \cite{gcmr} developed a class of marginal models for modelling
+dependence structures in the analysis of longitudinal data, time series
+and spatial based on Gaussian copula models.
+
+The main goal of this study is to propose the . In this paper, we will
+investigate the as an alternative to . R \citep{R21} package
+\texttt{TMB} \citep{TMb}.
+
+The main contributions of this article are: (i) introducing the unit
+gamma distribution into the GLMMs framework; (ii) performing a extensive
+simulation study to check the properties of the the maximum likelihood
+estimator to deal with longitudinal continuous bounded outcomes; (iii)
+applying the proposed model in two data sets from different fields of
+application; (iv) providing R code and \texttt{C++} implementation for
+the unit gamma mixed models.
+
+The work are organized as follows. Finally, the main contributions of
+the article are discussed in Section .
+
+\section{multiGLMM: a multinomial GLMM for clustered competing risks data}
+\label{model}
+
+\begin{figure}[H]
+ \centering \includegraphics[width=\textwidth]{pics/cifcoefs-1.png}
+ \caption{ILLUSTRATION OF COEFFICIENT BEHAVIORS FOR A GIVEN CUMULATIVE
+          INCIDENCE FUNCTION (CIF) (PROPOSED BY \citeonline{SCHEIKE}),
+          IN A MODEL WITH TWO COMPETING CAUSES OF FAILURE, WITHOUT
+          COVARIATES, AND WITH THE FOLLOWING CONFIGURATION: \(\beta_{2}
+          = 0\), \(\bm{u} = 0\) AND \(\bm{\eta} = 0\); IN EACH SCENARIO
+          ALL OTHER COEFFICIENTS ARE SET TO ZERO, WITH THE EXCEPTION
+          OF \(w_{1} = 1\)}
+ \label{fig:cifcoefs}
 \end{figure}
 
 \begin{figure}[H]
  \centering
- \includegraphics[]{}
- \caption{.}
- \label{fig:}
+ \includegraphics[width=0.9\textwidth]{pics/cif-1.png}
+ \caption{ILLUSTRATION OF A GIVEN CLUSTER-SPECIFIC CUMULATIVE INCIDENCE
+          FUNCTION (CIF), PROPOSED BY \citeonline{SCHEIKE}, IN A MODEL
+          WITH TWO COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES AND
+          THE FOLLOWING CONFIGURATION: \(\beta_{1} = -2\),
+          \(\beta_{2} = -1\), \(\gamma_{1} = 1\), \(w_{1} = 3\) AND
+          \(u_{2} = 0\). THE VARIATION BETWEEN FRAMES IS GIVEN BY THE
+          LATENT EFFECTS \(u_{1}\) AND \(\eta_{1}\)}
+ \label{fig:cif}
 \end{figure}
+
+\section{Estimation and inference}
+\label{inference}
+
+\section{Simulation studies}
+\label{simulation}
 
 \section{Discussion}
 \label{discussion}
