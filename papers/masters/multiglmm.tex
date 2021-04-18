@@ -1,4 +1,5 @@
 \documentclass[a4paper,12pt]{article}
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
 %% \usepackage[brazil,brazilian]{babel}
 \usepackage{amsmath, nccmath}
 \usepackage{amsfonts}
@@ -76,30 +77,30 @@
 Regression models are the main statistical tool for investigating the
 relationship between a response variable and a set of explanatory
 variables. When the response is the time until the occurrence of some
-event, we are in the field of failure time data with the corresponding
-regression models being called survival models
-\citep{kalb&prentice}. The word \textit{survival} is used in those
-models since the survival experience is the modeling focus. We could be
-interested in the occurrence of an event for multiple causes or even in
-systematic occurrences, having then multiple survival experiences. These
-possibilities imply different failure time data designs. They can be of
-three classes, as schematized in Figure \ref{fig:failuretimedata}.
+event, we are in the yard of failure time data with its regression
+models being called survival models \citep{kalb&prentice}, with the word
+\textit{survival} meaning that the modeling focus is the survival
+experience. We could be interested in the occurrence of an event for
+multiple causes or even in systematic occurrences, having then multiple
+survival experiences to be modeled. These possibilities imply different
+failure time data designs. They can be of three classes, as schematized
+in Figure \ref{fig:failuretimedata}.
 
 \begin{figure}[H]
  \centering
- \scalebox{0.8}{
+ \scalebox{0.85}{
   \begin{tikzpicture}
    \begin{pgfonlayer}{nodelayer}
-    \node [style=circle] (2) at (-17.5, 5.5) {0};
-    \node [style=circle] (3) at (-13.5, 5.5) {1};
-    \node [style=circle] (7) at (-7.5, 5.5) {1};
-    \node [style=circle] (9) at (-7.5, 4.5) {2};
+    \node [style=circle,draw=black,fill=white] (2) at (-17.5, 5.5) {0};
+    \node [style=circle,draw=black,fill=white] (3) at (-13.5, 5.5) {1};
+    \node [style=circle,draw=black,fill=white] (7) at (-7.5, 5.5) {1};
+    \node [style=circle,draw=black,fill=white] (9) at (-7.5, 4.5) {2};
     \node [style=none] (11) at (-7.5, 3.5) {$\vdots$};
-    \node [style=circle] (12) at (-7.5, 2.5) {$m$};
-    \node [style=circle] (14) at (-12.25, 4) {0};
-    \node [style=circle] (22) at (-6, 3.5) {0};
-    \node [style=circle] (23) at (-2, 3.5) {2};
-    \node [style=circle] (25) at (-4, 5.5) {1};
+    \node [style=circle,draw=black,fill=white] (12) at (-7.5, 2.5) {$m$};
+    \node [style=circle,draw=black,fill=white] (14) at (-12.25, 4) {0};
+    \node [style=circle,draw=black,fill=white] (22) at (-6, 3.5) {0};
+    \node [style=circle,draw=black,fill=white] (23) at (-2, 3.5) {2};
+    \node [style=circle,draw=black,fill=white] (25) at (-4, 5.5) {1};
     \node [style=none] (27) at (-17, 5.5) {};
     \node [style=none] (28) at (-14, 5.5) {};
     \node [style=none] (29) at (-11.75, 4.25) {};
@@ -117,7 +118,7 @@ three classes, as schematized in Figure \ref{fig:failuretimedata}.
     \node [style=none] (44) at (-15.5, 6.75) {{\large
                                                Failure time process}};
     \node [style=none] (45) at (-10, 6.75) {{\large
-                                             Competing risk process}};
+                                             Competing risks process}};
     \node [style=none] (47) at (-4, 6.75) {{\large Multistate process}};
    \end{pgfonlayer}
    \begin{pgfonlayer}{edgelayer}
@@ -138,7 +139,17 @@ three classes, as schematized in Figure \ref{fig:failuretimedata}.
 The first two are special cases of the last, a multistate process. The
 special cases are characterized by the presence of only absorbent
 states, besides the initial state 0. A multistate process is
-characterized by the presence of at least one intermediate state.
+characterized by the presence of at least one intermediate state. In
+this work, our focus is on the competing risks process, more
+specifically, its clustered version. This means that we have groups of
+elements sharing some non-observed latent dependence structure.
+
+In survival analysis, the survival experiences are usually modeled in
+the hazard (failure rate) scale, and when the latent within-cluster
+dependence is accommodated we have the so-called frailty models.
+
+A less usual scale but convenient when dealing with competing risks
+process is the probability scale.
 
 The class of generalized linear models~(GLMs)~\citep{GLM72}
 is probably the most popular statistical modelling framework to deal
