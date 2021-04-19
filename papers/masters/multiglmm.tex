@@ -151,23 +151,17 @@ dependence is accommodated we have the so-called frailty models.
 A less usual scale but convenient when dealing with competing risks
 process is the probability scale.
 
-The class of generalized linear models~(GLMs)~\citep{GLM72}
-is probably the most popular statistical modelling framework to deal
-with Gaussian and non-Gaussian outcomes. Despite its flexibility, the
-GLMs are not suitable for . In general, .
-
-The analysis of is generally performed by the . Besides that, other
-. Some examples are the . Additionally, .
-
-Although these models are useful in many applications, they are usually
-limited to analyze independent data. In the case of longitudinal data,
-it is essential that the regression model take into account the
-longitudinal and/or grouped data structure. According to \cite{}
-longitudinal data are repeated measures evaluated on the same subjects
-over time, that are potentially correlated. Dependent data can also
-arises in studies with block designs, spatial and multilevel data. For
-the analysis of such data several methods have been proposed over the
-last four decades.
+The class of generalized linear models (GLMs) \citep{GLM72} is probably
+the most popular statistical modelling framework. Despite its
+flexibility, the GLMs are not suitable for dependent data. In the case
+of longitudinal data, it is essential that the regression model take
+into account the longitudinal and/or grouped data structure. According
+to \cite{diggle02} longitudinal data are repeated measures evaluated on
+the same subjects over time, that are potentially correlated. Dependent
+data can also arises in studies with block designs, spatial and
+multilevel data \citep{verbeke&molenberghs,fitzmaurice}. For the
+analysis of such data several methods have been proposed over the last
+four decades.
 
 \cite{laird82} proposed the random effects regression models for
 longitudinal data analysis. \cite{breslow93} presented the generalized
@@ -188,8 +182,9 @@ applying the proposed model in two data sets from different fields of
 application; (iv) providing R code and \texttt{C++} implementation for
 the unit gamma mixed models.
 
-The work are organized as follows. Finally, the main contributions of
-the article are discussed in Section .
+The work are organized as follows. Section \ref{model}, Section
+\ref{inference}, Section \ref{simulation}. Finally, the main
+contributions of the article are discussed in Section \ref{discussion}.
 
 \section{multiGLMM: a multinomial GLMM for clustered competing risks data}
 \label{model}

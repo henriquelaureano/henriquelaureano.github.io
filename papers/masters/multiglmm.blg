@@ -3,46 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: multiglmm.aux
 The style file: dcu.bst
 Database file #1: references.bib
-Warning--I didn't find a database entry for ""
-You've used 7 entries,
+You've used 10 entries,
             2921 wiz_defined-function locations,
-            689 strings with 5738 characters,
-and the built_in function-call counts, 30505 in all, are:
-= -- 5023
-> -- 371
+            705 strings with 6110 characters,
+and the built_in function-call counts, 47715 in all, are:
+= -- 7882
+> -- 600
 < -- 0
-+ -- 2377
-- -- 112
-* -- 2642
-:= -- 6119
-add.period$ -- 15
-call.type$ -- 7
-change.case$ -- 97
-chr.to.int$ -- 7
-cite$ -- 7
-duplicate$ -- 97
-empty$ -- 216
-format.name$ -- 147
-if$ -- 5475
++ -- 3781
+- -- 182
+* -- 4151
+:= -- 9514
+add.period$ -- 21
+call.type$ -- 10
+change.case$ -- 137
+chr.to.int$ -- 10
+cite$ -- 10
+duplicate$ -- 142
+empty$ -- 300
+format.name$ -- 229
+if$ -- 8576
 int.to.chr$ -- 5
 int.to.str$ -- 0
-missing$ -- 7
-newline$ -- 32
-num.names$ -- 71
-pop$ -- 18
+missing$ -- 13
+newline$ -- 44
+num.names$ -- 103
+pop$ -- 37
 preamble$ -- 1
-purify$ -- 105
+purify$ -- 150
 quote$ -- 0
-skip$ -- 85
+skip$ -- 114
 stack$ -- 0
-substring$ -- 7077
-swap$ -- 12
-text.length$ -- 98
+substring$ -- 11151
+swap$ -- 15
+text.length$ -- 140
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 26
+type$ -- 32
 warning$ -- 0
-while$ -- 157
+while$ -- 220
 width$ -- 0
-write$ -- 99
-(There was 1 warning)
+write$ -- 145

@@ -1,0 +1,125 @@
+---
+author: henrique laureano (.github.io)
+date: '*Last modification on* `r Sys.time()`'
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+```{r echo=FALSE}
+library(knitr)
+opts_chunk$set(fig.path='pics/')
+```
+
+```{r packages}
+## install.packages('pacman')
+pacman::p_load(ggplot2, patchwork, tibble)
+```
+
+```{r cifcoefs,fig.width=10,fig.height=3.75}
+time  <- seq(0.1, 79.9, length.out=100)
+beta2 <- 0
+u1    <- 0
+u2    <- 0
+eta   <- 0
+cif <- function(time, beta1, beta2, gamma, w, u1, u2, eta)
+{
+    delta       <- 80
+    core        <- expand.grid(time, beta1, beta2, gamma, w, u1, u2, eta)
+    names(core) <-
+        c('time', 'beta1', 'beta2', 'gamma', 'w', 'u1', 'u2', 'eta')
+    risk1 <- exp(core$beta1 + core$u1)
+    risk2 <- exp(core$beta2 + core$u2)
+    level <- 1 + risk1 + risk2
+    gtime <- atanh(2 * core$time/delta - 1)
+    x     <- core$w * gtime - core$gamma - core$eta
+    ftime <- pnorm(x)
+    out   <- risk1/level * ftime
+    return(cbind(out, core))
+}
+parplot <- function(data, par, expar)
+{
+    ggplot(data, aes(time, out, group=data[, par]))+
+        geom_line(aes(linetype=factor(data[, par])), size=1)+
+        labs(x='Time', y=NULL, linetype=expar)+
+        theme_minimal()+
+        theme(legend.position      ='top',
+              legend.box.background=element_rect(color='black'), 
+              legend.title         =element_text(size=14),
+              legend.text          =element_text(size=14),
+              axis.text.x          =element_text(size=13),
+              axis.text.y          =element_text(size=13),
+              axis.title.x         =element_text(
+                  size=14, margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
+              axis.title.y         =element_text(
+                  size=14, margin=unit(c(t=0, r=3, b=0, l=0), 'mm')))
+}
+beta1 <- c(-0.5, 0, 0.5)
+gamma <- 0
+w     <- 1
+df <- cif(time, beta1, beta2, gamma, w, u1, u2, eta)
+g1 <- parplot(df, par='beta1', expression(beta[1]))
+beta1 <- 0
+gamma <- c(-2, 0, 2)
+w     <- 1
+df <- cif(time, beta1, beta2, gamma, w, u1, u2, eta)
+g2 <- parplot(df, par='gamma', expression(gamma[1]))
+beta1 <- 0
+gamma <- 0
+w     <- c(-1, 0, 1)
+df <- cif(time, beta1, beta2, gamma, w, u1, u2, eta)
+g3 <- parplot(df, par='w', expression(w[1]))
+g1+g2+g3+
+    plot_annotation(title='Cumulative Incidence Function (CIF)')&
+    theme(plot.title=element_text(size=14, face='bold'))
+```
+
+```{r cif,fig.height=6}
+cif1 <- function(mrow) {
+    t <- mrow[ , 1] ; eta1 <- mrow[ , 2] ; u1 <- mrow[ , 3] ; u2 <- 0
+    X <- 1
+    beta1 <- -2 ; beta2 <- -1
+    risklevel1 <- exp(X * beta1 + u1)
+    risklevel <- risklevel1/(1 + risklevel1 + exp(X * beta2 + u2))
+    delta <- 80
+    gamma1 <- 1
+    w1 <- 3
+    trajectory <- pnorm(w1 * atanh(2 * t/delta - 1) - X * gamma1 - eta1)
+    out <- risklevel * trajectory
+    return(out)
+}
+## ---------------------------------------------------------------------
+t <- seq(30, 79.5, length.out = 50)
+u1 <- c(-1, -0.5, 0.5, 1)
+eta1 <- c(-2, -1, 0, 1, 2)
+## ---------------------------------------------------------------------
+cifgrid <- expand.grid(t, eta1, u1)
+names(cifgrid) <- c("t", "eta1", "u1")
+## ---------------------------------------------------------------------
+cifs <- cif1(cifgrid)
+## ---------------------------------------------------------------------
+df <- cbind(cifs, cifgrid)
+
+ggplot(df, aes(t, cifs, group = eta1)) +
+    geom_line(aes(linetype = factor(eta1))) +
+    facet_wrap(~ u1, labeller = label_bquote(u[1] : .(u1))) +
+    ## ylim(0, 0.2) +
+    labs(x = "Time", y = "Cluster-specific CIF",
+         linetype = expression(eta[1])) +
+    theme_minimal()+
+    theme(legend.position = c(0.07, 0.81),
+          legend.text = element_text(size = 12),
+          legend.box.background=element_rect(color='black'), 
+          strip.background=element_rect(colour='black', fill='white'),
+          strip.text.x = element_text(size = 12),
+          axis.text.x = element_text(size = 11),
+          axis.text.y = element_text(size = 11),
+          axis.title.x = element_text(
+              size = 12,
+              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
+          axis.title.y = element_text(
+              size = 12,
+              margin = unit(c(t = 0, r = 3, b = 0, l = 0), "mm")))
+```
