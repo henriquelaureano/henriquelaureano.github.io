@@ -177,13 +177,11 @@ generally complicated, when not impracticable.
 
 ### Probability scale \(\rightarrow\) Cause-specific CIF
 
-Besides the within-cluster dependence, there is an often interest\newline
-in describing the time at event onset, directly described by\newline
-the cause-specific
-
-```{r cif, echo=FALSE,fig.height=2,fig.width=4}
+\vspace{0.2cm}
+```{r cif, echo=FALSE,fig.height=4.15}
 pacman::p_load(tidyverse, ## you need the pacman's package
-               ggplot2)
+               ggplot2,
+               patchwork)
 time  <- seq(30, 79.5, by=0.5)
 delta <- 80
 u     <- c(0, 0)
@@ -200,28 +198,60 @@ traj1 <- pnorm(w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1])
 traj2 <- pnorm(w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2])
 cif1 <- risklevel1 * traj1
 cif2 <- risklevel2 * traj2
+cif3 <- 1 - cif1 - cif2
 df <- as.data.frame(cbind(time, cif1, cif2))
 df <- df%>%
     pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
-ggplot(df, aes(time, value, group=cif, color=cif))+
+g1 <-
+    ggplot(df, aes(time, value, group=cif, color=cif))+
     geom_line(size=1.5)+
     labs(x="Time", y="Incidence",
          title='Cumulative Incidence Function (CIF)')+
     scale_color_manual(values=c("#0096c8", "#262626"),
                        labels=c("Cause 1", "Cause 2"))+
     theme(legend.title=element_blank(),
-          legend.text=element_text(size=9),
-          axis.text.x=element_text(size=8),
-          axis.text.y=element_text(size=8),
+          legend.text=element_text(size=14),
+          legend.position=c(0.175, 0.85),
+          legend.box.background=element_rect(color='black'),
+          axis.text.x=element_text(size=13),
+          axis.text.y=element_text(size=13),
           plot.title=element_text(
-              size=10,
+              size=17,
+              face='bold', 
               margin=unit(c(t=0, r=0, b=2, l=0), 'mm')), 
           axis.title.x=element_text(
-              size=9,
+              size=14,
               margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
           axis.title.y=element_text(
-              size=9,
+              size=14,
               margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
+df <- as.data.frame(cbind(time, cif1, cif2, cif3))
+df <- df%>%
+    pivot_longer(cols=cif1:cif3, names_to="cif", values_to="value")
+df$cif <- factor(df$cif, levels=c('cif3', 'cif2', 'cif1'))
+g2 <-
+    ggplot(df, aes(time, value, fill=cif))+
+    geom_area(alpha=1, size=1, colour='white')+
+    scale_fill_manual(values=c('#ff4c00', '#262626', '#0096c8'),
+                      labels=c('Censorship', 'Cause 2', 'Cause 1'))+
+    labs(x='Time', y='Probability', title='All CIFs sum up to 1')+
+    theme(legend.title=element_blank(),
+          legend.text=element_text(size=14),
+          legend.position=c(0.25, 0.75),
+          legend.box.background=element_rect(color='black'),
+          axis.text.x=element_text(size=13),
+          axis.text.y=element_text(size=13),
+          plot.title=element_text(
+              size=17,
+              face='bold',
+              margin=unit(c(t=0, r=0, b=2, l=0), 'mm')), 
+          axis.title.x=element_text(
+              size=14, 
+              margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=14, 
+              margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
+g1+g2
 ```
 
 \begin{block}{}
