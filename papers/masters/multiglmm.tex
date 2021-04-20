@@ -189,29 +189,15 @@ contributions of the article are discussed in Section \ref{discussion}.
 \section{multiGLMM: a multinomial GLMM for clustered competing risks data}
 \label{model}
 
-\begin{figure}[H]
- \centering \includegraphics[width=\textwidth]{pics/cifcoefs-1.png}
- \caption{ILLUSTRATION OF COEFFICIENT BEHAVIORS FOR A GIVEN CUMULATIVE
-          INCIDENCE FUNCTION (CIF) (PROPOSED BY \citeonline{SCHEIKE}),
-          IN A MODEL WITH TWO COMPETING CAUSES OF FAILURE, WITHOUT
-          COVARIATES, AND WITH THE FOLLOWING CONFIGURATION: \(\beta_{2}
-          = 0\), \(\bm{u} = 0\) AND \(\bm{\eta} = 0\); IN EACH SCENARIO
-          ALL OTHER COEFFICIENTS ARE SET TO ZERO, WITH THE EXCEPTION
-          OF \(w_{1} = 1\)}
- \label{fig:cifcoefs}
-\end{figure}
+So
 
 \begin{figure}[H]
- \centering
- \includegraphics[width=0.9\textwidth]{pics/cif-1.png}
- \caption{ILLUSTRATION OF A GIVEN CLUSTER-SPECIFIC CUMULATIVE INCIDENCE
-          FUNCTION (CIF), PROPOSED BY \citeonline{SCHEIKE}, IN A MODEL
-          WITH TWO COMPETING CAUSES OF FAILURE, WITHOUT COVARIATES AND
-          THE FOLLOWING CONFIGURATION: \(\beta_{1} = -2\),
-          \(\beta_{2} = -1\), \(\gamma_{1} = 1\), \(w_{1} = 3\) AND
-          \(u_{2} = 0\). THE VARIATION BETWEEN FRAMES IS GIVEN BY THE
-          LATENT EFFECTS \(u_{1}\) AND \(\eta_{1}\)}
- \label{fig:cif}
+ \centering \includegraphics[width=\linewidth]{pics/cifstudy-1.png}
+ \vspace{-0.75cm}
+ \caption{Curve behaviors for different parameter settings, showing then
+   the corresponding parameter effects in a cluster-specific cumulative
+   incidence function (CIF).}
+ \label{fig:cifcoefs}
 \end{figure}
 
 \section{Estimation and inference}
