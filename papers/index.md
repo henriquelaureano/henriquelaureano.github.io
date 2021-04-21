@@ -34,6 +34,8 @@
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
   Submitted to [*Statistical Methods in Medical Research*](https://www.google.com/search?q=statistical+methods+in+medical+research)
 
+***
+
 ### In preparation
 
 + [2021]\
