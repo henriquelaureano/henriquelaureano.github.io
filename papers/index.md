@@ -26,11 +26,17 @@
 
 ***
 
-<!-- ### Submitted for publication -->
-
-### In preparation
+### Submitted for publication
 
 + [2021]\
   Multivariate generalized linear mixed models for continuous bounded
   outcomes: Analyzing the body fat percentage data\
-  R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat  
+  R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
+  Submitted to [*Statistical Methods in Medical Research*](https://www.google.com/search?q=statistical+methods+in+medical+research)
+
+### In preparation
+
++ [2021]\
+  Modeling the cumulative incidence function of clustered competing
+  risks data: a multinomial GLMM approach\
+  **H. A. Laureano**, W. H. Bonat

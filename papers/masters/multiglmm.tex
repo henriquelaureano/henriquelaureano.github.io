@@ -144,9 +144,16 @@ this work, our focus is on the competing risks process, more
 specifically, its clustered version. This means that we have groups of
 elements sharing some non-observed latent dependence structure.
 
-In survival analysis, the survival experiences are usually modeled in
-the hazard (failure rate) scale, and when the latent within-cluster
-dependence is accommodated we have the so-called frailty models.
+In the analysis of failure time data, the survival experiences are
+usually modeled in the hazard (failure rate) scale, and when the latent
+within-cluster dependence is accommodated we have the so-called frailty
+models.
+
+The use of frailty models implies complicated likelihood functions and
+its inference is done via elaborated and slow EM algorithms or
+inefficient MCMC schemes. Besides, its conclusions are attached to its
+modeling scale i.e., all model interpretations are in terms of not
+straightforward hazard rates.
 
 A less usual scale but convenient when dealing with competing risks
 process is the probability scale.
@@ -188,8 +195,6 @@ contributions of the article are discussed in Section \ref{discussion}.
 
 \section{multiGLMM: a multinomial GLMM for clustered competing risks data}
 \label{model}
-
-So
 
 \begin{figure}[H]
  \centering \includegraphics[width=\linewidth]{pics/cifstudy-1.png}
