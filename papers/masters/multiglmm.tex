@@ -74,17 +74,19 @@
 
 \section{Introduction}
 
-Regression models are the main statistical tool for investigating the
-relationship between a response variable and a set of explanatory
-variables. When the response is the time until the occurrence of some
-event, we are in the yard of failure time data with its regression
-models being called survival models \citep{kalb&prentice}, with the word
-\textit{survival} meaning that the modeling focus is the survival
-experience. We could be interested in the occurrence of an event for
-multiple causes or even in systematic occurrences, having then multiple
-survival experiences to be modeled. These possibilities imply different
-failure time data designs. They can be of three classes, as schematized
-in Figure \ref{fig:failuretimedata}.
+Failure time data is the branch of Statistics responsible to handle
+random variables describing the time until the occurrence of an event, a
+failure \citep{kalb&prentice,hougaard00}. The time until a failure is
+called survival experience, the modeling object. To accommodate the
+number of possible causes for a failure and the way how they relate,
+different failure time data layouts were proposed and are shown in
+Figure \ref{fig:failuretimedata}. The first two are special cases of the
+last, a multistate process. The special cases are characterized by the
+presence of only absorbent states, besides the initial state 0. A
+multistate process is characterized by the presence of at least one
+intermediate state. In this work, our focus is on the competing risks
+process, more specifically, its clustered version i.e., with groups of
+elements sharing some non-observed latent dependence structure.
 
 \begin{figure}[H]
  \centering
@@ -132,31 +134,23 @@ in Figure \ref{fig:failuretimedata}.
    \end{pgfonlayer}
   \end{tikzpicture}
  }
- \caption{Illustration of failure time designs.}
+ \caption{Illustration of failure time data layouts.}
  \label{fig:failuretimedata}
 \end{figure}
-
-The first two are special cases of the last, a multistate process. The
-special cases are characterized by the presence of only absorbent
-states, besides the initial state 0. A multistate process is
-characterized by the presence of at least one intermediate state. In
-this work, our focus is on the competing risks process, more
-specifically, its clustered version. This means that we have groups of
-elements sharing some non-observed latent dependence structure.
 
 In the analysis of failure time data, the survival experiences are
 usually modeled in the hazard (failure rate) scale, and when the latent
 within-cluster dependence is accommodated we have the so-called frailty
-models.
-
-The use of frailty models implies complicated likelihood functions and
-its inference is done via elaborated and slow EM algorithms or
-inefficient MCMC schemes. Besides, its conclusions are attached to its
+models \citep{frailty78,frailty79,liang95,petersen98,therneau00}. The
+use of frailty models implies complicated likelihood functions and its
+inference is done via elaborated and slow EM algorithms
+\citep{nielsen92,klein92} or inefficient MCMC schemes
+\citep{hougaard00}. Besides, its conclusions are attached to its
 modeling scale i.e., all model interpretations are in terms of not
 straightforward hazard rates.
 
-A less usual scale but convenient when dealing with competing risks
-process is the probability scale.
+A less usual scale is to model the survival experiences in the
+probability scale.
 
 The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
