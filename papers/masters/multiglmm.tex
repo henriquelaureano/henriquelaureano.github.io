@@ -78,7 +78,7 @@ Failure time data is the branch of Statistics responsible to handle
 random variables describing the time until the occurrence of an event, a
 failure \citep{kalb&prentice,hougaard00}. The time until a failure is
 called survival experience, the modeling object. To accommodate the
-number of possible causes for a failure and the way how they relate,
+number of possible causes for a failure and the form how they relate,
 different failure time data layouts were proposed and are shown in
 Figure \ref{fig:failuretimedata}. The first two are special cases of the
 last, a multistate process. The special cases are characterized by the
@@ -141,16 +141,24 @@ elements sharing some non-observed latent dependence structure.
 In the analysis of failure time data, the survival experiences are
 usually modeled in the hazard (failure rate) scale, and when the latent
 within-cluster dependence is accommodated we have the so-called frailty
-models \citep{frailty78,frailty79,liang95,petersen98,therneau00}. The
-use of frailty models implies complicated likelihood functions and its
-inference is done via elaborated and slow EM algorithms
-\citep{nielsen92,klein92} or inefficient MCMC schemes
-\citep{hougaard00}. Besides, its conclusions are attached to its
-modeling scale i.e., all model interpretations are in terms of not
-straightforward hazard rates.
+models \citep{prentice78,frailty78,frailty79,liang95,petersen98,
+  therneau00}. The use of frailty models implies complicated likelihood
+functions and its inference is done via elaborated and slow EM
+algorithms \citep{nielsen92,klein92} or inefficient MCMC schemes
+\citep{hougaard00}. Besides, its inference is attached to the modeling
+scale, i.e. the interpretations are in terms of hazard rates. A less
+usual scale but with a more appealing interpretation, is to model the
+survival experiences in the probability scale.
 
-A less usual scale is to model the survival experiences in the
-probability scale.
+For competing risks data \citep{andersen12}, the work on the probability
+scale is done by means of the cumulative incidence function (CIF), with
+the main modeling approach being the subdistribution
+\citep{fine&gray}. For clustered competing risks data there are also
+some available options but without any predominance. There are some
+complicated pairwise nonparametric approaches for bivariate CIFs
+\citep{cheng07,cheng09}, and semiparametric approachs based on composite
+likelihoods \citep{lindsay88,cox&reid04,varin11} for also bivariate
+CIFs \citep{shih}.
 
 The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
