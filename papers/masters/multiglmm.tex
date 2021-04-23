@@ -138,63 +138,54 @@ elements sharing some non-observed latent dependence structure.
  \label{fig:failuretimedata}
 \end{figure}
 
-In the analysis of failure time data, the survival experiences are
-usually modeled in the hazard (failure rate) scale, and when the latent
-within-cluster dependence is accommodated we have the so-called frailty
-models \citep{prentice78,frailty78,frailty79,liang95,petersen98,
-  therneau00}. The use of frailty models implies complicated likelihood
-functions and its inference is done via elaborated and slow EM
-algorithms \citep{nielsen92,klein92} or inefficient MCMC schemes
-\citep{hougaard00}.
+In the analysis of failure time data, a survival experiences is usually
+modeled in the hazard (failure rate) scale, and when the latent
+within-cluster dependence is accommodated we have a frailty model
+\citep{frailty78,frailty79,liang95,petersen98}. The use of frailty
+models implies complicated likelihood functions and its inference is
+done via elaborated and slow EM algorithms \citep{nielsen92,klein92} or
+inefficient MCMC schemes \citep{hougaard00}. With multiple survival
+experiences, the general idea is the same but with even more elaborated
+likelihoods \citep{prentice78,therneau00} or via mixture models
+\citep{larson85,kuk92}.
 
-Parametric \citep{larson85} and semiparametric \citep{kuk92} mixture
-model for competing risks data.
-
-Besides, its inference is attached to the modeling scale, i.e. the
-interpretations are in terms of hazard rates. A less usual scale but
+The inference is attached to the modeling scale i.e., in the usual case
+the interpretations are in terms of hazard rates. A less usual scale but
 with a more appealing interpretation, is to model the survival
-experiences in the probability scale.
+experiences in the probability scale. For competing risks data, the work
+on the probability scale is done by means of the cumulative incidence
+function (CIF) \citep{andersen12}, with the main modeling approach being
+the subdistribution \citep{fine&gray}. For clustered competing risks
+data there are some available options but without any predominance. The
+differences are basically in terms of likelihood specification, with its
+majority being designed for bivariate CIFs, where increasing the CIF's
+dimension is a limitation. Some of the approaches are
 
-For competing risks data, the work on the probability scale is done by
-means of the cumulative incidence function (CIF) \citep{andersen12},
-with the main modeling approach being the subdistribution
-\citep{fine&gray}. For clustered competing risks data there are some
-available options but without any predominance. There are some
-complicated
+\begin{itemize}
+ \item Nonparametric approaches \citep{cheng07,cheng09};
+ \item Linear transformation models \citep{fine99,gerds12};
+ \item Semiparametric approaches based on
+  \begin{itemize}
+   \item Composite likelihoods \citep{shih,SCHEIKE};
+   \item Estimating equations \citep{crossoddsratioSCHEIKE,cheng&fine};
+   \item Copulas \citep{semiparametricSCHEIKE};
+   \item Mixtures \citep{naskar05,shi13}.
+  \end{itemize}
+\end{itemize}
 
-\begin{enumerate}
- \item nonparametric approaches \citep{cheng07,cheng09};
- \item semiparametric approaches based on
-  \begin{enumerate}
-   \item composite likelihoods \citep{shih,SCHEIKE};
-   \item estimating equations \citep{crossoddsratioSCHEIKE,cheng&fine};
-   \item copulas \citep{semiparametricSCHEIKE};
-   \item mixtures \citep{naskar05,shi13};
-  \end{enumerate}
- \item linear transformation models \citep{fine99,gerds12}.
-\end{enumerate}
-
-The majority of them designed for bivariate CIFs,where increasing the
-CIF's dimension is a limitation.
-
-The class of generalized linear models (GLMs) \citep{GLM72} is probably
-the most popular statistical modelling framework. Despite its
-flexibility, the GLMs are not suitable for dependent data. In the case
-of longitudinal data, it is essential that the regression model take
-into account the longitudinal and/or grouped data structure. According
-to \cite{diggle02} longitudinal data are repeated measures evaluated on
-the same subjects over time, that are potentially correlated. Dependent
-data can also arises in studies with block designs, spatial and
-multilevel data \citep{verbeke&molenberghs,fitzmaurice}. For the
-analysis of such data several methods have been proposed over the last
-four decades.
-
-\cite{laird82} proposed the random effects regression models for
-longitudinal data analysis. \cite{breslow93} presented the generalized
-linear mixed models~(GLMMs) for the analysis of non-Gaussian
-outcomes. \cite{gcmr} developed a class of marginal models for modelling
-dependence structures in the analysis of longitudinal data, time series
-and spatial based on Gaussian copula models.
+Besides the interpretation, by modeling the CIF is easier to specify
+more elaborated within-cluster dependence structures. In this work, we
+follow \cite{SCHEIKE} specification based on a decomposition in
+instantaneous risk and failure time trajectory, with both being
+cluster-specifics and possible correlated. As a modeling framework, we
+use a multinomial generalized linear mixed model specification. The
+class of generalized linear models (GLMs) \citep{GLM72} is probably the
+most popular statistical modelling framework. Despite its flexibility,
+the GLMs are not suitable for dependent data. For the analysis of such
+data, \cite{laird82} proposed the random effects regression models for
+longitudinal/repeated-measures data analysis. \cite{breslow93} presented
+the generalized linear mixed models (GLMMs) for the analysis of
+non-Gaussian outcomes.
 
 The main goal of this study is to propose the . In this paper, we will
 investigate the as an alternative to . R \citep{R21} package
