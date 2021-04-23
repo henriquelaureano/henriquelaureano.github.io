@@ -11,7 +11,21 @@ Andersen, P.~K., Geskus, R.~B., de~Witte, T. \harvardand\ Putter, H.
 Breslow, N.~E. \harvardand\ Clayton, D.~G.  \harvardyearleft
   1993\harvardyearright .
 \newblock Approximate inference in generalized linear mixed models, {\em
-  Journal of the American statistical Association} {\bf 88}(421):~9--25.
+  Journal of the American Statistical Association} {\bf 88}(421):~9--25.
+
+\harvarditem[Cederkvist et~al.]{Cederkvist, Holst, Andersen \harvardand\
+  Scheike}{2019}{SCHEIKE}
+Cederkvist, L., Holst, K.~K., Andersen, K.~K. \harvardand\ Scheike, T.~H.
+  \harvardyearleft 2019\harvardyearright .
+\newblock Modeling the cumulative incidence function of multivariate competing
+  risks data allowing for within-cluster dependence of risk and timing, {\em
+  Biostatistics} {\bf 20}(2):~199--217.
+
+\harvarditem{Cheng \harvardand\ Fine}{2012}{cheng&fine}
+Cheng, Y. \harvardand\ Fine, J.~P.  \harvardyearleft 2012\harvardyearright .
+\newblock Cumulative incidence association models for bivariate competing risks
+  data, {\em Journal of the Royal Statistical Society, Series B
+  (Methodological)} {\bf 74}(2):~183--202.
 
 \harvarditem[Cheng et~al.]{Cheng, Fine \harvardand\ Kosorok}{2007}{cheng07}
 Cheng, Y., Fine, J.~P. \harvardand\ Kosorok, M. R.~J.  \harvardyearleft
@@ -32,17 +46,18 @@ Clayton, D.~G.  \harvardyearleft 1978\harvardyearright .
   in epidemiological studies of familial rendency in chronic disease incidence,
   {\em Biometrika} {\bf 65}(1):~141--151.
 
-\harvarditem{Cox \harvardand\ Reid}{2004}{cox&reid04}
-Cox, D.~R. \harvardand\ Reid, N.  \harvardyearleft 2004\harvardyearright .
-\newblock A note on pseudolikelihood constructed from marginal densities, {\em
-  Biometrika} {\bf 91}(3):~729--737.
-
 \harvarditem[Diggle et~al.]{Diggle, Heagerty, Liang \harvardand\
   Zeger}{2002}{diggle02}
 Diggle, P., Heagerty, P., Liang, K.~Y. \harvardand\ Zeger, S.  \harvardyearleft
   2002\harvardyearright .
 \newblock {\em Analysis of Longitudinal Data}, second {E}dition edn, Oxford
   University Press, United Kingdom.
+
+\harvarditem{Fine}{1999}{fine99}
+Fine, J.~P.  \harvardyearleft 1999\harvardyearright .
+\newblock Analysing competing risks data with transformation models, {\em
+  Journal of the Royal Statistical Society, Series B (Methodological)} {\bf
+  61}(4):~817--830.
 
 \harvarditem{Fine \harvardand\ Gray}{1999}{fine&gray}
 Fine, J.~P. \harvardand\ Gray, R.~J.  \harvardyearleft 1999\harvardyearright .
@@ -55,6 +70,13 @@ Fine, J.~P. \harvardand\ Gray, R.~J.  \harvardyearleft 1999\harvardyearright .
 Fitzmaurice, G., Davidian, M., Verbeke, G. \harvardand\ Molenberghs, G.
   \harvardyearleft 2008\harvardyearright .
 \newblock {\em Longitudinal Data Analysis}, CRC Press.
+
+\harvarditem[Gerds et~al.]{Gerds, Scheike \harvardand\ Andersen}{2012}{gerds12}
+Gerds, T.~A., Scheike, T.~H. \harvardand\ Andersen, P.~K.  \harvardyearleft
+  2012\harvardyearright .
+\newblock Absolute risk regression for competing risks: interpretation, link
+  functions and prediction, {\em Statistics in Medicine} {\bf
+  31}(29):~3921--3930.
 
 \harvarditem{Hougaard}{2000}{hougaard00}
 Hougaard, P.  \harvardyearleft 2000\harvardyearright .
@@ -79,10 +101,22 @@ Kristensen, K., Nielsen, A., Berg, C.~W., Skaug, H.~J. \harvardand\ Bell, B.~M.
 \newblock {TMB}: Automatic {D}ifferentiation and {L}aplace {A}pproximation,
   {\em Journal of Statistical Software} {\bf 70}(5):~1--21.
 
+\harvarditem{Kuk}{1992}{kuk92}
+Kuk, A. Y.~C.  \harvardyearleft 1992\harvardyearright .
+\newblock A semiparametric mixture model for the analysis of competing risks
+  data, {\em Australian Journal of Statistics} {\bf 34}(2):~169--180.
+
 \harvarditem{Laird \harvardand\ Ware}{1982}{laird82}
 Laird, N.~M. \harvardand\ Ware, J.~H.  \harvardyearleft 1982\harvardyearright .
 \newblock Random-effects models for longitudinal data, {\em Biometrics} {\bf
   38}(4):~963--974.
+
+\harvarditem{Larson \harvardand\ Dinse}{1985}{larson85}
+Larson, M.~G. \harvardand\ Dinse, G.~E.  \harvardyearleft 1985\harvardyearright
+  .
+\newblock A {M}ixture {M}odel for the {R}egression {A}nalysis of {C}ompeting
+  {R}isks {D}ata, {\em Journal of the Royal Statistical Society, Series C
+  (Applied Statistics)} {\bf 34}(3):~201--211.
 
 \harvarditem[Liang et~al.]{Liang, Self, Bandeen-Roche \harvardand\
   Zeger}{1995}{liang95}
@@ -91,15 +125,16 @@ Liang, K.~Y., Self, S., Bandeen-Roche, K.~J. \harvardand\ Zeger, S.~L.
 \newblock Some recent developments for regression analysis of multivariate
   failure time data, {\em Lifetime Data Analysis} {\bf 1}(1):~403--415.
 
-\harvarditem{Lindsay}{1988}{lindsay88}
-Lindsay, B.~G.  \harvardyearleft 1988\harvardyearright .
-\newblock Composite likelihood methods, {\em Comtemporary Mathematics} {\bf
-  80}(1):~221--239.
-
 \harvarditem{Masarotto \harvardand\ Varin}{2012}{gcmr}
 Masarotto, G. \harvardand\ Varin, C.  \harvardyearleft 2012\harvardyearright .
 \newblock Gaussian copula marginal regression, {\em Electronic Journal of
   Statistics} {\bf 6}(1):~1517--1549.
+
+\harvarditem[Naskar et~al.]{Naskar, Das \harvardand\ Ibrahim}{2005}{naskar05}
+Naskar, M., Das, K. \harvardand\ Ibrahim, J.~G.  \harvardyearleft
+  2005\harvardyearright .
+\newblock A {S}emiparametric {M}ixture {M}odel for {A}nalyzing {C}lustered
+  {C}ompeting {R}isks {D}ata, {\em Biometrics} {\bf 61}(3):~729--737.
 
 \harvarditem{Nelder \harvardand\ Wedderburn}{1972}{GLM72}
 Nelder, J.~A. \harvardand\ Wedderburn, R. W.~M.  \harvardyearleft
@@ -134,6 +169,25 @@ Prentice, R.~L., Kalbfleisch, J.~D., {Peterson Jr}, A.~V., Flournoy, N.,
   Foundation for Statistical Computing. Vienna, Austria.
 \newblock \url{https://www.R-project.org/}.
 
+\harvarditem{Scheike \harvardand\ Sun}{2012}{crossoddsratioSCHEIKE}
+Scheike, T. \harvardand\ Sun, Y.  \harvardyearleft 2012\harvardyearright .
+\newblock On cross-odds ratio for multivariate competing risks data, {\em
+  Biostatistics} {\bf 13}(4):~680--694.
+
+\harvarditem[Scheike et~al.]{Scheike, Zhang \harvardand\
+  Jensen}{2010}{semiparametricSCHEIKE}
+Scheike, T., Zhang, Y. S.~M. \harvardand\ Jensen, T.~K.  \harvardyearleft
+  2010\harvardyearright .
+\newblock A semiparametric random effects model for multivariate competing
+  risks, {\em Biometrika} {\bf 97}(1):~133--145.
+
+\harvarditem[Shi et~al.]{Shi, Cheng \harvardand\ Jeong}{2013}{shi13}
+Shi, H., Cheng, Y. \harvardand\ Jeong, J.~H.  \harvardyearleft
+  2013\harvardyearright .
+\newblock Constrained parametric model for simultaneous inference of two
+  cumulative incidence functions, {\em Biometrical Journal} {\bf
+  55}(1):~82--96.
+
 \harvarditem{Shih \harvardand\ Albert}{2009}{shih}
 Shih, J.~H. \harvardand\ Albert, P.~S.  \harvardyearleft 2009\harvardyearright
   .
@@ -153,12 +207,6 @@ Valpel, J.~W., Manton, K.~G. \harvardand\ Stallard, E.  \harvardyearleft
   1979\harvardyearright .
 \newblock The impact of heterogeneity in {I}ndividual {F}railty on the
   {D}ynamics of {M}ortality, {\em Demography} {\bf 16}(1):~439--454.
-
-\harvarditem[Varin et~al.]{Varin, Reid \harvardand\ Firth}{2011}{varin11}
-Varin, C., Reid, N. \harvardand\ Firth, D.  \harvardyearleft
-  2011\harvardyearright .
-\newblock An overview of composite likelihood methods, {\em Statistica Sinica}
-  {\bf 21}(1):~5--42.
 
 \harvarditem{Verbeke \harvardand\ Molenberghs}{2001}{verbeke&molenberghs}
 Verbeke, G. \harvardand\ Molenberghs, G.  \harvardyearleft

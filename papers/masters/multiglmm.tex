@@ -21,8 +21,8 @@
 
 \title{
   
-  Modeling the cumulative incidence function of clustered competing
-  risks data: a multinomial GLMM approach
+  A multinomial generalized linear mixed model for clustered competing
+  risks data
 
 }
 \author{
@@ -145,20 +145,37 @@ models \citep{prentice78,frailty78,frailty79,liang95,petersen98,
   therneau00}. The use of frailty models implies complicated likelihood
 functions and its inference is done via elaborated and slow EM
 algorithms \citep{nielsen92,klein92} or inefficient MCMC schemes
-\citep{hougaard00}. Besides, its inference is attached to the modeling
-scale, i.e. the interpretations are in terms of hazard rates. A less
-usual scale but with a more appealing interpretation, is to model the
-survival experiences in the probability scale.
+\citep{hougaard00}.
 
-For competing risks data \citep{andersen12}, the work on the probability
-scale is done by means of the cumulative incidence function (CIF), with
-the main modeling approach being the subdistribution
-\citep{fine&gray}. For clustered competing risks data there are also
-some available options but without any predominance. There are some
-complicated pairwise nonparametric approaches for bivariate CIFs
-\citep{cheng07,cheng09}, and semiparametric approachs based on composite
-likelihoods \citep{lindsay88,cox&reid04,varin11} for also bivariate
-CIFs \citep{shih}.
+Parametric \citep{larson85} and semiparametric \citep{kuk92} mixture
+model for competing risks data.
+
+Besides, its inference is attached to the modeling scale, i.e. the
+interpretations are in terms of hazard rates. A less usual scale but
+with a more appealing interpretation, is to model the survival
+experiences in the probability scale.
+
+For competing risks data, the work on the probability scale is done by
+means of the cumulative incidence function (CIF) \citep{andersen12},
+with the main modeling approach being the subdistribution
+\citep{fine&gray}. For clustered competing risks data there are some
+available options but without any predominance. There are some
+complicated
+
+\begin{enumerate}
+ \item nonparametric approaches \citep{cheng07,cheng09};
+ \item semiparametric approaches based on
+  \begin{enumerate}
+   \item composite likelihoods \citep{shih,SCHEIKE};
+   \item estimating equations \citep{crossoddsratioSCHEIKE,cheng&fine};
+   \item copulas \citep{semiparametricSCHEIKE};
+   \item mixtures \citep{naskar05,shi13};
+  \end{enumerate}
+ \item linear transformation models \citep{fine99,gerds12}.
+\end{enumerate}
+
+The majority of them designed for bivariate CIFs,where increasing the
+CIF's dimension is a limitation.
 
 The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
@@ -195,7 +212,7 @@ The work are organized as follows. Section \ref{model}, Section
 \ref{inference}, Section \ref{simulation}. Finally, the main
 contributions of the article are discussed in Section \ref{discussion}.
 
-\section{multiGLMM: a multinomial GLMM for clustered competing risks data}
+\section{Model}
 \label{model}
 
 \begin{figure}[H]
