@@ -304,7 +304,7 @@ three classes. The third class exists to handle the censorship and its
 probability is given by the complementary to reach 1. This framework in
 \autoref{eq:model} results in what we call multiGLMM, a multinomial
 GLMM to handle the CIF of clustered competing risks data. For a random
-sample, the corresponding marginal likelihood functions in given by
+sample, the corresponding marginal likelihood function in given by
 \begin{align}
  L(\bm{\theta}~;~y)
  &= \prod_{j=1}^{J}~\int_{\Re^{4}}
@@ -360,11 +360,6 @@ Gaussian distribution in four dimensions). Consequently, for each
 cluster, we approximate an integral in four dimensions. The product of
 these approximated integrals results in the called marginal likelihood,
 to be maximized in \(\bm{\theta}\).
-
-Independent of the parameters value choice, the probabilities for the
-failure causes will be small, providing always a bigger probability mass
-to the censorship. More will be talked about this model characteristic
-in the next chapter.
 
 \subsection{Parametrization}
 \label{cap:parametrization}

@@ -383,8 +383,9 @@ updated applying the Newton's step calculated using the current
 approximate Hessian matrix \(\bm{B}_{k}\) in the following fashion:
 \begin{itemize}
  \item \(\Delta \bm{x}_{k} = -\alpha_{k}\bm{B}_{k}^{-1}\nabla
-       f(\bm{x}_{k})\), with \(\alpha\) chosen to satisfy the so called
-       Wolfe conditions \cite[p.~34]{nocedal&wright};
+       f(\bm{x}_{k})\), with \(\alpha\) chosen to satisfy some
+       sufficient decrease and curvature conditions collectively known
+       as the \textit{Wolfe conditions} \cite[p.~34]{nocedal&wright};
 
  \item \(\bm{x}_{k+1} = \bm{x}_{k} + \Delta\bm{x}_{k}\);
 
@@ -395,8 +396,8 @@ approximate Hessian matrix \(\bm{B}_{k}\) in the following fashion:
        \(\bm{H}_{k+1} = \bm{B}_{k+1}^{-1}\).
 \end{itemize}
 
-The most popular quasi-Newton method is the BFGS algorithm, named for
-its discoverers Broyden, Fletcher, Goldfarb, and Shanno. It has the
+The most popular quasi-Newton method is the BFGS algorithm, named after
+its inventors, Broyden, Fletcher, Goldfarb, and Shanno. It has the
 following update formula
 \begin{align*}
  \bm{B}_{k+1} &= \bm{B}_{k} +
@@ -423,7 +424,7 @@ literature, is the one based on the PORT routines
 \url{http://www.netlib.org/port/}. It is a Fortran mathematical
 subroutine library designed to be \textit{portable} over different types
 of computers, developed by David Gay in the Bell Labs \cite{PORTreport}.
-Is a quasi-Newton adaptive nonlinear least-squares algorithm
+It is a quasi-Newton adaptive nonlinear least-squares algorithm
 \cite{PORTpaper} with the following update formula
 \begin{align*}
  \bm{B}_{k+1} &= \bm{B}_{k}\\
