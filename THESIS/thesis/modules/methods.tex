@@ -143,8 +143,8 @@ integrate out the latent effect. So what do we do? Well, we have
 basically two options again.
 
 We can avoid the integrals in \autoref{eq:generalmarginal}, replacing it
-by integrals that are more analytically tractable. This can be performed
-via an algorithm called Expectation-Maximization (EM), proposed by
+by integrals that are tractable. This can be performed via an algorithm
+called Expectation-Maximization (EM), proposed by
 \citeonline{EM77}. This approach is considered a little bit naive and
 generally is not recommended if you have a better option. The other
 option consists of performing a numerical integration i.e.,
@@ -164,7 +164,7 @@ approximation}
 \cite{molenberghs&verbeke, LA4H, tierney, corestats}.
 
 With an integral that is analytically intractable, we may approximate it
-to obtain a tractable closed-form expression allowing then the numerical
+to obtain a tractable closed-form expression allowing the numerical
 maximization of the resulting marginal likelihood function
 \cite{patrao}. The Laplace approximation has been designed to
 approximate integrals in the form
@@ -257,7 +257,7 @@ expressed as
 The approximation in~\autoref{eq:laplace} requires the maximum
 \(\bm{\hat{u}}_{i}\) of the function \(Q(\bm{u}_{i})\). As we assume a
 Gaussian distribution with a known mean for the latent effects, we have
-the perfect initial guess for a gradient-based maximization method, as
+the perfect initial guess for a hessian-based maximization method, as
 the Newton-Raphson (NR) algorithm.
 
 The NR method consists of an iterative scheme as follows:
