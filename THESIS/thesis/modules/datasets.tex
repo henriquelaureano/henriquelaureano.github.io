@@ -299,19 +299,27 @@ clusters. Thus,
  \end{align*}
 \end{minipage}\\
 
-
+The sample and cluster size specifications were thought to agree with
+family studies, generally having big samples or even treating with
+populations i.e, a lot of families/clusters of small
+sizes. In \citeonline{SCHEIKE}, the simulation studies were performed
+with samples/populations of 50000 clusters of size 3. The real data
+example consisted of a study with more than 1200000 families with no
+more than 4 members. For computational reasons, they worked with a
+sample of fewer than 15000 clusters.
 
 Besides the sample size per se, by increasing it we also increase the
 number of Laplace approximations to be performed since each cluster
 implies a Laplace approximation. This affects hugely the computational
 time. About the failure/censorship times, we work on a grid between 30
 and 80 years. The times are sampled from a Uniform distribution on that
-grid, as explained in \autoref{cap:simu}. In summary, we have
+grid, as explained in \autoref{cap:simu}.
 
-Two CIF configurations, four latent effect structures, three sample
-sizes, and three cluster sizes; \(2 \times 4 \times 3 \times 3 = 72\)
-scenarios. For each scenario, we simulate 400 samples and fitted the
-corresponding model. Thus, \(72 \times 400 = 28800\) models/fits.
+In summary, we have: two CIF configurations, four latent effect
+structures, three sample sizes, and three cluster sizes; \(2 \times
+4 \times 3 \times 3 = 72\) scenarios. For each scenario, we simulate 500
+samples and fitted the corresponding model. Thus, \(72 \times 500 =
+36000\) models/fits.
 
 In \autoref{fig:completeModel} we have the \texttt{C++} code for the TMB
 implementation of the complete model.
@@ -337,7 +345,6 @@ complete model, we show their TMB's implementation in
 the \autoref{cap:appendixD} (\autoref{cap:riskModel},
 \autoref{cap:timeModel}, \autoref{cap:blockdiagModel}). In the
 \autoref{cap:appendixD} (\autoref{cap:rscript}), we also have the
-\texttt{R} code showing how to load and fit the models. It is a brief
-piece of code, which just shows how simple is to work with TMB.
+\texttt{R} code showing how to load and fit the models.
 
 % END ==================================================================
