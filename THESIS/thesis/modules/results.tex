@@ -42,8 +42,8 @@ Let us just recap the parameter values used
 \noindent
 The parameter values per se are not important. What is important is to
 keep in mind the behaviors implied by them, and see if the proposed
-model is able to learn the true values in several different scenarios
-and measure the quality of this learning.
+model is able to estimate the true values in several different scenarios
+and measure the quality of the estimates.
 
 The take-home message for the fixed-effect parameters, is to show that
 we can construct different level CIF scenarios. The \(\bm{\beta}\)s are
@@ -55,21 +55,22 @@ still acceptable. The underlying idea was to try to build a realistic
 covariance scenario and consequently be able to check how the model
 performs in such conditions.
 
-In the following pages we have several graphs summarizing the parameters
-bias. In each figure, we have the parameter bias and its uncertainty
-described by a Wald-based interval i.e., \(\pm\) 1.96 the bias standard
-deviation. This is a good uncertainty representation choice since it is
-symmetric and robust to outliers. In the \autoref{cap:appendixD}, we
-have the same parameters bias but with the corresponding 2.5 and 97.5\%
+In the following pages we have several graphs summarizing the estimates
+bias. In each figure, we have the estimate bias and its uncertainty
+described by a Wald-based confidence interval i.e., \(\pm\) 1.96 the
+bias standard deviation. This is a good uncertainty representation
+choice since it is symmetric. In the \autoref{cap:appendixD}, we have
+the same estimates bias but with the corresponding 2.5 and 97.5\%
 quantiles. We chose to use these uncertainty representations uniquely
 based on the point estimates instead of the standard error
 computations. In several scenarios, the model fails to compute all the
-standard errors, caused by Hessian instability problems.
+standard errors, caused by Hessian numerical instabilities.
 
-The seventy-two scenarios are accommodated. We have up to four blocks of
-bars, each block representing a model. In each block we have eighteen
-bars, each bar representing the 400 fits in each of the eighteen
-scenarios, \(4 \times 18 \times 400 = 28800\). 
+In each of the following estimates bias graphs, the seventy-two
+scenarios are accommodated. We have up to four blocks of bars, each
+block representing a model. In each block we have eighteen bars, each
+bar representing the 500 fits in each of the eighteen
+scenarios, \(4 \times 18 \times 500 = 36000\).
 
 Each scenario name consists of a combination of three strings
 \begin{itemize}
@@ -77,33 +78,8 @@ Each scenario name consists of a combination of three strings
  \item The CIF configuration, high and low;
  \item The sample size, 5, 30, and 60 thousand.
 \end{itemize}
-We have tried to fit a total of 28800 models but not all
-converged. Besides that inconvenience, from the ones that converged do
-not all converged in the strict sense of the word. To show these two
-characteristics respectively, we control the bar widths and colors. The
-ideal convergence is the traditional one i.e., based on the
-gradient. However, in complicated optimization scenarios as the one we
-are here, we can reach a convergence based on a metric different from
-the gradient one.
-
-In the \texttt{base::nlmimb()} \texttt{R}'s \texttt{PORT}
-implementation, when the default gradient-based convergence is reached
-we get a 0 flag message. When the optimization converges but not
-gradient-based, we get a 1 flag message. Looking at the technical report
-of \citeonline{PORTreport}, we see that this different convergence means
-that the last algorithm iterate \(x\) appears to be at a certain scaled
-distance of the locally optimal point \(x^{\ast}\). This scaled
-distance, \(p(x, x^{\ast})\), is defined by
-\[
- p(x, y) =
- \underset{1~\leq i~\leq~p}{\text{max}}
- \left\{d_{i}, |x_{i} - y_{i}|\right\}
- \Big/
- \underset{1~\leq j~\leq~p}{\text{max}}
- \left\{d_{j}, |x_{j}| + |y_{j}|\right\},
-\]
-where \(d\) is a certain scale vector. In all figures, the presented
-convergence percentage is from the gradient-based one.
+We have tried to fit a total of 36000 models but not all converged. To
+show these characteristic, we control the bar widths.
 
 Something specific can be said about each parameter but let us keep the
 focus on the general remarks. Starting from the fixed-effect parameters
@@ -124,6 +100,25 @@ changes for the better. The mean biases get even closer to zero, the
 standard deviations decrease 50\% or more, and mainly, now the high CIF
 scenarios are the ones with a much smaller bias-variance. All this is
 accomplished through the consideration of the cross-correlations.
+
+In the \textit{simpler} models, with a latent structure just in one
+level, is hard to see some significant difference between the clusters
+and sample sizes. With the complete model, in the other hand, the
+difference is clear: as we increase the clusters and the sample sizes,
+the bias-variance decreases. The mean-bias is basically always the
+same. In the risk and block-diag models is hard to point-out a scenario
+as the best or worst. For the time model, with the scenario of cluster
+size 10; low CiF; and 5 thousand data points, we get a much bigger
+standard deviation in two of the parameters.
+
+With the log-variances presented in \autoref{fig:biassdlogs2_1},
+\autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3}, and
+\autoref{fig:biassdlogs2_4}, we have instead a similar behavior through
+the models. For all the models, the high CIF scenarios are the ones with
+a smaller mean and bias-variances. From the risk/time model to the
+block-diag model, we do not see a significant improvement in terms of
+bias reduction. Such improvement, however, is clear when we look at the
+complete model. Again, the magick of considering the cross-correlations.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
@@ -280,25 +275,6 @@ accomplished through the consideration of the cross-correlations.
  \label{fig:biassdrhoz4}
 \end{figure}
 
-In the \textit{simpler} models, with a latent structure just in one
-level, is hard to see some significant difference between the clusters
-and sample sizes. With the complete model, in the other hand, the
-difference is clear: as we increase the clusters and the sample sizes,
-the bias-variance decreases. The mean-bias is basically always the
-same. In the risk and block-diag models is hard to point-out a scenario
-as the best or worst. For the time model, with the scenario of cluster
-size 10; low CiF; and 5 thousand data points, we get a much bigger
-standard deviation in two of the parameters.
-
-With the log-variances presented in \autoref{fig:biassdlogs2_1},
-\autoref{fig:biassdlogs2_2}, \autoref{fig:biassdlogs2_3}, and
-\autoref{fig:biassdlogs2_4}, we have instead a similar behavior through
-the models. For all the models, the high CIF scenarios are the ones with
-a smaller mean and bias-variances. From the risk/time model to the
-block-diag model, we do not see a significant improvement in terms of
-bias reduction. Such improvement, however, is clear when we look at the
-complete model. Again, the magick of considering the cross-correlations.
-
 The same said about the log-variances, can be applied to the risk
 correlations in \autoref{fig:biassdrhoz12}, with one addendum: the bias
 reduction is even bigger. With the time correlation in
@@ -312,17 +288,29 @@ in the high CIF scenarios.
 The biggest bias-variances are obtained in the log-variances. A final
 remark to be made is about convergences. With the simpler models, not
 all of them work, having in some scenarios (generally the ones with 60
-thousand data points) a 50\(\sim\)60\% convergence rate. However, from
-this 50\(\sim\)60\%, most reach the ideal gradient-based
-convergence. With the complete model is the complete
-opposite. Basically, all fits reach a convergence (\(\sim\)100\%
-performance) but never is the desired gradient-based convergence.
+thousand data points) a 50\(\sim\)60\% convergence rate. With the
+complete model, basically, all fits reach a convergence (\(\sim\)100\%
+performance).
 
 After looking at the parameter biases, let us take a look at the implied
 mean-CIF curves. To nicely accommodate all seventy-two scenarios we
 split the curves by level-CIF. In \autoref{fig:cifshigh} we have the
 high CIF scenario curves and in \autoref{fig:cifslow} the low CIF
 scenario curves.
+
+Since for all the models we have a latent structure for the
+within-cluster dependency, the inherent idea is that this also affect
+the fixed-effect parameter estimates. By taking its average in each of
+the seventy-two scenarios, we are able to construct the mean CIF curves.
+
+In \autoref{fig:cifshigh} we have all the thirty-six curves obtained in
+the high CIF scenarios. It is clear that with the complete model we get
+a perfect fit in all nine scenarios. The risk and time models estimate
+well the curve shape parameters but they fail to learn the max
+incidence. A compensation between curves is clear. In the risk model,
+there is a super estimation of \(\beta_{1}\) in all scenarios. For
+failure cause 2, there is a sub estimation. With the time model, we
+observe the opposite compensation but on a smaller scale.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
@@ -345,20 +333,6 @@ scenario curves.
  \end{footnotesize}
  \label{fig:cifslow}
 \end{figure}
-
-Since for all the models we have a latent structure for the
-within-cluster dependency, the inherent idea is that this also affect
-the fixed-effect parameter estimates. By taking its average in each of
-the seventy-two scenarios, we are able to construct the mean CIF curves.
-
-In \autoref{fig:cifshigh} we have all the thirty-six curves obtained in
-the high CIF scenarios. It is clear that with the complete model we get
-a perfect fit in all nine scenarios. The risk and time models estimate
-well the curve shape parameters but they fail to learn the max
-incidence. A compensation between curves is clear. In the risk model,
-there is a super estimation of \(\beta_{1}\) in all scenarios. For
-failure cause 2, there is a sub estimation. With the time model, we
-observe the opposite compensation but on a smaller scale.
 
 With the time model, we get much better curves than with the risk
 model. The block-diag model results are a middle term between them. For
@@ -405,9 +379,10 @@ also. The lack of any considerable difference between the covariance
 densities, indicates no quality divergences in the results for different
 cluster sizes. The densities in \autoref{fig:histologs2} and
 \autoref{fig:historhoz} are the final corroboration indicating the good
-estimability of the complete model. Between the four tested models, the
-complete model was the one with the smallest biases, better CIF shape
-learning, and precisest covariance parameter estimates.
+performance of the maximum likelihood method in the complete
+model. Between the four tested models, the complete model was the one
+with the smallest biases, better CIF shape learning, and precisest
+covariance parameter estimates.
 
 In \autoref{fig:cor2plot} we have a heat-map of the correlations between
 parameter estimates for the complete model in the scenario with clusters
