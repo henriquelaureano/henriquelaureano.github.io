@@ -1,7 +1,7 @@
 This chapter describes how to simulate from our multiGLMM and describes
 the performed simulation studies. The general simulation procedure is
-addressed in \autoref{cap:simu}. In \autoref{cap:data} the simulation
-studies are presented in detail.
+addressed in \autoref{cap:simu}. In \autoref{cap:data} the performed
+simulation studies are presented in detail.
 
 \section{SIMULATING FROM THE MODEL}
 \label{cap:simu}
@@ -172,9 +172,9 @@ which we do not know if holds in the real world.
 \section{SIMULATION STUDIES DESIGN}
 \label{cap:data}
 
-To stress the model and check the parameters identifiability, we propose
-seventy-two scenarios. All scenarios with two competing causes. Thus, a
-three classes multinomial distribution.
+To stress the model and check the properties of the maximum likelihood
+estimates, we propose seventy-two scenarios. All scenarios with two
+competing causes. Thus, a three classes multinomial distribution.
 
 We consider two CIF scenarios, in summary, a low and a high CIF
 scenario. The parameter configurations are presented together with their
@@ -255,15 +255,15 @@ Propose a \(4\times4\) matrix like this is not so simple since we should
 not only look at the values coherence. The matrix should also be
 positive-definite, and more than that, the submatrices \(R\), \(T\),
 and \(\text{diag}(R, T)\), should also be positive-definite since they
-are also used as variance-covariances matrices.
+are also used as variance-covariance matrices.
 
-The inherent idea of these four models is to able to check if a latent
-structure on both CIF levels is really necessary. To accomplish this
-goal we propose the simpler versions i.e., a latent structure only on
-the risk and only on the trajectory time. More than just check the
+The inherent idea of these four models is to be able to check if a
+latent structure on both CIF levels is really necessary. To accomplish
+this goal we propose the simpler versions i.e., a latent structure only
+on the risk and only on the trajectory time. More than just check the
 necessity of a complete latent specification, we have to check if we are
-able to properly estimate/learn all the covariance parameters. Thinking
-in these tasks, we have the block-diag and the complete model
+able to properly estimate all the covariance parameters. Thinking in
+these tasks, we have the block-diag and the complete model
 specifications, and also the CIF level configurations. Are we able to
 properly estimate the covariance parameters independent of the CIF
 level? Do we really need or can we estimate the cross-correlations?
@@ -298,6 +298,8 @@ clusters. Thus,
   \bullet~&\text{6000 clusters of size 10}
  \end{align*}
 \end{minipage}\\
+
+
 
 Besides the sample size per se, by increasing it we also increase the
 number of Laplace approximations to be performed since each cluster
