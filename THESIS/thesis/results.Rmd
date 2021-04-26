@@ -261,17 +261,17 @@ bias2plot <- function(df, title)
             strip.background=element_rect(colour='black', fill='white'),
             legend.box.background=element_rect(color='black'),
             legend.position='bottom', 
-            plot.title=element_text(size=15), 
-            plot.subtitle=element_text(size=14, face='italic'),
-            axis.text.x=element_text(size=12), 
-            axis.text.y=element_text(size=13),
-            axis.title.x=element_text(size=13,
+            plot.title=element_text(size=16), 
+            plot.subtitle=element_text(size=15, face='italic'),
+            axis.text.x=element_text(size=13), 
+            axis.text.y=element_text(size=14),
+            axis.title.x=element_text(size=14,
                                       margin=unit(c(t=3, r=0, b=0, l=0),
                                                   'mm')),
             ## legend.justification=c(1, 0),
-            legend.title=element_text(size=13), 
-            legend.text=element_text(size=12),
-            strip.text.x=element_text(size=13, face='bold')
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=13),
+            strip.text.x=element_text(size=14, face='bold')
         )
 }
 bias <- function(par, title)
@@ -373,18 +373,20 @@ bias2plot_rho <- function(df, title)
             strip.background=element_rect(colour='black', fill='white'),
             legend.box.background=element_rect(color='black'),
             legend.position='bottom', 
-            plot.title=element_text(size=15), 
-            plot.subtitle=element_text(size=14, face='italic'),
-            axis.text.x=element_text(size=12), 
-            axis.text.y=element_text(size=13),
-            axis.title.x=element_text(size=13,
+            plot.title=element_text(size=16), 
+            plot.subtitle=element_text(size=15, face='italic'),
+            axis.text.x=element_text(size=13), 
+            axis.text.y=element_text(size=14),
+            axis.title.x=element_text(size=14,
                                       margin=unit(c(t=3, r=0, b=0, l=0),
                                                   'mm')),
             ## legend.justification=c(1, 0),
-            legend.title=element_text(size=13), 
-            legend.text=element_text(size=12),
-            strip.text.x=element_text(size=13)
-        )
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=13),
+            strip.text.x=element_text(size=14)
+        )+
+        guides(size=guide_legend(nrow=1))
+
 }
 
 out <- dplyr::bind_rows(inside('rhoZ13', v4error),
@@ -422,17 +424,17 @@ bias2plot2 <- function(df, title)
             strip.background=element_rect(colour='black', fill='white'),
             legend.box.background=element_rect(color='black'),
             legend.position='bottom', 
-            plot.title=element_text(size=15),
-            plot.subtitle=element_text(size=14, face='italic'),
-            axis.text.x=element_text(size=12), 
-            axis.text.y=element_text(size=13),
-            axis.title.x=element_text(size=13,
+            plot.title=element_text(size=16), 
+            plot.subtitle=element_text(size=15, face='italic'),
+            axis.text.x=element_text(size=13), 
+            axis.text.y=element_text(size=14),
+            axis.title.x=element_text(size=14,
                                       margin=unit(c(t=3, r=0, b=0, l=0),
                                                   'mm')),
             ## legend.justification=c(1, 0),
-            legend.title=element_text(size=13), 
-            legend.text=element_text(size=12),
-            strip.text.x=element_text(size=13, face='bold')
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=13),
+            strip.text.x=element_text(size=14, face='bold')
         )
 }
 bias2 <- function(par, title)
@@ -534,18 +536,19 @@ bias2plot2_rho <- function(df, title)
             strip.background=element_rect(colour='black', fill='white'),
             legend.box.background=element_rect(color='black'),
             legend.position='bottom', 
-            plot.title=element_text(size=15), 
-            plot.subtitle=element_text(size=14, face='italic'),
-            axis.text.x=element_text(size=12), 
-            axis.text.y=element_text(size=13),
-            axis.title.x=element_text(size=13,
+            plot.title=element_text(size=16), 
+            plot.subtitle=element_text(size=15, face='italic'),
+            axis.text.x=element_text(size=13), 
+            axis.text.y=element_text(size=14),
+            axis.title.x=element_text(size=14,
                                       margin=unit(c(t=3, r=0, b=0, l=0),
                                                   'mm')),
             ## legend.justification=c(1, 0),
-            legend.title=element_text(size=13), 
-            legend.text=element_text(size=12),
-            strip.text.x=element_text(size=13)
-        )
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=13),
+            strip.text.x=element_text(size=14)
+        )+
+        guides(size=guide_legend(nrow=1))
 }
 
 out <- dplyr::bind_rows(inside('rhoZ13', v4error),
