@@ -356,29 +356,30 @@ look to the other. An interesting scenario is the one with cluster size
 2 and 60 thousand data points. In this scenario we see the worst fits
 for failure cause 1, with a negative highlight in the block-diag
 configuration. However, with this same model, for failure cause 2, it is
-the only scenario, by far, were we learn the true curve. An interesting
+the scenario were we better learn the true curve. An interesting
 compensation phenomena. The best joint fit is still with the complete
 model.
 
 Now we look at how the latent-effect parameter estimates distribute
 themselves. Given the huge number of scenarios and the fact that is
-harder to estimate covariance parameters, we chose to plot the
-parameters just in the scenarios with better performances. By the
-metrics of small bias and CIF shape learning, the scenarios with better
-results are the ones with high CIF and bigger sample sizes. We have the
-densities for the variance parameters, in each of these scenarios,
-presented in \autoref{fig:histologs2}. In \autoref{fig:historhoz} we
-have the same for the correlation parameters.
+harder to estimate covariance parameters, we chose to plot the parameter
+estimates just in the scenarios with better performances. By the metrics
+of small bias and CIF shape learning, the scenarios with better results
+are the ones with high CIF and bigger sample sizes. We have the
+densities for the variance parameter estimates, in each of these
+scenarios, presented
+in \autoref{fig:histologs2}. In \autoref{fig:historhoz} we have the same
+for the correlation parameter estimates.
 
 An interesting result is the clear difference between risk and time
-models' covariance parameters. With the risk model, we have an evident
-super estimation and bigger variances. With the time model we get much
-better results, but still with high variances. The block-diag model
-generally performs better than the risk model and worst than the time
-model, showing again to be a compromise between them. Besides the bias
-itself, we should also pay attention to the values. We model the
+models' covariance parameter estimates. With the risk model, we have an
+evident super estimation and bigger variances. With the time model we
+get much better results, but still with high variances. The block-diag
+model generally performs better than the risk model and worst than the
+time model, showing again to be a compromise between them. Besides the
+bias itself, we should also pay attention to the values. We model the
 variances in the log-scale, so a value 5, in reality, implies a variance
-of \(\exp(4) = 148\). Terrible. This kind of problem do not sound to
+of \(\exp(5) = 148\). Terrible. This kind of problem do not sound to
 appear with the complete model.
 
 All correlations are quite well estimated, in all three scenarios, with
@@ -388,20 +389,22 @@ densities, indicates no quality divergences in the results for different
 cluster sizes. The densities in \autoref{fig:histologs2} and
 \autoref{fig:historhoz} are the final corroboration indicating the good
 performance of the maximum likelihood method in the complete
-model. Between the four tested models, the complete model was the one
-with the smallest biases, better CIF shape learning, and precisest
-covariance parameter estimates.
+model.
 
-In \autoref{fig:cor2plot} we have a heat-map of the correlations between
-parameter estimates for the complete model in the scenario with clusters
-of size 10, high CIF, and 60 thousand data points.
+Between the four tested models, the complete model was the one with the
+smallest biases, better CIF shape learning, and precisest covariance
+parameter estimates. In \autoref{fig:cor2plot} we have a heat-map of the
+correlations between parameter estimates for the complete model in the
+scenario with clusters of size 10, high CIF, and 60 thousand data
+points.
 
-We have a little bit of everything in \autoref{fig:cor2plot}. Some
-correlations are very close to zero, but we also have strong positive
-and negative correlations. We can mention some curiosities, but nothing
-pathological appears to happen, at least nothing clear.
+We have a little bit of everything in the parameter estimates
+correlations' heat-map. Some correlations are very close to zero, but we
+also have strong positive and negative correlations. We can mention some
+curiosities, but nothing pathological appears to happen, at least
+nothing clear.
 
-\begin{figure}[!htpb]
+\begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
  \caption{VARIANCE PARAMETERS DENSITIES IN THE SCENARIOS OF HIGH CIF AND
           60 THOUSAND DATA POINTS}
@@ -425,15 +428,17 @@ pathological appears to happen, at least nothing clear.
  \label{fig:historhoz}
 \end{figure}
 
-All fixed-effect parameters are positive correlated, with an emphasis on
-the correlation between \(\beta_{1}\) and \(\beta_{2}\), and the one of
-the \(\bm{\beta}\)s with the \(\bm{w}\)s. Another interesting
-observation is the negative correlation between the \(\bm{\beta}\)s and
-the risk log-variances, and also the positive correlation between the
-\(\bm{\beta}\)s and the trajectory time log-variances. The risk
-log-variances are positively correlated. So do the time trajectory
-ones. The correlations between the log-variances of different levels are
-negative.
+In \autoref{fig:cor2plot}, all fixed-effect parameters are positive
+correlated, with an emphasis on the correlation between \(\beta_{1}\)
+and \(\beta_{2}\), and the one of the \(\bm{\beta}\)s with
+the \(\bm{w}\)s. Another interesting observation is the strong negative
+correlation between the \(\bm{\beta}\)s and the risk level
+log-variances, and also the (less strong) positive correlation between
+the \(\bm{\beta}\)s and the failure time trajectory level
+log-variances. The risk level log-variances are (strongly) positively
+correlated. So do the failure time trajectory level ones, but again, not
+so strong as in the risk level. The correlations between the
+log-variances of different levels are negative.
 
 \begin{figure}[H]
  \setlength{\abovecaptionskip}{.0001pt}
