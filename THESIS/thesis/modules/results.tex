@@ -454,4 +454,36 @@ log-variances of different levels are negative.
  \label{fig:cor2plot}
 \end{figure}
 
+The next step was to compare our results with the ones obtained
+in \citeonline{SCHEIKE}, with the composite approach. In the GitHub
+repository
+\url{https://github.com/kkholst/mcif/} the authors provide their
+code. In \texttt{mcif/inst/examples/datasim.R} they show how to simulate
+from the model, and in \texttt{mcif/src/loglik.cpp} they have their
+marginal log-likelihood function. We tried to optimize their marginal
+log-likelihood over its parameters using basically all \texttt{R}
+\texttt{base::optim()} and \texttt{base::nlminb()} available methods, in
+the paper was used the BFGS, one of them. We made several scenarios,
+using their own simulation scripts and ours, and to our surprise, the
+model basically does not work.
+
+The optimization in its majority fails, via any gradient-based algorithm
+(BFGS \cite{nocedal&wright}, PORT \cite{PORTreport, PORTpaper},
+conjugate gradient (CG) \cite{CG}), generally by Hessian matrix
+instability problems, a problem which our model also suffers from when
+we try to compute the parameter estimates standard errors. When the
+model works, it is because we are using the parameter true values as
+initial guesses i.e. if the algorithm needs to walk on the
+log-likelihood surface following the gradient, it fails. Even when it
+works, the estimates are not always good. We also tried with a SANN and
+a Nelder-Mead algorithm. SANN \cite{SANN} is a variant of a simulated
+annealing method, based on a Metropolis algorithm. Since it is based on
+simulation, it takes a lot of time and as the gradient-based methods, do
+not work most of the time. The best results were with the Nelder-Mead
+\cite{neldermead}, a gradient-free method. Still, it only works when we
+use the parameter true values as initial guesses. This situation is
+completely the opposite of what is shown in the paper, making impossible
+any reasonable comparison between the models. We will enter in contact
+with the authors to see what is happening.
+
 % END ==================================================================

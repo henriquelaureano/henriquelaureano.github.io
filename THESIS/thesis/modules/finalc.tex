@@ -1,7 +1,7 @@
 The general goal of this master thesis was the proposition of a new
 regression model for the analysis of clustered competing risks
 data. Focused on the probability scale, by means of the cumulative
-incidence function (CIF), instead of the hazard scale usual on the
+incidence function (CIF), instead of the hazard scale usual in the
 survival modeling literature \cite{kalb&prentice}. We model the
 clustered competing risks on a latent-effects framework, a generalized
 linear mixed model (GLMM) \cite{GLMM}, with a multinomial distribution
@@ -29,39 +29,6 @@ computationally impracticable. Our goal here was to try a full
 likelihood framework taking advantage of state-of-the-art computational
 libraries and very efficient algorithm implementations. We have all this
 with the \texttt{R} \cite{R21} package TMB \cite{TMB}.
-
-In \autoref{cap:results} our main results are presented, and it is clear
-that the multiGLMM works under certain circumstances. The next step was
-to compare our results with the ones obtained in \citeonline{SCHEIKE},
-with the composite approach. In the GitHub repository
-\url{https://github.com/kkholst/mcif/} the authors provide their code.
-In \texttt{mcif/inst/examples/datasim.R} they show how to simulate from
-the model, and in \texttt{mcif/src/loglik.cpp} they have their marginal
-log-likelihood function. We tried to optimize their marginal
-log-likelihood over its parameters using basically all \texttt{R}
-\texttt{base::optim()} and \texttt{base::nlminb()} available methods, in
-the paper was used the BFGS, one of them. We made several scenarios,
-using their own simulation scripts and ours, and to our surprise, the
-model basically does not work.
-
-The optimization in its majority fails, via any gradient-based algorithm
-(BFGS \cite{nocedal&wright}, PORT \cite{PORTreport, PORTpaper},
-conjugate gradient (CG) \cite{CG}), generally by Hessian matrix
-instability problems, a problem which our multiGLMM also suffers from
-when we try to compute the parameters standard errors. When the model
-works, it is because we are using the parameter true values as initial
-guesses i.e. if the algorithm needs to walk on the log-likelihood
-surface following the gradient, it fails. Even when it works, the
-estimates are not always good. We also tried with a SANN and a
-Nelder-Mead algorithm. SANN \cite{SANN} is a variant of a simulated
-annealing method, based on a Metropolis algorithm. Since it is based on
-simulation, it takes a lot of time and as the gradient-based methods, do
-not work most of the time. The best results were with the Nelder-Mead
-\cite{neldermead}, a free-gradient method. Still, it only works when we
-use the parameter true values as initial guesses. This situation is
-completely the opposite of what is shown in the paper, making impossible
-any reasonable comparison between the models. We will enter in contact
-with the authors to see what is happening.
 
 All models from the simulation study were run, in a parallelized
 fashion, in one of the two following Linux systems:
