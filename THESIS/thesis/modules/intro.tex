@@ -213,19 +213,9 @@ modelling framework. A comprehensive reference is \citeonline{GLM89}.
 data. For the analysis of such data, \citeonline{laird82} proposed the
 random effects regression models for longitudinal/repeated-measures data
 analysis. \citeonline{breslow93} presented the GLMMs for the analysis of
-non-Gaussian outcomes. In this framework, we can accommodate all
-competing causes of failure and censorship with a multinomial
-probability distribution, easily extend to any number of competing
-causes. The within-cluster dependence is accommodated via a multivariate
-normal distribution and the cause-specific CIFs via the model's link
-function. The estimation and inference are done via an efficient
-implementation and state-of-art computational libraries provided through
-TMB. The latent effects are handled out by means of an efficient Laplace
-approximation and automatic differentiation.
-
-What makes a GLM into a GLMM \cite{GLMM} is the addition of a latent
-effect \(\bm{u}\) (then, \textit{m}ixed) into the mean structure. The
-mean structure of a standard GLMM is defined as
+non-Gaussian outcomes. What makes a GLM into a GLMM is the addition of a
+latent effect \(\bm{u}\) (then, \textit{m}ixed) into the mean
+structure. The mean structure of a standard GLMM is defined as
 \[
   g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u},
   \quad \bm{u} \sim \text{Multivariate Normal}(\bm{0},\bm{\Sigma})
@@ -238,13 +228,25 @@ The covariates are into \(\bm{x}_{i}\), the \(i^\text{th}\) vector row
 of a model-matrix \(\bm{X}\), with \(\bm{\beta}\) being a vector of
 unknown parameters.
 
+In the GLMM framework, we can accommodate all competing causes of
+failure and censorship with a multinomial probability distribution,
+easily extend to any number of competing causes. The within-cluster
+dependence is accommodated via the latent effect and the cause-specific
+CIFs via the model's link function. The estimation and inference are
+done via an efficient implementation and state-of-art computational
+libraries provided through the R \cite{R21} package TMB \cite{TMB}. The
+latent effects are handled out by means of an efficient Laplace
+approximation \cite{corestats,patrao} and automatic differentiation (AD)
+\cite{corestats,peyre} routines.
+
 \section{GOALS}
 
 \subsection{General goals}
 
-Propose and study the estimability of a multinomial generalized linear
-mixed model (multiGLMM) to the cluster and cause-specific cumulative
-incidence function (CIF) of clustered competing risks data.
+Propose and study a maximum likelihood estimation approach of a
+multinomial generalized linear mixed model (multiGLMM) to the cluster
+and cause-specific cumulative incidence function (CIF) of clustered
+competing risks data.
 
 \subsection{Specific goals}
 
@@ -263,8 +265,8 @@ incidence function (CIF) of clustered competing risks data.
        efficient Laplace approximation routine.
 
  \item Study the maximum likelihood estimation method embedded on TMB.
-       Check its properties in our multiGLMM for different complexity
-       level in terms of parametric space and latent effect structures.
+       Check its properties in our model for different complexity level
+       in terms of parametric space and latent effect structures.
 
  \item Make exact likelihood-based inference to the cluster and
        cause-specific CIF of clustered competing risks data.
@@ -289,8 +291,8 @@ clustered competing risks data on the probability scale. We propose to
 model the cause-specific CIF and accommodate the within-family
 dependence in the same fashion (via a latent structure that allows the
 absolute risk and the failure time distribution to vary between
-families) but with an easier framework, based on a multinomial
-generalized linear mixed model approach.
+families) but with an easier framework, based on a full-likelihood
+approach of a multinomial generalized linear mixed model.
 
 \section{LIMITATION}
 
