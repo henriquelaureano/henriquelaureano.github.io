@@ -16,11 +16,11 @@ familiar structure. More specifically, we are interested in what is
 called \textit{family studies}. Besides the dependence between family
 members, this kind of data is characterized by being consisted of big
 samples, or even a population, and having a lot of clusters/families of
-small size. The inspiration to the study of these kinds of problems came
-from the work developed in \citeonline{SCHEIKE}, where they studied
-breast cancer incidence in mothers and daughters but using a complicated
-modeling framework. Based on that, the aim of this thesis is to propose
-a simpler framework taking advantage of several \textit{state-of-art}
+small size. The inspiration to these kinds of problems came from the
+work developed in \citeonline{SCHEIKE}, where they studied breast cancer
+incidence in mothers and daughters but using a complicated estimation
+framework. Based on that, the aim of this thesis is to propose a simpler
+estimation framework taking advantage of several \textit{state-of-art}
 computational libraries and see how far we can go in several
 scenarios. Until now we have just contextualized, we still need to
 introduce the methodology. To do this, some definitions and theoretical
@@ -169,16 +169,13 @@ product of a cluster-specific risk level function with a
 cluster-specific failure time trajectory function. A composite approach
 \cite{lindsay88, cox&reid04, varin11} is a valid alternative to a full
 likelihood analysis in high-dimensional situations when a full approach
-is too computational costly or even inviable. In failure time data
-problems, the composite likelihood function is built from the product of
-marginal densities. The marginal specification implies a pairwise
-approach since we need to add model layers to be able to handle with the
-dependence structure. A clear advantage of this approach is that we do
-not need to care about a joint distribution specification, which
-generally translates also into a computational advantage. A disadvantage
-is the model specification, which becomes much more complicated, besides
-the number of small details to workaround from the fact of being working
-with not an exact likelihood function.
+is too computational costly or even inviable. A clear advantage of this
+approach is that we do not need to care about a joint distribution
+specification, which generally translates also into a computational
+advantage. A disadvantage is the likelihood function specification,
+which becomes much more complicated, besides the number of small details
+to workaround from the fact of being working with not an exact
+likelihood function.
 
 We do not have any guarantees that a full likelihood inference procedure
 is not viable here, so we try to reach the same goal of
@@ -194,20 +191,19 @@ function based on the cluster-specific CIF, accouting for an appropriate
 latent effects structure), marginalize (integrate out the latent
 effects) and optimize it. A Fisherian approach per se.
 
-To a better contextualization of our GLMM approach \cite{GLMM}, consider
-a random suject \(i\). In a standard linear model we assume that the
-response variable \(Y_{i}\), conditioned on the covariates
-\(\bm{x}_{i}\), follows a normal/Gaussian distribution and what we do is
-to model its mean, \(\mu_{i} \equiv \mathbb{E}(Y_{i} \mid \bm{x}_{i})\),
-via a linear combination. As much well explained in \citeonline{GLM72},
-with the aid of a \textit{link function} \(g(\cdot)\), this idea is
-generalized to distributions of the \textit{exponential family}. Many of
-its members are useful for practical modelling, such as the Poisson (for
-counting data), binomial (dichotomic data), gamma (continuous but
-positive) and Gaussian (continuous data) distributions. This extended
-framework received the name of generalized linear models
-(GLMs) \cite{GLM72}, and is probably the most popular statistical
-modelling framework. A comprehensive reference is \citeonline{GLM89}.
+In a standard linear model we assume that the response
+variable \(Y_{i}\), conditioned on the covariates \(\bm{x}_{i}\),
+follows a normal/Gaussian distribution and what we do is to model its
+mean, \(\mu_{i} \equiv \mathbb{E}(Y_{i} \mid \bm{x}_{i})\), via a linear
+combination. As much well explained in \citeonline{GLM72}, with the aid
+of a \textit{link function} \(g(\cdot)\), this idea is generalized to
+distributions of the \textit{exponential family}. Many of its members
+are useful for practical modelling, such as the Poisson (for counting
+data), binomial (dichotomic data), gamma (continuous but positive) and
+Gaussian (continuous data) distributions. This extended framework
+received the name of generalized linear models (GLMs) \cite{GLM72}, and
+is probably the most popular statistical modelling framework. A
+comprehensive reference is \citeonline{GLM89}.
 
  Despite its flexibility, the GLMs are not suitable for dependent
 data. For the analysis of such data, \citeonline{laird82} proposed the
@@ -228,22 +224,23 @@ The covariates are into \(\bm{x}_{i}\), the \(i^\text{th}\) vector row
 of a model-matrix \(\bm{X}\), with \(\bm{\beta}\) being a vector of
 unknown parameters.
 
-In the GLMM framework, we can accommodate all competing causes of
-failure and censorship with a multinomial probability distribution,
-easily extend to any number of competing causes. The within-cluster
-dependence is accommodated via the latent effect and the cause-specific
-CIFs via the model's link function. The estimation and inference are
-done via an efficient implementation and state-of-art computational
-libraries provided through the R \cite{R21} package TMB \cite{TMB}. The
-latent effects are handled out by means of an efficient Laplace
-approximation \cite{corestats,patrao} and automatic differentiation (AD)
+In the GLMM framework \cite{GLMM}, we can accommodate all competing
+causes of failure and censorship with a multinomial probability
+distribution, easily extend to any number of competing causes. The
+within-cluster dependence is accommodated via the latent effect and the
+cause-specific CIFs via the model's link function. The estimation and
+inference are done via an efficient implementation and state-of-art
+computational libraries provided through the R \cite{R21} package
+TMB \cite{TMB}. The latent effects are handled out by means of an
+efficient Laplace approximation \cite{corestats,patrao} and automatic
+differentiation (AD)
 \cite{corestats,peyre} routines.
 
 \section{GOALS}
 
 \subsection{General goals}
 
-Propose and study a maximum likelihood estimation approach of a
+Propose and evaluate a maximum likelihood estimation approach of a
 multinomial generalized linear mixed model (multiGLMM) to the cluster
 and cause-specific cumulative incidence function (CIF) of clustered
 competing risks data.
@@ -264,7 +261,7 @@ competing risks data.
        implementation; and a joint likelihood marginalization via an
        efficient Laplace approximation routine.
 
- \item Study the maximum likelihood estimation method embedded on TMB.
+ \item Assess the maximum likelihood estimation method embedded on TMB.
        Check its properties in our model for different complexity level
        in terms of parametric space and latent effect structures.
 

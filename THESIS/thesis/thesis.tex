@@ -1,7 +1,7 @@
 %%----------------------------------------------------------------------
 %%                                                     Henrique Laureano
 %%                                            henriquelaureano.github.io
-%%                                      2021-mar-05 · Curitiba/PR/Brazil
+%%                                      2021-apr-27 · Curitiba/PR/Brazil
 %%----------------------------------------------------------------------
 \documentclass[12pt, % tamanho da fonte
                openright, % capítulos começam em pág ímpar
@@ -384,38 +384,39 @@
   within-cluster dependence between its elements, this kind of data is
   characterized by 1) multiple causes/variables competing to be the one
   responsible for the occurrence of an event, a failure; and 2)
-  censorship, when the event of interest happens or not for none of the
-  competing causes, in the study period. To handle this type of data, we
-  propose a generalized linear mixed model (GLMM) i.e., a latent-effects
-  framework, instead of a usual survival model. In survival analysis,
-  the modeling is usually done by means of the hazard rate, and the
-  within-cluster dependence accommodation ends by generating a
-  complicated likelihood function, sometimes intractable. We, on the
-  other hand, model the clustered competing causes in the probability
-  scale, in terms of the cumulative incidence function (CIF) of each
-  competing cause. In our framework, we suppose a multinomial
-  probability distribution for the competing causes and censorship,
-  conditioned on the latent effects. The latent effects are accommodated
-  via a multivariate Gaussian distribution and are modeled by the
-  parameters of its covariance matrix. The probability distributions are
-  connected via CIF, modeled here following \citeonline{SCHEIKE}
-  specification, based on its decomposition as the product of an
-  instantaneous risk level function with a trajectory time level
-  function. The latent effects are inserted in those level functions. To
+  censorship, when the event of interest does not happen in the study
+  period, or it happens by a different cause. To handle this type of
+  data, we propose a generalized linear mixed model (GLMM) i.e., a
+  latent-effects framework, instead of a usual survival model. In
+  survival analysis, the modeling is usually done by means of the hazard
+  rate, and the within-cluster dependence accommodation ends by
+  generating a complicated likelihood function, sometimes
+  intractable. We, on the other hand, model the clustered competing
+  causes in the probability scale, in terms of the cumulative incidence
+  function (CIF) of each competing cause. In our framework, we suppose a
+  multinomial probability distribution for the competing causes and
+  censorship, conditioned on the latent effects. The latent effects are
+  accommodated via a multivariate Gaussian distribution and are modeled
+  by the parameters of its covariance matrix. The probability
+  distributions are connected via CIF, modeled here following
+  \citeonline{SCHEIKE} specification, based on its decomposition as the
+  product of an instantaneous risk level function with a trajectory time
+  level function. The latent effects are inserted in both functions. To
   make the model parameters estimation the most efficient as possible,
   we use the template model builder (TMB) \cite{TMB}. With this
   \texttt{R} \cite{R21} package, we have 1) the log-likelihood function
   written in \texttt{C++}; 2) access to efficient linear algebra
   libraries; 3) efficient Laplace approximation implementation for the
   latent-effects; and 4) an automatic differentiation (AD) routine, the
-  state-of-the-art in derivatives computation. To check the estimability
-  of our model a large simulation study is performed, based on different
-  latent structure formulations, with the aim to verify which one is
+  state-of-the-art in derivatives computation. To check the model
+  performance a large simulation study is performed, based on different
+  latent structure formulations, with the aim to verify which one is the
   most adequate to real scenarios. The model presents to be of difficult
   estimation, with our results converging to a latent structure where
-  the risk and trajectory time levels are correlated. In scenarios with
-  high CIF the model exhibits the better results, but still with an
-  excessive variance, showing that improvements are necessary.
+  the risk and trajectory time levels are correlated. The smallest
+  parameter estimates biases are found in scenarios with high CIF, but
+  the estimates present an excessive variance, showing that improvements
+  are necessary.
 
   \vfill
   \textbf{Keywords}: Clustered competing risks.
@@ -445,10 +446,10 @@
     tipo de dado \'{e} caracterizado por 1) m\'{u}ltiplas
     causas/vari\'{a}veis ​​competindo para ser a respons\'{a}vel pela
     ocorr\^{e}ncia de um evento, uma falha; e 2) censura, quando o
-    evento de interesse ocorre ou n\~{a}o por nenhuma das causas
-    concorrentes, no per\'{i}odo de estudo. Para lidar com este tipo de
-    dado, propomos um modelo linear generalizado misto (GLMM), ou seja,
-    um modelo de efeitos latentes/aleat\'{o}rios, em vez de um modelo de
+    evento de interesse n\~{a}o ocorre no per\'{i}odo de estudo, ou
+    ocorre por uma diferente causa. Para lidar com este tipo de dado,
+    propomos um modelo linear generalizado misto (GLMM), ou seja, um
+    modelo de efeitos latentes/aleat\'{o}rios, em vez de um modelo de
     sobreviv\^{e}ncia usual. Em an\'{a}lise de sobreviv\^{e}ncia, a
     modelagem \'{e} usualmente feita por meio da taxa de risco, e a
     acomodação da depend\^{e}ncia intra-grupo acaba por gerar uma
@@ -476,16 +477,16 @@
     aproxima\c{c}\~{a}o de Laplace para os efeitos latentes; e 4) uma
     rotina computacional de diferencia\c{c}\~{a}o autom\'{a}tica, o
     estado da arte em computa\c{c}\~{a}o de derivadas. Para verificar a
-    estimabilidade do nosso modelo \'{e} realizado um amplo estudo de
+    performance do modelo foi realizado um amplo estudo de
     simula\c{c}\~{a}o, baseado em diferentes formula\c{c}\~{o}es de
     estruturas latentes, com o objetivo de verificar qual delas \'{e} a
     mais adequada a um cen\'{a}rio real. O modelo se apresenta de
     dif\'{i}cil estimati\c{c}\~{a}o, com nossos resultados convergindo
     para uma estrutura latente onde os n\'{i}veis de risco e de
-    trajet\'{o}ria est\~{a}o correlacionados. Em cen\'{a}rios de CIF
-    alta o modelo apresenta os melhores resultados, mas ainda com uma
-    excessiva variablidade, mostrando que melhorias s\~{a}o
-    necess\'{a}rias.
+    trajet\'{o}ria est\~{a}o correlacionados. Os menores vieses nas
+    estimativas dos param\^{e}tros s\~{a}o encontrados nos cen\'{a}rios
+    de CIF alta, mas com uma excessiva variablidade, mostrando que
+    melhorias s\~{a}o necess\'{a}rias.
     
     \vfill
     \textbf{Palavras-chave}: Riscos competitivos agrupados.
