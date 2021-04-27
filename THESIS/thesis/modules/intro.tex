@@ -12,15 +12,19 @@ the probability of the same happening in the others.
 A realistic context that fits perfectly with the framework described
 above is the study of disease incidence in family members, where each
 member is indexed by a random variable and each cluster consists of a
-familiar structure. The inspiration to the study of these kinds of
-problems came from the work developed in \citeonline{SCHEIKE}, where
-they studied breast cancer incidence in mothers and daughters but using
-a complicated modeling framework. Based on that, the aim of this thesis
-is to propose a simpler framework taking advantage of
-several \textit{state-of-art} computational libraries and see how far we
-can go in several scenarios. Until now we have just contextualized, we
-still need to introduce the methodology. To do this, some definitions
-and theoretical contexts are welcome.
+familiar structure. More specifically, we are interested in what is
+called \textit{family studies}. Besides the dependence between family
+members, this kind of data is characterized by being consisted of big
+samples, or even a population, and having a lot of clusters/families of
+small size. The inspiration to the study of these kinds of problems came
+from the work developed in \citeonline{SCHEIKE}, where they studied
+breast cancer incidence in mothers and daughters but using a complicated
+modeling framework. Based on that, the aim of this thesis is to propose
+a simpler framework taking advantage of several \textit{state-of-art}
+computational libraries and see how far we can go in several
+scenarios. Until now we have just contextualized, we still need to
+introduce the methodology. To do this, some definitions and theoretical
+contexts are welcome.
 
 When the object under study is a random variable representing the time
 until some event occurs, we are in the field of \textit{failure time
@@ -97,8 +101,9 @@ This structure is specified for a failure time process, as in
 \autoref{fig:intro1}~A). Nevertheless, the idea is easy to extend. We
 basically have the \autoref{eq:intro1}'s model to each cause-specific
 (in a competing risks process) or transition (in a multistate process).
-A complete and extensive detailing can be, again, found in
-\citeonline{kalb&prentice}.
+For competing risks, the probable most famous specific approach is
+the \citeonline{fine&gray} subdistribution model. A complete and
+extensive detailing can be, again, found in \citeonline{kalb&prentice}.
 
 In this work we approach the case of clustered competing risks. Besides
 the cause-specific structure, we have to deal with the fact that the
@@ -108,13 +113,21 @@ dependence that needs to be considered, accommodated, and modeled. This,
 possible, dependence is something that we do not actually measure but
 know (or just suppose) that exists. In the statistical modeling language
 this characteristic receives the name of \textit{random} or
-\textit{latent effect}. A survival model with a latent effect,
-association, or unobserved heterogeneity, is denoted
-\textit{frailty model} \cite{frailty78, frailty79}. In its simplest
-form, a frailty is an unobserved random proportionality factor that
-modifies the hazard function of an individual, or of related
-individuals. Frailty models are extensions of \autoref{eq:intro1}'s
-model.
+\textit{latent effect}.
+
+A survival model with a latent effect, association, or unobserved
+heterogeneity, is denoted \textit{frailty model}
+\cite{frailty78,frailty79,liang95,petersen98}. In its simplest form, a
+frailty is an unobserved random proportionality factor that modifies the
+hazard function of an individual, or of related individuals. Frailty
+models are extensions of \autoref{eq:intro1}'s model, and its use
+implies complicated likelihood functions (statistical objective
+functions) and inference routines done via elaborated and slow
+expectation–maximization (EM) algorithms \cite{nielsen92,klein92} or
+inefficient Markov chain Monte Carlo (MCMC) schemes \cite{hougaard00}.
+With multiple survival experiences, the general idea is the same but
+with even more elaborated likelihoods \cite{prentice78,therneau00} or
+using instead mixture model approaches \cite{larson85,kuk92}.
 
 In the competing risks setting, the hazard scale (focusing on the
 cause-specific hazard) is not the only possible scale to work on. A more
@@ -122,11 +135,31 @@ attractive possibility is to work on the probability scale
 \cite{andersen12}, focusing on the cause-specific cumulative incidence
 function (CIF). Besides the within-family dependence, in family studies
 there is often a strong interest in describing age at disease onset,
-which is directly described by the cause-specific CIF. Therefore, making
-the probability scale a more attractive and logical choice. Since the
-CIF plays a central role in this master thesis, it will be formally
-defined later in a place with greater emphasis. With the definitions and
-the theoretical context being made, let us be more specific.
+which is directly described by the cause-specific CIF. The CIF is the
+cumulative probability of experiencing a failure by a given competing
+cause along the time. Therefore, making the probability scale a more
+attractive and logical choice. Since the CIF plays a central role in
+this master thesis, it will be formally defined later in a place with
+greater emphasis. With the definitions and the theoretical context being
+made, let us be more specific.
+
+Besides the CIF specification itself, the known works with clustered
+competing risks data in the probability scale, differ in terms of
+likelihood construction and parameters estimation. There is a lack of
+methodology predominance in the literature, but with its majority being
+designed for bivariate CIFs, where increasing the CIF's dimension is a
+limitation. Some of the existing options are
+\begin{itemize}
+ \item Nonparametric approaches \cite{cheng07,cheng09};
+ \item Linear transformation models \cite{fine99,gerds12};
+ \item Semiparametric approaches based on
+  \begin{itemize}
+   \item Composite likelihoods \cite{shih,SCHEIKE};
+   \item Estimating equations \cite{cheng&fine12,crossoddsratioSCHEIKE};
+   \item Copula models \cite{semiparametricSCHEIKE};
+   \item Mixture models \cite{naskar05,shi13}.
+  \end{itemize}
+\end{itemize}
 
 To work with competing risks data on the probability scale plus a latent
 structure allowing for within-cluster dependence of both risk and
@@ -149,16 +182,17 @@ with not an exact likelihood function.
 
 We do not have any guarantees that a full likelihood inference procedure
 is not viable here, so we try to reach the same goal of
-\citeonline{SCHEIKE} albeit with a simpler framework taking advantage of
-\textit{state-of-art} software, something still not so common in the
-statistical modeling community. This simpler framework is a generalized
-linear mixed model (GLMM). Instead of concentrating on failure time data
-and consequently having a survival/frailty model based on the hazard
-scale, or using a composite approach, we just build the joint/full
-likelihood function (a multinomial model with its link function based on
-the cluster-specific CIF, accouting for an appropriate latent effects
-structure), marginalize (integrate out the latent effects) and optimize
-it. A Fisherian approach per se.
+\citeonline{SCHEIKE} albeit with a simpler maximum likelihood estimation
+framework taking advantage of \textit{state-of-art} software, something
+still not so common in the statistical modeling community. This simpler
+framework is a generalized linear mixed model (GLMM). Instead of
+concentrating on failure time data and consequently having a
+survival/frailty model based on the hazard scale, or using a composite
+approach (or any other of the options listed above), we just build the
+joint/full likelihood function (a multinomial model with its link
+function based on the cluster-specific CIF, accouting for an appropriate
+latent effects structure), marginalize (integrate out the latent
+effects) and optimize it. A Fisherian approach per se.
 
 To a better contextualization of our GLMM approach \cite{GLMM}, consider
 a random suject \(i\). In a standard linear model we assume that the
@@ -171,8 +205,23 @@ generalized to distributions of the \textit{exponential family}. Many of
 its members are useful for practical modelling, such as the Poisson (for
 counting data), binomial (dichotomic data), gamma (continuous but
 positive) and Gaussian (continuous data) distributions. This extended
-framework received the name of generalized linear model (GLM) and a
-comprehensive reference is \citeonline{GLM89}.
+framework received the name of generalized linear models
+(GLMs) \cite{GLM72}, and is probably the most popular statistical
+modelling framework. A comprehensive reference is \citeonline{GLM89}.
+
+ Despite its flexibility, the GLMs are not suitable for dependent
+data. For the analysis of such data, \citeonline{laird82} proposed the
+random effects regression models for longitudinal/repeated-measures data
+analysis. \citeonline{breslow93} presented the GLMMs for the analysis of
+non-Gaussian outcomes. In this framework, we can accommodate all
+competing causes of failure and censorship with a multinomial
+probability distribution, easily extend to any number of competing
+causes. The within-cluster dependence is accommodated via a multivariate
+normal distribution and the cause-specific CIFs via the model's link
+function. The estimation and inference are done via an efficient
+implementation and state-of-art computational libraries provided through
+TMB. The latent effects are handled out by means of an efficient Laplace
+approximation and automatic differentiation.
 
 What makes a GLM into a GLMM \cite{GLMM} is the addition of a latent
 effect \(\bm{u}\) (then, \textit{m}ixed) into the mean structure. The
