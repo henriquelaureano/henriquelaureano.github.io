@@ -574,6 +574,123 @@ bias2plot2_rho(out,
                expression(bold("Complete model's cross-correlations")))
 ```
 
+```{r biasaqua,fig.width=10,fig.height=6.5}
+bias2plotAqua <- function(df, title)
+{
+    ggplot(df, aes(ymin=mean-1.96*sd, ymax=mean+1.96*sd, x=data, size=nr))+
+        geom_linerange(position=position_dodge(width=0.2), color='#0096c8')+
+        geom_point(mapping=aes(x=data, y=mean), size=3,
+                   shape=21, color='black', fill='white', stroke=2)+
+        facet_grid(~v, scales='free_x')+
+        geom_hline(yintercept=0, linetype='dashed')+
+        labs(x=NULL, y='Bias',
+             title=title,
+             subtitle='with \u00b1 1.96 standard deviations',
+             size='Fittings')+
+        coord_flip()+
+        theme(
+            strip.background=element_rect(colour='black', fill='white'),
+            legend.box.background=element_rect(color='black'),
+            plot.title=element_text(size=16), 
+            plot.subtitle=element_text(size=15, face='italic'),
+            axis.text.x=element_text(size=13), 
+            axis.text.y=element_text(size=14),
+            axis.title.x=element_text(size=14,
+                                      margin=unit(c(t=3, r=0, b=0, l=0),
+                                                  'mm')),
+            legend.justification=c(1, 0),
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=13),
+            strip.text.x=element_text(size=12.5, face='bold')
+        )
+}
+bias2aqua <- function(par, title)
+{
+    out <- biasformat(
+        par,
+        list(v1error, v2error, v3error, v4error)
+    )
+    bias2plotAqua(out, title=title)
+}
+bias2aqua('beta1', expression(bold('Parameter:'~beta[1])))
+
+par <- 'logs2_4'
+out <- dplyr::bind_rows(inside(par, v2error),
+                        inside(par, v3error),
+                        inside(par, v4error),
+                        .id='v')
+out$v <- forcats::fct_recode(out$v,
+                             'TIME MODEL'      ='1',
+                             'BLOCK-DIAG MODEL'='2',
+                             'COMPLETE MODEL'  ='3')
+bias2plotAqua(out, expression(bold('Parameter:'~log(sigma[4]^2))))
+
+par <- 'rhoZ12'
+out <- dplyr::bind_rows(inside(par, v1error),
+                        inside(par, v3error),
+                        inside(par, v4error),
+                        .id='v')
+out$v <- forcats::fct_recode(out$v,
+                             'RISK MODEL'      ='1',
+                             'BLOCK-DIAG MODEL'='2',
+                             'COMPLETE MODEL'  ='3')
+bias2plotAqua(out, expression(bold('Parameter:'~z(rho[12]))))
+
+par <- 'rhoZ34'
+out <- dplyr::bind_rows(inside(par, v2error),
+                        inside(par, v3error),
+                        inside(par, v4error),
+                        .id='v')
+out$v <- forcats::fct_recode(out$v,
+                             'TIME MODEL'      ='1',
+                             'BLOCK-DIAG MODEL'='2',
+                             'COMPLETE MODEL'  ='3')
+bias2plotAqua(out, expression(bold('Parameter:'~z(rho[34]))))
+
+bias2aqua_rho <- function(df, title)
+{
+    ggplot(df, aes(ymin=mean-1.96*sd, ymax=mean+1.96*sd, x=data, size=nr))+
+        geom_linerange(position=position_dodge(width=0.2), color='#0096c8')+
+        geom_point(mapping=aes(x=data, y=mean), size=3,
+                   shape=21, color='black', fill='white', stroke=2)+
+        facet_grid(~v, scales='free_x', labeller=label_parsed)+
+        geom_hline(yintercept=0, linetype='dashed')+
+        labs(x=NULL, y='Bias',
+             title=title,
+             subtitle='with \u00b1 1.96 standard deviations',
+             size='Fittings')+
+        coord_flip()+
+        theme(
+            strip.background=element_rect(colour='black', fill='white'),
+            legend.box.background=element_rect(color='black'),
+            plot.title=element_text(size=16), 
+            plot.subtitle=element_text(size=15, face='italic'),
+            axis.text.x=element_text(size=13), 
+            axis.text.y=element_text(size=14),
+            axis.title.x=element_text(size=14,
+                                      margin=unit(c(t=3, r=0, b=0, l=0),
+                                                  'mm')),
+            legend.justification=c(1, 0),
+            legend.title=element_text(size=14), 
+            legend.text=element_text(size=13),
+            strip.text.x=element_text(size=14)
+        )##+guides(size=guide_legend(nrow=1))
+}
+
+out <- dplyr::bind_rows(inside('rhoZ13', v4error),
+                        inside('rhoZ24', v4error),
+                        inside('rhoZ14', v4error),
+                        inside('rhoZ23', v4error),
+                        .id='v')
+out$v <- forcats::fct_recode(out$v,
+                             'bold(z(rho[13]))'='1',
+                             'bold(z(rho[24]))'='2',
+                             'bold(z(rho[14]))'='3',
+                             'bold(z(rho[23]))'='4')
+bias2aqua_rho(out,
+              expression(bold("Complete model's cross-correlations")))
+```
+
 # CIF
 
 ```{r cifs,fig.width=10,fig.height=10}
