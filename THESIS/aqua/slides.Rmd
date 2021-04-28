@@ -190,6 +190,7 @@ inference routines mostly done via
 
 ### Probability scale \(\rightarrow\) Cause-specific CIF
 
+\vspace{0.2cm}
 ```{r cif, echo=FALSE,fig.height=3.25}
 pacman::p_load(tidyverse, ## you need the pacman's package
                ggplot2,
@@ -228,15 +229,15 @@ g1 <-
           axis.text.x=element_text(size=13),
           axis.text.y=element_text(size=13),
           plot.title=element_text(
-              size=17,
+              size=16,
               face='bold', 
-              margin=unit(c(t=0, r=0, b=2, l=0), 'mm')), 
+              margin=unit(c(t=0, r=0, b=3, l=0), 'mm')), 
           axis.title.x=element_text(
               size=14,
-              margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
           axis.title.y=element_text(
               size=14,
-              margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")))
 df <- as.data.frame(cbind(time, cif1, cif2, cif3))
 df <- df%>%
     pivot_longer(cols=cif1:cif3, names_to="cif", values_to="value")
@@ -254,15 +255,15 @@ g2 <-
           axis.text.x=element_text(size=13),
           axis.text.y=element_text(size=13),
           plot.title=element_text(
-              size=17,
+              size=16,
               face='bold',
-              margin=unit(c(t=0, r=0, b=2, l=0), 'mm')), 
+              margin=unit(c(t=0, r=0, b=3, l=0), 'mm')), 
           axis.title.x=element_text(
               size=14, 
-              margin=unit(c(t=2, r=0, b=0, l=0), "mm")),
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
           axis.title.y=element_text(
               size=14, 
-              margin=unit(c(t=0, r=2, b=0, l=0), "mm")))
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")))
 g1+g2
 ```
 
@@ -277,6 +278,12 @@ g1+g2
 \end{block}
 
 Common applications: \textit{\textcolor{UniBlue}{family studies}}.
+\newline
+\hspace*{.5cm}\rotatebox[origin=c]{180}{$\color{UniBlue}{\Lsh}$}
+Keywords:
+*within-family/cluster dependence*;
+*age at disease onset*;
+*populations*.
 
 ### Formally,
 
@@ -339,8 +346,9 @@ with
      \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty).\)
 
 \includegraphics[height=0.5cm]{logo/book.png}
-In @SCHEIKE, this CIF specification is modeled under a *complicated*
-pairwise composite likelihood approach [@lindsay88; @varin11].
+In @SCHEIKE, this CIF specification is modeled under a
+*challengeable* pairwise composite likelihood approach
+[@lindsay88; @varin11].
 
 ### Our contribution: a full likelihood analysis
 
