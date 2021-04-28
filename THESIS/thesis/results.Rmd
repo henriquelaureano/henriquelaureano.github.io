@@ -131,8 +131,17 @@ for (i in 1:3)
         }
     }
 }
+
 ## str(v1data);length(v1data)
+## summary(v2data[9][[1]]$beta1)
+## plot(seq(453), v2data[9][[1]]$beta1)
+## str(v2data[9][[1]])
+v2data[9][[1]] <- v2data[9][[1]][-437, ]
 ## str(v2data);length(v2data)
+## summary(v3data[10][[1]]$gama1)
+## plot(seq(496), v3data[10][[1]]$gama1)
+## str(v3data[10][[1]])
+v3data[10][[1]] <- v3data[10][[1]][-329, ]
 ## str(v3data);length(v3data)
 ## str(v4data);length(v4data)
 
