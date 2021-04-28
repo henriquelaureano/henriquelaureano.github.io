@@ -146,7 +146,7 @@ A comprehensive reference is @kalb&prentice's book.
    \textcolor{UniBlue}{\textbf{How?}}
 \end{columns}
 
-### Failure time data \(\rightarrow\) Survival models
+### Modeling failure time data
 
 First of all, we have to choose which \textcolor{UniBlue}{scale} we
 model the \textbf{survival experience}.
@@ -170,15 +170,27 @@ The cluster dependence is something actually not measured\dots
  \end{center}
 \end{block}
 
-Full likelihood analysis with frailty models for competing risks data is
-generally complicated, when not impracticable.
+Frailty-based models for (\textcolor{UniBlue}{multiple}) survival
+experiences turn out in challengeable likelihood functions with
+inference routines mostly done via
+
+\begin{columns}
+ \column{8cm}
+  \begin{itemize}
+   \item Elaborated and slow expectation–maximization (EM)
+         algorithms;
+  \end{itemize}
+ \column{6cm}
+  \begin{itemize}
+   \item Inefficient Markov chain Monte Carlo (MCMC) schemes.
+  \end{itemize}
+\end{columns}
 
 2. \textit{Not} usually, the \textcolor{UniBlue}{probability scale}.
 
 ### Probability scale \(\rightarrow\) Cause-specific CIF
 
-\vspace{0.2cm}
-```{r cif, echo=FALSE,fig.height=4.15}
+```{r cif, echo=FALSE,fig.height=3.25}
 pacman::p_load(tidyverse, ## you need the pacman's package
                ggplot2,
                patchwork)
@@ -211,8 +223,8 @@ g1 <-
                        labels=c("Cause 1", "Cause 2"))+
     theme(legend.title=element_blank(),
           legend.text=element_text(size=14),
-          legend.position=c(0.175, 0.85),
-          legend.box.background=element_rect(color='black'),
+          ## legend.position=c(0.175, 0.85),
+          ## legend.box.background=element_rect(color='black'),
           axis.text.x=element_text(size=13),
           axis.text.y=element_text(size=13),
           plot.title=element_text(
@@ -237,8 +249,8 @@ g2 <-
     labs(x='Time', y='Probability', title='All CIFs sum up to 1')+
     theme(legend.title=element_blank(),
           legend.text=element_text(size=14),
-          legend.position=c(0.25, 0.75),
-          legend.box.background=element_rect(color='black'),
+          ## legend.position=c(0.25, 0.75),
+          ## legend.box.background=element_rect(color='black'),
           axis.text.x=element_text(size=13),
           axis.text.y=element_text(size=13),
           plot.title=element_text(
@@ -263,6 +275,8 @@ g1+g2
             ~].
 \]
 \end{block}
+
+Common applications: \textit{\textcolor{UniBlue}{family studies}}.
 
 ### Formally,
 
