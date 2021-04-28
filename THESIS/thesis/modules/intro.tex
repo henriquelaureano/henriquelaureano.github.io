@@ -18,7 +18,7 @@ members, this kind of data is characterized by being consisted of big
 samples, or even a population, and having a lot of clusters/families of
 small size. The inspiration to these kinds of problems came from the
 work developed in \citeonline{SCHEIKE}, where they studied breast cancer
-incidence in mothers and daughters but using a complicated estimation
+incidence in mothers and daughters but using a nontrivial estimation
 framework. Based on that, the aim of this thesis is to propose a simpler
 estimation framework taking advantage of several \textit{state-of-art}
 computational libraries and see how far we can go in several
@@ -101,9 +101,9 @@ This structure is specified for a failure time process, as in
 \autoref{fig:intro1}~A). Nevertheless, the idea is easy to extend. We
 basically have the \autoref{eq:intro1}'s model to each cause-specific
 (in a competing risks process) or transition (in a multistate process).
-For competing risks, the probable most famous specific approach is
-the \citeonline{fine&gray} subdistribution model. A complete and
-extensive detailing can be, again, found in \citeonline{kalb&prentice}.
+For competing risks, the probable most famous approach is the
+\citeonline{fine&gray} subdistribution model. A complete and extensive
+detailing can be, again, found in \citeonline{kalb&prentice}.
 
 In this work we approach the case of clustered competing risks. Besides
 the cause-specific structure, we have to deal with the fact that the
@@ -121,13 +121,13 @@ heterogeneity, is denoted \textit{frailty model}
 frailty is an unobserved random proportionality factor that modifies the
 hazard function of an individual, or of related individuals. Frailty
 models are extensions of \autoref{eq:intro1}'s model, and its use
-implies complicated likelihood functions (statistical objective
+implies challengeable likelihood functions (statistical objective
 functions) and inference routines done via elaborated and slow
 expectation–maximization (EM) algorithms \cite{nielsen92,klein92} or
 inefficient Markov chain Monte Carlo (MCMC) schemes \cite{hougaard00}.
 With multiple survival experiences, the general idea is the same but
-with even more elaborated likelihoods \cite{prentice78,therneau00} or
-using instead mixture model approaches \cite{larson85,kuk92}.
+with even more challengeable likelihoods
+\cite{prentice78,larson85,kuk92,therneau00}.
 
 In the competing risks setting, the hazard scale (focusing on the
 cause-specific hazard) is not the only possible scale to work on. A more
@@ -140,15 +140,14 @@ cumulative probability of experiencing a failure by a given competing
 cause along the time. Therefore, making the probability scale a more
 attractive and logical choice. Since the CIF plays a central role in
 this master thesis, it will be formally defined later in a place with
-greater emphasis. With the definitions and the theoretical context being
-made, let us be more specific.
+greater emphasis.
 
 Besides the CIF specification itself, the known works with clustered
 competing risks data in the probability scale, differ in terms of
-likelihood construction and parameters estimation. There is a lack of
-methodology predominance in the literature, but with its majority being
-designed for bivariate CIFs, where increasing the CIF's dimension is a
-limitation. Some of the existing options are
+likelihood construction and parameters estimation routines. There is a
+lack of methodology predominance in the literature, but with its
+majority being designed for bivariate CIFs, where increasing the CIF's
+dimension is a limitation. Some of the existing options are
 \begin{itemize}
  \item Nonparametric approaches \cite{cheng07,cheng09};
  \item Linear transformation models \cite{fine99,gerds12};
@@ -161,11 +160,12 @@ limitation. Some of the existing options are
   \end{itemize}
 \end{itemize}
 
-To work with competing risks data on the probability scale plus a latent
-structure allowing for within-cluster dependence of both risk and
-timing, \citeonline{SCHEIKE} proposed a pairwise composite likelihood
-approach based on the factorization of the cause-specific CIF as the
-product of a cluster-specific risk level function with a
+With the definitions and the theoretical context being made, let us be
+more specific. To work with competing risks data on the probability
+scale plus a latent structure allowing for within-cluster dependence of
+both risk and timing, \citeonline{SCHEIKE} proposed a pairwise composite
+likelihood approach based on the factorization of the cause-specific CIF
+as the product of a cluster-specific risk level function with a
 cluster-specific failure time trajectory function. A composite approach
 \cite{lindsay88, cox&reid04, varin11} is a valid alternative to a full
 likelihood analysis in high-dimensional situations when a full approach
@@ -173,8 +173,8 @@ is too computational costly or even inviable. A clear advantage of this
 approach is that we do not need to care about a joint distribution
 specification, which generally translates also into a computational
 advantage. A disadvantage is the likelihood function specification,
-which becomes much more complicated, besides the number of small details
-to workaround from the fact of being working with not an exact
+which becomes much more challengeable, besides the number of small
+details to workaround from the fact of being working with not an exact
 likelihood function.
 
 We do not have any guarantees that a full likelihood inference procedure
@@ -182,8 +182,8 @@ is not viable here, so we try to reach the same goal of
 \citeonline{SCHEIKE} albeit with a simpler maximum likelihood estimation
 framework taking advantage of \textit{state-of-art} software, something
 still not so common in the statistical modeling community. This simpler
-framework is a generalized linear mixed model (GLMM). Instead of
-concentrating on failure time data and consequently having a
+framework is based on a generalized linear mixed model (GLMM). Instead
+of concentrating on failure time data and consequently having a
 survival/frailty model based on the hazard scale, or using a composite
 approach (or any other of the options listed above), we just build the
 joint/full likelihood function (a multinomial model with its link
@@ -211,7 +211,8 @@ random effects regression models for longitudinal/repeated-measures data
 analysis. \citeonline{breslow93} presented the GLMMs for the analysis of
 non-Gaussian outcomes. What makes a GLM into a GLMM is the addition of a
 latent effect \(\bm{u}\) (then, \textit{m}ixed) into the mean
-structure. The mean structure of a standard GLMM is defined as
+structure. The mean structure of a standard GLMM for a subject \(i\) is
+defined as
 \[
   g(\mu_{i}) = \bm{x}_{i}\bm{\beta} + \bm{z}_{i}\bm{u},
   \quad \bm{u} \sim \text{Multivariate Normal}(\bm{0},\bm{\Sigma})
@@ -288,15 +289,16 @@ clustered competing risks data on the probability scale. We propose to
 model the cause-specific CIF and accommodate the within-family
 dependence in the same fashion (via a latent structure that allows the
 absolute risk and the failure time distribution to vary between
-families) but with an easier framework, based on a full-likelihood
-approach of a multinomial generalized linear mixed model.
+families) but with an easier estimation framework, based on a
+full-likelihood approach of a multinomial generalized linear mixed
+model.
 
 \section{LIMITATION}
 
 This work restraint to the proposition and maximum likelihood estimation
-method study of a multinomial model for the cause-specific cumulative
-incidence function (CIF) of competing risks data in the context of
-family studies, with a latent effect structure to accommodate
+method evaluation of a multinomial model for the cause-specific
+cumulative incidence function (CIF) of competing risks data in the
+context of family studies, with a latent effect structure to accommodate
 within-family dependence with regard to both risk and timing. Family
 studies are characterized by a considerable amount of clusters
 (families) but with each one having a small number of elements. Given
