@@ -15,7 +15,7 @@ Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
 What am I doing right now? (Apr 21)
 
 + The [master thesis](THESIS/thesis/thesis.pdf) is *ready*,
-  [Wagner](http://www.leg.ufpr.br/~wagner/) is reading it;
+  waiting for the defense;
 
 + Master thesis defense slides are ready\
   [pdf](THESIS/aqua/slides.pdf)
