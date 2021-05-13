@@ -76,6 +76,8 @@ Automatic differentiation (AD).
 
 \section{Introduction}
 
+Competing risks data and, more generally, failure time data, can be modeled in two possible scales: the hazard and probability scale, with the former being the most popular one. The modeling object is the survival experience of the time-to-event data. A competing risks process can be seen as the multivariate extension of a failure time process, having multiple causes competing to be the one responsible for the desired event occurrence, properly, a failure. In \autoref{fig:crp} a visual aid is provided considering m competing causes.
+
 Failure time data is the branch of Statistics responsible to handle
 random variables describing the time until the occurrence of an event, a
 failure \citep{kalb&prentice,hougaard00}. The time until a failure is
@@ -112,6 +114,10 @@ elements sharing some non-observed latent dependence structure.
  \caption{Illustration of competing risks process.}
  \label{fig:crp}
 \end{figure}
+
+When this framework is applied in real-world situations, we have to be able to handle the nonoccurrence of the desired event, by any of the competing causes, for, let us say, \textit{logistic reasons} (short-time study and outside scope causes are some examples). This, generally noninformative, nonoccurrence of the event is called censorship.
+
+Introduce family studies.
 
 The survival experiences is usually modeled in the hazard (failure rate)
 scale, and with the latent within-cluster dependence accommodation we
