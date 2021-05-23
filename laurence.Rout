@@ -28,9 +28,8 @@ processing file: laurence.Rmd
 
   |                                                                              |.......................                                               |  33%
 label: unnamed-chunk-1 (with options) 
-List of 2
+List of 1
  $ message: logi FALSE
- $ warning: logi FALSE
 
   |                                                                              |...................................                                   |  50%
   ordinary text without R code
@@ -50,7 +49,7 @@ label: unnamed-chunk-3
 
 output file: laurence.knit.md
 
-/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/Rtmpd7lEwZ/rmarkdown-str4113d2e94a4cf.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
+/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/RtmpTCRe3o/rmarkdown-str2ccd6a4e4eb7.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
 
 Output created: laurence.html
 Warning messages:
@@ -61,4 +60,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  5.767   0.344   4.918 
+  5.589   0.251   4.654 
