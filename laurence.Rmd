@@ -107,6 +107,12 @@ plot.curves <-
     scale_fill_manual(values=c('#EF426F','#00B2A9', '#FF8200'),
                       aesthetics='color')+
     geom_point(aes(y=y), color='black', size=2)+
+    geom_point(
+        data=data2plot[c(
+            dplyr::first(which(cumsum(data.inla$y)>=100)), 
+            dplyr::first(which(cumsum(data.inla$y)>=200))
+        ), ],
+        aes(y=y), color='red', size=3)+
     theme_minimal()+
     theme(legend.position='top',
           legend.box.background=element_rect(color='black'),
