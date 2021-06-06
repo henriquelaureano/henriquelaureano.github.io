@@ -17,7 +17,7 @@ Institute](http://www.pelepequenoprincipe.org.br/), part of the Pequeno
 Príncipe Complex. Pequeno Príncipe Hospital is the largest exclusively
 pediatric hospital in Brazil.
 
-What am I doing right now? (May 21)
+What am I doing right now? (Jun 21)
 
 + The [master thesis](THESIS/thesis/thesis.pdf) is *ready*,
   waiting for the defense;
