@@ -88,7 +88,7 @@ plot.curves <-
     ggplot(data2plot, aes(x=x, y=y, color=Model))+
     ## geom_line(aes(y=y), color='black', alpha=0.25)+
     geom_vline(xintercept=c(31, 28+31, 31+28+31, 30+31+28+31,
-                            31+30+31+28+31),
+                            31+30+31+28+31, 30+31+30+31+28+31),
                linetype='dashed')+
     annotate('text', label='JAN',
              x=31/2, y=4, color='#8A8D8F', size=5)+
