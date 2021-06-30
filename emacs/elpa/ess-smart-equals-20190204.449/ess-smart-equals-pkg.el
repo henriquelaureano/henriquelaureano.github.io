@@ -1,2 +1,0 @@
-;;; -*- no-byte-compile: t -*-
-(define-package "ess-smart-equals" "20190204.449" "flexible, context-sensitive assignment key for R/S" '((emacs "25.1") (ess "18.10")) :commit "746cf9e78c3b86cbbf78d69c335a8a4ff3da79d6" :keywords '("r" "s" "ess" "convenience") :authors '(("Christopher R. Genovese" . "genovese@cmu.edu")) :maintainer '("Christopher R. Genovese" . "genovese@cmu.edu") :url "https://github.com/genovese/ess-smart-equals")
