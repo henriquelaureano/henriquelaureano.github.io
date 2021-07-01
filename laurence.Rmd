@@ -8,10 +8,11 @@ output:
 ---
 
 ```{r message=FALSE}
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 pacman::p_load(tidyverse, patchwork, INLA)
 x <- c(
     1:31, 1:28+31, 1:31+31+28, 1:30+31+28+31, 1:31+31+28+31+30,
-    1:30+31+28+31+30+31, 1:(1+14)31+28+31+30+31+30
+    1:30+31+28+31+30+31, 1:(1+14)+31+28+31+30+31+30
 )
 ## 23 days per row
 y <- c(
@@ -102,6 +103,8 @@ plot.curves <-
              x=31/2+31+28+31+30, y=4, color='#8A8D8F', size=5)+
     annotate('text', label='JUN',
              x=30/2+31+28+31+30+31, y=4, color='#8A8D8F', size=5)+
+    annotate('text', label='JUL',
+             x=10+31+28+31+30+31+30, y=4, color='#8A8D8F', size=5)+
     geom_ribbon(aes(ymin=f.lb, ymax=f.ub, fill=Model),
                 alpha=0.15, fill='#8A8D8F', size=1.25, linetype='dashed')+
     geom_line(aes(y=f.hat), size=2)+
@@ -114,6 +117,10 @@ plot.curves <-
             dplyr::first(which(cumsum(data.inla$y)>=200))
         ), ],
         aes(y=y), color='red', size=3)+
+    scale_x_continuous(breaks=c(0, 31, 28+31, 31+31+28, 30+31+28+31,
+                                31+31+28+31+30, 30+31+28+31+30+31,
+                                31+31+28+31+30+31+30))+
+    scale_y_continuous(breaks=seq(0, 4, by=0.5))+
     theme_minimal()+
     theme(legend.position='top',
           legend.box.background=element_rect(color='black'),
