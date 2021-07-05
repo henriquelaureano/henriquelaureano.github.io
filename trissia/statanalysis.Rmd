@@ -1,0 +1,425 @@
+---
+title: "Perda auditiva em crianças"
+author: "Análise: [Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path='figuras/', fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning=FALSE, message=FALSE, prompt=FALSE,
+                      echo=FALSE, comment=NA)
+
+```
+
+***
+
+```{r pkgs}
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+pacman::p_load(
+            ## data manipulation
+            readxl, dplyr, lubridate, stringr, haven, tidyr, forcats,
+            ## data analysis
+            ## data visualization
+            ggplot2, ggthemes, patchwork, kableExtra
+        )
+source('../i4p-colors/i4p-palette.R')
+```
+
+```{r data}
+
+## I am reading 'data' cause the diagnostic time's column is
+## inconsistent. There are some subjects with only month/year informed,
+## or worst, just the year. With the month/year ones, lubridate's
+## already inserted the day 1 automatically, but in the year ones I did
+## that manually.
+
+dat <- readxl::read_xlsx('data.xlsx',
+                         col_names=c(
+                             'criança', 'sexo', 'nasc', 'pront', 'mãe',
+                             'diag', 'etiologia', 'tipo', 'obs',
+                             'implante', 'orelha', 'perda', 'hosp'),
+                         skip=1, col_types=c( rep('guess', 5), 'date',
+                         rep('guess', 7)))
+
+## fixing inconsistencies ----------------------------------------------
+
+### eliminating duplicate rows 
+## dat|>
+##     dplyr::select(pront)|>
+##     unique()
+## 
+## reps <- dat|>
+##     dplyr::count(pront)|>
+##     dplyr::filter(n>1)|>
+##     dplyr::pull(pront)
+## 
+## dat|>
+##     dplyr::filter(pront%in%reps)|>
+##     View()
+
+dat <- dat|>
+    dplyr::distinct(pront, .keep_all=TRUE)
+
+### computing kids age at diagnosis (there are not only kids)
+
+#### by putting day 1 in the uninformed day ones, I got some age zeros
+#### or even negative. To fix that I add now an extra month to those
+#### kids
+idiag0 <- dat|>
+    dplyr::mutate(idiag=(diag-nasc)/lubridate::dyears(),
+                  idiag=ifelse(idiag<=0, idiag+0.1, idiag))|>
+    dplyr::filter(idiag<=0)|>
+    dplyr::pull(pront)
+
+#### there is still a kid with negative age. do you know why? cause the
+#### diagnostic time is previous to the kid's birthday. So I will invert
+#### that
+
+## which(dat$pront==idiag0)
+
+idiag0_nd <- dat|>
+    dplyr::filter(pront%in%idiag0)|>
+    dplyr::select(nasc, diag)
+
+dat[117, 'nasc'] <- idiag0_nd$diag
+dat[117, 'diag'] <- idiag0_nd$nasc
+
+dat2 <- dat|>
+    dplyr::mutate(idiag=(diag-nasc)/lubridate::dyears(),
+                  idiag=ifelse(idiag<=0, idiag+0.1, idiag))|>
+    dplyr::select(!c(criança, nasc, pront, mãe, diag))|>
+    dplyr::mutate(perda=dplyr::recode(perda,
+                                      'nao encontrado'='não encontrado'),
+                  perda=stringr::str_to_sentence(perda),
+                  i2diag=cut(idiag,
+                             breaks=c(0:10, 80), include.lowest=TRUE),
+                  sexo=dplyr::recode(sexo,
+                                     'F'='Feminino', 'M'='Masculino'))
+
+```
+
+# Etiologia da surdez
+
+***
+
+```{r etiologia,fig.height=6}
+
+dat_etio <- dat2|>
+    dplyr::count(etiologia)|>
+    dplyr::filter(n>1)
+
+dat_etio <-
+    dplyr::bind_rows(dat_etio,
+                     tibble::tibble(etiologia='Frequência única',
+                                    n=(nrow(dat2)-sum(dat_etio$n))))|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(etiologia=stringr::str_to_sentence(etiologia),
+                  etiologia=haven::as_factor(etiologia))
+
+dat_etio|>
+    ggplot(aes(x=n, y=etiologia))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 205),
+                       breaks=seq(0, 200, by=25))+
+    labs(title='Etiologia da surdez',
+         subtitle='Com frequências superiores a 1')+
+    theme_fivethirtyeight(base_size=14)+
+    theme(plot.subtitle=element_text(face='italic', size=14))
+
+```
+
+# Tipo
+
+***
+
+```{r tipo}
+
+dat2|>
+    dplyr::mutate(tipo=tidyr::replace_na(tipo, 'não disponível'))|>
+    dplyr::count(tipo)|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(tipo=stringr::str_to_sentence(tipo),
+                  tipo=haven::as_factor(tipo))|>
+    ggplot(aes(x=n, y=tipo))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 365),
+                       breaks=seq(0, 360, by=60))+
+    labs(title='Tipo')+
+    theme_fivethirtyeight(base_size=14)
+
+```
+
+# Observações
+
+***
+
+```{r obs}
+
+dat_obs <- dat2|>
+    dplyr::count(obs)|>
+    dplyr::filter(n>1)
+
+dat_obs <-
+    dplyr::bind_rows(dat_obs,
+                     tibble::tibble(obs='Frequência única',
+                                    n=(nrow(dat2)-sum(dat_obs$n))))|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(obs=tidyr::replace_na(obs, 'nenhuma'),
+                  obs=stringr::str_to_sentence(obs),
+                  obs=haven::as_factor(obs))
+
+dat_obs|>
+    ggplot(aes(x=n, y=obs))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 340),
+                       breaks=seq(0, 330, by=60))+
+    labs(title='Observações',
+         subtitle='Com frequências superiores a 1')+
+    theme_fivethirtyeight(base_size=14)+
+    theme(plot.subtitle=element_text(face='italic', size=14))
+
+```
+
+# Aparelho/implante
+
+***
+
+```{r implante}
+
+dat2|>
+    dplyr::count(implante)|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(implante=stringr::str_to_sentence(implante),
+                  implante=dplyr::recode(
+                                      implante,
+                                      'Baha'='BAHA',
+                                      'Tubo ventilacao'='Tubo ventilação',
+                                      'Tv oe'='TV OE',
+                                      'Nao encontrado'='Não encontrado',
+                                      'Aasi'='AASI'), 
+                  implante=haven::as_factor(implante))|>
+    ggplot(aes(x=n, y=implante))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 230),
+                       breaks=seq(0, 230, by=25))+
+    labs(title='Aparelho/implante')+
+    theme_fivethirtyeight(base_size=14)
+
+```
+
+# Orelha
+
+***
+
+```{r orelha,fig.height=3}
+
+dat2|>
+    dplyr::count(orelha)|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(orelha=dplyr::recode(orelha,
+                                       'nao encontrado'='não encontrado'),
+                  orelha=stringr::str_to_sentence(orelha),
+                  orelha=haven::as_factor(orelha))|>
+    ggplot(aes(x=n, y=orelha))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 190),
+                       breaks=seq(0, 180, by=20))+
+    labs(title='Orelha')+
+    theme_fivethirtyeight(base_size=14)
+
+```
+
+# Tipo de perda auditiva
+
+***
+
+```{r perda_auditiva-tipo,fig.height=3.5}
+
+dat2|>
+    dplyr::count(perda)|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(perda=haven::as_factor(perda))|>
+    ggplot(aes(x=n, y=perda))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 415),
+                       breaks=seq(0, 415, by=60))+
+    labs(title='Tipo de perda auditiva')+
+    theme_fivethirtyeight(base_size=14)
+
+```
+
+# Hospital
+
+***
+
+```{r hospital,fig.height=2}
+
+dat2|>
+    dplyr::count(hosp)|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(hosp=haven::as_factor(hosp))|>
+    ggplot(aes(x=n, y=hosp))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 410),
+                       breaks=seq(0, 410, by=50))+
+    labs(title='Hospital')+
+    theme_fivethirtyeight(base_size=14)
+
+```
+
+# Sexo
+
+***
+
+```{r sexo,fig.height=2}
+
+dat2|>
+    dplyr::count(sexo)|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(sexo=haven::as_factor(sexo))|>
+    ggplot(aes(x=n, y=sexo))+
+    geom_bar(stat='identity', alpha=0.5)+
+    geom_text(aes(label=paste(n, '(', round(100*n/sum(n), 1), '%)')),
+              hjust=-0.1)+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 265),
+                       breaks=seq(0, 250, by=50))+
+    labs(title='Sexo')+
+    theme_fivethirtyeight(base_size=14)
+
+```
+
+# Idade
+
+***
+
+```{r idade,fig.height=2}
+
+dat2|>
+    tidyr::drop_na(idiag)|>
+    ggplot(aes(x=idiag, y=NA))+
+    geom_boxplot()+
+    stat_summary(fun=mean, geom='point', size=4, color='#ff0000')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 80),
+                       breaks=c(0, 5, seq(10, 80, by=10)))+
+    labs(title='Boxplot das idades', subtitle='Em vermelho, a média')+
+    theme_fivethirtyeight(base_size=14)+
+    theme(axis.text.y=element_blank(),
+          plot.subtitle=element_text(face='italic', size=14))
+
+```
+
+```{r idade_by_sexo,fig.width=10,fig.height=7.5}
+
+isexo <- dat2|>
+    tidyr::drop_na(idiag)|>
+    ggplot(aes(x=idiag, y=sexo))+
+    geom_boxplot()+
+    stat_summary(fun=mean, geom='point', size=4, color='#ff0000')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 80),
+                       breaks=c(0, 5, seq(10, 80, by=10)))+
+    labs(title='Boxplot das idades', subtitle='Em vermelho, as médias')+
+    theme_fivethirtyeight(base_size=15)+
+    theme(plot.subtitle=element_text(face='italic', size=14))
+
+piraF <- dat2|>
+    dplyr::mutate(i2diag=forcats::fct_explicit_na(i2diag,
+                                                  'Não disponível'))|>
+    dplyr::filter(sexo=='Feminino')|>
+    ggplot(aes(x=i2diag))+
+    geom_bar(fill=i4p_colors['yellow'])+
+    geom_text(stat='count', aes(label=..count..), hjust=1.5)+
+    scale_y_continuous(trans='reverse',
+                       limits=c(65, 0), breaks=seq(0, 60, by=10))+
+    labs(title='Pirâmide etária:', subtitle='Sexo feminino')+
+    theme_fivethirtyeight(base_size=15)+
+    theme(axis.text.y=element_blank(),
+          plot.margin=margin(t=1, r=0, b=1, l=1, unit='lines'),
+          plot.title=element_text(hjust=1), 
+          plot.subtitle=element_text(hjust=1, face='bold'))+
+    coord_flip()
+
+piraM <- dat2|>
+    dplyr::mutate(i2diag=forcats::fct_explicit_na(i2diag,
+                                                  'Não disponível'))|>
+    dplyr::filter(sexo=='Masculino')|>
+    ggplot(aes(x=i2diag))+
+    geom_bar(fill=i4p_colors['blue'])+
+    geom_text(stat='count', aes(label=..count..), hjust=-0.5)+
+    scale_y_continuous(limits=c(0, 65), breaks=seq(0, 60, by=10))+
+    labs(title=paste(nrow(dat2), 'pacientes'),
+         subtitle='Sexo Masculino')+
+    theme_fivethirtyeight(base_size=15)+
+    theme(axis.text.y=element_text(hjust=0.5),
+          plot.margin=margin(t=1, r=1, b=1, l=0, unit='lines'),
+          plot.subtitle=element_text(face='bold'))+
+    coord_flip()
+
+layout <- '
+AA
+BC'
+isexo+piraF+piraM+patchwork::plot_layout(heights=c(0.4, 1), design=layout)
+
+```
+
+# Tipo de Perda auditiva por
+
+***
+
+## Idade
+
+```{r perda_by_idade}
+
+dat_prev <- dat2|>
+    dplyr::mutate(i2diag=forcats::fct_explicit_na(i2diag,
+                                                  'Não disponível'))|>
+    dplyr::rename('Tipo de perda auditiva'='perda',
+                  'Faixa etária'='i2diag')|>
+    dplyr::group_by(`Tipo de perda auditiva`, `Faixa etária`)|>
+    dplyr::summarize(Prevalência=dplyr::n(),
+                     Percentual=100*Prevalência/nrow(dat2))
+
+dat_prev|>
+    kableExtra::kbl(digits=3, booktabs=TRUE)|>
+    kableExtra::kable_classic_2(fixed_thead=TRUE, full_width=FALSE)
+
+```
+
+## Sexo
+
+```{r perda_by_sexo}
+
+dat_prev2 <- dat2|>
+    dplyr::rename('Tipo de perda auditiva'='perda', 'Sexo'='sexo')|>
+    dplyr::group_by(`Tipo de perda auditiva`, Sexo)|>
+    dplyr::summarize(Prevalência=dplyr::n(),
+                     Percentual=100*Prevalência/nrow(dat2))
+
+dat_prev2|>
+    kableExtra::kbl(digits=3, booktabs=TRUE)|>
+    kableExtra::kable_classic_2(fixed_thead=TRUE, full_width=FALSE)
+
+```
