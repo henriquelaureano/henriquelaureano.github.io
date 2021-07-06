@@ -1,0 +1,178 @@
+---
+title: "Flavio Damasneco's cow study"
+author: "Análise: [Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path='figuras/', fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning=FALSE, message=FALSE, prompt=FALSE,
+                      echo=FALSE, comment=NA)
+
+```
+
+***
+
+```{r pkgs}
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+pacman::p_load(
+            ## data manipulation
+            purrr, readxl, dplyr, tidyr,
+            lubridate, stringr, haven, forcats,
+            ## data analysis
+            ## data visualization
+            ggplot2, ggthemes, patchwork, kableExtra
+        )
+source('../i4p-colors/i4p-palette.R')
+```
+
+```{r data}
+
+sheet_names <- c('CCS', 'CBT', 'Gord', 'Proteína', 'Produção', 'Peso',
+                 'Esc corporal', 'Esc higiene', 'Esc locom',
+                 'Umid cama sup', 'Umid cama 20',
+                 'Temp cama sup', 'Temp cama 20', 'C/N cama', 'pH cama')
+dat <- 
+    purrr::map(seq(length(sheet_names)),
+               ~readxl::read_xlsx(path='novos_dados-sheet1.xlsx',
+                                  sheet=.x))
+names(dat) <- sheet_names
+
+dat <- dplyr::bind_rows(dat, .id='variable')|>
+    tidyr::pivot_longer(dplyr::starts_with('Semana'),
+                        names_to='Semana', values_to='valor')|>
+    dplyr::relocate(Semana, .after=Tempo)|>
+    dplyr::relocate(valor, .after=Semana)|>
+    dplyr::mutate(Tempo=rep(seq(as.Date('2019/3/8'),
+                                as.Date('2020/2/28'), length.out=48), 
+                            times=length(sheet_names)))
+
+```
+
+# Séries semanais
+
+***
+
+## CCS, CBT, Gord
+
+```{r ccs_cbt_gord,fig.height=10,fig.width=10}
+
+ccs <- dat|>
+    dplyr::filter(variable=='CCS')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(180, 480, length.out=5))+
+    labs(title='CCS')+
+    theme_fivethirtyeight(base_size=16)
+
+cbt <- dat|>
+    dplyr::filter(variable=='CBT')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(2, 32, length.out=5))+
+    labs(title='CBT')+
+    theme_fivethirtyeight(base_size=16)
+
+gord <- dat|>
+    dplyr::filter(variable=='Gord')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(2.8, 4.5, length.out=5))+
+    labs(title='Gordura')+
+    theme_fivethirtyeight(base_size=16)
+
+ccs / cbt / gord
+
+```
+
+## Proteína, Produção, Peso
+
+```{r proteina_producao_peso,fig.height=10,fig.width=10}
+
+proteína <- dat|>
+    dplyr::filter(variable=='Proteína')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(3, 3.7, length.out=5))+
+    labs(title='Proteína')+
+    theme_fivethirtyeight(base_size=16)
+
+produção <- dat|>
+    dplyr::filter(variable=='Produção')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(800, 1500, length.out=5))+
+    labs(title='Produção')+
+    theme_fivethirtyeight(base_size=16)
+
+peso <- dat|>
+    dplyr::filter(variable=='Peso')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(615, 665, length.out=5))+
+    labs(title='Peso')+
+    theme_fivethirtyeight(base_size=16)
+
+proteína / produção / peso
+
+```
+
+## Esc- corporal, higiene, locom
+
+```{r esc_corporol_higiene_locom,fig.height=10,fig.width=10}
+
+esc_corporol <- dat|>
+    dplyr::filter(variable=='Esc corporal')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(2.9, 3.8, length.out=5))+
+    labs(title='Esc corporal')+
+    theme_fivethirtyeight(base_size=16)
+
+esc_higiene <- dat|>
+    dplyr::filter(variable=='Esc higiene')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(1, 1.6, length.out=5))+
+    labs(title='Esc higiene')+
+    theme_fivethirtyeight(base_size=16)
+
+esc_locom <- dat|>
+    dplyr::filter(variable=='Esc locom')|>
+    ggplot(aes(x=Tempo, y=valor))+
+    geom_line(size=1)+
+    geom_smooth(method=lm, formula=y ~ splines::bs(x, 3), se=TRUE)+
+    scale_x_date(date_breaks='1 month', date_labels='%m/%y')+
+    scale_y_continuous(breaks=seq(1, 1.7, length.out=5))+
+    labs(title='Esc locom')+
+    theme_fivethirtyeight(base_size=16)
+
+esc_corporol / esc_higiene / esc_locom
+
+```
