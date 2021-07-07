@@ -32,7 +32,7 @@ pacman::p_load(
             ## data analysis
             MASS, broom, 
             ## data visualization
-            ggplot2, ggthemes, patchwork, kableExtra
+            ggplot2, ggthemes, patchwork, psych, kableExtra
         )
 source('../i4p-colors/i4p-palette.R')
 ```
@@ -323,5 +323,37 @@ ccs_20.plot <- ccs_20.aug|>
     theme_fivethirtyeight(base_size=16)
 
 ccs_sup.plot / ccs_20.plot
+
+```
+
+```{r ccs_sub_20,fig.height=6.75}
+
+dat_ccs|>
+    dplyr::select_if(is.numeric)|>
+    dplyr::select(!dplyr::ends_with('20'))|>
+    pairs.panels(density=TRUE,
+                 hist.col=7,
+                 pch=21,
+                 lm=TRUE, ## linear fit rather the LOESS (smoothed) fit
+                 ci=TRUE,
+                 cor=TRUE,
+                 method='pearson', ## or 'spearman' or 'kendall'
+                 stars=TRUE,
+                 ellipses=TRUE, ## correlation ellipses
+                 cex.axis=1.4)
+
+dat_ccs|>
+    dplyr::select_if(is.numeric)|>
+    dplyr::select(!dplyr::ends_with('sup'))|>
+    pairs.panels(density=TRUE,
+                 hist.col=7,
+                 pch=21,
+                 lm=TRUE, ## linear fit rather the LOESS (smoothed) fit
+                 ci=TRUE, 
+                 cor=TRUE,
+                 method='pearson', ## or 'spearman' or 'kendall'
+                 stars=TRUE,
+                 ellipses=TRUE, ## correlation ellipses
+                 cex.axis=1.4)
 
 ```
