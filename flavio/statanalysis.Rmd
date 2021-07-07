@@ -27,8 +27,7 @@ knitr::opts_chunk$set(fig.path='figuras/', fig.align='center',
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 pacman::p_load(
             ## data manipulation
-            purrr, readxl, dplyr, tidyr, lubridate,
-            ##stringr, haven, forcats,
+            purrr, readxl, dplyr, tidyr, lubridate, stringr, haven,
             ## data analysis
             MASS, broom, 
             ## data visualization
@@ -268,7 +267,7 @@ cn_cama / ph_cama
 
 ## CCS
 
-```{r ccs_fit,fig.height=8,fig.width=10}
+```{r ccs_dat}
 
 dat_ccs <- dat|>
     dplyr::filter(variable%in%c('CCS',
@@ -277,8 +276,47 @@ dat_ccs <- dat|>
                                 'pH cama'))|>
     dplyr::select(variable, Tempo, valor)|>
     tidyr::pivot_wider(names_from=variable, values_from=valor)|>
-    dplyr::mutate(Mês=lubridate::month(Tempo), Mês=as.factor(Mês))|>
+    dplyr::mutate(Mês=lubridate::month(Tempo, label=TRUE), 
+                  Mês=as.character(Mês), 
+                  Mês=stringr::str_to_sentence(Mês),
+                  Mês=haven::as_factor(Mês))|>
     dplyr::relocate(Mês, .after=Tempo)
+
+```
+
+```{r ccs_sub_20,fig.height=7}
+
+dat_ccs|>
+    dplyr::select(where(is.numeric) | where(is.factor))|>
+    dplyr::select(!dplyr::ends_with('20'))|>
+    pairs.panels(density=TRUE,
+                 hist.col=7,
+                 pch=21,
+                 lm=TRUE, ## linear fit rather the LOESS (smoothed) fit
+                 ci=TRUE,
+                 cor=TRUE,
+                 method='pearson', ## or 'spearman' or 'kendall'
+                 stars=TRUE,
+                 ellipses=TRUE, ## correlation ellipses
+                 cex.axis=1.1)
+
+dat_ccs|>
+    dplyr::select(where(is.numeric) | where(is.factor))|>
+    dplyr::select(!dplyr::ends_with('sup'))|>
+    pairs.panels(density=TRUE,
+                 hist.col=7,
+                 pch=21,
+                 lm=TRUE, ## linear fit rather the LOESS (smoothed) fit
+                 ci=TRUE, 
+                 cor=TRUE,
+                 method='pearson', ## or 'spearman' or 'kendall'
+                 stars=TRUE,
+                 ellipses=TRUE, ## correlation ellipses
+                 cex.axis=1.1)
+
+```
+
+```{r ccs_fit,fig.height=8,fig.width=10}
 
 ccs_sup.fit <-
     MASS::stepAIC(
@@ -326,34 +364,38 @@ ccs_sup.plot / ccs_20.plot
 
 ```
 
-```{r ccs_sub_20,fig.height=6.75}
+```{r ccs_fit-tables}
 
-dat_ccs|>
-    dplyr::select_if(is.numeric)|>
-    dplyr::select(!dplyr::ends_with('20'))|>
-    pairs.panels(density=TRUE,
-                 hist.col=7,
-                 pch=21,
-                 lm=TRUE, ## linear fit rather the LOESS (smoothed) fit
-                 ci=TRUE,
-                 cor=TRUE,
-                 method='pearson', ## or 'spearman' or 'kendall'
-                 stars=TRUE,
-                 ellipses=TRUE, ## correlation ellipses
-                 cex.axis=1.4)
+ccs_sup.ftable <- broom::tidy(ccs_sup.fit, conf.int=TRUE)
 
-dat_ccs|>
-    dplyr::select_if(is.numeric)|>
-    dplyr::select(!dplyr::ends_with('sup'))|>
-    pairs.panels(density=TRUE,
-                 hist.col=7,
-                 pch=21,
-                 lm=TRUE, ## linear fit rather the LOESS (smoothed) fit
-                 ci=TRUE, 
-                 cor=TRUE,
-                 method='pearson', ## or 'spearman' or 'kendall'
-                 stars=TRUE,
-                 ellipses=TRUE, ## correlation ellipses
-                 cex.axis=1.4)
+ccs_sup.colcol <- ccs_sup.ftable|>
+    dplyr::summarize(
+               red=ifelse(p.value > 0.05, 0, 1),
+               yellow=ifelse(p.value > 0.05 & p.value < 0.10, 1, 0))
+
+ccs_sup.ftable|>
+    kableExtra::kbl(digits=3, booktabs=TRUE)|>
+    kableExtra::kable_classic_2(fixed_thead=TRUE)|>
+    kableExtra::column_spec(5, bold=TRUE)|>
+    kableExtra::row_spec(which(ccs_sup.colcol$red == 1), bold=TRUE, 
+                         color='white', background='#D7261E')|>
+    kableExtra::row_spec(which(ccs_sup.colcol$yellow == 1), bold=TRUE, 
+                         background=i4p_colors['yellow'])
+
+ccs_20.ftable <- broom::tidy(ccs_20.fit, conf.int=TRUE)
+
+ccs_20.colcol <- ccs_20.ftable|>
+    dplyr::summarize(
+               red=ifelse(p.value > 0.05, 0, 1),
+               yellow=ifelse(p.value > 0.05 & p.value < 0.10, 1, 0))
+
+ccs_20.ftable|>
+    kableExtra::kbl(digits=3, booktabs=TRUE)|>
+    kableExtra::kable_classic_2(fixed_thead=TRUE)|>
+    kableExtra::column_spec(5, bold=TRUE)|>
+    kableExtra::row_spec(which(ccs_20.colcol$red == 1), bold=TRUE, 
+                         color='white', background='#D7261E')|>
+    kableExtra::row_spec(which(ccs_20.colcol$yellow == 1), bold=TRUE, 
+                         background=i4p_colors['yellow'])
 
 ```
