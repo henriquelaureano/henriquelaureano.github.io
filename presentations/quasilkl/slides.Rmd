@@ -40,84 +40,64 @@ output:
 
 # Introduction
 
-### Clustered competing risk data
+### Introduction
 
-Key terms:
+\vspace{-0.1cm}
+1. Likelihood fucntion with \textbf{exponential family form}\newline
+   \hspace*{0.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+   MLE through \textbf{weighted least squares}
 
-1. \textcolor{AlertOrange}{Clustered}:
-   groups with a dependence structure (e.g. families);
+   - \textbf{variance (assumed) constant}:
+     we minimize a sum of squared residuals;
+   
+   - \textbf{variance not constant}:\newline
+     estimating equations can be thought as a generalization of the
+     scoring method.
 
-2. Causes \textcolor{AlertOrange}{competing} by *something*.
+2. Likelihood function \textcolor{AlertOrange}{without} exponential
+   family form\newline
+   \hspace*{0.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+   In some cases: weighted least squares\newline
+   \hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
+   Jorgensen, B. (1983). Maximum likelihood estimation and large sample
+                         \newline
+                         \hspace*{5.05cm}
+                         inference for generalized linear and non-linear
+                         \newline
+                         \hspace*{5.05cm}
+                         regression models. \textit{Biometrika} 70
 
-\bigskip
-Something?
-
-\begin{columns}
- \column{5cm}
-  \begin{itemize}
-  \item \textbf{Failure} of an industrial or electronic component;
- \end{itemize}
- \column{6.25cm}
-  \begin{itemize}
-   \item \textbf{Occurence} or \textbf{cure} of a disease or some
-         biological process;
-   \end{itemize}
- \column{4cm}
-  \begin{itemize}
-   \item \textbf{Progress} of a patient clinic state.
-  \end{itemize}
-\end{columns}
-
-\bigskip
-Independent of the application, always the same framework
-
-\begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
- Cluster & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
- \hline
- 1     & 1  & Yes     & No       & No        & 10   & A\\
- 1     & 2  & No      & No       & Yes       &  8   & A\\
- 2     & 1  & No      & No       & Yes       &  7   & B\\
- 2     & 2  & No      & Yes      & No        &  5   & A\\
-\end{tabular}
-
-### Big picture: Failure time data/time-to-event outcomes
-
-\begin{columns}
- \column{4cm}
-  \textit{Same methodologies, different names.}
-  \column{9cm}
-   \begin{description}
-    \item[Survival analysis] Biomedical studies;
-    \item[Reliability analysis] Industrial life testing.
-   \end{description}
-\end{columns}
+\vspace{-0.1cm}
+\begin{minipage}{14cm}
+\begin{block}{Paper purposes}
+ \begin{enumerate}
+  \item Maximize the likelihood function through weighted least squares
+        \newline
+        \hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+        In which class of problems;
+  \item Weighted least squares under 2nd moment assumptions
+        (\textbf{quasi-likelihood}).
+ \end{enumerate}
 \end{block}
-
-\includegraphics[height=0.5cm]{logo/book.png}
-A comprehensive reference is @kalb&prentice's book.
+\end{minipage}
 
 # A class of likelihood functions
 
-### Modeling clustered competing risks data
+### A class of likelihood functions
 
-\bigskip
-\begin{columns}
- \column{\linewidth/3}
-  \centering
-   \includegraphics[height=3.6cm]{logo/what.png}\\
-   \bigskip
-   \textcolor{UniBlue}{\textbf{What?}}
- \column{\linewidth/3}
-  \centering
-   \includegraphics[height=3.6cm]{logo/why.jpg}\\
-   \bigskip
-   \textcolor{UniBlue}{\textbf{Why?}}
- \column{\linewidth/3}
-  \centering
-   \includegraphics[height=3.6cm]{logo/roll_safe.png}\\
-   \bigskip
-   \textcolor{UniBlue}{\textbf{How?}}
-\end{columns}
+\begin{block}{}
+\begin{equation}
+ \text{Log likelihood written in the form}: \qquad
+ \sigma^{-2}\{\mathbf{y}^{\top}\bm{\theta} -
+              b(\bm{\theta}) -
+              c(\mathbf{y}, \sigma)\}
+ \label{eq:1}
+\end{equation}
+\end{block}
+
+By differentiating it and assuming that the support does not depend on
+\(\bm{\theta}\)\newline
+\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
 
 ### Modeling failure time data
 
