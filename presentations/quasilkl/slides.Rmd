@@ -89,8 +89,7 @@ output:
 \begin{equation}
  \text{Log likelihood written in the form}: \qquad
  \sigma^{-2}\{\mathbf{y}^{\top}\bm{\theta} -
-              b(\bm{\theta}) -
-              c(\mathbf{y}, \sigma)\}
+              b(\bm{\theta}) - c(\mathbf{y}, \sigma)\}
  \label{eq:1}
 \end{equation}
 \end{block}
