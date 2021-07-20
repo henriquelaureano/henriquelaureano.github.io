@@ -208,30 +208,55 @@ output:
 
 ### Quasi-likelihood functions
 
-\begin{center}
- \begin{minipage}{14.5cm}
-  \begin{block}{Reversing the natural order of assumptions}
-   \begin{enumerate}
-    \item Instead of taking the log-likelihood to be of the exponential
-          family form and \textcolor{AlertOrange}{then} deriving its
-          moments;
+\begin{minipage}{14.5cm}
+ \begin{block}{Reversing the natural order of assumptions}
+  \begin{enumerate}
+   \item Instead of taking the log-likelihood to be of the exponential
+         family form and \textcolor{AlertOrange}{then} deriving its
+         moments;
           
    \vspace{0.15cm}
-    \item We begin with the moments and \textcolor{AlertOrange}{then}
-          attempt to reconstruct the log-likelihood.
-   \end{enumerate}
-   \vspace{0.3cm}
-   \[
-    \text{The reconstituted function is called a
-    \textbf{quasi-likelihood}}.
-   \]
-  \end{block}
- \end{minipage}
-\end{center}
+   \item We begin with the moments and \textcolor{AlertOrange}{then}
+         attempt to reconstruct the log-likelihood.
+  \end{enumerate}
+  \vspace{0.3cm}
+  \[
+   \text{The reconstituted function is called a
+   \textbf{quasi-likelihood}}.
+  \]
+ \end{block}
+\end{minipage}
+
+\vspace{0.15cm}
+\begin{columns}
+\column{9cm}
+The log-quasi-likelihood, function of \(\bm{\mu}\),\newline
+is given by the system of partial differential equations
+\column{6cm}
+\begin{block}{}
+ \[
+  \frac{\partial \ell(\bm{\mu}; \mathbf{y})}{\partial \bm{\mu}} =
+  \mathbf{V}^{-}(\bm{\mu})(\mathbf{y} - \bm{\mu}).
+ \]
+\end{block}
+\end{columns}
+
+Which extends \textbf{Wedderburn's (1974)} definition.
+
+\begin{enumerate}
+ \item We get \(\def\hat{\mathaccent "705E\relax} \hat{\bm{\beta}}\)
+       from \(\def\hat{\mathaccent "705E\relax}
+              \mathbf{D}^{\top}\mathbf{V}^{-}
+              \{\mathbf{y} - \bm{\mu}(\hat{\bm{\beta}})\} = \mathbf{0}\)
+       (\textbf{generalized least squares equations});
+ \item There is no guarantee that
+       \(\def\hat{\mathaccent "705E\relax} \hat{\bm{\beta}}\)
+       is the MLE.
+\end{enumerate}
 
 # Properties of quasi-likelihood functions
 
-### Simulation study model designs
+### Properties of quasi-likelihood functions
 
 \begin{columns}
  \column{5.75cm}
