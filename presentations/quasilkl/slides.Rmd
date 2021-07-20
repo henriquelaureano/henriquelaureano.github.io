@@ -337,6 +337,43 @@ The conclusions (asymptotic unbiasedness),
 
 ### Estimation of \(\sigma^{2}\)
 
+In the absense of information beyond the second moments:
+\begin{block}{}
+ \vspace{-0.1cm}
+ \[
+  \def\tilde{\mathaccent "707E\relax}
+  \def\hat{\mathaccent "705E\relax}
+  \tilde{\sigma}^{2} =
+  \frac{(\mathbf{y} - \hat{\bm{\mu}})^{\top}\mathbf{V}^{-}
+        (\mathbf{y} - \hat{\bm{\mu}})}{N - p} =
+  \frac{X^{2}}{N - p}
+ \]
+\end{block}
+\vspace{-0.15cm}
+where \(X^{2}\) is a generalized form of Pearson's statistic.
+
+\vspace{0.15cm}
+\textcolor{UniBlue}{If} the log-likelihood is in the exponential
+family,\newline
+an estimate can be obtained by equating the observed deviance
+\[
+ \def\hat{\mathaccent "705E\relax}
+ d(\mathbf{y}; \hat{\bm{\mu}}) = 2\ell(\mathbf{y}; \mathbf{y}) -
+                                 2\ell(\hat{\bm{\mu}}; \mathbf{y}),
+ ~\text{to its approximate expected value}.
+\]
+
+\begin{description}
+ \item[Advantage:] asymptotically independent of
+                   \(\def\hat{\mathaccent "705E\relax}
+                     \hat{\bm{\beta}}\);
+ 
+ \item[Disadvantage:] the expectation of
+                      \(\def\hat{\mathaccent "705E\relax}
+                        d(\mathbf{Y}; \hat{\bm{\mu}})\) is often
+                      difficult to compute.
+\end{description}
+
 # Examples of quasi-likelihood functions
 
 ### Examples of quasi-likelihood functions
