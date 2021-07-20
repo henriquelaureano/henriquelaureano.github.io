@@ -85,42 +85,63 @@ output:
 
 ### A class of likelihood functions
 
-\begin{block}{}
-\begin{equation}
+\[
  \text{Log likelihood written in the form}: \qquad
  \sigma^{-2}\{\mathbf{y}^{\top}\bm{\theta} -
-              b(\bm{\theta}) - c(\mathbf{y}, \sigma)\}
- \label{eq:1}
-\end{equation}
-\end{block}
+              \mathbf{b}(\bm{\theta}) - \mathbf{c}(\mathbf{y}, \sigma)\}
+\]
 
-By differentiating it and assuming that the support does not depend on
-\(\bm{\theta}\)\newline
-\hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+\begin{center}
+ \begin{minipage}{12.25cm}
+  \begin{block}{The first two cumulants}
+   By differentiating it and assuming that the support does not depend
+   on \(\bm{\theta}\)\newline
+   \hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+   \(E(\mathbf{Y}) = \bm{\mu} = \mathbf{b}^{'}(\bm{\theta})\) and
+   \(\text{Cov}(\mathbf{Y}) = \sigma^{2}\mathbf{b}^{''}(\bm{\theta})
+                            = \sigma^{2}\mathbf{V}(\bm{\mu})\).
+  \end{block}
+ \end{minipage}
+\end{center}
 
-### Modeling failure time data
+\bigskip
+\begin{description}
+ \item[In fact,] the \(r\)th order cumulants of \(\mathbf{Y}\) are given
+                by \(\kappa_{r} = \sigma^{2r-2}
+                                  \mathbf{b}^{(r)}(\bm{\theta})\).
+\end{description}
 
-First of all, we have to choose which \textcolor{UniBlue}{scale} we
-model the \textbf{survival experience}.
+\bigskip
+\begin{enumerate}
+ \item The first two cumulants describe the random component of the
+       model;
+ \item However, in applications it is usually the systematic or
+       nonrandom variation that is of primary importance\newline
+       \hspace*{0.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+       \(E(\mathbf{Y}) = \bm{\mu} = \bm{\mu}(\bm{\beta})\) or
+       \(E\{(\mathbf{h}(\mathbf{Y}))\} = \bm{\psi}(\bm{\beta})\)
+       (implicitly involving \(\sigma^{2}\)).
+\end{enumerate}
 
-1. Usually, is in the
-   \begin{equation}
-    \text{\textcolor{UniBlue}{hazard} (failure rate)
-          \textcolor{UniBlue}{scale}}: \quad
-    \lambda(t \mid \text{features}) =
-    \lambda_{0}(t) \times c(\text{features}).\label{fig:hazard}
-   \end{equation}
+### A class of likelihood functions
 
-We have a Equation \ref{fig:hazard} for each competing cause.
-
-The cluster dependence is something actually not measured\dots
-\begin{block}{}
- \begin{center}
-  Not measured dependence~\(\rightarrow\)
-  \textbf{random/latent effects}~\(\rightarrow\)
-  Frailty models.
- \end{center}
-\end{block}
+\begin{description}
+ \item[If \(\sigma^{2}\) is known,] log-likelihood is an exponential
+                                    family\newline
+  \hspace*{0.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+  variance and all higher order cumulants of \(\mathbf{Y}\) are\newline
+  \hspace*{0.82cm}functions of the mean vector alone\newline
+  \hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
+  exponential, Poisson, multinomial, noncentral hypergeometric\newline
+  \hspace*{1.31cm}and partial likelihoods (survival analysis)\newline
+  \hspace*{1.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+  MLE of \(\bm{\beta}\) through weighted least squares\newline
+  \hspace*{2cm}\rotatebox[origin=c]{180}{$\Lsh$}
+  \(\bm{\mu}\) and \(\sigma^{2}\) are orthogonal\newline
+  \hspace*{2.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+  \(\bm{\beta}\) and \(\sigma^{2}\) also orthogonal;
+ \item[If \(\sigma^{2}\) is unknown,] log-likelihood is
+\end{description}
 
 Frailty-based models for (\textcolor{UniBlue}{multiple}) survival
 experiences turn out in challengeable likelihood functions with
@@ -137,8 +158,6 @@ inference routines mostly done via
    \item Inefficient Markov chain Monte Carlo (MCMC) schemes.
   \end{itemize}
 \end{columns}
-
-2. \textit{Not} usually, the \textcolor{UniBlue}{probability scale}.
 
 ### Probability scale \(\rightarrow\) Cause-specific CIF
 
