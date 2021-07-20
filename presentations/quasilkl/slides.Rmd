@@ -258,148 +258,72 @@ Which extends \textbf{Wedderburn's (1974)} definition.
 
 ### Properties of quasi-likelihood functions
 
-\begin{columns}
- \column{5.75cm}
-  \begin{block}{Risk model}
-   Latent effects only on the risk level i.e.,
+\vspace{-0.15cm}
+\begin{minipage}{13.5cm}
+ \textit{Very similar to those of ordinary likelihoods
+  \textcolor{AlertOrange}{except} that the nuisance parameter,
+  \(\sigma^{2}\), when unknown, is treated separately from
+  \(\bm{\beta}\) and is not estimated by weighted least squares.
+}
+\end{minipage}
+
+\vspace{0.15cm}
+The principal results fall into three classes:
+
+\begin{enumerate}
+ \item Those concerning the score function
+       \(\mathbf{U}_{\beta} = \partial\ell / \partial\bm{\beta}\);
+  \begin{block}{}
+   \vspace{-0.5cm}
    \[
-    \Sigma = \begin{bmatrix}
-              \sigma_{u_{1}}^{2} & \text{cov}_{u_{1}, u_{2}}\\
-                                 & \sigma_{u_{2}}^{2}
-             \end{bmatrix}.
+    \mathbf{U}_{\beta} =
+    \mathbf{D}^{\top}\mathbf{V}^{-}(\mathbf{Y} - \bm{\mu}(\bm{\beta}))
+    \quad \text{has zero mean and covariance matrix} \quad
+    \sigma^{2}\mathbf{i}_{\beta} =
+    \sigma^{2}\mathbf{D}^{\top}\mathbf{V}^{-}\mathbf{D}
    \]
   \end{block}
- \column{5.75cm}
-  \begin{block}{Time model}
-   Latent effects only on the failure time trajectory level i.e.,
+  \vspace{-0.15cm}
+  where \(\mathbf{i}_{\beta}\) is the expected second derivative matrix
+  of \(\ell(\bm{\mu}(\bm{\beta});\mathbf{Y})\).
+  
+ \vspace{0.15cm}
+ \item Those concerning the estimator
+       \(\def\hat{\mathaccent "705E\relax} \hat{\bm{\beta}}\);
+  \begin{block}{}
+   \vspace{-0.15cm}
    \[
-    \Sigma = \begin{bmatrix}
-              \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
-                                    & \sigma_{\eta_{2}}^{2}
-              \end{bmatrix}.
+    \def\hat{\mathaccent "705E\relax}
+    \text{There exists a}~\hat{\bm{\beta}}~\text{satisfying}~
+    \hat{\bm{\beta}} - \bm{\beta} =
+    \mathbf{I}_{\beta^{\ast}}^{-1}\mathbf{U}_{\beta} \quad
+    \text{(minimum asymptotic variance)}
    \]
   \end{block}
-\end{columns}
+  \vspace{-0.15cm}
+  where \(\mathbf{I}_{\beta}\) is the observed matrix of second
+  derivatives\newline
+  and \(\bm{\beta}^{\ast}\) is a point lying on the line segment joining
+  \(\def\hat{\mathaccent "705E\relax}
+    \hat{\bm{\beta}}~\text{and}~\bm{\beta}\).
+\end{enumerate}
 
-\begin{columns}
- \column{7cm}
-  \begin{block}{Block-diag model}
-   Latent effects on the risk and time levels without cross-correlations
-   i.e.,
-   \[
-    \Sigma = \begin{bmatrix}
-              \sigma_{u_{1}}^{2} & \text{cov}_{u_{1}, u_{2}} & 0 & 0\\
-              & \sigma_{u_{2}}^{2} & 0 & 0\\
-              & & \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
-              & & & \sigma_{\eta_{2}}^{2}
-             \end{bmatrix}.
-   \]
-  \end{block}
- \column{7cm}
-  \begin{block}{Complete model}
-   A \textit{complete} latent effects structure\newline
-   i.e.,
-   \[
-    \Sigma = \begin{bmatrix}
-              \sigma_{u_{1}}^{2} &
-              \text{cov}_{u_{1}, u_{2}} &
-              \text{cov}_{u_{1}, \eta_{1}} & \text{cov}_{u_{1}, \eta_{2}}\\
-              & \sigma_{u_{2}}^{2} &
-              \text{cov}_{u_{2}, \eta_{1}} & \text{cov}_{u_{2}, \eta_{2}}\\
-              & & \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
-              & & & \sigma_{\eta_{2}}^{2}
-              \end{bmatrix}.
-   \]
-  \end{block}
-\end{columns}
+### Properties of quasi-likelihood functions
 
-### Simulation study setup
-
-\vspace{-0.3cm}
-\begin{description}
- \item[Four] latent effects structures:
-  \begin{multicols}{4}
-   \begin{enumerate}
-    \item Risk model;
-    \item Time model;
-    \item Block-diag model;
-    \item Complete model.
-   \end{enumerate}
-  \end{multicols}
- \vspace{-0.6cm}
- \item[Two] CIF configurations:
-  \begin{multicols}{2}
-   \begin{description}
-    \item[Low] max incidence \(\approx 0.15\);
-    \item[High] max incidence \(\approx 0.60\).
-   \end{description}
-  \end{multicols}
-\end{description}
-
-\vspace{-0.3cm}
-For each of those \({\color{UniBlue}{\bm{4}}} \times
-{\color{UniBlue}{\bm{2}}} = {\color{UniBlue}{\bm{8}}}\) scenarios, we
-vary the sample and cluster sizes:
-
-\vspace{-0.2cm}
-\begin{columns}
- \column{5cm}
-  \begin{align*}
-   &\textbf{\textit{\color{UniBlue}{5000 data points}}}\\
-   \bullet~&\text{2500 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
-   \bullet~&\text{1000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
-   \bullet~&\text{500 clusters of}~\textbf{\color{UniBlue}{size 10}}.
-  \end{align*}
- \column{5cm}
-  \begin{align*}
-   &\textbf{\textit{\color{UniBlue}{30000 data points}}}\\
-   \bullet~&\text{15000 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
-   \bullet~&\text{6000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
-   \bullet~&\text{3000 clusters of}~\textbf{\color{UniBlue}{size 10}}.
-  \end{align*}
- \column{5cm}
-  \begin{align*}
-   &\textbf{\textit{\color{UniBlue}{60000 data points}}}\\
-   \bullet~&\text{30000 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
-   \bullet~&\text{12000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
-   \bullet~&\text{6000 clusters of}~\textbf{\color{UniBlue}{size 10}}.
-  \end{align*}
-\end{columns}
-
-\vspace{-0.1cm}
+3. Those concerning the distribution of the quasi-likelihood-ratio
+   statistic.
 \begin{block}{}
-Totalizing, \({\color{UniBlue}{\bm{8}}} \times {\color{UniBlue}{\bm{3}}}
-\times {\color{UniBlue}{\bm{3}}} = {\color{UniBlue}{\bm{72}}}\)
-scenarios.\newline
-For each scenario, we simulate \(\color{UniBlue}{\bm{500}}\) samples,
-totalizing \({\color{UniBlue}{\bm{72}}} \times
-{\color{UniBlue}{\bm{500}}} = {\color{UniBlue}{\bm{36000}}}\) model
-fittings.
+ \vspace{-0.15cm}
+ \[
+  \def\hat{\mathaccent "705E\relax}
+  2\ell(\hat{\bm{\beta}}; \mathbf{Y}) - 2\ell(\bm{\beta}; \mathbf{Y}) =
+  \mathbf{U}_{\beta}^{\top}\mathbf{i}_{\beta}^{-1}\mathbf{U}_{\beta} +
+  O_{p}(N^{-1/2}) \quad
+  \text{is asymptotically} \quad \sigma^{2}\chi_{p}^{2}
+ \]
 \end{block}
-
-### Simulation study results
-
-First of all, the **time**.
-
-+ The *non-complete* models (2D Laplace aprox.) are kind of fast,\newline
-  taking always **less than 5 min**.
-
-+ In the most expensive scenarios (30K 4D Laplaces),\newline
-  **the complete model takes 30 min**.\newline
-  In a **full R** implementation with 10K 4D Laplaces, it **took
-  30hrs**. \textcolor{UniBlue}{\textbf{TMB is fast}}.
- 
-+ We also did a Bayesian analysis via Stan/NUTS-HMC [@RStan].
-
-  - **1 week of parallelized processing** for a 2500 size 2 clusters
-    scenario with tuned NUTS. This just reinforces the MCMC
-    impracticability for some complex models.
-
-**Parameters estimation**.
-
-+ The *non-complete* models fail to learn the data.\newline
-  They appear to be *not structured enough* to capture the data
-  characteristics.
+\vspace{-0.15cm}
+the.
 
 # Estimation of \(\sigma^{2}\)
 
