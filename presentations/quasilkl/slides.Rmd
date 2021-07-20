@@ -97,8 +97,8 @@ output:
    By differentiating it and assuming that the support does not depend
    on \(\bm{\theta}\)\newline
    \hspace*{.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
-   \(E(\mathbf{Y}) = \bm{\mu} = \mathbf{b}^{'}(\bm{\theta})\) and
-   \(\text{Cov}(\mathbf{Y}) = \sigma^{2}\mathbf{b}^{''}(\bm{\theta})
+   \(E(\mathbf{Y}) = \bm{\mu} = {\mathbf{b}}'(\bm{\theta})\) and
+   \(\text{Cov}(\mathbf{Y}) = \sigma^{2}{\mathbf{b}}''(\bm{\theta})
                             = \sigma^{2}\mathbf{V}(\bm{\mu})\).
   \end{block}
  \end{minipage}
@@ -127,249 +127,107 @@ output:
 
 \begin{description}
  \item[If \(\sigma^{2}\) is known,] log-likelihood is an exponential
-                                    family\newline
+                                    family
+  \vspace{0.15cm}\newline
   \hspace*{0.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
   variance and all higher order cumulants of \(\mathbf{Y}\) are\newline
-  \hspace*{0.82cm}functions of the mean vector alone\newline
+  \hspace*{0.82cm}functions of the mean vector alone
+  \vspace{0.15cm}\newline
   \hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
   exponential, Poisson, multinomial, noncentral hypergeometric\newline
-  \hspace*{1.31cm}and partial likelihoods (survival analysis)\newline
+  \hspace*{1.31cm}and partial likelihoods (survival analysis)
+  \vspace{0.15cm}\newline
   \hspace*{1.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
   MLE of \(\bm{\beta}\) through weighted least squares\newline
   \hspace*{2cm}\rotatebox[origin=c]{180}{$\Lsh$}
   \(\bm{\mu}\) and \(\sigma^{2}\) are orthogonal\newline
   \hspace*{2.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
   \(\bm{\beta}\) and \(\sigma^{2}\) also orthogonal;
+ \bigskip
  \item[If \(\sigma^{2}\) is unknown,] log-likelihood is
+          \textcolor{AlertOrange}{not generally} an exponential
+          family\newline
+          \hspace*{0.5cm}\rotatebox[origin=c]{180}{$\Lsh$}
+          However, MLE of \(\bm{\beta}\) still through weighted least
+          squares\newline
+          \hspace*{1cm}\rotatebox[origin=c]{180}{$\Lsh$}
+          \textcolor{UniBlue}{If}
+          \(E(\mathbf{Y})\) does not involve \(\sigma^{2}\).
 \end{description}
 
-Frailty-based models for (\textcolor{UniBlue}{multiple}) survival
-experiences turn out in challengeable likelihood functions with
-inference routines mostly done via
+### A class of likelihood functions
 
-\begin{columns}
- \column{8cm}
-  \begin{itemize}
-   \item Elaborated and slow expectation–maximization (EM)
-         algorithms;
-  \end{itemize}
- \column{6cm}
-  \begin{itemize}
-   \item Inefficient Markov chain Monte Carlo (MCMC) schemes.
-  \end{itemize}
-\end{columns}
+\vspace{-0.25cm}
+\begin{minipage}{13cm}
+ \begin{block}{Least square equations}
+  \[
+   \def\hat{\mathaccent "705E\relax}
+   \mathbf{D}^{\top}\mathbf{V}^{-}
+   \{\mathbf{y} - \bm{\mu}(\hat{\bm{\beta}})\} = \mathbf{0}, \qquad
+   \text{for the parameters in} \quad
+   E(\mathbf{Y}) = \bm{\mu}(\bm{\beta})
+  \]
+  \begin{multicols}{2}
+   \begin{itemize}
+    \item \(\mathbf{D} = d\bm{\mu}/d\bm{\beta}, \quad N \times p\);
+    \item \(\mathbf{V}^{-}\) is a generalized inverse of \(\mathbf{V}\).
+   \end{itemize}
+  \end{multicols}
+  \vspace{-0.15cm}
+  Why its name?
+  \vspace{0.15cm}
+  \begin{enumerate}
+   \item \textbf{Geometrical interpretation}:
+         projections of the residual vector
+         \(\def\hat{\mathaccent "705E\relax}
+           \mathbf{y} - \bm{\mu}(\hat{\bm{\beta}}_{0})\) on to the
+         tangent space of the solution locus \(\bm{\mu}(\bm{\beta})\);
+   \vspace{0.15cm}
+   \item These equations \textbf{do not} depend on \(\sigma^{2}\).
+  \end{enumerate}
+ \end{block}
+\end{minipage}
 
-### Probability scale \(\rightarrow\) Cause-specific CIF
-
-\begin{block}{}
-\[
- \text{i.e.},\quad
- \text{CIF} =
- \mathbb{P}[~\text{failure time} \leq t,
-            ~\text{a given cause} \mid \text{features \& latent effects}
-            ~].
-\]
-\end{block}
-
-Common applications: \textit{\textcolor{UniBlue}{family studies}}.
-\newline
-\hspace*{.5cm}\rotatebox[origin=c]{180}{$\color{UniBlue}{\Lsh}$}
-Keywords:
-*within-family/cluster dependence*;
-*age at disease onset*;
-*populations*.
-
-### Formally,
-
-for a cause-specific of failure \(k\),\newline
-the cumulative incidence function (CIF) is defined as
-\begin{block}{}
-\vspace{-0.5cm}
-\begin{align*}
- F_{k}(t \mid \bm{x})
- &= \mathbb{P}[T \leq t,~K = k \mid \bm{x}]\\
- &= \int_{0}^{t} f_{k}(z \mid \bm{x})~\text{d}z\quad
- (f_{k}(t \mid \bm{x})
- ~\text{is the (sub)density for the time to a type}~k~\text{failure})\\
- &= \int_{0}^{t}
- \underbrace{\lambda_{k}(z \mid \bm{x})}_{\substack{
-                                           \text{cause-specific}\\
-                                           \text{hazard function}}}
- \underbrace{S(z \mid \bm{x})}_{\substack{\text{overall}\\
-                                          \text{survival}\\
-                                          \text{function}}}
- \text{d}z, \quad t > 0, \quad k = 1,~\dots,~K.
-\end{align*}
-\end{block}
-
-\includegraphics[height=0.5cm]{logo/book.png}
-Again, a comprehensive reference is @kalb&prentice's book.
-
-\includegraphics[height=0.5cm]{logo/lightbulb.jpg}
-\textit{Here}, we use the same CIF specification of @SCHEIKE.
-
-### SCHEIKE's CIF specification
-
-For two competing causes of failure,\newline
-the cause-specific CIFs are specified in the following manner
-\begin{block}{}
-\vspace{-0.5cm}
-\begin{equation}
- F_{k} (t \mid \bm{x},~u_{1},~u_{2},~\eta_{k}) =
- \underbrace{\pi_{k}(\bm{x},~u_{1},~u_{2})}_{
- \substack{\text{cluster-specific}\\\text{risk level}}}\times
-  \underbrace{\Phi[w_{k} g(t) - \bm{x}\bm{\gamma}_{k} - \eta_{k}]}_{
-   \substack{\text{cluster-specific}\\\text{failure time trajectory}}
-  }, \quad t > 0, \quad k = 1,~2,
-  \label{eq:cif}
-\end{equation}
-\end{block}
-
-with
-
-1. \(\pi_{k}(\bm{x}, \bm{u}) =
-     \exp\{\bm{x}\bm{\beta}_{k} + u_{k}\} \Big/
-     \left(1 + \sum_{m=1}^{K-1} \exp\{\bm{x}\bm{\beta}_{m} + u_{m}\}
-     \right),
-     \quad k = 1,~2, \quad K = 3;\)
-
-2. \(\Phi(\cdot)\) is the cumulative distribution function of a standard
-   Gaussian distribution;
-
-3. \(g(t) = \text{arctanh}(2t/\delta - 1),
-     \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty).\)
-
-\includegraphics[height=0.5cm]{logo/book.png}
-In @SCHEIKE, this CIF specification is modeled under a
-*challengeable* pairwise composite likelihood approach
-[@lindsay88; @varin11].
-
-### Our contribution: a full likelihood analysis
-
-\vspace{-0.3cm}
-For two competing causes of failure, a subject \(i\), in the cluster
-\(j\), in time \(t\), we have
-\begin{block}{}
-\vspace{-0.5cm}
-\begin{equation}
- \begin{aligned}
-  y_{ijt} \mid
-  \underbrace{\{u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j}\}}_{
-  \substack{\text{\color{UniBlue}{latent effects}}}
-  } & \sim
-  \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt})\\
-  \begin{bmatrix} u_{1}\\ u_{2}\\ \eta_{1}\\ \eta_{2} \end{bmatrix}
-  & \sim
-  \parbox{2cm}{\centering Multivariate Normal}
-  \left(
-   \begin{bmatrix} 0\\ 0\\ 0\\ 0 \end{bmatrix},
-   \begin{bmatrix}
-    \sigma_{u_{1}}^{2}&
-    \text{cov}(u_{1}, u_{2})&
-    \text{cov}(u_{1}, \eta_{1})&\text{cov}(u_{1}, \eta_{2})\\
-    &\sigma_{u_{2}}^{2}&
-    \text{cov}(u_{2}, \eta_{1})&\text{cov}(u_{2}, \eta_{2})\\
-    &&\sigma_{\eta_{1}}^{2}&\text{cov}(\eta_{1}, \eta_{2})\\
-    &&&\sigma_{\eta_{2}}^{2}
-   \end{bmatrix}
-  \right)\\  
-  p_{ {\color{UniBlue}{k}} ijt} &=
-  \frac{\partial}{\partial t}
-  F_{\color{UniBlue}{k}}
-  (t \mid \bm{x}, \bm{u}, \eta_{\color{UniBlue}{k}})\label{eq:model}\\
-  &= \frac{\exp\{\bm{x}_{ {\color{UniBlue}{k}} ij}
-                 \bm{\beta}_{\color{UniBlue}{k}} +
-                 u_{ {\color{UniBlue}{k}} j}\}}{
-  1 + \sum_{ {\color{UniBlue}{m}}=1}^{K-1}
-      \exp\{\bm{x}_{ {\color{UniBlue}{m}} ij}
-            \bm{\beta}_{\color{UniBlue}{m}} +
-            u_{ {\color{UniBlue}{m}} j}\}}\\
-  &\times w_{\color{UniBlue}{k}}\frac{\delta}{2\delta t - 2t^{2}}~
-  \phi\left(
-   w_{\color{UniBlue}{k}}
-   \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
-   - \bm{x}_{ {\color{UniBlue}{k}} ij}
-     \bm{\gamma}_{\color{UniBlue}{k}} -
-     \eta_{ {\color{UniBlue}{k}} j}
-  \right), \quad {\color{UniBlue}{k}} = 1,~2.
- \end{aligned}
-\end{equation}
-\end{block}
-
-### Simulating from the model
-
-### Marginal likelihood function for two competing causes
-
-\vspace{-0.75cm}
-\begin{align}
- L(\bm{\theta}; y)
- &= \prod_{j=1}^{J}~\int_{\Re^{4}}
-    \pi(y_{j} \mid \bm{r}_{j})\times\pi(\bm{r}_{j})~\text{d}\bm{r}_{j}
-    \nonumber\\
- &= \prod_{j=1}^{J}~\int_{\Re^{4}}
-    \Bigg\{
-    \underbrace{\prod_{i=1}^{n_{j}}~\prod_{t=1}^{n_{ij}}
-    \Bigg(
-    \frac{(\sum_{k=1}^{K}y_{kijt})!}{y_{1ijt}!~y_{2ijt}!~y_{3ijt}!}~
-    \prod_{k=1}^{K} p_{kijt}^{y_{kijt}}
-    \Bigg)}_{\substack{\text{\color{UniBlue}{fixed effect component}}}}
-  \Bigg\}\times\nonumber\\
- &\hspace{2cm}\underbrace{
-   (2\pi)^{-2} |\Sigma|^{-1/2} \exp
-   \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
-   }_{\substack{\text{\color{UniBlue}{latent effect component}}}}
-   \text{d}\bm{r}_{j}\nonumber\\
- &= \prod_{j=1}^{J}~\int_{\Re^{4}}
-    \Bigg\{
-    \underbrace{\prod_{i=1}^{n_{j}}~\prod_{t=1}^{n_{ij}}
-    \prod_{k=1}^{K} p_{kijt}^{y_{kijt}}
-    }_{\substack{\color{UniBlue}{\text{fixed effect}}}}
-   \Bigg\}\underbrace{
-   (2\pi)^{-2} |\Sigma|^{-1/2} \exp
-   \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
-   }_{\substack{\color{UniBlue}{\text{latent effect component}}}}
-   \text{d}\bm{r}_{j}\label{eq:loglik},
-\end{align}
-with \(p_{kijt}\) from Equation \ref{eq:model} and where \(\bm{\theta} =
-[\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~ \bm{\rho}]^{\top}\) is
-the parameters vector.
+\vspace{-0.1cm}
+\begin{center}
+ \begin{minipage}{12cm}
+  \begin{block}{Newton-Raphson method}
+   We replace the second derivative matrix by its expected value,
+   \(\mathbf{D}^{\top}\mathbf{V}^{-}\mathbf{D}\)
+   \[
+    \def\hat{\mathaccent "705E\relax}
+    \hat{\bm{\beta}}_{1} - \hat{\bm{\beta}}_{0} =
+    (\mathbf{D}^{\top}\mathbf{V}^{-}\mathbf{D})^{-1}
+    \mathbf{D}^{\top}\mathbf{V}^{-}(\mathbf{y} - \hat{\bm{\mu}}_{0}).
+   \]
+  \end{block}
+ \end{minipage}
+\end{center}
 
 # Quasi-likelihood functions
 
-### TMB: Automatic Differentiation and Laplace Approximation
+### Quasi-likelihood functions
 
-\includegraphics[height=0.5cm]{logo/book.png}
-@TMB.
-
-\bigskip
-> An R [@R21] package for the quickly implementation of complex random
-> effect models through simple C++ templates.
-
-\begin{block}{Workflow}
- \begin{enumerate}
-  \item Write your objective function in a \texttt{.cpp} through a
-        \texttt{\#include <TMB.hpp>};
-
-  \vspace{0.15cm}
-  \item Compile and load it in R via \texttt{TMB::compile()} and
-        \texttt{base::dyn.load(TMB::dynlib())};
-
-  \vspace{0.15cm}
-  \item Compute your objective function derivatives with
-        \texttt{obj <- TMB::MakeADFun()};
-
-  \vspace{0.15cm}
-  \item Perform the model fitting,
-        \texttt{opt <- base::nlminb(obj\$par, obj\$fn, obj\$gr)};
-
-  \vspace{0.15cm}
-  \item Compute the parameters standard deviations,
-        \texttt{TMB::sdreport(obj)}.
- \end{enumerate}
-\end{block}
-
-\includegraphics[height=0.5cm]{logo/book.png}
-For details about TMB, AD, and Laplace approximation: @laurence.
+\begin{center}
+ \begin{minipage}{14.5cm}
+  \begin{block}{Reversing the natural order of assumptions}
+   \begin{enumerate}
+    \item Instead of taking the log-likelihood to be of the exponential
+          family form and \textcolor{AlertOrange}{then} deriving its
+          moments;
+          
+   \vspace{0.15cm}
+    \item We begin with the moments and \textcolor{AlertOrange}{then}
+          attempt to reconstruct the log-likelihood.
+   \end{enumerate}
+   \vspace{0.3cm}
+   \[
+    \text{The reconstituted function is called a
+    \textbf{quasi-likelihood}}.
+   \]
+  \end{block}
+ \end{minipage}
+\end{center}
 
 # Properties of quasi-likelihood functions
 
