@@ -36,8 +36,8 @@ What am I doing right now? (Jul 21)
   [h-likelihood](https://www.amazon.com/Generalized-Linear-Models-Random-Effects/dp/1498720617/ref=sr_1_1?crid=3GYWLSOWV3JVP&dchild=1&keywords=Generalized+Linear+Models+with+Random+Effects%3A+Unified+Analysis+via+H-likelihood%2C+Second+Edition&qid=1620398604&sprefix=physics+and+beyond+%2Caps%2C274&sr=8-1),
   just to know/learn about it;
 
-+ Doing the UFPR grad school level course in [advanced topics in
-  statistical modeling](presentations/quasilkl/slides.pdf)
++ Doing the PhD course @ UFPR in
+  [Advanced Topics in Statistical Modeling](courses/quasilkl/slides.pdf)
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |

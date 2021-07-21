@@ -185,3 +185,12 @@ my bachelors (@ [UFPR](http://www.est.ufpr.br/index.html)), and masters
   [hw3](mcie/list3.pdf) |
   [Multinomial likelihood](mcie/multinomial.html) |
   [Project](mcie/projectslides.pdf) ([.R](mcie/projectslides.R))
+
+***
+
+### Advanced Topics in Statistical Modeling
+
+> Guided study course offered by Professor
+> [Wagner Bonat](http://leg.ufpr.br/~wagner/) @ UFPR in 2021/2
+
++ [Quasi-likelihood functions](quasilkl/slides.pdf)
