@@ -378,79 +378,63 @@ an estimate can be obtained by equating the observed deviance
 
 ### Examples of quasi-likelihood functions
 
+\begin{description}
+ \item[Least squares.] \(\mathbf{V}(\bm{\mu}) = \mathbf{V}\);
+
+ \item[Uncorrelated observations.]
+  \(\mathbf{V}(\bm{\mu}) = \text{diag}\{\mathbf{v}(\bm{\mu}_{1}),
+                                        \mathbf{v}(\bm{\mu}_{2}),
+                                        \dots,
+                                        \mathbf{v}(\bm{\mu}_{N})\}\);
+ 
+ \item[Invariance under \textcolor{AlertOrange}{linear}
+       transformations.]
+  \[
+   \mathbf{Y}_{L} = \mathbf{LY}, \quad
+   \bm{\mu}_{L} = \mathbf{L}\bm{\mu}, \quad
+   \mathbf{V}_{L} = \mathbf{LVL}^{\top},
+  \]
+  
+  \vspace{-0.3cm}
+  with \(\mathbf{L}\) being a nonsingular matrix of order \(N\).
+ 
+  \begin{itemize}
+   \item Weaker than the corresponding result for log-likelihoods which
+         are invariant under all \textcolor{AlertOrange}{invertible}
+         transformations;
+  \end{itemize}
+ 
+ \item[Multinomial response models.] Logistic regression, e.g.;
+ 
+ \item[Models with constant coefficient of variation.]
+ 
+ \item[Over-dispersion.]
+  Quasi-likelihood for over-dispersed discrete observations.
+\end{description}
+
 # A higher order theory
 
 ### A higher order theory
 
-### Take-home message
-
-\vspace{-0.55cm}
-\begin{minipage}{13cm}
- \begin{block}{}
-  \textbf{The complete model works}. It's not magnificent, but it works.
-  \vspace{0.2cm}
-  \begin{enumerate}
-   \item It works better in the high CIF scenarios;
-   \vspace{0.15cm}
-   \item As expected, as the sample size increases the results get
-         better;
-   \vspace{0.15cm}
-   \item We do not see any considerable performance difference between
-         cluster/family sizes;
-   \vspace{0.15cm}
-   \item Satisfactory full likelihood analysis under the maximum
-         likelihood estimation framework (the estimates bias-variance
-         could be smaller).
-   \end{enumerate}
- \end{block}
-\end{minipage}
-\vspace{0.1cm}
-What else can we do?
-
-1. Instead of a conditional approach (latent effects model),\newline
-   we can try a marginal approach e.g., an McGLM [@mcglm];
-
-2. We can also try a copula [@copulas], on maybe two fronts:\newline 1)
-   for a full specification; 2) to accommodate the within-cluster
-   dependence.
-
-\includegraphics[height=0.5cm]{logo/book.png}
-For more read @laurence master thesis.
-
-### Thanks for watching and have a great day
-
 \vspace{0.5cm}
-Special thanks to
+
++ Basically, there are problems if the exponential family is curved,
+  \newline
+  conditioning on ancillary statistics.
 
 \bigskip
-\begin{columns}
- \column{1.5cm}
-  \centering\includegraphics{logo/ppgmne-logo.png}
- \column{13.75cm}
-  {\large \textbf{PPGMNE}}\newline
-  Programa de Pós-Graduação em\newline
-  Métodos Numéricos em Engenharia
-\end{columns}
+\begin{description}
+ \item[Acknowledgments.]
+  McCullagh says thanks to Professor D. R. Cox and\newline
+            \textbf{Dr. B. Jorgensen} (patrão's PhD advisor, nice!).
+\end{description}
 
-\bigskip
-\begin{columns}
- \column{2cm}
-  \includegraphics[height=2cm]{logo/capes.jpg}
- \column{3cm}
-  \includegraphics[height=2cm]{logo/ufpr.png}
- \column{4.5cm}
-  Joint work with
-  \vspace{0.2cm}\newline
-  Wagner H. Bonat\newline
-  \url{http://leg.ufpr.br/~wagner}
- \column{4.75cm}
-  \textcolor{white}{Joint work with}
-  \vspace{0.2cm}\newline
-  Paulo Justiniano Ribeiro Jr.\newline
-  \url{http://leg.ufpr.br/~paulojus}
-\end{columns}
+\vspace{1cm}
+\Large
+\textcolor{UniBlue}{\textbf{THANKS FOR WATCHING AND HAVE A GREAT DAY}}
 
-\vspace{1.5cm}
+\normalsize
+\vspace{1cm}
 \begin{columns}
  \column{10cm}
  \column{5cm}
