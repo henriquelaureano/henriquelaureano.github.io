@@ -31,6 +31,316 @@ label: unnamed-chunk-1 (with options)
 List of 1
  $ message: logi FALSE
 
+f                     package:INLA                     R Documentation
+
+_D_e_f_i_n_e _g_e_n_e_r_a_l _G_a_u_s_s_i_a_n _m_o_d_e_l_s _i_n _t_h_e _I_N_L_A _f_o_r_m_u_l_a
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Function used for defining of smooth and spatial terms within
+     'inla' model formulae. The function does not evaluate anything -
+     it exists purely to help set up a model. The function specifies
+     one smooth function in the linear predictor (see
+     'inla.list.models') as
+
+                                weight*f(var)                           
+     
+_U_s_a_g_e:
+
+         f(...,
+              model = "iid",
+              copy=NULL,
+              same.as = NULL,
+              n=NULL,
+              nrep = NULL,
+              replicate = NULL,
+              ngroup = NULL,
+              group = NULL,
+              control.group = inla.set.control.group.default(),
+              hyper = NULL,
+              initial=NULL,
+              prior=NULL,
+              param = NULL,
+              fixed = NULL,
+              season.length=NULL,
+              constr = NULL,
+              extraconstr=list(A=NULL, e=NULL),
+              values=NULL,
+              cyclic = NULL,
+              diagonal = NULL,
+              graph=NULL,
+              graph.file=NULL,
+              cdf=NULL,
+              quantiles=NULL,
+              Cmatrix=NULL,
+              rankdef=NULL,
+              Z = NULL,
+              nrow = NULL,
+              ncol = NULL,
+              nu = NULL,
+              bvalue = NULL,
+              spde.prefix = NULL,
+              spde2.prefix = NULL,
+              spde2.transform = c("logit", "log", "identity"),
+              spde3.prefix = NULL,
+              spde3.transform = c("logit", "log", "identity"),
+              mean.linear = inla.set.control.fixed.default()$mean,
+              prec.linear = inla.set.control.fixed.default()$prec,
+              compute = TRUE,
+              of=NULL,
+              precision = exp(14),
+              range = NULL,
+              adjust.for.con.comp = TRUE,
+              order = NULL,
+              scale = NULL,
+              strata = NULL,
+              rgeneric = NULL,
+              scale.model = NULL,
+              args.slm = list(rho.min = NULL, rho.max = NULL,
+                              X = NULL, W = NULL, Q.beta = NULL),
+              args.ar1c = list(Z = NULL, Q.beta = NULL),
+              args.intslope = list(subject = NULL, strata = NULL, covariates = NULL),
+              correct = NULL,
+              vb.correct = NULL,
+              locations = NULL,
+              debug = FALSE)
+     
+_A_r_g_u_m_e_n_t_s:
+
+     ...: Name of the covariate and, possibly of the weights vector.
+          NB: order counts!!!! The first specified term is the
+          covariate and the second one is the vector of weights (which
+          can be negative).
+
+   model: A string indicating the choosen model. The default is 'iid'.
+          See 'names(inla.models()$latent)' for a list of possible
+          alternatives and 'inla.doc' for detailed docs.
+
+    copy: TODO
+
+ same.as: TODO
+
+       n: An optional argument which defines the dimension of the model
+          if this is different from 'length(sort(unique(covariate)))'
+
+    nrep: TODO
+
+replicate: We need to write documentation here
+
+  ngroup: TODO
+
+   group: TODO
+
+control.group: TODO
+
+   hyper: Specification of the hyperparameter, fixed or random, initial
+          values, priors and its parameters. See '?inla.models' for the
+          list of hyparameters for each model and its default options
+          or use 'inla.doc()' for detailed info on the family and
+          supported prior distributions.
+
+ initial: THIS OPTION IS OBSOLETE; use 'hyper'!!! Vector indicating the
+          starting values for the optimization algorithm. The length of
+          the vector depends on the number of hyperparamters in the
+          choosen 'model'. If 'fixed=T' the value at which the
+          parameters are fixed is determines through 'initial'. See
+          'inla.models()$latent$'model name'' to have info about the
+          choosen model.
+
+   prior: THIS OPTION IS OBSOLETE; use 'hyper'!!! Prior distribution(s)
+          for the hyperparameters of the !random model. The default
+          value depends on the type of model, see !<URL:
+          www.r-inla.org> for a detailed description of the models. See
+          'names(inla.models()$priors)' for possible prior choices
+
+   param: THIS OPTION IS OBSOLETE; use 'hyper'!!! Vector indicating the
+          parameters a and b of the prior distribution for the
+          hyperparameters. The length of the vector depends on the
+          choosen 'model'. See 'inla.models()$latent$'model name'' to
+          have info about the choosen model.
+
+   fixed: THIS OPTION IS OBSOLETE; use 'hyper'!!! Vector of boolean
+          variables indicating wheater the hyperparameters of the model
+          are fixed or random. The length of the vector depends on the
+          choosen 'model' See 'inla.models()$latent$'model name'' to
+          have info about the choosen model.
+
+season.length: Lenght of the seasonal compoment (ONLY if
+          'model="seasonal"')
+
+  constr: A boolean variable indicating whater to set a sum to 0
+          constraint on the term. By default the sum to 0 constraint is
+          imposed on all intrinsic models ("iid","rw1","rw1","besag",
+          etc..).
+
+extraconstr: This argument defines extra linear constraints. The
+          argument is a list with two elements, a matrix 'A' and a
+          vector 'e', which defines the extra constraint 'Ax = e'; for
+          example 'extraconstr = list(A = A, e=e)'. The number of
+          columns of 'A' must correspond to the length of this
+          'f'-model.  Note that this constraint comes additional to the
+          sum-to-zero constraint defined if 'constr = TRUE'.
+
+  values: An optional vector giving all values assumed by the covariate
+          for which we want estimated the effect. It must be a numeric
+          vector, a vector of factors or 'NULL'.
+
+  cyclic: A boolean specifying wheather the model is cyclical. Only
+          valid for "rw1" and "rw2" models, is cyclic=T then the sum to
+          0 constraint is removed. For the correct form of the grah
+          file see Martino and Rue (2008).
+
+diagonal: An extra constant added to the diagonal of the precision
+          matrix.
+
+   graph: Defines the graph-object either as a file with a
+          graph-description, an 'inla.graph'-object, or as a (sparse)
+          symmetric matrix.
+
+graph.file: THIS OPTION IS OBSOLETE AND REPLACED BY THE MORE GENERAL
+          ARGUMENT 'graph'. PLEASE CHANGE YOUR CODE. Name of the file
+          containing the graph of the model; see <URL:
+          www.r-inla.org/faq>.
+
+     cdf: A vector of maximum 10 values between 0 and 1 x(0), x(1),....
+          The function returns, for each posterior marginal the
+          probabilities
+
+                                   Prob(X<x(p))                         
+          
+quantiles: A vector of maximum 10 quantiles, p(0), p(1),... to compute
+          for each posterior marginal. The function returns, for each
+          posterior marginal, the values x(0), x(1),... such that
+
+                                   Prob(X<x)=p                          
+          
+ Cmatrix: The specification of the precision matrix for the generic,
+          generic3 or z models (up to a scaling constant). 'Cmatrix' is
+          either a (dense) matrix, a matrix created using
+          'Matrix::sparseMatrix()', or a filename which stores the
+          non-zero elements of 'Cmatrix', in three columns: 'i', 'j'
+          and 'Qij'. In case of the generic3 model, it is a list of
+          such specifications.
+
+ rankdef: A number *defining* the rank deficiency of the model, with
+          sum-to-zero constraint and possible extra-constraints taken
+          into account. See details.
+
+       Z: The matrix for the z-model
+
+    nrow: Number of rows for 2d-models
+
+    ncol: Number of columns for 2d-models
+
+      nu: Smoothing parameter for the Matern2d-model, possible values
+          are 'c(0, 1, 2, 3)'
+
+  bvalue: TODO
+
+spde.prefix: TODO
+
+spde2.prefix: TODO
+
+spde2.transform: TODO
+
+spde3.prefix: TODO
+
+spde3.transform: TODO
+
+mean.linear: Prior mean for the linear component, only used if
+          'model="linear"'
+
+prec.linear: Prior precision for the linear component, only used if
+          'model="linear"'
+
+ compute: A boolean variable indicating wheather the marginal posterior
+          distribution for the nodes in the 'f()' model should be
+          computed or not. This is usefull for large models where we
+          are only interested in some posterior marginals.
+
+      of: TODO
+
+precision: The precision for the artifical noise added when creating a
+          copy of a model and others.
+
+   range: A vector of size two giving the lower and upper range for the
+          scaling parameter 'beta' in the model 'COPY', 'CLINEAR',
+          'MEC' and 'MEB'. If 'low = high' then the identity mapping is
+          used.
+
+adjust.for.con.comp: If TRUE (default), adjust some of the models
+          (currently: besag, bym, bym2 and besag2) if the number of
+          connected components in graph is larger than 1. If FALSE, do
+          nothing.
+
+   order: Defines the 'order' of the model: for model 'ar' this defines
+          the order p, in AR(p). Not used for other models at the time
+          being.
+
+   scale: A scaling vector. Its meaning depends on the model.
+
+  strata: Currently not in use
+
+rgeneric: A object of class 'inla.rgeneric' which defines the model.
+          (EXPERIMENTAL!)
+
+scale.model: Logical. If 'TRUE' then scale the RW1 and RW2 and BESAG
+          and BYM and BESAG2 and RW2D models so the their (generlized)
+          variance is 1. Default value is
+          'inla.getOption("scale.model.default")'
+
+args.slm: Required arguments to the model="slm"; see the documentation
+          for further details.
+     ,
+
+args.ar1c: Required arguments to the model="ar1c"; see the
+          documentation for further details.
+     ,
+
+args.intslope: A list with the 'subject' (factor), 'strata' (factor)
+          and 'covariates' (numeric) for the 'intslope' model; see the
+          documentation for further details.
+     ,
+
+ correct: Add this model component to the list of variables to be used
+          in the corrected Laplace approximation? If 'NULL' use default
+          choice, otherwise correct if 'TRUE' and do not if 'FALSE'.
+          (This option is currently experimental.)
+     ,
+
+vb.correct: Add this model component to the list of variables to be
+          used for the vb corrected Laplace approximation? If 'NULL'
+          use default choice, otherwise correct if 'TRUE' and do not if
+          'FALSE'. (expert option)
+     ,
+
+locations: A matrix with locations for the model 'dmatern'. This also
+          defines 'n'.
+
+   debug: Enable local debug output
+
+_D_e_t_a_i_l_s:
+
+     There is no default value for 'rankdef', if it is not defined by
+     the user then it is computed by the rank deficiency of the prior
+     model (for the generic model, the default is zero), plus 1 for the
+     sum-to-zero constraint if the prior model is proper, plus the
+     number of extra constraints. *Oops:* This can be wrong, and then
+     the user must define the 'rankdef' explicitely.
+
+_V_a_l_u_e:
+
+     TODO
+
+_A_u_t_h_o_r(_s):
+
+     Havard Rue <email: hrue@r-inla.org>
+
+_S_e_e _A_l_s_o:
+
+     'inla', 'hyperpar.inla'
+
+
   |                                                                              |...................................                                   |  50%
   ordinary text without R code
 
@@ -49,7 +359,7 @@ label: unnamed-chunk-3
 
 output file: laurence.knit.md
 
-/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/RtmphIAe7J/rmarkdown-str1ca668cd3b47.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
+/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/RtmplNmOOP/rmarkdown-str68a52e8fd504.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
 
 Output created: laurence.html
 Warning messages:
@@ -60,4 +370,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  7.600   0.400   6.131 
+  5.527   0.250   4.510 
