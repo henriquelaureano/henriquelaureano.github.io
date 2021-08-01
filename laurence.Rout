@@ -341,33 +341,9 @@ _S_e_e _A_l_s_o:
      'inla', 'hyperpar.inla'
 
 
-  |                                                                              |...................................                                   |  50%
-  ordinary text without R code
+Quitting from lines 11-70 (laurence.Rmd) 
+Error in model.frame.default(formula = y...fake ~ x, data = list(y...fake = c(Inf,  : 
+  variable lengths differ (found for 'x')
+Calls: <Anonymous> ... eval.parent -> eval -> eval -> model.frame -> model.frame.default
 
-  |                                                                              |...............................................                       |  67%
-label: unnamed-chunk-2 (with options) 
-List of 3
- $ fig.width : num 10
- $ fig.height: num 5.25
- $ warning   : logi FALSE
-
-  |                                                                              |..........................................................            |  83%
-  ordinary text without R code
-
-  |                                                                              |......................................................................| 100%
-label: unnamed-chunk-3
-
-output file: laurence.knit.md
-
-/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/RtmpCE1tWh/rmarkdown-str4b391e97a9bf.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
-
-Output created: laurence.html
-Warning messages:
-1: Removed 42 rows containing missing values (geom_point). 
-2: Removed 14 rows containing non-finite values (stat_count). 
-3: Removed 14 rows containing non-finite values (stat_count). 
-4: Removed 14 rows containing non-finite values (stat_count). 
-> 
-> proc.time()
-   user  system elapsed 
-  5.881   0.370   5.582 
+Execution halted
