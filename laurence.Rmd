@@ -67,7 +67,7 @@ model.spde <- INLA::inla(formula.spde, family='poisson', data=data.inla,
 
 ```
 
-```{r fig.width=10,fig.height=5.25,warning=FALSE}
+```{r fig.width=10,fig.height=5.25,warning=FALSE,error=TRUE}
 
 data.plots <- function(model)
 {
@@ -110,7 +110,8 @@ plot.curves <-
     geom_point(aes(y=y), color='black', size=2)+
     geom_point(data=data2plot[c(
                    dplyr::first(which(cumsum(data.inla$y)>=100)), 
-                   dplyr::first(which(cumsum(data.inla$y)>=200))), ],
+                   dplyr::first(which(cumsum(data.inla$y)>=200)),
+                   dplyr::first(which(cumsum(data.inla$y)>=300))), ],
                aes(y=y), color='red', size=3)+
     scale_x_continuous(breaks=c(0,
                                 31,
