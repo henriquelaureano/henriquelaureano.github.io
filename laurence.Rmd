@@ -7,7 +7,7 @@ output:
     code_folding: hide
 ---
 
-```{r message=FALSE}
+```{r message=FALSE,error=TRUE}
 
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 if (!requireNamespace('INLA', quietly=TRUE))

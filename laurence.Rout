@@ -28,12 +28,49 @@ processing file: laurence.Rmd
 
   |                                                                              |.......................                                               |  33%
 label: unnamed-chunk-1 (with options) 
-List of 1
+List of 2
  $ message: logi FALSE
+ $ error  : logi TRUE
 
-Quitting from lines 11-68 (laurence.Rmd) 
-Error in INLA::inla(formula.spde, family = "poisson", data = data.inla,  : 
-  f(x). Covariate does not match 'values' 1 times. Indexes for mismatch:227. This is not what you want. Use NA values in the covariate!
-Calls: <Anonymous> ... withCallingHandlers -> withVisible -> eval -> eval -> <Anonymous>
+  |                                                                              |...................................                                   |  50%
+  ordinary text without R code
+
+  |                                                                              |...............................................                       |  67%
+label: unnamed-chunk-2 (with options) 
+List of 3
+ $ fig.width : num 10
+ $ fig.height: num 5.25
+ $ warning   : logi FALSE
+
+Quitting from lines 71-149 (laurence.Rmd) 
+Error: Tibble columns must have compatible sizes.
+* Size 227: Existing data.
+* Size 226: Column `f.hat`.
+ℹ Only values of size one are recycled.
+Backtrace:
+     █
+  1. ├─rmarkdown::render("laurence.Rmd")
+  2. │ └─knitr::knit(knit_input, knit_output, envir = envir, quiet = quiet)
+  3. │   └─knitr:::process_file(text, output)
+  4. │     ├─base::withCallingHandlers(...)
+  5. │     ├─knitr:::process_group(group)
+  6. │     └─knitr:::process_group.block(group)
+  7. │       └─knitr:::call_block(x)
+  8. │         └─knitr:::block_exec(params)
+  9. │           └─knitr:::eng_r(options)
+ 10. │             ├─knitr:::in_dir(...)
+ 11. │             └─knitr:::evaluate(...)
+ 12. │               └─evaluate::evaluate(...)
+ 13. │                 └─evaluate:::evaluate_call(...)
+ 14. │                   ├─evaluate:::timing_fn(...)
+ 15. │                   ├─base:::handle(...)
+ 16. │                   ├─base::withCallingHandlers(...)
+ 17. │                   ├─base::withVisible(eval(expr, envir, enclos))
+ 18. │                   └─base::eval(expr, envir, enclos)
+ 19. │                     └─base::eval(expr, envir, enclos)
+ 20. └─global::data.plots(model.spde)
+ 21.   └─tibble::tibble(y = y, x = x, f.hat = f.hat, f.lb = f.lb, f.ub = f.ub)
+ 22.     └─tibble:::tibble_quos(xs[!is.null], .rows, .name_repair)
+ 23.       └─tibble:::vectbl_recycle_rows(res, first_size, j, given_col_names[[j]])
 
 Execution halted
