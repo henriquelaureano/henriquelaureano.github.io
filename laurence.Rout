@@ -37,40 +37,29 @@ List of 2
 
   |                                                                              |...............................................                       |  67%
 label: unnamed-chunk-2 (with options) 
-List of 3
+List of 4
  $ fig.width : num 10
  $ fig.height: num 5.25
  $ warning   : logi FALSE
+ $ error     : logi TRUE
 
-Quitting from lines 71-149 (laurence.Rmd) 
-Error: Tibble columns must have compatible sizes.
-* Size 227: Existing data.
-* Size 226: Column `f.hat`.
-ℹ Only values of size one are recycled.
-Backtrace:
-     █
-  1. ├─rmarkdown::render("laurence.Rmd")
-  2. │ └─knitr::knit(knit_input, knit_output, envir = envir, quiet = quiet)
-  3. │   └─knitr:::process_file(text, output)
-  4. │     ├─base::withCallingHandlers(...)
-  5. │     ├─knitr:::process_group(group)
-  6. │     └─knitr:::process_group.block(group)
-  7. │       └─knitr:::call_block(x)
-  8. │         └─knitr:::block_exec(params)
-  9. │           └─knitr:::eng_r(options)
- 10. │             ├─knitr:::in_dir(...)
- 11. │             └─knitr:::evaluate(...)
- 12. │               └─evaluate::evaluate(...)
- 13. │                 └─evaluate:::evaluate_call(...)
- 14. │                   ├─evaluate:::timing_fn(...)
- 15. │                   ├─base:::handle(...)
- 16. │                   ├─base::withCallingHandlers(...)
- 17. │                   ├─base::withVisible(eval(expr, envir, enclos))
- 18. │                   └─base::eval(expr, envir, enclos)
- 19. │                     └─base::eval(expr, envir, enclos)
- 20. └─global::data.plots(model.spde)
- 21.   └─tibble::tibble(y = y, x = x, f.hat = f.hat, f.lb = f.lb, f.ub = f.ub)
- 22.     └─tibble:::tibble_quos(xs[!is.null], .rows, .name_repair)
- 23.       └─tibble:::vectbl_recycle_rows(res, first_size, j, given_col_names[[j]])
+  |                                                                              |..........................................................            |  83%
+  ordinary text without R code
 
-Execution halted
+  |                                                                              |......................................................................| 100%
+label: unnamed-chunk-3
+
+output file: laurence.knit.md
+
+/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/RtmpZJjk1Z/rmarkdown-str47e6509aa073.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
+
+Output created: laurence.html
+Warning messages:
+1: Removed 42 rows containing missing values (geom_point). 
+2: Removed 14 rows containing non-finite values (stat_count). 
+3: Removed 14 rows containing non-finite values (stat_count). 
+4: Removed 14 rows containing non-finite values (stat_count). 
+> 
+> proc.time()
+   user  system elapsed 
+  5.109   0.387   5.486 
