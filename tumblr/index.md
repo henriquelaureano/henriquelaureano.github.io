@@ -103,11 +103,9 @@
 <img src='old_couple.jpg'>
 <img src='baking.jpg'>
 <img src='arabic_food.jpg'>
-<img src='endless_summer.png'>
 <img src='road.jpg'>
 <img src='definitions.jpg'>
 <img src='emotions.jpg'>
-<img src='iambeautiful.jpg'>
 <img src='say.jpg'>
 <img src='fuck_off.jpg'>
 <img src='truck.jpg'>
@@ -119,5 +117,4 @@
 <img src='good_idea.jpg'>
 <img src='originality_honesty.jpg'>
 <img src='capone.jpg'>
-<img src='moving_on.jpg'>
 <img src='dunes.jpg'>
