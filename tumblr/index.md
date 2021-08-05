@@ -101,3 +101,5 @@
 <img src='advice_from_a_tree.jpg'>
 <img src='hoes.jpg'>
 <img src='old_couple.jpg'>
+<img src='baking.jpg'>
+<img src='arabic_food.jpg'>
