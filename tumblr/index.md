@@ -117,3 +117,7 @@
 <img src='pulp_fiction.gif'>
 <img src='goku_teaching.jpeg'>
 <img src='good_idea.jpg'>
+<img src='originality_honesty.jpg'>
+<img src='capone.jpg'>
+<img src='moving_on.jpg'>
+<img src='dunes.jpg'>
