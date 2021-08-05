@@ -98,3 +98,5 @@
 <img src='well.gif'>
 <img src='howdareyou.jpg'>
 <img src='savage.jpg'>
+<img src='advice_from_a_tree.jpg'>
+<img src='hoes.jpg'>
