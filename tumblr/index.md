@@ -114,3 +114,6 @@
 <img src='wealth.jpg'>
 <img src='standard_procedure.jpg'>
 <img src='bag.jpg'>
+<img src='pulp_fiction.gif'>
+<img src='goku_teaching.jpeg'>
+<img src='good_idea.jpg'>
