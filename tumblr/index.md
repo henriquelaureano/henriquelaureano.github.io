@@ -109,7 +109,6 @@
 <img src='say.jpg'>
 <img src='fuck_off.jpg'>
 <img src='truck.jpg'>
-<img src='wealth.jpg'>
 <img src='standard_procedure.jpg'>
 <img src='bag.jpg'>
 <img src='pulp_fiction.gif'>
