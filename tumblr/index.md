@@ -100,3 +100,4 @@
 <img src='savage.jpg'>
 <img src='advice_from_a_tree.jpg'>
 <img src='hoes.jpg'>
+<img src='old_couple.jpg'>
