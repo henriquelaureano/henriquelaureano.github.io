@@ -101,7 +101,7 @@ plot.curves <-
                  31/2+31+28+31+30,
                  30/2+31+28+31+30+31,
                  31/2+31+28+31+30+31+30,
-                 7+31+31+28+31+30+31+30), y=4, color='#8A8D8F', size=5)+
+                 31/2+31+31+28+31+30+31+30), y=4, color='#8A8D8F', size=5)+
     geom_ribbon(aes(ymin=f.lb, ymax=f.ub, fill=Model),
                 alpha=0.15, fill='#8A8D8F', size=1.25, linetype='dashed')+
     geom_line(aes(y=f.hat), size=2)+
