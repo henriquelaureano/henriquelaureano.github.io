@@ -19,20 +19,20 @@
 ### Accepted for publication
 
 + [2021]\
-  Unit gamma mixed regression models for continuous bounded data\
-  R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
-  **H. A. Laureano**, W. H. Bonat\
-  To appear in [*Journal of Statistical Computation and Simulation*](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
+  Multivariate generalized linear mixed models for continuous bounded
+  outcomes: Analyzing the body fat percentage data\
+  R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
+  To appear in [*Statistical Methods in Medical Research*](https://journals.sagepub.com/home/smm)
 
 ***
 
 ### Submitted for publication
 
 + [2021]\
-  Multivariate generalized linear mixed models for continuous bounded
-  outcomes: Analyzing the body fat percentage data\
-  R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
-  Submitted to [*Statistical Methods in Medical Research*](https://www.google.com/search?q=statistical+methods+in+medical+research)
+  Unit gamma mixed regression models for continuous bounded data\
+  R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
+  **H. A. Laureano**, W. H. Bonat\
+  Submitted to [*Journal of Statistical Computation and Simulation*](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
 
 ***
 
