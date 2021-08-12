@@ -56,7 +56,7 @@ R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat
 
 ## Contact
 
-[laureano@ufpr.br](laureano@ufpr.br) |
+[henriqueaparecidolaureano@gmail.com](henriqueaparecidolaureano@gmail.com) |
 [henriquelaureano@outlook.com](<henriquelaureano@outlook.com)
 
 <!-- font-size default: 14px -->
