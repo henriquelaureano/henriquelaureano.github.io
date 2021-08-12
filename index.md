@@ -56,8 +56,8 @@ R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat
 
 ## Contact
 
-[henriqueaparecidolaureano@gmail.com](henriqueaparecidolaureano@gmail.com) |
-[henriquelaureano@outlook.com](<henriquelaureano@outlook.com)
+henriqueaparecidolaureano@gmail.com |
+henriquelaureano@outlook.com
 
 <!-- font-size default: 14px -->
 <p><a href="mike.html" style="float: right; font-size: 11px">
