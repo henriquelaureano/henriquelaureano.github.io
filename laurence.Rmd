@@ -7,24 +7,12 @@ output:
     code_folding: hide
 ---
 
-```{r message=FALSE,error=TRUE}
+```{r laurence,fig.width=10,fig.height=7.5}
 
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
-if (!requireNamespace('INLA', quietly=TRUE))
-    install.packages(
-        'INLA', repos=c(getOption('repos'),
-                        INLA='https://inla.r-inla-download.org/R/stable'),
-        dep=TRUE)
-pacman::p_load(INLA, tibble, dplyr, ggplot2, ggthemes, patchwork)
-
-x <- c(1:31,
-       1:28+31,
-       1:31+31+28,
-       1:30+31+28+31,
-       1:31+31+28+31+30,
-       1:30+31+28+31+30+31,
-       1:31+31+28+31+30+31+31,
-       1:(12+14)+31+28+31+30+31+31+31)
+pacman::p_load(
+            tibble, lubridate, dplyr, stringr, haven, ggplot2, ggthemes
+        )
 y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
        1, 1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1,
        1, 2, 3, 2, 1, 1, 1, 1, 1, 1, 3, 1, 2, 1, 1, 3, 2, 2, 2, 2, 1, 3,
@@ -35,124 +23,32 @@ y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
        2, 1, 2, 2, 2, 2, 1, 1, 0, 0, 2, 2, 0, 1, 1, 1, 1, 1, 3, 2, 2, 1,
        1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 1, 1, 2, 2, 0, 3, 1, 2,
        2, 1, 1, 1, 1, 0, 1, 2, 1, 2, 0, 0, 0, 2, 1, 2, 1, 1, 1, 0, 1, 1, 
-       3, 2, 1, 0,
-       NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
-data.inla <- list(y=y, x=x)
+       3, 2, 1, 1)
 
-formula.rw1 <-
-    y ~ -1 + f(x,
-               model='rw1',
-               scale.model=TRUE,
-               hyper=list(prec=list(prior='pc.prec', param=c(1, 0.01))),
-               constr=FALSE)
-formula.ar1 <-
-    y ~ -1 + f(x,
-               model='ar1',
-               hyper=list(theta1=list(prior='pc.prec', param=c(1, 0.01)),
-                          theta2=list(prior='pc.cor1',
-                                      param=c(0.1, 0.9))),
-               constr=FALSE)
-formula.spde <-
-    y ~ -1 + f(x,
-               model=inla.spde2.pcmatern(mesh=inla.mesh.1d(x), alpha=2,
-                                         prior.range=c(1, 0.05),
-                                         prior.sigma=c(1, 0.01)),
-               constr=FALSE)
-
-model.rw1  <- INLA::inla(formula.rw1, family='poisson', data=data.inla,
-                         control.predictor=list(link=1))
-model.ar1  <- INLA::inla(formula.ar1, family='poisson', data=data.inla,
-                         control.predictor=list(link=1))
-model.spde <- INLA::inla(formula.spde, family='poisson', data=data.inla,
-                         control.predictor=list(link=1))
-
-```
-
-```{r fig.width=10,fig.height=5.25,warning=FALSE,error=TRUE}
-
-data.plots <- function(model)
-{
-    f.hat <- model$summary.fitted.values$mean
-    f.lb  <- model$summary.fitted.values$'0.025quant'
-    f.ub  <- model$summary.fitted.values$'0.975quant'
-    out   <- tibble::tibble(y=y, x=x, f.hat=f.hat, f.lb=f.lb, f.ub=f.ub)
-    return(out)
-}
-data.rw1  <- data.plots(model.rw1)
-data.ar1  <- data.plots(model.ar1)
-data.spde <- data.plots(model.spde)
-data2plot <- dplyr::bind_rows('RW(1)'=data.rw1,
-                              'AR(1)'=data.ar1,
-                              '1d Matern'=data.spde, .id='Model')
-plot.curves <-
-    ggplot(data2plot, aes(x=x, y=y, color=Model))+
-    geom_vline(xintercept=c(31,
-                            28+31,
-                            31+28+31,
-                            30+31+28+31,
-                            31+30+31+28+31,
-                            30+31+30+31+28+31,
-                            31+30+31+30+31+28+31), linetype='dashed')+
-    annotate('text', label=c('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-                             'JUL', 'AUG'),
-             x=c(31/2,
-                 28/2+31,
-                 31/2+31+28,
-                 30/2+31+28+31,
-                 31/2+31+28+31+30,
-                 30/2+31+28+31+30+31,
-                 31/2+31+28+31+30+31+30,
-                 31/2+31+31+28+31+30+31+30), y=4, color='#8A8D8F', size=5)+
-    geom_ribbon(aes(ymin=f.lb, ymax=f.ub, fill=Model),
-                alpha=0.15, fill='#8A8D8F', size=1.25, linetype='dashed')+
-    geom_line(aes(y=f.hat), size=2)+
-    scale_fill_manual(values=c('#EF426F','#00B2A9', '#FF8200'),
-                      aesthetics='color')+
-    geom_point(aes(y=y), color='black', size=2)+
-    geom_point(data=data2plot[c(
-                   dplyr::first(which(cumsum(data.inla$y)>=100)), 
-                   dplyr::first(which(cumsum(data.inla$y)>=200)),
-                   dplyr::first(which(cumsum(data.inla$y)>=300))), ],
-               aes(y=y), color='red', size=3)+
-    scale_x_continuous(breaks=c(0,
-                                31,
-                                28+31,
-                                31+31+28,
-                                30+31+28+31,
-                                31+31+28+31+30,
-                                30+31+28+31+30+31,
-                                31+31+28+31+30+31+30,
-                                31+31+28+31+30+31+30))+
-    scale_y_continuous(breaks=seq(0, 4, by=0.5))+
+tibble::tibble(Day=seq(as.Date('2021-01-01'), lubridate::today(),
+                       by='days'),
+               Count=haven::as_factor(y),
+               WeekDay=lubridate::wday(Day, label=TRUE), 
+               Week=lubridate::week(Day), 
+               Month=lubridate::month(Day, label=TRUE, abbr=FALSE))|>
+    dplyr::mutate(WeekDay=stringr::str_to_title(WeekDay),
+                  WeekDay=haven::as_factor(WeekDay),
+                  Week=haven::as_factor(Week),
+                  Month=stringr::str_to_title(Month),
+                  Month=haven::as_factor(Month))|>
+    ggplot(aes(Week, WeekDay, fill=Count))+ 
+    geom_tile(color='white')+ 
+    facet_wrap(~ Month, scales='free', ncol=4)+ 
+    scale_fill_viridis_d()+
+    labs(title='Laurence’s 2021 daily activity',
+         subtitle=paste0(
+             sum(y), ' events (', round(mean(y), 2), ' per day)'
+         ))+
     ggthemes::theme_fivethirtyeight(base_size=14)+
-    theme(legend.text=element_text(size=14, face='bold'), 
-          axis.title.x=element_text(
-              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
-          axis.title.y=element_text(
-              margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
-          plot.subtitle=element_text(face='italic'))+
-    labs(x='Days', y='Count', subtitle='With 2 weeks ahead prediction')
-plot.bars <-
-    ggplot(as.data.frame(data.inla), aes(x=y))+
-    geom_bar(color='white', fill='#8A8D8F', alpha=0.15*3)+
-    ylim(c(0, max(table(data.inla$y))*1.4))+
-    geom_text(stat='count',
-              aes(label=paste(..count.., 'days')), hjust=-0.15, size=4)+
-    labs(x='Count')+
-    geom_density(stat='count', color='#0080ff', size=1.25)+
-    coord_flip()+
-    ggthemes::theme_fivethirtyeight(base_size=14)+
-    theme(axis.text.x=element_blank())
-layout <- '
-AAAB
-'
-plot.curves + plot.bars + patchwork::plot_layout(design=layout)
-
-```
-
-```{r}
-
-Y <- y[-which(y %in% NA)]
-print(paste0(sum(Y), ' events (', round(mean(Y), 2), ' per day)'))
+    theme(legend.title=element_blank(),
+          strip.text.x=element_text(face='bold', size=14),
+          legend.key.width=ggplot2::unit(0.75, 'cm'),
+          legend.justification=c(1, 0),
+          plot.subtitle=element_text(face='italic'))
 
 ```
