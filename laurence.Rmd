@@ -39,7 +39,7 @@ tibble::tibble(Day=seq(as.Date('2021-01-01'), lubridate::today(),
     ggplot(aes(Week, WeekDay, fill=Count))+ 
     geom_tile(color='white')+ 
     facet_wrap(~ Month, scales='free', ncol=4)+ 
-    scale_fill_viridis_d()+
+    scale_fill_viridis_d(direction=-1)+
     labs(title='Laurence’s 2021 daily activity',
          subtitle=paste0(
              sum(y), ' events (', round(mean(y), 2), ' per day)'
