@@ -45,7 +45,7 @@ What am I doing right now? (Aug 21)
       [Presentations](presentations/) |
       [Papers](papers/)</span>
 
-## News (Aug 21)
+## News (Aug 21, both in the same week!)
 
 Accepted in
 [Statistical Methods in Medical Research](https://journals.sagepub.com/home/smm):
@@ -53,6 +53,13 @@ Accepted in
 **Multivariate generalized linear mixed models for continuous bounded
   outcomes: Analyzing the body fat percentage data**\
 R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat
+
+Accepted in
+[*Journal of Statistical Computation and Simulation*](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
+
+**Unit gamma mixed regression models for continuous bounded data**\
+R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
+**H. A. Laureano**, W. H. Bonat
 
 ## Contact
 

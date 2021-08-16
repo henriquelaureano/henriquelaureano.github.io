@@ -24,15 +24,13 @@
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
   To appear in [*Statistical Methods in Medical Research*](https://journals.sagepub.com/home/smm)
 
-***
-
-### Submitted for publication
-
 + [2021]\
   Unit gamma mixed regression models for continuous bounded data\
   R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
   **H. A. Laureano**, W. H. Bonat\
-  Submitted to [*Journal of Statistical Computation and Simulation*](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
+  To appear in [*Journal of Statistical Computation and Simulation*](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
+
+<!-- ### Submitted for publication -->
 
 ***
 
