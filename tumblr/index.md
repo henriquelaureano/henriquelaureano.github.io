@@ -117,3 +117,5 @@
 <img src='originality_honesty.jpg'>
 <img src='capone.jpg'>
 <img src='dunes.jpg'>
+<img src='mypool.jpg'>
+<img src='freetime.jpg'>
