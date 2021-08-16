@@ -55,7 +55,7 @@ Accepted in
 R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat
 
 Accepted in
-[*Journal of Statistical Computation and Simulation*](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
+[Journal of Statistical Computation and Simulation](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
 
 **Unit gamma mixed regression models for continuous bounded data**\
 R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
