@@ -76,7 +76,14 @@ Automatic differentiation (AD).
 
 \section{Introduction}
 
-Competing risks data and, more generally, failure time data, can be modeled in two possible scales: the hazard and probability scale, with the former being the most popular one. The modeling object is the survival experience of the time-to-event data. A competing risks process can be seen as the multivariate extension of a failure time process, having multiple causes competing to be the one responsible for the desired event occurrence, properly, a failure. In \autoref{fig:crp} a visual aid is provided considering m competing causes.
+Competing risks data, and more generally failure time data, can be
+modeled in two possible scales: the hazard and the probability scale,
+with the former being the most popular. The modeling object is the
+survival experience of the time-to-event data. A competing risks process
+can be seen as the multivariate extension of a failure time process,
+having multiple causes competing to be the one responsible for the
+desired event occurrence, properly, a failure. In \autoref{fig:crp} a
+visual aid is provided considering \(m\) competing causes.
 
 Failure time data is the branch of Statistics responsible to handle
 random variables describing the time until the occurrence of an event, a
@@ -115,20 +122,34 @@ elements sharing some non-observed latent dependence structure.
  \label{fig:crp}
 \end{figure}
 
-When this framework is applied in real-world situations, we have to be able to handle the nonoccurrence of the desired event, by any of the competing causes, for, let us say, \textit{logistic reasons} (short-time study and outside scope causes are some examples). This, generally noninformative, nonoccurrence of the event is called censorship.
+When this framework is applied in real-world situations, we have to be
+able to handle with the nonoccurrence of the desired event, by any of
+the competing causes, for, let us say, \textit{logistic reasons}
+(short-time study and outside scope causes are some examples). This,
+generally noninformative, nonoccurrence of the event is called
+censorship.
 
-Introduce family studies.
+In its simplest form, it is assumed that all subjects under study are
+independent. However, if the subjects are structured in a related
+fashion the independence assumption is unrealistic. When the subjects
+are organized in clusters (a family, e.g.), the nonindependence is
+accommodated in terms of a latent/random-effect, shared by all elements
+of that cluster. This idea opens space to what is called \textit{family
+  studies}. In family studies, the goal is to accommodate and try to
+understand the relationship between the family elements. In other words,
+how the occurrence of an event in a subject affects the survival
+experience for the same or similar event in its familiars.
 
 The survival experiences is usually modeled in the hazard (failure rate)
 scale, and with the latent within-cluster dependence accommodation we
 have a frailty model \citep{frailty78,frailty79,liang95,petersen98}. The
-use of frailty models implies complicated likelihood functions and
+use of frailty models implies in complicated likelihood functions and
 inference routines done via elaborated and slow EM algorithms
 \citep{nielsen92,klein92} or inefficient MCMC schemes
 \citep{hougaard00}. With multiple survival experiences, the general idea
 is the same but with even more elaborated likelihoods
-\citep{prentice78,therneau00} or using instead mixture model approaches
-\citep{larson85,kuk92}.
+\citep{prentice78,therneau00} or instead with the of mixture model
+approaches \citep{larson85,kuk92}.
 
 When in the hazard scale, the interpretations are in terms of hazard
 rates. A less usual scale but with a more appealing interpretation, is
@@ -138,7 +159,7 @@ of the cumulative incidence function (CIF) \citep{andersen12}, with the
 main modeling approach being the subdistribution \citep{fine&gray}.
 
 For clustered competing risks data there are some available options but
-with a lack of predominance. The options vary in terms likelihood
+with a lack of predominance. The options vary in terms of likelihood
 specification, with its majority being designed for bivariate CIFs,
 where increasing the CIF's dimension is a limitation. Some of the
 existing options are (i) nonparametric approaches
@@ -148,12 +169,13 @@ composite likelihoods \citep{shih,SCHEIKE}, estimating equations
 \citep{crossoddsratioSCHEIKE,cheng&fine}, copulas
 \citep{semiparametricSCHEIKE}, and mixtures \citep{naskar05,shi13}.
 
-Besides the interpretation, by modeling the CIF possible to specify
-complex within-cluster dependence structures. We follow \cite{SCHEIKE}
-and work with a CIF specification based on its decomposition in
-instantaneous risk and failure time trajectory, with both being
-cluster-specifics and possible correlated. As a modeling framework, we
-use a generalized linear mixed model (GLMM) specification.
+Besides the interpretation, by modeling the CIF it is possible to
+specify complex within-cluster dependence structures. We follow
+\cite{SCHEIKE} and work with a CIF specification based on its
+decomposition in instantaneous risk and failure time trajectory
+functions, with both being cluster-specifics and possible correlated. As
+a modeling framework, we use a generalized linear mixed model (GLMM)
+specification.
 
 The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
@@ -162,7 +184,7 @@ analysis of such data, \cite{laird82} proposed the random effects
 regression models for longitudinal/repeated-measures data
 analysis. \cite{breslow93} presented the GLMMs for the analysis of
 non-Gaussian outcomes. In this framework, we can accommodate all
-competing causes of failure and censorship with a multinomial
+competing causes of failure and censorship under a multinomial
 probability distribution, easily extend to any number of competing
 causes. The within-cluster dependence is accommodated via a multivariate
 normal distribution and the cause-specific CIFs via the model's link
