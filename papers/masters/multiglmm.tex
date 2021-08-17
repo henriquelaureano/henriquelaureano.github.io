@@ -78,21 +78,11 @@ Automatic differentiation (AD).
 
 Competing risks data, and more generally failure time data, can be
 modeled in two possible scales: the hazard and the probability scale,
-with the former being the most popular. The modeling object is the
-survival experience of the time-to-event data. A competing risks process
-can be seen as the multivariate extension of a failure time process,
-having multiple causes competing to be the one responsible for the
-desired event occurrence, properly, a failure. In \autoref{fig:crp} a
-visual aid is provided considering \(m\) competing causes.
-
-Failure time data is the branch of Statistics responsible to handle
-random variables describing the time until the occurrence of an event, a
-failure \citep{kalb&prentice,hougaard00}. The time until a failure is
-called survival experience, and is the modeling object. To accommodate
-the number of possible causes for a failure there is the competing risks
-data scheme, described in \autoref{fig:crp} and the focus of this
-work. More specifically, its clustered version i.e., with groups of
-elements sharing some non-observed latent dependence structure.
+with the former being the most popular. A competing risks process can be
+seen as the multivariate extension of a failure time process, having
+multiple causes competing to be the one responsible for the desired
+event occurrence, properly, a failure. In \autoref{fig:crp} a visual aid
+is provided considering \(m\) competing causes.
 
 \begin{figure}[H]
  \centering
@@ -122,6 +112,14 @@ elements sharing some non-observed latent dependence structure.
  \label{fig:crp}
 \end{figure}
 
+Failure time data is the branch of Statistics responsible to handle
+random variables describing the time until the occurrence of an event, a
+failure \citep{kalb&prentice,hougaard00}. The time until a failure is
+called survival experience, and is the modeling object. To accommodate
+the number of possible causes for a failure there is the competing risks
+data scheme. More specifically, its clustered version i.e., with groups
+of elements sharing some non-observed latent dependence structure.
+
 When this framework is applied in real-world situations, we have to be
 able to handle with the nonoccurrence of the desired event, by any of
 the competing causes, for, let us say, \textit{logistic reasons}
@@ -129,22 +127,20 @@ the competing causes, for, let us say, \textit{logistic reasons}
 generally noninformative, nonoccurrence of the event is called
 censorship.
 
-In its simplest form, it is assumed that all subjects under study are
-independent. However, if the subjects are structured in a related
-fashion the independence assumption is unrealistic. When the subjects
-are organized in clusters (a family, e.g.), the nonindependence is
-accommodated in terms of a latent/random-effect, shared by all elements
-of that cluster. This idea opens space to what is called \textit{family
-  studies}. In family studies, the goal is to accommodate and try to
-understand the relationship between the family elements. In other words,
-how the occurrence of an event in a subject affects the survival
-experience for the same or similar event in its familiars.
+When the elements under study are organized in clusters (a family,
+e.g.), it opens space to what is called \textit{family studies}. In
+family studies, the goal is to accommodate the non-observed latent
+dependence and try to understand the relationship between the family
+elements. In other words, how the occurrence of an event in a subject
+affects the survival experience for the same or similar event in its
+familiars.
 
 The survival experiences is usually modeled in the hazard (failure rate)
 scale, and with the latent within-cluster dependence accommodation we
-have a frailty model \citep{frailty78,frailty79,liang95,petersen98}. The
-use of frailty models implies in complicated likelihood functions and
-inference routines done via elaborated and slow EM algorithms
+have what is called a frailty model
+\citep{frailty78,frailty79,liang95,petersen98}. The use of frailty
+models implies in complicated likelihood functions and inference
+routines done via elaborated and slow EM algorithms
 \citep{nielsen92,klein92} or inefficient MCMC schemes
 \citep{hougaard00}. With multiple survival experiences, the general idea
 is the same but with even more elaborated likelihoods
@@ -153,10 +149,10 @@ approaches \citep{larson85,kuk92}.
 
 When in the hazard scale, the interpretations are in terms of hazard
 rates. A less usual scale but with a more appealing interpretation, is
-to model the survival experiences in the probability scale. For
-competing risks data, the work on the probability scale is done by means
-of the cumulative incidence function (CIF) \citep{andersen12}, with the
-main modeling approach being the subdistribution \citep{fine&gray}.
+the probability scale. For competing risks data, the work on the
+probability scale is done by means of the cumulative incidence function
+(CIF) \citep{andersen12}, with the main modeling approach being the
+subdistribution \citep{fine&gray}.
 
 For clustered competing risks data there are some available options but
 with a lack of predominance. The options vary in terms of likelihood
@@ -175,35 +171,40 @@ specify complex within-cluster dependence structures. We follow
 decomposition in instantaneous risk and failure time trajectory
 functions, with both being cluster-specifics and possible correlated. As
 a modeling framework, we use a generalized linear mixed model (GLMM)
-specification.
+specification. Through a GLMM we have a straightforward full likelihood
+specification, easy to virtually extend to any number of competing
+causes, and capable to allow for complex CIF structures. To make the
+estimation and inferential process the most efficient as possible we
+take advantage of state-of-art computational libraries and efficiently
+implemented routines under the \texttt{TMB} \citep{TMB} package of the R
+\citep{R21} statistical software.
 
 The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
 flexibility, the GLMs are not suitable for dependent data. For the
 analysis of such data, \cite{laird82} proposed the random effects
-regression models for longitudinal/repeated-measures data analysis, and
+regression models for longitudinal/repeated-measures data, and
 \cite{breslow93} presented the GLMMs for the analysis of non-Gaussian
 outcomes. In this framework, we can accommodate all competing causes of
 failure and censorship under a multinomial probability distribution. The
-within-cluster dependence is accommodated via a multivariate normal
-distribution, and the cause-specific CIFs via the model's link
-function. The main goal of this study is to propose a GLMM approach to
-handle clustered competing risks data with a flexible within-cluster
-dependence structure. The model specification and the inferential
-routine are much simpler than the usually used approaches, increasing
-the practical relevance of our framework. The estimation and inference
-is made through the efficient computational resources of the R
-\citep{R21} package \texttt{TMB} \citep{TMb}. The latent effects are
-handled out by means of an efficient Laplace approximation and automatic
-differentiation.
+latent within-cluster dependence is accommodated via a multivariate
+normal distribution, and the cause-specific CIFs via the model's link
+function.
 
-The main contributions of this article are: (i) introducing the modeling
-of cause/cluster-specific CIFs of clustered competing risks data into an
-efficient implementation of the GLMMs framework; (ii) performing a
-extensive simulation study to check the properties of the maximum
-likelihood estimator to learn the cause-specific CIF forms and the
-feasibility of the within-cluster dependence structure.; (iii) providing
-R code and \texttt{C++} implementation for the used GLMMs.
+The main goal of this work is to propose a GLMM approach to handle
+clustered competing risks data with a flexible within-cluster dependence
+structure. The model specification and the inferential routine are much
+simpler than the usually used approaches, increasing its practical
+relevance. The latent effects, the key complicator factor, are handled
+out by means of an efficient Laplace approximation and automatic
+differentiation. The main contributions of this article are: (i)
+introducing the modeling of cause/cluster-specific CIFs of clustered
+competing risks data into an efficient implementation of the GLMMs
+framework; (ii) performing a extensive simulation study to check the
+properties of the maximum likelihood estimator to learn the
+cause-specific CIF forms and the feasibility of the within-cluster
+dependence structure.; (iii) providing R code and \texttt{C++}
+implementation for the used GLMMs.
 
 The work is organized as follows. Section \ref{model} presents the CIF
 specification and the multinomial GLMM. Section \ref{inference} presents
@@ -246,7 +247,7 @@ the second function that compose the subdensity \(f_{k}(t \mid
 \bm{x})\). A comprehensive reference for all these definitions is
 the book of \cite{kalb&prentice}.
 
-To take into consideration our clustered/family structure. We use the
+To take into consideration our clustered/family structure, we follow the
 same CIF specification of \cite{SCHEIKE}. For two competing causes of
 failure, the cause-specific CIFs are specified in the following manner
 \begin{equation}
@@ -263,7 +264,7 @@ cluster-specific failure time trajectory, resulting in a
 cluster-specific CIF. What makes these components cluster-specific are
 \(\bm{u} = \{u_{1},~u_{2}\}\) and \(\bm{\eta} =
 \{\eta_{1},~\eta_{2}\}\), Gaussian distributed latent effects with zero
-mean and potentially correlated i.e.,
+mean and potentially correlated,
 \[
  \begin{bmatrix} u_{1}\\u_{2}\\\eta_{1}\\\eta_{2} \end{bmatrix} \sim
  \parbox{2.5cm}{\centering Multivariate Normal}
@@ -279,32 +280,7 @@ mean and potentially correlated i.e.,
    &&&\sigma_{\eta_{2}}^{2}
   \end{bmatrix}
  \right).
-\]
-The cluster-specific survival function is given by \(S(t \mid
-\bm{x},~\bm{u},~\bm{\eta}) = 1 - F_{1} (t \mid \bm{x},~\bm{u},~\eta_{1})
-- F_{2} (t \mid \bm{x},~\bm{u},~\eta_{2})\). The second component of
-\autoref{eq:cif}, the cluster-specific failure time trajectory
-\[
- \Phi[w_{k} g(t) - \bm{x}\bm{\gamma}_{k} - \eta_{k}],
- \quad t > 0, \quad k = 1,~2,
-\]
-where \(\Phi(\cdot)\) is the cumulative distribution function of a
-standard Gaussian distribution. With regard to the function
-\(g(t)\), it plays a crucial role since the CIF separation in
-\autoref{eq:cif} is only possible with it. It is used a time \(t\)
-transformation given by
-\[
- g(t) = \text{arctanh}\left(\frac{t - \delta/2}{\delta/2}\right),
- \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty),
-\]
-where \(\delta\) depends on the data and cannot exceed the maximum
-observed follow-up time \(\tau\) i.e., \(\delta \leq \tau\). With this
-Fisher-based transformation the value of the cluster-specific failure
-time trajectory is equal 1, at time \(\delta\). Consequently, \(F_{k}
-(\delta \mid \bm{x},~\bm{u},~\eta_{k}) = \pi_{k}(\bm{x} \mid
-\bm{u})\) and we can interpret \(\pi_{1}(\bm{x} \mid \bm{u})\) and
-\(\pi_{2}(\bm{x} \mid \bm{u})\) as the cause-specific
-cluster-specific risk levels, at time \(\delta\).
+ \]
 
 The cluster-specific risk levels are modeled by a multinomial logistic
 regression model with latent effects i.e.,
@@ -321,26 +297,54 @@ levels. For individuals from the same cluster/family, at the same time
 point, the \(\bm{\beta}_{k}\)s have the well-known odds ratio
 interpretation.
 
-A direct understanding of all coefficients/parameters of
-\autoref{eq:cif} can be reached via the illustrations in
-\autoref{fig:cifcoefs}. To really understand what is going on, we
-simplify the model. We still consider just two competing causes but
-without covariates and we plot just the cluster-specific CIF of one
-failure cause. In the top-plots of \autoref{fig:cifcoefs} we see that
-the \(\beta\)'s are also related with the curve's maximum value i.e.,
-bigger the \(\beta\), highest the CIF will be.
+The second component of \autoref{eq:cif} is the cluster-specific failure
+time trajectory
+\[
+ \Phi[w_{k} g(t) - \bm{x}\bm{\gamma}_{k} - \eta_{k}],
+ \quad t > 0, \quad k = 1,~2,
+\]
+where \(\Phi(\cdot)\) is the cumulative distribution function of a
+standard Gaussian distribution. With regard to the function \(g(t)\), it
+plays a crucial role since the proposed CIF separation is only possible
+with it. It is used a time \(t\) transformation given by
+\[
+ g(t) = \text{arctanh}\left(\frac{t - \delta/2}{\delta/2}\right),
+ \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty),
+\]
+where \(\delta\) depends on the data and cannot exceed the maximum
+observed follow-up time \(\tau\) i.e., \(\delta \leq \tau\). With this
+Fisher-based transformation the value of the cluster-specific failure
+time trajectory is equal 1, at time \(\delta\). Consequently, \(F_{k}
+(\delta \mid \bm{x},~\bm{u},~\eta_{k}) = \pi_{k}(\bm{x} \mid \bm{u})\)
+and we can interpret \(\pi_{1}(\bm{x} \mid \bm{u})\) and
+\(\pi_{2}(\bm{x} \mid \bm{u})\) as the cause-specific cluster-specific
+risk levels, at time \(\delta\). The cluster-specific survival function
+is given by \(S(t \mid \bm{x},~\bm{u},~\bm{\eta}) = 1 - F_{1} (t \mid
+\bm{x},~\bm{u},~\eta_{1}) - F_{2} (t \mid \bm{x},~\bm{u},~\eta_{2})\).
 
-The \(\bm{\gamma}_{k}\)'s are the coefficients responsible for
-quantifying the impact of the covariates in the cause-specific failure
-time trajectories i.e., the shape of the cumulative incidence. We see
-that the \(\gamma\)'s are also related with an idea of midpoint and
-consequently, growth speed. The fact that \(\gamma_{k}\) enters
-negatively in the cluster-specific failure time trajectory makes that a
-negative value causes an advance towards the curve, whereas a positive
-value causes a delay. Last but not least, the \(w\)'s. With negative
-values, we have a decreasing curve and with positive values an
-increasing curve i.e., we are interested only on the positive side.
+A direct understanding of all coefficients/parameters in
+\autoref{eq:cif} can be reached via the top-placed illustrations in
+\autoref{fig:cifcoefs}. We consider two competing causes, without
+covariates, and plot the cluster-specific CIF of just one failure
+cause. We see that:
+\begin{itemize}
+ \item The \(\beta\)'s are related to the curve's maximum value i.e.,
+   bigger the \(\beta\), highest the CIF;
 
+ \item The \(\bm{\gamma}_{k}\)'s are the coefficients responsible for
+   quantifying the impact of the covariates in the cause-specific
+   failure time trajectories i.e., the shape of the cumulative
+   incidence. We see that the \(\gamma\)'s are also related with an idea
+   of midpoint and consequently, growth speed. The fact that
+   \(\gamma_{k}\) enters negatively in the cluster-specific failure time
+   trajectory makes that a negative value causes an advance towards the
+   curve, whereas a positive value causes a delay;
+
+ \item Last but not least, the \(w\)'s. With negative values, we have a
+   decreasing curve and with positive values an increasing curve i.e.,
+   we are interested only on the positive side.
+\end{itemize}
+   
 \begin{figure}[H]
  \centering \includegraphics[width=\linewidth]{pics/cifstudy-1.png}
  \vspace{-0.75cm}
@@ -351,11 +355,10 @@ increasing curve i.e., we are interested only on the positive side.
 \end{figure}
 
 Remains to talk about the within-cluster dependence induced by the
-latent effects in \(\bm{u}\) and \(\bm{\eta}\). Unfortunately, they do
-not have an easy interpretation. To help in the discussion, the
-bottom-plots on \autoref{fig:cifcoefs} illustrates the cluster-specific
-CIF for a given failure cause in a model without covariates, let us call
-it failure cause 1 (in total we have two).
+latent effects in \(\bm{u}\) and \(\bm{\eta}\). To help in the
+discussion, the bottom-plots on \autoref{fig:cifcoefs} illustrates the
+cluster-specific CIF for a given failure cause in a model without
+covariates, let us call it failure cause 1 (in total we have two).
 
 The latent effects \(u_{1}\) and \(u_{2}\) always appear together in the
 cluster-specific risk level, as consequency they have a joint effect on
