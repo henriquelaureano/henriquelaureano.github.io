@@ -181,25 +181,21 @@ The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
 flexibility, the GLMs are not suitable for dependent data. For the
 analysis of such data, \cite{laird82} proposed the random effects
-regression models for longitudinal/repeated-measures data
-analysis. \cite{breslow93} presented the GLMMs for the analysis of
-non-Gaussian outcomes. In this framework, we can accommodate all
-competing causes of failure and censorship under a multinomial
-probability distribution, easily extend to any number of competing
-causes. The within-cluster dependence is accommodated via a multivariate
-normal distribution and the cause-specific CIFs via the model's link
-function. The estimation and inference are done via an efficient
-implementation and state-of-art computational libraries provided through
-TMB. The latent effects are handled out by means of an efficient Laplace
-approximation and automatic differentiation.
-
-The main goal of this study is to propose a GLMM approach to handle
-clustered competing risks data with a flexible within-cluster dependence
-structure. The model specification and the inferential routine are much
-simpler than the usually used approaches, increasing the practical
-relevance of our framework. The estimation and inference is made through
-the efficient computational resources of the R \citep{R21} package
-\texttt{TMB} \citep{TMb}.
+regression models for longitudinal/repeated-measures data analysis, and
+\cite{breslow93} presented the GLMMs for the analysis of non-Gaussian
+outcomes. In this framework, we can accommodate all competing causes of
+failure and censorship under a multinomial probability distribution. The
+within-cluster dependence is accommodated via a multivariate normal
+distribution, and the cause-specific CIFs via the model's link
+function. The main goal of this study is to propose a GLMM approach to
+handle clustered competing risks data with a flexible within-cluster
+dependence structure. The model specification and the inferential
+routine are much simpler than the usually used approaches, increasing
+the practical relevance of our framework. The estimation and inference
+is made through the efficient computational resources of the R
+\citep{R21} package \texttt{TMB} \citep{TMb}. The latent effects are
+handled out by means of an efficient Laplace approximation and automatic
+differentiation.
 
 The main contributions of this article are: (i) introducing the modeling
 of cause/cluster-specific CIFs of clustered competing risks data into an
