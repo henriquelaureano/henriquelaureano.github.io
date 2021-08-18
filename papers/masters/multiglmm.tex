@@ -358,9 +358,8 @@ Remains to talk about the within-cluster dependence induced by the
 latent effects in \(\bm{u}\) and \(\bm{\eta}\). To help in the
 discussion, the bottom-plots on \autoref{fig:cifcoefs} illustrates the
 cluster-specific CIF for a given failure cause in a model without
-covariates, let us call it failure cause 1 (in total we have two).
-
-The latent effects \(u_{1}\) and \(u_{2}\) always appear together in the
+covariates, let us call it failure cause 1 (in total we have two). The
+latent effects \(u_{1}\) and \(u_{2}\) always appear together in the
 cluster-specific risk level, as consequency they have a joint effect on
 the cumulative incidence of both causes. As we can see in
 \autoref{fig:cifcoefs}, an increase in \(u_{k}\) will increase the risk
@@ -377,23 +376,18 @@ quickly and a decreased risk level is reached later, respectively.
 Practical situations with a positive within-cause correlation are hard
 to find i.e., where an increased risk level is associated with a late
 onset and vice versa. However, a positive cross-cause correlation
-between \(\eta\) and \(u\) sounds much more realistic i.e., where late
-onset of one failure cause is associated with a high absolute risk of
-another failure cause.
-
-The latent effects \(\{u_{k},~\eta_{k}\}\) are assumed independent
-across clusters and shared by individuals within the same
-cluster/family.
+between \(\eta\) and \(u\) sounds much more realistic, where late onset
+of one failure cause is associated with a high absolute risk of another
+failure cause.
 
 \subsection{Model specification}
 \label{multiGLMM}
 
-The multiGLMM for clustered competing risks data is specified in the
-following hierarchical fashion. By simplicity, we focus on two competing
-causes of failure but an extension is straightforward.
-
-For two competing causes of failure, a subject \(i\), in the
-cluster/family \(j\), in time \(t\), we have
+The generalized linear mixed model (GLMM) for clustered competing risks
+data is specified in the following hierarchical fashion. By simplicity,
+we focus on two competing causes of failure but an extension is
+straightforward. For two competing causes of failure, a subject \(i\),
+in the cluster/family \(j\), in time \(t\), we have
 \begin{align}
  y_{i j t} \mid \{u_{1j},~u_{2j},~\eta_{1j},~\eta_{2j}\}
  &\sim\text{Multinomial}(p_{1ijt},~p_{2ijt},~p_{3ijt})\nonumber\\
@@ -429,14 +423,15 @@ cluster/family \(j\), in time \(t\), we have
 The probabilities are given by the derivative w.r.t. time \(t\) of the
 cluster-specific CIF. The choice of a multinomial logistic regression
 model ensures that the sum of the predicted cause-specific CIFs does not
-exceed 1.
+exceed 1. Considering two competing causes of failure, we have a
+multinomial with three classes. The third class exists to handle the
+censorship and its probability is given by the complementary to reach
+1. This framework in \autoref{eq:model} results in what we call
+multiGLMM, a multinomial GLMM to handle the CIF of clustered competing
+risks data.
 
-Considering two competing causes of failure, we have a multinomial with
-three classes. The third class exists to handle the censorship and its
-probability is given by the complementary to reach 1. This framework in
-\autoref{eq:model} results in what we call multiGLMM, a multinomial
-GLMM to handle the CIF of clustered competing risks data. For a random
-sample, the corresponding marginal likelihood function in given by
+For a random sample, the corresponding marginal likelihood function in
+given by
 \begin{align}
  L(\bm{\theta}~;~y)
  &= \prod_{j=1}^{J}~\int_{\Re^{4}}
