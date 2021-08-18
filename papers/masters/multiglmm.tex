@@ -4,6 +4,7 @@
 \usepackage{amsmath, nccmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{bm}
 \usepackage{multirow}
 \usepackage{natbib}
 \usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
@@ -615,7 +616,9 @@ follows:
 \end{equation}
 that can now be numerically maximized over the model parameters
 \(\bm{\theta} = [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
-  \bm{\rho}]^{\top}\).
+  \bm{\rho}]^{\top}\) using a quasi-Newton method as the
+Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm or the PORT routines,
+all available in the R statistical software.
 
 \section{Simulation studies}
 \label{simulation}
