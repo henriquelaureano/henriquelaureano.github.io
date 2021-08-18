@@ -119,3 +119,7 @@
 <img src='dunes.jpg'>
 <img src='mypool.jpg'>
 <img src='freetime.jpg'>
+<img src='niceview3.jpg'>
+<img src='whoa.jpg'>
+<img src='donotdisturb.jpg'>
+<img src='alligator.jpg'>
