@@ -621,6 +621,15 @@ Broyden-Fletcher-Goldfarb-Shanno (BFGS) algorithm \citep{nocedal&wright}
 or the PORT routines \citep{PORTpaper,PORTreport}, all available in the
 R \citep{R21} statistical software.
 
+We use an efficient Laplace approximation routine implemented in
+\texttt{TMB} \citep{TMB}. Besides state-of-art linear algebra libraries
+and the possibility of performing the computations in parallel,
+\texttt{TMB} also offers an efficient implementation of automatic
+differentiation \citep{nocedal&wright,corestats,peyre}, the state-of-art
+in gradients computation. In \texttt{TMB} the user should write its
+likelihood function in a \texttt{C++} template file and then load it on
+R.
+
 \section{Simulation studies}
 \label{simulation}
 
