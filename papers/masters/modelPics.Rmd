@@ -12,8 +12,10 @@ opts_chunk$set(fig.path='pics/')
 ```
 
 ```{r packages}
-## install.packages('pacman')
-pacman::p_load(ggplot2, patchwork, tibble)
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+pacman::p_load(ggplot2, patchwork, tibble, tidyr, haven)
+
 ```
 
 ```{r cifstudy,fig.width=10,fig.height=7.5}
@@ -104,4 +106,113 @@ g4 <-
     plot_annotation(
         title='Cluster-specific Cumulative Incidence Function (CIF)'
     )&theme(plot.title=element_text(size=16))
+```
+
+```{r modelsample}
+
+cif <- function() {
+    t <- seq(30, 79.5, by = 0.5)
+    delta <- 80
+    u <- c(0, 0)
+    eta <- c(0, 0)
+    beta <- c(-2, -1.5)
+    gamma <- c(1.2, 1)
+    w <- c(3, 5)
+    risk1 <- exp(beta[1] + u[1])
+    risk2 <- exp(beta[2] + u[2])
+    level <- 1 +  risk1 + risk2
+    risklevel1 <- risk1/level
+    risklevel2 <- risk2/level
+    traj1 <- pnorm(w[1] * atanh(2 * t/delta - 1) - gamma[1] - eta[1])
+    traj2 <- pnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
+    cif1 <- risklevel1 * traj1
+    cif2 <- risklevel2 * traj2
+    out <- as.data.frame(cbind(t, cif1, cif2))
+    out <- out %>% pivot_longer(cols = cif1:cif2,
+                                names_to = "cif", values_to = "value")
+    return(out)
+}
+dfcif <- cif()
+dcif <- function() {
+    t <- seq(30, 79.5, by = 0.5)
+    delta <- 80
+    u <- c(0, 0)
+    eta <- c(0, 0)
+    beta <- c(-2, -1.5)
+    gamma <- c(1.2, 1)
+    w <- c(3, 5)
+    risk1 <- exp(beta[1] + u[1])
+    risk2 <- exp(beta[2] + u[2])
+    level <- 1 +  risk1 + risk2
+    risklevel1 <- risk1/level
+    risklevel2 <- risk2/level
+    dtraj1 <- w[1] * delta/(2 * t * (delta - t)) *
+        dnorm(w[1] * atanh(2 * t/delta - 1) - gamma[1] - eta[1])
+    dtraj2 <- w[2] * delta/(2 * t * (delta - t)) *
+        dnorm(w[2] * atanh(2 * t/delta - 1) - gamma[2] - eta[2])
+    dcif1 <- risklevel1 * dtraj1
+    dcif2 <- risklevel2 * dtraj2
+    out <- as.data.frame(cbind(t, dcif1, dcif2))
+    out <- out %>% pivot_longer(cols = dcif1:dcif2,
+                                names_to = "dcif", values_to = "value")
+    return(out)
+}
+dfdcif <- dcif()
+p1 <- ggplot(dfcif, aes(t, value, group = cif)) +
+    geom_line(aes(linetype = cif)) +
+    labs(x = "Time", y = NULL) +
+    scale_linetype_discrete(labels = c("CIF 1", "CIF 2")) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text = element_text(size = 14),
+          axis.text.x = element_text(size = 13),
+          axis.text.y = element_text(size = 13),
+          axis.title.x = element_text(
+              size = 14,
+              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
+          legend.box.background=element_rect(color='black'))
+p2 <- ggplot(dfdcif, aes(t, value, group = dcif)) +
+    geom_line(aes(linetype = dcif)) +
+    labs(x = "Time", y = NULL) +
+    scale_linetype_discrete(labels = c("dCIF 1", "dCIF 2")) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text = element_text(size = 14),
+          axis.text.x = element_text(size = 13),
+          axis.text.y = element_text(size = 13),
+          axis.title.x = element_text(
+              size = 14,
+              margin = unit(c(t = 3, r = 0, b = 0, l = 0), "mm")),
+          legend.box.background=element_rect(color='black'))
+p1+p2
+
+dfcif|>
+    tidyr::pivot_wider(names_from=cif, values_from=value)|>
+    dplyr::rename('CIF 1'='cif1', 'CIF 2'='cif2')|>
+    dplyr::mutate(Censorship=(1-`CIF 1`-`CIF 2`))|>
+    tidyr::pivot_longer(!t, names_to='cif', values_to='value')|>
+    dplyr::mutate(cif=factor(cif,
+                             levels=rev(c('CIF 1', 'CIF 2', 'Censorship'))))|>
+    ggplot(aes(t, value, fill=cif))+
+    geom_area(alpha=1, size=1, color='white')+
+    labs(x='Time', y='Probability', title='All CIFs sum up to 1')+
+    scale_fill_manual(values=c('#0096c8', '#262626', '#ff4c00'))+
+    theme(legend.position = "bottom",
+          legend.title = element_blank(),
+          legend.text = element_text(size = 14),
+          axis.text.x = element_text(size = 13),
+          axis.text.y = element_text(size = 13),
+          plot.title=element_text(
+              size=16,
+              face='bold',
+              margin=unit(c(t=0, r=0, b=3, l=0), 'mm')), 
+          axis.title.x=element_text(
+              size=14, 
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=14, 
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")),
+          legend.box.background=element_rect(color='black'))+
+    guides(fill=guide_legend(reverse=TRUE))
+
 ```
