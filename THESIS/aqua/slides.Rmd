@@ -2,9 +2,9 @@
 title: "Modeling the cumulative incidence function of clustered competing
         risks data: \\newline
         a multinomial GLMM approach"
-subtitle: master thesis defense
+subtitle:
 author: Henrique Laureano ([.github.io](https://henriquelaureano.github.io))
-date: \today
+date: September 3, 2021
 institute: LEG @ UFPR
 classoption: [aspectratio=169]
 bibliography: ../thesis/references.bib
@@ -14,6 +14,28 @@ output:
     includes:
       in_header: beamerheader.txt
 ---
+
+### Giving context: defining where we are and what we did
+
+\textbf{Object}
+
+- Handle \textcolor{UniBlue}{clustered competing risks data} (a kind of
+  failure time data)\
+  through the \textcolor{UniBlue}{cumulative incidence function} (CIF).
+
+\textbf{Goal}
+
+- Perform \textcolor{UniBlue}{maximum likelihood estimation} in terms of
+  a \textcolor{UniBlue}{full likelihood formulation}\
+  based on @SCHEIKE's CIF specification (\textbf{Scheike's}).
+
+\textbf{Procedure}
+
+- The full likelihood formulation is in terms of a generalized linear
+  mixed model (GLMM) - a conditional approach (with fixed and
+  random/latent effects).
+  
+- We handle the latent effects through an efficient 
 
 # Data
 
