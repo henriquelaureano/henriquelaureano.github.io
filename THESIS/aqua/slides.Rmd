@@ -29,28 +29,54 @@ output:
   a \textcolor{UniBlue}{full likelihood formulation}\
   based on @SCHEIKE's CIF specification (\textbf{Scheike's}).
 
-\textbf{Procedure}
+\textbf{Contribution}
 
-- The full likelihood formulation is in terms of a generalized linear
-  mixed model (GLMM) - a conditional approach (with fixed and
-  random/latent effects).
+- The \textcolor{UniBlue}{full likelihood formulation} is in terms of a
+  generalized linear mixed model (\textcolor{UniBlue}{GLMM}) - a
+  conditional approach (with fixed and random/latent effects);
   
-- We handle the latent effects through an efficient 
+- The optimization and inference are tacked down via an
+  \textcolor{UniBlue}{efficient model implementation} with the use of
+  \textcolor{UniBlue}{\textit{state-of-art} computational libraries}
+  (@TMB's \textcolor{UniBlue}{TMB}).
+
+### Outline
+
+\begin{minipage}{6cm}
+ \begin{block}{}
+  \begin{enumerate}
+   \item Data;
+   \bigskip
+   \item Model;
+   \bigskip
+   \item TMB: Template Model Builder;
+   \bigskip
+   \item Simulation study;
+   \bigskip
+   \item Conclusion;
+   \bigskip
+   \item References.
+  \end{enumerate}
+ \end{block}
+\end{minipage}
 
 # Data
 
 ### Clustered competing risk data
 
-Key terms:
+Key ideas:
+\begin{multicols}{2}
+ \begin{enumerate}
+  \item \textcolor{AlertOrange}{Clustered}:
+        groups with a dependence structure (e.g. families);
+  \item Causes \textcolor{AlertOrange}{competing} by \textit{something};
+  \item Occurrence \textcolor{AlertOrange}{time} of this
+        \textit{something}.
+ \end{enumerate}
+\end{multicols}
 
-1. \textcolor{AlertOrange}{Clustered}:
-   groups with a dependence structure (e.g. families);
-
-2. Causes \textcolor{AlertOrange}{competing} by *something*.
-
-\bigskip
+\vspace{-0.5cm}
 Something?
-
 \begin{columns}
  \column{5cm}
   \begin{itemize}
@@ -58,7 +84,7 @@ Something?
  \end{itemize}
  \column{6.25cm}
   \begin{itemize}
-   \item \textbf{Occurence} or \textbf{cure} of a disease or some
+   \item \textbf{Occurrence} or \textbf{cure} of a disease or some
          biological process;
    \end{itemize}
  \column{4cm}
@@ -67,7 +93,7 @@ Something?
   \end{itemize}
 \end{columns}
 
-\bigskip
+\vspace{0.15cm}
 Independent of the application, always the same framework
 
 \begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
@@ -368,9 +394,8 @@ with
      \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty).\)
 
 \includegraphics[height=0.5cm]{logo/book.png}
-In @SCHEIKE, this CIF specification is modeled under a
-*challengeable* pairwise composite likelihood approach
-[@lindsay88; @varin11].
+In @SCHEIKE, this CIF specification is modeled under a pairwise
+composite likelihood approach [@lindsay88; @varin11].
 
 ### Our contribution: a full likelihood analysis
 
