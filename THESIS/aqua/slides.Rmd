@@ -619,7 +619,7 @@ the parameters vector.
 
 # TMB: Template Model Builder
 
-### TMB: Automatic Differentiation and Laplace Approximation
+### TMB: Template Model Builder
 
 \includegraphics[height=0.5cm]{logo/book.png}
 @TMB.
@@ -650,6 +650,18 @@ the parameters vector.
         \texttt{TMB::sdreport(obj)}.
  \end{enumerate}
 \end{block}
+
+### TMB: Template Model Builder
+
+Key features:
+\begin{multicols}{2}
+ \begin{enumerate}
+  \item Automatic differentiation;
+  \item Laplace approximation.
+ \end{enumerate}
+\end{multicols}
+
+A code slice:
 
 \includegraphics[height=0.5cm]{logo/book.png}
 For details about TMB, AD, and Laplace approximation: @laurence.
