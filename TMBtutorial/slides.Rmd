@@ -1,0 +1,165 @@
+---
+title: "Implementando modelos estatísticos\\newline
+        de maneira eficiente com o TMB"
+subtitle: Um tutorial
+author: Henrique Laureano, Ricardo Petterle & Wagner Bonat
+date: 9 de setembro, 2021
+institute: LEG @ UFPR
+classoption: [aspectratio=169]
+bibliography: references.bib
+link-citations: yes
+output:
+  beamer_presentation:
+    includes:
+      in_header: beamerheader.txt
+---
+
+### TMB: Template Model Builder
+
+\bigskip
+\begin{columns}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/what.png}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{O quê?}}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/why.jpg}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{Por quê?}}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/roll_safe.png}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{Como?}}
+\end{columns}
+
+### O que é o Template Model Builder?
+
+Pelas palavras dos autores:
+
+\includegraphics[height=0.5cm]{logo/book.png}
+@TMB.
+
+\bigskip
+> Um pacote R [@R21] para a rápida implementação de complexos modelos de
+> efeitos aleatórios através de simples *templates* C++.
+
+\textcolor{UniBlue}{\textbf{Complexos modelos de efeitos aleatórios?}}
+Do simples ao complicado.
+
+\vspace{-0.2cm}
+\begin{minipage}{9.5cm}
+ \begin{block}{}
+  \vspace{0.1cm}
+  De modelos simples como um
+  \vspace{0.1cm}
+  \begin{itemize}
+   \item um modelo linear (\textbf{LM}) ou
+   \item um modelo linear generalizado (\textbf{GLM}),
+  \end{itemize}
+  \vspace{0.1cm}
+  até
+  \vspace{0.1cm}
+  \begin{itemize}
+   \item \textbf{modelos não-lineares com efeitos aleatórios} e
+   \item complexos \textbf{modelos espaço-temporais}.
+  \end{itemize}
+  \vspace{0.1cm}
+ \end{block}
+\end{minipage}
+
+### Inúmeras possibilidades...
+
+- Estudar o efeito de características numa certa variável?
+  **Modelo linear** (LM).
+
+- Ok, resposta não-Normal/Gaussiana?
+  **Modelo linear generalizado** (GLM).
+
+### TMB
+
+\textcolor{UniBlue}{O \textbf{TMB} possibilita o ajuste de
+                    \textbf{todos} esses modelos}.
+
+\begin{block}{Workflow}
+ \begin{enumerate}
+  \item Write your objective function in a \texttt{.cpp} through a
+        \texttt{\#include <TMB.hpp>};
+
+  \vspace{0.15cm}
+  \item Compile and load it in R via \texttt{TMB::compile()} and
+        \texttt{base::dyn.load(TMB::dynlib())};
+
+  \vspace{0.15cm}
+  \item Compute your objective function derivatives with
+        \texttt{obj <- TMB::MakeADFun()};
+
+  \vspace{0.15cm}
+  \item Perform the model fitting,
+        \texttt{opt <- base::nlminb(obj\$par, obj\$fn, obj\$gr)};
+
+  \vspace{0.15cm}
+  \item Compute the parameters standard deviations,
+        \texttt{TMB::sdreport(obj)}.
+ \end{enumerate}
+\end{block}
+
+### TMB
+
+Key features:
+\begin{multicols}{2}
+ \begin{enumerate}
+  \item Automatic differentiation;\newline
+        \textit{The state-of-art in derivatives computation}
+  \item Laplace approximation.\newline
+        \textit{An efficient fashion to approximate the latent effect
+                integrals}
+ \end{enumerate}
+\end{multicols}
+
+\includegraphics[height=0.5cm]{logo/book.png}
+For details about TMB, AD, and Laplace approximation: @laurence.
+
+### Ideia de estrutura (slide 1 de 2)
+
+\begin{minipage}{11.5cm}
+ \begin{block}{}
+  Quatro pontos principais:\newline
+  \textbf{o que é}, \textbf{por quê usar},
+  \textbf{estrutura e características}, e \textbf{exemplos}.
+ \end{block}
+\end{minipage}
+
+\bigskip
+
+1. Explicar em um slide **o que é** o TMB;
+
+2. Tá, mas **por que usar** o TMB?
+
+   1. **Motivação**: modelos mistos;
+  
+   2. **Exemplos**: dados longitudinais, modelos multivariados,\
+      espaciais
+      (espaço-temporal, talvez pra mostrar quão longe podemos ir);
+      
+   3. Não dá pra falar bem dessas coisas sem explicar o que é\
+      e qual a estrutura de um **GLM** e de um **GLMM**;
+      
+   4. Consequentemente, falar do *calcanhar de Aquiles* dum GLMM:\
+      como fazer a **marginalização** de maneira eficiente ->
+      aproximação de Laplace;
+
+### Ideia de estrutura (slide 2 de 2)
+
+3. **Estrutura e características** do TMB:
+
+   1. C++;
+
+   2. Bibliotecas eficientes (listar elas) e paralelismo;
+
+   3. **Diferenciação automática**\
+      (um exemplo, talvez o da minha dissertação);
+
+### Referências

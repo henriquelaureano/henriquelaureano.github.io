@@ -1,0 +1,108 @@
+\usetheme{Boadilla}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{rotating}
+%\setbeamertemplate{caption}[numbered]
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage[normalem]{ulem}
+%\mode<presentation>
+\usepackage{wasysym}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{changepage}
+\usepackage{bm}
+\usepackage{animate}
+\usepackage{pifont}
+\usepackage{framed}
+
+\renewcommand{\familydefault}{\sfdefault}
+
+\usefonttheme{structurebold}
+\usepackage{helvet}
+\usepackage{eulervm}
+
+\setbeamerfont{alerted text}{series=\bfseries}
+\setbeamerfont{section in toc}{series=\mdseries}
+\setbeamerfont{frametitle}{size=\Large}
+\setbeamerfont{title}{size=\LARGE}
+\setbeamerfont{date}{size=\small}
+
+\definecolor{UniBlue}{RGB}{0,150,200} 
+\definecolor{AlertOrange}{RGB}{255,76,0}
+\definecolor{AlmostBlack}{RGB}{38,38,38}
+
+\setbeamercolor{normal text}{fg=AlmostBlack}
+\setbeamercolor{structure}{fg=UniBlue}
+\setbeamercolor{block title}{fg=UniBlue!50!black}
+\setbeamercolor{alerted text}{fg=AlertOrange}
+\mode<beamer>{\definecolor{BackGroundGray}{RGB}{254,254,254}
+              \setbeamercolor{background canvas}{bg=BackGroundGray}
+}
+
+\hypersetup{colorlinks=true,urlcolor=UniBlue,linkcolor=UniBlue,
+            citecolor=AlertOrange,anchorcolor=AlertOrange}
+
+\setbeamertemplate{blocks}[rounded]
+\useinnertheme{circles}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\addtobeamertemplate{frametitle}{}{%
+ \begin{tikzpicture}[remember picture,overlay]
+  %\node at (14.8,0.3) {\includegraphics[width=1.2cm]{logo/rday3.png}};
+  \node at (14.75,0.4) {\includegraphics[width=1.4cm]{logo/rday3.png}};
+ \end{tikzpicture}
+}
+
+\setbeamertemplate{title page}{%
+ \vspace{2.5em}
+ {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+ {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
+ \vspace{1.5em}
+ \begin{columns}
+  \column{0.3\textwidth}
+   %\centering
+   %\includegraphics[width=0.5\textwidth]{logo/rday3.png}
+   \includegraphics[width=0.95\textwidth]{logo/rday3.png}
+  \column{0.7\textwidth}
+   \begin{flushright}
+    \usebeamerfont{author}\textbf{\insertauthor}\par
+    \vspace{0.25em}
+    \usebeamerfont{institute}\insertinstitute\par
+    \vspace{3em}
+    \usebeamerfont{date}\insertdate
+   \end{flushright}
+ \end{columns}
+}
+
+\usepackage{algorithm}
+\usepackage[noend]{algorithmic}
+\algsetup{linenosize=\color{fg!50}\footnotesize}
+\renewcommand\algorithmicdo{:}
+\renewcommand\algorithmicthen{:}
+\renewcommand\algorithmicrequire{\textbf{Input:}}
+\renewcommand\algorithmicensure{\textbf{Output:}}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows}
+\usepackage{adjustbox}
+\input{tikzit.sty}
+
+\theoremstyle{definition}
+
+\AtBeginSection[]{
+ \frame{\tableofcontents[currentsection,hideallsubsections]}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+ \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
+}
