@@ -72,16 +72,96 @@ Do simples ao complicado.
 
 ### Inúmeras possibilidades...
 
-- Estudar o efeito de características numa certa variável?
-  **Modelo linear** (LM).
+1. Estudar o efeito de características numa certa variável?
+   **Modelos lineares** (LM);
 
-- Ok, resposta não-Normal/Gaussiana?
-  **Modelo linear generalizado** (GLM).
+2. A resposta é não-Normal/Gaussiana?
+   **Modelos lineares generalizados** (GLM);
 
-### TMB
+3. Função não-linear nos parâmetros? **Modelos não-lineares**;
 
-\textcolor{UniBlue}{O \textbf{TMB} possibilita o ajuste de
-                    \textbf{todos} esses modelos}.
+4. Múltiplas respostas/variáveis? **Modelos multivariados**;
+
+5. Presença de dependência não-observada/latente?\
+   **Modelos de efeito aleatório/latente/misto**.
+
+   1. Modelos para **dados longitudinais**
+      (medidas repetidas, séries temporais);
+      
+   2. Modelos para **dados espaciais** e **espaço-temporais**;
+
+6. ...
+
+\bigskip
+\textcolor{UniBlue}{\textbf{O TMB possibilita o ajuste de todos esses
+                            modelos}}.
+
+### TMB: Automatic Differentiation and Laplace Approximation
+
+Características-chave:
+\begin{multicols}{2}
+ \begin{enumerate}
+  \item Diferenciação automática;\newline
+        \textit{o estado-da-arte na computação de derivadas}
+  \item Aproximação de Laplace.\newline
+        \textit{Uma maneira eficiente de aproximar as integrais do
+                efeito aleatório}
+ \end{enumerate}
+\end{multicols}
+
+\vspace{-0.2cm}
+\begin{block}{Um pouco de matemática para justificar as coisas...}
+ Considere que \(f(u, \theta)\) seja o
+ \vspace{-0.15cm}
+ \[
+  \text{negativo da sua função de log-verossililhança
+        \textbf{\textcolor{AlertOrange}{conjunta} nll})},
+ \]
+ \vspace{-0.6cm}
+ 
+ em que \(u \in \mathbb{R}^{n}\) são os
+ \textbf{efeitos aleatórios desconhecidos}
+ e \(\theta \in \mathbb{R}^{m}\) são os \textbf{parâmetros}. 
+\end{block}
+
+\begin{description}
+ \item[\textcolor{AlertOrange}{Conjunta?}]
+  Num modelo estatístico especificamos uma distribuição de
+  probabilidade para o que observamos (\textbf{dados}) e
+  outra para o que não observamos (\textbf{efeito aleatório}).
+  \textcolor{UniBlue}{\textbf{E é aí que mora o problema}}!
+\end{description}
+
+### Por que usar o TMB? Em que situações ele se destaca?
+
+\begin{description}
+ \item[Paradigmas:] Verossimilhancista e Bayesiano.
+  \begin{description}
+   \item[Bayesiano:] Atribuição de distribuições ã \textit{priori} para
+                     os parâmetros, que passam a serem vistos como
+                     variáveis. Não mais estimamos os "parâmetros", e
+                     sim amostramos de sua distribuição a
+                     \textit{posteriori}. Funciona, mas é
+                     \textbf{computacionalmente intensivo}.
+   \item[Verossimilhancista:] Temos um problema, já que o efeito
+                              aleatório é \textbf{não observável}.
+                              Contudo, da estatística básica: se temos
+                              uma
+                              \textcolor{AlertOrange}{\textbf{conjunta}},
+                              basta \textbf{integrarmos} na variável que
+                              não queremos mais. Resultando numa
+  \end{description}
+\end{description}
+
+\begin{block}{}
+ \vspace{-0.2cm}
+ \[
+  \text{função de log-verossimilhança
+        \textcolor{AlertOrange}{\textbf{marginal}}}.
+ \]
+\end{block}
+
+###
 
 \begin{block}{Workflow}
  \begin{enumerate}
