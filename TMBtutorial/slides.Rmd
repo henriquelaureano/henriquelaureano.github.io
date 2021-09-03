@@ -132,7 +132,7 @@ Características-chave:
   \textcolor{UniBlue}{\textbf{E é aí que mora o problema}}!
 \end{description}
 
-### Por que usar o TMB? Em que situações ele se destaca?
+### Por que usar o TMB?
 
 \begin{description}
  \item[Paradigmas:] Verossimilhancista e Bayesiano.
@@ -156,9 +156,36 @@ Características-chave:
 \begin{block}{}
  \vspace{-0.2cm}
  \[
-  \text{função de log-verossimilhança
-        \textcolor{AlertOrange}{\textbf{marginal}}}.
+  \text{Função de verossimilhança
+        \textcolor{AlertOrange}{\textbf{marginal}}}:\qquad
+  L(\theta) = \int_{\mathbb{R}^{n}} \text{exp}(-f(u, \theta))~\text{d}u.
  \]
+\end{block}
+
+Bem, essa é a ideia básica. Na prática não é bem assim...
+
+### Na prática
+
+Quando a distribuição que especificamos pro **dado** não é Gaussiana,\
+não conseguimos resolver aquela integral analíticamente.
+
+\begin{block}{}
+ \vspace{-0.35cm}
+ \[
+  \def\hat{\mathaccent "705E\relax}
+  \text{Aí que entra a
+        \textcolor{UniBlue}{\textbf{aproximação de Laplace}}}:\quad
+  L^{\star}(\theta) = \sqrt{2\pi}^{n}
+                      \text{det}(H(\theta))^{-1/2}
+                      \text{exp}(-f(\hat{u}, \theta)),
+  \vspace{-0.2cm}
+ \]
+ com
+ \vspace{0.1cm}
+ \begin{itemize}
+  \item H
+  \item f
+ \end{itemize}
 \end{block}
 
 ###
