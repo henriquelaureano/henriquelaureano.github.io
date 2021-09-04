@@ -181,37 +181,176 @@ não conseguimos resolver aquela integral analíticamente.
   \vspace{-0.2cm}
  \]
  com
- \vspace{0.1cm}
+ \vspace{0.15cm}
  \begin{itemize}
-  \item H
-  \item f
+  \item \(\def\hat{\mathaccent "705E\relax}
+          H(\theta) = f_{uu}^{''}(\hat{u}(\theta), \theta)\) sendo o
+        Hessiano de \(f(u, \theta)\) w.r.t. \(u\) e avaliado em
+        \(\def\hat{\mathaccent "705E\relax} \hat{u}(\theta)\);
+  \vspace{0.15cm}
+  \item \(\def\hat{\mathaccent "705E\relax}
+          \hat{u}(\theta) =
+          \text{arg}~\underset{u}{\text{min}}~f(u, \theta)\) sendo o
+        minimizador de \(f(u, \theta)\) w.r.t. \(u\).
  \end{itemize}
+ \vspace{0.15cm}
+ \textbf{Finalmente},\newline
+ a função objetivo final a ser minimizada em termos de
+ \(\theta\) é
+ \vspace{-0.1cm}
+ \[
+  \def\hat{\mathaccent "705E\relax}
+  \color{AlertOrange}{-\log L^{\star}(\theta) =
+  -n\log \sqrt{2\pi} +
+  \frac{1}{2}\log \text{det}(H(\theta)) +
+  f(\hat{u}, \theta)},
+  \vspace{-0.1cm}
+ \]
+ i.e., o
+ \textcolor{UniBlue}{\textbf{log negativo da aproximação de Laplace}}.
+ \vspace{0.1cm}
 \end{block}
 
-###
+### Automatic Differentiation (AD)
 
+\vspace{-0.2cm}
+\begin{minipage}{11.75cm}
+ \begin{block}{Uncertainty quantification: Método-\(\bm{\delta}\)}
+  \[
+   \def\hat{\mathaccent "705E\relax}
+   \text{VAR}(\phi(\hat{\theta}) =
+   -\phi_{\theta}^{'}(\hat{\theta}))
+   (\bigtriangledown^{2}\log L^{\star}(\hat{\theta}))^{-1}
+   \phi_{\theta}^{'}(\hat{\theta})^{\top},
+   \vspace{-0.15cm}
+  \]
+  ou seja,\newline
+  conseguimos quantificar a incerteza da estimativa
+  \(\def\hat{\mathaccent "705E\relax} \hat{\theta}\), e de qualquer
+  função diferenciável da estimativa
+  \(\def\hat{\mathaccent "705E\relax} \phi(\hat{\theta})\).
+  \vspace{0.1cm}
+ \end{block}
+\end{minipage}
+
+\vspace{0.1cm}
+Em todas as etapas
+
+- Aproximação de Laplace (*otimização interna*);
+
+- Log negativo da aproximação de Laplace (*otimização externa*);
+
+- Quantificação da incerteza,
+
+o cálculo de derivadas (1a e 2a ordem) é essencial.\
+**Portanto**, sermos capazes de usar a
+\textcolor{UniBlue}{\textbf{maneira mais eficiente existente}}\
+*hoje* pra calcular essas derivadas, é uma tremenda
+\textcolor{UniBlue}{\textbf{qualidade}}.
+
+### Diferenciação automática (AD) em um exemplo
+
+Considere a função (\includegraphics[height=0.5cm]{logo/book.png}
+exemplo tirade de @peyre[, página 33])
+\begin{block}{}
+ \vspace{-0.15cm}
+ \[
+  f(x, y) = y\log(x) + \sqrt{y\log(x)}
+ \]
+\end{block}
+
+O que a \textcolor{UniBlue}{\textbf{AD}} internamente faz é decompor a
+função em *nodos*, construir um ***grafo***
+
+\begin{center}
+ \includegraphics[height=2.25cm]{ex-computational_graph.png}
+\end{center}
+
+e trabalhar em cima do mesmo.
+
+Existem dois **modos** de avaliar a função via
+\textcolor{UniBlue}{\textbf{AD}}. O modo **forward** e o modo
+**reverse**.\
+O que o \textcolor{UniBlue}{\textbf{TMB}} faz é o **reverse**,
+\textcolor{AlertOrange}{\textbf{computationalmente mais eficiente}}.
+
+### AD: modo reverso
+
+\begin{columns}
+ \column{5.5cm}
+  Função:
+  \vspace{-0.2cm}
+  \begin{block}{}
+   \vspace{-0.5cm}
+   \[
+    f(x, y) = y\log(x) + \sqrt{y\log(x)}
+   \]
+  \end{block}
+ \column{9.5cm}
+   \includegraphics[height=1.75cm]{ex-computational_graph.png}
+\end{columns}
+
+\vspace{-0.35cm}
+\begin{align*}
+ \frac{\partial f}{\partial f} &= 1\\
+ \frac{\partial f}{\partial c} &=
+ \frac{\partial f}{\partial f} \frac{\partial f}{\partial c} =
+ \frac{\partial f}{\partial f} 1\qquad &\{c \mapsto f = b + c\}\\
+ \frac{\partial f}{\partial b} &=
+ \frac{\partial f}{\partial c} \frac{\partial c}{\partial b} +
+ \frac{\partial f}{\partial f} \frac{\partial f}{\partial b} =
+ \frac{\partial f}{\partial c} \frac{1}{2\sqrt{b}} +
+ \frac{\partial f}{\partial f} 1\qquad
+ &\{b \mapsto c = \sqrt{b},~b \mapsto f = b + c\}\\
+ \frac{\partial f}{\partial a} &=
+ \frac{\partial f}{\partial b} \frac{\partial b}{\partial a} =
+ \frac{\partial f}{\partial b} y\qquad &\{a \mapsto b = ya\}\\
+ \frac{\partial f}{\partial y} &=
+ \frac{\partial f}{\partial b} \frac{\partial b}{\partial y} =
+ \frac{\partial f}{\partial b} a \qquad &\{y \mapsto b = ya\}\\
+ \frac{\partial f}{\partial x} &=
+ \frac{\partial f}{\partial a} \frac{\partial a}{\partial x} =
+ \frac{\partial f}{\partial a} \frac{1}{x} \hspace{6.5cm}
+ &\{x \mapsto a = \log(x)\}
+\end{align*}
+
+### TMB: Template Model Builder
+
+\large
+\textcolor{UniBlue}{\textbf{Como usar?}}
+
+\vspace{0.15cm}
+\normalsize
 \begin{block}{Workflow}
+ \vspace{0.15cm}
  \begin{enumerate}
-  \item Write your objective function in a \texttt{.cpp} through a
+  \item Escreva sua função objetivo em um \texttt{.cpp} com
         \texttt{\#include <TMB.hpp>};
 
   \vspace{0.15cm}
-  \item Compile and load it in R via \texttt{TMB::compile()} and
+  \item Compile e carregue seu arquivo \texttt{.cpp} em R via
+        \texttt{TMB::compile()} e
         \texttt{base::dyn.load(TMB::dynlib())};
 
   \vspace{0.15cm}
-  \item Compute your objective function derivatives with
+  \item Compute as derivadas da sua função objetivo com
         \texttt{obj <- TMB::MakeADFun()};
 
   \vspace{0.15cm}
-  \item Perform the model fitting,
+  \item Faça o ajuste do modelo,
         \texttt{opt <- base::nlminb(obj\$par, obj\$fn, obj\$gr)};
 
   \vspace{0.15cm}
-  \item Compute the parameters standard deviations,
+  \item Quantifique a incerteza dos parâmetros,
         \texttt{TMB::sdreport(obj)}.
  \end{enumerate}
+ \vspace{0.15cm}
 \end{block}
+
+\large
+\textcolor{UniBlue}{\textbf{(Extra) Funcionalidades}}
+
+\normalsize
 
 ### TMB
 
