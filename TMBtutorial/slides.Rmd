@@ -351,61 +351,65 @@ O que o \textcolor{UniBlue}{\textbf{TMB}} faz é o **reverse**,
 \textcolor{UniBlue}{\textbf{(Extra) Funcionalidades}}
 
 \normalsize
+\begin{multicols}{4}
+ \begin{itemize}
+  \item Paralelização;
 
-### TMB
+  \item Simulação;
 
-Key features:
-\begin{multicols}{2}
- \begin{enumerate}
-  \item Automatic differentiation;\newline
-        \textit{The state-of-art in derivatives computation}
-  \item Laplace approximation.\newline
-        \textit{An efficient fashion to approximate the latent effect
-                integrals}
- \end{enumerate}
+  \item Esparsidade;
+
+  \item ...
+ \end{itemize}
 \end{multicols}
 
-\includegraphics[height=0.5cm]{logo/book.png}
-For details about TMB, AD, and Laplace approximation: @laurence.
+### TMB package design
 
-### Ideia de estrutura (slide 1 de 2)
+\begin{center}
+ \includegraphics[height=3.75cm]{tmb_package_design.png}
+\end{center}
 
-\begin{minipage}{11.5cm}
- \begin{block}{}
-  Quatro pontos principais:\newline
-  \textbf{o que é}, \textbf{por quê usar},
-  \textbf{estrutura e características}, e \textbf{exemplos}.
- \end{block}
-\end{minipage}
+\vspace{-0.4cm}
+Combinação de algums softwares *estado-da-arte*:
+
+- \texttt{CppAD}, um pacote \texttt{C++} para AD
+  \url{https://coin-or.github.io/CppAD/};
+
+- Bibliotecas de álgebra como a \texttt{Eigen} (@eigen, em
+  \texttt{C++}), a \texttt{CHOLMOD}
+  (\url{https://developer.nvidia.com/cholmod}, em \texttt{C}) e a
+  \texttt{Matrix} (@Matrix, usando a \texttt{LAPACK}
+  \url{http://www.netlib.org/lapack/} e a \texttt{SuiteSparse}
+  \url{https://sparse.tamu.edu/});
+
+- Paralelismo através da \texttt{BLAS}
+  (\url{http://www.netlib.org/blas/}, em \texttt{Fortran}).
+
+###
+
+\begin{columns}
+ \column{5cm}
+  \includegraphics[height=4cm]{logo/rday3.png}
+ \column{10cm}
+  \LARGE
+   \textcolor{UniBlue}{\textbf{TMB: Template Model Builder,}}\newline
+
+   \vspace{-0.4cm}
+   \textcolor{UniBlue}{\textbf{Exemplos}}
+  \normalsize
+\end{columns}
 
 \bigskip
+\includegraphics[height=0.5cm]{logo/book.png}
+Lista online dos usuários de TMB:
+\url{https://groups.google.com/g/tmb-users};
 
-1. Explicar em um slide **o que é** o TMB;
+\includegraphics[height=0.5cm]{logo/book.png}
+Tutorial online:
+\url{https://kaskr.github.io/adcomp/_book/Tutorial.html};
 
-2. Tá, mas **por que usar** o TMB?
-
-   1. **Motivação**: modelos mistos;
-  
-   2. **Exemplos**: dados longitudinais, modelos multivariados,\
-      espaciais
-      (espaço-temporal, talvez pra mostrar quão longe podemos ir);
-      
-   3. Não dá pra falar bem dessas coisas sem explicar o que é\
-      e qual a estrutura de um **GLM** e de um **GLMM**;
-      
-   4. Consequentemente, falar do *calcanhar de Aquiles* dum GLMM:\
-      como fazer a **marginalização** de maneira eficiente ->
-      aproximação de Laplace;
-
-### Ideia de estrutura (slide 2 de 2)
-
-3. **Estrutura e características** do TMB:
-
-   1. C++;
-
-   2. Bibliotecas eficientes (listar elas) e paralelismo;
-
-   3. **Diferenciação automática**\
-      (um exemplo, talvez o da minha dissertação);
+\includegraphics[height=0.5cm]{logo/book.png}
+Para mais detalhes sobre TMB, AD e aproximação de Laplace: @laurence.
 
 ### Referências
+
