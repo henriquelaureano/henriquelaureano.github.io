@@ -96,7 +96,7 @@ Do simples ao complicado.
 \textcolor{UniBlue}{\textbf{O TMB possibilita o ajuste de todos esses
                             modelos}}.
 
-### TMB: Automatic Differentiation and Laplace Approximation
+### TMB: Background ideas
 
 Características-chave:
 \begin{multicols}{2}
@@ -132,7 +132,7 @@ Características-chave:
   \textcolor{UniBlue}{\textbf{E é aí que mora o problema}}!
 \end{description}
 
-### Por que usar o TMB?
+### TMB: Lidando com efeitos aleatórios
 
 \begin{description}
  \item[Paradigmas:] Verossimilhancista e Bayesiano.
@@ -271,7 +271,7 @@ e trabalhar em cima do mesmo.
 Existem dois **modos** de avaliar a função via
 \textcolor{UniBlue}{\textbf{AD}}. O modo **forward** e o modo
 **reverse**.\
-O que o \textcolor{UniBlue}{\textbf{TMB}} faz é o **reverse**,
+O que o \textcolor{UniBlue}{\textbf{TMB}} faz é a **reverse**,
 \textcolor{AlertOrange}{\textbf{computationalmente mais eficiente}}.
 
 ### AD: modo reverso
@@ -314,6 +314,28 @@ O que o \textcolor{UniBlue}{\textbf{TMB}} faz é o **reverse**,
  &\{x \mapsto a = \log(x)\}
 \end{align*}
 
+### TMB package design
+
+\begin{center}
+ \includegraphics[height=3.75cm]{tmb_package_design.png}
+\end{center}
+
+\vspace{-0.4cm}
+Combinação de algums softwares *estado-da-arte*:
+
+- \texttt{CppAD}, um pacote \texttt{C++} para AD
+  \url{https://coin-or.github.io/CppAD/};
+
+- Bibliotecas de álgebra como a \texttt{Eigen} (@eigen, em
+  \texttt{C++}), a \texttt{CHOLMOD}
+  (\url{https://developer.nvidia.com/cholmod}, em \texttt{C}) e a
+  \texttt{Matrix} (@Matrix, usando a \texttt{LAPACK}
+  \url{http://www.netlib.org/lapack/} e a \texttt{SuiteSparse}
+  \url{https://sparse.tamu.edu/});
+
+- Paralelismo através da \texttt{BLAS}
+  (\url{http://www.netlib.org/blas/}, em \texttt{Fortran}).
+  
 ### TMB: Template Model Builder
 
 \large
@@ -362,28 +384,6 @@ O que o \textcolor{UniBlue}{\textbf{TMB}} faz é o **reverse**,
   \item ...
  \end{itemize}
 \end{multicols}
-
-### TMB package design
-
-\begin{center}
- \includegraphics[height=3.75cm]{tmb_package_design.png}
-\end{center}
-
-\vspace{-0.4cm}
-Combinação de algums softwares *estado-da-arte*:
-
-- \texttt{CppAD}, um pacote \texttt{C++} para AD
-  \url{https://coin-or.github.io/CppAD/};
-
-- Bibliotecas de álgebra como a \texttt{Eigen} (@eigen, em
-  \texttt{C++}), a \texttt{CHOLMOD}
-  (\url{https://developer.nvidia.com/cholmod}, em \texttt{C}) e a
-  \texttt{Matrix} (@Matrix, usando a \texttt{LAPACK}
-  \url{http://www.netlib.org/lapack/} e a \texttt{SuiteSparse}
-  \url{https://sparse.tamu.edu/});
-
-- Paralelismo através da \texttt{BLAS}
-  (\url{http://www.netlib.org/blas/}, em \texttt{Fortran}).
 
 ###
 
