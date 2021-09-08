@@ -373,20 +373,32 @@ Combinação de algums softwares *estado-da-arte*:
 \textcolor{UniBlue}{\textbf{(Extra) Funcionalidades}}
 
 \normalsize
-\begin{multicols}{4}
- \begin{itemize}
-  \item Paralelização;
-
-  \item Simulação;
-
-  \item Esparsidade;
-
-  \item ...
- \end{itemize}
-\end{multicols}
+\begin{columns}
+ \column{3.2cm}
+  \begin{itemize}
+   \item Paralelização;
+  \end{itemize}
+ \column{2.8cm}
+  \begin{itemize}
+   \item Simulação;
+  \end{itemize}
+ \column{3.2cm}
+  \begin{itemize}
+   \item Esparsidade;
+  \end{itemize}
+ \column{3.8cm}
+  \begin{itemize}
+   \item Perfis de verossimilhança;
+  \end{itemize}
+ \column{3.2cm}
+  \begin{itemize}
+   \item ...
+  \end{itemize}
+\end{columns}
 
 ###
 
+\bigskip
 \begin{columns}
  \column{5cm}
   \includegraphics[height=4cm]{logo/rday3.png}
@@ -410,6 +422,16 @@ Tutorial online:
 
 \includegraphics[height=0.5cm]{logo/book.png}
 Para mais detalhes sobre TMB, AD e aproximação de Laplace: @laurence.
+
+\vspace{0.2cm}
+\begin{columns}
+ \column{0.4cm}
+  \includegraphics[height=0.75cm]{logo/github_logo.png}
+ \column{14.6cm}
+  \vspace{-0.15cm}
+  Tutorial completo disponível em
+  \url{https://github.com/henriquelaureano}
+\end{columns}
 
 ### Referências
 
