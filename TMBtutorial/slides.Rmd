@@ -137,7 +137,7 @@ Características-chave:
 \begin{description}
  \item[Paradigmas:] Verossimilhancista e Bayesiano.
   \begin{description}
-   \item[Bayesiano:] Atribuição de distribuições ã \textit{priori} para
+   \item[Bayesiano:] Atribuição de distribuições a \textit{priori} para
                      os parâmetros, que passam a serem vistos como
                      variáveis. Não mais estimamos os "parâmetros", e
                      sim amostramos de sua distribuição a
@@ -251,7 +251,7 @@ o cálculo de derivadas (1a e 2a ordem) é essencial.\
 ### Diferenciação automática (AD) em um exemplo
 
 Considere a função (\includegraphics[height=0.5cm]{logo/book.png}
-exemplo tirade de @peyre[, página 33])
+exemplo retirado de @peyre[, página 33])
 \begin{block}{}
  \vspace{-0.15cm}
  \[
@@ -314,7 +314,7 @@ O que o \textcolor{UniBlue}{\textbf{TMB}} faz é a **reverse**,
  &\{x \mapsto a = \log(x)\}
 \end{align*}
 
-### TMB package design
+### TMB package design (\includegraphics[height=0.5cm]{logo/book.png} @TMB)
 
 \begin{center}
  \includegraphics[height=3.75cm]{tmb_package_design.png}
