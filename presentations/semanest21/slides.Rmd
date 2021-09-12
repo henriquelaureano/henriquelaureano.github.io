@@ -1,0 +1,822 @@
+---
+title: "Modeling the cumulative incidence function of clustered competing
+        risks data: \\newline
+        a multinomial GLMM approach"
+subtitle: Semana Acadêmica de Estatística, UFPR
+author: Henrique Laureano ([.github.io](https://henriquelaureano.github.io))
+date: September 13, 2021
+institute: IPPPP & LEG @ UFPR
+classoption: [aspectratio=169]
+bibliography: ../../THESIS/thesis/references.bib
+link-citations: yes
+output:
+  beamer_presentation:
+    includes:
+      in_header: beamerheader.txt
+---
+
+### Giving context: defining where we are and what we did
+
+\textbf{Object}
+
+- Handle \textcolor{UniBlue}{clustered competing risks data} (a kind of
+  failure time data)\
+  through the \textcolor{UniBlue}{cumulative incidence function} (CIF).
+
+\textbf{Goal}
+
+- Perform \textcolor{UniBlue}{maximum likelihood estimation} in terms of
+  a \textcolor{UniBlue}{full likelihood formulation}\
+  based on @SCHEIKE's CIF specification (\textbf{Scheike's}).
+
+\textbf{Contribution}
+
+- The \textcolor{UniBlue}{full likelihood formulation} is in terms of a
+  generalized linear mixed model (\textcolor{UniBlue}{GLMM}) - a
+  conditional approach (with fixed and random/latent effects);
+  
+- The optimization and inference are tacked down via an
+  \textcolor{UniBlue}{efficient model implementation} with the use of
+  \textcolor{UniBlue}{\textit{state-of-art} computational libraries}
+  (@TMB's \textcolor{UniBlue}{TMB}).
+
+### Outline
+
+\begin{minipage}{6.25cm}
+ \begin{block}{}
+  \begin{enumerate}
+   \vspace{0.1cm}
+   \item Data;
+   \bigskip
+   \item Model;
+   \bigskip
+   \item TMB: Template Model Builder;
+   \bigskip
+   \item Simulation study;
+   \bigskip
+   \item Conclusion;
+   \bigskip
+   \item References.
+   \vspace{0.15cm}
+  \end{enumerate}
+ \end{block}
+\end{minipage}
+
+# Data
+
+### Clustered competing risk data
+
+Key ideas:
+\begin{multicols}{2}
+ \begin{enumerate}
+  \item \textcolor{AlertOrange}{Clustered}:
+        groups with a dependence structure (e.g. families);
+  \item Causes \textcolor{AlertOrange}{competing} by \textit{something};
+  \item Occurrence \textcolor{AlertOrange}{time} of this
+        \textit{something}.
+ \end{enumerate}
+\end{multicols}
+
+\vspace{-0.5cm}
+Something?
+\begin{columns}
+ \column{5cm}
+  \begin{itemize}
+  \item \textbf{Failure} of an industrial or electronic component;
+ \end{itemize}
+ \column{6.25cm}
+  \begin{itemize}
+   \item \textbf{Occurrence} or \textbf{cure} of a disease or some
+         biological process;
+   \end{itemize}
+ \column{4cm}
+  \begin{itemize}
+   \item \textbf{Progress} of a patient clinic state.
+  \end{itemize}
+\end{columns}
+
+\vspace{0.15cm}
+Independent of the application, always the same framework
+
+\begin{tabular}{lc*{3}{>{\columncolor[gray]{0.8}}c}cr}
+ Cluster & ID & Cause 1 & Cause 2 & Censorship & Time & Feature\\
+ \hline
+ 1     & 1  & Yes     & No       & No        & 10   & A\\
+ 1     & 2  & No      & No       & Yes       &  8   & A\\
+ 2     & 1  & No      & No       & Yes       &  7   & B\\
+ 2     & 2  & No      & Yes      & No        &  5   & A\\
+\end{tabular}
+
+# Model
+
+### Modeling clustered competing risks data
+
+\bigskip
+\begin{columns}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/what.png}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{What?}}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/why.jpg}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{Why?}}
+ \column{\linewidth/3}
+  \centering
+   \includegraphics[height=3.6cm]{logo/roll_safe.png}\\
+   \bigskip
+   \textcolor{UniBlue}{\textbf{How?}}
+\end{columns}
+
+### Modeling failure time data
+
+First of all, we have to choose which \textcolor{UniBlue}{scale} we
+model the \textbf{survival experience}.
+
+1. Usually, is in the
+   \begin{equation}
+    \text{\textcolor{UniBlue}{hazard} (failure rate)
+          \textcolor{UniBlue}{scale}}: \quad
+    \lambda(t \mid \text{features}) =
+    \lambda_{0}(t) \times c(\text{features}).\label{fig:hazard}
+   \end{equation}
+
+We have a Equation \ref{fig:hazard} for each competing cause.
+
+The cluster dependence is something actually not measured\dots
+\begin{block}{}
+ \begin{center}
+  Not measured dependence~\(\rightarrow\)
+  \textbf{random/latent effects}~\(\rightarrow\)
+  Frailty models.
+ \end{center}
+\end{block}
+
+Frailty-based models for (\textcolor{UniBlue}{multiple}) survival
+experiences turn out in challengeable likelihood functions with
+inference routines mostly done via
+
+\begin{columns}
+ \column{8cm}
+  \begin{itemize}
+   \item Elaborated and slow expectation–maximization (EM)
+         algorithms;
+  \end{itemize}
+ \column{6cm}
+  \begin{itemize}
+   \item Inefficient Markov chain Monte Carlo (MCMC) schemes.
+  \end{itemize}
+\end{columns}
+
+2. \textit{Not} usually, the \textcolor{UniBlue}{probability scale}.
+
+### Probability scale \(\rightarrow\) Cause-specific CIF
+
+\vspace{0.2cm}
+```{r cif, echo=FALSE,fig.height=3.25}
+pacman::p_load(tidyverse, ## you need the pacman's package
+               ggplot2,
+               patchwork)
+time  <- seq(30, 79.5, by=0.5)
+delta <- 80
+u     <- c(0, 0)
+eta   <- c(0, 0)
+beta  <- c(-2, -1.5)
+gamma <- c(1.2, 1)
+w     <- c(3, 5)
+risk1 <- exp(beta[1] + u[1])
+risk2 <- exp(beta[2] + u[2])
+level <- 1 +  risk1 + risk2
+risklevel1 <- risk1/level
+risklevel2 <- risk2/level
+traj1 <- pnorm(w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1])
+traj2 <- pnorm(w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2])
+cif1 <- risklevel1 * traj1
+cif2 <- risklevel2 * traj2
+cif3 <- 1 - cif1 - cif2
+df <- as.data.frame(cbind(time, cif1, cif2))
+df <- df%>%
+    pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
+g1 <-
+    ggplot(df, aes(time, value, group=cif, color=cif))+
+    geom_line(size=1.5)+
+    labs(x="Time", y="Incidence",
+         title='Cumulative Incidence Function (CIF)')+
+    scale_color_manual(values=c("#0096c8", "#262626"),
+                       labels=c("Cause 1", "Cause 2"))+
+    theme(legend.title=element_blank(),
+          legend.text=element_text(size=14),
+          ## legend.position=c(0.175, 0.85),
+          ## legend.box.background=element_rect(color='black'),
+          axis.text.x=element_text(size=13),
+          axis.text.y=element_text(size=13),
+          plot.title=element_text(
+              size=16,
+              face='bold', 
+              margin=unit(c(t=0, r=0, b=3, l=0), 'mm')), 
+          axis.title.x=element_text(
+              size=14,
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=14,
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")))
+df <- as.data.frame(cbind(time, cif1, cif2, cif3))
+df <- df%>%
+    pivot_longer(cols=cif1:cif3, names_to="cif", values_to="value")
+df$cif <- factor(df$cif, levels=c('cif3', 'cif2', 'cif1'))
+g2 <-
+    ggplot(df, aes(time, value, fill=cif))+
+    geom_area(alpha=1, size=1, colour='white')+
+    scale_fill_manual(values=c('#ff4c00', '#262626', '#0096c8'),
+                      labels=c('Censorship', 'Cause 2', 'Cause 1'))+
+    labs(x='Time', y='Probability', title='All CIFs sum up to 1')+
+    theme(legend.title=element_blank(),
+          legend.text=element_text(size=14),
+          ## legend.position=c(0.25, 0.75),
+          ## legend.box.background=element_rect(color='black'),
+          axis.text.x=element_text(size=13),
+          axis.text.y=element_text(size=13),
+          plot.title=element_text(
+              size=16,
+              face='bold',
+              margin=unit(c(t=0, r=0, b=3, l=0), 'mm')), 
+          axis.title.x=element_text(
+              size=14, 
+              margin=unit(c(t=3, r=0, b=0, l=0), "mm")),
+          axis.title.y=element_text(
+              size=14, 
+              margin=unit(c(t=0, r=3, b=0, l=0), "mm")))
+g1+g2
+```
+
+\begin{block}{}
+\[
+ \text{i.e.},\quad
+ \text{CIF} =
+ \mathbb{P}[~\text{failure time} \leq t,
+            ~\text{a given cause} \mid \text{features \& latent effects}
+            ~].
+\]
+\end{block}
+
+Common applications: \textit{\textcolor{UniBlue}{family studies}}.
+\newline
+\hspace*{.5cm}\rotatebox[origin=c]{180}{$\color{UniBlue}{\Lsh}$}
+Keywords:
+*within-family/cluster dependence*;
+*age at disease onset*;
+*populations*.
+
+### @SCHEIKE's CIF specification
+
+For two competing causes of failure,\newline
+the cause-specific CIFs are specified in the following manner
+\begin{block}{}
+\vspace{-0.5cm}
+\begin{equation}
+ F_{k} (t \mid \bm{x},~u_{1},~u_{2},~\eta_{k}) =
+ \underbrace{\pi_{k}(\bm{x},~u_{1},~u_{2})}_{
+ \substack{\text{cluster-specific}\\\text{risk level}}}\times
+  \underbrace{\Phi[w_{k} g(t) - \bm{x}\bm{\gamma}_{k} - \eta_{k}]}_{
+   \substack{\text{cluster-specific}\\\text{failure time trajectory}}
+  }, \quad t > 0, \quad k = 1,~2,
+  \label{eq:cif}
+\end{equation}
+\end{block}
+
+with
+
+1. \(\pi_{k}(\bm{x}, \bm{u}) =
+     \exp\{\bm{x}\bm{\beta}_{k} + u_{k}\} \Big/
+     \left(1 + \sum_{m=1}^{K-1} \exp\{\bm{x}\bm{\beta}_{m} + u_{m}\}
+     \right),
+     \quad k = 1,~2, \quad K = 3;\)
+
+2. \(\Phi(\cdot)\) is the cumulative distribution function of a standard
+   Gaussian distribution;
+
+3. \(g(t) = \text{arctanh}(2t/\delta - 1),
+     \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty).\)
+
+\includegraphics[height=0.5cm]{logo/book.png}
+In @SCHEIKE, this CIF specification is modeled under a pairwise
+composite likelihood approach [@lindsay88; @varin11].
+
+### Our contribution: a full likelihood analysis
+
+\vspace{-0.3cm}
+For two competing causes of failure, a subject \(i\), in the cluster
+\(j\), in time \(t\), we have
+\begin{block}{}
+\vspace{-0.5cm}
+\begin{equation}
+ \begin{aligned}
+  y_{ijt} \mid
+  \underbrace{\{u_{1j}, u_{2j}, \eta_{1j}, \eta_{2j}\}}_{
+  \substack{\text{\color{UniBlue}{latent effects}}}
+  } & \sim
+  \text{Multinomial}(p_{1ijt}, p_{2ijt}, p_{3ijt})\\
+  \begin{bmatrix} u_{1}\\ u_{2}\\ \eta_{1}\\ \eta_{2} \end{bmatrix}
+  & \sim
+  \parbox{2cm}{\centering Multivariate Normal}
+  \left(
+   \begin{bmatrix} 0\\ 0\\ 0\\ 0 \end{bmatrix},
+   \begin{bmatrix}
+    \sigma_{u_{1}}^{2}&
+    \text{cov}(u_{1}, u_{2})&
+    \text{cov}(u_{1}, \eta_{1})&\text{cov}(u_{1}, \eta_{2})\\
+    &\sigma_{u_{2}}^{2}&
+    \text{cov}(u_{2}, \eta_{1})&\text{cov}(u_{2}, \eta_{2})\\
+    &&\sigma_{\eta_{1}}^{2}&\text{cov}(\eta_{1}, \eta_{2})\\
+    &&&\sigma_{\eta_{2}}^{2}
+   \end{bmatrix}
+  \right)\\  
+  p_{ {\color{UniBlue}{k}} ijt} &=
+  \frac{\partial}{\partial t}
+  F_{\color{UniBlue}{k}}
+  (t \mid \bm{x}, \bm{u}, \eta_{\color{UniBlue}{k}})\label{eq:model}\\
+  &= \frac{\exp\{\bm{x}_{ {\color{UniBlue}{k}} ij}
+                 \bm{\beta}_{\color{UniBlue}{k}} +
+                 u_{ {\color{UniBlue}{k}} j}\}}{
+  1 + \sum_{ {\color{UniBlue}{m}}=1}^{K-1}
+      \exp\{\bm{x}_{ {\color{UniBlue}{m}} ij}
+            \bm{\beta}_{\color{UniBlue}{m}} +
+            u_{ {\color{UniBlue}{m}} j}\}}\\
+  &\times w_{\color{UniBlue}{k}}\frac{\delta}{2\delta t - 2t^{2}}~
+  \phi\left(
+   w_{\color{UniBlue}{k}}
+   \text{arctanh}\left(\frac{t-\delta/2}{\delta/2}\right)
+   - \bm{x}_{ {\color{UniBlue}{k}} ij}
+     \bm{\gamma}_{\color{UniBlue}{k}} -
+     \eta_{ {\color{UniBlue}{k}} j}
+  \right), \quad {\color{UniBlue}{k}} = 1,~2.
+ \end{aligned}
+\end{equation}
+\end{block}
+
+### Simulating from the model
+
+\vspace{0.2cm}
+```{r simu,echo=FALSE,fig.height=4.9,warning=FALSE}
+pacman::p_load(tidyverse, ## you need the pacman's package
+               ggplot2,
+               mvtnorm,
+               mc2d, 
+               patchwork)
+time  <- seq(30, 79.5, by=0.5)
+delta <- 80
+u     <- c(0, 0)
+eta   <- c(0, 0)
+beta  <- c(-2, -1.5)
+gamma <- c(1.2, 1)
+w     <- c(3, 5)
+risk1 <- exp(beta[1] + u[1])
+risk2 <- exp(beta[2] + u[2])
+level <- 1 +  risk1 + risk2
+risklevel1 <- risk1/level
+risklevel2 <- risk2/level
+traj1 <- pnorm(w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1])
+traj2 <- pnorm(w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2])
+cif1 <- risklevel1 * traj1
+cif2 <- risklevel2 * traj2
+df <- as.data.frame(cbind(time, cif1, cif2))
+df <- df%>%
+    pivot_longer(cols=cif1:cif2, names_to="cif", values_to="value")
+x1 <- w[1] * atanh(2 * time/delta - 1) - gamma[1] - eta[1]
+x2 <- w[2] * atanh(2 * time/delta - 1) - gamma[2] - eta[2]
+dtraj1 <- w[1] * delta/(2 * time * (delta - time)) * dnorm(x1)
+dtraj2 <- w[2] * delta/(2 * time * (delta - time)) * dnorm(x2)
+dcif1 <- risklevel1 * dtraj1
+dcif2 <- risklevel2 * dtraj2
+ddf <- as.data.frame(cbind(time, dcif1, dcif2))
+ddf <- ddf%>%
+    pivot_longer(cols=dcif1:dcif2, names_to="dcif", values_to="value")
+g1 <-
+    ggplot(df, aes(time, value, group=cif, color=cif))+
+    geom_line(size=1.5)+
+    labs(x="Time", y=NULL)+
+    scale_color_manual(values=c("#0096c8", "#262626"),
+                       labels=c("CIF 1", "CIF 2"))+
+    theme(legend.title=element_blank(),
+          legend.text=element_text(size=13),
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_text(size=11),
+          axis.title.x=element_text(
+              size=12,
+              margin=unit(c(t=2, r=0, b=0, l=0), "mm")))
+g2 <-
+    ggplot(ddf, aes(time, value, group=dcif, color=dcif))+
+    geom_line(size=1.5)+
+    labs(x="Time", y=NULL)+
+    scale_color_manual(values=c("#0096c8", "#262626"),
+                       labels=c("dCIF 1", "dCIF 2"))+
+    theme(legend.title=element_blank(),
+          legend.text=element_text(size=13),
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_text(size=11),
+          axis.title.x=element_text(
+              size=12,
+              margin=unit(c(t=2, r=0, b=0, l=0), "mm")))
+J    <- 10e3
+cs   <- 2
+set.seed(3)
+time <- runif(n=cs*J, min=30, max=79.9)
+Z    <- Matrix::bdiag(replicate(J, rep(1, cs), simplify=FALSE))
+S    <- matrix(c( 1.0,  0.4, -0.1,  0.4,
+                  0.4,  1.0,  0.4, -0.1,
+                 -0.1,  0.4,  1.0,  0.4,
+                  0.4, -0.1,  0.4,  1.0), 4)
+out <- tibble::tibble(i=rep(seq(cs), times=J),
+                      j=rep(seq(J),  each=cs),
+                      time=time,
+                      p1=NA, p2=NA, p3=NA)
+K     <- dim(S)[1]/2 + 1
+ladim <- 2*(K-1) ## latent effects dimension
+set.seed(11)
+U     <- mvtnorm::rmvnorm(J, mean=rep(0, ladim), sigma=S)
+ZU    <- Z%*%U
+risk1 <- exp(beta[1] + ZU[, 1])
+risk2 <- exp(beta[2] + ZU[, 2])
+level <- 1 + risk1 + risk2
+gt    <- atanh(2*time/delta - 1)
+dgt   <- delta/(2*time*(delta - time))
+x1    <- w[1]*gt - gamma[1] - ZU[, 3]
+x2    <- w[2]*gt - gamma[2] - ZU[, 4]
+out$p1 <- risk1/level*w[1]*dgt*dnorm(x1)
+out$p2 <- risk2/level*w[2]*dgt*dnorm(x2)
+out    <- out%>%dplyr::mutate(p3=1-p1-p2)
+set.seed(31)
+y      <- mc2d::rmultinomial(cs*J, 1, prob=out%>%select(p1:p3))
+out    <- out%>%
+    dplyr::bind_cols(tibble::as_tibble(y))%>%
+    dplyr::rename(y1=V1, y2=V2, y3=V3)
+datp   <- out%>%
+    pivot_longer(cols=p1:p3, names_to='p_label', values_to='p_value')%>%
+    mutate(p_label=forcats::fct_recode(p_label,
+                                       'Cause 1'='p1',
+                                       'Cause 2'='p2',
+                                       'Censorship'='p3'))
+daty   <- out%>%
+    pivot_longer(cols=y1:y3, names_to='y_label', values_to='y_value')%>%
+    filter(y_value==1)
+g3 <- 
+    ggplot(datp, aes(x=p_value))+
+    geom_histogram(binwidth=0.0025, color='white', fill="#0096c8")+
+    facet_wrap(~p_label, scales='free')+
+    labs(x='Probability', caption='bindwidth=0.0025')+
+    geom_label(data=data.frame(
+                   label=paste0(
+                       "Turns out in\n",
+                       round(prop.table(table(daty$y_label)), 3),
+                       "%'s of data"),
+                   p_label=levels(datp$p_label)),
+               mapping=aes(x=c(0.0275, 0.0345, 0.966),
+                           y=Inf, label=label),
+               vjust=1.5)+
+    ## theme_minimal()+
+    theme(strip.background=element_rect(colour='black', fill='white'),
+          strip.text.x=element_text(size=13), 
+          axis.text.x=element_text(size=11),
+          axis.text.y=element_blank(),
+          axis.title.y=element_blank(),
+          axis.title.x=element_text(
+              size=12, 
+              margin=unit(c(t=3, r=0, b=0, l=0), 'mm')),
+          plot.caption=element_text(size=11))
+(g1+g2)/g3
+```
+
+### Marginal likelihood function for two competing causes
+
+\vspace{-0.75cm}
+\begin{align}
+ L(\bm{\theta}; y)
+ &= \prod_{j=1}^{J}~\int_{\Re^{4}}
+    \pi(y_{j} \mid \bm{r}_{j})\times\pi(\bm{r}_{j})~\text{d}\bm{r}_{j}
+    \nonumber\\
+ &= \prod_{j=1}^{J}~\int_{\Re^{4}}
+    \Bigg\{
+    \underbrace{\prod_{i=1}^{n_{j}}~\prod_{t=1}^{n_{ij}}
+    \Bigg(
+    \frac{(\sum_{k=1}^{K}y_{kijt})!}{y_{1ijt}!~y_{2ijt}!~y_{3ijt}!}~
+    \prod_{k=1}^{K} p_{kijt}^{y_{kijt}}
+    \Bigg)}_{\substack{\text{\color{UniBlue}{fixed effect component}}}}
+  \Bigg\}\times\nonumber\\
+ &\hspace{2cm}\underbrace{
+   (2\pi)^{-2} |\Sigma|^{-1/2} \exp
+   \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
+   }_{\substack{\text{\color{UniBlue}{latent effect component}}}}
+   \text{d}\bm{r}_{j}\nonumber\\
+ &= \prod_{j=1}^{J}~\int_{\Re^{4}}
+    \Bigg\{
+    \underbrace{\prod_{i=1}^{n_{j}}~\prod_{t=1}^{n_{ij}}
+    \prod_{k=1}^{K} p_{kijt}^{y_{kijt}}
+    }_{\substack{\color{UniBlue}{\text{fixed effect}}}}
+   \Bigg\}\underbrace{
+   (2\pi)^{-2} |\Sigma|^{-1/2} \exp
+   \left\{-\frac{1}{2}\bm{r}_{j}^{\top} \Sigma^{-1} \bm{r}_{j}\right\}
+   }_{\substack{\color{UniBlue}{\text{latent effect component}}}}
+   \text{d}\bm{r}_{j}\label{eq:loglik},
+\end{align}
+with \(p_{kijt}\) from Equation \ref{eq:model} and where \(\bm{\theta} =
+[\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~ \bm{\rho}]^{\top}\) is
+the parameters vector.
+
+# TMB: Template Model Builder
+
+### TMB: Template Model Builder
+
+\includegraphics[height=0.5cm]{logo/book.png}
+@TMB.
+
+\bigskip
+> An R [@R21] package for the quickly implementation of complex random
+> effect models through simple C++ templates.
+
+\begin{block}{Workflow}
+ \begin{enumerate}
+  \item Write your objective function in a \texttt{.cpp} through a
+        \texttt{\#include <TMB.hpp>};
+
+  \vspace{0.15cm}
+  \item Compile and load it in R via \texttt{TMB::compile()} and
+        \texttt{base::dyn.load(TMB::dynlib())};
+
+  \vspace{0.15cm}
+  \item Compute your objective function derivatives with
+        \texttt{obj <- TMB::MakeADFun()};
+
+  \vspace{0.15cm}
+  \item Perform the model fitting,
+        \texttt{opt <- base::nlminb(obj\$par, obj\$fn, obj\$gr)};
+
+  \vspace{0.15cm}
+  \item Compute the parameters standard deviations,
+        \texttt{TMB::sdreport(obj)}.
+ \end{enumerate}
+\end{block}
+
+### TMB: Template Model Builder
+
+Key features:
+\begin{multicols}{2}
+ \begin{enumerate}
+  \item Automatic differentiation;\newline
+        \textit{The state-of-art in derivatives computation}
+  \item Laplace approximation.\newline
+        \textit{An efficient fashion to approximate the latent effect
+                integrals}
+ \end{enumerate}
+\end{multicols}
+
+\begin{columns}
+ \column{3.5cm}
+  A code example:
+ \column{11.5cm}
+  \includegraphics[height=4cm]{logo/mixedlogistic_parallel.png}
+\end{columns}
+
+\includegraphics[height=0.5cm]{logo/book.png}
+For details about TMB, AD, and Laplace approximation: @laurence.
+
+# Simulation study
+
+### Simulation study model designs
+
+\begin{columns}
+ \column{5.75cm}
+  \begin{block}{Risk model}
+   Latent effects only on the risk level i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{u_{1}}^{2} & \text{cov}_{u_{1}, u_{2}}\\
+                                 & \sigma_{u_{2}}^{2}
+             \end{bmatrix}.
+   \]
+  \end{block}
+ \column{5.75cm}
+  \begin{block}{Time model}
+   Latent effects only on the failure time trajectory level i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
+                                    & \sigma_{\eta_{2}}^{2}
+              \end{bmatrix}.
+   \]
+  \end{block}
+\end{columns}
+
+\begin{columns}
+ \column{7cm}
+  \begin{block}{Block-diag model}
+   Latent effects on the risk and time levels without cross-correlations
+   i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{u_{1}}^{2} & \text{cov}_{u_{1}, u_{2}} & 0 & 0\\
+              & \sigma_{u_{2}}^{2} & 0 & 0\\
+              & & \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
+              & & & \sigma_{\eta_{2}}^{2}
+             \end{bmatrix}.
+   \]
+  \end{block}
+ \column{7cm}
+  \begin{block}{Complete model}
+   A \textit{complete} latent effects structure\newline
+   i.e.,
+   \[
+    \Sigma = \begin{bmatrix}
+              \sigma_{u_{1}}^{2} &
+              \text{cov}_{u_{1}, u_{2}} &
+              \text{cov}_{u_{1}, \eta_{1}} & \text{cov}_{u_{1}, \eta_{2}}\\
+              & \sigma_{u_{2}}^{2} &
+              \text{cov}_{u_{2}, \eta_{1}} & \text{cov}_{u_{2}, \eta_{2}}\\
+              & & \sigma_{\eta_{1}}^{2} & \text{cov}_{\eta_{1}, \eta_{2}}\\
+              & & & \sigma_{\eta_{2}}^{2}
+              \end{bmatrix}.
+   \]
+  \end{block}
+\end{columns}
+
+### Simulation study setup
+
+\vspace{-0.3cm}
+\begin{description}
+ \item[Four] latent effects structures:
+  \begin{multicols}{4}
+   \begin{enumerate}
+    \item Risk model;
+    \item Time model;
+    \item Block-diag model;
+    \item Complete model.
+   \end{enumerate}
+  \end{multicols}
+ \vspace{-0.6cm}
+ \item[Two] CIF configurations:
+  \begin{multicols}{2}
+   \begin{description}
+    \item[Low] max incidence \(\approx 0.15\);
+    \item[High] max incidence \(\approx 0.60\).
+   \end{description}
+  \end{multicols}
+\end{description}
+
+\vspace{-0.3cm}
+For each of those \({\color{UniBlue}{\bm{4}}} \times
+{\color{UniBlue}{\bm{2}}} = {\color{UniBlue}{\bm{8}}}\) scenarios, we
+vary the sample and cluster sizes:
+
+\vspace{-0.2cm}
+\begin{columns}
+ \column{5cm}
+  \begin{align*}
+   &\textbf{\textit{\color{UniBlue}{5000 data points}}}\\
+   \bullet~&\text{2500 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
+   \bullet~&\text{1000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
+   \bullet~&\text{500 clusters of}~\textbf{\color{UniBlue}{size 10}}.
+  \end{align*}
+ \column{5cm}
+  \begin{align*}
+   &\textbf{\textit{\color{UniBlue}{30000 data points}}}\\
+   \bullet~&\text{15000 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
+   \bullet~&\text{6000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
+   \bullet~&\text{3000 clusters of}~\textbf{\color{UniBlue}{size 10}}.
+  \end{align*}
+ \column{5cm}
+  \begin{align*}
+   &\textbf{\textit{\color{UniBlue}{60000 data points}}}\\
+   \bullet~&\text{30000 clusters of}~\textbf{\color{UniBlue}{size 2}};\\
+   \bullet~&\text{12000 clusters of}~\textbf{\color{UniBlue}{size 5}};\\
+   \bullet~&\text{6000 clusters of}~\textbf{\color{UniBlue}{size 10}}.
+  \end{align*}
+\end{columns}
+
+\vspace{-0.1cm}
+\begin{block}{}
+\({\color{UniBlue}{\bm{8}}} \times {\color{UniBlue}{\bm{3}}}
+\times {\color{UniBlue}{\bm{3}}} = {\color{UniBlue}{\bm{72}}}\)
+scenarios.\newline
+For each scenario, we simulate \(\color{UniBlue}{\bm{500}}\) samples.
+\({\color{UniBlue}{\bm{72}}} \times
+{\color{UniBlue}{\bm{500}}} = {\color{UniBlue}{\bm{36000}}}\) model
+fittings.
+\end{block}
+
+### Simulation study results
+
+First of all, the **time**.
+
++ The *non-complete* models (2D Laplace aprox.) are kind of fast,\newline
+  taking always **less than 5 min**.
+
++ In the most expensive scenarios (30K 4D Laplaces),\newline
+  **the complete model takes 30 min**.\newline
+  In a **full R** implementation with 10K 4D Laplaces, it **took
+  30hrs**. \textcolor{UniBlue}{\textbf{TMB is fast}}.
+ 
++ We also did a Bayesian analysis via Stan/NUTS-HMC [@RStan].
+
+  - **1 week of parallelized processing** for a 2500 size 2 clusters
+    scenario with tuned NUTS. This just reinforces the MCMC
+    impracticability for some complex models.
+
+**Parameters estimation**.
+
++ The *non-complete* models fail to learn the data.\newline
+  They appear to be *not structured enough* to capture the data
+  characteristics.
+
+### Simulation study results: High CIF scenario
+
+\vspace{-0.3cm}
+\includegraphics[height=8cm]{../../THESIS/thesis/figures/cifsaqua-1.png}
+
+### Simulation study results: Low CIF scenario
+
+\vspace{-0.3cm}
+\includegraphics[height=8cm]{../../THESIS/thesis/figures/cifsaqua-2.png}
+
+# Conclusion
+
+### Take-home message
+
+\vspace{-0.4cm}
+\begin{minipage}{12.25cm}
+ \begin{block}{}
+  \textbf{The complete model works}.
+  \vspace{0.2cm}
+  \begin{enumerate}
+   \item It works better in the high CIF scenarios;
+   \vspace{0.15cm}
+   \item As expected, as the sample size increases the results get
+         better;
+   \vspace{0.15cm}
+   \item We do not see any considerable performance difference between
+         cluster/family sizes;
+   \vspace{0.15cm}
+   \item Satisfactory full likelihood analysis under the maximum
+         likelihood estimation framework.
+   \end{enumerate}
+ \end{block}
+\end{minipage}
+\vspace{0.1cm}
+What else can we do?
+
+1. We can try a marginal approach e.g., an McGLM [@mcglm];
+
+2. We can also try a copula [@copulas], on maybe two fronts:\newline 1)
+   for a full specification; 2) to accommodate the within-cluster
+   dependence.
+
+\includegraphics[height=0.5cm]{logo/book.png}
+For more read @laurence master thesis.
+
+### Thanks for watching and have a great day
+
+\vspace{0.5cm}
+Special thanks to
+
+\bigskip
+\begin{columns}
+ \column{1.5cm}
+  \centering\includegraphics{logo/ppgmne-logo.png}
+ \column{13.75cm}
+  {\large \textbf{PPGMNE}}\newline
+  Programa de Pós-Graduação em\newline
+  Métodos Numéricos em Engenharia
+\end{columns}
+
+\bigskip
+\begin{columns}
+ \column{2cm}
+  \includegraphics[height=2cm]{logo/capes.jpg}
+ \column{3cm}
+  \includegraphics[height=2cm]{logo/ufpr.png}
+ \column{4.5cm}
+  Joint work with
+  \vspace{0.2cm}\newline
+  Wagner H. Bonat\newline
+  \url{http://leg.ufpr.br/~wagner}
+ \column{4.75cm}
+  \textcolor{white}{Joint work with}
+  \vspace{0.2cm}\newline
+  Paulo Justiniano Ribeiro Jr.\newline
+  \url{http://leg.ufpr.br/~paulojus}
+\end{columns}
+
+\vspace{1.5cm}
+\begin{columns}
+ \column{10cm}
+ \column{5cm}
+  \includegraphics[height=0.3cm,angle=90]{../../laurence.jpg}
+  \hspace{0.05cm}
+  \href{https://henriquelaureano.github.io}{henriquelaureano.github.io}
+\end{columns}
+
+# References
+
+### References
+
+\scriptsize
