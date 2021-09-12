@@ -339,53 +339,22 @@ the parameters vector.
 > An R [@R21] package for the quickly implementation of complex random
 > effect models through simple C++ templates.
 
-\begin{block}{Workflow}
- \begin{enumerate}
-  \item Write your objective function in a \texttt{.cpp} through a
-        \texttt{\#include <TMB.hpp>};
-
-  \vspace{0.15cm}
-  \item Compile and load it in R via \texttt{TMB::compile()} and
-        \texttt{base::dyn.load(TMB::dynlib())};
-
-  \vspace{0.15cm}
-  \item Compute your objective function derivatives with
-        \texttt{obj <- TMB::MakeADFun()};
-
-  \vspace{0.15cm}
-  \item Perform the model fitting,
-        \texttt{opt <- base::nlminb(obj\$par, obj\$fn, obj\$gr)};
-
-  \vspace{0.15cm}
-  \item Compute the parameters standard deviations,
-        \texttt{TMB::sdreport(obj)}.
- \end{enumerate}
-\end{block}
-
-\vspace{-0.2cm}
-\begin{columns}
- \column{1.5cm}
+\bigskip
 Key features:
- \column{13.5cm}
-\begin{multicols}{2}
- \begin{enumerate}
-  \item Automatic differentiation;\newline
-        \textit{The state-of-art in derivatives computation}
-  \item Laplace approximation.\newline
-        \textit{An efficient fashion to approximate the latent effect
-                integrals}
- \end{enumerate}
-\end{multicols}
-\end{columns}
+
+1. Automatic differentiation;\newline
+   \textit{The state-of-art in derivatives computation}
+
+2. Laplace approximation.\newline
+   \textit{An efficient fashion to approximate the latent effect
+           integrals}
+
 
 # Simulation study
 
 ### Simulation study results
 
 First of all, the **time**.
-
-+ The *non-complete* models (2D Laplace aprox.) are kind of fast,\newline
-  taking always **less than 5 min**.
 
 + In the most expensive scenarios (30K 4D Laplaces),\newline
   **the complete model takes 30 min**.\newline
@@ -398,6 +367,7 @@ First of all, the **time**.
     scenario with tuned NUTS. This just reinforces the MCMC
     impracticability for some complex models.
 
+\bigskip
 **Parameters estimation**.
 
 + The *non-complete* models fail to learn the data.\newline
