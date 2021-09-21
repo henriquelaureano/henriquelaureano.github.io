@@ -6,27 +6,23 @@
 [CV](vitae.pdf) |
 [LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/)
 
-Hi! I'm a brazilian from [Curitiba](https://goo.gl/K1Qcdv), Statistician
-(BSc in Statistics @ [UFPR](https://goo.gl/DtVAbi), 2016) and MSc
-student in Numerical Methods in Engineering @ UFPR under the guidance of
-Professor [Wagner Bonat](http://www.leg.ufpr.br/~wagner/) and Professor
-[Paulo Justiniano](http://leg.ufpr.br/~paulojus/).
+Hi! I'm a brazilian Statistician from [Curitiba](https://goo.gl/K1Qcdv),
+holding a BSc in Statistics (2016) and a MSc in Statistical
+Methods/Numerical Methods in Engineering (2021), both @
+[UFPR](https://goo.gl/DtVAbi).
 
 I work as a Statistician in the [Pele Pequeno Príncipe Research
 Institute](http://www.pelepequenoprincipe.org.br/), part of the Pequeno
 Príncipe Complex. Pequeno Príncipe Hospital is the largest exclusively
 pediatric hospital in Brazil.
 
-What am I doing right now? (Aug 21)
+You may take a look [here](THESIS/thesis/thesis.pdf) at my master thesis
+and [here](THESIS/aqua/slides.pdf)(
+    [.Rmd](THESIS/aqua/slides.Rmd) |
+    [in_header file](THESIS/aqua/beamerheader.txt) |
+    [TikZ style](THESIS/aqua/tikzit.sty)) at the defense slides.
 
-+ The [master thesis](THESIS/thesis/thesis.pdf) is *ready*,
-  waiting for the defense;
-
-+ Master thesis defense slides are ready\
-  [pdf](THESIS/aqua/slides.pdf)
-  ([.Rmd](THESIS/aqua/slides.Rmd) |
-   [in_header file](THESIS/aqua/beamerheader.txt) |
-   [TikZ style](THESIS/aqua/tikzit.sty));
+What am I doing right now? (Sep 21)
 
 + Reading
   [Physics and Beyond](https://en.wikipedia.org/wiki/Physics_and_Beyond),
@@ -45,7 +41,7 @@ What am I doing right now? (Aug 21)
       [Presentations](presentations/) |
       [Papers](papers/)</span>
 
-## News (Aug 21, both in the same week!)
+## News (Aug 21)
 
 Accepted in
 [Statistical Methods in Medical Research](https://journals.sagepub.com/home/smm):
