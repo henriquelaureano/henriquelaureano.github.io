@@ -21,6 +21,11 @@ look [here](THESIS/thesis/thesis.pdf) at my thesis and [here
 file](THESIS/aqua/beamerheader.txt) | [TikZ
 style](THESIS/aqua/tikzit.sty)) at the defense slides.
 
+My main research interests lie in computational statistics and
+statistical modeling through GLMMs, estimation equations, and bayesian
+and likelihood-based methods. Besides the theoretical background, I love
+to analyze data and make pretty and useful visualizations.
+
 What am I doing right now? (Sep 21)
 
 + Reading
@@ -40,7 +45,7 @@ What am I doing right now? (Sep 21)
       [Presentations](presentations/) |
       [Papers](papers/)</span>
 
-## News (Aug 21)
+## News
 
 Accepted in
 [Statistical Methods in Medical Research](https://journals.sagepub.com/home/smm):
