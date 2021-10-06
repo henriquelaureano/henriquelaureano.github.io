@@ -132,3 +132,6 @@
 <img src='metro.jpg'>
 <img src='godzilla.gif'>
 <img src='somelife.jpg'>
+<img src='change.jpg'>
+<img src='killbill.gif'>
+<img src='jasonmood.jpg'>
