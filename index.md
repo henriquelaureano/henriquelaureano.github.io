@@ -26,7 +26,7 @@ statistical modeling through GLMMs, estimation equations, and bayesian
 and likelihood-based methods. Besides the theoretical background, I love
 to analyze data and make pretty and useful visualizations.
 
-What am I doing right now? (Sep 21)
+What am I doing right now? (Oct 21)
 
 + Reading
   [Physics and Beyond](https://en.wikipedia.org/wiki/Physics_and_Beyond),
