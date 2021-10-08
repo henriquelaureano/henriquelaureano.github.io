@@ -66,3 +66,22 @@
 + [15min](http://leg.ufpr.br/~henrique/presentations/videos/15min.mp4)
   ([slides](videos/15min.pdf)),
   approaching the developed methodology
+
+***
+
+### [2021-09-09] TMB Tutorial
+
+> TMB tutorial presented @ [3o R Day](http://rday.leg.ufpr.br/)
+
++ [Slides](http://leg.ufpr.br/~henrique/TMBtutorial/slides.pdf) |
+  [GitHub repository](https://github.com/henriquelaureano/TMBtutorial) |
+  [Youtube](https://www.youtube.com/watch?v=a1XfzEow6Hc)
+
+***
+
+### [2021-09-13] Presentation at the [Statistics' academic week @ UFPR](https://pet.leg.ufpr.br/semana/)
+
+> Master thesis work
+
++ [Slides](semanest21/slides.pdf) |
+  [Youtube](https://www.youtube.com/watch?v=WV_hxUTAAOQ&t=882s)
