@@ -39,11 +39,17 @@
 \maketitle
 \thispagestyle{empty}
 
-%\vfill
+\vfill
 \noindent \horrule{.5pt} \vspace{-.95cm} \tableofcontents \noindent \horrule{.5pt}
 
 \section*{Coefficients}
 \addcontentsline{toc}{section}{Coefficients}
+
+Based on the fitted model parameters, the predicted values were obtained
+for four different profiles focused on four different features:
+pesticides reduction, unbreakable contract, penalization, and contract
+length. The variables that compose each profile can be accessed on the
+right table of \autoref{fig:spider}.
 
 \begin{figure}[H]
  \centering
@@ -54,12 +60,16 @@
 \end{figure}
 
 With \autoref{fig:spider} and \autoref{fig:spiders}, we see a clear
-difference between the profiles, showing the impact of changing even
-just a few features in a profile, in terms of model coefficients. Each
-profile is highlighted in one direction/variable. In
+difference between the profiles, showing that even with each profile
+being built by a considerable number of features, each of those features
+is relevant - given the considerable differences obtained in terms of
+predicted values from one profile to another. Each profile is
+highlighted in one direction/variable, which also shows that based on
+those four profiles we are able to virtually reach all possible
+spectrums since we basically reach all vertices of the spider chart. In
 \autoref{fig:spider} we see all of them together, and in
-\autoref{fig:spiders}, side=by-side. In three of the four variables,
-profile 4 presents the most extreme coefficients.
+\autoref{fig:spiders}, side=by-side. In three of the four features,
+profile 4 presents the most extreme values.
 
 \begin{figure}[H]
  \centering
@@ -72,6 +82,11 @@ profile 4 presents the most extreme coefficients.
 \section*{WTA profit}
 \addcontentsline{toc}{section}{WTA profit}
 
+In \autoref{fig:spider_wta} and \autoref{fig:spiders_wta}, we now look
+at the WTA profits per feature and profile. We can still see clear
+differences between the profiles, with each one highlighting a different
+feature. Again, the most extremes values are obtained with profile 4.
+
 \begin{figure}[H]
  \centering
  \includegraphics[width=\textwidth]{figures/spider_wta.pdf}\\
@@ -79,11 +94,6 @@ profile 4 presents the most extreme coefficients.
           frequent profiles and their WTA profits}
  \label{fig:spider_wta}
 \end{figure}
-
-In \autoref{fig:spider_wta} and \autoref{fig:spiders_wta}, we now look
-at the WTA profits per variable and profile. We can still see clear
-differences between the profiles, with each one highlighting a different
-variable. Again, the most extremes values are obtained with profile 4.
 
 \begin{figure}[H]
  \centering
@@ -96,19 +106,35 @@ variable. Again, the most extremes values are obtained with profile 4.
 \section*{Scenarios}
 \addcontentsline{toc}{section}{Scenarios}
 
-In \autoref{fig:scenarios}, we have the cost for each of the four
-profiles in six different scenarios. We see that depending on the
-scenario, the profiles behaviors vary considerably, being very difficult
-to state any pattern.
+In \autoref{fig:scenarios}, we have the total amount to be payed in each
+of the four profiles in six different scenarios. We see that the
+profiles behaviors are not the same, varying depending on the scenario
+and turning out to be very difficult to state any clear pattern besides
+the fact that scenario 11 present the biggest general amounts, and that
+scenario 9 presents the general smallest.
 
 \begin{figure}[H]
  \centering
- \includegraphics[width=0.85\textwidth]{figures/scenarios.pdf}\\
- \caption{Scenarios per the four most frequent profiles}
+ \includegraphics[width=0.875\textwidth]{figures/scenarios.pdf}\\
+ \caption{Total amount to be payed for six different scenarios and four
+          profiles}
  \label{fig:scenarios}
 \end{figure}
 
 \section*{Model formula}
 \addcontentsline{toc}{section}{Model formula}
+
+\begin{align*}
+ \texttt{Profile 1}_{~\texttt{Pesticides reduction}}
+ &= -0.04568\\
+ &+ 0.0004559 \times \texttt{\textit{Average} Age}\\
+ &- 0.000001664 \times \texttt{\textit{Average} Annual pesticides application}\\
+ %% &+ \beta \times \texttt{Decision maker \textit{C}}\\
+ &- 0.0003879 \times \texttt{\textit{Average} Education level}\\
+ &- 0.00239 \times \texttt{\textit{Average} Income}%%\\
+ %% &+ \beta \times \texttt{\textit{Agriculture} Land use}\\
+ %% &+ \beta \times \texttt{\textit{Medium/Big} Property surface}\\
+ %% &+ \beta \times \texttt{\textit{Piriripau} Region}
+\end{align*}
 
 \end{document}

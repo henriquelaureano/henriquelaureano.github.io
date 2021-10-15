@@ -298,7 +298,12 @@ dat_scenarios <-
                          2111.947, 4858.871, 5615.085, 2228.263, 
                          2211.921, 7227.960, 6937.716, 2117.705, 
                          2003.5255, 4186.2770, 1074.9662, 3456.8206))
-
+dat_scenarios <-
+    dplyr::mutate(
+               dat_scenarios, 
+               scenario=haven::as_factor(scenario),
+               description=haven::as_factor(description)
+           )
 pdf(file='figures/scenarios.pdf', width=7.5, height=9)
 ggplot(dat_scenarios, aes(x=amount, y=profile, fill=description))+
     geom_bar(stat='identity', alpha=0.75)+
