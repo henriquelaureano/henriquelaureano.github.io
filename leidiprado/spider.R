@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2021-out-13 · Curitiba/PR/Brazil
+##                                      2021-out-15 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
@@ -32,7 +32,7 @@ datatable <-
                        'Average', 'Mode', 'Max', 'Average'
                    ),
                    'Education\nlevel'=c(
-                       'Average', 'Max', 'Model', 'Average'
+                       'Average', 'Max', 'Mode', 'Average'
                    ),
                    'Annual\npesticides\napplication'=c(
                        'Average', 'Average', 'Min', 'Max'
@@ -292,12 +292,14 @@ dat_scenarios <-
                                'Scenario 23\nProg 2',
                                'Scenario 09\nProg 2'), each=4),
                 description=rep(descs, each=4),
-                amount=c(5799.4126, 6979.0008, 4237.4410, 8880.2215,
-                         838.7163, 5822.2688, 6647.5656, -165.7692, 
-                         3510.7372, 4636.182, 3753.858, 5074.432, 
-                         2111.947, 4858.871, 5615.085, 2228.263, 
-                         2211.921, 7227.960, 6937.716, 2117.705, 
-                         2003.5255, 4186.2770, 1074.9662, 3456.8206))
+                amount=c(
+                    5799.4126, 6979.0008, 4237.4410, 8880.2215,
+                    838.7163, 5822.2688, 6647.5656, -165.7692, 
+                    3510.7372, 4636.182, 3753.858, 5074.432, 
+                    2111.947, 4858.871, 5615.085, 2228.263, 
+                    2211.921, 7227.960, 6937.716, 2117.705, 
+                    2003.5255, 4186.2770, 1074.9662, 3456.8206
+                )-497.885897)
 dat_scenarios <-
     dplyr::mutate(
                dat_scenarios, 
@@ -308,10 +310,11 @@ pdf(file='figures/scenarios.pdf', width=7.5, height=9)
 ggplot(dat_scenarios, aes(x=amount, y=profile, fill=description))+
     geom_bar(stat='identity', alpha=0.75)+
     geom_text(aes(label=round(amount, 2)),
-              fontface='bold', size=4, hjust=-0.2)+
+              fontface='bold', size=4,
+              hjust=c(rep(-0.1, 7), -0.75, rep(-0.1, 16)))+
     facet_grid(scenario ~ ., scales='free', space='free')+
     scale_x_continuous(
-        expand=c(0, 0), breaks=NULL, limits=c(-175, 10500)
+        expand=c(0, 0), breaks=NULL, limits=c(-675, 9750)
     )+
     labs(title='Scenarios')+
     scale_fill_viridis_d()+
