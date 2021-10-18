@@ -208,15 +208,16 @@
   COMPETING RISKS DATA: A MULTINOMIAL GLMM APPROACH}
 \autor{HENRIQUE APARECIDO LAUREANO}
 \data{2021}
-\instituicao{FEDERAL UNIVERSITY OF PARANÁ}
+\instituicao{UNIVERSIDADE FEDERAL DO PARAN\'{A}}
 \orientador{Prof. PhD Wagner Hugo Bonat}
 \coorientador{Prof. PhD Paulo Justiniano Ribeiro Jr}
 \tipotrabalho{Dissertação (mestrado)}
-\preambulo{\small{Thesis presented to the Graduate Program of Numerical
-    Methods in Engineering, Concentration Area in Mathematical
-    Programming: Statistical Methods, Federal University of Paran\'{a},
-    as part of the requirements to the obtention of the Master's Degree
-    in Sciences.}}
+\preambulo{\small{Disserta\c{c}\~{a}o apresentada ao Curso de
+    P\'{o}s-Gradua\c{c}\~{a}o em M\'{e}todos Num\'{e}ricos em
+    Engenharia, \'{A}rea de Concentra\c{c}\~{a}o em Programa\c{c}\~{a}o
+    Matem\'{a}tica: M\'{e}todos Est\'{a}tisticos, Universidade Federal
+    do Paran\'{a}, como parte das exig\^{e}ncias para a
+    obten\c{c}\~{a}o do t\'{i}tulo de Mestre em Ci\^{e}ncias.}}
 % ----------------------------------------------------------------------
 % informações do PDF
 \makeatletter
@@ -244,8 +245,8 @@
   \renewcommand{\anexosname}{Annex}
   \renewcommand{\apendicename}{APPENDIX}
   \renewcommand{\apendicesname}{Appendix}
-  \renewcommand{\orientadorname}{Supervisor:}
-  \renewcommand{\coorientadorname}{Co-supervisor:}
+  \renewcommand{\orientadorname}{Orientador:}
+  \renewcommand{\coorientadorname}{Coorientador:}
   \renewcommand{\folhadeaprovacaoname}{Approval}
   \renewcommand{\resumoname}{Abstract}
   \renewcommand{\listadesiglasname}{List of abbreviations and acronyms}
@@ -292,9 +293,9 @@
 % ----------------------------------------------------------------------
 % ficha catalográfica
 
-% \begin{fichacatalografica}
-%   \includepdf{ficha.pdf}
-% \end{fichacatalografica}
+\begin{fichacatalografica}
+ \includepdf{ficha.pdf}
+\end{fichacatalografica}
 % ----------------------------------------------------------------------
 % inserir folha de aprovação
 \begin{folhadeaprovacao}
@@ -373,66 +374,6 @@
 \setlength{\abstitleskip}{1cm} % adiciona mais um cm após o 'titulo' do
                                % resumo para ficar com 2cm
 \begin{resumo}[]
-  \vspace{-2cm}
-  \begin{center}
-    \bfseries{\large{\textsf{ABSTRACT}}}
-  \end{center}
-  \vspace{0.3cm}
-  
-  Clustered competing risks data is a special case of failure time
-  data. Besides the cluster structure which implies a latent
-  within-cluster dependence between its elements, this kind of data is
-  characterized by 1) multiple causes/variables competing to be the one
-  responsible for the occurrence of an event, a failure; and 2)
-  censorship, when the event of interest does not happen in the study
-  period, or it happens by a different cause. To handle this type of
-  data, we propose a generalized linear mixed model (GLMM) i.e., a
-  latent-effects framework, instead of a usual survival model. In
-  survival analysis, the modeling is usually done by means of the hazard
-  rate, and the within-cluster dependence accommodation ends by
-  generating a complicated likelihood function, sometimes
-  intractable. We, on the other hand, model the clustered competing
-  causes in the probability scale, in terms of the cumulative incidence
-  function (CIF) of each competing cause. In our framework, we suppose a
-  multinomial probability distribution for the competing causes and
-  censorship, conditioned on the latent effects. The latent effects are
-  accommodated via a multivariate Gaussian distribution and are modeled
-  by the parameters of its covariance matrix. The probability
-  distributions are connected via CIF, modeled here following
-  \citeonline{SCHEIKE} specification, based on its decomposition as the
-  product of an instantaneous risk level function with a trajectory time
-  level function. The latent effects are inserted in both functions. To
-  make the model parameters estimation the most efficient as possible,
-  we use the template model builder (TMB) \cite{TMB}. With this
-  \texttt{R} \cite{R21} package, we have 1) the log-likelihood function
-  written in \texttt{C++}; 2) access to efficient linear algebra
-  libraries; 3) efficient Laplace approximation implementation for the
-  latent-effects; and 4) an automatic differentiation (AD) routine, the
-  state-of-the-art in derivatives computation. To check the model
-  performance a large simulation study is performed, based on different
-  latent structure formulations, with the aim to verify which one is the
-  most adequate to real scenarios. The model presents to be of difficult
-  estimation, with our results converging to a latent structure where
-  the risk and trajectory time levels are correlated. The smallest
-  parameter estimates biases are found in scenarios with high CIF, but
-  the estimates present an excessive variance, showing that improvements
-  are necessary.
-
-  \vfill
-  \textbf{Keywords}: Clustered competing risks.
-                     Within-cluster dependence.
-                     Multinomial generalized linear mixed model (GLMM).
-                     TMB: Template Model Builder.
-                     Laplace approximation.
-                     Automatic differentiation (AD).
-\end{resumo}
-% ----------------------------------------------------------------------
-\newpage
-\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do
-                             % resumo
-\setlength{\abstitleskip}{1cm} % adiciona mais um cm após o 'titulo' do
-                               % resumo para ficar com 2cm
-\begin{resumo}[]
   \begin{otherlanguage*}{brazil}
     \vspace{-2cm}
     \begin{center}
@@ -497,6 +438,66 @@
                              Aproxima\c{c}\~{a}o de Laplace.
                              Diferencia\c{c}\~{a}o autom\'{a}tica.
   \end{otherlanguage*}
+\end{resumo}
+% ----------------------------------------------------------------------
+\newpage
+\setlength{\absparsep}{18pt} % ajusta o espaçamento dos parágrafos do
+                             % resumo
+\setlength{\abstitleskip}{1cm} % adiciona mais um cm após o 'titulo' do
+                               % resumo para ficar com 2cm
+\begin{resumo}[]
+  \vspace{-2cm}
+  \begin{center}
+    \bfseries{\large{\textsf{ABSTRACT}}}
+  \end{center}
+  \vspace{0.3cm}
+  
+  Clustered competing risks data is a special case of failure time
+  data. Besides the cluster structure which implies a latent
+  within-cluster dependence between its elements, this kind of data is
+  characterized by 1) multiple causes/variables competing to be the one
+  responsible for the occurrence of an event, a failure; and 2)
+  censorship, when the event of interest does not happen in the study
+  period, or it happens by a different cause. To handle this type of
+  data, we propose a generalized linear mixed model (GLMM) i.e., a
+  latent-effects framework, instead of a usual survival model. In
+  survival analysis, the modeling is usually done by means of the hazard
+  rate, and the within-cluster dependence accommodation ends by
+  generating a complicated likelihood function, sometimes
+  intractable. We, on the other hand, model the clustered competing
+  causes in the probability scale, in terms of the cumulative incidence
+  function (CIF) of each competing cause. In our framework, we suppose a
+  multinomial probability distribution for the competing causes and
+  censorship, conditioned on the latent effects. The latent effects are
+  accommodated via a multivariate Gaussian distribution and are modeled
+  by the parameters of its covariance matrix. The probability
+  distributions are connected via CIF, modeled here following
+  \citeonline{SCHEIKE} specification, based on its decomposition as the
+  product of an instantaneous risk level function with a trajectory time
+  level function. The latent effects are inserted in both functions. To
+  make the model parameters estimation the most efficient as possible,
+  we use the template model builder (TMB) \cite{TMB}. With this
+  \texttt{R} \cite{R21} package, we have 1) the log-likelihood function
+  written in \texttt{C++}; 2) access to efficient linear algebra
+  libraries; 3) efficient Laplace approximation implementation for the
+  latent-effects; and 4) an automatic differentiation (AD) routine, the
+  state-of-the-art in derivatives computation. To check the model
+  performance a large simulation study is performed, based on different
+  latent structure formulations, with the aim to verify which one is the
+  most adequate to real scenarios. The model presents to be of difficult
+  estimation, with our results converging to a latent structure where
+  the risk and trajectory time levels are correlated. The smallest
+  parameter estimates biases are found in scenarios with high CIF, but
+  the estimates present an excessive variance, showing that improvements
+  are necessary.
+
+  \vfill
+  \textbf{Keywords}: Clustered competing risks.
+                     Within-cluster dependence.
+                     Multinomial generalized linear mixed model (GLMM).
+                     TMB: Template Model Builder.
+                     Laplace approximation.
+                     Automatic differentiation (AD).
 \end{resumo}
 % ----------------------------------------------------------------------
 \pdfbookmark[0]{\listfigurename}{lof}
