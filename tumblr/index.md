@@ -135,3 +135,16 @@
 <img src='change.jpg'>
 <img src='killbill.gif'>
 <img src='jasonmood.jpg'>
+<img src='todayisawadog.jpg'>
+<img src='mike.jpg'>
+<img src='akiss.jpg'>
+<img src='cavalos.jpg'>
+<img src='houseintheocean.png'>
+<img src='dbz.gif'>
+<img src='houseentrance.jpg'>
+<img src='doginlava.jpg'>
+<img src='sale.jpg'>
+<img src='japonesevibe.gif'>
+<img src='view.jpg'>
+<img src='nowherehouse.jpg'>
+<img src='bart.jpg'>
