@@ -140,10 +140,8 @@
 <img src='akiss.jpg'>
 <img src='cavalos.jpg'>
 <img src='houseintheocean.png'>
-<img src='dbz.gif'>
 <img src='houseentrance.jpg'>
 <img src='doginlava.jpg'>
-<img src='sale.jpg'>
 <img src='japonesevibe.gif'>
 <img src='view.jpg'>
 <img src='nowherehouse.jpg'>
