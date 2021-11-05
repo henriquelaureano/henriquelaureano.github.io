@@ -1721,7 +1721,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">TCR</h1>
 <h4 class="author">Jessica Sayume, Jessica Alves e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2021-10-31 17:00:49</h4>
+<h4 class="date"><em>Last modification on</em> 2021-11-05 13:01:57</h4>
 
 </div>
 
@@ -1755,27 +1755,27 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
--1.794
+0.181
 </td>
 <td style="text-align:right;">
-2.246
+0.330
 </td>
 <td style="text-align:right;">
--0.799
+0.550
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.424
+0.582
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-DVA_S1_N22
+DVA_S1_N21
 </td>
 <td style="text-align:right;">
 -2.077
 </td>
 <td style="text-align:right;">
-1.118
+1.117
 </td>
 <td style="text-align:right;">
 -1.859
@@ -1786,7 +1786,7 @@ DVA_S1_N22
 </tr>
 <tr>
 <td style="text-align:left;">
-ABNM_S1_N22
+ABNM_S1_N21
 </td>
 <td style="text-align:right;">
 0.465
@@ -1798,21 +1798,21 @@ ABNM_S1_N22
 0.461
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.645
+0.644
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-NORA_S1_N22
+NORA_S1_N21
 </td>
 <td style="text-align:right;">
 2.037
 </td>
 <td style="text-align:right;">
-1.102
+1.101
 </td>
 <td style="text-align:right;">
-1.849
+1.850
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.064
@@ -1820,7 +1820,7 @@ NORA_S1_N22
 </tr>
 <tr>
 <td style="text-align:left;">
-EPINEFRINA_S1_N22
+EPINEFRINA_S1_N21
 </td>
 <td style="text-align:right;">
 1.763
@@ -1837,7 +1837,7 @@ EPINEFRINA_S1_N22
 </tr>
 <tr>
 <td style="text-align:left;">
-VASO_S1_N22
+VASO_S1_N21
 </td>
 <td style="text-align:right;">
 -0.314
@@ -1854,7 +1854,7 @@ VASO_S1_N22
 </tr>
 <tr>
 <td style="text-align:left;">
-ATRAC_S1_N22
+ATRAC_S1_N21
 </td>
 <td style="text-align:right;">
 -0.353
@@ -1871,13 +1871,13 @@ ATRAC_S1_N22
 </tr>
 <tr>
 <td style="text-align:left;">
-CISATRAC_S1_N22
+CISATRAC_S1_N21
 </td>
 <td style="text-align:right;">
 0.331
 </td>
 <td style="text-align:right;">
-1.040
+1.039
 </td>
 <td style="text-align:right;">
 0.319
@@ -1888,13 +1888,13 @@ CISATRAC_S1_N22
 </tr>
 <tr>
 <td style="text-align:left;">
-ROCURO_S1_N22
+ROCURO_S1_N21
 </td>
 <td style="text-align:right;">
 -0.240
 </td>
 <td style="text-align:right;">
-0.999
+0.998
 </td>
 <td style="text-align:right;">
 -0.241
@@ -1909,11 +1909,11 @@ ROCURO_S1_N22
 <p>A primeira linha da tabela, intercepto, basicamente representa todas as características no nível 1. Ou seja, as demais linhas correspondem ao fato de você ter a característica em questão no valor 2. Temos ali a estimativa do parâmetro/coeficiente, erro padrão (incerteza associada), quantil da distribuição Normal (esse valor é utilizado pra se chegar no p-valor) e o p-valor. Nenhum p-valor é significativo a um nível de 5%. Dois deles (pra duas caracterśiticas) tem p-valor de 0.06.</p>
 </blockquote>
 <blockquote>
-<p>Todo mundo com característica 1 gera uma probabilidade de ter <code>INTER_S1_N2</code> de</p>
+<p>Um paciente com nenhuma droga presente tem probabilidade de ter <code>INTER_S1_N2</code> de</p>
 </blockquote>
-<pre><code>[1] 0.1426148</code></pre>
+<pre><code>[1] 0.5451798</code></pre>
 <blockquote>
-<p>Mudando/aplicando cada característica a probabilidade muda para:</p>
+<p>Pela aplicação de cada droga a probabilidade muda para:</p>
 </blockquote>
 <table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -1932,96 +1932,96 @@ Diferença
 <tbody>
 <tr>
 <td style="text-align:left;">
-DVA_S1_N22
+DVA_S1_N21
 </td>
 <td style="text-align:right;">
-0.020
+0.131
 </td>
 <td style="text-align:right;">
--0.122
+-0.415
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ABNM_S1_N22
+ABNM_S1_N21
 </td>
 <td style="text-align:right;">
-0.209
+0.656
 </td>
 <td style="text-align:right;">
-0.067
+0.111
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-NORA_S1_N22
+NORA_S1_N21
 </td>
 <td style="text-align:right;">
-0.561
+0.902
 </td>
 <td style="text-align:right;">
-0.418
+0.357
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-EPINEFRINA_S1_N22
+EPINEFRINA_S1_N21
 </td>
 <td style="text-align:right;">
-0.492
+0.875
 </td>
 <td style="text-align:right;">
-0.350
+0.330
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-VASO_S1_N22
+VASO_S1_N21
 </td>
 <td style="text-align:right;">
-0.108
+0.467
 </td>
 <td style="text-align:right;">
--0.034
+-0.078
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ATRAC_S1_N22
+ATRAC_S1_N21
 </td>
 <td style="text-align:right;">
-0.105
+0.457
 </td>
 <td style="text-align:right;">
--0.038
+-0.088
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-CISATRAC_S1_N22
+CISATRAC_S1_N21
 </td>
 <td style="text-align:right;">
-0.188
+0.625
 </td>
 <td style="text-align:right;">
-0.045
+0.080
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-ROCURO_S1_N22
+ROCURO_S1_N21
 </td>
 <td style="text-align:right;">
-0.116
+0.485
 </td>
 <td style="text-align:right;">
--0.027
+-0.060
 </td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Agora olhando para a razão de chances comparado com um paciente com 1 em todas as características (uma chance de 1 equivale a uma probabilidade de 0.5):</p>
+<p>Agora olhando para a razão de chances, comparando a um paciente com nenhuma droga aplicada (uma chance de 1 equivale a uma probabilidade de 0.5):</p>
 </blockquote>
 <table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
@@ -2040,7 +2040,7 @@ Aumentou
 <tbody>
 <tr>
 <td style="text-align:left;">
-DVA_S1_N22
+DVA_S1_N21
 </td>
 <td style="text-align:right;">
 0.125
@@ -2051,7 +2051,7 @@ Não
 </tr>
 <tr>
 <td style="text-align:left;">
-ABNM_S1_N22
+ABNM_S1_N21
 </td>
 <td style="text-align:right;">
 1.592
@@ -2062,7 +2062,7 @@ Sim
 </tr>
 <tr>
 <td style="text-align:left;">
-NORA_S1_N22
+NORA_S1_N21
 </td>
 <td style="text-align:right;">
 7.670
@@ -2073,7 +2073,7 @@ Sim
 </tr>
 <tr>
 <td style="text-align:left;">
-EPINEFRINA_S1_N22
+EPINEFRINA_S1_N21
 </td>
 <td style="text-align:right;">
 5.831
@@ -2084,7 +2084,7 @@ Sim
 </tr>
 <tr>
 <td style="text-align:left;">
-VASO_S1_N22
+VASO_S1_N21
 </td>
 <td style="text-align:right;">
 0.731
@@ -2095,7 +2095,7 @@ Não
 </tr>
 <tr>
 <td style="text-align:left;">
-ATRAC_S1_N22
+ATRAC_S1_N21
 </td>
 <td style="text-align:right;">
 0.703
@@ -2106,7 +2106,7 @@ Não
 </tr>
 <tr>
 <td style="text-align:left;">
-CISATRAC_S1_N22
+CISATRAC_S1_N21
 </td>
 <td style="text-align:right;">
 1.393
@@ -2117,7 +2117,7 @@ Sim
 </tr>
 <tr>
 <td style="text-align:left;">
-ROCURO_S1_N22
+ROCURO_S1_N21
 </td>
 <td style="text-align:right;">
 0.786
@@ -2128,6 +2128,9 @@ Não
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p>Com a aplicação de <code>NORA</code> a chance de ter <code>INTER</code> aumenta 7 vezes e meia. Com a aplicação de <code>EPINEFRINA</code> a chance de ter <code>INTER</code> aumenta 5.8 vezes.</p>
+</blockquote>
 </div>
 <div id="a-análise-1" class="section level1">
 <h1>2a análise</h1>
@@ -2160,13 +2163,13 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
--0.194
+0.194
 </td>
 <td style="text-align:right;">
 0.102
 </td>
 <td style="text-align:right;">
--1.895
+1.895
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.058
@@ -2177,13 +2180,13 @@ Pr(&gt;|z|)
 NORA_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.136
+0.136
 </td>
 <td style="text-align:right;">
 0.096
 </td>
 <td style="text-align:right;">
--1.408
+1.408
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.159
@@ -2200,7 +2203,7 @@ EPINEFRINA_MCG_MIN
 0.092
 </td>
 <td style="text-align:right;">
--0.003
+0.003
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.998
@@ -2211,13 +2214,13 @@ EPINEFRINA_MCG_MIN
 VASO_UI_MIN
 </td>
 <td style="text-align:right;">
-0.151
+-0.151
 </td>
 <td style="text-align:right;">
 0.097
 </td>
 <td style="text-align:right;">
-1.560
+-1.560
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.119
@@ -2228,13 +2231,13 @@ VASO_UI_MIN
 ATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.007
+0.007
 </td>
 <td style="text-align:right;">
 0.083
 </td>
 <td style="text-align:right;">
--0.089
+0.089
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.929
@@ -2245,13 +2248,13 @@ ATRAC_MCG_MIN
 CISATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.068
+0.068
 </td>
 <td style="text-align:right;">
 0.084
 </td>
 <td style="text-align:right;">
--0.802
+0.802
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.423
@@ -2262,13 +2265,13 @@ CISATRAC_MCG_MIN
 ROCURO_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.039
+-0.039
 </td>
 <td style="text-align:right;">
 0.089
 </td>
 <td style="text-align:right;">
-0.444
+-0.444
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.657
@@ -2280,11 +2283,11 @@ ROCURO_MCG_MIN
 <p>A característica <code>EQUI_NORA_MCG_MIN</code> foi retirada automaticamente do modelo. Ou o nível de variabilidade dela é muito alto, o que compromete o ajuste, ou ela é muito similar (correlacionada) com alguma outra característica, o que também compromete a análise. Todas as variáveis foram normalizadas (pra ter média zero e variância 1). Sem essa normalização o modelo não estava ajustando: muita variabilidade.</p>
 </blockquote>
 <blockquote>
-<p>Aqui as variáveis são númericas, então considerando todas na média, a partir do inercepto somos capazes de obter a probabilidade:</p>
+<p>Aqui as variáveis são númericas, então considerando todas na média (normalizadas), a probabilidade de <code>INTER</code>, a partir do inercepto, é:</p>
 </blockquote>
-<pre><code>[1] 0.4516706</code></pre>
+<pre><code>[1] 0.5483293</code></pre>
 <blockquote>
-<p>Conforme aumentamos as dosagens das drogas (dosagem normalizada) conseguimos saber se a probabilidade de ter o desfecho em questão vai aumentar ou diminuir com base no sinal da estimativa. Estimativas negativas indicam que a probabilidade vai diminuir se aumentarmos a dosagem.</p>
+<p>A partir do sinal das estimativas (Estimate), conseguimos saber se a probabilidade de <code>INTER</code> aumenta ou diminui conforme aumentamos as dosagens das drogas (dosagem normalizada). Estimativas negativas indicam que a probabilidade vai diminuir se aumentarmos a dosagem.</p>
 </blockquote>
 </div>
 <div id="parte-2" class="section level2">
@@ -2316,7 +2319,7 @@ Média
 ATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-8.008
+7.720
 </td>
 </tr>
 <tr>
@@ -2327,7 +2330,7 @@ ATRAC_MCG_KG_MIN
 ATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-7.142
+7.784
 </td>
 </tr>
 <tr>
@@ -2338,7 +2341,7 @@ ATRAC_MCG_KG_MIN
 CISATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-8.878
+9.117
 </td>
 </tr>
 <tr>
@@ -2349,7 +2352,7 @@ CISATRAC_MCG_KG_MIN
 CISATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-13.080
+10.860
 </td>
 </tr>
 <tr>
@@ -2360,7 +2363,7 @@ CISATRAC_MCG_KG_MIN
 EPINEFRINA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.121
+0.151
 </td>
 </tr>
 <tr>
@@ -2371,7 +2374,7 @@ EPINEFRINA_MCG_KG_MIN
 EPINEFRINA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.178
+0.149
 </td>
 </tr>
 <tr>
@@ -2382,7 +2385,7 @@ EPINEFRINA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.143
+0.133
 </td>
 </tr>
 <tr>
@@ -2393,7 +2396,7 @@ EQUI_NORA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-5.420
+0.193
 </td>
 </tr>
 <tr>
@@ -2404,7 +2407,7 @@ EQUI_NORA_MCG_KG_MIN
 NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.128
+0.114
 </td>
 </tr>
 <tr>
@@ -2415,7 +2418,7 @@ NORA_MCG_KG_MIN
 NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.172
+0.173
 </td>
 </tr>
 <tr>
@@ -2426,7 +2429,7 @@ NORA_MCG_KG_MIN
 ROCURO_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-5.400
+5.321
 </td>
 </tr>
 <tr>
@@ -2437,7 +2440,7 @@ ROCURO_MCG_KG_MIN
 ROCURO_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-6.442
+6.401
 </td>
 </tr>
 </tbody>
@@ -2462,7 +2465,7 @@ pvalor
 NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.135
+0.025
 </td>
 </tr>
 <tr>
@@ -2470,7 +2473,7 @@ NORA_MCG_KG_MIN
 EPINEFRINA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.446
+0.978
 </td>
 </tr>
 <tr>
@@ -2478,7 +2481,7 @@ EPINEFRINA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.160
+0.068
 </td>
 </tr>
 <tr>
@@ -2486,7 +2489,7 @@ EQUI_NORA_MCG_KG_MIN
 ATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.519
+0.974
 </td>
 </tr>
 <tr>
@@ -2494,7 +2497,7 @@ ATRAC_MCG_KG_MIN
 CISATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.283
+0.458
 </td>
 </tr>
 <tr>
@@ -2502,7 +2505,7 @@ CISATRAC_MCG_KG_MIN
 ROCURO_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.285
+0.221
 </td>
 </tr>
 </tbody>
@@ -2539,13 +2542,13 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
-0.017
+-0.017
 </td>
 <td style="text-align:right;">
 0.130
 </td>
 <td style="text-align:right;">
-0.131
+-0.131
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.896
@@ -2556,13 +2559,13 @@ Pr(&gt;|z|)
 NORA_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.141
+0.141
 </td>
 <td style="text-align:right;">
 0.102
 </td>
 <td style="text-align:right;">
--1.382
+1.382
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.167
@@ -2573,13 +2576,13 @@ NORA_MCG_MIN
 EPINEFRINA_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.075
+0.075
 </td>
 <td style="text-align:right;">
 0.098
 </td>
 <td style="text-align:right;">
--0.768
+0.768
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.443
@@ -2590,13 +2593,13 @@ EPINEFRINA_MCG_MIN
 VASO_UI_MIN
 </td>
 <td style="text-align:right;">
-0.171
+-0.171
 </td>
 <td style="text-align:right;">
 0.106
 </td>
 <td style="text-align:right;">
-1.604
+-1.604
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.109
@@ -2607,13 +2610,13 @@ VASO_UI_MIN
 ATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.026
+0.026
 </td>
 <td style="text-align:right;">
 0.093
 </td>
 <td style="text-align:right;">
--0.283
+0.283
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.777
@@ -2624,13 +2627,13 @@ ATRAC_MCG_MIN
 CISATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.063
+0.063
 </td>
 <td style="text-align:right;">
 0.087
 </td>
 <td style="text-align:right;">
--0.723
+0.723
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.470
@@ -2641,13 +2644,13 @@ CISATRAC_MCG_MIN
 ROCURO_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.002
+-0.002
 </td>
 <td style="text-align:right;">
 0.096
 </td>
 <td style="text-align:right;">
-0.021
+-0.021
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.983
@@ -2659,11 +2662,11 @@ ROCURO_MCG_MIN
 <p>Como anteriormente, a característica <code>EQUI_NORA_MCG_MIN</code> foi retirada e as demais características foram normalizadas.</p>
 </blockquote>
 <blockquote>
-<p>A probabilidade do desfecho pra um paciente médio é:</p>
+<p>A probabilidade de <code>INTER</code> para um paciente com dosagens aplicadas no seu valor médio normalizado é:</p>
 </blockquote>
-<pre><code>[1] 0.5042452</code></pre>
+<pre><code>[1] 0.4957549</code></pre>
 <blockquote>
-<p>Conforme aumentamos as dosagens das drogas conseguimos saber se a probabilidade de ter o desfecho em questão vai aumentar ou diminuir com base no sinal da estimativa. Estimativas negativas indicam que a probabilidade vai diminuir se aumentarmos a dosagem.</p>
+<p>Conforme aumentamos as dosagens das drogas conseguimos saber se a probabilidade de <code>INTER</code> vai aumentar ou diminuir com base no sinal da estimativa. Estimativas negativas indicam que a probabilidade vai diminuir se aumentarmos a dosagem.</p>
 </blockquote>
 <blockquote>
 <p>Agora as comparações de média.</p>
@@ -2691,7 +2694,7 @@ Média
 ATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-7.708
+8.133
 </td>
 </tr>
 <tr>
@@ -2702,7 +2705,7 @@ ATRAC_MCG_KG_MIN
 ATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-7.800
+7.612
 </td>
 </tr>
 <tr>
@@ -2713,7 +2716,7 @@ ATRAC_MCG_KG_MIN
 CISATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-10.007
+9.117
 </td>
 </tr>
 <tr>
@@ -2724,7 +2727,7 @@ CISATRAC_MCG_KG_MIN
 CISATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-10.551
+10.860
 </td>
 </tr>
 <tr>
@@ -2735,7 +2738,7 @@ CISATRAC_MCG_KG_MIN
 EPINEFRINA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.141
+0.151
 </td>
 </tr>
 <tr>
@@ -2746,7 +2749,7 @@ EPINEFRINA_MCG_KG_MIN
 EPINEFRINA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.153
+0.149
 </td>
 </tr>
 <tr>
@@ -2757,7 +2760,7 @@ EPINEFRINA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.148
+0.139
 </td>
 </tr>
 <tr>
@@ -2768,7 +2771,7 @@ EQUI_NORA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-4.285
+0.182
 </td>
 </tr>
 <tr>
@@ -2779,7 +2782,7 @@ EQUI_NORA_MCG_KG_MIN
 NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.129
+0.119
 </td>
 </tr>
 <tr>
@@ -2790,7 +2793,7 @@ NORA_MCG_KG_MIN
 NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.162
+0.163
 </td>
 </tr>
 <tr>
@@ -2801,7 +2804,7 @@ NORA_MCG_KG_MIN
 ROCURO_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-5.681
+5.608
 </td>
 </tr>
 <tr>
@@ -2812,7 +2815,7 @@ ROCURO_MCG_KG_MIN
 ROCURO_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-5.913
+5.940
 </td>
 </tr>
 </tbody>
@@ -2834,7 +2837,7 @@ pvalor
 NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.220
+0.090
 </td>
 </tr>
 <tr>
@@ -2842,7 +2845,7 @@ NORA_MCG_KG_MIN
 EPINEFRINA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.845
+0.978
 </td>
 </tr>
 <tr>
@@ -2850,7 +2853,7 @@ EPINEFRINA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.159
+0.197
 </td>
 </tr>
 <tr>
@@ -2858,7 +2861,7 @@ EQUI_NORA_MCG_KG_MIN
 ATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.956
+0.832
 </td>
 </tr>
 <tr>
@@ -2866,7 +2869,7 @@ ATRAC_MCG_KG_MIN
 CISATRAC_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.871
+0.458
 </td>
 </tr>
 <tr>
@@ -2874,7 +2877,7 @@ CISATRAC_MCG_KG_MIN
 ROCURO_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.802
+0.690
 </td>
 </tr>
 </tbody>
@@ -2908,13 +2911,13 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
-5.132
+-5.132
 </td>
 <td style="text-align:right;">
 0.974
 </td>
 <td style="text-align:right;">
-5.270
+-5.270
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.000
@@ -2925,13 +2928,13 @@ Pr(&gt;|z|)
 NORA_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.816
+0.816
 </td>
 <td style="text-align:right;">
 0.272
 </td>
 <td style="text-align:right;">
--3.001
+3.001
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.003
@@ -2942,13 +2945,13 @@ NORA_MCG_MIN
 EPINEFRINA_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.165
+0.165
 </td>
 <td style="text-align:right;">
 0.252
 </td>
 <td style="text-align:right;">
--0.655
+0.655
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.513
@@ -2959,13 +2962,13 @@ EPINEFRINA_MCG_MIN
 VASO_UI_MIN
 </td>
 <td style="text-align:right;">
-0.566
+-0.566
 </td>
 <td style="text-align:right;">
 0.358
 </td>
 <td style="text-align:right;">
-1.581
+-1.581
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.114
@@ -2976,13 +2979,13 @@ VASO_UI_MIN
 ATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.158
+0.158
 </td>
 <td style="text-align:right;">
 0.144
 </td>
 <td style="text-align:right;">
--1.097
+1.097
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.272
@@ -2993,13 +2996,13 @@ ATRAC_MCG_MIN
 CISATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.035
+0.035
 </td>
 <td style="text-align:right;">
 0.208
 </td>
 <td style="text-align:right;">
--0.170
+0.170
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.865
@@ -3010,13 +3013,13 @@ CISATRAC_MCG_MIN
 ROCURO_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.243
+-0.243
 </td>
 <td style="text-align:right;">
 0.377
 </td>
 <td style="text-align:right;">
-0.645
+-0.645
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.519
@@ -3025,9 +3028,9 @@ ROCURO_MCG_MIN
 </tbody>
 </table>
 <blockquote>
-<p>Aqui, olhando apenas para a média das características já temos probabilidade 99% para o desfecho.</p>
+<p>Aqui, nas dosagens médias normalizadas das drogas a probabilidade de <code>INTER</code> é de menos de 1%.</p>
 </blockquote>
-<pre><code>[1] 0.9941305</code></pre>
+<pre><code>[1] 0.005869485</code></pre>
 <blockquote>
 <p>Dada a baixíssima frequência do nível 1, somos capazes de fazer a comparação de médias para apenas duas características.</p>
 </blockquote>
@@ -3120,7 +3123,7 @@ NaN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-2.255
+0.166
 </td>
 </tr>
 <tr>
@@ -3205,7 +3208,7 @@ NORA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-0.150
+0.566
 </td>
 </tr>
 </tbody>
@@ -3239,16 +3242,16 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
-7.201
+-7.247
 </td>
 <td style="text-align:right;">
-35.642
+56.172
 </td>
 <td style="text-align:right;">
-0.202
+-0.129
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.840
+0.897
 </td>
 </tr>
 <tr>
@@ -3256,13 +3259,13 @@ Pr(&gt;|z|)
 NORA_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.729
+-0.729
 </td>
 <td style="text-align:right;">
 0.459
 </td>
 <td style="text-align:right;">
-1.586
+-1.586
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.113
@@ -3273,13 +3276,13 @@ NORA_MCG_MIN
 EPINEFRINA_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.352
+-0.352
 </td>
 <td style="text-align:right;">
 0.481
 </td>
 <td style="text-align:right;">
-0.732
+-0.732
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.464
@@ -3290,13 +3293,13 @@ EPINEFRINA_MCG_MIN
 VASO_UI_MIN
 </td>
 <td style="text-align:right;">
--0.147
+0.147
 </td>
 <td style="text-align:right;">
 0.314
 </td>
 <td style="text-align:right;">
--0.470
+0.470
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.638
@@ -3307,13 +3310,13 @@ VASO_UI_MIN
 ATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.593
+-0.593
 </td>
 <td style="text-align:right;">
 0.459
 </td>
 <td style="text-align:right;">
-1.291
+-1.291
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.197
@@ -3324,16 +3327,16 @@ ATRAC_MCG_MIN
 CISATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
-14.755
+-15.081
 </td>
 <td style="text-align:right;">
-251.058
+395.735
 </td>
 <td style="text-align:right;">
-0.059
+-0.038
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.953
+0.970
 </td>
 </tr>
 <tr>
@@ -3341,13 +3344,13 @@ CISATRAC_MCG_MIN
 ROCURO_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.862
+-0.862
 </td>
 <td style="text-align:right;">
 0.447
 </td>
 <td style="text-align:right;">
-1.927
+-1.927
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.054
@@ -3356,9 +3359,9 @@ ROCURO_MCG_MIN
 </tbody>
 </table>
 <blockquote>
-<p>Novamente uma probabilidade de desfecho bem alta olhando apenas para a média das características.</p>
+<p>Novamente uma probabilidade de <code>INTER</code> bem baixa, na dosagem média normalizada das drogas.</p>
 </blockquote>
-<pre><code>[1] 0.9992546</code></pre>
+<pre><code>[1] 0.0007116644</code></pre>
 <blockquote>
 <p>Aqui, a frequência do desfecho 1 é tão baixo que não somos capazes de fazer nenhuma comparação.</p>
 </blockquote>
@@ -3418,7 +3421,7 @@ EPINEFRINA_MCG_KG_MIN
 EQUI_NORA_MCG_KG_MIN
 </td>
 <td style="text-align:right;">
-2.180
+0.164
 </td>
 </tr>
 <tr>
@@ -3475,33 +3478,33 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
--0.195
+-0.075
 </td>
 <td style="text-align:right;">
-0.102
+0.200
 </td>
 <td style="text-align:right;">
--1.901
+-0.374
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.057
+0.708
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-PROC_S1_N2
+PROC_S1_N21
 </td>
 <td style="text-align:right;">
-0.090
+0.328
 </td>
 <td style="text-align:right;">
-0.083
+0.215
 </td>
 <td style="text-align:right;">
-1.078
+1.531
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.281
+0.126
 </td>
 </tr>
 <tr>
@@ -3509,16 +3512,33 @@ PROC_S1_N2
 VEL_INF_DIET_ML_H
 </td>
 <td style="text-align:right;">
--0.025
+-0.005
 </td>
 <td style="text-align:right;">
-0.083
+0.085
 </td>
 <td style="text-align:right;">
--0.295
+-0.059
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.768
+0.953
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FENTA_MCG_KG_H
+</td>
+<td style="text-align:right;">
+0.116
+</td>
+<td style="text-align:right;">
+0.096
+</td>
+<td style="text-align:right;">
+1.210
+</td>
+<td style="text-align:right;font-weight: bold;">
+0.226
 </td>
 </tr>
 <tr>
@@ -3526,16 +3546,16 @@ VEL_INF_DIET_ML_H
 NORA_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.138
+0.145
 </td>
 <td style="text-align:right;">
-0.096
+0.097
 </td>
 <td style="text-align:right;">
--1.432
+1.504
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.152
+0.132
 </td>
 </tr>
 <tr>
@@ -3543,16 +3563,16 @@ NORA_MCG_MIN
 EPINEFRINA_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.006
+0.046
 </td>
 <td style="text-align:right;">
 0.092
 </td>
 <td style="text-align:right;">
--0.061
+0.503
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.951
+0.615
 </td>
 </tr>
 <tr>
@@ -3560,16 +3580,16 @@ EPINEFRINA_MCG_MIN
 VASO_UI_MIN
 </td>
 <td style="text-align:right;">
-0.158
+-0.164
 </td>
 <td style="text-align:right;">
-0.098
+0.097
 </td>
 <td style="text-align:right;">
-1.622
+-1.681
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.105
+0.093
 </td>
 </tr>
 <tr>
@@ -3577,16 +3597,16 @@ VASO_UI_MIN
 ATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.013
+-0.022
 </td>
 <td style="text-align:right;">
-0.085
+0.087
 </td>
 <td style="text-align:right;">
--0.154
+-0.253
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.878
+0.800
 </td>
 </tr>
 <tr>
@@ -3594,16 +3614,16 @@ ATRAC_MCG_MIN
 CISATRAC_MCG_MIN
 </td>
 <td style="text-align:right;">
--0.079
+0.057
 </td>
 <td style="text-align:right;">
-0.085
+0.086
 </td>
 <td style="text-align:right;">
--0.923
+0.666
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.356
+0.506
 </td>
 </tr>
 <tr>
@@ -3611,29 +3631,29 @@ CISATRAC_MCG_MIN
 ROCURO_MCG_MIN
 </td>
 <td style="text-align:right;">
-0.033
+-0.050
 </td>
 <td style="text-align:right;">
-0.089
+0.092
 </td>
 <td style="text-align:right;">
-0.377
+-0.542
 </td>
 <td style="text-align:right;font-weight: bold;">
-0.706
+0.588
 </td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Novamente <code>EQUI_NORA_MCG_MIN</code> foi retirada da análise e as demais características foram normalizadas para melhor ajuste do modelo. Dada as células em branco de <code>FENTA_MCG_KG_H</code>, ela não foi utilizada. Calculei as médias por paciente pra assim poder usar ela, mas novamente nenhum paciente teve todas as características mensuradas.</p>
+<p>Novamente <code>EQUI_NORA_MCG_MIN</code> foi retirada da análise e as demais características foram normalizadas para melhor ajuste do modelo.</p>
 </blockquote>
 <blockquote>
-<p>A probabilidade do desfecho olhando pra média das características normalizadas é:</p>
+<p>A probabilidade de <code>INTER</code> olhando para a média das dosagens normalizadas é:</p>
 </blockquote>
-<pre><code>[1] 0.4514811</code></pre>
+<pre><code>[1] 0.4812795</code></pre>
 <blockquote>
-<p>O sinal da estimativa das características indica se a probabilidade de desfecho aumenta ou não conforme se aumenta a dose.</p>
+<p>O sinal da estimativa das drogas indica se a probabilidade de <code>INTER</code> aumenta ou não conforme se aumenta a dose.</p>
 </blockquote>
 </div>
 <div id="a-análise-4" class="section level1">
@@ -3664,13 +3684,13 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
--0.179
+0.179
 </td>
 <td style="text-align:right;">
 0.099
 </td>
 <td style="text-align:right;">
--1.805
+1.805
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.071
@@ -3681,13 +3701,13 @@ Pr(&gt;|z|)
 ADEQ_KCAL
 </td>
 <td style="text-align:right;">
--0.203
+0.203
 </td>
 <td style="text-align:right;">
 0.202
 </td>
 <td style="text-align:right;">
--1.006
+1.006
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.315
@@ -3698,13 +3718,13 @@ ADEQ_KCAL
 ADEQ_PT
 </td>
 <td style="text-align:right;">
-0.387
+-0.387
 </td>
 <td style="text-align:right;">
 0.238
 </td>
 <td style="text-align:right;">
-1.627
+-1.627
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.104
@@ -3716,9 +3736,9 @@ ADEQ_PT
 <p>Substituindo as células em branco por zero obtemos os p-valores acima.</p>
 </blockquote>
 <blockquote>
-<p>A probabilidade média de desfecho é:</p>
+<p>A probabilidade média de <code>INTER</code> é:</p>
 </blockquote>
-<pre><code>[1] 0.4553089</code></pre>
+<pre><code>[1] 0.5446911</code></pre>
 <table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -3744,13 +3764,13 @@ Pr(&gt;|z|)
 (Intercept)
 </td>
 <td style="text-align:right;">
--0.173
+0.173
 </td>
 <td style="text-align:right;">
 0.104
 </td>
 <td style="text-align:right;">
--1.661
+1.661
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.097
@@ -3761,13 +3781,13 @@ Pr(&gt;|z|)
 ADEQ_KCAL
 </td>
 <td style="text-align:right;">
--0.198
+0.198
 </td>
 <td style="text-align:right;">
 0.187
 </td>
 <td style="text-align:right;">
--1.056
+1.056
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.291
@@ -3778,13 +3798,13 @@ ADEQ_KCAL
 ADEQ_PT
 </td>
 <td style="text-align:right;">
-0.356
+-0.356
 </td>
 <td style="text-align:right;">
 0.228
 </td>
 <td style="text-align:right;">
-1.564
+-1.564
 </td>
 <td style="text-align:right;font-weight: bold;">
 0.118
@@ -3796,9 +3816,138 @@ ADEQ_PT
 <p>Retirando as linhas correspondentes as observações faltantes obtemos os p-valore acima.</p>
 </blockquote>
 <blockquote>
-<p>A probabilidade média de desfecho é:</p>
+<p>A probabilidade média de <code>INTER</code> é:</p>
 </blockquote>
-<pre><code>[1] 0.4568911</code></pre>
+<pre><code>[1] 0.5431089</code></pre>
+</div>
+<div id="dva" class="section level1">
+<h1>DVA</h1>
+<hr />
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+Std. Error
+</th>
+<th style="text-align:right;">
+z value
+</th>
+<th style="text-align:right;">
+Pr(&gt;|z|)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+0.478
+</td>
+<td style="text-align:right;">
+0.282
+</td>
+<td style="text-align:right;">
+1.699
+</td>
+<td style="text-align:right;font-weight: bold;">
+0.089
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DVA_S1_N21
+</td>
+<td style="text-align:right;">
+-0.317
+</td>
+<td style="text-align:right;">
+0.289
+</td>
+<td style="text-align:right;">
+-1.098
+</td>
+<td style="text-align:right;font-weight: bold;">
+0.272
+</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Como o sinal da estimativa do coeficiente de <code>DVA</code> é negativo, a aplicação de <code>DVA</code> implica numa diminuição na probabilidade de <code>INTER</code>.</p>
+</blockquote>
+<blockquote>
+<p>A probabilidade de <code>INTER</code> para um paciente sem <code>DVA</code> é de:</p>
+</blockquote>
+<pre><code>[1] 0.6173353</code></pre>
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Característica
+</th>
+<th style="text-align:right;">
+Probabilidade
+</th>
+<th style="text-align:right;">
+Diferença
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+DVA_S1_N21
+</td>
+<td style="text-align:right;">
+0.54
+</td>
+<td style="text-align:right;">
+-0.077
+</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Aplicando <code>DVA</code> a probabilidade de <code>INTER</code> diminui.</p>
+</blockquote>
+<blockquote>
+<p>E essa é razão de chances:</p>
+</blockquote>
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Característica
+</th>
+<th style="text-align:right;">
+Chance
+</th>
+<th style="text-align:left;">
+Aumentou
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+DVA_S1_N21
+</td>
+<td style="text-align:right;">
+0.728
+</td>
+<td style="text-align:left;">
+Não
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="referência" class="section level1">
 <h1>Referência</h1>
