@@ -146,3 +146,7 @@
 <img src='view.jpg'>
 <img src='nowherehouse.jpg'>
 <img src='bart.jpg'>
+<img src='cooking.jpg'>
+<img src='window.jpg'>
+<img src='wow2.jpg'>
+<img src='fishes.jpg'>
