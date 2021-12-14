@@ -150,3 +150,6 @@
 <img src='window.jpg'>
 <img src='wow2.jpg'>
 <img src='fishes.jpg'>
+<img src='jordan.jpg'>
+<img src='vulcano.jpg'>
+<img src='pablo.jpg'>
