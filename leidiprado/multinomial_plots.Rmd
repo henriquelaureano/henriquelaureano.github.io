@@ -1,0 +1,365 @@
+---
+title: "Multinomial plots"
+author: "leidimari Neves do Prado e
+         [Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path='multinomial_plots/', fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning=FALSE, message=FALSE, prompt=FALSE,
+                      echo=FALSE, comment=NA)
+
+```
+
+***
+
+```{r pkg}
+
+if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+pacman::p_load(tibble, tidyr, dplyr, ggplot2, patchwork)
+
+```
+
+```{r data}
+
+res    <- read.csv('res_summary_model.csv', header=TRUE, sep=' ')
+final1 <- read.csv('final1.csv',            header=TRUE, sep=' ')
+
+```
+
+```{r funs}
+
+plotObj <- function(i1, i2, i3, start, end)
+{
+    mgrid  <- seq(start, end, length.out=40)
+    n1.est <- exp(res[ 1, 2]              + mgrid *  res[i1, 2]              )
+    n1.low <- exp(res[ 1, 2] - res[ 1, 3] + mgrid * (res[i1, 2] - res[i1, 3]))
+    n1.upp <- exp(res[ 1, 2] + res[ 1, 3] + mgrid * (res[i1, 2] + res[i1, 3]))
+    n2.est <- exp(res[21, 2]              + mgrid *  res[i2, 2]              )
+    n2.low <- exp(res[21, 2] - res[21, 3] + mgrid * (res[i2, 2] - res[i2, 3]))
+    n2.upp <- exp(res[21, 2] + res[21, 3] + mgrid * (res[i2, 2] + res[i2, 3]))
+    n3.est <- exp(res[41, 2]              + mgrid *  res[i3, 2]              )
+    n3.low <- exp(res[41, 2] - res[41, 3] + mgrid * (res[i3, 2] - res[i3, 3]))
+    n3.upp <- exp(res[41, 2] + res[41, 3] + mgrid * (res[i3, 2] + res[i3, 3]))
+    denom.est <- 1 + rowSums(cbind(n1.est, n2.est, n3.est))
+    denom.low <- 1 + rowSums(cbind(n1.low, n2.low, n3.low))
+    denom.upp <- 1 + rowSums(cbind(n1.upp, n2.upp, n3.upp))
+    dat.est <-
+        tibble::tibble(x=mgrid,
+                       L0S0=n1.est/denom.est,
+                       L1S0=n2.est/denom.est,
+                       L0S1=n3.est/denom.est,
+                       L1S1=     1/denom.est)|>
+        tidyr::pivot_longer(L0S0:L1S1,
+                            names_to='p', values_to='value.est')
+    dat.low <-
+        tibble::tibble(L0S0=n1.low/denom.low,
+                       L1S0=n2.low/denom.low,
+                       L0S1=n3.low/denom.low,
+                       L1S1=     1/denom.low)|>
+        tidyr::pivot_longer(L0S0:L1S1,
+                            names_to='p', values_to='value.low')|>
+        dplyr::select(value.low)
+    dat.upp <-
+        tibble::tibble(L0S0=n1.upp/denom.upp,
+                       L1S0=n2.upp/denom.upp,
+                       L0S1=n3.upp/denom.upp,
+                       L1S1=     1/denom.upp)|>
+        tidyr::pivot_longer(L0S0:L1S1,
+                            names_to='p', values_to='value.upp')|>
+        dplyr::select(value.upp)
+    out <- dplyr::bind_cols(dat.est, dat.low, dat.upp)
+    return(out)
+}
+
+myplot <- function(dat, xb, title)
+{
+    dat|>
+        ggplot(aes(x, value.est, color=p))+
+        geom_line(size=1.25)+
+        geom_ribbon(aes(ymin=value.low, ymax=value.upp),
+                    alpha=0.2, linetype='dashed')+
+        scale_x_continuous(breaks=xb)+
+        scale_y_continuous(breaks=seq(0, 1, by=0.1))+
+        scale_color_brewer(palette='Spectral')+
+        labs(x='Average income', y='Probability',
+             title=paste0('Probabilities vs.\n', title))+
+        theme_minimal(base_size=15)+
+        theme(axis.title.x=element_text(
+                  face='bold',
+                  margin=ggplot2::unit(c(t=3, l=0, b=-3, r=0), 'mm')),
+              axis.title.y=element_text(
+                  face='bold',
+                  margin=ggplot2::unit(c(t=0, l=3, b=0, r=0), 'mm')),
+              legend.position='bottom',
+              plot.title=element_text(face='bold'))+
+        guides(color=guide_legend(title='Class:', keywidth=2))
+}
+
+plotObj_fac <- function(i1, i2, i3, start, end, j1, j2, j3)
+{
+    mgrid  <- seq(start, end, length.out=40)
+    n1.est <- exp(res[ 1, 2]              +
+                  mgrid *  res[i1, 2]               +
+                  res[j1, 2])
+    n1.low <- exp(res[ 1, 2] - res[ 1, 3] +
+                  mgrid * (res[i1, 2] - res[i1, 3]) +
+                  res[j1, 2] - res[j1, 3])
+    n1.upp <- exp(res[ 1, 2] + res[ 1, 3] +
+                  mgrid * (res[i1, 2] + res[i1, 3]) +
+                  res[j1, 2] + res[j1, 3])
+    n2.est <- exp(res[21, 2]              +
+                  mgrid *  res[i2, 2]               +
+                  res[j2, 2])
+    n2.low <- exp(res[21, 2] - res[21, 3] +
+                  mgrid * (res[i2, 2] - res[i2, 3]) +
+                  res[j2, 2] - res[j2, 3])
+    n2.upp <- exp(res[21, 2] + res[21, 3] +
+                  mgrid * (res[i2, 2] + res[i2, 3]) +
+                  res[j2, 2] + res[j2, 3])
+    n3.est <- exp(res[41, 2]              +
+                  mgrid *  res[i3, 2]               +
+                  res[j3, 2])
+    n3.low <- exp(res[41, 2] - res[41, 3] +
+                  mgrid * (res[i3, 2] - res[i3, 3]) +
+                  res[j3, 2] - res[j3, 3])
+    n3.upp <- exp(res[41, 2] + res[41, 3] +
+                  mgrid * (res[i3, 2] + res[i3, 3]) +
+                  res[j3, 2] + res[j3, 3])
+    denom.est <- 1 + rowSums(cbind(n1.est, n2.est, n3.est))
+    denom.low <- 1 + rowSums(cbind(n1.low, n2.low, n3.low))
+    denom.upp <- 1 + rowSums(cbind(n1.upp, n2.upp, n3.upp))
+    dat.est <-
+        tibble::tibble(x=mgrid,
+                       L0S0=n1.est/denom.est,
+                       L1S0=n2.est/denom.est,
+                       L0S1=n3.est/denom.est,
+                       L1S1=     1/denom.est)|>
+        tidyr::pivot_longer(L0S0:L1S1,
+                            names_to='p', values_to='value.est')
+    dat.low <-
+        tibble::tibble(L0S0=n1.low/denom.low,
+                       L1S0=n2.low/denom.low,
+                       L0S1=n3.low/denom.low,
+                       L1S1=     1/denom.low)|>
+        tidyr::pivot_longer(L0S0:L1S1,
+                            names_to='p', values_to='value.low')|>
+        dplyr::select(value.low)
+    dat.upp <-
+        tibble::tibble(L0S0=n1.upp/denom.upp,
+                       L1S0=n2.upp/denom.upp,
+                       L0S1=n3.upp/denom.upp,
+                       L1S1=     1/denom.upp)|>
+        tidyr::pivot_longer(L0S0:L1S1,
+                            names_to='p', values_to='value.upp')|>
+        dplyr::select(value.upp)
+    out <- dplyr::bind_cols(dat.est, dat.low, dat.upp)
+    return(out)
+}
+
+myplot2 <- function(dat, title)
+{
+    dat|>
+        ggplot(aes(x, value.est, color=p))+
+        geom_line(size=1.25)+
+        geom_ribbon(aes(ymin=value.low, ymax=value.upp),
+                    alpha=0.2, linetype='dashed')+
+        scale_x_continuous(breaks=seq(17, 90, by=10))+
+        scale_y_continuous(breaks=seq(0, 1, by=0.1))+
+        scale_color_brewer(palette='Spectral')+
+        labs(x='Average income', y='Probability',
+             subtitle='Probabilities vs. Age',
+             title=title)+
+        theme_minimal(base_size=15)+
+        theme(axis.title.x=element_text(
+                  face='bold',
+                  margin=ggplot2::unit(c(t=3, l=0, b=-3, r=0), 'mm')),
+              axis.title.y=element_text(
+                  face='bold',
+                  margin=ggplot2::unit(c(t=0, l=3, b=0, r=0), 'mm')),
+              legend.position='bottom',
+              plot.title=element_text(face='bold'))+
+        guides(color=guide_legend(title='Class:', keywidth=2))
+}
+
+```
+
+# Numerical variables
+
+***
+
+```{r num_vars,fig.width=10,fig.height=10}
+
+gg1 <- myplot(plotObj(i1=2, i2=22, i3=42,
+                      start=min(final1$average.income_),
+                      end=max(final1$average.income_)),
+              xb=seq(2500, 25e3, by=5e3),
+              title='Average income')
+
+gg2 <- myplot(plotObj(i1=3, i2=23, i3=43,
+                      start=min(final1$age_),
+                      end=max(final1$age_)),
+              xb=seq(17, 90, by=10),
+              title='Age')
+
+gg3 <- myplot(plotObj(i1=11, i2=31, i3=51,
+                      start=min(final1$hlong_),
+                      end=max(final1$hlong_)),
+              xb=seq(0, 60, by=10),
+              title='H long')
+
+gg4 <- myplot(plotObj(i1=12, i2=32, i3=52,
+                      start=min(final1$perc_pasture_.y),
+                      end=max(final1$perc_pasture_.y)),
+              xb=seq(0, 100, by=10),
+              title='Pasture percentage')
+
+gg5 <- myplot(plotObj(i1=13, i2=33, i3=53,
+                      start=min(final1$perc_agrihort_),
+                      end=max(final1$perc_agrihort_)),
+              xb=seq(0, 100, by=10),
+              title='Agrihort percentage')
+
+gg6 <- myplot(plotObj(i1=18, i2=38, i3=58,
+                      start=min(final1$percent_slope),
+                      end=max(final1$percent_slope)),
+              xb=seq(0, 100, by=10),
+              title='Slope percentage')
+
+gg7 <- myplot(plotObj(i1=14, i2=34, i3=54,
+                      start=min(final1$perc_eucalyptus_),
+                      end=max(final1$perc_eucalyptus_)),
+              xb=seq(0, 100, by=10),
+              title='Slope percentage')
+
+layout <- '
+ABC
+DEF
+#G#
+'
+gg1 + theme(legend.position='none') +
+gg2 + theme(legend.position='none') +
+gg3 + theme(legend.position='none') +
+gg4 + theme(legend.position='none') +
+gg5 + theme(legend.position='none') +
+gg6 + theme(legend.position='none') +
+gg7 + patchwork::plot_layout(design=layout)
+
+```
+
+# Categorial variables
+
+***
+
+```{r leduc,fig.width=10,fig.height=8}
+
+ggleduc1 <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                                start=min(final1$age_),
+                                end=max(final1$age_),
+                                j1=4, j2=24, j3=44),
+                    title='Level of education\n0 to 1')
+
+ggleduc2 <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                                start=min(final1$age_),
+                                end=max(final1$age_),
+                                j1=5, j2=25, j3=45),
+                    title='Level of education\n0 to 2')
+
+ggleduc3 <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                                start=min(final1$age_),
+                                end=max(final1$age_),
+                                j1=6, j2=26, j3=46),
+                    title='Level of education\n0 to 3')
+
+ggleduc5 <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                                start=min(final1$age_),
+                                end=max(final1$age_),
+                                j1=7, j2=27, j3=47),
+                    title='Level of education\n0 to 5')
+
+ggleduc6 <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                                start=min(final1$age_),
+                                end=max(final1$age_),
+                                j1=8, j2=28, j3=48),
+                    title='Level of education\n0 to 6')
+
+ggleduc7 <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                                start=min(final1$age_),
+                                end=max(final1$age_),
+                                j1=9, j2=29, j3=49),
+                    title='Level of education\n0 to 7')
+
+ggleduc1 + theme(legend.position='none') +
+ggleduc2 + theme(legend.position='none') +
+ggleduc3 + theme(legend.position='none') +
+ggleduc5 + theme(legend.position='none') +
+ggleduc6 +
+ggleduc7 + theme(legend.position='none')
+
+```
+
+```{r gender,fig.width=5.5}
+
+myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                    start=min(final1$age_),
+                    end=max(final1$age_),
+                    j1=10, j2=30, j3=50),
+        title='Gender 0 to 1')
+
+```
+
+```{r small_prop_surface,fig.width=5.5}
+
+myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                    start=min(final1$age_),
+                    end=max(final1$age_),
+                    j1=15, j2=35, j3=55),
+        title='Small property surface 0 to 1')
+
+```
+
+```{r dec_maker,fig.width=10}
+
+ggdmb <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                             start=min(final1$age_),
+                             end=max(final1$age_),
+                             j1=16, j2=36, j3=56),
+                 title='Decision maker A to B')
+
+ggdmc <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                             start=min(final1$age_),
+                             end=max(final1$age_),
+                             j1=17, j2=37, j3=57),
+                 title='Decision maker A to C')
+
+ggdmb + ggdmc
+
+```
+
+```{r region,fig.width=10}
+
+ggregb <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                              start=min(final1$age_),
+                              end=max(final1$age_),
+                              j1=19, j2=39, j3=59),
+                  title='Region A to B')
+
+ggregc <- myplot2(plotObj_fac(i1=3, i2=23, i3=43,
+                              start=min(final1$age_),
+                              end=max(final1$age_),
+                              j1=20, j2=40, j3=60),
+                  title='Region A to C')
+
+ggregb + ggregc
+
+```
