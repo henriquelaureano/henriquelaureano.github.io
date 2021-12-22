@@ -23,6 +23,19 @@
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
   *Statistical Methods in Medical Research* 30(12) (2021), 2619-2633
 
++ [Newborn Screening for the Detection of the TP53 R337H Variant and Surveillance for Early Diagnosis of Pediatric Adrenocortical Tumors: Lessons Learned and Way Forward]\
+  K. C. F. Tosin, E. F. Legal, M. A. D. Pianovski, H. C. Ibañez, G.
+  Custódio, D. S. Carvalho, M. M. O. Figueiredo, A.  Hoffmann Filho, C.
+  M. C. M. Fiori, A. L. M. Rodrigues, R. G. Mello, K. R. P. Ogradowski,
+  I. Z. S. Parise, T. E. J. Costa, V. S. Melanda, F. M. Watanabe, D. B.
+  Silva, H. Komechen, **H.  A. Laureano**, E. K. Carboni, A. P.
+  Kuczynski, G. C. F. Luiz, L. Lima, T. Tormen, V. K. Q. Gerber, T. H.
+  Anegawa, S. G. A. Avilla, R. B. Tenório, E. L. Mendes, R. D. F. Donin,
+  J. Souza, V. N. Kozak, G. S. Oliveira, D. C. Souza, I. Gomy, V. B.
+  Teixeira, H. H. L. Borba, N. Kiesel Filho, G. A. Parise, R. C.
+  Ribeiro, B. C. Figueiredo\
+  *Cancers* 13(23) (2021), 6111
+
 <!-- ### Accepted for publication -->
 
 <!-- ### Submitted for publication -->
