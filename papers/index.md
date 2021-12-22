@@ -14,15 +14,13 @@
   S. M. Barbosa, E. C. Severiano, N. Curi\
   *SEMINA: Ciências Agrárias* 42(3) (2021), 1049--1068
 
++ [Multivariate generalized linear mixed models for continuous bounded outcomes: Analyzing the body fat percentage data](https://journals.sagepub.com/doi/abs/10.1177/09622802211043276)\
+  R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
+  *Statistical Methods in Medical Research* 30(12) (2021), 2619-2633
+
 ***
 
 ### Accepted for publication
-
-+ [2021]\
-  Multivariate generalized linear mixed models for continuous bounded
-  outcomes: Analyzing the body fat percentage data\
-  R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
-  To appear in [*Statistical Methods in Medical Research*](https://journals.sagepub.com/home/smm)
 
 + [2021]\
   Unit gamma mixed regression models for continuous bounded data\
