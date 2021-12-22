@@ -38,7 +38,15 @@
 
 <!-- ### Accepted for publication -->
 
-<!-- ### Submitted for publication -->
+***
+
+### Submitted for publication
+
++ [2021]\
+  The Long Term Loss of Smell and Taste in COVID-19 Patients – A
+  Systematic Review and Meta-Analysis\
+  J. D. C. Passos, Y. S. Borges, **H. A. Laureano**, I. C. Guiloski\
+  Submitted to *Clinical Otolaryngology*
 
 ***
 
