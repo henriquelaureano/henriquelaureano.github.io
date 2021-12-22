@@ -14,19 +14,16 @@
   S. M. Barbosa, E. C. Severiano, N. Curi\
   *SEMINA: Ciências Agrárias* 42(3) (2021), 1049--1068
 
++ [Unit gamma mixed regression models for continuous bounded data](https://www.tandfonline.com/doi/full/10.1080/00949655.2021.1970164?scroll=top&needAccess=true)\
+  R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
+  **H. A. Laureano**, W. H. Bonat\
+  *Journal of Statistical Computation and Simulation* (2021)
+
 + [Multivariate generalized linear mixed models for continuous bounded outcomes: Analyzing the body fat percentage data](https://journals.sagepub.com/doi/abs/10.1177/09622802211043276)\
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
   *Statistical Methods in Medical Research* 30(12) (2021), 2619-2633
 
-***
-
-### Accepted for publication
-
-+ [2021]\
-  Unit gamma mixed regression models for continuous bounded data\
-  R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
-  **H. A. Laureano**, W. H. Bonat\
-  To appear in [*Journal of Statistical Computation and Simulation*](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
+<!-- ### Accepted for publication -->
 
 <!-- ### Submitted for publication -->
 
