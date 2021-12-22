@@ -26,7 +26,7 @@ statistical modeling through GLMMs, estimation equations, and bayesian
 and likelihood-based methods. Besides the theoretical background, I love
 to analyze data and make pretty and useful visualizations.
 
-What am I doing right now? (Dec 21)
+What else am I doing right now? (Dec 21)
 
 + Reading
   [Physics and Beyond](https://en.wikipedia.org/wiki/Physics_and_Beyond),
@@ -34,29 +34,13 @@ What am I doing right now? (Dec 21)
 
 + Studying
   [h-likelihood](https://www.amazon.com/Generalized-Linear-Models-Random-Effects/dp/1498720617/ref=sr_1_1?crid=3GYWLSOWV3JVP&dchild=1&keywords=Generalized+Linear+Models+with+Random+Effects%3A+Unified+Analysis+via+H-likelihood%2C+Second+Edition&qid=1620398604&sprefix=physics+and+beyond+%2Caps%2C274&sr=8-1),
-  just to know/learn about it.
+  just for fun.
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
       [Stuff](stuff/) |
       [Presentations](presentations/) |
       [Papers](papers/)</span>
-
-## News
-
-Accepted in
-[Statistical Methods in Medical Research](https://journals.sagepub.com/home/smm):
-
-**Multivariate generalized linear mixed models for continuous bounded
-  outcomes: Analyzing the body fat percentage data**\
-R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat
-
-Accepted in
-[Journal of Statistical Computation and Simulation](https://www.google.com/search?q=journal+of+statistical+computation+and+simulation)
-
-**Unit gamma mixed regression models for continuous bounded data**\
-R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
-**H. A. Laureano**, W. H. Bonat
 
 ## Contact
 
