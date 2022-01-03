@@ -31,7 +31,7 @@ y <- c(0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 3, 2, 0, 1, 0, 0, 0, 1, 1, 2, 2,
        0, 0, 2, 3, 1, 1, 1, 0, 0, 0, 2, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0,
        0, 1, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1)
 dat <-
-    tibble::tibble(Day=seq(as.Date('2021-01-01'), lubridate::today(),
+    tibble::tibble(Day=seq(as.Date('2021-01-01'), as.Date('2021-12-31'),
                            by='days'),
                    Count=haven::as_factor(y),
                    WeekDay=lubridate::wday(Day, label=TRUE), 
@@ -78,6 +78,39 @@ dat|>
           axis.text.x=element_blank(),
           axis.text.y=element_text(face='bold'),
           axis.title.x=element_text(size=14, face='bold'))+
+    guides(fill=guide_legend(title='Frequency:'))
+
+```
+
+```{r}
+
+y <- c(0, 0, 0)
+dat <-
+    tibble::tibble(Day=seq(as.Date('2022-01-01'), lubridate::today(),
+                           by='days'),
+                   Count=haven::as_factor(y),
+                   WeekDay=lubridate::wday(Day, label=TRUE), 
+                   Week=lubridate::week(Day), 
+                   Month=lubridate::month(Day, label=TRUE, abbr=FALSE))|>
+    dplyr::mutate(WeekDay=stringr::str_to_title(WeekDay),
+                  WeekDay=haven::as_factor(WeekDay),
+                  Week=haven::as_factor(Week),
+                  Month=stringr::str_to_title(Month),
+                  Month=haven::as_factor(Month))
+dat|>
+    ggplot(aes(Week, WeekDay, fill=Count))+ 
+    geom_tile(color='white')+ 
+    facet_wrap(~ Month, scales='free', ncol=4)+ 
+    scale_fill_viridis_d(direction=-1)+
+    labs(title='Laurence’s 2022 daily activity',
+         subtitle=paste0(
+             sum(y), ' events (', round(mean(y), 2), ' per day)'
+         ))+
+    ggthemes::theme_fivethirtyeight(base_size=14)+
+    theme(strip.text.x=element_text(face='bold', size=14),
+          legend.key.width=ggplot2::unit(0.75, 'cm'),
+          legend.justification=c(1, 0),
+          plot.subtitle=element_text(face='italic'))+
     guides(fill=guide_legend(title='Frequency:'))
 
 ```
