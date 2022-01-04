@@ -26,16 +26,6 @@ statistical modeling through GLMMs, estimation equations, and bayesian
 and likelihood-based methods. Besides the theoretical background, I love
 to analyze data and make pretty and useful visualizations.
 
-What else am I doing right now? (Dec 21)
-
-+ Reading
-  [Physics and Beyond](https://en.wikipedia.org/wiki/Physics_and_Beyond),
-  by Heisenberg,
-
-+ Studying
-  [h-likelihood](https://www.amazon.com/Generalized-Linear-Models-Random-Effects/dp/1498720617/ref=sr_1_1?crid=3GYWLSOWV3JVP&dchild=1&keywords=Generalized+Linear+Models+with+Random+Effects%3A+Unified+Analysis+via+H-likelihood%2C+Second+Edition&qid=1620398604&sprefix=physics+and+beyond+%2Caps%2C274&sr=8-1),
-  just for fun.
-
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
       [Stuff](stuff/) |
