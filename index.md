@@ -6,7 +6,7 @@
 [CV](vitae.pdf) |
 [LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/)
 
-oiHi! I'm a Statistician based in [Curitiba](https://goo.gl/K1Qcdv) and
+Hi! I'm a Statistician based in [Curitiba](https://goo.gl/K1Qcdv) and
 working in the [Pele Pequeno Príncipe Research
 Institute](http://www.pelepequenoprincipe.org.br/), part of the Pequeno
 Príncipe Complex. Pequeno Príncipe Hospital is the largest exclusively
