@@ -158,3 +158,6 @@
 <img src='howdareyou2.jpg'>
 <img src='worthwhile.jpg'>
 <img src='matrix.png'>
+<img src='planet.jpg'>
+<img src='cowboybeep.gif'>
+<img src='nicetattoo.jpg'>
