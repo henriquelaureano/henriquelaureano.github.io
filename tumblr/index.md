@@ -161,3 +161,4 @@
 <img src='planet.jpg'>
 <img src='cowboybeep.gif'>
 <img src='nicetattoo.jpg'>
+<img src='chairs.jpg'>
