@@ -1,0 +1,276 @@
+---
+title: "Fatores associados ao sentimento de prejuízo no processo de aprendizagem"
+author: "Itália Tatiana Bordin and 
+         [Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path='figuras/', fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning=FALSE, message=FALSE, prompt=FALSE,
+                      echo=FALSE, comment=NA)
+
+```
+
+***
+
+```{r pkgs}
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car, kableExtra)
+source(
+    '../../henriquelaureano.github.io/i4p-colors/i4p-palette.R'
+)
+unique_color <- '#3e4989ff'
+options(scipen=10000)
+
+```
+
+# Dados
+
+***
+
+> 20 covariáveis e 176 indivíduos/alunos. Retiramos os que disseram `Não
+> sei responder` em relação à resposta que renomeei como `Prejuízo`,
+> ficando assim com 176 alunos.
+
+> Abaixo mostramos o nome das 20 covariáveis utilizadas (com a resposta,
+> 21). Renomeei o nome de todas (e os níveis de algumas) para facilitar
+> e até mesmo viabilizar a análise. Contudo, acredito que pelos nomes
+> dados todas são intendíveis (de qualquer modo, lhe enviei por email
+> planilha excel com apenas essas variáveis já renomeadas).
+
+```{r dat}
+
+dat <- readxl::read_xlsx('baseR.xlsx')|>
+    dplyr::filter(Prejuízo != 'Não sei responder')|>
+    dplyr::mutate(
+               Prejuízo=dplyr::recode(Prejuízo, 'Não'=0, 'Sim'=1),
+               Concentração=
+                   dplyr::recode(
+                              Concentração,
+                              'Alta  (consigo  me concentrar)'='Alta',
+                              'Baixa (distraio-me com  facilidade)'='Baixa',
+                              'Parcial  (consigo me concentrar por um período)'='Parcial'
+                          ),
+               Aulas=
+                   dplyr::recode(
+                              Aulas,
+                              'Prefiro as disciplinas cujas atividades são 100% assíncronas.'=
+                                  '100% assíncronas', 
+                              'Prefiro as disciplinas cujas atividades são 100% síncronas.'=
+                                  '100% síncronas', 
+                              'Prefiro as disciplinas cujas atividades são, em maior parte, assíncronas.'=
+                                  'Em maior parte, assíncronas',
+                              'Prefiro as disciplinas cujas atividades são, em maior parte, síncronas.'=
+                                  'Em maior parte, síncronas'
+                          ),
+               Atendimento_professor=
+                   dplyr::recode(Atendimento_professor,
+                                 'Busquei atendimento e não obtive resposta.'='Insatisfatória',
+                                 'Busquei atendimento e obtive resposta insatisfatória.'='Insatisfatória',
+                                 'Busquei atendimento e obtive resposta satisfatória.'='Satisfatória',
+                                 'Não tive necessidade de buscar atendimento.'='Sem necessidade'),
+               UF=forcats::fct_collapse(UF,
+                                        'Sul'=c('Paraná (PR)',
+                                                'Santa Catarina (SC)',
+                                                'Rio Grande do Sul (RS)'),
+                                        'Sudeste'=c('Minas Gerais (MG)',
+                                                    'São Paulo (SP)'),
+                                        'Norte'=c('Amapá (AP)'),
+                                        'Nordeste'=c('Rio Grande do Norte (RN)'),
+                                        'Centro-Oeste'=c('Distrito Federal (DF)',
+                                                         'Mato Grosso do Sul (MS)')
+                                        ),
+               Concentração=factor(Concentração,
+                                   levels=c('Baixa', 'Parcial', 'Alta')),
+               Aulas=factor(Aulas,
+                            levels=c('100% assíncronas',
+                                     'Em maior parte, assíncronas',
+                                     'Em maior parte, síncronas', 
+                                     '100% síncronas')),
+               Interação_remota_professor=factor(Interação_remota_professor,
+                                                 levels=c('Pouco',
+                                                          'Parcialmente', 
+                                                          'Muito'))
+           )
+names(dat)
+
+```
+
+> Além disso alguns agrupamentos foram feitos, dado que o ajuste do
+> modelo ficou comprometido dado a baixa representatividade de dados em
+> alguns níveis de algumas variáveis. Na variável `UF` os estados foram
+> agrupados em regiões do Brasil, e na variável `Atendimento_professor`
+> os 3 alunos que disseram `Busquei atendimento e não obtive resposta.`
+> foram alocados junto dos que disseram `Busquei atendimento e obtive
+> resposta insatisfatória.`, tal novo nível foi chamado de
+> `Insatisfatória`.
+
+# Regressão logística
+
+***
+
+> Primeiro ajustados o modelo com todas as variáveis e vemos os resíduos
+> (análise de resíduos).
+
+> Na esquerda temos um gráfico quantil-quantil (qq-plot), para uma
+> distribuição uniforme (a distribuição esperada), para detectar
+> possíveis desvios da mesma. Testes de hipótese são apresentados para
+> melhor corroborar tais possíveis desvios, p-valores não significativos
+> (maiores que 0.05) indicam que está tudo bem (pressupostos são
+> atendidos). Na direita temos um gráfico dos resíduos contra os valores
+> preditos/ajustados. Vemos um possível outlier e um padrão um pouco
+> cíclico. Dado que está tudo bem no qq-plot e que temos apenas um
+> possível outlier, tal padrão não parece ser um problema (tal
+> comportamento é muito provavelmente causado por alguma(s) covariável
+> desbalanceada - nível com poucas observações ou observações de apenas
+> uma classe da resposta).
+
+```{r reglog_inicial,fig.width=10,fig.height=5.25}
+
+m0 <- glm(Prejuízo ~ ., family=binomial(link='logit'), dat)
+
+res.m0 <- DHARMa::simulateResiduals(m0);plot(res.m0)
+
+```
+
+> Performamos seleção de variáveis via o critério de Akaike (AIC) num
+> esquema *stepwise*. Abaixo temos a análise de resíduos do modelo final:
+
+```{r reglog_final,fig.width=10,fig.height=5.25}
+
+m <- MASS::stepAIC(m0, direction='both', trace=FALSE)
+
+res <- DHARMa::simulateResiduals(m);plot(res)
+
+```
+
+> Está tudo ok com a análise de resíduos, nenhuma não-conformidade.
+
+> A seguir temos a tabela de análise de variância (ANOVA) do modelo
+> final. Das 20 covariáveis inseridas no modelo inicial, terminamos num
+> modelo com 5 covariáveis.
+
+```{r m_anova}
+
+car::Anova(m)|>
+    kableExtra::kbl(booktabs=TRUE, digits=8)|>
+    kableExtra::kable_classic_2(full_width=FALSE)|>
+    kableExtra::column_spec(4, bold=TRUE)
+
+```
+
+> Finalmente, a tabela com os resultados finais. Temos, da esquerda para
+> a direita: Nome da variável; estimativa pontual (\(\hat{\beta}\));
+> erro padrão da estimativa pontual; estatística *z*; *p*-valor;
+> probabilidade estimada de se sentir com o aprendizado prejudicado;
+> chance/odds; *lower bound* do intervalo de 95\% da chance; *upper
+> bound* do intervalo de 95% da chance.
+
+> No intercepto (nível de referência) temos um aluno de
+>
+> + `Concentração` Baixa;
+> + `Aulas` 100% assíncronas;
+> + `Interação_remota_professor` Pouco;
+> + `Atendimento_professor` Insatisfatória;
+> + `Faixa_etária` até 25 anos.
+
+> Sua probabilidade de se sentir com o aprendizado prejudicado é de
+> 94.3%. Se mudamos para um diferente nível de `Concentração` (Parcial
+> ou Alta), `Atendimento_professor` (Satisfatória ou Sem necessidade) ou
+> de `Faixa etária` mais de 25 anos, sua probabilidade diminui e
+> consequentemente suas chances (comparado ao perfil do intercepto) são
+> **menores** que 1 (mesmo se não tivéssemos calculado as probabilidades
+> e chances seríamos capazes de saber isso pelo fato dos coeficientes
+> estimados serem **negativos**).
+
+> Se mudamos para um diferente nível de `Aulas` (Em maior parte,
+> assíncronas; Em maior parte, síncronas; ou 100% síncronas) ou de
+> `Interação_remota_professor` (Parcialmente ou Muito) as probabilidades
+> e chances de se sentir com o aprendizado prejudicado, aumentam. As
+> maiores razões de chances são observados na variável `Aulas`.
+>
+> + Um aluno com `Aulas` 100% síncronas tem uma chance 19 vezes
+>   **maior** de se sentir com o aprendizado prejudicado do que um aluno
+>   com `Aulas` 100% assíncronas;
+> + Um aluno com `Aulas` Em maior parte, síncronas, tem uma chance 10
+>   vezes **maior** de se sentir com o aprendizado prejudicado do que um
+>   aluno com `Aulas` 100% assíncronas.
+
+> As chances menores que 1 podem ser interpretados como 1/chance:
+>
+> + Um aluno com `Concentração` Parcial tem uma chance `r 1/0.04`
+>   (1/0.04) vezes **menor** de se sentir com o aprendizado prejudicado
+>   do que um aluno com `Concentração` Baixa;
+> + Um aluno com `Concentração` Alta tem uma chance `r 1/0.01` (1/0.01)
+>   vezes **menor** de se sentir com o aprendizado prejudicado do que um
+>   aluno com `Concentração` Baixa.
+ 
+```{r m_table}
+
+invlogit <- function(x) exp(x)/(1 + exp(x))
+
+Prob <- c(invlogit(coef(m)[1])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[2])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[3])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[4])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[5])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[6])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[7])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[8])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[9])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[10])[[1]], 
+          invlogit(coef(m)[1] + coef(m)[11])[[1]])
+
+dplyr::bind_cols(
+           Variavel=names(coef(m)), coef(summary(m)), Prob=Prob,
+           Chance=exp(coef(m)), exp(confint(m))
+       )|>
+    kableExtra::kbl(booktabs=TRUE, digits=5)|>
+    kableExtra::kable_classic_2(full_width=FALSE)|>
+    kableExtra::column_spec(5, bold=TRUE)
+
+```
+
+# Referências
+
+***
+
+> R Core Team (2021). R: A language and environment for statistical
+> computing. R Foundation for Statistical Computing, Vienna,
+> Austria. URL https://www.R-project.org/.
+>
+> Hadley Wickham, Romain François, Lionel Henry and Kirill Müller
+> (2021). dplyr: A Grammar of Data Manipulation. R package version
+> 1.0.7. https://CRAN.R-project.org/package=dplyr
+>
+> Florian Hartig (2021). DHARMa: Residual Diagnostics for Hierarchical
+> (Multi-Level / Mixed) Regression Models. R package version
+> 0.4.4. https://CRAN.R-project.org/package=DHARMa
+>
+> Venables, W. N. & Ripley, B. D. (2002) Modern Applied Statistics with
+> S. Fourth Edition. Springer, New York. ISBN 0-387-95457-0
+>
+> John Fox and Sanford Weisberg (2019). An {R} Companion to Applied
+> Regression, Third Edition. Thousand Oaks CA: Sage. URL:
+> https://socialsciences.mcmaster.ca/jfox/Books/Companion/
+>
+> Alan Agresti (2002). Categorical Data Analysis. New York:
+> Wiley-Interscience. ISBN 978-0-471-36093-3
+>
+> David Hosmer (2013). Applied logistic regression. Hoboken, New Jersey:
+> Wiley. ISBN 978-0470582473
+>
+> Frank E. Harrell (2015). Regression Modeling Strategies. Springer
+> Series in Statistics (2nd ed.). New York;
+> Springer. doi:10.1007/978-3-319-19425-7. ISBN 978-3-319-19424-0
