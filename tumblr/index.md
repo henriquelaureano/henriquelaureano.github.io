@@ -162,3 +162,5 @@
 <img src='cowboybeep.gif'>
 <img src='nicetattoo.jpg'>
 <img src='chairs.jpg'>
+<img src='garage.jpg'>
+<img src='view2.jpg'>
