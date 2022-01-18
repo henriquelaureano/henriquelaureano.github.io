@@ -164,3 +164,8 @@
 <img src='chairs.jpg'>
 <img src='garage.jpg'>
 <img src='view2.jpg'>
+<img src='alwayshelp.jpg'>
+<img src='mytwopassions.jpg'>
+<img src='flowers.gif'>
+<img src='quasimoto.jpg'>
+<img src='dadandson.jpg'>
