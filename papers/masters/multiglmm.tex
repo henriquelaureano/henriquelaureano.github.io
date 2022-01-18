@@ -76,7 +76,7 @@
   routines. A large simulation study is performed, based on different
   latent structure formulations. The model presents to be of difficult
   estimation, with our results converging to a latent structure where
-  the risk and failure time trajectory levels are correlated.
+  both risk and failure time trajectory levels are correlated.
 
 \end{abstract}
 \vfill
@@ -133,8 +133,8 @@ random variables describing the time until the occurrence of an event, a
 failure \citep{kalb&prentice,hougaard00}. The time until a failure is
 called survival experience, and is the modeling object. To accommodate
 the number of possible causes for a failure there is the competing risks
-data scheme. More specifically, its clustered version i.e., with groups
-of elements sharing some non-observed latent dependence structure.
+data scheme. More specifically, its clustered version with groups of
+elements sharing some non-observed latent dependence structure.
 
 When this framework is applied in real-world situations, we have to be
 able to handle with the nonoccurrence of the desired event, by any of
@@ -160,11 +160,11 @@ routines done via elaborated and slow EM algorithms
 \citep{nielsen92,klein92} or inefficient MCMC schemes
 \citep{hougaard00}. With multiple survival experiences, the general idea
 is the same but with even more elaborated likelihoods
-\citep{prentice78,therneau00} or instead with the of mixture model
-approaches \citep{larson85,kuk92}.
+\citep{prentice78,therneau00} or mixture model approaches
+\citep{larson85,kuk92}.
 
 When in the hazard scale, the interpretations are in terms of hazard
-rates. A less usual scale but with a more appealing interpretation, is
+rates. A less usual scale but with a more appealing interpretation is
 the probability scale. For competing risks data, the work on the
 probability scale is done by means of the cumulative incidence function
 (CIF) \citep{andersen12}, with the main modeling approach being the
@@ -213,8 +213,8 @@ structure. The model specification and the inferential routine are much
 simpler than the usually used approaches, increasing its practical
 relevance. The latent effects, the key complicator factor, are handled
 out by means of an efficient Laplace approximation and automatic
-differentiation. The main contributions of this article are: (i)
-introducing the modeling of cause/cluster-specific CIFs of clustered
+differentiation routines. The main contributions of this article are:
+(i) introducing the modeling of cause/cluster-specific CIFs of clustered
 competing risks data into an efficient implementation of the GLMMs
 framework; (ii) performing a extensive simulation study to check the
 properties of the maximum likelihood estimator to learn the
