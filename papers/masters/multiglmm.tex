@@ -438,12 +438,22 @@ model ensures that the sum of all predicted cause-specific CIFs does not
 exceed 1. Considering two competing causes of failure, we have a
 multinomial with three classes. The third class exists to handle the
 censorship and its probability is given by the complementary to reach
-1. This framework in \autoref{eq:model} results in what we call
-multiGLMM, a multinomial GLMM to handle the CIF of clustered competing
-risks data.
+1. To better describe these curve behaviors we have
+\autoref{fig:modelsample}.
 
-For a random sample, the corresponding marginal likelihood function in
-given by
+\begin{figure}[H]
+ \centering \includegraphics[width=\linewidth]{pics/modelsample-1.png}
+ \vspace{-0.75cm}
+ \caption{Cluster-specific cumulative incidence function (CIF) curves
+   and their derivatives (dCIF) for a random scenario with two competing
+   causes.}
+ \label{fig:modelsample}
+\end{figure}
+
+This framework in \autoref{eq:model} results in what we call multiGLMM,
+a multinomial GLMM to handle the CIF of clustered competing risks
+data. For a random sample, the corresponding marginal likelihood
+function in given by
 \begin{align}
  L(\bm{\theta}~;~y)
  &= \prod_{j=1}^{J}~\int_{\Re^{4}}
@@ -644,6 +654,40 @@ model implementation).
 
 \section{Simulation studies}
 \label{simulation}
+
+To verify the practical viability of our model we performed an extensive
+simulation study. As main complicator factors, we may mention the
+competing causes un balancement, where we typically have much more
+censorships than actual failures; and the high dimensionality problem,
+having a considerable number of parameters to estimate in both fixed and
+latent effects layers.
+
+One of the main questions surrounding our model that we tried to tack
+down in this study was, if even when in the possession of a high
+correlated sample in the latent field, we are able to estimate all
+variance and covariance parameters.
+
+One of the main questions surrounding our model that we tried to tack
+down in this study was, if even when in the possession of a high
+correlated sample in the latent field, we are able to estimate all
+variance and covariance parameters. To answer this question we worked
+with four different models, with each one differentiating from the other
+in terms of latent effects structure. We had a model with (i) latent
+effects only on the risk level; (ii) only on the failure time trajectory
+level; (iii) on both levels but without cross-correlations, called a
+blog-diag model; and (iv) a model with all possible correlations
+presented, called as a complete model. A visual representation of these
+latent effects structures is presented in \autoref{fig:matrix} in terms
+of the corresponding variance-covariance matrices.
+
+\begin{figure}[H]
+ \centering \includegraphics[width=\linewidth]{pics/matrix-1.png}
+ \vspace{-0.75cm}
+ \caption{Simulation study variance-covariance matrix model designs,
+   considering two competing causes of failure and consequently, four
+   latent effects.}
+ \label{fig:matrix}
+\end{figure}
 
 \section{Discussion}
 \label{discussion}
