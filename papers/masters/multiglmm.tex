@@ -399,7 +399,7 @@ The generalized linear mixed model (GLMM) for clustered competing risks
 data is specified in the following hierarchical fashion. By simplicity,
 we focus on two competing causes of failure but an extension is
 straightforward. For two competing causes of failure, a subject \(i\),
-in the cluster/family \(j\), in time \(t\), we have
+in the cluster/family \(j\) and time \(t\), we have
 \begin{align}
  y_{i j t} \mid \{u_{1j},~u_{2j},~\eta_{1j},~\eta_{2j}\}
  &\sim\text{Multinomial}(p_{1ijt},~p_{2ijt},~p_{3ijt})\nonumber\\
@@ -434,7 +434,7 @@ in the cluster/family \(j\), in time \(t\), we have
 \end{align}
 The probabilities are given by the derivative w.r.t. time \(t\) of the
 cluster-specific CIF. The choice of a multinomial logistic regression
-model ensures that the sum of the predicted cause-specific CIFs does not
+model ensures that the sum of all predicted cause-specific CIFs does not
 exceed 1. Considering two competing causes of failure, we have a
 multinomial with three classes. The third class exists to handle the
 censorship and its probability is given by the complementary to reach
@@ -474,30 +474,30 @@ given by
    \text{d}\bm{r}_{j}\label{eq:loglik},
 \end{align}
 where \(\bm{\theta} = [\bm{\beta}~\bm{\gamma}~\bm{w}~\bm{\sigma^{2}}~
-\bm{\rho}]^{\top}\) is the parameters vector to be maximized. In our
+  \bm{\rho}]^{\top}\) is the parameters vector to be maximized. In our
 framework, a subject can fail from just one competing cause or get
 censor, at a given time. Thus, the fraction of factorials in the fixed
-effect component is made only by 0's and 1's. Finally, returning the
-value 1. The matrix \(\Sigma\) is the variance-covariance matrix, which
-parameters are given by \(\bm{\sigma}^{2}\) and \(\bm{\rho}\).
+effect component is made only by 0's and 1's. The matrix \(\Sigma\) is
+the variance-covariance matrix, which parameters are given by
+\(\bm{\sigma}^{2}\) and \(\bm{\rho}\).
 
-Now, \autoref{eq:loglik} in words. To each cluster/family \(j\) we have
-a product of two components. The fixed effect component, given by a
-multinomial distribution with its probabilities specified through the
-cluster-specific CIF (\autoref{eq:cif}) and, the latent effect
-component, given by a multivariate Gaussian distribution. To each
-subject \(i\) that composes a cluster \(j\) we have its specific fixed
-effects contribution. The likelihood in \autoref{eq:loglik} is the most
-general as possible, allowing for repeated measures to each
-subject. Since all subjects of a given cluster shares the same latent
-effect, we have just one latent effect contribution multiplying the
-product of fixed effect contributions. As we do not observe the latent
-effect variables, \(\bm{r}_{j}\), we integrate out in it. With two
-competing causes of failure, we have four latent effects (a multivariate
-Gaussian distribution in four dimensions). Consequently, for each
-cluster, we approximate an integral in four dimensions. The product of
-these approximated integrals results in the called marginal likelihood,
-to be maximized in \(\bm{\theta}\).
+To each cluster \(j\) we have a product of two components. The fixed
+effect component, given by a multinomial distribution with its
+probabilities specified through the cluster-specific CIF
+(\autoref{eq:cif}) and, the latent effect component, given by a
+multivariate Gaussian distribution. To each subject \(i\) that composes
+a cluster \(j\) we have its specific fixed effects contribution. The
+likelihood in \autoref{eq:loglik} is the most general as possible,
+allowing for repeated measures to each subject. Since all subjects of a
+given cluster shares the same latent effect, we have just one latent
+effect contribution multiplying the product of fixed effect
+contributions. As we do not observe the latent effect variables,
+\(\bm{r}_{j}\), we integrate out in it. With two competing causes of
+failure we have four latent effects, a multivariate Gaussian
+distribution in four dimensions. Consequently, for each cluster, we
+approximate an integral in four dimensions. The product of these
+approximated integrals results in the called marginal likelihood, to be
+maximized in \(\bm{\theta}\).
 
 \section{Estimation and inference}
 \label{inference}
