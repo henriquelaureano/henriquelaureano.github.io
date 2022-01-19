@@ -299,7 +299,7 @@ mean and potentially correlated,
  \]
 
 The cluster-specific risk levels are modeled by a multinomial logistic
-regression model with latent effects i.e.,
+regression model with latent effects, i.e.
 \begin{equation}
  \pi_{k}(\bm{x}, \bm{u}) =
  \frac{\exp\{\bm{x}\bm{\beta}_{k} + u_{k}\}}{1 +
@@ -328,13 +328,13 @@ with it. It is used a time \(t\) transformation given by
  \quad t\in(0,~\delta), \quad g(t)\in(-\infty,~\infty),
 \]
 where \(\delta\) depends on the data and cannot exceed the maximum
-observed follow-up time \(\tau\) i.e., \(\delta \leq \tau\). With this
+observed follow-up time \(\tau\), i.e. \(\delta \leq \tau\). With this
 Fisher-based transformation the value of the cluster-specific failure
-time trajectory is equal 1, at time \(\delta\). Consequently, \(F_{k}
+time trajectory is equal 1 at time \(\delta\). Consequently, \(F_{k}
 (\delta \mid \bm{x},~\bm{u},~\eta_{k}) = \pi_{k}(\bm{x} \mid \bm{u})\)
 and we can interpret \(\pi_{1}(\bm{x} \mid \bm{u})\) and
 \(\pi_{2}(\bm{x} \mid \bm{u})\) as the cause-specific cluster-specific
-risk levels, at time \(\delta\). The cluster-specific survival function
+risk levels at time \(\delta\). The cluster-specific survival function
 is given by \(S(t \mid \bm{x},~\bm{u},~\bm{\eta}) = 1 - F_{1} (t \mid
 \bm{x},~\bm{u},~\eta_{1}) - F_{2} (t \mid \bm{x},~\bm{u},~\eta_{2})\).
 
@@ -344,21 +344,21 @@ A direct understanding of all coefficients/parameters in
 covariates, and plot the cluster-specific CIF of just one failure
 cause. We see that:
 \begin{itemize}
- \item The \(\beta\)'s are related to the curve's maximum value i.e.,
-   bigger the \(\beta\), highest the CIF;
+ \item The \(\beta\)'s are related to the curve's maximum value, i.e.
+   bigger the \(\beta\) highest the CIF;
 
  \item The \(\bm{\gamma}_{k}\)'s are the coefficients responsible for
    quantifying the impact of the covariates in the cause-specific
-   failure time trajectories i.e., the shape of the cumulative
+   failure time trajectories, i.e. the shape of the cumulative
    incidence. We see that the \(\gamma\)'s are also related with an idea
    of midpoint and consequently, growth speed. The fact that
    \(\gamma_{k}\) enters negatively in the cluster-specific failure time
    trajectory makes that a negative value causes an advance towards the
    curve, whereas a positive value causes a delay;
 
- \item Last but not least, the \(w\)'s. With negative values, we have a
-   decreasing curve and with positive values an increasing curve i.e.,
-   we are interested only on the positive side.
+ \item Last but not least, the \(w\)'s. With negative values we have a
+   decreasing curve and with positive values an increasing curve, the
+   behavior of interest.
 \end{itemize}
    
 \begin{figure}[H]
@@ -387,14 +387,10 @@ negative values are the common situation. A negative correlation between
 \(\eta_{k}\) and \(u_{k}\) imply that when \(\eta_{k}\) decreases,
 \(u_{k}\) increases and conversely when \(\eta_{K}\) increases,
 \(u_{k}\) decreases. In other words, an increased risk level is reached
-quickly and a decreased risk level is reached later, respectively.
-
-Practical situations with a positive within-cause correlation are hard
-to find i.e., where an increased risk level is associated with a late
-onset and vice versa. However, a positive cross-cause correlation
-between \(\eta\) and \(u\) sounds much more realistic, where late onset
-of one failure cause is associated with a high absolute risk of another
-failure cause.
+quickly and a decreased risk level is reached later, respectively. With
+regard to cross-cause correlation between \(\eta\) and \(u\), positive
+values are the common situation where late onset of one failure cause is
+associated with a high absolute risk of another failure cause.
 
 \subsection{Model specification}
 \label{multiGLMM}
