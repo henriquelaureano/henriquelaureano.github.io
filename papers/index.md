@@ -55,7 +55,7 @@
 + [2021]\
   Modeling the cumulative incidence function of clustered competing
   risks data: a multinomial GLMM approach\
-  **H. A. Laureano**, W. H. Bonat
+  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, W. H. Bonat
 
 + [2021]\
   Multivariate generalized linear mixed models for underdispersed count
