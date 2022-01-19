@@ -514,8 +514,8 @@ likelihood for \(\bm{\theta}\) can be written as
 \end{equation}
 From standard probability theory is easy to see that in the right-hand
 side (r.h.s.) we have a joint density, consequently, \autoref{eq:joint}
-represents what is called a full or a joint likelihood function. The
-latent effect \(\bm{u}\) is \textit{latent} i.e., we do not observe
+represents what is called a full or joint likelihood function. The
+latent effect \(\bm{u}\) is \textit{latent}, i.e. we do not observe
 it. To handle this we use the Laplace approximation.
 
 If we have a joint density we can just integrate out the undesired
@@ -534,15 +534,15 @@ variable resulting in
  \end{aligned}
 \end{equation}
 a marginal density that keeps the parameters \(\{\bm{\sigma^{2}}~
-\bm{\rho}\}\) of the integrated variable. A very good option for this
-integration consists in take advantage of the exponential family
-structure together with the fact that we are dealing with Gaussian
-latent effects. These ideas converge to an adaptive Gaussian quadrature
-with one integration point, also called as \textit{Laplace
-  approximation} \citep{molenberghs&verbeke,LA4H,tierney,corestats}.
+\bm{\rho}\}\) of the integrated variable. To handle this integration
+step a clever choice is to take advantage of the exponential family
+structure together with the Gaussian latent effects distribution. These
+ideas converge to an adaptive Gaussian quadrature with one integration
+point, also known as \textit{Laplace approximation}
+\citep{molenberghs&verbeke,LA4H,tierney,corestats}.
 
-With an integral that is analytically intractable, we may approximate it
-to obtain a tractable closed-form expression allowing the numerical
+We may approximate a analytically intractable integral in a way to
+obtain a tractable closed-form expression allowing the numerical
 maximization of the resulting marginal likelihood function
 \citep{patrao}. The Laplace approximation has been designed to
 approximate integrals in the form
@@ -553,13 +553,12 @@ approximate integrals in the form
  |{Q}''(\bm{\hat{u}}_{i})|^{-1/2}~\exp\{Q(\bm{\hat{u}}_{i})\},
  \label{eq:laplace}
 \end{equation}
-where \(Q(\bm{u}_{i})\) is a known, unimodal bounded function, and
+where \(Q(\bm{u}_{i})\) is a known unimodal bounded function, and
 \(\bm{\hat{u}}_{i}\) is the value for which \(Q(\bm{u}_{i})\) is
-maximized.
-
-A advantage of the Laplace approximation approach in a GLMM is the
-exponential family structure. In a usual GLMM the response follows a
-one-parameter exponential family distribution that can be written as
+maximized. A advantage of the Laplace approximation approach in a GLMM
+is the exponential family structure. In a usual GLMM the response
+follows a one-parameter exponential family distribution that can be
+written as
 \[
  f(\bm{y}_{i} \mid \bm{u}_{i}, \bm{\theta}) =
  \exp \left\{
@@ -569,7 +568,7 @@ one-parameter exponential family distribution that can be written as
       \right\},
 \]
 where \(b(\cdot)\) and \(c(\cdot)\) are known functions. This general
-and easy to compute expression, together with a (multivariate) Gaussian
+and easy to compute expression together with a (multivariate) Gaussian
 distribution, highlights the convenience of the Laplace method. The
 \(Q(\bm{u}_{i})\) function to be maximized can be expressed as
 \begin{equation}
@@ -639,7 +638,9 @@ and the possibility of performing the computations in parallel,
 differentiation \citep{nocedal&wright,corestats,peyre}, the state-of-art
 in gradients computation. In \texttt{TMB} the user should write its
 likelihood function in a \texttt{C++} template file and then load it on
-R.
+R. This last characteristic makes \texttt{TMB} general (a vast range of
+models being allowed to be written) and powerful (low-level \texttt{C++}
+model implementation).
 
 \section{Simulation studies}
 \label{simulation}
