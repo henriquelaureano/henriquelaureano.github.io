@@ -692,7 +692,6 @@ of the corresponding variance-covariance matrices.
 
 Besides the four latent effects structures, we worked with two CIF
 configurations
-
 \begin{align*}
  \text{High CIF configuration}:~&\quad
  \{\beta_{1} = -2,~\beta_{2} = -1.5,~\gamma_{1} = 1,~\gamma_{2} = 1.5,~
@@ -707,6 +706,8 @@ configurations
 Those two sets of parameter values together with the following
 variance-covariance structure values arise in CIF curves with peaks
 around 0.15 (low incidence scenario) and 0.60 (high incidence scenario).
+For numerical efficiency reasons, we worked with the log-variances and
+the Fisher-z-transformation of the correlation parameters.
 
 \begin{minipage}{0.15\textwidth}
  \begin{align*}
@@ -747,21 +748,58 @@ parameters).
 All models were run, in a parallelized fashion, in one of the two
 following Linux systems:
 \begin{description}
- \item[System 1] 12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz
-   processors with 16GB RAM;
- \item[System 2] 30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz
-   processors and 206GB RAM.
+ \item[System 1] 12 Intel(R) Core(TM) i7-8750H CPU @2.20GHz processors
+   with 16GB RAM;
+ \item[System 2] 30 Intel(R) Xeon(R) CPU E5-2690v2 @3.00GHz processors
+   and 206GB RAM.
 \end{description}
 
 The non-complete models (involving 2D Laplace approximations) are kind
 of fast, taking always less than 5 minutes of processing. In the most
 expensive scenarios (30K 4D Laplaces), the complete model takes 30
-minutes.
+minutes. In terms of parameters estimation, the non-complete models fail
+to learn the data. They appear to be not structured enough to capture
+the data characteristics, showing that a full correlated latent field is
+really the most appropriate choice.
 
-In terms of parameters estimation, the non-complete models fail to learn
-the data. They appear to be not structured enough to capture the data
-characteristics, showing that a full correlated latent field is really
-the most appropriate choice.
+In the supplementary materials, we have several graphs summarizing the
+parameters estimate bias. In each figure, we have the estimate bias and
+its uncertainty described by a Wald-based confidence interval,
+i.e. \(\pm\) 1.96 the bias standard deviation. We chose to use this
+uncertainty representation based on the point estimates instead of the
+standard error computations, since in several scenarios the model fails
+to compute all the standard errors, caused by Hessian numerical
+instabilities.
+
+## ---------------------------------------------------------------------
+
+With a latent structure only in the risk level or in the failure time
+trajectory level, the low CIF scenarios are the ones with a much smaller
+bias-variance. In general, the mean-bias is small but the variances are
+high. When we have a latent structure on both levels but we still assume
+the cross-correlations as zero (block-diag model), the results get a
+little bit better. Nevertheless, when we assume a non-zero
+cross-correlation structure (complete model), basically everything
+changes for the better. The mean biases get even closer to zero, the
+standard deviations decrease 50\% or more, and mainly, now the high CIF
+scenarios are the ones with a much smaller bias-variance. All this is
+accomplished through the consideration of the cross-correlations.
+
+In the \textit{simpler} models, with a latent structure just in one
+level, is hard to see some significant difference between the clusters
+and sample sizes. With the complete model, in the other hand, the
+difference is clear: as we increase the clusters and the sample sizes,
+the bias-variance decreases. The mean-bias is basically always the
+same. In the risk model is hard to point-out a scenario as the best or
+worst. For the time model,in the scenario with clusters of size 2, high
+CIF, and 5 thousand data points, we get a much bigger standard deviation
+in the \(\bm{\beta}\)s parameter estimates. For the block-diag model, in
+the scenario with clusters of size 2, low CIF, and 5 thousand data
+points, the standard deviations are huge for the curve shape parameter
+estimates of the competing cause 1. In the \autoref{cap:appendixD}, with
+the 2.5 and 97.5\% bias quantiles, the most extreme values are removed
+from the uncertainty representation. There, the main characteristic is
+the parameter estimates asymmetry.
 
 \begin{figure}[H]
  \centering
@@ -914,7 +952,6 @@ for some complex models.
    with \(\pm\) 1.96 standard deviations.}
  \label{fig:biassdrhoz4}
 \end{figure}
-
 
 \bibliographystyle{dcu} \bibliography{references}
 
