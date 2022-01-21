@@ -739,10 +739,56 @@ structures \(\times\) 2 CIF configurations \(\times\) 3 cluster sizes
 samples. In total, 36000 (72 \(\times\) 500) model fittings. In the
 smallest scenario, we had 500 clusters, in the biggest one, 30000
 clusters. The number of clusters is the number of Laplace approximations
-to be performed.
+to be performed. With two competing causes of failure, we have a model
+with 16 parameters (6 in the fixed effect layer, 3 for each competing
+cause; and 10 in the latent effects layer, 4 variances, and 6 covariance
+parameters).
+
+All models were run, in a parallelized fashion, in one of the two
+following Linux systems:
+\begin{description}
+ \item[System 1] 12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz
+   processors with 16GB RAM;
+ \item[System 2] 30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz
+   processors and 206GB RAM.
+\end{description}
+
+The non-complete models (involving 2D Laplace approximations) are kind
+of fast, taking always less than 5 minutes of processing. In the most
+expensive scenarios (30K 4D Laplaces), the complete model takes 30
+minutes.
+
+In terms of parameters estimation, the non-complete models fail to learn
+the data. They appear to be not structured enough to capture the data
+characteristics, showing that a full correlated latent field is really
+the most appropriate choice.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=\linewidth]{../../THESIS/thesis/figures/cifs-1.png}
+ \vspace{-0.75cm}
+ \caption{High cumulative incidence function (CIF) scenario curves. \texttt{cs} means the cluster size (2, 5, and 10), and 5, 30, and 60K means the sample size.}
+ \label{fig:cifshigh}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=\linewidth]{../../THESIS/thesis/figures/cifs-2.png}
+ \vspace{-0.75cm}
+ \caption{Low cumulative incidence function (CIF) scenario curves.}
+ \label{fig:cifslow}
+\end{figure}
 
 \section{Discussion}
 \label{discussion}
+
+In a full R implementation with 10K 4D Laplaces, it took 30hrs. TMB is
+fast.
+
+We also did a Bayesian analysis via Stan/NUTS-HMC (Stan Development Team
+2020). 1 week of parallelized processing for a 2500 size 2 clusters
+scenario with tuned NUTS. This just reinforces the MCMC impracticability
+for some complex models.
 
 \section*{Supplementary material}
 
