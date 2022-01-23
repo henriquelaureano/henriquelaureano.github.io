@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2022-jan-11 · Curitiba/PR/Brazil
+##                                      2022-jan-23 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ## "Fatores associados ao sentimento de prejuízo no processo de
@@ -9,7 +9,7 @@
 
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 
-pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car)
+pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car, pROC)
 
 dat <- readxl::read_xlsx('baseR.xlsx')|>
     dplyr::filter(Prejuízo != 'Não sei responder')|>
@@ -68,10 +68,16 @@ names(dat)
 m0 <- glm(Prejuízo ~ ., family=binomial(link='logit'), dat)
 
 res.m0 <- DHARMa::simulateResiduals(m0);plot(res.m0)
+prob   <- predict(m0, type='response')
+roc    <- pROC::roc(dat$Prejuízo ~ prob, plot=TRUE, print.auc=TRUE,
+                  main='ROC curve')
 
-m <- MASS::stepAIC(m0, direction='both', trace=FALSE)
+m <- MASS::stepAIC(m0, direction='both', trace=TRUE)
 
-res <- DHARMa::simulateResiduals(m);plot(res)
+res  <- DHARMa::simulateResiduals(m);plot(res)
+prob <- predict(m, type='response')
+roc  <- pROC::roc(dat$Prejuízo ~ prob, plot=TRUE, print.auc=TRUE,
+                  main='ROC curve')
 
 car::Anova(m)
 

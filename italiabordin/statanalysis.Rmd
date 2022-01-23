@@ -26,7 +26,8 @@ knitr::opts_chunk$set(fig.path='figuras/', fig.align='center',
 ```{r pkgs}
 
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
-pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car, kableExtra)
+pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car, kableExtra,
+               pROC)
 source(
     '../../henriquelaureano.github.io/i4p-colors/i4p-palette.R'
 )
@@ -144,14 +145,47 @@ res.m0 <- DHARMa::simulateResiduals(m0);plot(res.m0)
 
 ```
 
+> A curva ROC apresenta uma alta área abaixo da curva (AUC), indicando
+> que dentre as variáveis existem boas preditoras para o desfecho em
+> questão.
+
+```{r reglog_inicial_roc,fig.width=4.25,fig.height=4}
+
+prob <- predict(m0, type='response')
+roc  <- pROC::roc(dat$Prejuízo ~ prob, plot=TRUE, print.auc=TRUE,
+                  main='ROC curve')
+
+```
+
 > Performamos seleção de variáveis via o critério de Akaike (AIC) num
-> esquema *stepwise*. Abaixo temos a análise de resíduos do modelo final:
+> esquema *stepwise*.
+>
+> O modelo completo/inicial possuí um AIC de 201.74. A variável cuja
+> retirada tem maior impacto no AIC, ou seja, a menos
+> relevante/significativa, é a `internet`. Um modelo sem essa variável
+> possuí um AIC de 197.55. Com esse novo modelo, vemos que a variável
+> menos relevante é a `Interação_remota_colegas` (AIC de 194.54). Assim
+> procedemos até chegar no modelo final.
+
+```{r stepwise}
+
+m <- MASS::stepAIC(m0, direction='both', trace=TRUE)
+
+```
+
+> Abaixo temos a análise de resíduos do modelo final:
 
 ```{r reglog_final,fig.width=10,fig.height=5.25}
 
-m <- MASS::stepAIC(m0, direction='both', trace=FALSE)
-
 res <- DHARMa::simulateResiduals(m);plot(res)
+
+```
+
+```{r reglog_final_roc,fig.width=4.25,fig.height=4}
+
+prob <- predict(m, type='response')
+roc  <- pROC::roc(dat$Prejuízo ~ prob, plot=TRUE, print.auc=TRUE,
+                  main='ROC curve')
 
 ```
 
@@ -264,6 +298,13 @@ dplyr::bind_cols(
 > John Fox and Sanford Weisberg (2019). An {R} Companion to Applied
 > Regression, Third Edition. Thousand Oaks CA: Sage. URL:
 > https://socialsciences.mcmaster.ca/jfox/Books/Companion/
+>
+> Xavier Robin, Natacha Turck, Alexandre Hainard, Natalia Tiberti,
+> Frédérique Lisacek, Jean-Charles Sanchez and Markus Müller
+> (2011). pROC: an open-source package for R and S+ to analyze and
+> compare ROC curves. BMC Bioinformatics, 12, p. 77.  DOI:
+> 10.1186/1471-2105-12-77
+> <http://www.biomedcentral.com/1471-2105/12/77/>
 >
 > Alan Agresti (2002). Categorical Data Analysis. New York:
 > Wiley-Interscience. ISBN 978-0-471-36093-3
