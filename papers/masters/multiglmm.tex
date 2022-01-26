@@ -811,7 +811,11 @@ the seventy-two scenarios, we are able to construct the mean CIF curves.
 In \autoref{fig:cifshigh} is clear that with the complete model we get a
 perfect fit in all scenarios. The risk and time models estimate well the
 curve shape parameters but they fail to learn the max incidence. A
-compensation between curves is clear.
+compensation between curves is clear. In the low CIF scenarios in
+\autoref{fig:cifslow}, the estimation is clearly more difficult. The
+overall fits are bad. For one of the failure causes, the estimation
+quality is not so bad. The problem is when we look to the other. The
+best joint fit is still with the complete model.
 
 \begin{figure}[H]
  \centering
@@ -833,6 +837,74 @@ We also did a Bayesian analysis via Stan/NUTS-HMC (Stan Development Team
 2020). 1 week of parallelized processing for a 2500 size 2 clusters
 scenario with tuned NUTS. This just reinforces the MCMC impracticability
 for some complex models.
+
+The general goal of this paper was the proposition and evaluation of a
+maximum likelihood estimation approach for the analysis of clustered
+competing risks data. Focused on the probability scale, by means of the
+cumulative incidence function (CIF), instead of the hazard scale usual
+in the survival modeling literature \citep{kalb&prentice}. We model the
+clustered competing risks on a latent-effects framework, a generalized
+linear mixed model (GLMM) \citep{GLMM}, with a multinomial distribution
+for the competing risks and censorship, conditioned on the
+latent-effects. The within-cluster latent dependency is accommodated by
+a multivariate Gaussian distribution and is modeled via its covariance
+matrix parameters.
+
+The failures by the competing causes and their respective censorships
+are modeled in the probability scale, by means of the CIF
+\cite{kalb&prentice,andersen12}. The CIF is accommodated in our GLMM
+framework in terms of the link function \cite{GLM89}, as the product of
+two functions, one responsible to model the instantaneous risk and the
+other the failure time trajectory, both in a cluster-specific
+fashion. The shape of these functions is described in detail
+in \autoref{cap:model}. This particular GLMM formulation is what makes
+our model, particular. Thus, we have what we call a multiGLMM: a
+multinomial GLMM for clustered competing risks data.
+
+The two-function product CIF formulation was taken from
+\citeonline{SCHEIKE} but there they use a different estimation
+framework, a composite likelihood framework
+\cite{lindsay88,cox&reid04,varin11}. Here we do a full likelihood
+analysis instead. A composite approach is generally used when a full
+likelihood approach is impossible or computationally impracticable. Our
+goal here was to assess a full likelihood framework taking advantage of
+state-of-the-art computational libraries together with efficient
+algorithm implementations. We have all this with
+the \texttt{R} \cite{R21} package TMB \cite{TMB}.
+
+The applications in focus here were family studies. Besides the
+within-cluster/family dependence, this kind of study is characterized by
+involving big samples, generally, populations. Also, generally having a
+high number of small clusters, families. A maximum likelihood approach
+with the use of efficiently implemented Laplace approximations
+\cite{tierney,patrao} together with an automatic differentiation (AD)
+\cite{corestats,nocedal&wright} routine, all via TMB, is able to
+efficiently handle with a high number of clusters, independent of its
+size. The multinomial distribution assumption, on its own, is an
+excellent probabilistic choice since it can accommodate virtually any
+number of competing causes of failure and its censorship. The presence
+of those two characteristics in our multiGLMM makes it an efficient and
+scalable modeling framework for clustered competing risks data.
+
+Even with our modeling framework being virtually able to handle any
+number of competing causes of failure, we restrained ourselves to work
+here with only two of them. With two competing causes, we have
+a \(4\times4\) covariance matrix for the latent effects, which implies
+ten covariance parameters, which is already a lot of parameters to be
+estimated in a latent structure. Since our goal was to assess the
+viability of the maximum likelihood estimation method, we kept it with
+two causes.
+
+All models from the simulation study were run, in a parallelized
+fashion, in one of the two following Linux systems:
+\begin{description}
+ \item[System 1]
+  12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz processors
+  with 16GB RAM;
+ \item[System 2]
+  30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz processors
+  and 206GB RAM.
+\end{description}
 
 \section*{Supplementary material}
 
