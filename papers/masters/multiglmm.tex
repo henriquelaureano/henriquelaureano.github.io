@@ -886,29 +886,6 @@ estimated in a latent structure. Since our goal was to assess the
 viability of the maximum likelihood estimation method, we kept it with
 two causes.
 
-## ---------------------------------------------------------------------
-
-In a full R implementation with 10K 4D Laplaces, it took 30hrs. TMB is
-fast.
-
-We also did a Bayesian analysis via Stan/NUTS-HMC (Stan Development Team
-2020). 1 week of parallelized processing for a 2500 size 2 clusters
-scenario with tuned NUTS. This just reinforces the MCMC impracticability
-for some complex models.
-
-Each risk and time model run is not so time-consuming, generally never
-taking more than 5 minutes. The inherent idea is that for each cluster
-we are always performing two-dimension integral approximations and we
-have \textit{just} three covariance parameters. With the block-diag
-model, we are theoretically in four dimensions. However, since the
-covariance matrix is, block-diagonal, we experienced several numerical
-instability problems. The solution, as can be seen in the
-\autoref{cap:blockdiagModel} (\autoref{cap:appendixD}) code, was to
-split it into two two-dimension matrices, since the \(4\times4\)
-covariance matrix is block-diagonal.  This simple solution solved all
-numerical instability problems. The computational time was only a little
-bit bigger than with the risk and time models.
-
 Finally, the complete model. In the biggest scenario, with 60 thousand
 data points and clusters of size 2 i.e., with 30 thousand four-dimension
 integral approximations (ten parameters in the covariance matrix), the
@@ -924,6 +901,14 @@ around 30 hours, parallelizing it between all threads of system 1. In
 summary, by using TMB we were able to increase the model size 3 times
 and to decrease the computational time 60 times. An incredible
 performance gain.
+
+In a full R implementation with 10K 4D Laplaces, it took 30hrs. TMB is
+fast.
+
+We also did a Bayesian analysis via Stan/NUTS-HMC (Stan Development Team
+2020). 1 week of parallelized processing for a 2500 size 2 clusters
+scenario with tuned NUTS. This just reinforces the MCMC impracticability
+for some complex models.
 
 Still, with the complete model, we performed a Bayesian analysis via
 \texttt{tmbstan} \cite{tmbstan}. \texttt{tmbstan} enables MCMC sampling
