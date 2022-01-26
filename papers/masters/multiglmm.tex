@@ -830,14 +830,6 @@ best joint fit is still with the complete model.
 \section{Discussion}
 \label{discussion}
 
-In a full R implementation with 10K 4D Laplaces, it took 30hrs. TMB is
-fast.
-
-We also did a Bayesian analysis via Stan/NUTS-HMC (Stan Development Team
-2020). 1 week of parallelized processing for a 2500 size 2 clusters
-scenario with tuned NUTS. This just reinforces the MCMC impracticability
-for some complex models.
-
 The general goal of this paper was the proposition and evaluation of a
 maximum likelihood estimation approach for the analysis of clustered
 competing risks data. Focused on the probability scale, by means of the
@@ -852,34 +844,33 @@ matrix parameters.
 
 The failures by the competing causes and their respective censorships
 are modeled in the probability scale, by means of the CIF
-\cite{kalb&prentice,andersen12}. The CIF is accommodated in our GLMM
-framework in terms of the link function \cite{GLM89}, as the product of
+\citep{kalb&prentice,andersen12}. The CIF is accommodated in our GLMM
+framework in terms of the link function \citep{GLM89}, as the product of
 two functions, one responsible to model the instantaneous risk and the
 other the failure time trajectory, both in a cluster-specific
-fashion. The shape of these functions is described in detail
-in \autoref{cap:model}. This particular GLMM formulation is what makes
-our model, particular. Thus, we have what we call a multiGLMM: a
-multinomial GLMM for clustered competing risks data.
+fashion. The shape of these functions is described in detail in Section
+\ref{model}. This particular GLMM formulation is what makes our model,
+particular. Thus, we have what we call a multiGLMM: a multinomial GLMM
+for clustered competing risks data.
 
-The two-function product CIF formulation was taken from
-\citeonline{SCHEIKE} but there they use a different estimation
-framework, a composite likelihood framework
-\cite{lindsay88,cox&reid04,varin11}. Here we do a full likelihood
-analysis instead. A composite approach is generally used when a full
-likelihood approach is impossible or computationally impracticable. Our
-goal here was to assess a full likelihood framework taking advantage of
-state-of-the-art computational libraries together with efficient
-algorithm implementations. We have all this with
-the \texttt{R} \cite{R21} package TMB \cite{TMB}.
+The two-function product CIF formulation was taken from \cite{SCHEIKE}
+but there they use a different estimation framework, a composite
+likelihood framework \citep{lindsay88,cox&reid04,varin11}. Here we do a
+full likelihood analysis instead. A composite approach is generally used
+when a full likelihood approach is impossible or computationally
+impracticable. Our goal here was to assess a full likelihood framework
+taking advantage of state-of-the-art computational libraries together
+with efficient algorithm implementations. We have all this with the R
+\citep{R21} package \texttt{TMB} \citep{TMB}.
 
 The applications in focus here were family studies. Besides the
 within-cluster/family dependence, this kind of study is characterized by
 involving big samples, generally, populations. Also, generally having a
 high number of small clusters, families. A maximum likelihood approach
 with the use of efficiently implemented Laplace approximations
-\cite{tierney,patrao} together with an automatic differentiation (AD)
-\cite{corestats,nocedal&wright} routine, all via TMB, is able to
-efficiently handle with a high number of clusters, independent of its
+\citep{tierney,patrao} together with an automatic differentiation (AD)
+\citep{corestats,nocedal&wright} routine, all via \texttt{TMB}, is able
+to efficiently handle with a high number of clusters, independent of its
 size. The multinomial distribution assumption, on its own, is an
 excellent probabilistic choice since it can accommodate virtually any
 number of competing causes of failure and its censorship. The presence
@@ -895,16 +886,170 @@ estimated in a latent structure. Since our goal was to assess the
 viability of the maximum likelihood estimation method, we kept it with
 two causes.
 
-All models from the simulation study were run, in a parallelized
-fashion, in one of the two following Linux systems:
-\begin{description}
- \item[System 1]
-  12 Intel (R) Core (TM) i7-8750H CPU @ 2.20GHz processors
-  with 16GB RAM;
- \item[System 2]
-  30 Intel (R) Xeon (R) CPU E5-2690 v2 @ 3.00GHz processors
-  and 206GB RAM.
-\end{description}
+## ---------------------------------------------------------------------
+
+In a full R implementation with 10K 4D Laplaces, it took 30hrs. TMB is
+fast.
+
+We also did a Bayesian analysis via Stan/NUTS-HMC (Stan Development Team
+2020). 1 week of parallelized processing for a 2500 size 2 clusters
+scenario with tuned NUTS. This just reinforces the MCMC impracticability
+for some complex models.
+
+Each risk and time model run is not so time-consuming, generally never
+taking more than 5 minutes. The inherent idea is that for each cluster
+we are always performing two-dimension integral approximations and we
+have \textit{just} three covariance parameters. With the block-diag
+model, we are theoretically in four dimensions. However, since the
+covariance matrix is, block-diagonal, we experienced several numerical
+instability problems. The solution, as can be seen in the
+\autoref{cap:blockdiagModel} (\autoref{cap:appendixD}) code, was to
+split it into two two-dimension matrices, since the \(4\times4\)
+covariance matrix is block-diagonal.  This simple solution solved all
+numerical instability problems. The computational time was only a little
+bit bigger than with the risk and time models.
+
+Finally, the complete model. In the biggest scenario, with 60 thousand
+data points and clusters of size 2 i.e., with 30 thousand four-dimension
+integral approximations (ten parameters in the covariance matrix), the
+model fitting takes 30 minutes, in parallel, with TMB. Before doing the
+TMB implementation, to really understand what we were doing, we did a
+complete \texttt{R} implementation. We wrote the marginal log-likelihood
+in \texttt{R}, based on our own Laplace approximation \cite{patrao} and
+Newton-Raphson implementation (the gradients, \autoref{cap:appendixA},
+and Hessian, \autoref{cap:appendixB}, were computed by hand and
+implemented). Running this complete \texttt{R} implementation in a
+scenario with 20 thousand data points and clusters of size 2, took
+around 30 hours, parallelizing it between all threads of system 1. In
+summary, by using TMB we were able to increase the model size 3 times
+and to decrease the computational time 60 times. An incredible
+performance gain.
+
+Still, with the complete model, we performed a Bayesian analysis via
+\texttt{tmbstan} \cite{tmbstan}. \texttt{tmbstan} enables MCMC sampling
+\cite{MCMC, Diaconis} from a TMB model object using Stan \cite{Stan,
+RStan}. Sampling can be performed with or without a Laplace
+approximation for the random effects, based on the probably state-of-art
+MCMC sampler algorithm, a Hamiltonian Monte Carlo (HMC) algorithm with
+the No-U-Turn Sampler (NUTS) extension \cite{NUTS-HMC}. We performed
+just one Bayesian model fitting in a modest scenario with 5 thousand
+data points and clusters of size 2. It took around 1 whole week of
+parallelized processing in system 1. The results were basically the same
+as the ones obtained with TMB but this high computational time just
+reinforces the, still, MCMC framework limitation.
+
+An important point to be made here is about TMB's memory consumption. As
+the sample size increases, the dimension of the model matrices also
+increases. This, summed to a high number of clusters (Laplace
+approximations to be performed), turns out to be a computational
+nightmare. For several models, even the 16GB RAM of system 1 was not
+enough. The bottleneck appears to be in the AD tape, which is made in
+parallel, by default, if the model fitting is in parallel. By turning
+this option off (line 11 of \autoref{cap:rscript}
+(\autoref{cap:appendixD}) code), we were able to save a lot of memory,
+making several models practicable.
+
+Model the CIF of clustered competing risks data is far from being
+trivial or straightforward. The formulation in \autoref{eq:cif} implies
+the desired curve behavior, \autoref{fig:datasimucif}. However, in
+counterpart, its derivatives w.r.t. time, generates very small
+probabilities for the failure competing causes, ending by concentrating
+almost everything on censorship, \autoref{fig:datasimu}. For each
+competing cause with poor data representativity, we have three curve
+shape parameters to estimate, implying the necessity of having a lot of
+data to then have enough information about the causes.
+
+We proposed for our multiGLMM an ideally complete latent-effects
+formulation i.e., correlated latent effects on both levels,
+instantaneous risk and failure time trajectory. The main underlying idea
+of the \autoref{cap:results} simulation study was to see in which
+scenarios we would be able to learn all the involved mean and covariance
+parameters. As part of that, simpler formulations were proposed i.e.,
+latent-effects in only one level, or in both but without
+cross-correlations. As result, we got that latent effects only in the
+risk level did not work. The optimization appears to get lost as if
+something is missing. Inserting latent effects only in the failure time
+trajectory level returned better results, but still not satisfactorily
+good. In most of the evaluated scenarios, the block-diagonal model
+appeared to be in the middle of them, as a compromise. The best results
+(smallest parameter estimates biases) were obtained with the complete
+model i.e. when we consider the cross-correlations between levels. In
+general, we still observe some high variances between the parameter
+estimates, but given all the problem characteristics mentioned earlier,
+sounds to be reasonable. On average, the complete model works fine,
+mainly in the scenarios of high CIF configuration, and also as expected,
+as the sample size increases. We can also say that as the cluster size
+increases, the estimates get better but we did not have very strong
+results supporting that.
+
+\section{ADDITIONAL CONSIDERATIONS}
+\label{cap:addcon}
+
+The next step was to compare our results with the ones obtained
+in \citeonline{SCHEIKE}, with the composite approach. In the GitHub
+repository
+\url{https://github.com/kkholst/mcif/} the authors provide their
+code. In \texttt{mcif/inst/examples/datasim.R} they show how to simulate
+from the model, and in \texttt{mcif/src/loglik.cpp} they have their
+marginal log-likelihood function. We tried to optimize their marginal
+log-likelihood over its parameters using basically all \texttt{R}
+\texttt{base::optim()} and \texttt{base::nlminb()} available methods, in
+the paper was used the BFGS, one of them. We made several scenarios,
+using their own simulation scripts and ours, and to our surprise, the
+model basically does not work.
+
+The optimization in its majority fails, via any gradient-based algorithm
+(BFGS \cite{nocedal&wright}, PORT \cite{PORTreport, PORTpaper},
+conjugate gradient (CG) \cite{CG}), generally by Hessian matrix
+instability problems, a problem which our model also suffers from when
+we try to compute the parameter estimates standard errors. When the
+model works, it is because we are using the parameter true values as
+initial guesses i.e. if the algorithm needs to walk on the
+log-likelihood surface following the gradient, it fails. Even when it
+works, the estimates are not always good. We also tried with a SANN and
+a Nelder-Mead algorithm. SANN \cite{SANN} is a variant of a simulated
+annealing method, based on a Metropolis algorithm. Since it is based on
+simulation, it takes a lot of time and as the gradient-based methods, do
+not work most of the time. The best results were with the Nelder-Mead
+\cite{neldermead}, a gradient-free method. Still, it only works when we
+use the parameter true values as initial guesses. This situation is
+completely the opposite of what is shown in the paper, making impossible
+any reasonable comparison between the models. We will enter in contact
+with the authors to see what is happening.
+
+\section{FUTURE WORKS}
+\label{cap:future}
+
+As show in \autoref{cap:results} results, even with the complete model
+specification, the parameter estimates present an excessive variance.
+In terms of a traditional GLMM specification \cite{GLMM}, we do not have
+a lot more to do. We are already using a smart quasi-Newton algorithm
+\cite{PORTpaper}, the most efficient derivatives computation technique
+(AD) \cite{peyre}, and an also efficient Laplace approximation routine
+\cite{corestats, patrao}, via TMB \cite{TMB}. We could change the
+Laplace approximation for an adaptative Gaussian quadrature
+\cite{quadrature}, but we do not see any good reason to do that.
+
+There are two possible paths here. We could instead of a conditional
+modeling framework (GLMM/latent-effects model), employ a marginal
+modeling framework. In this framework, instead of caring about the
+specification of a probability distribution to the competing causes
+conditioned on the latent effects, we just care about the specification
+of a mean and a variance structure. This approach does not have a
+likelihood function per se, but the estimation procedure tends to be
+easier than with the GLMM one. A marginal modeling framework that can be
+used here is the multivariate covariance generalized linear model
+(McGLM) \cite{mcglm, rmcglm}. How to exactly model the CIF of clustered
+competing risks data in this framework, is something to still be figured
+out.
+
+The other path is by the use of a different way of modeling the
+dependence structure. Instead of a latent-effects approach, we could use
+copulas \cite{copulas,semiparametricSCHEIKE,gcmr,factorcopulas}. How to
+do that is something to still be figured out by us, in terms of which
+kind (conditional or marginal) and version (Archimedean-, Gauss-,
+Maltesian-, \(t\)-, hyperbolic-, zebra-, and elliptical-) of copula to
+use, besides the estimability issue.
 
 \section*{Supplementary material}
 
