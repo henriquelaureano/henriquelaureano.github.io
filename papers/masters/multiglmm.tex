@@ -774,8 +774,8 @@ instabilities.
 When we assume a non-zero cross-correlation structure (complete model),
 the improvements in terms of bias reduction are huge when compared with
 the non-complete models. The mean biases get very close to zero, the
-standard deviations decrease 50\% or more, if compared with the
-non-complete models. and the high CIF scenarios are the ones with a much
+standard deviations decrease 50\% or more, compared with the
+non-complete models, and the high CIF scenarios are the ones with a much
 smaller bias-variance. All this is accomplished through the
 consideration of the cross-correlations.
 
@@ -833,25 +833,22 @@ best joint fit is still with the complete model.
 The general goal of this paper was the proposition and evaluation of a
 maximum likelihood estimation approach for the analysis of clustered
 competing risks data. Focused on the probability scale, by means of the
-cumulative incidence function (CIF), instead of the hazard scale usual
-in the survival modeling literature \citep{kalb&prentice}. We model the
-clustered competing risks on a latent-effects framework, a generalized
-linear mixed model (GLMM) \citep{GLMM}, with a multinomial distribution
-for the competing risks and censorship, conditioned on the
-latent-effects. The within-cluster latent dependency is accommodated by
-a multivariate Gaussian distribution and is modeled via its covariance
-matrix parameters.
+cumulative incidence function (CIF), instead of the usual hazard scale
+\citep{kalb&prentice}. We model the clustered competing risks on a
+latent-effects framework, a generalized linear mixed model (GLMM)
+\citep{GLMM}, with a multinomial distribution for the competing risks
+and censorship, conditioned on the latent-effects. The within-cluster
+latent dependency is accommodated by a multivariate Gaussian
+distribution.
 
 The failures by the competing causes and their respective censorships
-are modeled in the probability scale, by means of the CIF
-\citep{kalb&prentice,andersen12}. The CIF is accommodated in our GLMM
-framework in terms of the link function \citep{GLM89}, as the product of
-two functions, one responsible to model the instantaneous risk and the
-other the failure time trajectory, both in a cluster-specific
-fashion. The shape of these functions is described in detail in Section
-\ref{model}. This particular GLMM formulation is what makes our model,
-particular. Thus, we have what we call a multiGLMM: a multinomial GLMM
-for clustered competing risks data.
+are modeled by means of the CIF \citep{kalb&prentice,andersen12}. The
+CIF is accommodated in our GLMM framework in terms of the link function
+\citep{GLM89}, as the product of two functions, one responsible to model
+the instantaneous risk and the other the failure time trajectory, both
+in a cluster-specific fashion. This particular GLMM formulation is what
+makes our model, particular. Thus, we have what we call a multiGLMM: a
+multinomial GLMM for clustered competing risks data.
 
 The two-function product CIF formulation was taken from \cite{SCHEIKE}
 but there they use a different estimation framework, a composite
@@ -866,16 +863,17 @@ with efficient algorithm implementations. We have all this with the R
 The applications in focus here were family studies. Besides the
 within-cluster/family dependence, this kind of study is characterized by
 involving big samples, generally, populations. Also, generally having a
-high number of small clusters, families. A maximum likelihood approach
-with the use of efficiently implemented Laplace approximations
-\citep{tierney,patrao} together with an automatic differentiation (AD)
-\citep{corestats,nocedal&wright} routine, all via \texttt{TMB}, is able
-to efficiently handle with a high number of clusters, independent of its
-size. The multinomial distribution assumption, on its own, is an
-excellent probabilistic choice since it can accommodate virtually any
-number of competing causes of failure and its censorship. The presence
-of those two characteristics in our multiGLMM makes it an efficient and
-scalable modeling framework for clustered competing risks data.
+high number of small clusters, families, and a lot of censorship. A
+maximum likelihood approach with the use of efficiently implemented
+Laplace approximations \citep{tierney,patrao} together with an automatic
+differentiation (AD) \citep{corestats,nocedal&wright} routine, all via
+\texttt{TMB}, is able to efficiently handle with a high number of
+clusters, independent of its size. The multinomial distribution
+assumption, on its own, is an excellent probabilistic choice since it
+can accommodate virtually any number of competing causes of failure and
+its censorship. The presence of those two characteristics in our
+multiGLMM makes it an efficient and scalable modeling framework for
+clustered competing risks data.
 
 Even with our modeling framework being virtually able to handle any
 number of competing causes of failure, we restrained ourselves to work
@@ -886,44 +884,29 @@ estimated in a latent structure. Since our goal was to assess the
 viability of the maximum likelihood estimation method, we kept it with
 two causes.
 
-Four latent effects structure configurations were tested, with the
-so-called complete model, a model with latent effects on both risk and
-failure time trajectory levels with cross-correlations, presenting the
-best results. In its biggest scenario, with 60 thousand data points and
-clusters of size 2, i.e. 30 thousand four-dimension integral
-approximations (ten parameters in the covariance matrix), the model
-fitting takes 30 minutes, in parallel, with \texttt{TMB}. Before
-\texttt{TMB}, we did a complete R implementation. We wrote the marginal
-log-likelihood in \texttt{R}, based on our own Laplace approximation
-\citep{patrao} and Newton-Raphson implementation (gradients and Hessian
-computed by hand). This complete \R implementation in a scenario with 20
-thousand data points and clusters of size 2, took around 30 hours, in
-parallel. In summary, by using \texttt{TMB} we were able to increase the
-model size 3 times and to decrease the computational time 60 times. An
-incredible performance gain.
+The so-called complete model, with latent effects on both risk and
+failure time trajectory levels with cross-correlations, presented the
+best results. In its biggest scenario, with 60000 data points and
+clusters of size 2, i.e. 30000 four-dimension integral approximations,
+the model fitting takes 30 minutes, in parallel. Before \texttt{TMB}, we
+did a complete R implementation writing our own Laplace approximation
+\citep{patrao} and Newton-Raphson gradients and Hessian, by hand. In a
+scenario with 20000 data points and clusters of size 2, it took around
+30 hours, in parallel. In summary, by using \texttt{TMB} we were able to
+increase the model size 3 times and to decrease the computational time
+60 times. An incredible performance gain.
 
-Still with the complete model, we performed a Bayesian analysis via
+Also with the complete model, we performed a Bayesian analysis via
 \texttt{tmbstan} \citep{tmbstan}. \texttt{tmbstan} enables MCMC sampling
 \citep{MCMC, Diaconis} from a \texttt{TMB} model object using Stan
 \citep{Stan, RStan}. Sampling was performed based on the probably
 state-of-art MCMC sampler algorithm, a Hamiltonian Monte Carlo (HMC)
 algorithm with the No-U-Turn Sampler (NUTS) extension
 \citep{NUTS-HMC}. We performed just one Bayesian model fitting in a
-modest scenario with 5 thousand data points and clusters of size 2. It
-took around 1 whole week of parallelized processing in system 1. The
-results were basically the same as the ones obtained with \texttt{TMB}
-but this high computational time just reinforces the, still, MCMC
-framework limitation.
-
-Model the CIF of clustered competing risks data is far from being
-trivial or straightforward. The formulation in \autoref{eq:cif} implies
-the desired curve behavior. However, in counterpart, its derivatives
-w.r.t. time, generates very small probabilities for the failure
-competing causes, ending by concentrating almost everything on
-censorship, \autoref{fig:modelsample}. For each competing cause with
-poor data representativity, we have three curve shape parameters to
-estimate, implying the necessity of having a lot of data to then have
-enough information about the causes.
+modest scenario with 5000 data points and clusters of size 2. It took
+around 1 whole week of parallelized processing. The results were
+basically the same as the ones obtained with \texttt{TMB} but this high
+computational time just reinforces the MCMC framework limitation.
 
 We proposed an ideally complete latent-effects formulation. The main
 underlying idea of the simulation study was to see in which scenarios we
@@ -955,7 +938,7 @@ be figured out.
 The other path is by the use of a different way of modeling the
 dependence structure. Instead of a latent-effects approach, we could use
 copulas \citep{copulas,semiparametricSCHEIKE,gcmr,factorcopulas}. How to
-do that is something to still be figured out in terms of which kind
+do that is something to still be figured out  in terms of which kind
 (conditional or marginal) and version (Archimedean-, Gauss-, Maltesian-,
 \(t\)-, hyperbolic-, zebra-, and elliptical-) of copula to use, besides
 the estimability issue.
