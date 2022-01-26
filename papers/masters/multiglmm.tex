@@ -771,35 +771,32 @@ standard error computations, since in several scenarios the model fails
 to compute all the standard errors, caused by Hessian numerical
 instabilities.
 
-## ---------------------------------------------------------------------
-
-With a latent structure only in the risk level or in the failure time
-trajectory level, the low CIF scenarios are the ones with a much smaller
-bias-variance. In general, the mean-bias is small but the variances are
-high. When we have a latent structure on both levels but we still assume
-the cross-correlations as zero (block-diag model), the results get a
-little bit better. Nevertheless, when we assume a non-zero
-cross-correlation structure (complete model), basically everything
-changes for the better. The mean biases get even closer to zero, the
-standard deviations decrease 50\% or more, and mainly, now the high CIF
-scenarios are the ones with a much smaller bias-variance. All this is
-accomplished through the consideration of the cross-correlations.
+When we assume a non-zero cross-correlation structure (complete model),
+the improvements in terms of bias reduction are huge when compared with
+the non-complete models. The mean biases get very close to zero, the
+standard deviations decrease 50\% or more, if compared with the
+non-complete models. and the high CIF scenarios are the ones with a much
+smaller bias-variance. All this is accomplished through the
+consideration of the cross-correlations.
 
 In the \textit{simpler} models, with a latent structure just in one
 level, is hard to see some significant difference between the clusters
 and sample sizes. With the complete model, in the other hand, the
 difference is clear: as we increase the clusters and the sample sizes,
-the bias-variance decreases. The mean-bias is basically always the
-same. In the risk model is hard to point-out a scenario as the best or
-worst. For the time model,in the scenario with clusters of size 2, high
-CIF, and 5 thousand data points, we get a much bigger standard deviation
-in the \(\bm{\beta}\)s parameter estimates. For the block-diag model, in
-the scenario with clusters of size 2, low CIF, and 5 thousand data
-points, the standard deviations are huge for the curve shape parameter
-estimates of the competing cause 1. In the \autoref{cap:appendixD}, with
-the 2.5 and 97.5\% bias quantiles, the most extreme values are removed
-from the uncertainty representation. There, the main characteristic is
-the parameter estimates asymmetry.
+the bias-variance decreases. The mean-bias is basically always the same.
+The biggest bias-variances are obtained in the log-variances. A final
+remark to be made is about convergences. With the simpler models, not
+all of them work, having in some scenarios (generally the ones with 60
+thousand data points) a 50\(\sim\)60\% convergence rate. With the
+complete model, basically, almost all fits reach convergence
+(\(\sim\)95\% performance).
+
+About the implied mean-CIF curves, in \autoref{fig:cifshigh} we have the
+high CIF scenario curves and in \autoref{fig:cifslow} the low CIF
+scenario curves. Since for all models we have a latent structure for the
+within-cluster dependency, the inherent idea is that this also affect
+the fixed-effect parameter estimates. By taking its average in each of
+the seventy-two scenarios, we are able to construct the mean CIF curves.
 
 \begin{figure}[H]
  \centering
@@ -810,6 +807,11 @@ the parameter estimates asymmetry.
    and 60K means the sample size.}
  \label{fig:cifshigh}
 \end{figure}
+
+In \autoref{fig:cifshigh} is clear that with the complete model we get a
+perfect fit in all scenarios. The risk and time models estimate well the
+curve shape parameters but they fail to learn the max incidence. A
+compensation between curves is clear.
 
 \begin{figure}[H]
  \centering
