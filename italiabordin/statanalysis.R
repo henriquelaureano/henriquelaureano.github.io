@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2022-jan-23 · Curitiba/PR/Brazil
+##                                      2022-jan-29 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ## "Fatores associados ao sentimento de prejuízo no processo de
@@ -9,7 +9,8 @@
 
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 
-pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car, pROC)
+pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car, pROC,
+               equatiomatic)
 
 dat <- readxl::read_xlsx('baseR.xlsx')|>
     dplyr::filter(Prejuízo != 'Não sei responder')|>
@@ -99,3 +100,6 @@ dplyr::bind_cols(
            Variavel=names(coef(m)), coef(summary(m)), Prob=Prob,
            Chance=exp(coef(m)), exp(confint(m))
        )
+
+equatiomatic::extract_eq(m, wrap=TRUE, terms_per_line=2,
+                         operator_location='start', use_coefs=TRUE)

@@ -27,7 +27,7 @@ knitr::opts_chunk$set(fig.path='figuras/', fig.align='center',
 
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 pacman::p_load(readxl, dplyr, forcats, DHARMa, MASS, car, kableExtra,
-               pROC)
+               pROC, equatiomatic)
 source(
     '../../henriquelaureano.github.io/i4p-colors/i4p-palette.R'
 )
@@ -273,6 +273,15 @@ dplyr::bind_cols(
     kableExtra::kbl(booktabs=TRUE, digits=5)|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::column_spec(5, bold=TRUE)
+
+```
+
+> Para terminar, equação do modelo:
+
+```{r equatiomatic}
+
+equatiomatic::extract_eq(m, wrap=TRUE, terms_per_line=2,
+                         operator_location='start', use_coefs=TRUE)
 
 ```
 
