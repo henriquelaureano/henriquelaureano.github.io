@@ -55,10 +55,10 @@ List of 4
 
 output file: laurence.knit.md
 
-/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/RtmpDfNifj/rmarkdown-strec8171270302.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
+/usr/bin/pandoc +RTS -K512m -RTS laurence.knit.md --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output laurence.html --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --standalone --section-divs --template /home/laureano/R/x86_64-pc-linux-gnu-library/4.1/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --include-in-header /tmp/RtmpKWy4HH/rmarkdown-str14a361fdd5e7.html --mathjax --variable 'mathjax-url:https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --variable code_folding=hide --variable code_menu=1 
 
 Output created: laurence.html
 > 
 > proc.time()
    user  system elapsed 
-  2.431   0.094   2.581 
+  2.420   0.166   2.902 
