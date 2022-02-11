@@ -37,7 +37,7 @@
 }
 \author[2]{Ricardo Rasmussen Petterle}
 \author[3]{Guilherme Parreira da Silva}
-\author[4]{Wagner Hubo Bonat}
+\author[4]{Wagner Hugo Bonat}
 
 \affil[1]{
   Instituto de Pesquisa Pel\'{e} Pequeno Pr\'{i}ncipe,
@@ -67,27 +67,27 @@
   mixed model instead a usual complex frailty model. We model the
   competing causes in the probability scale, in terms of the cumulative
   incidence function (CIF). A multinomial distribution is assumed for
-  the competing causes and censorship, conditioned on the latent
-  effects. The latent effects are accommodated via a multivariate
-  Gaussian distribution. The CIF is specified as the product of an
-  instantaneous risk level function with a failure time trajectory level
-  function. The estimation procedure is performed through the R package
-  TMB (Template Model Builder), an \texttt{C++} based framework with
-  efficient Laplace approximation and automatic differentiation
-  routines. A large simulation study is performed, based on different
-  latent structure formulations. The model presents to be of difficult
-  estimation, with our results converging to a latent structure where
-  both risk and failure time trajectory levels are correlated.
+  the competing causes and censorship, conditioned on the latent effects
+  that are accommodated by a multivariate Gaussian distribution. The CIF
+  is specified as the product of an instantaneous risk level function
+  with a failure time trajectory level function. The estimation
+  procedure is performed through the R package TMB (Template Model
+  Builder), an \texttt{C++} based framework with efficient Laplace
+  approximation and automatic differentiation routines. A large
+  simulation study is performed, based on different latent structure
+  formulations. The model presents to be of difficult estimation, with
+  our results converging to a latent structure where both risk and
+  failure time trajectory levels are correlated.
 
 \end{abstract}
 \vfill
 \noindent\textbf{Keywords}: 
 Clustered competing risks data;
 Within-cluster dependence;
-Multinomial generalized linear mixed model (GLMM);
-TMB: Template Model Builder;
+Multinomial generalized linear mixed model;
+Template Model Builder;
 Laplace approximation;
-Automatic differentiation (AD).
+Automatic differentiation.
 \vspace{0.2cm}
 \newpage
 
@@ -99,7 +99,8 @@ with the former being the most popular. A competing risks process can be
 seen as the multivariate extension of a failure time process, having
 multiple causes competing to be the one responsible for the desired
 event occurrence, properly, a failure. In \autoref{fig:crp} a visual aid
-is provided considering \(m\) competing causes.
+is provided considering \(m\) competing causes, where zero represents
+the initial state.
 
 \begin{figure}[H]
  \centering
@@ -666,11 +667,6 @@ latent effects layers.
 One of the main questions surrounding our model that we tried to tack
 down in this study was, if even when in the possession of a high
 correlated sample in the latent field, we are able to estimate all
-variance and covariance parameters.
-
-One of the main questions surrounding our model that we tried to tack
-down in this study was, if even when in the possession of a high
-correlated sample in the latent field, we are able to estimate all
 variance and covariance parameters. To answer this question we worked
 with four different models, with each one differentiating from the other
 in terms of latent effects structure. We had a model with (i) latent
@@ -877,9 +873,9 @@ clustered competing risks data.
 
 Even with our modeling framework being virtually able to handle any
 number of competing causes of failure, we restrained ourselves to work
-here with only two of them. With two competing causes, we have
-a \(4\times4\) covariance matrix for the latent effects, which implies
-ten covariance parameters, which is already a lot of parameters to be
+here with only two of them. With two competing causes, we have a
+\(4\times4\) covariance matrix for the latent effects, which implies ten
+covariance-matrix parameters, which is already a lot of parameters to be
 estimated in a latent structure. Since our goal was to assess the
 viability of the maximum likelihood estimation method, we kept it with
 two causes.
