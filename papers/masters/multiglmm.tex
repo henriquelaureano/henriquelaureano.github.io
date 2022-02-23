@@ -74,17 +74,16 @@
   procedure is performed through the R package TMB (Template Model
   Builder), an \texttt{C++} based framework with efficient Laplace
   approximation and automatic differentiation routines. A large
-  simulation study is performed, based on different latent structure
+  simulation study was performed, based on different latent structure
   formulations. The model presents to be of difficult estimation, with
   our results converging to a latent structure where both risk and
   failure time trajectory levels are correlated.
 
 \end{abstract}
 \vfill
-\noindent\textbf{Keywords}: 
-Clustered competing risks data;
+\noindent\textbf{Keywords}:
+Cause-specific cumulative incidence function;
 Within-cluster dependence;
-Multinomial generalized linear mixed model;
 Template Model Builder;
 Laplace approximation;
 Automatic differentiation.
@@ -150,8 +149,7 @@ e.g.), it opens space to what is called \textit{family studies}. In
 family studies, the goal is to accommodate the non-observed latent
 dependence and try to understand the relationship between the family
 elements. In other words, how the occurrence of an event in a subject
-affects the survival experience for the same or similar event in its
-familiars.
+affects the survival experience for the same or similar event.
 
 The survival experiences is usually modeled in the hazard (failure rate)
 scale, and with the latent within-cluster dependence accommodation we
@@ -181,7 +179,7 @@ existing options are (i) nonparametric approaches
 \citep{fine99,gerds12}; (iii) semiparametric approaches based on
 composite likelihoods \citep{shih,SCHEIKE}, estimating equations
 \citep{crossoddsratioSCHEIKE,cheng&fine}, copulas
-\citep{semiparametricSCHEIKE}, and mixtures \citep{naskar05,shi13}.
+\citep{semiparametricSCHEIKE}, or mixtures \citep{naskar05,shi13}.
 
 Besides the interpretation, by modeling the CIF it is possible to
 specify complex within-cluster dependence structures. We follow
@@ -455,7 +453,7 @@ censorship and its probability is given by the complementary to reach
 This framework in \autoref{eq:model} results in what we call multiGLMM,
 a multinomial GLMM to handle the CIF of clustered competing risks
 data. For a random sample, the corresponding marginal likelihood
-function in given by
+function is given by
 \begin{align}
  L(\bm{\theta}~;~y)
  &= \prod_{j=1}^{J}~\int_{\Re^{4}}
@@ -553,7 +551,7 @@ ideas converge to an adaptive Gaussian quadrature with one integration
 point, also known as \textit{Laplace approximation}
 \citep{molenberghs&verbeke,LA4H,tierney,corestats}.
 
-We may approximate a analytically intractable integral in a way to
+We may approximate an analytically intractable integral in a way to
 obtain a tractable closed-form expression allowing the numerical
 maximization of the resulting marginal likelihood function
 \citep{patrao}. The Laplace approximation has been designed to
