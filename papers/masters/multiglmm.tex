@@ -657,7 +657,7 @@ model implementation).
 
 To verify the practical viability of our model we performed an extensive
 simulation study. As main complicator factors, we may mention the
-competing causes un balancement, where we typically have much more
+competing causes imbalance, where we typically have much more
 censorships than actual failures; and the high dimensionality problem,
 having a considerable number of parameters to estimate in both fixed and
 latent effects layers.
@@ -730,7 +730,7 @@ the Fisher-z-transformation of the correlation parameters.
 We also considered three cluster sizes (2, 5, and 10) and three sample
 sizes (5000, 30000, and 60000). We had 72 scenarios (4 latent effects
 structures \(\times\) 2 CIF configurations \(\times\) 3 cluster sizes
-\(\times\) 3 sample sizes). For each scenario, we simulate 500
+\(\times\) 3 sample sizes). For each scenario, we simulated 500
 samples. In total, 36000 (72 \(\times\) 500) model fittings. In the
 smallest scenario, we had 500 clusters, in the biggest one, 30000
 clusters. The number of clusters is the number of Laplace approximations
@@ -807,8 +807,8 @@ perfect fit in all scenarios. The risk and time models estimate well the
 curve shape parameters but they fail to learn the max incidence. A
 compensation between curves is clear. In the low CIF scenarios in
 \autoref{fig:cifslow}, the estimation is clearly more difficult. The
-overall fits are bad. For one of the failure causes, the estimation
-quality is not so bad. The problem is when we look to the other. The
+overall fits were bad. For the failure cause 2, the estimation quality
+is not so bad. The problem is when we look to the failure cause 1. The
 best joint fit is still with the complete model.
 
 \begin{figure}[H]
@@ -828,16 +828,16 @@ The general goal of this paper was the proposition and evaluation of a
 maximum likelihood estimation approach for the analysis of clustered
 competing risks data. Focused on the probability scale, by means of the
 cumulative incidence function (CIF), instead of the usual hazard scale
-\citep{kalb&prentice}. We model the clustered competing risks on a
+\citep{kalb&prentice}. We modeled the clustered competing risks on a
 latent-effects framework, a generalized linear mixed model (GLMM)
 \citep{GLMM}, with a multinomial distribution for the competing risks
 and censorship, conditioned on the latent-effects. The within-cluster
-latent dependency is accommodated by a multivariate Gaussian
+latent dependency was accommodated by a multivariate Gaussian
 distribution.
 
 The failures by the competing causes and their respective censorships
 are modeled by means of the CIF \citep{kalb&prentice,andersen12}. The
-CIF is accommodated in our GLMM framework in terms of the link function
+CIF was accommodated in our GLMM framework in terms of the link function
 \citep{GLM89}, as the product of two functions, one responsible to model
 the instantaneous risk and the other the failure time trajectory, both
 in a cluster-specific fashion. This particular GLMM formulation is what
@@ -882,7 +882,7 @@ The so-called complete model, with latent effects on both risk and
 failure time trajectory levels with cross-correlations, presented the
 best results. In its biggest scenario, with 60000 data points and
 clusters of size 2, i.e. 30000 four-dimension integral approximations,
-the model fitting takes 30 minutes, in parallel. Before \texttt{TMB}, we
+the model fitting took 30 minutes, in parallel. Before \texttt{TMB}, we
 did a complete R implementation writing our own Laplace approximation
 \citep{patrao} and Newton-Raphson gradients and Hessian, by hand. In a
 scenario with 20000 data points and clusters of size 2, it took around
@@ -907,7 +907,7 @@ underlying idea of the simulation study was to see in which scenarios we
 would be able to learn all the involved mean and covariance
 parameters. As part of that, simpler formulations were proposed. As
 result, we got that latent effects only in the risk level did not
-work. The optimization appears to get lost as if something is
+work. The optimization appears to got lost as if something was
 missing. Inserting latent effects only in the failure time trajectory
 level returned better results, but still not satisfactorily good. In
 most of the evaluated scenarios, the block-diagonal model appeared to be
