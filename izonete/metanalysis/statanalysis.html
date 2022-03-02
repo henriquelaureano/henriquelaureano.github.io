@@ -1718,7 +1718,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Meta-análise anti-inflamatórios não esteroidais e biomarcadores em peixes</h1>
 <h4 class="author">Luiz Henrique Z Justi, Juh F Silva, Izonete Cristina Guiloski e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2022-03-02 15:19:46</h4>
+<h4 class="date"><em>Last modification on</em> 2022-03-02 15:38:40</h4>
 
 </div>
 
@@ -3382,7 +3382,8 @@ Trophic
 <ul>
 <li><p><em>Q</em>: Cochran’s test statistic for the residual heterogeneity, approximated from a chi-square distribution;</p></li>
 <li><p><span class="math inline">\(Q_{M}\)</span>: if the variables/moderators are statistically significant;</p></li>
-<li><p><span class="math inline">\(\tau^{2}\)</span>: estimated amount of residual heterogeneity.</p></li>
+<li><p><span class="math inline">\(\tau^{2}\)</span>: estimated amount of residual heterogeneity;</p></li>
+<li><p><span class="math inline">\(R^{2}\)</span>: the proportion of the (response) variance/heterogeneity that’s explained by the moderator(s).</p></li>
 </ul>
 <p>In red, all significant <em>p</em>-values (<span class="math inline">\(\leq\)</span> 0.05).</p>
 </blockquote>
@@ -3406,11 +3407,14 @@ Qm.pvalue
 <th style="text-align:right;">
 tau2
 </th>
+<th style="text-align:right;">
+R2
+</th>
 </tr>
 </thead>
 <tbody>
 <tr grouplength="6">
-<td colspan="6" style="border-bottom: 0;">
+<td colspan="7" style="border-bottom: 0;">
 <strong>CAT</strong>
 </td>
 </tr>
@@ -3433,6 +3437,9 @@ Global effect
 <td style="text-align:right;">
 0.1526
 </td>
+<td style="text-align:right;">
+NaN
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3452,6 +3459,9 @@ Type of exposure
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.2125
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -3473,6 +3483,9 @@ NSAID
 <td style="text-align:right;">
 0.1569
 </td>
+<td style="text-align:right;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3492,6 +3505,9 @@ Dose
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.2552
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -3513,6 +3529,9 @@ Exposure
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1773
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3533,9 +3552,12 @@ All/Full
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.2260
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr grouplength="6">
-<td colspan="6" style="border-bottom: 0;">
+<td colspan="7" style="border-bottom: 0;">
 <strong>GPx</strong>
 </td>
 </tr>
@@ -3558,6 +3580,9 @@ Global effect
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1412
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+NaN
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3577,6 +3602,9 @@ Type of exposure
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1549
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -3598,6 +3626,9 @@ NSAID
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1387
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3617,6 +3648,9 @@ Dose
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1634
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -3638,6 +3672,9 @@ Exposure
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1581
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3658,9 +3695,12 @@ All/Full
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.2052
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr grouplength="6">
-<td colspan="6" style="border-bottom: 0;">
+<td colspan="7" style="border-bottom: 0;">
 <strong>GSH</strong>
 </td>
 </tr>
@@ -3683,6 +3723,9 @@ Global effect
 <td style="text-align:right;">
 0.0262
 </td>
+<td style="text-align:right;">
+NaN
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3702,6 +3745,9 @@ Type of exposure
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.0197
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -3723,6 +3769,9 @@ NSAID
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.0899
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;padding-left: 2em;" indentlevel="1">
@@ -3742,6 +3791,9 @@ Dose
 </td>
 <td style="text-align:right;">
 0.0238
+</td>
+<td style="text-align:right;">
+100
 </td>
 </tr>
 <tr>
@@ -3763,6 +3815,9 @@ Exposure
 <td style="text-align:right;">
 0.0261
 </td>
+<td style="text-align:right;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3783,9 +3838,12 @@ All/Full
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.0446
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr grouplength="6">
-<td colspan="6" style="border-bottom: 0;">
+<td colspan="7" style="border-bottom: 0;">
 <strong>GST</strong>
 </td>
 </tr>
@@ -3808,6 +3866,9 @@ Global effect
 <td style="text-align:right;">
 0.4950
 </td>
+<td style="text-align:right;">
+NaN
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3827,6 +3888,9 @@ Type of exposure
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.4952
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -3848,6 +3912,9 @@ NSAID
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.7117
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;padding-left: 2em;" indentlevel="1">
@@ -3867,6 +3934,9 @@ Dose
 </td>
 <td style="text-align:right;">
 0.4968
+</td>
+<td style="text-align:right;">
+100
 </td>
 </tr>
 <tr>
@@ -3888,6 +3958,9 @@ Exposure
 <td style="text-align:right;">
 0.4980
 </td>
+<td style="text-align:right;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3908,9 +3981,12 @@ All/Full
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.7155
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr grouplength="6">
-<td colspan="6" style="border-bottom: 0;">
+<td colspan="7" style="border-bottom: 0;">
 <strong>LPO</strong>
 </td>
 </tr>
@@ -3933,6 +4009,9 @@ Global effect
 <td style="text-align:right;">
 0.2238
 </td>
+<td style="text-align:right;">
+NaN
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -3952,6 +4031,9 @@ Type of exposure
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.2386
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -3973,6 +4055,9 @@ NSAID
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.2005
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;padding-left: 2em;" indentlevel="1">
@@ -3992,6 +4077,9 @@ Dose
 </td>
 <td style="text-align:right;">
 0.2283
+</td>
+<td style="text-align:right;">
+100
 </td>
 </tr>
 <tr>
@@ -4013,6 +4101,9 @@ Exposure
 <td style="text-align:right;">
 0.2180
 </td>
+<td style="text-align:right;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -4033,9 +4124,12 @@ All/Full
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1966
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr grouplength="6">
-<td colspan="6" style="border-bottom: 0;">
+<td colspan="7" style="border-bottom: 0;">
 <strong>SOD</strong>
 </td>
 </tr>
@@ -4058,6 +4152,9 @@ Global effect
 <td style="text-align:right;">
 0.0991
 </td>
+<td style="text-align:right;">
+NaN
+</td>
 </tr>
 <tr>
 <td style="text-align:left;padding-left: 2em;" indentlevel="1">
@@ -4077,6 +4174,9 @@ Type of exposure
 </td>
 <td style="text-align:right;">
 0.1018
+</td>
+<td style="text-align:right;">
+100
 </td>
 </tr>
 <tr>
@@ -4098,6 +4198,9 @@ NSAID
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1135
 </td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -4117,6 +4220,9 @@ Dose
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1547
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 <tr>
@@ -4138,6 +4244,9 @@ Exposure
 <td style="text-align:right;">
 0.1071
 </td>
+<td style="text-align:right;">
+100
+</td>
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;color: white !important;background-color: #D7261E !important;padding-left: 2em;" indentlevel="1">
@@ -4157,6 +4266,9 @@ All/Full
 </td>
 <td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
 0.1970
+</td>
+<td style="text-align:right;font-weight: bold;color: white !important;background-color: #D7261E !important;">
+100
 </td>
 </tr>
 </tbody>
