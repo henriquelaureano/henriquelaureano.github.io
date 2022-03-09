@@ -4,7 +4,7 @@
 [Tumblr](tumblr/) |
 [Spotify](https://open.spotify.com/user/12147941733) |
 [CV](vitae.pdf) |
-[LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/)
+[LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/) |
 [Google Scholar](https://scholar.google.com/citations?user=CWYkCEQAAAAJ&hl=en)
 
 Hi! I'm a Statistician based in [Curitiba](https://goo.gl/K1Qcdv) and
