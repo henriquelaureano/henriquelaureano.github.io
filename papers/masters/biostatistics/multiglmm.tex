@@ -1,0 +1,83 @@
+\documentclass[oupdraft]{bio}
+% \usepackage[colorlinks=true, urlcolor=citecolor, linkcolor=citecolor, citecolor=citecolor]{hyperref}
+\usepackage{url}
+
+% Add history information for the article if required
+\history{Received August 1, 2010;
+revised October 1, 2010;
+accepted for publication November 1, 2010}
+
+\begin{document}
+
+% Title of paper
+\title{Exploration of empirical Bayes hierarchical modeling for the
+analysis of genome-wide association study data}
+
+% List of authors, with corresponding author marked by asterisk
+\author{ELIZABETH A. HERON$^\ast$, COLM O'DUSHLAINE, RICARDO SEGURADO,\\
+LOUISE GALLAGHER, MICHAEL GILL\\[4pt]
+% Author addresses
+\textit{Neuropsychiatric Genetics Research Group and Department of Psychiatry,
+Trinity College Dublin,
+Trinity Centre for Health Sciences,
+James's Street, Dublin 8,
+Ireland}
+\\[2pt]
+% E-mail address for correspondence
+{eaheron@tcd.ie}}
+
+% Running headers of paper:
+\markboth%
+% First field is the short list of authors
+{E. A. Heron and others}
+% Second field is the short title of the paper
+{Empirical Bayes hierarchical modeling for GWAS}
+
+\maketitle
+
+% Add a footnote for the corresponding author if one has been
+% identified in the author list
+\footnotetext{To whom correspondence should be addressed.}
+
+\begin{abstract}
+{In the analysis of genome-wide association (GWA) data, the aim is
+to detect statistical associations between single nucleotide
+polymorphisms (SNPs) and the disease or trait of interest. These
+SNPs, or the particular regions of the genome they implicate, are
+then considered for further study. We demonstrate through a
+comprehensive simulation study that the inclusion of additional,
+biologically relevant information through a 2-level
+empirical Bayes hierarchical model framework offers a more robust
+method of detecting associated SNPs. The empirical Bayes approach
+is an objective means of analyzing the data without the need for
+the setting of subjective parameter estimates. This framework
+gives more stable estimates of effects through a reduction of the
+variability in the usual effect estimates. We also demonstrate the
+consequences of including additional information that is not
+informative and examine power and false-positive rates. We apply
+the methodology to a number of genome-wide association (GWA)
+data sets with the inclusion of additional biological information.
+Our results agree with previous findings and in the case of one
+data set (Crohn's disease) suggest an additional region of interest.}
+{Coronary artery disease; Crohn's disease; Multilevel model;
+Rheumatoid arthritis; Semi-Bayes; Type 2 diabetes.}
+\end{abstract}
+
+
+\section{Introduction}
+\label{sec1}
+
+\section{Methods}
+\label{sec2}
+
+In our development of the methodology for the hierarchical model,
+we will concentrate on the case--control study design. Here, we
+present a 2-level EB-HM. The first level comprises a logistic
+regression model, and the second level comprises a Gaussian
+regression incorporating additional biologically relevant
+information.
+
+\bibliographystyle{biorefs}
+\bibliography{references}
+
+\end{document}
