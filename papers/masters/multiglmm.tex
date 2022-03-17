@@ -64,8 +64,8 @@
   implies a latent within-cluster dependence between its elements, and
   its multiple variables competing to be the one responsible for the
   occurrence of an event, the failure. To handle this kind of data, we
-  propose a full likelihood approach, based on a generalized linear
-  mixed model instead a usual complex frailty model. We model the
+  propose a full likelihood approach, based on generalized linear
+  mixed models instead the usual complex frailty model. We model the
   competing causes in the probability scale, in terms of the cumulative
   incidence function (CIF). A multinomial distribution is assumed for
   the competing causes and censorship, conditioned on the latent effects
@@ -76,9 +76,10 @@
   Builder), an \texttt{C++} based framework with efficient Laplace
   approximation and automatic differentiation routines. A large
   simulation study was performed, based on different latent structure
-  formulations. The model presents to be of difficult estimation, with
-  our results converging to a latent structure where both risk and
-  failure time trajectory levels are correlated.
+  formulations. The model fitting was challenging and
+  our results indicated that a latent structure where both risk and
+  failure time trajectory levels are correlated is required to reach 
+  reasonable estimation.
 
 \end{abstract}
 \vfill
