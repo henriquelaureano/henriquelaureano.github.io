@@ -1,37 +1,43 @@
 \documentclass[oupdraft]{bio}
-% \usepackage[colorlinks=true, urlcolor=citecolor, linkcolor=citecolor, citecolor=citecolor]{hyperref}
+\usepackage[colorlinks,urlcolor=blue,citecolor=blue]{hyperref}
 \usepackage{url}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows}
+\usepackage{adjustbox}
+\usepackage{blkarray}
+\input{tikzit.sty}
 
-% Add history information for the article if required
-\history{Received August 1, 2010;
-revised October 1, 2010;
-accepted for publication November 1, 2010}
+\history{Received March 18, 2022;
+  revised ;
+  accepted for publication }
 
 \begin{document}
 
-% Title of paper
-\title{Exploration of empirical Bayes hierarchical modeling for the
-analysis of genome-wide association study data}
+\title{
+  A multinomial generalized linear mixed model for clustered competing
+  risks data
+}
 
-% List of authors, with corresponding author marked by asterisk
-\author{ELIZABETH A. HERON$^\ast$, COLM O'DUSHLAINE, RICARDO SEGURADO,\\
-LOUISE GALLAGHER, MICHAEL GILL\\[4pt]
-% Author addresses
-\textit{Neuropsychiatric Genetics Research Group and Department of Psychiatry,
-Trinity College Dublin,
-Trinity Centre for Health Sciences,
-James's Street, Dublin 8,
-Ireland}
-\\[2pt]
-% E-mail address for correspondence
-{eaheron@tcd.ie}}
+\author{HENRIQUE APARECIDO LAUREANO$^\ast$\\
+        \textit{Instituto de Pesquisa Pel\'{e} Pequeno Pr\'{i}ncipe,
+                Curitiba, Brasil}\\
+        RICARDO HASMUSSEN PETTERLE\\
+        \textit{Departamento de Medicina Integrada,
+                Universidade Federal do Paran\'{a}, Curitiba, Brasil}\\
+        GUILHERME PARREIRA DA SILVA, PAULO JUSTINIANO RIBEIRO JUNIOR,\\
+        WAGNER HUGO BONAT\\
+        \textit{Laborat\'{o}rio de Estat\'{i}stica e
+                Geoinforma\c{c}\~{a}o,
+                Departamento de Estat\'{i}stica,
+                Universidade Federal do Paran\'{a}, Curitiba, Brasil}\\
+{henriqueaparecidolaureano@gmail.com}}
 
-% Running headers of paper:
 \markboth%
 % First field is the short list of authors
-{E. A. Heron and others}
+{H. A. Laureano and others}
 % Second field is the short title of the paper
-{Empirical Bayes hierarchical modeling for GWAS}
+{A multinomial GLMM for clustered competing risks data}
 
 \maketitle
 
@@ -40,42 +46,170 @@ Ireland}
 \footnotetext{To whom correspondence should be addressed.}
 
 \begin{abstract}
-{In the analysis of genome-wide association (GWA) data, the aim is
-to detect statistical associations between single nucleotide
-polymorphisms (SNPs) and the disease or trait of interest. These
-SNPs, or the particular regions of the genome they implicate, are
-then considered for further study. We demonstrate through a
-comprehensive simulation study that the inclusion of additional,
-biologically relevant information through a 2-level
-empirical Bayes hierarchical model framework offers a more robust
-method of detecting associated SNPs. The empirical Bayes approach
-is an objective means of analyzing the data without the need for
-the setting of subjective parameter estimates. This framework
-gives more stable estimates of effects through a reduction of the
-variability in the usual effect estimates. We also demonstrate the
-consequences of including additional information that is not
-informative and examine power and false-positive rates. We apply
-the methodology to a number of genome-wide association (GWA)
-data sets with the inclusion of additional biological information.
-Our results agree with previous findings and in the case of one
-data set (Crohn's disease) suggest an additional region of interest.}
-{Coronary artery disease; Crohn's disease; Multilevel model;
-Rheumatoid arthritis; Semi-Bayes; Type 2 diabetes.}
+  {Clustered competing risks data are a complex failure time data
+    scheme. Its main characteristics are the cluster structure, which
+    implies a latent within-cluster dependence between its elements, and
+    its multiple variables competing to be the one responsible for the
+    occurrence of an event, the failure. To handle this kind of data, we
+    propose a full likelihood approach, based on generalized linear
+    mixed models instead the usual complex frailty model. We model the
+    competing causes in the probability scale, in terms of the
+    cumulative incidence function (CIF). A multinomial distribution is
+    assumed for the competing causes and censorship, conditioned on the
+    latent effects that are accommodated by a multivariate Gaussian
+    distribution. The CIF is specified as the product of an
+    instantaneous risk level function with a failure time trajectory
+    level function. The estimation procedure is performed through the R
+    package TMB (Template Model Builder), an \texttt{C++} based
+    framework with efficient Laplace approximation and automatic
+    differentiation routines. A large simulation study was performed,
+    based on different latent structure formulations. The model fitting
+    was challenging and our results indicated that a latent structure
+    where both risk and failure time trajectory levels are correlated is
+    required to reach reasonable estimation.}  {Cause-specific
+    cumulative incidence function; Within-cluster dependence; Template
+    Model Builder; Laplace approximation; Automatic differentiation.}
 \end{abstract}
 
-
 \section{Introduction}
-\label{sec1}
+\label{intro}
 
-\section{Methods}
-\label{sec2}
+Competing risks data, and more generally failure time data, can be
+modeled in two possible scales: the hazard and the probability scale,
+with the former being the most popular. A competing risks process can be
+seen as the multivariate extension of a failure time process, having
+multiple causes competing to be the one responsible for the desired
+event occurrence, properly, a failure. In \autoref{fig:crp} a visual aid
+is provided considering \(m\) competing causes, where zero represents
+the initial state.
 
-In our development of the methodology for the hierarchical model,
-we will concentrate on the case--control study design. Here, we
-present a 2-level EB-HM. The first level comprises a logistic
-regression model, and the second level comprises a Gaussian
-regression incorporating additional biologically relevant
-information.
+\begin{figure}[H]
+ \centering
+ \scalebox{0.85}{
+  \begin{tikzpicture}
+   \begin{pgfonlayer}{nodelayer}
+    \node [style=circle,draw=black,fill=white] (7) at (-7.5, 5.5) {1};
+    \node [style=circle,draw=black,fill=white] (9) at (-7.5, 4.5) {2};
+    \node [style=none] (11) at (-7.5, 3.5) {$\vdots$};
+    \node [style=circle,draw=black,fill=white] (12) at (-7.5, 2.5) {$m$};
+    \node [style=circle,draw=black,fill=white] (14) at (-12.25, 4) {0};
+    \node [style=none] (29) at (-11.75, 4.25) {};
+    \node [style=none] (30) at (-8, 5.5) {};
+    \node [style=none] (31) at (-8, 4.5) {};
+    \node [style=none] (32) at (-8, 2.5) {};
+    \node [style=none] (36) at (-11.75, 4) {};
+    \node [style=none] (37) at (-11.75, 3.75) {};
+   \end{pgfonlayer}
+   \begin{pgfonlayer}{edgelayer}
+	\draw [style=1side] (37.center) to (32.center);
+	\draw [style=1side] (36.center) to (31.center);
+	\draw [style=1side] (29.center) to (30.center);
+   \end{pgfonlayer}
+  \end{tikzpicture}
+ }
+ \caption{Illustration of competing risks process.}
+ \label{fig:crp}
+\end{figure}
+
+Failure time data is the branch of Statistics responsible to handle
+random variables describing the time until the occurrence of an event, a
+failure \citep{kalb&prentice,hougaard00}. The time until a failure is
+called survival experience, and is the modeling object. To accommodate
+the number of possible causes for a failure there is the competing risks
+data scheme. More specifically, its clustered version with groups of
+elements sharing some non-observed latent dependence structure.
+
+When this framework is applied in real-world situations, we have to be
+able to handle with the nonoccurrence of the desired event, by any of
+the competing causes, for, let us say, \textit{logistic reasons}
+(short-time study and outside scope causes are some examples). This,
+generally noninformative, nonoccurrence of the event is called
+censorship.
+
+When the elements under study are organized in clusters (a family,
+e.g.), it opens space to what is called \textit{family studies}. In
+family studies, the goal is to accommodate the non-observed latent
+dependence and try to understand the relationship between the family
+elements. In other words, how the occurrence of an event in a subject
+affects the survival experience for the same or similar event.
+
+The survival experiences is usually modeled in the hazard (failure rate)
+scale, and with the latent within-cluster dependence accommodation we
+have what is called a frailty model
+\citep{frailty78,frailty79,liang95,petersen98}. The use of frailty
+models implies in complicated likelihood functions and inference
+routines done via elaborated and slow EM algorithms
+\citep{nielsen92,klein92} or inefficient MCMC schemes
+\citep{hougaard00}. With multiple survival experiences, the general idea
+is the same but with even more elaborated likelihoods
+\citep{prentice78,therneau00} or mixture model approaches
+\citep{larson85,kuk92}.
+
+When in the hazard scale, the interpretations are in terms of hazard
+rates. A less usual scale but with a more appealing interpretation is
+the probability scale. For competing risks data, the work on the
+probability scale is done by means of the cumulative incidence function
+(CIF) \citep{andersen12}, with the main modeling approach being the
+subdistribution \citep{fine&gray}.
+
+For clustered competing risks data there are some available options but
+with a lack of predominance. The options vary in terms of likelihood
+specification, with its majority being designed for bivariate CIFs,
+where increasing the CIF's dimension is a limitation. Some of the
+existing options are (i) nonparametric approaches
+\citep{cheng07,cheng09}; (ii) linear transformation models
+\citep{fine99,gerds12}; (iii) semiparametric approaches based on
+composite likelihoods \citep{shih,SCHEIKE}, estimating equations
+\citep{crossoddsratioSCHEIKE,cheng&fine}, copulas
+\citep{semiparametricSCHEIKE}, or mixtures \citep{naskar05,shi13}.
+
+Besides the interpretation, by modeling the CIF it is possible to
+specify complex within-cluster dependence structures. We follow
+\cite{SCHEIKE} and work with a CIF specification based on its
+decomposition in instantaneous risk and failure time trajectory
+functions, with both being cluster-specifics and possible correlated. As
+a modeling framework, we use a generalized linear mixed model (GLMM)
+specification. Through a GLMM we have a straightforward full likelihood
+specification, easy to virtually extend to any number of competing
+causes, and capable to allow for complex CIF structures. To make the
+estimation and inferential process the most efficient as possible we
+take advantage of state-of-art computational libraries and efficiently
+implemented routines under the \texttt{TMB} \citep{TMB} package of the R
+\citep{R21} statistical software.
+
+The class of generalized linear models (GLMs) \citep{GLM72} is probably
+the most popular statistical modelling framework. Despite its
+flexibility, the GLMs are not suitable for dependent data. For the
+analysis of such data, \cite{laird82} proposed the random effects
+regression models for longitudinal/repeated-measures data, and
+\cite{breslow93} presented the GLMMs for the analysis of non-Gaussian
+outcomes. In this framework, we can accommodate all competing causes of
+failure and censorship under a multinomial probability distribution. The
+latent within-cluster dependence is accommodated via a multivariate
+normal distribution, and the cause-specific CIFs via the model's link
+function.
+
+The main goal of this work is to propose a GLMM approach to handle
+clustered competing risks data with a flexible within-cluster dependence
+structure. The model specification and the inferential routine are much
+simpler than the usually used approaches, increasing its practical
+relevance. The latent effects, the key complicator factor, are handled
+out by means of an efficient Laplace approximation and automatic
+differentiation routines. The main contributions of this article are:
+(i) introducing the modeling of cause/cluster-specific CIFs of clustered
+competing risks data into an efficient implementation of the GLMMs
+framework; (ii) performing a extensive simulation study to check the
+properties of the maximum likelihood estimator to learn the
+cause-specific CIF forms and the feasibility of the within-cluster
+dependence structure.; (iii) providing R code and \texttt{C++}
+implementation for the used GLMMs.
+
+%% The work is organized as follows. Section \ref{model} presents the
+%% CIF specification and the multinomial GLMM. Section \ref{inference}
+%% presents the estimation and inferential routines. Section
+%% \ref{simulation} presents the performed simulation studies to check
+%% the model viability. Finally, the main contributions of the article
+%% are discussed in Section \ref{discussion}.
 
 \bibliographystyle{biorefs}
 \bibliography{references}
