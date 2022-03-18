@@ -42,22 +42,24 @@
 
 ### Submitted for publication
 
-+ [2021]\
++ [2022]\
   The Long Term Loss of Smell and Taste in COVID-19 Patients – A
   Systematic Review and Meta-Analysis\
-  J. D. C. Passos, Y. S. Borges, **H. A. Laureano**, I. C. Guiloski\
-  Submitted to *Clinical Otolaryngology*
+  J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
+  Submitted to *Brazilian Journal of Otorhinolaryngology*
+
++ [2022]\
+  A multinomial generalized linear mixed model for clustered competing
+  risks data\
+  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  Submitted to *Biostatistics*
 
 ***
 
 ### In preparation
 
-+ [2021]\
-  Modeling the cumulative incidence function of clustered competing
-  risks data: a multinomial GLMM approach\
-  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, W. H. Bonat
-
-+ [2021]\
++ [2022]\
   Multivariate generalized linear mixed models for underdispersed count
   data\
   G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
