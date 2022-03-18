@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------
 //                                                     Henrique Laureano
 //                                            henriquelaureano.github.io
-//                                      2021-fev-23 · Curitiba/PR/Brazil
+//                                      2022-mar-18 · Curitiba/PR/Brazil
 //----------------------------------------------------------------------
 // multiGLMM: A MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS DATA
 

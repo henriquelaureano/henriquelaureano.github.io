@@ -1,11 +1,11 @@
 //----------------------------------------------------------------------
 //                                                     Henrique Laureano
 //                                            henriquelaureano.github.io
-//                                      2021-fev-23 · Curitiba/PR/Brazil
+//                                      2022-mar-18 · Curitiba/PR/Brazil
 //----------------------------------------------------------------------
 // multiGLMM: A MULTINOMIAL GLMM FOR CLUSTERED COMPETING RISKS DATA
 
-// v3: CORRELATED LATENT EFFECTS ON RISK
+// v2: CORRELATED LATENT EFFECTS ON TIME TRAJECTORY
 
 #include <TMB.hpp>
 template<class Type>
@@ -27,17 +27,17 @@ Type objective_function<Type>::operator() ()
   PARAMETER(w1);
   PARAMETER(w2);
 
-  PARAMETER(logs2_1); Type s2_1=exp(logs2_1);
-  PARAMETER(logs2_2); Type s2_2=exp(logs2_2);
+  PARAMETER(logs2_3); Type s2_3=exp(logs2_3);
+  PARAMETER(logs2_4); Type s2_4=exp(logs2_4);
 
-  PARAMETER(rhoZ12); Type rho12=(exp(2*rhoZ12) - 1)/(exp(2*rhoZ12) + 1);
+  PARAMETER(rhoZ34); Type rho34=(exp(2*rhoZ34) - 1)/(exp(2*rhoZ34) + 1);
 
   PARAMETER_MATRIX(U); matrix<Type> ZU=Z*U;
 
-  Type risk1=0;
-  Type risk2=0;
-  Type level=0;
-
+  Type risk1=exp(beta1);
+  Type risk2=exp(beta2);
+  Type level=1 + risk1 + risk2;
+  
   // gt=atanh(2*time/delta-1); atanh(x)=0.5*log((1+x)/(1-x))
   vector<Type> gt=0.5*log(time/(delta-time));
 
@@ -53,11 +53,11 @@ Type objective_function<Type>::operator() ()
 
   vector<Type> u(U.cols());
 
-  Type cov12=rho12 * sqrt(s2_1)*sqrt(s2_2);
+  Type cov34=rho34 * sqrt(s2_3)*sqrt(s2_4);
 
   matrix<Type> Sigma(2, 2);
-  Sigma.row(0) << s2_1, cov12;
-  Sigma.row(1) << cov12, s2_2;
+  Sigma.row(0) << s2_3, cov34;
+  Sigma.row(1) << cov34, s2_4;
 
   MVNORM_t<Type> dmvnorm(Sigma);
 
@@ -69,13 +69,8 @@ Type objective_function<Type>::operator() ()
   
   for (int i=0; i<Y.rows(); i++) {
 
-    risk1=exp(beta1 + ZU(i, 0));
-    risk2=exp(beta2 + ZU(i, 1));
-
-    level=1 + risk1 + risk2;
-
-    x1=w1*gt(i) - gama1;
-    x2=w2*gt(i) - gama2;
+    x1=w1*gt(i) - gama1 - ZU(i, 0);
+    x2=w2*gt(i) - gama2 - ZU(i, 1);
     
     prob(0)=risk1/level * w1*dgt(i) * dnorm(x1, Type(0), Type(1), false);
     prob(1)=risk2/level * w2*dgt(i) * dnorm(x2, Type(0), Type(1), false);
@@ -85,9 +80,9 @@ Type objective_function<Type>::operator() ()
     y=Y.row(i);
     nll -= dmultinom(y, prob, true);
   }
-  ADREPORT(s2_1);
-  ADREPORT(s2_2);
-  ADREPORT(rho12);
+  ADREPORT(s2_3);
+  ADREPORT(s2_4);
+  ADREPORT(rho34);
   REPORT(Sigma);
   
   return nll;
