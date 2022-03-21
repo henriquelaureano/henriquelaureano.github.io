@@ -55,12 +55,13 @@
   Junior, W. H. Bonat\
   Submitted to *Biostatistics*
 
-***
-
-### In preparation
-
 + [2022]\
   Multivariate generalized linear mixed models for underdispersed count
   data\
   G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
-  Júnior, W. H. Bonat
+  Junior, W. H. Bonat\
+  Submitted to *Journal of Statistical Computation and Simulation*
+
+***
+
+### In preparation
