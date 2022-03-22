@@ -53,7 +53,7 @@
   risks data\
   **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
   Junior, W. H. Bonat\
-  Submitted to *Biostatistics*
+  Submitted to *Journal of Statistical Computation and Simulation*
 
 + [2022]\
   Multivariate generalized linear mixed models for underdispersed count
