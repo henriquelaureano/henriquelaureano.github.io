@@ -46,7 +46,7 @@
   The Long Term Loss of Smell and Taste in COVID-19 Patients – A
   Systematic Review and Meta-Analysis\
   J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
-  Submitted to *Brazilian Journal of Otorhinolaryngology*
+  Submitted to *ABCS Health Sciences*
 
 + [2022]\
   A multinomial generalized linear mixed model for clustered competing
