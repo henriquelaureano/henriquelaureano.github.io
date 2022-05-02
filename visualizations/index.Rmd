@@ -1,0 +1,41 @@
+---
+title: "Visualizations"
+author: "[Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path='figures/', fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning=FALSE, message=FALSE, prompt=FALSE,
+                      echo=FALSE, comment=NA)
+
+```
+
+***
+
+# 2015
+
+***
+
+> Um modelo linear com duas covariáveis visto ao mesmo tempo em termos
+> de ambas (3d).
+
+![](linear_model_in_3d.png){width=80%}
+
+***
+
+> Série temporal trimestral da taxa de juros real ex-post dos Estados
+> Unidos de 1961 até 1986, com processo de flutuação M empírico a partir
+> dos scores de um modelo ajustado (pontos de quebra/mudança).
+
+![](time_serie_with_breakpoints.png){width=65%}
+
