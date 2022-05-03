@@ -32,7 +32,8 @@ some [here](visualizations/)).
       [Courses](courses/) |
       [Stuff](stuff/) |
       [Presentations](presentations/) |
-      [Papers](papers/)</span>
+      [Papers](papers/) |
+      [R Visualizations](visualizations/)</span>
 
 ## Contact
 
