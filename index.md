@@ -25,7 +25,8 @@ style](THESIS/aqua/tikzit.sty)) at the defense slides.
 My main research interests lie in computational statistics and
 statistical modeling through GLMMs, estimation equations, and bayesian
 and likelihood-based methods. Besides the theoretical background, I love
-to analyze data and make pretty and useful visualizations.
+to analyze data and make pretty and useful visualizations (I ensembled
+some [here](visualizations/)).
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
