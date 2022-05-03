@@ -1,11 +1,11 @@
 ---
-title: "Visualizations"
+title: "R Visualizations"
 author: "[Henrique Laureano](https://henriquelaureano.github.io/)"
 date: "*Last modification on* `r Sys.time()`"
 output:
   html_document:
-    toc: true
-    toc_float: true
+    toc: false
+    toc_float: false
 ---
 
 ```{r, echo=FALSE}
@@ -22,20 +22,73 @@ knitr::opts_chunk$set(fig.path='figures/', fig.align='center',
 
 ***
 
-# 2015
+> A linear model with two covariates seen at the same time in terms of
+> both (3d).
+
+![](linear_model_in_3d.png){width=70%}
 
 ***
 
-> Um modelo linear com duas covariáveis visto ao mesmo tempo em termos
-> de ambas (3d).
+> US Real interest ex-post trimester time series from 1961 until 1986,
+> with empiric M-fluctuation process based on the scores of a fitted
+> model (break/change points).
 
-![](linear_model_in_3d.png){width=80%}
+![](time_serie_with_breakpoints.png){width=60%}
 
 ***
 
-> Série temporal trimestral da taxa de juros real ex-post dos Estados
-> Unidos de 1961 até 1986, com processo de flutuação M empírico a partir
-> dos scores de um modelo ajustado (pontos de quebra/mudança).
+> The curve fits obtained through each gradient descent iteration until
+> convergence, in red.
 
-![](time_serie_with_breakpoints.png){width=65%}
+![](linear_model_gradient_descent.png){width=65%}
 
+***
+
+> Sequential Bayesian learning of a simple linear model with one
+> covariate.
+
+![](sequential_bayesian_learning.png){width=70%}
+
+***
+
+> Clustering results of the DbScan algorithm for different *minpts*
+> parameter values.
+
+![](dbscan_minpts.png){width=70%}
+
+***
+
+> Clustering results of the DbScan algorithm for different *eps*
+> parameter values.
+
+![](dbscan_eps.png){width=70%}
+
+***
+
+> A: Deviance contour of the quadritic approximation for a bivariate
+> Gaussian with zero mean;
+>
+> B: Quadratic approx. added into the original likelihood-based deviance
+> contour.
+
+![](deviance_with_quad_approx.png){width=75%}
+
+***
+
+> Deviance contours for a bivariate Gaussian with zero mean.
+
+![](deviance_contours.png){width=75%}
+
+***
+
+> Deviance contours with the parameters estimate at each optimization
+> algorithm function evaluation.
+
+![](deviance_contours_function_evaluations.png){width=80%}
+
+***
+
+> Posterior mean and 95% credible interval of a random walk model of 1st
+> order for smoothing splines without intercept.
+
+![](random_walk_smoothing_splines.png){width=70%}
