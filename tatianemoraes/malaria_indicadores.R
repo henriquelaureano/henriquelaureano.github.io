@@ -288,18 +288,18 @@ dplyr::bind_rows(morans(dat6.median, dat6.median$index),
     kableExtra::row_spec(1:3, bold=TRUE,
                          color='white', background='#D7261E')
 
+## Nível 2 -------------------------------------------------------------
+
+### Índice de Capacidade Adaptativa
+
+### Índice de sensibilidade
+
+## Nível 3 -------------------------------------------------------------
+
+### Índice de Exposição
+
+### Índice de Vulnerabilidade
+
 ## Nível 4 -------------------------------------------------------------
 
 ### Índice de Risco de Impacto para precipitação
-
-var.map(precipitacao, `Índice de Intensidade de Precipitação Simples`)
-
-rbind(morans(
-    precipitacao.br,
-    precipitacao.br$`Índice de Intensidade de Precipitação Simples`
-))|>
-    kableExtra::kbl(booktabs=TRUE, digits=10)|>
-    kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::column_spec(4, bold=TRUE)|>
-    kableExtra::row_spec(1, bold=TRUE,
-                         color='white', background='#D7261E')
