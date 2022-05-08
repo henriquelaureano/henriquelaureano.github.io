@@ -135,6 +135,23 @@ dplyr::bind_rows(morans(dat1.median, dat1.median$index),
     dplyr::mutate(var=c('Mediana', 'Média', 'PCA'))|>
     dplyr::relocate(var, .before='Moran I statistic')
 
+finalindicator.map <- function(data, title='Título')
+{
+    data|>
+        ggplot(aes(fill=index))+
+        geom_sf(size=0.025)+
+        coord_sf(datum=NA)+
+        scale_fill_distiller(palette='Spectral',
+                             limits=c(0, 1), 
+                             breaks=seq(0, 1, by=0.1))+
+        labs(title=title)+
+        theme_classic(base_size=14)+
+        theme(plot.title=element_text(face='bold'))+
+        guides(fill=guide_colorbar(title=NULL,
+                                   barheight=19, barwidth=0.65))
+}
+finalindicator.map(dat1.pca, title='Uso e ocupação do solo')
+
 ### Malha rodoviária
 
 var.map <- function(data, var)
@@ -195,6 +212,8 @@ dplyr::bind_rows(morans(dat3.median, dat3.median$index),
     kableExtra::row_spec(1:3, bold=TRUE,
                          color='white', background='#D7261E')
 
+finalindicator.map(dat3.median, title='Serviços de saúde')
+
 ### Perfil Epidemiológico da Malária
 
 dat4.vars <- c("IPA",
@@ -225,6 +244,9 @@ dplyr::bind_rows(morans(dat4.median, dat4.median$index),
     kableExtra::column_spec(5, bold=TRUE)|>
     kableExtra::row_spec(1:3, bold=TRUE,
                          color='white', background='#D7261E')
+
+finalindicator.map(dat4.pca,
+                   title='Perfil Epidemiológico da Malária')
 
 ### Mobilidade populacional
 
@@ -257,6 +279,9 @@ dplyr::bind_rows(morans(dat5.median, dat5.median$index),
     kableExtra::row_spec(1:3, bold=TRUE,
                          color='white', background='#D7261E')
 
+finalindicator.map(dat5.median,
+                   title='Mobilidade Populacional')
+
 ### Suscetibilidade social
 
 dat6.vars <- c("IDH-M",
@@ -288,18 +313,163 @@ dplyr::bind_rows(morans(dat6.median, dat6.median$index),
     kableExtra::row_spec(1:3, bold=TRUE,
                          color='white', background='#D7261E')
 
+finalindicator.map(dat6.median, title='Suscetibilidade Social')
+
 ## Nível 2 -------------------------------------------------------------
 
 ### Índice de Capacidade Adaptativa
 
+finalindicator.map(dat3.median,
+                   title='Índice de Capacidade Adaptativa')
+
 ### Índice de sensibilidade
+
+dat8 <- tibble::tibble(ind1=dat4.pca   $index, 
+                       ind2=dat5.median$index, 
+                       ind3=dat6.median$index)
+
+dat8.vars <- paste0('ind', 1:3)
+
+dat8.median <- indicator(dat8, dat8.vars, index='median')
+dat8.mean   <- indicator(dat8, dat8.vars, index='mean')
+dat8.pca    <- indicator(dat8, dat8.vars, index='pca')
+
+p1 <- indicator.map(dat8.median, title='Mediana')
+p2 <- indicator.map(dat8.mean  , title='Média')
+p3 <- indicator.map(dat8.pca   , title='PCA')
+
+p1 + p2 + p3 +
+    patchwork::plot_layout(guides='collect')&
+    patchwork::plot_annotation(title='Índice de sensibilidade',
+                               subtitle='Agregação por')&
+    theme(plot.title   =element_text(face='bold', size=14),
+          plot.subtitle=element_text(size=14))
+
+dplyr::bind_rows(morans(dat8.median, dat8.median$index), 
+                 morans(dat8.mean  , dat8.mean$index), 
+                 morans(dat8.pca   , dat8.pca$index))|>
+    dplyr::mutate(var=c('Mediana', 'Média', 'PCA'))|>
+    dplyr::relocate(var, .before='Moran I statistic')|>
+    kableExtra::kbl(booktabs=TRUE, digits=10)|>
+    kableExtra::kable_classic_2(full_width=FALSE)|>
+    kableExtra::column_spec(5, bold=TRUE)|>
+    kableExtra::row_spec(1:3, bold=TRUE,
+                         color='white', background='#D7261E')
+
+finalindicator.map(dat8.pca, title='Índice de sensibilidade')
 
 ## Nível 3 -------------------------------------------------------------
 
 ### Índice de Exposição
 
+dat9 <- tibble::tibble(ind1=precipitacao$`Presença de rodovias`, 
+                       ind2=dat1.pca$index)
+
+dat9.vars <- paste0('ind', 1:2)
+
+dat9.median <- indicator(dat9, dat9.vars, index='median')
+dat9.mean   <- indicator(dat9, dat9.vars, index='mean')
+dat9.pca    <- indicator(dat9, dat9.vars, index='pca')
+
+p1 <- indicator.map(dat9.median, title='Mediana')
+p2 <- indicator.map(dat9.mean  , title='Média')
+p3 <- indicator.map(dat9.pca   , title='PCA')
+
+p1 + p2 + p3 +
+    patchwork::plot_layout(guides='collect')&
+    patchwork::plot_annotation(title='Índice de Exposição',
+                               subtitle='Agregação por')&
+    theme(plot.title   =element_text(face='bold', size=14),
+          plot.subtitle=element_text(size=14))
+
+dplyr::bind_rows(morans(dat9.median, dat9.median$index), 
+                 morans(dat9.mean  , dat9.mean$index), 
+                 morans(dat9.pca   , dat9.pca$index))|>
+    dplyr::mutate(var=c('Mediana', 'Média', 'PCA'))|>
+    dplyr::relocate(var, .before='Moran I statistic')|>
+    kableExtra::kbl(booktabs=TRUE, digits=10)|>
+    kableExtra::kable_classic_2(full_width=FALSE)|>
+    kableExtra::column_spec(5, bold=TRUE)|>
+    kableExtra::row_spec(1:3, bold=TRUE,
+                         color='white', background='#D7261E')
+
+finalindicator.map(dat9.median, title='Índice de Exposição')
+
 ### Índice de Vulnerabilidade
+
+dat10 <- tibble::tibble(ind1=dat3.median$index, 
+                        ind2=dat8.pca$index)
+
+dat10.vars <- paste0('ind', 1:2)
+
+dat10.median <- indicator(dat10, dat10.vars, index='median')
+dat10.mean   <- indicator(dat10, dat10.vars, index='mean')
+dat10.pca    <- indicator(dat10, dat10.vars, index='pca')
+
+p1 <- indicator.map(dat10.median, title='Mediana')
+p2 <- indicator.map(dat10.mean  , title='Média')
+p3 <- indicator.map(dat10.pca   , title='PCA')
+
+p1 + p2 + p3 +
+    patchwork::plot_layout(guides='collect')&
+    patchwork::plot_annotation(title='Índice de Vulnerabilidade',
+                               subtitle='Agregação por')&
+    theme(plot.title   =element_text(face='bold', size=14),
+          plot.subtitle=element_text(size=14))
+
+dplyr::bind_rows(morans(dat10.median, dat10.median$index), 
+                 morans(dat10.mean  , dat10.mean$index), 
+                 morans(dat10.pca   , dat10.pca$index))|>
+    dplyr::mutate(var=c('Mediana', 'Média', 'PCA'))|>
+    dplyr::relocate(var, .before='Moran I statistic')|>
+    kableExtra::kbl(booktabs=TRUE, digits=10)|>
+    kableExtra::kable_classic_2(full_width=FALSE)|>
+    kableExtra::column_spec(5, bold=TRUE)|>
+    kableExtra::row_spec(1:3, bold=TRUE,
+                         color='white', background='#D7261E')
+
+finalindicator.map(dat10.median, title='Índice de Vulnerabilidade')
 
 ## Nível 4 -------------------------------------------------------------
 
 ### Índice de Risco de Impacto para precipitação
+
+dat11 <- tibble::tibble(ind1=dat9.median$index, 
+                        ind2=dat10.median$index,
+                        ind3=precipitacao$
+                            `Índice de Ameaça Climática (Presente)`)
+
+dat11.vars <- paste0('ind', 1:3)
+
+dat11.median <- indicator(dat11, dat11.vars, index='median')
+dat11.mean   <- indicator(dat11, dat11.vars, index='mean')
+dat11.pca    <- indicator(dat11, dat11.vars, index='pca')
+
+p1 <- indicator.map(dat11.median, title='Mediana')
+p2 <- indicator.map(dat11.mean  , title='Média')
+p3 <- indicator.map(dat11.pca   , title='PCA')
+
+p1 + p2 + p3 +
+    patchwork::plot_layout(guides='collect')&
+    patchwork::plot_annotation(
+                   title=
+                       'Índice de Risco de Impacto para precipitação',
+                   subtitle='Agregação por')&
+    theme(plot.title   =element_text(face='bold', size=14),
+          plot.subtitle=element_text(size=14))
+
+dplyr::bind_rows(morans(dat11.median, dat11.median$index), 
+                 morans(dat11.mean  , dat11.mean$index), 
+                 morans(dat11.pca   , dat11.pca$index))|>
+    dplyr::mutate(var=c('Mediana', 'Média', 'PCA'))|>
+    dplyr::relocate(var, .before='Moran I statistic')|>
+    kableExtra::kbl(booktabs=TRUE, digits=10)|>
+    kableExtra::kable_classic_2(full_width=FALSE)|>
+    kableExtra::column_spec(5, bold=TRUE)|>
+    kableExtra::row_spec(1:3, bold=TRUE,
+                         color='white', background='#D7261E')
+
+finalindicator.map(
+    dat11.mean,
+    title='Índice de Risco de Impacto para precipitação'
+)
