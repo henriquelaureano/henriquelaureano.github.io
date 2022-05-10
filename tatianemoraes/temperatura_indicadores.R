@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2022-mai-09 · Curitiba/PR/Brazil
+##                                      2022-mai-10 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ## ---------------------------------------------------------------------
@@ -478,3 +478,21 @@ finalindicator.map(
     dat11.pca,
     title='Índice de Risco de Impacto para temperatura'
 )
+
+indicadores <-
+    tibble::tibble(
+                'Uso e ocupação do solo'=dat1.pca$index,
+                'Malha rodoviária'=temperatura$`Presença de rodovias`,
+                'Serviços de saúde'=dat3.median$index,
+                'Perfil Epidemiológico da Malária'=dat4.pca$index,
+                'Mobilidade Populacional'=dat5.median$index,
+                'Suscetibilidade Social'=dat6.median$index,
+                'Índice de Capacidade Adaptativa'=dat3.median$index,
+                'Índice de sensibilidade'=dat8.pca$index,
+                'Índice de Exposição'=dat9.median$index,
+                'Índice de Vulnerabilidade'=dat10.median$index,
+                'Índice de Risco de Impacto para temperatura (média)'=dat11.mean$index, 
+                'Índice de Risco de Impacto para temperatura (mediana)'=dat11.median$index, 
+                'Índice de Risco de Impacto para temperatura (PCA)'=dat11.pca$index
+            )
+write.csv(indicadores, 'indicadores_temperatura.csv', row.names=FALSE)
