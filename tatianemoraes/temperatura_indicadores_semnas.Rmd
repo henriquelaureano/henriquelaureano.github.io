@@ -1,0 +1,453 @@
+---
+title: "Indicadores de malária: Temperatura (Sem NAs)"
+author: "Tatiane Moraes e 
+         [Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path='figuras_temperatura_semnas/',
+                      fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning=FALSE, message=FALSE, prompt=FALSE,
+                      echo=FALSE, comment=NA)
+
+```
+
+***
+
+```{r pkgs}
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+pacman::p_load(readxl, dplyr, tidyr, devtools, geobr, rlang, purrr,
+               ggplot2, patchwork, spdep, kableExtra)
+## devtools::install_github('ipeaGIT/geobr', subdir='r-package')
+## library(geobr)
+source(
+    '../../henriquelaureano.github.io/i4p-colors/i4p-palette.R'
+)
+unique_color <- '#3e4989ff'
+
+```
+
+```{r dat}
+
+temperatura <-
+    readxl::read_xlsx('valores_ind_simples_malaria_TM_0805.xlsx',
+                      sheet='valores_temperatura_henrique')
+
+temp.chr <- dplyr::select(temperatura,
+                          c(`code_muni`, `Município`, `UF`, `Biome`))
+
+temp.num <- dplyr::select(temperatura,
+                          !c(`code_muni`, `Município`, `UF`, `Biome`))|>
+    dplyr::mutate_if(is.character, as.numeric)
+
+temperatura <- cbind(temp.chr, temp.num)
+
+## str(temperatura)
+
+```
+
+```{r results='hide'}
+
+br <- geobr::read_municipality(code_muni='all', year=2018)
+
+```
+
+# Nível 1
+
+***
+
+## Uso e ocupação do solo
+
+> - Assentamentos
+> - Mineração
+> - Desflorestamento
+> - População Rural
+> - Corpos d'agua
+
+> Ficamos com o PCA.
+
+```{r uso_e_ocupacao_do_solo}
+
+indicator <- function(data, vars, index=c('median', 'mean', 'pca'))
+{
+    dat       <- dplyr::select(data,
+                               c(code_muni,
+                                 dplyr::all_of(!!rlang::enquo(vars))))|>
+        tidyr::drop_na()
+    code_muni <- dat$code_muni
+    dat       <- dplyr::select(dat, !code_muni)
+    n         <- nrow(dat)
+    dat$index <- switch(
+        index,
+        'median'=purrr::map_dbl(seq(n), 
+                                function(.x)
+                                    median(as.numeric(dat[.x, ]))),
+        'mean'  =purrr::map_dbl(seq(n),
+                                function(.x)
+                                    mean  (as.numeric(dat[.x, ]))),
+        'pca'   =prcomp(dat)$x[, 1]
+    )
+    if (index == 'pca')
+    {
+        index.min <- min(dat$index)
+        dat$index <- (dat$index-index.min)/(max(dat$index)-index.min)
+    }
+    dat <- cbind(code_muni, dat)
+    dat <- dplyr::inner_join(br, dat, by='code_muni')
+    return(dat)
+}
+indicator.map <- function(data, title='Título')
+{
+    data|>
+        ggplot(aes(fill=index))+
+        geom_sf(size=0.025)+
+        coord_sf(datum=NA)+
+        scale_fill_distiller(palette='Spectral',
+                             limits=c(0, 1), 
+                             breaks=seq(0, 1, by=0.1))+
+        labs(title=title)+
+        theme_classic(base_size=14)+
+        theme(plot.title=element_text(face='bold'))+
+        guides(fill=guide_colorbar(title=NULL,
+                                   barheight=19, barwidth=0.65))
+}
+
+dat1.vars <- c("Assentamentos",
+               "Mineração",
+               "Desflorestamento",
+               "População Rural",
+               "Corpos d'água")
+
+dat1.pca    <- indicator(temperatura, dat1.vars, index='pca')
+## str(dat1.pca)
+
+indicator.map(dat1.pca, title='Uso e ocupação do solo')
+
+```
+
+## Malha rodoviária
+
+> - Presença de rodovias
+
+```{r malha_rodoviaria}
+
+var.map <- function(data, var)
+{
+    dat <- dplyr::inner_join(br, data, by='code_muni')
+    dat|>
+        ggplot(aes(fill=!!rlang::ensym(var)))+
+        geom_sf(size=0.025)+
+        coord_sf(datum=NA)+
+        scale_fill_distiller(palette='Spectral',
+                             limits=c(0, 1), 
+                             breaks=seq(0, 1, by=0.1))+
+        labs(title=deparse(substitute(var)))+
+        theme_classic(base_size=14)+
+        theme(plot.title=element_text(face='bold'))+
+        guides(fill=guide_colorbar(title=NULL,
+                                   barheight=19, barwidth=0.65))
+}
+var.map(temperatura, `Presença de rodovias`)
+
+```
+
+## Serviços de saúde
+
+> - Cobertura atenção básica
+> - Acesso a diagnóstico e tratamento
+
+> Ficamos com a mediana.
+
+```{r servicos_de_saude}
+
+dat3.vars <- c("Cobertura da Atenção Básica",
+               "Acesso a diagnóstico e tratamento")
+
+dat3.median <- indicator(temperatura, dat3.vars, index='median')
+
+indicator.map(dat3.median, title='Serviços de saúde')
+
+```
+
+## Perfil Epidemiológico da Malária
+
+> - IPA
+> - Malaria falciparum 
+
+> Ficamos com o PCA.
+
+```{r perfil_epidemiologico_da_malaria}
+
+dat4.vars <- c("IPA",
+               "Malária falciparum")
+
+dat4.pca <- indicator(temperatura, dat4.vars, index='pca')
+
+indicator.map(dat4.pca, title='Perfil Epidemiológico da Malária')
+
+```
+
+## Mobilidade populacional
+
+> - Turismo municipal
+> - Imigração recente 
+
+> Ficamos com a mediana.
+
+```{r mobilidade_populacional}
+
+dat5.vars <- c("Turismo Municipal",
+               "Imigração recente")
+
+dat5.median <- indicator(temperatura, dat5.vars, index='median')
+
+indicator.map(dat5.median, title='Mobilidade Populacional')
+
+```
+
+## Suscetibilidade social
+
+> - IDHM
+> - Sem acesso a saneamento adequado
+
+> Ficamos com a mediana.
+
+```{r suscetilidade_social}
+
+dat6.vars <- c("IDH-M",
+               "Sem acesso ao saneamento adequado")
+
+dat6.median <- indicator(temperatura, dat6.vars, index='median')
+
+indicator.map(dat6.median, title='Suscetibilidade Social')
+
+```
+
+# Nível 2
+
+***
+
+## Índice de Capacidade Adaptativa
+
+> - Serviços de Saúde (mediana)
+
+> Ficamos com a mediana.
+
+```{r indice_de_capacidade_adaptativa}
+
+indicator.map(dat3.median, title='Índice de Capacidade Adaptativa')
+
+```
+
+## Índice de sensibilidade
+
+> - Suscetibilidade social (mediana)
+> - Mobilidade Populacional (mediana)
+> - Perfil Epidemiológico da Malária (PCA)
+
+> ficamos com o PCA.
+
+```{r indice_de_sensibilidade}
+
+d1 <- dplyr::inner_join(br,
+                        tibble::as_tibble(dat4.pca)|>
+                        dplyr::select(c(code_muni, index))|>
+                        dplyr::rename(ind1=index),
+                        by='code_muni')
+
+d2 <- dplyr::inner_join(d1,
+                        tibble::as_tibble(dat5.median)|>
+                        dplyr::select(c(code_muni, index))|>
+                        dplyr::rename(ind2=index),
+                        by='code_muni')
+
+dat8 <- dplyr::inner_join(d2,
+                          tibble::as_tibble(dat6.median)|>
+                          dplyr::select(c(code_muni, index))|>
+                          dplyr::rename(ind3=index),
+                          by='code_muni')|>
+    tibble::as_tibble()|>
+    dplyr::select(c(code_muni, ind1:ind3))
+
+dat8.vars <- paste0('ind', 1:3)
+
+dat8.pca <- indicator(dat8, dat8.vars, index='pca')
+
+indicator.map(dat8.pca, title='Índice de sensibilidade')
+
+```
+
+# Nível 3
+
+***
+
+## Índice de Exposição
+
+> - Malha rodoviária
+> - Uso e ocupação do solo (PCA)
+
+> Ficamos com a mediana.
+
+```{r indice_de_exposicao}
+
+d1 <- dplyr::inner_join(br,
+                        temperatura|>
+                        dplyr::select(c(code_muni,
+                                        `Presença de rodovias`))|>
+                        dplyr::rename(ind1=`Presença de rodovias`),
+                        by='code_muni')
+
+dat9 <- dplyr::inner_join(d1,
+                          tibble::as_tibble(dat1.pca)|>
+                          dplyr::select(c(code_muni, index))|>
+                          dplyr::rename(ind2=index),
+                          by='code_muni')|>
+    tibble::as_tibble()|>
+    dplyr::select(c(code_muni, ind1:ind2))
+
+dat9.vars <- paste0('ind', 1:2)
+
+dat9.median <- indicator(dat9, dat9.vars, index='median')
+
+indicator.map(dat9.median, title='Índice de Exposição')
+
+```
+
+## Índice de Vulnerabilidade
+
+> - Sensibilidade (PCA)
+> - Capacidade adaptativa (mediana)
+
+> Ficamos com a mediana.
+
+```{r indice_de_vulnerabilidade}
+
+d1 <- dplyr::inner_join(br,
+                        tibble::as_tibble(dat3.median)|>
+                        dplyr::select(c(code_muni, index))|>
+                        dplyr::rename(ind1=index),
+                        by='code_muni')
+
+dat10 <- dplyr::inner_join(d1,
+                           tibble::as_tibble(dat8.pca)|>
+                           dplyr::select(c(code_muni, index))|>
+                           dplyr::rename(ind2=index),
+                           by='code_muni')|>
+    tibble::as_tibble()|>
+    dplyr::select(c(code_muni, ind1:ind2))
+
+dat10.vars <- paste0('ind', 1:2)
+
+dat10.median <- indicator(dat10, dat10.vars, index='median')
+
+indicator.map(dat10.median, title='Índice de Vulnerabilidade')
+
+```
+
+# Nível 4
+
+***
+
+## Índice de Risco de Impacto para temperatura
+
+> - Vulnerabilidade (mediana)
+> - Exposição (mediana)
+> - Ameaça Climática
+
+> Ficamos com o PCA.
+
+```{r indice_de_risco_de_impacto_para_temperatura}
+
+d1 <- dplyr::inner_join(br,
+                        tibble::as_tibble(dat9.median)|>
+                        dplyr::select(c(code_muni, index))|>
+                        dplyr::rename(ind1=index),
+                        by='code_muni')
+
+d2 <- dplyr::inner_join(d1,
+                        tibble::as_tibble(dat10.median)|>
+                        dplyr::select(c(code_muni, index))|>
+                        dplyr::rename(ind2=index),
+                        by='code_muni')
+
+dat11 <-
+    dplyr::inner_join(d2,
+                      temperatura|>
+                      dplyr::select(c(
+                                 code_muni,
+                                 `Índice de Ameaça Climática (Presente)`
+                             ))|>
+                      dplyr::rename(ind3=`Índice de Ameaça Climática (Presente)`
+                                    ),
+                      by='code_muni')|>
+    tibble::as_tibble()|>
+    dplyr::select(c(code_muni, ind1:ind3))
+
+dat11.vars <- paste0('ind', 1:3)
+
+dat11.pca <- indicator(dat11, dat11.vars, index='pca')|>
+    dplyr::mutate(index=(1-index))
+
+indicator.map(dat11.pca,
+              title='Índice de Risco de Impacto para temperatura')
+
+```
+
+# Referência
+
+***
+
+> A análise estatística foi realizada no ambiente de computação
+> estatística `R` (R Core Team, 2022). Os principais pacotes `R`
+> utilizados foram o {`dplyr`} (Wickham et al., 2022), {`tidyr`}
+> (Wickham & Girlich, 2022), {`rlang`} (Henry & Wickham, 2022),
+> {`purrr`} (Henry & Wickham, 2020), {`ggplot2`} (Wickham, 2016),
+> {`patckwork`} (Pedersen, 2020), {`geobr`} (Pereira & Gonçalves, 2022),
+> e {`spdep`} (Bivand, 2022; Bivand et al., 2013).
+
+> R Core Team (2022). R: A language and environment for statistical
+> computing. R Foundation for Statistical Computing, Vienna,
+> Austria. URL https://www.R-project.org/
+>
+> Wickham, H., François, R., Henry, L., Müller, K. (2022). dplyr: A
+> Grammar of Data Manipulation. R package version
+> 1.0.9. https://CRAN.R-project.org/package=dplyr
+>
+> Wickham, H., Girlich, M. (2022). tidyr: Tidy Messy Data. R package
+> version 1.2.0, https://CRAN.R-project.org/package=tidyr
+>
+> Henry, L., Wickham, H. (2022). rlang: Functions for Base Types and
+> Core R and 'Tidyverse' Features. R package version 1.0.2,
+> https://CRAN.R-project.org/package=rlang
+>
+> Henry, L., Wickham, H. (2020). purrr: Functional Programming Tools. R
+> package version 0.3.4, https://CRAN.R-project.org/package=purrr
+>
+> Wickham, H. (2016). ggplot2: Elegant Graphics for Data
+> Analysis. Springer-Verlag New York
+>
+> Pedersen, T. L. (2020). patchwork: The Composer of Plots. R package
+> version 1.1.1. https://CRAN.R-project.org/package=patchwork
+>
+> Pereira, R. H. M., Gonçalves, C. N. (2022). geobr: Download Official
+> Spatial Data Sets of Brazil. R package version 1.6.5999,
+> <https://github.com/ipeaGIT/geobr
+>
+> Bivand, R. S. (2022) R Packages for Analyzing Spatial Data: A Comparative
+> Case Study with Areal Data Geographical Analysis URL
+> https://doi.org/10.1111/gean.12319
+>
+> Bivand, R. S., Pebesma, E., Gomez-Rubio, V. (2013). Applied spatial
+> data analysis with R, Second edition. Springer,
+> NY. https://asdar-book.org/

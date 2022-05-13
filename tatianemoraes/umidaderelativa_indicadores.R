@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2022-mai-11 · Curitiba/PR/Brazil
+##                                      2022-mai-13 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ## ---------------------------------------------------------------------
@@ -11,7 +11,7 @@
 if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 
 pacman::p_load(readxl, dplyr, tidyr, devtools, geobr, rlang, purrr,
-               ggplot2, patchwork, spdep, kableExtra)
+               ggplot2, patchwork, spdep, KableExtra)
 
 ## devtools::install_github('ipeaGIT/geobr', subdir='r-package')
 ## library(geobr)
@@ -193,7 +193,8 @@ dat3.vars <- c("Cobertura da Atenção Básica",
 
 dat3.median <- indicator(urelativa, dat3.vars, index='median')
 dat3.mean   <- indicator(urelativa, dat3.vars, index='mean')
-dat3.pca    <- indicator(urelativa, dat3.vars, index='pca')
+dat3.pca    <- indicator(urelativa, dat3.vars, index='pca')|>
+    dplyr::mutate(index=(1-index))
 
 p1 <- indicator.map(dat3.median, title='Mediana')
 p2 <- indicator.map(dat3.mean  , title='Média')
@@ -294,7 +295,8 @@ dat6.vars <- c("IDH-M",
 
 dat6.median <- indicator(urelativa, dat6.vars, index='median')
 dat6.mean   <- indicator(urelativa, dat6.vars, index='mean')
-dat6.pca    <- indicator(urelativa, dat6.vars, index='pca')
+dat6.pca    <- indicator(urelativa, dat6.vars, index='pca')|>
+    dplyr::mutate(index=(1-index))
 
 p1 <- indicator.map(dat6.median, title='Mediana')
 p2 <- indicator.map(dat6.mean  , title='Média')
@@ -407,7 +409,8 @@ dat10.vars <- paste0('ind', 1:2)
 
 dat10.median <- indicator(dat10, dat10.vars, index='median')
 dat10.mean   <- indicator(dat10, dat10.vars, index='mean')
-dat10.pca    <- indicator(dat10, dat10.vars, index='pca')
+dat10.pca    <- indicator(dat10, dat10.vars, index='pca')|>
+    dplyr::mutate(index=(1-index))
 
 p1 <- indicator.map(dat10.median, title='Mediana')
 p2 <- indicator.map(dat10.mean  , title='Média')
