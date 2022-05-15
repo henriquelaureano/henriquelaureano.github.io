@@ -1,7 +1,7 @@
 ##----------------------------------------------------------------------
 ##                                                     Henrique Laureano
 ##                                            henriquelaureano.github.io
-##                                      2022-mai-13 · Curitiba/PR/Brazil
+##                                      2022-mai-15 · Curitiba/PR/Brazil
 ##----------------------------------------------------------------------
 
 ## ---------------------------------------------------------------------
@@ -41,28 +41,35 @@ indicator <- function(data, vars, index=c('median', 'mean', 'pca'))
 {
     dat       <- dplyr::select(data,
                                c(code_muni,
-                                 dplyr::all_of(!!rlang::enquo(vars))))|>
-        tidyr::drop_na()
-    code_muni <- dat$code_muni
-    dat       <- dplyr::select(dat, !code_muni)
-    n         <- nrow(dat)
-    dat$index <- switch(
+                                 dplyr::all_of(!!rlang::enquo(vars))))
+    code_muni     <- dplyr::select( dat,  code_muni)
+    ddat          <- tidyr::drop_na(dat)
+    code_muni.pca <- dplyr::select(ddat,  code_muni)
+    ddat          <- dplyr::select(ddat, !code_muni)
+    dat           <- dplyr::select( dat, !code_muni)
+    n             <- nrow(dat)
+    indicador     <- switch(
         index,
         'median'=purrr::map_dbl(seq(n), 
                                 function(.x)
-                                    median(as.numeric(dat[.x, ]))),
+                                    median(as.numeric(dat[.x, ]),
+                                           na.rm=TRUE)),
         'mean'  =purrr::map_dbl(seq(n),
                                 function(.x)
-                                    mean  (as.numeric(dat[.x, ]))),
-        'pca'   =prcomp(dat)$x[, 1]
+                                    mean  (as.numeric(dat[.x, ]),
+                                           na.rm=TRUE)),
+        'pca'   =prcomp(ddat)$x[, 1]
     )
     if (index == 'pca')
     {
-        index.min <- min(dat$index)
-        dat$index <- (dat$index-index.min)/(max(dat$index)-index.min)
+        index.min <- min(indicador)
+        indicador <- (indicador-index.min)/(max(indicador)-index.min)
+        dat       <- ddat
+        code_muni <- code_muni.pca
     }
-    dat <- cbind(code_muni, dat)
-    dat <- dplyr::inner_join(br, dat, by='code_muni')
+    dat$index <- indicador
+    dat       <- cbind(code_muni, dat)
+    dat       <- dplyr::inner_join(br, dat, by='code_muni')
     return(dat)
 }
 indicator.map <- function(data, title='Título')
