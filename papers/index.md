@@ -62,6 +62,12 @@
   Junior, W. H. Bonat\
   Submitted to *Journal of Statistical Computation and Simulation*
 
++ [2022]\
+  Occupational exposure to pesticides and its association with telomere
+  length - A systematic review and meta-analysis\
+  J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
+  Submitted to *Environmental Health Perspectives*
+
 ***
 
 ### In preparation
