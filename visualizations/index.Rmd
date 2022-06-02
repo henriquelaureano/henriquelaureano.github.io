@@ -204,3 +204,31 @@ knitr::opts_chunk$set(fig.path='figures/', fig.align='center',
 > Barplots of comorbidities.
 
 ![](comorbidities.png){width=95%}
+
+***
+
+> Confusion matrix of two different (outcomes) logistic regressions
+> (binomial GLM with logit link function).
+
+![](confusion_matrices.png){width=70%}
+
+***
+
+> Barplot and heatmap of long-term symptoms in a group of people who had
+> COVID-19.
+
+![](barplot_and_heatmap.png){width=95%}
+
+***
+
+> Heatmaps of presented symptoms during and long-term in a group of
+> people who had COVID-19.
+
+![](heatmaps.png){width=90%}
+
+***
+
+> Symptoms split-barplot of during/long-term outcomes in a group of
+> people who had COVID-19.
+
+![](split_barplot.png){width=90%}
