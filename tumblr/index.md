@@ -169,3 +169,5 @@
 <img src='flowers.gif'>
 <img src='quasimoto.jpg'>
 <img src='dadandson.jpg'>
+<img src='wutangclan.jpg'>
+<img src='train.jpg'>
