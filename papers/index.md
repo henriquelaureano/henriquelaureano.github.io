@@ -66,7 +66,7 @@
   Occupational exposure to pesticides and its association with telomere
   length - A systematic review and meta-analysis\
   J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
-  Submitted to *Environmental Health Perspectives*
+  Submitted to *Science of the Total Environment*
 
 + [2022]\
   Increased risk of fractures caused by the use of proton pump
