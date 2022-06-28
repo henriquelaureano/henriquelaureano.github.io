@@ -68,12 +68,12 @@
   J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
   Submitted to *Science of the Total Environment*
 
-+ [2022]\
-  Increased risk of fractures caused by the use of proton pump
-  inhibitors in women in menopause: a systematic review and
-  meta-analysis\
-  T. Maia, B. Gafo, **H. A. Laureano**, I. C. Guiloski\
-  Submitted to *EXCLI Journal: Experimental and Clinical Sciences*
+<!-- + [2022]\ -->
+  <!-- Increased risk of fractures caused by the use of proton pump -->
+  <!-- inhibitors in women in menopause: a systematic review and -->
+  <!-- meta-analysis\ -->
+  <!-- T. Maia, B. Gafo, **H. A. Laureano**, I. C. Guiloski\ -->
+  <!-- Submitted to *EXCLI Journal: Experimental and Clinical Sciences* -->
 
 <!-- *** -->
 
