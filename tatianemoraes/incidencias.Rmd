@@ -1,0 +1,3003 @@
+---
+title: "Incidências"
+author: "Tatiane Moraes e 
+         [Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path ='figuras_incidencia/',
+                      fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning  =FALSE,
+                      message  =FALSE,
+                      prompt   =FALSE,
+                      echo     =FALSE,
+                      comment  =NA)
+
+```
+
+***
+
+```{r pkgs}
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+
+pacman::p_load(readxl, dplyr, tidyr, ggplot2, patchwork, devtools,
+               geobr, rlang, tibble, purrr, psych, lme4, lmerTest)
+
+## devtools::install_github('ipeaGIT/geobr', subdir='r-package')
+## library(geobr)
+
+unique_color <- '#3e4989ff'
+
+```
+
+```{r dat}
+
+lv6 <- readxl::read_xlsx('Incidencia _2001 a 2006.xlsx', sheet='LV')|>
+    dplyr::mutate(
+               code=gsub(' .*',      '', `Município de notificação`),
+               muni=gsub('^[0-9]* ', '', `Município de notificação`)
+           )|>
+    dplyr::select(!`Município de notificação`)|>
+    tidyr::pivot_longer(!c(code, muni), names_to='year')|>
+    dplyr::mutate(value=as.numeric(dplyr::recode(value, '-'='0')))
+## str(lv6)
+
+lta6 <- readxl::read_xlsx('Incidencia _2001 a 2006.xlsx', sheet='LTA')|>
+    dplyr::mutate(
+               code=gsub(' .*',      '', `Município de notificação`),
+               muni=gsub('^[0-9]* ', '', `Município de notificação`)
+           )|>
+    dplyr::select(!`Município de notificação`)|>
+    tidyr::pivot_longer(!c(code, muni), names_to='year')|>
+    dplyr::mutate(value=as.numeric(dplyr::recode(value, '-'='0')))
+## str(lta6)
+
+taxas <- read.csv('taxa_lta_lv_2001 a 2005.csv', sep=';')|>
+    dplyr::select(ibge_code_6,
+                  ibge_code_7,
+                  Ano,
+                  populacao_ibge,
+                  biome)|>
+    dplyr::rename(code     ='ibge_code_6',
+                  code_muni='ibge_code_7',
+                  year     ='Ano')
+## str(taxas)
+
+lv <- dplyr::right_join(lv6|>
+                        dplyr::select(!muni)|>
+                        dplyr::filter(!year %in% 2006)|>
+                        dplyr::mutate(code=as.numeric(code),
+                                      year=as.numeric(year)), taxas)|>
+    dplyr::select(code_muni, year, biome, populacao_ibge, value)|>
+    dplyr::mutate(value=tidyr::replace_na(value, 0), 
+                  LV   =value/populacao_ibge)|>
+    dplyr::select(code_muni, year, biome, LV)
+## str(lv)
+
+lta <- dplyr::right_join(lta6|>
+                         dplyr::select(!muni)|>
+                         dplyr::filter(!year %in% 2006)|>
+                         dplyr::mutate(code=as.numeric(code),
+                                       year=as.numeric(year)), taxas)|>
+    dplyr::select(code_muni, year, biome, populacao_ibge, value)|>    
+    dplyr::mutate(value=tidyr::replace_na(value, 0), 
+                  LTA  =value/populacao_ibge)|>
+    dplyr::select(code_muni, year, biome, LTA)
+## str(lta)
+
+ur <- read.csv('HURS_historical.csv')|>
+    dplyr::select(ibge_code_7, ANO, media_hist)|>
+    dplyr::rename(year     ='ANO',
+                  code_muni='ibge_code_7',
+                  UR       ='media_hist')|>
+    dplyr::filter(year %in% 2001:2005)
+## str(ur)
+
+sdii <- read.csv('SDII_historical.csv')|>
+    dplyr::select(ibge_code_7, ANO, media_hist)|>
+    dplyr::rename(year     ='ANO',
+                  code_muni='ibge_code_7',
+                  SDII     ='media_hist')|>
+    dplyr::filter(year %in% 2001:2005)
+## str(sdii)
+
+tasmax <- read.csv('TASMAX_historical (1).csv')|>
+    dplyr::select(ibge_code_7, ANO, media_hist)|>
+    dplyr::rename(year     ='ANO',
+                  code_muni='ibge_code_7',
+                  TASMAX   ='media_hist')|>
+    dplyr::filter(year %in% 2001:2005)
+## str(tasmax)
+
+folder <- 'TASMIN_hist/'
+## ---------------------------------------------------------------------
+UF     <- c('AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+            'MG', 'MS', 'MT', 'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN',
+            'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO')
+## ---------------------------------------------------------------------
+tasmin <-
+    purrr::map_df(
+               UF,
+               function(i)
+                   read.csv(
+                       paste0(folder, 'tasmin_', i,
+                              '_ensemble_historical_r1i1p1_CORDEX_v0_',
+                              'month_mean_19860101-20051231_lonlat_',
+                              'regrid_SAM_44.csv'),
+                       sep=';')|>
+                   tidyr::pivot_longer(!c(ANO, MÊS))|>
+                   dplyr::mutate(name     =gsub(   '^X',  '', name),
+                                 name     =gsub('\\...', ' ', name),
+                                 code_muni=gsub(  ' .*',  '', name))|>
+                   dplyr::filter(ANO %in% 2001:2005)|>
+                   dplyr::select(code_muni, ANO, MÊS, value)|>
+                   dplyr::group_by(code_muni, ANO)|>
+                   dplyr::summarise(TASMIN=mean(value))|>
+                   dplyr::rename(year='ANO')
+           )|>
+    dplyr::ungroup()
+## str(tasmin)
+
+folder <- 'PREC_MEAN_hist/'
+prec_mean <-
+    purrr::map_df(
+               UF,
+               function(i)
+                   read.csv(
+                       paste0(folder, 'pr_', i,
+                              '_ensemble_historical_r1i1p1_CORDEX_v0_',
+                              'month_mean_19860101-20051231_lonlat_',
+                              'regrid_SAM_44.csv'),
+                       sep=';')|>
+                   tidyr::pivot_longer(!c(ANO, MÊS))|>
+                   dplyr::mutate(name     =gsub(   '^X',  '', name),
+                                 name     =gsub('\\...', ' ', name),
+                                 code_muni=gsub(  ' .*',  '', name))|>
+                   dplyr::filter(ANO %in% 2001:2005)|>
+                   dplyr::select(code_muni, ANO, MÊS, value)|>
+                   dplyr::group_by(code_muni, ANO)|>
+                   dplyr::summarise(PREC_MEAN=mean(value))|>
+                   dplyr::rename(year='ANO')
+           )|>
+    dplyr::ungroup()
+## str(prec_mean)
+
+folder <- 'PREC_SUM_hist/'
+prec_sum <-
+    purrr::map_df(
+               UF,
+               function(i)
+                   read.csv(
+                       paste0(folder, 'pr_', i,
+                              '_ensemble_historical_r1i1p1_CORDEX_v0_',
+                              'month_sum_19860101-20051231_lonlat_',
+                              'regrid_SAM_44.csv'),
+                       sep=';')|>
+                   tidyr::pivot_longer(!c(ANO, MÊS))|>
+                   dplyr::mutate(name     =gsub(   '^X',  '', name),
+                                 name     =gsub('\\...', ' ', name),
+                                 code_muni=gsub(  ' .*',  '', name))|>
+                   dplyr::filter(ANO %in% 2001:2005)|>
+                   dplyr::select(code_muni, ANO, MÊS, value)|>
+                   dplyr::group_by(code_muni, ANO)|>
+                   dplyr::summarise(PREC_SUM=mean(value))|>
+                   dplyr::rename(year='ANO')
+           )|>
+    dplyr::ungroup()
+## str(prec_sum)
+
+```
+
+```{r geobr,results='hide',cache=TRUE}
+
+br <- geobr::read_municipality(code_muni='all', year=2018)
+
+br <- dplyr::inner_join(br,
+                        tibble::tibble(lv,
+                                       LTA      =lta$LTA, 
+                                       UR       =ur$UR,
+                                       SDII     =sdii$SDII,
+                                       TASMAX   =tasmax$TASMAX,
+                                       TASMIN   =tasmin$TASMIN,
+                                       PREC_MEAN=prec_mean$PREC_MEAN,
+                                       PREC_SUM =prec_sum$PREC_SUM),
+                        by='code_muni')|>
+    dplyr::mutate(biome=dplyr::recode(biome,
+                                      '1'='Amazonia + Pantanal',
+                                      '2'='Caatinga',
+                                      '3'='Cerrado',
+                                      '4'='Mata Atlantica',
+                                      '5'='Pampa', 
+                                      '6'='Amazonia + Pantanal'))
+## str(br)
+
+dat <- tibble::tibble(lv,
+                      LTA      =lta$LTA,
+                      UR       =ur$UR,
+                      SDII     =sdii$SDII,
+                      TASMAX   =tasmax$TASMAX,
+                      TASMIN   =tasmin$TASMIN,
+                      PREC_MEAN=prec_mean$PREC_MEAN,
+                      PREC_SUM =prec_sum$PREC_SUM)|>
+    dplyr::mutate(code_muni=as.character(code_muni),
+                  biome=dplyr::recode(biome,
+                                      '1'='Amazonia + Pantanal',
+                                      '2'='Caatinga',
+                                      '3'='Cerrado',
+                                      '4'='Mata Atlantica',
+                                      '5'='Pampa', 
+                                      '6'='Amazonia + Pantanal'))
+    
+mapa <- function(var)
+{
+    min <- min(dplyr::pull(br, !!rlang::ensym(var)), na.rm=TRUE)
+    max <- max(dplyr::pull(br, !!rlang::ensym(var)), na.rm=TRUE)
+    br|>
+        dplyr::rename(Year='year')|>
+        ggplot(aes(fill=!!rlang::ensym(var)))+
+        geom_sf(size=0.025)+
+        coord_sf(datum=NA)+
+        facet_wrap(~ Year, labeller=label_both)+
+        scale_fill_distiller(palette ='Spectral',
+                             limits  =c(min, max),
+                             n.breaks=13)+
+        labs(title=deparse(substitute(var)))+
+        theme_classic(base_size=14)+
+        theme(plot.title  =element_text(face='bold'),
+              strip.text.x=element_text(face='bold'))+
+        guides(fill=guide_colorbar(title    =NULL,
+                                   barheight=18,
+                                   barwidth =0.5))
+}
+
+biomapa <- function(var, bio)
+{
+    br2plot <- dplyr::filter(br, biome %in% bio)
+    min <- min(dplyr::pull(br2plot, !!rlang::ensym(var)), na.rm=TRUE)
+    max <- max(dplyr::pull(br2plot, !!rlang::ensym(var)), na.rm=TRUE)
+    br2plot|>
+        dplyr::rename(Year='year')|>
+        ggplot(aes(fill=!!rlang::ensym(var)))+
+        geom_sf(size=0.025)+
+        coord_sf(datum=NA)+
+        facet_wrap(~ Year, labeller=label_both)+
+        scale_fill_distiller(palette ='Spectral',
+                             limits  =c(min, max),
+                             n.breaks=13)+
+        labs(title   =deparse(substitute(var)),
+             subtitle=paste('Biome:', bio))+
+        theme_classic(base_size=14)+
+        theme(plot.title  =element_text(face='bold'),
+              strip.text.x=element_text(face='bold'))+
+        guides(fill=guide_colorbar(title    =NULL,
+                                   barheight=18,
+                                   barwidth =0.5))
+}
+
+```
+
+# LV
+
+***
+
+## Casos brutos (1116 municípios)
+
+***
+
+```{r lv_serie,fig.width=9.5,fig.height=4}
+
+n.lv6 <- length(unique(lv6$code))
+
+(lv6.met <- lv6|>
+     dplyr::group_by(year)|>
+     dplyr::summarise(mean     =mean(value),
+                      sd       =sd(value),
+                      var      =var(value),
+                      min      =min(value),
+                      quant25  =quantile(value, 0.25), 
+                      median   =median(value),
+                      quant75  =quantile(value, 0.75), 
+                      quant90  =quantile(value, 0.90), 
+                      quant95  =quantile(value, 0.95), 
+                      max      =max(value),
+                      zero     =table(value)['0'],
+                      zero.perc=zero/n.lv6))
+
+p1 <- lv6.met|>
+    ggplot(aes(x=year, y=mean, group=1))+
+    geom_hline(yintercept=seq(2.5, 3.5, by=0.1), linetype='dashed')+
+    geom_line(size=1.5, color=unique_color)+
+    labs(x='Year', y='Mean',
+         title='LV mean', subtitle=paste(n.lv6, 'municipalities'))+
+    scale_y_continuous(breaks=seq(2.5, 3.5, by=0.1))+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p2 <- lv6.met|>
+    ggplot(aes(x=year, y=sd, group=1))+
+    geom_hline(yintercept=seq(11, 20, by=1), linetype='dashed')+
+    geom_line(size=1.5, color=unique_color)+
+    labs(x='Year', y='Mean',
+         title='LV SD', subtitle=paste(n.lv6, 'municipalities'))+
+    scale_y_continuous(breaks=seq(11, 20, by=1))+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p1 + p2
+
+```
+
+## Brasil (whole)
+
+***
+
+```{r lv_map,fig.width=8}
+
+## ---------------------------------------------------------------------
+n.muni <- length(unique(lv$code_muni))
+## ---------------------------------------------------------------------
+
+lv|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE),
+                     var      =var(LV, na.rm=TRUE),
+                     min      =min(LV, na.rm=TRUE),
+                     quant25  =quantile(LV, 0.25, na.rm=TRUE), 
+                     median   =median(LV, na.rm=TRUE),
+                     quant75  =quantile(LV, 0.75, na.rm=TRUE), 
+                     quant75  =quantile(LV, 0.90, na.rm=TRUE), 
+                     quant75  =quantile(LV, 0.95, na.rm=TRUE), 
+                     max      =max(LV, na.rm=TRUE), 
+                     zero     =table(LV)['0'],
+                     zero.perc=zero/n.muni,
+                     `NA`     =table(is.na(LV))[['TRUE']],
+                     NA.perc  =`NA`/n.muni)
+
+mapa(LV)
+
+```
+
+# LTA
+
+***
+
+## Casos brutos (3212 municípios)
+
+***
+
+```{r lta_serie,fig.width=9.5,fig.height=4}
+
+n.lta6 <- length(unique(lta6$code))
+
+(lta6.met <- lta6|>
+     dplyr::group_by(year)|>
+     dplyr::summarise(mean     =mean(value),
+                      sd       =sd(value),
+                      var      =var(value),
+                      min      =min(value),
+                      quant25  =quantile(value, 0.25), 
+                      median   =median(value),
+                      quant75  =quantile(value, 0.75), 
+                      quant90  =quantile(value, 0.90), 
+                      quant95  =quantile(value, 0.95), 
+                      max      =max(value),
+                      zero     =table(value)['0'],
+                      zero.perc=zero/n.lta6))
+
+p1 <- lta6.met|>
+    ggplot(aes(x=year, y=mean, group=1))+
+    geom_hline(yintercept=seq(7, 10.5, by=0.5), linetype='dashed')+
+    geom_line(size=1.5, color=unique_color)+
+    labs(x='Year', y='Mean',
+         title='LTA mean', subtitle=paste(n.lta6, 'municipalities'))+
+    scale_y_continuous(breaks=seq(7, 10.5, by=0.5))+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p2 <- lta6.met|>
+    ggplot(aes(x=year, y=sd, group=1))+
+    geom_hline(yintercept=seq(24, 47, by=2), linetype='dashed')+
+    geom_line(size=1.5, color=unique_color)+
+    labs(x='Year', y='Mean',
+         title='LTA SD', subtitle=paste(n.lta6, 'municipalities'))+
+    scale_y_continuous(breaks=seq(24, 47, by=2))+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p1 + p2
+
+```
+
+## Brasil (whole)
+
+***
+
+```{r lta_map,fig.width=8}
+
+lta|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE),
+                     var      =var(LTA, na.rm=TRUE),
+                     min      =min(LTA, na.rm=TRUE),
+                     quant25  =quantile(LTA, 0.25, na.rm=TRUE), 
+                     median   =median(LTA, na.rm=TRUE),
+                     quant75  =quantile(LTA, 0.75, na.rm=TRUE), 
+                     quant75  =quantile(LTA, 0.90, na.rm=TRUE), 
+                     quant75  =quantile(LTA, 0.95, na.rm=TRUE), 
+                     max      =max(LTA, na.rm=TRUE), 
+                     zero     =table(LTA)['0'],
+                     zero.perc=zero/n.muni,
+                     `NA`     =table(is.na(LTA))[['TRUE']],
+                     NA.perc  =`NA`/n.muni)
+
+mapa(LTA)
+
+```
+
+# UR
+
+***
+
+```{r ur_map,fig.width=8}
+
+ur|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean   =mean(UR),
+                     sd     =sd(UR),
+                     var    =var(UR),
+                     min    =min(UR),
+                     quant25=quantile(UR, 0.25), 
+                     median =median(UR),
+                     quant75=quantile(UR, 0.75), 
+                     max    =max(UR))
+
+mapa(UR)
+
+```
+
+# SDII
+
+***
+
+```{r sdii_map,fig.width=8}
+
+sdii|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean   =mean(SDII),
+                     sd     =sd(SDII),
+                     var    =var(SDII),
+                     min    =min(SDII),
+                     quant25=quantile(SDII, 0.25), 
+                     median =median(SDII),
+                     quant75=quantile(SDII, 0.75), 
+                     max    =max(SDII))
+
+mapa(SDII)
+
+```
+
+# TASMAX
+
+***
+
+```{r tasmax_map,fig.width=8}
+
+tasmax|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean   =mean(TASMAX),
+                     sd     =sd(TASMAX),
+                     var    =var(TASMAX),
+                     min    =min(TASMAX),
+                     quant25=quantile(TASMAX, 0.25), 
+                     median =median(TASMAX),
+                     quant75=quantile(TASMAX, 0.75), 
+                     max    =max(TASMAX))
+
+mapa(TASMAX)
+
+```
+
+# TASMIN
+
+***
+
+```{r tasmin_map,fig.width=8}
+
+tasmin|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean   =mean(TASMIN),
+                     sd     =sd(TASMIN),
+                     var    =var(TASMIN),
+                     min    =min(TASMIN),
+                     quant25=quantile(TASMIN, 0.25), 
+                     median =median(TASMIN),
+                     quant75=quantile(TASMIN, 0.75), 
+                     max    =max(TASMIN))
+
+mapa(TASMIN)
+
+```
+
+# PREC_MEAN
+
+***
+
+```{r prec_mean_map,fig.width=8}
+
+prec_mean|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean   =mean(PREC_MEAN),
+                     sd     =sd(PREC_MEAN),
+                     var    =var(PREC_MEAN),
+                     min    =min(PREC_MEAN),
+                     quant25=quantile(PREC_MEAN, 0.25), 
+                     median =median(PREC_MEAN),
+                     quant75=quantile(PREC_MEAN, 0.75), 
+                     max    =max(PREC_MEAN))
+
+mapa(PREC_MEAN)
+
+```
+
+# PREC_SUM
+
+***
+
+```{r prec_sum_map,fig.width=8}
+
+prec_sum|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean   =mean(PREC_SUM),
+                     sd     =sd(PREC_SUM),
+                     var    =var(PREC_SUM),
+                     min    =min(PREC_SUM),
+                     quant25=quantile(PREC_SUM, 0.25), 
+                     median =median(PREC_SUM),
+                     quant75=quantile(PREC_SUM, 0.75), 
+                     max    =max(PREC_SUM))
+
+mapa(PREC_SUM)
+
+```
+
+# Modelagem
+
+***
+
+```{r pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(year %in% 2001)|>
+                    dplyr::select(!c(code_muni, year, biome)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80', main='2001',
+                    density =FALSE, ellipses=FALSE)
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(year %in% 2002)|>
+                    dplyr::select(!c(code_muni, year, biome)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80', main='2002',
+                    density =FALSE, ellipses=FALSE)
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(year %in% 2003)|>
+                    dplyr::select(!c(code_muni, year, biome)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80', main='2003',
+                    density =FALSE, ellipses=FALSE)
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(year %in% 2004)|>
+                    dplyr::select(!c(code_muni, year, biome)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80', main='2004',
+                    density =FALSE, ellipses=FALSE)
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(year %in% 2005)|>
+                    dplyr::select(!c(code_muni, year, biome)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80', main='2005',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+> `PREC_MEAN` e `PREC_SUM` são "super" colineares / dependentes /
+> redundantes / dizem a mesma coisa. Usaremos apenas uma, a `PREC_SUM`.
+>
+> Como estamos trabalhando com incidências, não contagens absolutas,
+> modelos com inflação de zero não são viáveis. Pela presença de zeros,
+> distribuições não-simétricas para dados contínuos, como a Gama e a
+> Normal Inversa, também não são viáveis. Sendo assim, ficamos com a
+> distribuição Normal.
+>
+> Ajustamos modelos mistos / multiníveis / hierárquicos à nível de
+> município, para assim acomodar a dependência das cinco observações de
+> cada. Tentamos também modelar essa dependência intra-município de um
+> modo temporal, mas não obtivemos convergência numérica. Sendo assim,
+> acomodamos o efeito dos anos no efeito fixo, junto das variáveis
+> climáticas.
+>
+> Para as variáveis estatisticamente significativas dentro de cada
+> bioma, gráficos são fornecidos para a partir deles limiares serem
+> obtidos.
+
+# Modelando LV por bioma
+
+***
+
+## Bioma Amazonia + Pantanal
+
+***
+
+```{r lv_amazonia_pantanal_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE),
+                     var      =var(LV, na.rm=TRUE),
+                     min      =min(LV, na.rm=TRUE),
+                     quant25  =quantile(LV, 0.25, na.rm=TRUE), 
+                     median   =median(LV, na.rm=TRUE),
+                     quant75  =quantile(LV, 0.75, na.rm=TRUE), 
+                     max      =max(LV, na.rm=TRUE),
+                     n        =dplyr::n(), 
+                     zero     =table(LV)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LV, bio='Amazonia + Pantanal')
+
+```
+
+```{r lv_amazonia_pantanal_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LTA,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LV, Biome: Amazonia + Pantanal',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lv.bio1 <-
+    lme4::lmer(LV ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Amazonia + Pantanal')
+cbind(
+    summary(lv.bio1)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lv.bio1))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lv_amazonia_pantanal_year,fig.height=3.75,fig.width=5.5}
+
+dat|>
+    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE))|>
+    ggplot(aes(x=year, y=mean, group=1))+
+    geom_line(size=1.5, color=unique_color)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='Year', y='Mean',
+         title='LV mean', subtitle='Biome: Amazonia + Pantanal')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+```
+
+## Bioma Caatinga
+
+***
+
+```{r lv_caatinga_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE),
+                     var      =var(LV, na.rm=TRUE),
+                     min      =min(LV, na.rm=TRUE),
+                     quant25  =quantile(LV, 0.25, na.rm=TRUE), 
+                     median   =median(LV, na.rm=TRUE),
+                     quant75  =quantile(LV, 0.75, na.rm=TRUE), 
+                     max      =max(LV, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LV)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LV, bio='Caatinga')
+
+```
+
+```{r lv_caatinga_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Caatinga')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LTA,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LV, Biome: Caatinga',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lv.bio2 <-
+    lme4::lmer(LV ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Caatinga')
+cbind(
+    summary(lv.bio2)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lv.bio2))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lv_caatinga_ur,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LV))+
+    geom_bin_2d(binwidth=c(3, 1e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 150, by=15),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 150, by=15)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LV', caption='Band width: (3, 0.0001)',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+ ```
+
+```{r lv_caatinga_sdii,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LV))+
+    geom_bin_2d(binwidth=c(1, 1e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 500, by=50),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 500, by=50)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LV', caption='Band width: (1, 0.0001)',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lv_caatinga_tasmax,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMAX, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMAX', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMAX, y=LV))+
+    geom_bin_2d(binwidth=c(2.5, 1e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 400, by=30),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 400, by=30)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMAX', y='LV', caption='Band width: (2.5, 0.0001)',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lv_caatinga_tasmin,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LV))+
+    geom_bin_2d(binwidth=c(2.5, 1e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 400, by=30),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 400, by=30)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LV', caption='Band width: (2.5, 0.0001)',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lv_caatinga_prec_sum,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LV))+
+    geom_bin_2d(binwidth=c(25, 1e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 400, by=30),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 400, by=30)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LV', caption='Band width: (25, 0.0001)',
+         title='LV', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+## Bioma Cerrado
+
+***
+
+```{r lv_cerrado_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE),
+                     var      =var(LV, na.rm=TRUE),
+                     min      =min(LV, na.rm=TRUE),
+                     quant25  =quantile(LV, 0.25, na.rm=TRUE), 
+                     median   =median(LV, na.rm=TRUE),
+                     quant75  =quantile(LV, 0.75, na.rm=TRUE), 
+                     max      =max(LV, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LV)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LV, bio='Cerrado')
+
+```
+
+```{r lv_cerrado_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Cerrado')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LTA,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LV, Biome: Cerrado',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lv.bio3 <-
+    lme4::lmer(LV ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Cerrado')
+cbind(
+    summary(lv.bio3)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lv.bio3))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lv_cerrado_year,fig.height=3.75,fig.width=5.5}
+
+dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE))|>
+    ggplot(aes(x=year, y=mean, group=1))+
+    geom_line(size=1.5, color=unique_color)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='Year', y='Mean',
+         title='LV mean', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+```
+
+```{r lv_cerrado_ur,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LV))+
+    geom_bin_2d(binwidth=c(2.5, 2.5e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 400, by=20),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 400, by=20)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Cerrado'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LV', caption='Band width: (2.5, 0.00025)',
+         title='LV', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+## Bioma Mata Atlantica
+
+***
+
+```{r lv_mata_atlantica_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE),
+                     var      =var(LV, na.rm=TRUE),
+                     min      =min(LV, na.rm=TRUE),
+                     quant25  =quantile(LV, 0.25, na.rm=TRUE), 
+                     median   =median(LV, na.rm=TRUE),
+                     quant75  =quantile(LV, 0.75, na.rm=TRUE), 
+                     max      =max(LV, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LV)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LV, bio='Mata Atlantica')
+
+```
+
+```{r lv_mata_atlantica_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Mata Atlantica')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LTA,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LV, Biome: Mata Atlantica',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lv.bio4 <-
+    lme4::lmer(LV ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Mata Atlantica')
+cbind(
+    summary(lv.bio4)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lv.bio4))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lv_mata_atlantica_sdii,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LV))+
+    geom_bin_2d(binwidth=c(1, 1e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 2e3, by=200),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 2e3, by=200)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Mata Atlantica'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LV', caption='Band width: (1, 0.0001)',
+         title='LV', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lv_mata_atlantica_tasmin,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LV))+
+    geom_bin_2d(binwidth=c(2.5, 2.5e-4))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 1e3, by=100),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 1e3, by=100)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Mata Atlantica'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LV', caption='Band width: (2.5, 0.00025)',
+         title='LV', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+## Bioma Pampa
+
+***
+
+```{r lv_pampa_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LV, na.rm=TRUE),
+                     sd       =sd(LV, na.rm=TRUE),
+                     var      =var(LV, na.rm=TRUE),
+                     min      =min(LV, na.rm=TRUE),
+                     quant25  =quantile(LV, 0.25, na.rm=TRUE), 
+                     median   =median(LV, na.rm=TRUE),
+                     quant75  =quantile(LV, 0.75, na.rm=TRUE), 
+                     max      =max(LV, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LV)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LV, bio='Pampa')
+
+```
+
+```{r lv_pampa_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Pampa')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LTA,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LV, Biome: Pampa',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lv.bio5 <-
+    lme4::lmer(LV ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Pampa')
+cbind(
+    summary(lv.bio5)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lv.bio5))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lv_pampa_ur,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LV))+
+    geom_bin_2d(binwidth=c(2.5, 5e-5))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 45, by=3),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 45, by=3)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Pampa'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LV', caption='Band width: (2.5, 0.00005)',
+         title='LV', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lv_pampa_sdii,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LV))+
+    geom_bin_2d(binwidth=c(0.5, 5e-5))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 60, by=5),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 60, by=5)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Pampa'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LV', caption='Band width: (0.5, 0.00005)',
+         title='LV', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lv_pampa_tasmax,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMAX, y=LV))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMAX', y='LV', caption='GAM model fit',
+         title='LV', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMAX, y=LV))+
+    geom_bin_2d(binwidth=c(2.5, 5e-5))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 80, by=10),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 80, by=10)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Pampa'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMAX', y='LV', caption='Band width: (2.5, 0.00005)',
+         title='LV', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+# Modelando LTA por bioma
+
+***
+
+## Bioma Amazonia + Pantanal
+
+***
+
+```{r lta_amazonia_pantanal_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE),
+                     var      =var(LTA, na.rm=TRUE),
+                     min      =min(LTA, na.rm=TRUE),
+                     quant25  =quantile(LTA, 0.25, na.rm=TRUE), 
+                     median   =median(LTA, na.rm=TRUE),
+                     quant75  =quantile(LTA, 0.75, na.rm=TRUE), 
+                     max      =max(LTA, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LTA)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LTA, bio='Amazonia + Pantanal')
+
+```
+
+```{r lta_amazonia_pantanal_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LV,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LTA, Biome: Amazonia + Pantanal',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lta.bio1 <-
+    lme4::lmer(LTA ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Amazonia + Pantanal')
+cbind(
+    summary(lta.bio1)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lta.bio1))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lta_amazonia_pantanal_year,fig.height=3.75,fig.width=5.5}
+
+dat|>
+    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE))|>
+    ggplot(aes(x=year, y=mean, group=1))+
+    geom_line(size=1.5, color=unique_color)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='Year', y='Mean',
+         title='LTA mean', subtitle='Biome: Amazonia + Pantanal')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+```
+
+```{r lta_amazonia_pantanal_ur,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Amazonia + Pantanal')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Amazonia + Pantanal')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_bin_2d(binwidth=c(2.5, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 80, by=5),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 80, by=5)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Amazonia + Pantanal'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='Band width: (2.5, 0.0025)',
+         title='LTA', subtitle='Biome: Amazonia + Pantanal')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+## Bioma Caatinga
+
+***
+
+```{r lta_caatinga_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE),
+                     var      =var(LTA, na.rm=TRUE),
+                     min      =min(LTA, na.rm=TRUE),
+                     quant25  =quantile(LTA, 0.25, na.rm=TRUE), 
+                     median   =median(LTA, na.rm=TRUE),
+                     quant75  =quantile(LTA, 0.75, na.rm=TRUE), 
+                     max      =max(LTA, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LTA)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LTA, bio='Caatinga')
+
+```
+
+```{r lta_caatinga_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Caatinga')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LV,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LTA, Biome: Caatinga',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lta.bio2 <-
+    lme4::lmer(LTA ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Caatinga')
+cbind(
+    summary(lta.bio2)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lta.bio2))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lta_caatinga_year,fig.height=3.75,fig.width=5.5}
+
+dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE))|>
+    ggplot(aes(x=year, y=mean, group=1))+
+    geom_line(size=1.5, color=unique_color)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='Year', y='Mean',
+         title='LTA mean', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+```
+
+```{r lta_caatinga_ur,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_bin_2d(binwidth=c(2.5, 5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 150, by=15),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 150, by=15)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='Band width: (2.5, 0.005)',
+         title='LTA', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_caatinga_sdii,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LTA))+
+    geom_bin_2d(binwidth=c(1, 5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 1e3, by=50),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 1e3, by=50)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LTA', caption='Band width: (1, 0.005)',
+         title='LTA', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_caatinga_tasmin,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Caatinga')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LTA))+
+    geom_bin_2d(binwidth=c(2.5, 5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 400, by=40),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 400, by=40)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Caatinga'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LTA', caption='Band width: (2.5, 0.005)',
+         title='LTA', subtitle='Biome: Caatinga')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+## Bioma Cerrado
+
+***
+
+```{r lta_cerrado_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE),
+                     var      =var(LTA, na.rm=TRUE),
+                     min      =min(LTA, na.rm=TRUE),
+                     quant25  =quantile(LTA, 0.25, na.rm=TRUE), 
+                     median   =median(LTA, na.rm=TRUE),
+                     quant75  =quantile(LTA, 0.75, na.rm=TRUE), 
+                     max      =max(LTA, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LTA)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LTA, bio='Cerrado')
+
+```
+
+```{r lta_cerrado_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Cerrado')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LV,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LTA, Biome: Cerrado',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lta.bio3 <-
+    lme4::lmer(LTA ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Cerrado')
+cbind(
+    summary(lta.bio3)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lta.bio3))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lta_cerrado_ur,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_bin_2d(binwidth=c(2.5, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 300, by=15),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 300, by=15)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Cerrado'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='Band width: (2.5, 0.0025)',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_cerrado_sdii,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LTA))+
+    geom_bin_2d(binwidth=c(1, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 1e3, by=50),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 1e3, by=50)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Cerrado'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LTA', caption='Band width: (1, 0.0025)',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_cerrado_tasmin,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LTA))+
+    geom_bin_2d(binwidth=c(1, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 300, by=20),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 300, by=20)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Cerrado'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LTA', caption='Band width: (1, 0.0025)',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_cerrado_prec_sum,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Cerrado')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LTA))+
+    geom_bin_2d(binwidth=c(25, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 500, by=40),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 500, by=40)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Cerrado'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LTA', caption='Band width: (25, 0.0025)',
+         title='LTA', subtitle='Biome: Cerrado')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+## Bioma Mata Atlantica
+
+***
+
+```{r lta_mata_atlantica_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE),
+                     var      =var(LTA, na.rm=TRUE),
+                     min      =min(LTA, na.rm=TRUE),
+                     quant25  =quantile(LTA, 0.25, na.rm=TRUE), 
+                     median   =median(LTA, na.rm=TRUE),
+                     quant75  =quantile(LTA, 0.75, na.rm=TRUE), 
+                     max      =max(LTA, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LTA)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LTA, bio='Mata Atlantica')
+
+```
+
+```{r lta_mata_atlantica_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Mata Atlantica')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LV,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LTA, Biome: Mata Atlantica',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lta.bio4 <-
+    lme4::lmer(LTA ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Mata Atlantica')
+cbind(
+    summary(lta.bio4)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lta.bio4))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lta_mata_atlantica_year,fig.height=3.75,fig.width=5.5}
+
+dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE))|>
+    ggplot(aes(x=year, y=mean, group=1))+
+    geom_line(size=1.5, color=unique_color)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='Year', y='Mean',
+         title='LTA mean', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+```
+
+```{r lta_mata_atlantica_ur,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=UR, y=LTA))+
+    geom_bin_2d(binwidth=c(2.5, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 400, by=30),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 400, by=30)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Mata Atlantica'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='UR', y='LTA', caption='Band width: (2.5, 0.0025)',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_mata_atlantica_sdii,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=SDII, y=LTA))+
+    geom_bin_2d(binwidth=c(1, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 2e3, by=150),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 2e3, by=150)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Mata Atlantica'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='SDII', y='LTA', caption='Band width: (1, 0.0025)',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_mata_atlantica_tasmax,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMAX, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMAX', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMAX, y=LTA))+
+    geom_bin_2d(binwidth=c(1, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 500, by=30),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 500, by=30)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Mata Atlantica'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMAX', y='LTA', caption='Band width: (1, 0.0025)',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_mata_atlantica_tasmin,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=TASMIN, y=LTA))+
+    geom_bin_2d(binwidth=c(1, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 500, by=40),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 500, by=40)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Mata Atlantica'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=5)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='TASMIN', y='LTA', caption='Band width: (1, 0.0025)',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+```{r lta_mata_atlantica_prec_sum,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Mata Atlantica')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LTA))+
+    geom_bin_2d(binwidth=c(25, 2.5e-3))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 2e3, by=100),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 2e3, by=100)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Mata Atlantica'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LTA', caption='Band width: (25, 0.0025)',
+         title='LTA', subtitle='Biome: Mata Atlantica')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+## Bioma Pampa
+
+***
+
+```{r lta_pampa_map,fig.width=8}
+
+dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::group_by(year)|>
+    dplyr::summarise(mean     =mean(LTA, na.rm=TRUE),
+                     sd       =sd(LTA, na.rm=TRUE),
+                     var      =var(LTA, na.rm=TRUE),
+                     min      =min(LTA, na.rm=TRUE),
+                     quant25  =quantile(LTA, 0.25, na.rm=TRUE), 
+                     median   =median(LTA, na.rm=TRUE),
+                     quant75  =quantile(LTA, 0.75, na.rm=TRUE), 
+                     max      =max(LTA, na.rm=TRUE), 
+                     n        =dplyr::n(), 
+                     zero     =table(LTA)['0'],
+                     zero.perc=zero/n)
+
+biomapa(LTA, bio='Pampa')
+
+```
+
+```{r lta_pampa_pairs_panel,fig.height=6.75}
+
+psych::pairs.panels(dat|>
+                    dplyr::filter(biome %in% 'Pampa')|>
+                    dplyr::select(!c(code_muni,
+                                     year,
+                                     biome,
+                                     LV,
+                                     PREC_MEAN)),
+                    stars=TRUE, lm=TRUE, smoother=TRUE, ci=TRUE,
+                    hist.col='gray80',
+                    main='LTA, Biome: Pampa',
+                    density =FALSE, ellipses=FALSE)
+
+```
+
+```{r}
+
+lta.bio5 <-
+    lme4::lmer(LTA ~ year + UR + SDII + TASMAX + TASMIN + PREC_SUM +
+                   (1 | code_muni),
+               data   =dat,
+               subset =biome %in% 'Pampa')
+cbind(
+    summary(lta.bio5)$coef[, 1:2],
+    p.value=c(NA, anova(lmerTest::as_lmerModLmerTest(lta.bio5))[, 6])
+)|>
+    tibble::as_tibble(rownames='var')
+
+```
+
+```{r lta_pampa_prec_sum,fig.width=10,fig.height=8}
+
+p1 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LTA))+
+    geom_point(pch=21, size=2)+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    geom_smooth(method=mgcv::gam, formula=y ~ s(x, bs='cs'),
+                se=TRUE, color='red', size=1)+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LTA', caption='GAM model fit',
+         title='LTA', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          plot.caption=element_text(color='red'),
+          plot.title  =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::filter(biome %in% 'Pampa')|>
+    dplyr::rename(Year='year')|>
+    ggplot(aes(x=PREC_SUM, y=LTA))+
+    geom_bin_2d(binwidth=c(5, 5e-5))+
+    facet_wrap(~Year, nrow=1, labeller=label_both)+
+    scale_fill_distiller(palette='Spectral', direction=-1, n.breaks=7,
+                         breaks=seq(0, 30, by=2),
+                         labels=paste0(
+                             round(100*
+                                   seq(0, 30, by=2)/
+                                   (nrow(dplyr::filter(dat,
+                                                       biome %in%
+                                                       'Pampa'))
+                                       /5), 2), '%'))+
+    scale_x_continuous(n.breaks=7)+
+    scale_y_continuous(labels=scales::comma, n.breaks=7)+
+    labs(x='PREC_SUM', y='LTA', caption='Band width: (5, 0.00005)',
+         title='LTA', subtitle='Biome: Pampa')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=2, r=0, b=-2, l=0), 'mm')
+          ),
+          axis.title.y=element_text(
+              face='bold',
+              margin=ggplot2::unit(c(t=0, r=3, b=0, l=0), 'mm')
+          ),
+          strip.text.x=element_text(face='bold'),
+          legend.position='bottom',
+          legend.justification=c(1, 0),
+          plot.title=element_text(face='bold'))+
+    guides(fill=guide_colorbar(title='Freq',
+                               barheight=0.75, barwidth=40))
+
+p1 / p2
+
+```
+
+# Referência
+
+***
+
+> A análise estatística foi realizada no ambiente de computação
+> estatística `R` (R Core Team, 2022). Os principais pacotes `R`
+> utilizados foram o {`dplyr`} (Wickham et al., 2022), {`tidyr`}
+> (Wickham & Girlich, 2022), {`ggplot2`} (Wickham, 2016), {`patckwork`}
+> (Pedersen, 2020), {`geobr`} (Pereira & Gonçalves, 2022), {`rlang`}
+> (Henry & Wickham, 2022), {`purrr`} (Henry & Wickham, 2020), {`psych`}
+> (Revelle, 2022), {`lme4`} (Bates et al., 2015), e {`lmerTest`}
+> (Kuznetsova et al., 2017).
+
+> R Core Team (2022). R: A language and environment for statistical
+> computing. R Foundation for Statistical Computing, Vienna,
+> Austria. URL https://www.R-project.org/
+>
+> Wickham, H., François, R., Henry, L., Müller, K. (2022). dplyr: A
+> Grammar of Data Manipulation. R package version
+> 1.0.9. https://CRAN.R-project.org/package=dplyr
+>
+> Wickham, H., Girlich, M. (2022). tidyr: Tidy Messy Data. R package
+> version 1.2.0, https://CRAN.R-project.org/package=tidyr
+>
+> Wickham, H. (2016). ggplot2: Elegant Graphics for Data
+> Analysis. Springer-Verlag New York
+>
+> Pedersen, T. L. (2020). patchwork: The Composer of Plots. R package
+> version 1.1.1. https://CRAN.R-project.org/package=patchwork
+>
+> Pereira, R. H. M., Gonçalves, C. N. (2022). geobr: Download Official
+> Spatial Data Sets of Brazil. R package version 1.6.5999,
+> <https://github.com/ipeaGIT/geobr
+>
+> Henry, L., Wickham, H. (2022). rlang: Functions for Base Types and
+> Core R and 'Tidyverse' Features. R package version 1.0.3,
+> https://CRAN.R-project.org/package=rlang
+>
+> Henry, L., Wickham, H. (2020). purrr: Functional Programming Tools. R
+> package version 0.3.4, https://CRAN.R-project.org/package=purrr
+>
+> Revelle, W. (2022). psych: Procedures for Personality and
+> Psychological Research, Northwestern University, Evanston, Illinois,
+> USA, R package version 2.2.3, https://CRAN.R-project.org/package=psych
+>
+> Bates, D., Maechler, M., Bolker, B., Walker, S. (2015). Fitting Linear
+> Mixed-Effects Models Using lme4. Journal of Statistical Software,
+> 67(1), 1-48. doi:10.18637/jss.v067.i01
+>
+> Kuznetsova, A., Brockhoff, P. B., Christensen,
+> R. H. B. (2017). lmerTest Package: Tests in Linear Mixed Effects
+> Models. Journal of Statistical Software, 82(13),
+> 1-26. doi:10.18637/jss.v082.i13
