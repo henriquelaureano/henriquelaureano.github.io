@@ -85,6 +85,8 @@ lv <- dplyr::right_join(lv6|>
     dplyr::select(code_muni, year, biome, LV)
 ## str(lv)
 
+## write.csv(lv, 'lv_range_2001_2005.csv', row.names=FALSE)
+
 lta <- dplyr::right_join(lta6|>
                          dplyr::select(!muni)|>
                          dplyr::filter(!year %in% 2006)|>
@@ -95,6 +97,8 @@ lta <- dplyr::right_join(lta6|>
                   LTA  =value/populacao_ibge)|>
     dplyr::select(code_muni, year, biome, LTA)
 ## str(lta)
+
+## write.csv(lta, 'lta_range_2001_2005.csv', row.names=FALSE)
 
 ur <- read.csv('HURS_historical.csv')|>
     dplyr::select(ibge_code_7, ANO, media_hist)|>
@@ -149,6 +153,8 @@ tasmin <-
     dplyr::ungroup()
 ## str(tasmin)
 
+## write.csv(tasmin, 'tasmin_range_2001_2005.csv', row.names=FALSE)
+
 folder <- 'PREC_MEAN_hist/'
 prec_mean <-
     purrr::map_df(
@@ -173,6 +179,8 @@ prec_mean <-
     dplyr::ungroup()
 ## str(prec_mean)
 
+## write.csv(prec_mean, 'prec_mean_range_2001_2005.csv', row.names=FALSE)
+
 folder <- 'PREC_SUM_hist/'
 prec_sum <-
     purrr::map_df(
@@ -196,6 +204,8 @@ prec_sum <-
            )|>
     dplyr::ungroup()
 ## str(prec_sum)
+
+## write.csv(prec_sum, 'prec_sum_range_2001_2005.csv', row.names=FALSE)
 
 ```
 
@@ -238,7 +248,9 @@ dat <- tibble::tibble(lv,
                                       '4'='Mata Atlantica',
                                       '5'='Pampa', 
                                       '6'='Amazonia + Pantanal'))
-    
+
+## write.csv(dat, 'wholedata_range_2001_2005.csv', row.names=FALSE)
+
 mapa <- function(var)
 {
     min <- min(dplyr::pull(br, !!rlang::ensym(var)), na.rm=TRUE)
