@@ -1498,7 +1498,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">HPP: COVID-19</h1>
 <h4 class="author">Ana Paula Pacheco, Carolina Prando e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2022-07-14 14:10:05</h4>
+<h4 class="date"><em>Last modification on</em> 2022-07-14 14:34:27</h4>
 
 </div>
 
@@ -1581,6 +1581,21 @@ div.tocify {
 <pre><code>[1] 0.2849052</code></pre>
 <blockquote>
 <p>Diferença média das idades por internação não difere significativamente.</p>
+</blockquote>
+<pre><code># A tibble: 3 × 8
+  Grupo        Mínimo `1o.quantil` Mediana `3o.quantil` Máximo Media Desvio.Padrão
+  &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;
+1 Internou enf 0.0137        0.874    3.66         12.2   17.7  6.30          5.83
+2 Internou UTI 0.0192        1.38     5.78         13.1   17.2  7.02          5.74
+3 Não internou 0             2.16     6.59         11.1   17.8  6.98          4.98</code></pre>
+<pre><code># A tibble: 3 × 2
+  ` `                           `valor-p`
+  &lt;chr&gt;                             &lt;dbl&gt;
+1 Não internou vs. Internou enf     0.186
+2 Não internou vs. Internou UTI     0.963
+3 Internou enf vs. Internou UTI     0.418</code></pre>
+<blockquote>
+<p>As diferenças médias das idades não diferem significativamente.</p>
 </blockquote>
 </div>
 </div>
