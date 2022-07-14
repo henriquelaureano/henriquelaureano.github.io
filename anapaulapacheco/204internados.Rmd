@@ -1,0 +1,2049 @@
+---
+title: "HPP: COVID-19"
+author: "Ana Paula Pacheco, Carolina Prando e 
+         [Henrique Laureano](https://henriquelaureano.github.io/)"
+date: "*Last modification on* `r Sys.time()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+options(width=100)
+knitr::opts_chunk$set(fig.path='figuras_204internados/',
+                      fig.align='center',
+                      ## dev=c('pdf', 'png'),
+                      warning=FALSE, message=FALSE, prompt=FALSE,
+                      echo=FALSE, comment=NA)
+
+```
+
+***
+
+```{r pkgs}
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+
+pacman::p_load(readxl, dplyr, tidyr, forcats, lubridate, ggplot2,
+               patchwork, geobr, ggspatial, psych, ggalluvial, zoo)
+
+## library(devtools)
+## devtools::install_github('ipeaGIT/geobr', subdir='r-package')
+## library(geobr)
+
+source(
+    '../../henriquelaureano.github.io/i4p-colors/i4p-palette.R'
+)
+
+unique_color <- '#3e4989ff'
+
+```
+
+```{r dat}
+
+dat <- readxl::read_xlsx('Análise estatística.xlsx',
+                         sheet='Internados',
+                         range='A1:FE205')
+
+```
+
+```{r functions}
+
+stringtable <- function(x)
+{
+    cbind(c('Total', 'Percentual'), 
+          rbind(table(x), 
+                paste0(round(100*prop.table(table(x)), 3), '%')))
+}
+
+chisquare <- function(datvar)
+{
+    names(datvar) <- 'var'
+    out <- datvar|>
+        dplyr::count(var)|>
+        tidyr::spread(var, n)|>
+        chisq.test()
+    return(out$p.value)
+}
+
+ig <- function(ig)
+{
+    dat|>
+        dplyr::select(dplyr::starts_with(ig))|>
+        dplyr::mutate(id=factor(seq(204)))|>
+        tidyr::pivot_longer(!id)|>
+        dplyr::mutate(value=dplyr::na_if(value, 'NR'),
+                      value=as.numeric(value))|>
+        dplyr::filter(!value %in% NA)
+}
+
+igstat <- function(datig)
+{
+    datig|>
+        dplyr::group_by(name)|>
+        dplyr::summarise(n              =dplyr::n(),
+                         Mínimo         =min(value), 
+                         '1o.quantil'   =quantile(value, 0.25),
+                         Mediana        =median(value), 
+                         '3o.quantil'   =quantile(value, 0.75),
+                         Maximo         =max(value),
+                         Média          =mean(value),
+                         'Desvio.Padrão'=sd(value))
+}
+
+```
+
+# Carga Viral
+
+***
+
+```{r}
+
+stringtable(dat$`CARGA VIRAL`)
+
+dat|>
+    dplyr::filter(!`CARGA VIRAL` %in% 'NI')|>
+    dplyr::select(`CARGA VIRAL`)|>
+    chisquare()
+
+```
+
+> p-valor significativo indicando diferença significativa entre as
+> frequências de carga viral alta, média e baixa.
+
+# Classificação
+
+***
+
+```{r}
+
+stringtable(dat$CLASSIF)
+
+```
+
+# Sexo
+
+***
+
+```{r}
+
+dat <- dat|>
+    dplyr::mutate(Sexo=dplyr::recode(Sexo,
+                                     'F'='Feminino', 'M'='Masculino'))
+
+stringtable(dat$Sexo)
+
+dat|>
+    dplyr::select(Sexo)|>
+    chisquare()
+
+```
+
+> p-valor significativo indicando diferença significativa entre as
+> frequências de meninas e meninos com COVID-!9.
+
+# Idade
+
+***
+
+```{r idade}
+
+dat <- dat|>
+    dplyr::mutate(IDADE=(`DATA PARA CÁLCULO IDADE` - DN)/
+                      lubridate::dyears())
+
+dat|>
+    dplyr::summarise(Mínimo       =min(IDADE),
+                     '1o.quantil' =quantile(IDADE, 0.25), 
+                     Mediana      =median(IDADE),
+                     '3o.quantil' =quantile(IDADE, 0.75), 
+                     Máximo       =max(IDADE), 
+                     Media        =mean(IDADE),
+                     Desvio.Padrão=sd(IDADE))
+
+```
+
+```{r piramide_etaria,fig.width=10,fig.height=5.5}
+
+dat <- dat|>
+    dplyr::mutate(IDADEcat=cut(IDADE,
+                               breaks=0:18,
+                               include.lowest=TRUE),
+                  IDADEcat2=cut(IDADE,
+                                breaks=c(0, 1, 2, 4, 10, 18),
+                                include.lowest=TRUE),
+                  IDADEcat3=cut(IDADE,
+                                breaks=c(0, 2, 10, 18),
+                                include.lowest=TRUE))
+
+idadef <- dat|>
+    dplyr::filter(Sexo=='Feminino')|>
+    ggplot(aes(x=IDADEcat))+
+    geom_bar(fill=i4p_colors['yellow'], alpha=0.75)+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../204, 3), '%)'
+                               )),
+              hjust=1.1, fontface='bold')+
+    scale_y_continuous(trans='reverse', limits=c(42.5, 0), breaks=NULL)+
+    labs(x=NULL, y=NULL, title='Age pyramid:', subtitle='Female')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y  =element_blank(), 
+          plot.margin  =margin(t=1, r=0, b=1, l=1, unit='lines'),
+          plot.title   =element_text(hjust=1, face='bold'), 
+          plot.subtitle=element_text(hjust=1, face='bold'))+
+    coord_flip()
+
+idadem <- dat|>
+    dplyr::filter(Sexo=='Masculino')|>
+    ggplot(aes(x=IDADEcat))+
+    geom_bar(fill=i4p_1c, alpha=0.75)+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../204, 3), '%)'
+                               )),
+              hjust=-0.1, fontface='bold')+
+    scale_y_continuous(limits=c(0, 42.5), breaks=NULL)+
+    labs(x=NULL, y=NULL, title='204 inpatients', subtitle='Male')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y  =element_text(hjust=0.5, face='bold'),
+          plot.margin  =margin(t=1, r=1, b=1, l=0, unit='lines'),
+          plot.title   =element_text(face='bold'), 
+          plot.subtitle=element_text(face='bold'))+
+    coord_flip()
+
+idadef + idadem
+
+dat|>
+    dplyr::group_by(Sexo)|>
+    dplyr::summarise(Mínimo       =min(IDADE),
+                     '1o.quantil' =quantile(IDADE, 0.25), 
+                     Mediana      =median(IDADE),
+                     '3o.quantil' =quantile(IDADE, 0.75), 
+                     Máximo       =max(IDADE), 
+                     Media        =mean(IDADE),
+                     Desvio.Padrão=sd(IDADE))
+
+t.test(
+    dplyr::filter(dat, Sexo ==  'Feminino')|>dplyr::pull(IDADE), 
+    dplyr::filter(dat, Sexo == 'Masculino')|>dplyr::pull(IDADE)
+)$p.value
+
+```
+
+> Diferença média das idades por sexo não difere significativamente.
+
+```{r piramide_etaria_2,fig.width=10,fig.height=2.5}
+
+idadef <- dat|>
+    dplyr::filter(Sexo=='Feminino')|>
+    ggplot(aes(x=IDADEcat2))+
+    geom_bar(fill=i4p_colors['yellow'], alpha=0.75)+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../204, 3), '%)'
+                               )),
+              hjust=1.1, fontface='bold')+
+    scale_y_continuous(trans='reverse', limits=c(52.5, 0), breaks=NULL)+
+    labs(x=NULL, y=NULL, title='Age pyramid:', subtitle='Female')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y  =element_blank(), 
+          plot.margin  =margin(t=1, r=0, b=1, l=1, unit='lines'),
+          plot.title   =element_text(hjust=1, face='bold'), 
+          plot.subtitle=element_text(hjust=1, face='bold'))+
+    coord_flip()
+
+idadem <- dat|>
+    dplyr::filter(Sexo=='Masculino')|>
+    ggplot(aes(x=IDADEcat2))+
+    geom_bar(fill=i4p_1c, alpha=0.75)+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../204, 3), '%)'
+                               )),
+              hjust=-0.1, fontface='bold')+
+    scale_y_continuous(limits=c(0, 52.5), breaks=NULL)+
+    labs(x=NULL, y=NULL, title='204 inpatients', subtitle='Male')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y  =element_text(hjust=0.5, face='bold'),
+          plot.margin  =margin(t=1, r=1, b=1, l=0, unit='lines'),
+          plot.title   =element_text(face='bold'), 
+          plot.subtitle=element_text(face='bold'))+
+    coord_flip()
+
+idadef + idadem
+
+```
+
+```{r piramide_etaria_3,fig.width=10,fig.height=2}
+
+idadef <- dat|>
+    dplyr::filter(Sexo=='Feminino')|>
+    ggplot(aes(x=IDADEcat3))+
+    geom_bar(fill=i4p_colors['yellow'], alpha=0.75)+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../204, 3), '%)'
+                               )),
+              hjust=1.1, fontface='bold')+
+    scale_y_continuous(trans='reverse', limits=c(57.5, 0), breaks=NULL)+
+    labs(x=NULL, y=NULL, title='Age pyramid:', subtitle='Female')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y  =element_blank(), 
+          plot.margin  =margin(t=1, r=0, b=1, l=1, unit='lines'),
+          plot.title   =element_text(hjust=1, face='bold'), 
+          plot.subtitle=element_text(hjust=1, face='bold'))+
+    coord_flip()
+
+idadem <- dat|>
+    dplyr::filter(Sexo=='Masculino')|>
+    ggplot(aes(x=IDADEcat3))+
+    geom_bar(fill=i4p_1c, alpha=0.75)+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../204, 3), '%)'
+                               )),
+              hjust=-0.1, fontface='bold')+
+    scale_y_continuous(limits=c(0, 57.5), breaks=NULL)+
+    labs(x=NULL, y=NULL, title='204 inpatients', subtitle='Male')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y  =element_text(hjust=0.5, face='bold'),
+          plot.margin  =margin(t=1, r=1, b=1, l=0, unit='lines'),
+          plot.title   =element_text(face='bold'), 
+          plot.subtitle=element_text(face='bold'))+
+    coord_flip()
+
+idadef + idadem
+
+```
+
+## Idade e comorbidade
+
+```{r idade_comorbidade}
+
+dat|>
+    dplyr::group_by(`PRESENÇA DE COMORBIDADE`)|>
+    dplyr::summarise(Mínimo       =min(IDADE),
+                     '1o.quantil' =quantile(IDADE, 0.25), 
+                     Mediana      =median(IDADE),
+                     '3o.quantil' =quantile(IDADE, 0.75), 
+                     Máximo       =max(IDADE), 
+                     Media        =mean(IDADE),
+                     Desvio.Padrão=sd(IDADE))
+t.test(
+    dat|>
+    dplyr::filter(`PRESENÇA DE COMORBIDADE` == 0)|>dplyr::pull(IDADE),
+    dat|>
+    dplyr::filter(`PRESENÇA DE COMORBIDADE` == 1)|>dplyr::pull(IDADE)
+)$p.value
+
+```
+
+> Diferença média das idades por presença de comorbidade difere
+> significativamente.
+
+# Município
+
+***
+
+```{r municipio}
+
+dat <- dat|>
+    dplyr::mutate(Município=
+                      forcats::fct_collapse(Município,
+                                            'ALMIRANTE TAMANDARÉ'=
+                                                'ALMIRANTE TAMANDARE',
+                                            ARAUCÁRIA='ARAUCARIA',
+                                            PARANAGUÁ='PARANAGUA',
+                                            'RIBEIRÃO DO PINHAL'=
+                                                'RIBEIRAO DO PINHAL',
+                                            ICARAÍMA='ICARAIMA'))
+
+munis <- dat|>
+    dplyr::count(Município)|>
+    dplyr::arrange(dplyr::desc(n))
+
+munis|>
+    print(n=30)
+
+munis <- munis|>
+    dplyr::filter(!Município %in% c('CUIABA',
+                                    'CAJATI(SP)',
+                                    'IRATI (sc)',
+                                    'PAPANDUVA'))|>
+    dplyr::mutate(Município=stringr::str_to_title(Município))
+
+dplyr::left_join(geobr::read_municipality(code_muni='PR', year=2020),
+                 dplyr::rename(munis, name_muni='Município'))|>
+    dplyr::mutate(n=cut(n,
+                        breaks=c(0, 1, 5, 10, 15, 102),
+                        labels=c('1',
+                                 '(1,5]',
+                                 '(5,10]',
+                                 '(10,15]',
+                                 '102')))|>
+    ggplot(aes(fill=n))+
+    geom_sf(size=0.3)+
+    coord_sf(datum=NA)+
+    ggspatial::annotation_scale()+
+    scale_fill_brewer(palette='Spectral', direction=-1,
+                      na.value='white', na.translate=FALSE)+
+    labs(title=paste0('Municipalities of Paraná\n',
+                      'with inpatients treated by HPP | COVID-19'),
+         fill='Number of\ninpatients')+
+    theme_classic(base_size=14)+
+    theme(plot.title     =element_text(face='bold'),
+          legend.title   =element_text(face='bold'))
+
+```
+
+# Data do internamento
+
+***
+
+```{r data_do_internamento,fig.width=10,fig.height=3.25}
+
+dat <- dat|>
+    dplyr::mutate(`Data internamento`=as.Date(`Data internamento`))
+
+dat|>
+    ggplot(aes(x=`Data internamento`))+
+    geom_vline(xintercept=seq(as.Date('2020-04-01'),
+                              as.Date('2022-07-01'), by='month'),
+               linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_date(date_labels='%m-%Y', date_breaks='2 month')+
+    labs(x=NULL, y=NULL,
+         title='Admission date', subtitle='204 patients')+
+    scale_y_continuous(breaks=1:5)+
+    theme_classic(base_size=14)+
+    theme(plot.title =element_text(face='bold'),
+          axis.text.x=element_text(face='bold'),
+          axis.text.y=element_text(face='bold'))
+
+md <- summary(dat$`Data internamento`)
+
+names(md) <- c('Mínimo',
+               '1o.quantil',
+               'Mediana',
+               'Média',
+               '3o.quantil',
+               'Máximo');md
+
+c('Desvio.Padrão'=sd(dat$`Data internamento`))
+
+```
+
+# UTI
+
+***
+
+```{r}
+
+dat <- dat|>
+    dplyr::mutate(UTI=dplyr::recode(UTI, '0'='Não', '1'='Sim'))
+
+stringtable(dat$UTI)
+
+```
+
+# Alta
+
+***
+
+```{r}
+
+dat <- dat|>
+    dplyr::mutate(Alta=dplyr::recode(Alta,
+                                     '1'='Alta',
+                                     '2'='Óbito',
+                                     '3'='Transferência'))
+
+stringtable(dat$Alta)
+
+```
+
+# Casos ativos
+
+***
+
+```{r casos_ativos,fig.width=10,fig.height=7}
+
+entrada_uti <- readxl::read_xlsx('Análise estatística.xlsx',
+                                 sheet=   'Internados',
+                                 range    ='AD1:AD205',
+                                 col_types='date')|>
+    dplyr::mutate(
+               `ENTRADA UTI`=
+                   dplyr::na_if(
+                              `ENTRADA UTI`,
+                              lubridate::ymd_hms('1899-12-31 00:00:00')
+                          )
+           )|>
+    dplyr::pull(`ENTRADA UTI`)
+
+saida_uti <- readxl::read_xlsx('Análise estatística.xlsx',
+                               sheet=   'Internados',
+                               range    ='AE1:AE205',
+                               col_types='date')|>
+    dplyr::mutate(
+               `SAIDA UTI`=
+                   dplyr::na_if(
+                              `SAIDA UTI`,
+                              lubridate::ymd_hms('1899-12-31 00:00:00')
+                          )
+           )|>
+    dplyr::pull(`SAIDA UTI`)
+
+dat_serie <- tibble::tibble(entrada    =dat$`Data internamento`,
+                            alta       =dat$`Data alta`,
+                            entrada_uti=entrada_uti,
+                            saida_uti  =saida_uti)|>
+    dplyr::mutate_if(is.POSIXct, as.Date)
+
+altas <- dat_serie|>
+    dplyr::arrange(alta)|>
+    dplyr::mutate(data=alta)|>
+    tidyr::drop_na(data)|>
+    dplyr::count(data)|>
+    dplyr::mutate(n=n*(-1))
+
+inter <- dplyr::bind_rows(dat_serie|>
+                          dplyr::arrange(entrada)|>
+                          dplyr::mutate(data=entrada)|>
+                          tidyr::drop_na(data)|>
+                          dplyr::count(data),
+                          altas)|>
+    dplyr::arrange(data)|>
+    dplyr::group_by(data)|>
+    dplyr::summarize(n=sum(n))|>
+    dplyr::mutate(active=cumsum(n))|>
+    dplyr::rename(Date=data)|>
+    tidyr::complete(Date=seq.Date(min(Date), max(Date), by="day"))|>
+    tidyr::fill(active)
+
+uti <- dplyr::bind_rows(dat_serie|>
+                        dplyr::arrange(entrada_uti)|>
+                        dplyr::mutate(data=entrada_uti)|>
+                        tidyr::drop_na(data)|>
+                        dplyr::count(data),
+                        dat_serie|>
+                        dplyr::arrange(saida_uti)|>
+                        dplyr::mutate(data=saida_uti)|>
+                        tidyr::drop_na(data)|>
+                        dplyr::count(data)|>
+                        dplyr::mutate(n=n*(-1)))|>
+    dplyr::arrange(data)|>
+    dplyr::group_by(data)|>
+    dplyr::summarize(n=sum(n))|>
+    dplyr::mutate(active=cumsum(n))|>
+    dplyr::rename(Date=data)|>
+    tidyr::complete(Date=seq.Date(min(Date), max(Date), by="day"))|>
+    tidyr::fill(active)
+
+p1 <- ggplot()+
+    geom_vline(xintercept=seq(as.Date('2020-04-01'),
+                              as.Date('2021-08-01'), by='month'),
+               linetype='dashed')+
+    geom_hline(yintercept=c(1, 5, 10, 15, 19), linetype='dashed')+
+    geom_area(data=inter, aes(x=Date, y=active, fill='Hospitalization'),
+              alpha=0.9)+
+    geom_area(data=uti, aes(x=Date, y=active, fill='ICU'), alpha=0.8)+
+    scale_x_date(date_labels='%m-%Y', date_breaks='2 month')+
+    scale_y_continuous(breaks=c(1, 5, 10, 15, 19))+
+    labs(x=NULL, y=NULL,
+         title='Active daily cases', subtitle='204 patients')+
+    theme_classic(base_size=14)+
+    scale_fill_manual(values=c('Hospitalization'=unique_color,
+                               'ICU'            ='red'))+
+    theme(axis.text.x    =element_text(face='bold'),
+          axis.text.y    =element_text(face='bold'),
+          plot.title     =element_text(face='bold'),
+          legend.title   =element_blank(), 
+          legend.position='bottom',
+          legend.text    =element_text(face='bold'),
+          legend.margin  =ggplot2::margin(t=0, unit='mm'))
+
+p2 <- ggplot()+
+    geom_vline(xintercept=seq(as.Date('2020-04-01'),
+                              as.Date('2021-08-01'), by='month'),
+               linetype='dashed')+
+    geom_hline(yintercept=c(1, 5, 10, 15, 19), linetype='dashed')+
+    geom_line(data=inter,
+              aes(x=Date, y=zoo::rollmean(active, k=7, fill=0),
+                  color='Hospitalization'), size=1.25)+
+    geom_line(data=uti,
+              aes(x=Date, y=zoo::rollmean(active, k=7, fill=0),
+                  color='ICU'), size=1.25)+
+    scale_x_date(date_labels='%m-%Y', date_breaks='2 month')+
+    scale_y_continuous(breaks=c(1, 5, 10, 15, 19))+
+    labs(x=NULL, y=NULL, title='Weekly moving averages')+
+    theme_classic(base_size=14)+
+    scale_color_manual(values=c('Hospitalization'=unique_color,
+                               'ICU'            ='red'))+
+    theme(axis.text.x     =element_text(face='bold'),
+          axis.text.y     =element_text(face='bold'),
+          plot.title      =element_text(face='bold'),
+          legend.title    =element_blank(), 
+          legend.position ='bottom',
+          legend.text     =element_text(face='bold'),
+          legend.margin   =ggplot2::margin(t=0, unit='mm'))+
+    guides(color=guide_legend(keywidth=1.75))
+
+p1 / p2
+
+names.md <- c('Mínimo',
+              '1o.quantil',
+              'Mediana',
+              'Média',
+              '3o.quantil',
+              'Máximo')
+
+names.mdwsd <- c('Mínimo',
+                 '1o.quantil',
+                 'Mediana',
+                 'Média',
+                 '3o.quantil',
+                 'Máximo',
+                 'Desvio.Padrão')
+
+```
+
+
+> Alta:
+
+```{r}
+
+md        <- summary(dat_serie$alta)
+names(md) <- names.md
+
+md
+
+c('Desvio.Padrão'=sd(dat_serie$alta))
+
+```
+
+> Entrada na UTI:
+
+```{r}
+
+md <- dat_serie|>
+    dplyr::filter(!entrada_uti %in% NA)|>
+    dplyr::pull(entrada_uti)|>
+    summary()
+
+names(md) <- names.md
+
+md
+
+c('Desvio.Padrão'=dat_serie|>
+      dplyr::filter(!entrada_uti %in% NA)|>
+      dplyr::pull(entrada_uti)|>
+      sd())
+
+```
+
+> Saída da UTI:
+
+```{r}
+
+md <- dat_serie|>
+    dplyr::filter(!saida_uti %in% NA)|>
+    dplyr::pull(saida_uti)|>
+    summary()
+
+names(md) <- names.md
+
+md
+
+c('Desvio.Padrão'=dat_serie|>
+      dplyr::filter(!saida_uti %in% NA)|>
+      dplyr::pull(saida_uti)|>
+      sd())
+
+```
+
+> Número diário de altas:
+
+```{r}
+
+md        <- c(summary(altas$n*(-1)), sd(altas$n*(-1)))
+names(md) <- names.mdwsd
+
+md
+
+```
+
+> Número diário de internações ativas:
+
+```{r}
+
+md        <- c(summary(inter$active), sd(inter$active))
+names(md) <- names.mdwsd
+
+md
+
+```
+
+> Número diário de UTI's ativas:
+
+```{r}
+
+md        <- c(summary(uti$active), sd(uti$active))
+names(md) <- names.mdwsd
+
+md
+
+```
+
+# Óbito
+
+***
+
+```{r}
+
+dat <- dat|>
+    dplyr::mutate(Óbito=dplyr::recode(Óbito, '0'='Não', '1'='Sim'))
+
+stringtable(dat$Óbito)
+
+```
+
+# Resultado COVID
+
+***
+
+```{r}
+
+dat <- dat|>
+    dplyr::mutate(
+               `RESULTADO COVID`=forcats::fct_collapse(
+                                              `RESULTADO COVID`,
+                                              DETECTÁVEL=c('deTECTÁVEL',
+                                                           'DETECTÁVEL')
+                                          ))
+
+stringtable(dat$`RESULTADO COVID`)
+
+```
+
+# Comorbidade
+
+***
+
+## Presença
+
+```{r}
+
+stringtable(dat$`PRESENÇA DE COMORBIDADE`)
+
+dat|>
+    dplyr::select(`PRESENÇA DE COMORBIDADE`)|>
+    chisquare()
+
+```
+
+> p-valor não significativo. Não existe uma diferença significativa
+> entre a quantidade de pacientes internados com e sem comorbidades.
+
+## Comorbidades
+
+```{r}
+
+datsc <- dat|>
+    dplyr::filter(`PRESENÇA DE COMORBIDADE` == 1)|>
+    dplyr::select(`SISTEMA COMORBIDADE 1`:`SISTEMA COMORBIDADE 5`)|>
+    dplyr::mutate(id=haven::as_factor(1:n()),
+                  `SISTEMA COMORBIDADE 2`=
+                      dplyr::na_if(`SISTEMA COMORBIDADE 2`, '0'),
+                  `SISTEMA COMORBIDADE 3`=
+                      dplyr::na_if(`SISTEMA COMORBIDADE 3`, '0'),
+                  `SISTEMA COMORBIDADE 4`=
+                      dplyr::na_if(`SISTEMA COMORBIDADE 4`, '0'),
+                  `SISTEMA COMORBIDADE 5`=
+                      dplyr::na_if(`SISTEMA COMORBIDADE 5`, '0'))|>
+    dplyr::select(c(id,
+                    `SISTEMA COMORBIDADE 1`:`SISTEMA COMORBIDADE 3`))|>
+    tidyr::pivot_longer(!id,
+                        names_to='sistema', values_to='comorbidade',
+                        values_drop_na=TRUE)|>
+    dplyr::mutate(comorbidade=stringr::str_to_title(comorbidade),
+                  comorbidade=forcats::fct_collapse(
+                                           comorbidade,
+                                           'Renal/Urinário'=c(
+                                               'Urinário/Renal',
+                                               'Renal/Urinário'),
+                                           'Sd Genética'=c(
+                                               'Sd Genética',
+                                               'Sd Genetica')))
+
+```
+
+```{r comorbidades,fig.height=3}
+
+datsc_sum <- dplyr::summarize(dplyr::group_by(datsc, comorbidade),
+                              n=length(id), id='total')
+
+datsc_sum|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(
+               comorbidade=haven::as_factor(as.character(comorbidade))
+           )|>
+    ggplot(aes(x=n, y=comorbidade))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/156, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 44), breaks=NULL)+
+    labs(x=NULL, y=NULL,
+         title=paste0(108, ' (', round(100*108/204, 1), '%)',
+                      ' patients with ',
+                      sum(datsc_sum$n), ' comorbidities'))+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+```
+
+```{r comorbidades_split,fig.width=10,fig.height=6}
+
+datsc_idsum <- dplyr::summarize(dplyr::group_by(datsc, id),
+                                n=length(id), comorbidade='total')
+
+idsum_1 <- dplyr::filter(datsc_idsum, n == 1)|>dplyr::pull(id)
+
+datsc.p1 <- datsc|>
+    dplyr::filter(id %in% idsum_1)|>
+    dplyr::count(comorbidade)|>
+    rbind(c(comorbidade='Outro', n=0))|>
+    dplyr::mutate(n=as.numeric(n))|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(
+               comorbidade=haven::as_factor(as.character(comorbidade))
+           )
+
+p1 <- datsc.p1|>
+    ggplot(aes(x=n, y=comorbidade))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/156, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 30), breaks=NULL)+
+    labs(x=NULL, y=NULL,
+         title=paste0(length(idsum_1),
+                      ' (', round(100*length(idsum_1)/204, 1), '%)',
+                      ' patients\nwith 1 comorbidity'))+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+idsum_plus1 <- dplyr::filter(datsc_idsum, n > 1)|>dplyr::pull(id)
+
+datsc_plus1 <- datsc|>
+    dplyr::filter(id %in% idsum_plus1)
+
+datsc.p2 <- dplyr::count(datsc_plus1, comorbidade)
+
+p2 <- datsc.p2|>
+    dplyr::mutate(
+               comorbidade=factor(comorbidade,
+                                  levels=levels(datsc.p1$comorbidade))
+           )|>
+    ggplot(aes(x=n, y=comorbidade))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/156, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 22.5), breaks=NULL)+
+    labs(x=NULL, y=NULL,
+         title=paste0(length(idsum_plus1), ' (',
+                      round(100*length(idsum_plus1)/204, 1), '%)',
+                      ' patients\nwith +1 comorbidity'))+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_blank(),
+          plot.title =element_text(face='bold'))
+
+id_plus1 <- datsc_plus1|>
+    dplyr::count(id, sort=TRUE)|>
+    dplyr::mutate(id=haven::as_factor(as.character(id)))|>
+    dplyr::pull(id)
+
+levels.p3 <- datsc.p2|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(
+               comorbidade=haven::as_factor(as.character(comorbidade))
+           )|>
+    dplyr::pull(comorbidade)|>
+    levels()
+
+p3 <- datsc_plus1|>
+    dplyr::mutate(id=factor(id, levels=id_plus1),
+                  comorbidade=factor(comorbidade, levels=levels.p3))|>
+    ggplot(aes(x=id, fill=comorbidade))+
+    geom_bar(alpha=0.75)+
+    labs(x='Patient 1:36', y=NULL,
+         title='Patients with +1 comorbidities')+
+    scale_fill_viridis_d()+
+    theme_minimal(base_size=14)+
+    theme(legend.title   =element_blank(),
+          axis.title.x   =element_text(face='bold'),
+          plot.title     =element_text(face='bold'),
+          legend.position='bottom',
+          axis.text.x    =element_blank())
+
+(p1 + p2) / p3 +
+    patchwork::plot_layout(heights=c(1, 0.4))
+
+```
+
+## Quantas comorbidades
+
+```{r}
+
+stringtable(dat$`QUANTAS COMORBIDADES`)
+
+```
+
+# Data do início dos sintomas
+
+***
+
+
+```{r}
+
+dat|>
+    dplyr::filter(
+               `DATA DO INICIO DOS SINTOMAS` %in% c('ASSINTOMÁTICO',
+                                                    'NÃO DISPONÍVEL')
+           )|>
+    dplyr::select(`DATA DO INICIO DOS SINTOMAS`)|>
+    stringtable()
+
+```
+
+```{r data_inicio_sintomas,fig.width=10,fig.height=3}
+
+data_inicio_sintomas <- readxl::read_xlsx('Análise estatística.xlsx',
+                                          sheet   ='Internados',
+                                          range   ='Y1:Y205',
+                                          col_types='date')|>
+    dplyr::filter(!`DATA DO INICIO DOS SINTOMAS` %in% NA)|>
+    dplyr::rename(data=`DATA DO INICIO DOS SINTOMAS`)|>
+    dplyr::mutate(data=as.Date(data))
+
+data_inicio_sintomas|>
+    ggplot(aes(x=data))+
+    geom_vline(xintercept=seq(as.Date('2020-04-01'),
+                              as.Date('2022-07-01'), by='month'),
+               linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_date(date_labels='%m-%Y', date_breaks='2 month')+
+    labs(x=NULL, y=NULL,
+         title='Date of onset of symptoms',
+         subtitle=paste0(
+             length(data_inicio_sintomas$data), ' (',
+             round(100*length(data_inicio_sintomas$data)/204, 1),
+             '%) patients with available date'
+         ))+
+    scale_y_continuous(breaks=1:5)+
+    theme_classic(base_size=14)+
+    theme(plot.title =element_text(face='bold'),
+          axis.text.x=element_text(face='bold'),
+          axis.text.y=element_text(face='bold'))
+
+md <- summary(data_inicio_sintomas$data)
+
+names(md) <- c('Mínimo',
+               '1o.quantil',
+               'Mediana',
+               'Média',
+               '3o.quantil',
+               'Máximo');md
+
+c('Desvio.Padrão'=sd(data_inicio_sintomas$data))
+
+```
+
+# Tempo do início dos sintomas
+
+***
+
+```{r}
+
+dat|>
+    dplyr::filter(`Tempo inicio sintomas` %in% c('ASSINTOMÁTICO',
+                                                 'NÃO DISPONÍVEL'))|>
+    dplyr::select(`Tempo inicio sintomas`)|>
+    stringtable()
+
+```
+
+```{r tempo_inicio_dos_sintomas,fig.height=3.25}
+
+dat.p <- dat|>
+    dplyr::filter(!`Tempo inicio sintomas` %in% c('ASSINTOMÁTICO',
+                                                  'NÃO DISPONÍVEL'))|>
+    dplyr::rename(tempo=`Tempo inicio sintomas`)|>
+    dplyr::mutate(tempo=as.numeric(tempo))
+
+dat.p|>
+    ggplot(aes(x=tempo))+
+    geom_hline(yintercept=seq(0, 35, by=5), linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_continuous(breaks=seq(-10, 25, by=5))+
+    scale_y_continuous(breaks=seq(0, 35, by=5))+
+    labs(x=NULL, y=NULL,
+         title='Days from onset of symptoms to medical consultation',
+         subtitle=paste0(length(dat.p$tempo), ' (',
+                         round(100*length(dat.p$tempo)/204, 1),
+                         '%) patients with available date'))+
+    theme_classic(base_size=14)+
+    theme(plot.title =element_text(face='bold'),
+          axis.text.x=element_text(face='bold'),
+          axis.text.y=element_text(face='bold'))
+
+dat.p|>
+    dplyr::summarise(Mínimo       =min(tempo),
+                     '1o.quantil' =quantile(tempo, 0.25), 
+                     Mediana      =median(tempo),
+                     '3o.quantil' =quantile(tempo, 0.75), 
+                     Máximo       =max(tempo), 
+                     Media        =mean(tempo),
+                     Desvio.Padrão=sd(tempo))
+
+```
+
+# Contato confirmado ou suspeito
+
+***
+
+```{r}
+
+dat <- dat|>
+    dplyr::mutate(`CONTATO CONFIRMADO OU SUSPEITO`=
+                      dplyr::recode(`CONTATO CONFIRMADO OU SUSPEITO`,
+                                    '0'='Não',
+                                    '1'='Sim',
+                                    '9'='Desconhecido'))
+
+stringtable(dat$`CONTATO CONFIRMADO OU SUSPEITO`)
+
+```
+
+# Tempo de internação
+
+***
+
+```{r tempo_de_internacao,fig.height=3.25}
+
+md <- summary(dat$`TEMPO INTERNAÇÃO`)
+
+names(md) <- c('Mínimo',
+               '1o.quantil',
+               'Mediana',
+               'Média',
+               '3o.quantil',
+               'Máximo')
+
+c(md, 'Desvio.Padrão'=sd(dat$`TEMPO INTERNAÇÃO`))
+
+dat|>
+    ggplot(aes(x=`TEMPO INTERNAÇÃO`))+
+    geom_hline(yintercept=c(1, seq(5, 20, by=5)), linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_continuous(breaks=c(1, seq(5, 50, by=5), 57))+
+    scale_y_continuous(breaks=c(1, seq(5, 20, by=5)))+
+    labs(x='Days', y=NULL,
+         title='Days of hospitalization', subtitle='204 patients')+
+    theme_classic(base_size=14)+
+    theme(plot.title  =element_text(face='bold'),
+          axis.text.x =element_text(face='bold'),
+          axis.text.y =element_text(face='bold'),
+          axis.title.x=element_text(face='bold'))
+
+```
+
+# Tempo de UTI
+
+***
+
+```{r tempo_uti,fig.height=3.25}
+
+md <- summary(dplyr::filter(dat, `TEMPO UTI` > 0)$`TEMPO UTI`)
+
+names(md) <- c('Mínimo',
+               '1o.quantil',
+               'Mediana',
+               'Média',
+               '3o.quantil',
+               'Máximo')
+
+c(md,
+  'Desvio.Padrão'=sd(dplyr::filter(dat, `TEMPO UTI` > 0)$`TEMPO UTI`))
+
+dat|>
+    dplyr::filter(`TEMPO UTI` > 0)|>
+    ggplot(aes(x=`TEMPO UTI`))+
+    geom_hline(yintercept=seq(1, 11, by=2), linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_continuous(breaks=c(1, seq(5, 50, by=5), 57))+
+    scale_y_continuous(breaks=seq(1, 11, by=2))+
+    labs(x='Days', y=NULL, title='ICU days',
+         subtitle=paste0('60 (', round(100*60/204, 1), 
+                         '%) patients in the ICU'))+
+    theme_classic(base_size=14)+
+    theme(plot.title  =element_text(face='bold'),
+          axis.text.x =element_text(face='bold'),
+          axis.text.y =element_text(face='bold'),
+          axis.title.x=element_text(face='bold'))
+
+```
+
+# VM
+
+***
+
+## Uso
+
+```{r}
+
+dat <- dat|>
+    dplyr::mutate(`USO DE VM`=dplyr::recode(`USO DE VM`,
+                                            '0'='Não', '1'='Sim'))
+
+stringtable(dat$`USO DE VM`)
+
+```
+
+## Tempo
+
+```{r tempo_vm,fig.height=2.75}
+
+md <- summary(dplyr::filter(dat, `TEMPO VM` > 0)$`TEMPO VM`)
+
+names(md) <- c('Mínimo',
+               '1o.quantil',
+               'Mediana',
+               'Média',
+               '3o.quantil',
+               'Máximo')
+
+c(md, 'Desvio.Padrão'=sd(dplyr::filter(dat, `TEMPO VM` > 0)$`TEMPO VM`))
+
+dat|>
+    dplyr::filter(`TEMPO VM` > 0)|>
+    ggplot(aes(x=`TEMPO VM`))+
+    geom_hline(yintercept=1:4, linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_continuous(breaks=c(seq(1, 19, by=2), 22, 24, 28))+
+    scale_y_continuous(breaks=1:4)+
+    labs(x='Days', y=NULL,
+         title='Days under mechanical ventilation (MV)',
+         subtitle=paste0('33 (', round(100*33/204, 1), 
+                         '%) patients under MV'))+
+    theme_classic(base_size=14)+
+    theme(plot.title  =element_text(face='bold'),
+          axis.text.x =element_text(face='bold'),
+          axis.text.y =element_text(face='bold'),
+          axis.title.x=element_text(face='bold'))
+
+```
+
+# Dias de O2
+
+***
+
+```{r dias_o2,fig.height=3.25}
+
+md <- summary(dplyr::filter(dat, `DIAS O2` > 0)$`DIAS O2`)
+
+names(md) <- c('Mínimo',
+               '1o.quantil',
+               'Mediana',
+               'Média',
+               '3o.quantil',
+               'Máximo')
+
+c(md, 'Desvio.Padrão'=sd(dplyr::filter(dat, `DIAS O2` > 0)$`DIAS O2`))
+
+dat|>
+    dplyr::filter(`DIAS O2` > 0)|>
+    ggplot(aes(x=`DIAS O2`))+
+    geom_hline(yintercept=c(1, seq(5, 20, by=5)), linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_continuous(breaks=c(1, seq(3, 30, by=2), 32))+
+    scale_y_continuous(breaks=c(1, seq(5, 20, by=5)))+
+    labs(x='Days', y=NULL,
+         title='Days on oxygenation',
+         subtitle=paste0(204-105, ' (', round(100*(204-105)/204, 1), 
+                         '%) patients on oxygenation'))+
+    theme_classic(base_size=14)+
+    theme(plot.title  =element_text(face='bold'),
+          axis.text.x =element_text(face='bold'),
+          axis.text.y =element_text(face='bold'),
+          axis.title.x=element_text(face='bold'))
+
+```
+
+# Sintomas
+
+***
+
+```{r sintomas}
+
+dats <- dat|>
+    dplyr::select(FEBRE:ROUQUIDÃO)|>
+    dplyr::mutate(id=factor(1:204))|>
+    tidyr::pivot_longer(!id)|>
+    dplyr::filter(value %in% c(0, 1))|>
+    dplyr::mutate(name=stringr::str_to_title(name))
+
+dats1 <- dats|>
+    dplyr::filter(value == 1)
+
+dats1|>
+    dplyr::count(name)|>
+    dplyr::arrange(n)|>
+    dplyr::mutate(name=haven::as_factor(name))|>
+    ggplot(aes(x=n, y=name))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/204, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 170), breaks=NULL)+
+    labs(x=NULL, y=NULL, title='Symptoms')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+```
+
+> Múltiplos sintomas:
+
+```{r multiple_symptoms,fig.height=3,fig.width=6}
+
+dats1_idsum <- dplyr::count(dats1, id)
+
+cbind(c('Total', 'Percentual %'), 
+      rbind(c('0'=3, table(dats1_idsum$n)), 
+            round(100*c('0'=3, table(dats1_idsum$n))/204, 3)))
+
+dats1_idsum|>
+    dplyr::summarise(Mínimo       =min(n),
+                     '1o.quantil' =quantile(n, 0.25), 
+                     Mediana      =median(n),
+                     '3o.quantil' =quantile(n, 0.75), 
+                     Máximo       =max(n), 
+                     Media        =mean(n),
+                     Desvio.Padrão=sd(n))
+
+dats1_idsum|>
+    ggplot(aes(x=n))+
+    geom_hline(yintercept=seq(0, 50, by=10), linetype='dashed')+
+    geom_bar(fill=unique_color)+
+    scale_x_continuous(breaks=1:8)+
+    scale_y_continuous(breaks=seq(0, 50, by=10))+
+    labs(x='Number of symptoms', y=NULL, title='Multiple symptoms')+
+    theme_classic(base_size=14)+
+    theme(plot.title  =element_text(face='bold'),
+          axis.text.x =element_text(face='bold'),
+          axis.text.y =element_text(face='bold'),
+          axis.title.x=element_text(face='bold'))
+
+```
+
+```{r multiplos_sintomas,fig.width=10,fig.height=6}
+
+dats|>
+    dplyr::mutate(value=factor(value, labels=c('Absent', 'Present')))|>
+    ggplot(aes(x=id, y=name, fill=value))+
+    geom_tile()+
+    scale_x_discrete(expand=c(0, 0))+
+    scale_fill_manual(values=c('Absent'='yellow', 'Present'='red'))+
+    labs(x=NULL, y=NULL,
+         title='Symptoms heatmap',
+         subtitle='Each row is a symptom and each column is a patient',
+         fill='Symptom:')+
+    theme_minimal(base_size=14)+
+    theme(axis.text.x    =element_blank(),
+          axis.text.y    =element_text(face='bold'),
+          legend.position='bottom',
+          legend.title   =element_text(face='bold'), 
+          plot.title     =element_text(face='bold'))
+
+```
+
+# Raio-X
+
+***
+
+```{r}
+
+raiox <- c('Normal + TQT',
+           'Normal',
+           'Infiltrado Instersticial',
+           'Condensação/Opacidade',
+           'Infiltrado Instersticial + Condensação/Opacidade',
+           'Hiperinsuflação',
+           'Outro',
+           'Condensação/Opacidade + Outro', 
+           'Não realizado')
+
+dat <- dat|>
+    dplyr::mutate(
+               `RAIOX 1`=dplyr::case_when(
+                                    startsWith(
+                                        `RAIOX 1`, '5'
+                                    ) |
+                                    startsWith(
+                                        `RAIOX 1`, 'vidro'
+                                    ) ~ '5',
+                                    TRUE ~ as.character(`RAIOX 1`)
+                                ),
+               `RAIOX 2`=dplyr::case_when(
+                                    startsWith(
+                                        `RAIOX 2`, '5'
+                                    ) |
+                                    startsWith(
+                                        `RAIOX 2`, 'vidro'
+                                    ) ~ '5',
+                                    startsWith(
+                                        `RAIOX 2`, '1 ;'
+                                    ) ~ '3',
+                                    startsWith(
+                                        `RAIOX 2`, '3 + 5'
+                                    ) ~ '3 + 5',
+                                    TRUE ~ as.character(`RAIOX 2`)
+                                ), 
+               `RAIOX 1`=dplyr::recode(`RAIOX 1`,
+                                       '1'      =raiox[2],
+                                       '1 + TQT'=raiox[1],
+                                       '2'      =raiox[3],
+                                       '3'      =raiox[4],
+                                       '2+3'    =raiox[5],
+                                       '4'      =raiox[6],
+                                       '5'      =raiox[7],
+                                       '6'      =raiox[9]),
+               `RAIOX 2`=dplyr::recode(`RAIOX 2`,
+                                       '1'      =raiox[2],
+                                       '1 + TQT'=raiox[1],
+                                       '2'      =raiox[3],
+                                       '3'      =raiox[4],
+                                       '4'      =raiox[6],
+                                       '5'      =raiox[7],
+                                       '3 + 5'  =raiox[8],
+                                       '6'      =raiox[9]),
+               `RAIOX 1`=factor(`RAIOX 1`, levels=raiox),
+               `RAIOX 2`=factor(`RAIOX 2`, levels=raiox))
+
+```
+
+> Primeiro raio-X:
+
+```{r}
+
+t(stringtable(dat$`RAIOX 1`))
+
+```
+
+> Segundo raio-X:
+
+```{r}
+
+t(stringtable(dat$`RAIOX 2`))
+
+```
+
+```{r raiox,fig.width=8,fig.height=4.75}
+
+p1 <- dat|>
+    dplyr::count(`RAIOX 1`)|>
+    dplyr::arrange(n)|>
+    dplyr::filter(!`RAIOX 1` == 'Não realizado')|>
+    ggplot(aes(x=n, y=`RAIOX 1`))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/204, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 107.5),
+                       breaks=NULL)+
+    labs(x=NULL, y=NULL, title='1st X-Ray',
+         subtitle=paste0(204-48, ' (', round(100*(204-48)/204, 2),
+                         '%) patients had a 1st X-ray'))+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::count(`RAIOX 2`)|>
+    dplyr::arrange(n)|>
+    dplyr::filter(!`RAIOX 2` == 'Não realizado')|>
+    ggplot(aes(x=n, y=`RAIOX 2`))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/204, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 28),
+                       breaks=NULL)+
+    labs(x=NULL, y=NULL, title='2nd X-Ray',
+         subtitle=paste0(204-153, ' (', round(100*(204-153)/204, 2),
+                         '%) patients had a 2nd X-ray'))+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p1 / p2
+
+dat|>
+    dplyr::filter(!`RAIOX 1` %in% 'Não realizado' &
+                  !`RAIOX 2` %in% 'Não realizado')|>
+    dplyr::count(`RAIOX 1`, `RAIOX 2`)
+
+```
+
+# Tomografia
+
+***
+
+```{r}
+
+tomo <- c('Normal',
+          'Condensação/Opacidade',
+          'Vidro Fosco',
+          'Outro',
+          'Não realizado')
+
+dat <- dat|>
+    dplyr::mutate(`TOMO 1`=dplyr::recode(`TOMO 1`,
+                                         '1'=tomo[1],
+                                         '3'=tomo[2],
+                                         '4'=tomo[3],
+                                         '5'=tomo[4],
+                                         '6'=tomo[5]),
+                  `TOMO 2`=dplyr::recode(`TOMO 2`,
+                                         '3'=tomo[2],
+                                         '4'=tomo[3],
+                                         '5'=tomo[4],
+                                         '6'=tomo[5]),
+                  `TOMO 1`=factor(`TOMO 1`, levels=tomo),
+                  `TOMO 2`=factor(`TOMO 2`, levels=tomo))
+
+```
+
+> Primeira tomografia:
+
+```{r}
+
+stringtable(dat$`TOMO 1`)
+
+```
+
+> Segunda tomografia:
+
+```{r}
+
+stringtable(dat$`TOMO 2`)
+
+```
+
+```{r tomografia,fig.height=3.25,fig.width=8}
+
+p1 <- dat|>
+    dplyr::count(`TOMO 1`)|>
+    dplyr::arrange(n)|>
+    dplyr::filter(!`TOMO 1` %in% 'Não realizado')|>
+    ggplot(aes(x=n, y=`TOMO 1`))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/204, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 82),
+                       breaks=NULL)+
+    labs(x=NULL, y=NULL, title='1st Tomography',
+         subtitle=paste0(204-96, ' (', round(100*(204-96)/204, 2),
+                         '%) patients had a 1st CT scan'))+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p2 <- dat|>
+    dplyr::count(`TOMO 2`)|>
+    dplyr::arrange(n)|>
+    dplyr::filter(!`TOMO 2` %in% 'Não realizado')|>
+    ggplot(aes(x=n, y=`TOMO 2`))+
+    geom_col(fill=unique_color, alpha=0.75)+
+    geom_text(aes(label=paste0(n, ' (', round(100*n/204, 1), '%)')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), limits=c(0, 16.5),
+                       breaks=NULL)+
+    labs(x=NULL, y=NULL, title='2nd Tomography',
+         subtitle=paste0(204-184, ' (', round(100*(204-184)/204, 2),
+                         '%) patients had a 2nd CT scan'))+
+    theme_minimal(base_size=14)+
+    theme(axis.text.y=element_text(face='bold'),
+          plot.title =element_text(face='bold'))
+
+p1 / p2 + patchwork::plot_layout(heights=c(1, 0.75))
+
+dattomo <- dat|>
+    dplyr::filter(!`TOMO 1` %in% 'Não realizado' &
+                  !`TOMO 2` %in% 'Não realizado')|>
+    dplyr::count(`TOMO 1`, `TOMO 2`)
+
+dattomo
+
+```
+
+```{r tomografias,fig.width=10,fig.height=6.5}
+
+dattomo|>
+    ggplot(aes(y=n, axis1=`TOMO 1`, axis2=`TOMO 2`))+
+    ggalluvial::geom_alluvium(aes(fill=`TOMO 1`))+
+    ggalluvial::geom_stratum(width=1/10,
+                             fill='8a8d8f', color='white', alpha=0.5)+
+    geom_label(stat='stratum', aes(label=after_stat(stratum)))+
+    scale_x_continuous(breaks=1:2,
+                       labels=c('1st CT Scan', '2nd CT Scan'))+
+    scale_fill_viridis_d()+
+    labs(y=NULL, title='1st & 2nd Tomographies',
+         subtitle=paste0(20,
+                         ' (', round(100*20/204, 1), '%) patients'))+
+    theme_minimal(base_size=14)+
+    theme(legend.position='none',
+          axis.text.x    =element_text(face='bold'), 
+          axis.text.y    =element_blank(),
+          plot.title     =element_text(face='bold'))
+
+```
+
+# Dímero-D
+
+***
+
+```{r dimero_d,fig.width=10,fig.height=4.5}
+
+dimerod <- dat|>
+    dplyr::select(dplyr::starts_with('DIMERO D'))|>
+    dplyr::mutate(id=factor(seq(204)))|>
+    tidyr::pivot_longer(!id)|>
+    dplyr::mutate(value=dplyr::recode(value,
+                                      '> 10000'='10000',
+                                      '>10000' ='10000'),
+                  value=dplyr::na_if(value, 'NR'),
+                  value=as.numeric(value))|>
+    dplyr::filter(!value %in% NA)
+
+(dimerodstats <- dimerod|>
+     dplyr::group_by(name)|>
+     dplyr::summarise(n              =dplyr::n(),
+                      Mínimo         =min(value), 
+                      '1o.quantil'   =quantile(value, 0.25),
+                      Mediana        =median(value), 
+                      '3o.quantil'   =quantile(value, 0.75),
+                      Maximo         =max(value),
+                      Média          =mean(value),
+                      'Desvio.Padrão'=sd(value)))
+
+dimerodstats <- dimerodstats|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'DIMERO D 1'='Draw 1\n(164)',
+                                     'DIMERO D 2'='Draw 2\n(97)',
+                                     'DIMERO D 3'='Draw 3\n(56)',
+                                     'DIMERO D 4'='Draw 4\n(27)',
+                                     'DIMERO D 5'='Draw 5\n(10)',
+                                     'DIMERO D 6'='Draw 6\n(5)',
+                                     'DIMERO D 7'='Draw 7\n(4)',
+                                     'DIMERO D 8'='Draw 8\n(2)'),
+                  id='average')
+
+dimerod|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'DIMERO D 1'='Draw 1\n(164)',
+                                     'DIMERO D 2'='Draw 2\n(97)',
+                                     'DIMERO D 3'='Draw 3\n(56)',
+                                     'DIMERO D 4'='Draw 4\n(27)',
+                                     'DIMERO D 5'='Draw 5\n(10)',
+                                     'DIMERO D 6'='Draw 6\n(5)',
+                                     'DIMERO D 7'='Draw 7\n(4)',
+                                     'DIMERO D 8'='Draw 8\n(2)'))|>
+    ggplot(aes(x=name, y=value, group=id))+
+    geom_hline(yintercept=seq(0, 15e3, by=2500),
+               linetype='dashed', color='gray20')+
+    geom_line()+
+    geom_point(size=1.5)+
+    geom_point(dimerodstats,
+               mapping=aes(x=name, y=`Média`), color='red', size=2.5)+
+    geom_line(dimerodstats,
+              mapping=aes(x=name, y=`Média`), color='red', size=1)+
+    scale_y_continuous(breaks=seq(0, 15e3, by=2500))+
+    labs(x=NULL, y=NULL,
+         title='D-Dimer', subtitle='In red, the draw averages')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x  =element_text(face='bold'),
+          axis.text.y  =element_text(face='bold'),
+          plot.title   =element_text(face='bold'),
+          plot.subtitle=element_text(color='red'))
+
+```
+
+# PCR
+
+***
+
+```{r pcr,fig.width=10,fig.height=4.5}
+
+pcr <- dat|>
+    dplyr::select(dplyr::starts_with('PCR'))|>
+    dplyr::mutate(id=factor(seq(204)))|>
+    tidyr::pivot_longer(!id)|>
+    dplyr::mutate(value=dplyr::recode(value,
+                                      '<5'            ='5',
+                                      'INFERIOR 5'    ='5',
+                                      'INFERIOR A 5,0'='5',
+                                      'INFERIOR A 5.0'='5'),
+                  value=dplyr::na_if(value, 'NR'),
+                  value=as.numeric(value))|>
+    dplyr::filter(!value %in% NA)
+
+(pcrstats <- pcr|>
+     dplyr::group_by(name)|>
+     dplyr::summarise(n              =dplyr::n(),
+                      Mínimo         =min(value), 
+                      '1o.quantil'   =quantile(value, 0.25),
+                      Mediana        =median(value), 
+                      '3o.quantil'   =quantile(value, 0.75),
+                      Maximo         =max(value),
+                      Média          =mean(value),
+                      'Desvio.Padrão'=sd(value)))
+
+pcrstats <- pcrstats|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'PCR 1'='Draw 1\n(197)',
+                                     'PCR 2'='Draw 2\n(162)',
+                                     'PCR 3'='Draw 3\n(111)',
+                                     'PCR 4'='Draw 4\n(61)',
+                                     'PCR 5'='Draw 5\n(34)',
+                                     'PCR 6'='Draw 6\n(19)',
+                                     'PCR 7'='Draw 7\n(12)',
+                                     'PCR 8'='Draw 8\n(6)'),
+                  id='average')
+
+pcr|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'PCR 1'='Draw 1\n(197)',
+                                     'PCR 2'='Draw 2\n(162)',
+                                     'PCR 3'='Draw 3\n(111)',
+                                     'PCR 4'='Draw 4\n(61)',
+                                     'PCR 5'='Draw 5\n(34)',
+                                     'PCR 6'='Draw 6\n(19)',
+                                     'PCR 7'='Draw 7\n(12)',
+                                     'PCR 8'='Draw 8\n(6)'))|>
+    ggplot(aes(x=name, y=value, group=id))+
+    geom_hline(yintercept=seq(0, 900, by=100),
+               linetype='dashed', color='gray20')+
+    geom_line()+
+    geom_point(size=1.5)+
+    geom_point(pcrstats,
+               mapping=aes(x=name, y=`Média`), color='red', size=2.5)+
+    geom_line(pcrstats,
+              mapping=aes(x=name, y=`Média`), color='red', size=1)+
+    scale_y_continuous(breaks=seq(0, 900, by=100))+
+    labs(x=NULL, y=NULL,
+         title='PCR', subtitle='In red, the draw averages')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x  =element_text(face='bold'),
+          axis.text.y  =element_text(face='bold'),
+          plot.title   =element_text(face='bold'),
+          plot.subtitle=element_text(color='red'))
+
+```
+
+# VHS
+
+***
+
+```{r vhs,fig.width=10,fig.height=4.5}
+
+vhs <- dat|>
+    dplyr::select(dplyr::starts_with('VHS'))|>
+    dplyr::mutate(id=factor(seq(204)))|>
+    tidyr::pivot_longer(!id)|>
+    dplyr::mutate(value=dplyr::na_if(value, 'NR'),
+                  value=as.numeric(value))|>
+    dplyr::filter(!value %in% NA)
+
+(vhsstats <- vhs|>
+     dplyr::group_by(name)|>
+     dplyr::summarise(n              =dplyr::n(),
+                      Mínimo         =min(value), 
+                      '1o.quantil'   =quantile(value, 0.25),
+                      Mediana        =median(value), 
+                      '3o.quantil'   =quantile(value, 0.75),
+                      Maximo         =max(value),
+                      Média          =mean(value),
+                      'Desvio.Padrão'=sd(value)))
+
+vhsstats <- vhsstats|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'VHS 1'='Draw 1\n(119)',
+                                     'VHS 2'='Draw 2\n(67)',
+                                     'VHS 3'='Draw 3\n(28)',
+                                     'VHS 4'='Draw 4\n(7)'),
+                  id='average')
+
+vhs|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'VHS 1'='Draw 1\n(119)',
+                                     'VHS 2'='Draw 2\n(67)',
+                                     'VHS 3'='Draw 3\n(28)',
+                                     'VHS 4'='Draw 4\n(7)'))|>
+    ggplot(aes(x=name, y=value, group=id))+
+    geom_hline(yintercept=seq(0, 130, by=10),
+               linetype='dashed', color='gray20')+
+    geom_line()+
+    geom_point(size=1.5)+
+    geom_point(vhsstats,
+               mapping=aes(x=name, y=`Média`), color='red', size=2.5)+
+    geom_line(vhsstats,
+              mapping=aes(x=name, y=`Média`), color='red', size=1)+
+    scale_y_continuous(breaks=seq(0, 130, by=10))+
+    labs(x=NULL, y=NULL,
+         title='VHS', subtitle='In red, the draw averages')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x  =element_text(face='bold'),
+          axis.text.y  =element_text(face='bold'),
+          plot.title   =element_text(face='bold'),
+          plot.subtitle=element_text(color='red'))
+
+```
+
+# Dímero-D, PCR & VHS
+
+***
+
+```{r dimerod_pcr_vhs,fig.width=6.5,fig.height=6}
+
+dpv <- dplyr::inner_join(
+                  dplyr::inner_join(
+                             dimerod|>
+                             dplyr::group_by(id)|>
+                             dplyr::summarise('D-Dimer'=mean(value)),
+                             pcr|>
+                             dplyr::group_by(id)|>
+                             dplyr::summarise(PCR=mean(value)), by='id'
+                         ),
+                  vhs|>
+                  dplyr::group_by(id)|>
+                  dplyr::summarise(VHS=mean(value)), by='id'
+              )
+
+psych::pairs.panels(dplyr::select(dpv, !id),
+                    stars   =TRUE,
+                    lm      =TRUE,
+                    smoother=TRUE,
+                    ci      =TRUE,
+                    hist.col='gray80',
+                    main    ='D-Dimer, PCR & VHS',
+                    density =FALSE,
+                    ellipses=FALSE)
+
+```
+
+> Aqui usamos as médias das coletas de cada paciente. 107 pacientes
+> tiveram as três medidas coletadas.
+>
+> Na diagonal temos os histogramas, mostrando como cada variável se
+> distribuí. Os risquinhos na parte de baixo indicam aonde cada
+> observação se localiza. Nos painéis superiores temos as correlações,
+> estrelas indicam significância (três estrelas significam p-valor <
+> 0.0001). Nos painéis inferiores temos os gráficos de dispersão num
+> estilo mapa de calor para facilitar a visualização, dado que temos
+> muitas observações. As retas em vermelho correspondem a modelos
+> lineares para indicar a tendência, em cinza seus intervalos de 95% de
+> confiança.
+
+# Linfócitos
+
+***
+
+```{r linfocitos,fig.width=10,fig.height=4.5}
+
+dat <- dat|>
+    dplyr::mutate(linfócitos=dplyr::recode(linfócitos,
+                                           '0'='Normal',
+                                           '1'='Decreased',
+                                           '2'='Increased',
+                                           '9'='Não disponível'),
+                  linfócitos=factor(linfócitos,
+                                    levels=c('Normal',
+                                             'Decreased',
+                                             'Increased',
+                                             'Não disponível')))
+
+stringtable(dat$linfócitos)
+
+linfocitos <- dat|>
+    dplyr::select(dplyr::starts_with('linfocitos'))|>
+    dplyr::mutate(id=factor(seq(204)))|>
+    tidyr::pivot_longer(!id)|>
+    dplyr::mutate(value=dplyr::na_if(value, 'NR'),
+                  value=as.numeric(value),
+                  name=factor(name, levels=paste('linfocitos', 1:11)))|>
+    dplyr::filter(!value %in% NA)
+
+(linfocitosstats <- linfocitos|>
+     dplyr::group_by(name)|>
+     dplyr::summarise(n              =dplyr::n(),
+                      Mínimo         =min(value), 
+                      '1o.quantil'   =quantile(value, 0.25),
+                      Mediana        =median(value), 
+                      '3o.quantil'   =quantile(value, 0.75),
+                      Maximo         =max(value),
+                      Média          =mean(value),
+                      'Desvio.Padrão'=sd(value)))
+
+linfocitosstats <- linfocitosstats|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'linfocitos 1' ='Draw 1\n(197)',
+                                     'linfocitos 2' ='Draw 2\n(159)',
+                                     'linfocitos 3' ='Draw 3\n(108)',
+                                     'linfocitos 4' ='Draw 4\n(65)',
+                                     'linfocitos 5' ='Draw 5\n(35)',
+                                     'linfocitos 6' ='Draw 6\n(24)',
+                                     'linfocitos 7' ='Draw 7\n(18)',
+                                     'linfocitos 8' ='Draw 8\n(10)',
+                                     'linfocitos 9' ='Draw 9\n(7)',
+                                     'linfocitos 10'='Draw 10\n(6)',
+                                     'linfocitos 11'='Draw 11\n(3)'),
+                  id='average')
+
+linfocitos|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'linfocitos 1' ='Draw 1\n(197)',
+                                     'linfocitos 2' ='Draw 2\n(159)',
+                                     'linfocitos 3' ='Draw 3\n(108)',
+                                     'linfocitos 4' ='Draw 4\n(65)',
+                                     'linfocitos 5' ='Draw 5\n(35)',
+                                     'linfocitos 6' ='Draw 6\n(24)',
+                                     'linfocitos 7' ='Draw 7\n(18)',
+                                     'linfocitos 8' ='Draw 8\n(10)',
+                                     'linfocitos 9' ='Draw 9\n(7)',
+                                     'linfocitos 10'='Draw 10\n(6)',
+                                     'linfocitos 11'='Draw 11\n(3)'))|>
+    ggplot(aes(x=name, y=value, group=id))+
+    geom_hline(yintercept=seq(0, 14e3, by=1e3),
+               linetype='dashed', color='gray20')+
+    geom_line()+
+    geom_point(size=1.5)+
+    geom_point(linfocitosstats,
+               mapping=aes(x=name, y=`Média`), color='red', size=2.5)+
+    geom_line(linfocitosstats,
+              mapping=aes(x=name, y=`Média`), color='red', size=1)+
+    scale_y_continuous(breaks=seq(0, 14e3, by=1e3))+
+    labs(x=NULL, y=NULL,
+         title='Lymphocytes', subtitle='In red, the draw averages')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x  =element_text(face='bold'),
+          axis.text.y  =element_text(face='bold'),
+          plot.title   =element_text(face='bold'),
+          plot.subtitle=element_text(color='red'))
+
+```
+
+# Neutrófilos
+
+***
+
+```{r neutrofilos,fig.width=10,fig.height=4.5}
+
+dat <- dat|>
+    dplyr::mutate(neutrófilos=dplyr::recode(neutrófilos,
+                                            '0'='Normal',
+                                            '1'='Decreased',
+                                            '2'='Increased',
+                                            '9'='Não disponível'),
+                  neutrófilos=factor(neutrófilos,
+                                     levels=c('Normal',
+                                              'Decreased',
+                                              'Increased',
+                                              'Não disponível')))
+
+stringtable(dat$neutrófilos)
+
+neutrofilos <- dat|>
+    dplyr::select(dplyr::starts_with('neutrofilos'))|>
+    dplyr::mutate(id=factor(seq(204)))|>
+    tidyr::pivot_longer(!id)|>
+    dplyr::mutate(value=dplyr::na_if(value, 'NR'),
+                  value=as.numeric(value),
+                  name=factor(name, levels=paste('neutrofilos', 1:11))
+                  )|>
+    dplyr::filter(!value %in% NA)
+
+(neutrofilosstats <- neutrofilos|>
+     dplyr::group_by(name)|>
+     dplyr::summarise(n              =dplyr::n(),
+                      Mínimo         =min(value), 
+                      '1o.quantil'   =quantile(value, 0.25),
+                      Mediana        =median(value), 
+                      '3o.quantil'   =quantile(value, 0.75),
+                      Maximo         =max(value),
+                      Média          =mean(value),
+                      'Desvio.Padrão'=sd(value)))
+
+neutrofilosstats <- neutrofilosstats|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'neutrofilos 1' ='Draw 1\n(197)',
+                                     'neutrofilos 2' ='Draw 2\n(159)',
+                                     'neutrofilos 3' ='Draw 3\n(108)',
+                                     'neutrofilos 4' ='Draw 4\n(65)',
+                                     'neutrofilos 5' ='Draw 5\n(35)',
+                                     'neutrofilos 6' ='Draw 6\n(23)',
+                                     'neutrofilos 7' ='Draw 7\n(16)',
+                                     'neutrofilos 8' ='Draw 8\n(10)',
+                                     'neutrofilos 9' ='Draw 9\n(7)',
+                                     'neutrofilos 10'='Draw 10\n(6)',
+                                     'neutrofilos 11'='Draw 11\n(3)'),
+                  id='average')
+
+neutrofilos|>
+    dplyr::mutate(name=dplyr::recode(name,
+                                     'neutrofilos 1' ='Draw 1\n(197)',
+                                     'neutrofilos 2' ='Draw 2\n(159)',
+                                     'neutrofilos 3' ='Draw 3\n(108)',
+                                     'neutrofilos 4' ='Draw 4\n(65)',
+                                     'neutrofilos 5' ='Draw 5\n(35)',
+                                     'neutrofilos 6' ='Draw 6\n(23)',
+                                     'neutrofilos 7' ='Draw 7\n(16)',
+                                     'neutrofilos 8' ='Draw 8\n(10)',
+                                     'neutrofilos 9' ='Draw 9\n(7)',
+                                     'neutrofilos 10'='Draw 10\n(6)',
+                                     'neutrofilos 11'='Draw 11\n(3)'))|>
+    ggplot(aes(x=name, y=value, group=id))+
+    geom_hline(yintercept=seq(0, 36e3, by=3e3),
+               linetype='dashed', color='gray20')+
+    geom_line()+
+    geom_point(size=1.5)+
+    geom_point(neutrofilosstats,
+               mapping=aes(x=name, y=`Média`), color='red', size=2.5)+
+    geom_line(neutrofilosstats,
+              mapping=aes(x=name, y=`Média`), color='red', size=1)+
+    scale_y_continuous(breaks=seq(0, 36e3, by=3e3))+
+    labs(x=NULL, y=NULL,
+         title='Neutrophils', subtitle='In red, the draw averages')+
+    theme_classic(base_size=14)+
+    theme(axis.text.x  =element_text(face='bold'),
+          axis.text.y  =element_text(face='bold'),
+          plot.title   =element_text(face='bold'),
+          plot.subtitle=element_text(color='red'))
+
+```
+
+# Linfócitos vs. Neutrófilos
+
+***
+
+```{r linfocitos_vs_neutrolilos,fig.width=6,fig.height=5.75}
+
+(datln <- dat|>
+     dplyr::filter(! linfócitos %in% 'Não disponível' &
+                   !neutrófilos %in% 'Não disponível')|>
+     dplyr::count(linfócitos, neutrófilos))
+
+datln|>
+    ggplot(aes(y=n, axis1=linfócitos, axis2=neutrófilos))+
+    ggalluvial::geom_alluvium(aes(fill=linfócitos))+
+    ggalluvial::geom_stratum(width=1/10,
+                             fill='8a8d8f', color='white', alpha=0.5)+
+    geom_label(stat='stratum', aes(label=after_stat(stratum)))+
+    scale_x_continuous(breaks=1:2,
+                       labels=c('Lymphocytes', 'Neutrophils'))+
+    scale_fill_viridis_d()+
+    labs(y=NULL, title='Lymphocytes & Neutrophils',
+         subtitle=paste0(197,
+                         ' (', round(100*197/204, 1), '%) patients'))+
+    theme_minimal(base_size=14)+
+    theme(legend.position='none',
+          axis.text.x    =element_text(face='bold'), 
+          axis.text.y    =element_blank(),
+          plot.title     =element_text(face='bold'))
+
+ln <- dplyr::inner_join(linfocitos|>
+                        dplyr::group_by(id)|>
+                        dplyr::summarise(Lymphocytes=mean(value)),
+                        neutrofilos|>
+                        dplyr::group_by(id)|>
+                        dplyr::summarise(Neutrophils=mean(value)),
+                        by='id')
+
+psych::pairs.panels(dplyr::select(ln, !id),
+                    stars   =TRUE,
+                    lm      =TRUE,
+                    smoother=TRUE,
+                    ci      =TRUE,
+                    hist.col='gray80',
+                    main    ='Lymphocytes & Neutrophils',
+                    density =FALSE,
+                    ellipses=FALSE)
+
+```
+
+# iga, igg & igm
+
+***
+
+```{r}
+
+iga <- ig('iga')
+igg <- ig('igg')
+igm <- ig('igm')
+
+rbind(igstat(iga), igstat(igg), igstat(igm))
+
+```
+
+# Referências
+
+***
+
+> A análise estatística foi realizada no ambiente de computação
+> estatística `R` (R Core Team, 2022). Os principais pacotes `R`
+> utilizados foram o {`dplyr`} (Wickham et al., 2022), {`tidyr`}
+> (Wickham & Girlich, 2022), {`forcats`} (Wickham, 2021), {`lubridate`}
+> (Grolemund & Wickham, 2011), {`ggplot2`} (Wickham, 2016),
+> {`patckwork`} (Pedersen, 2020), {`geobr`} (Pereira & Gonçalves, 2022),
+> {`psych`} (Revelle, 2022), e {`ggalluvial`} (Brunson & Read, 2020).
+
+> R Core Team (2022). R: A language and environment for statistical
+> computing. R Foundation for Statistical Computing, Vienna,
+> Austria. URL https://www.R-project.org/
+>
+> Wickham, H., François, R., Henry, L., Müller, K. (2022). dplyr: A
+> Grammar of Data Manipulation. R package version
+> 1.0.9. https://CRAN.R-project.org/package=dplyr
+>
+> Wickham, H., Girlich, M. (2022). tidyr: Tidy Messy Data. R package
+> version 1.2.0, https://CRAN.R-project.org/package=tidyr
+>
+> Wickham, H. (2021). forcats: Tools for Working with Categorical
+> Variables (Factors). R package version 0.5.1,
+> https://CRAN.R-project.org/package=forcats
+>
+> Grolemund, G., Wickham, H. (2011). Dates and Times Made Easy with
+> lubridate. Journal of Statistical Software, 40(3),
+> 1-25. https://www.jstatsoft.org/v40/i03/
+>
+> Wickham, H. (2016). ggplot2: Elegant Graphics for Data
+> Analysis. Springer-Verlag New York
+>
+> Pedersen, T. L. (2020). patchwork: The Composer of Plots. R package
+> version 1.1.1. https://CRAN.R-project.org/package=patchwork
+>
+> Pereira, R. H. M., Gonçalves, C. N. (2022). geobr: Download Official
+> Spatial Data Sets of Brazil. R package version 1.6.5999,
+> <https://github.com/ipeaGIT/geobr
+>
+> Revelle, W. (2022). psych: Procedures for Personality and
+> Psychological Research, Northwestern University, Evanston, Illinois,
+> USA, R package version 2.2.3. https://CRAN.R-project.org/package=psych
+>
+> Brunson, J. C., Read, Q. D. (2020). ggalluvial: Alluvial Plots in
+> 'ggplot2'. R package version
+> 0.12.3. http://corybrunson.github.io/ggalluvial/
