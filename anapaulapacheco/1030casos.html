@@ -1498,7 +1498,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">HPP: COVID-19</h1>
 <h4 class="author">Ana Paula Pacheco, Carolina Prando e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></h4>
-<h4 class="date"><em>Last modification on</em> 2022-07-15 14:49:17</h4>
+<h4 class="date"><em>Last modification on</em> 2022-07-15 16:19:09</h4>
 
 </div>
 
@@ -1822,6 +1822,18 @@ Não realizado            &quot;803&quot;   &quot;78.113%&quot;   </code></pre>
 <blockquote>
 <p>Diferença não significativa.</p>
 </blockquote>
+<div id="dímero-d-por-presença-de-comorbidade" class="section level2">
+<h2>Dímero-D por presença de comorbidade</h2>
+<pre><code># A tibble: 2 × 3
+  `PRESENÇA DE COMORBIDADE` Alterado Normal
+                      &lt;dbl&gt;    &lt;int&gt;  &lt;int&gt;
+1                         0       38     47
+2                         1       56     32</code></pre>
+<pre><code>[1] 0.01896095</code></pre>
+<blockquote>
+<p>Diferença significativa que aqui pode ser interpretada como interação. Nas crianças sem comorbidade é mais comum Dímero-D normal, já nas crianças com comorbidade é mais comum Dímero-D alterado. Esse <em>comum</em> se mostrou estatisticamente significativo.</p>
+</blockquote>
+</div>
 </div>
 <div id="pcr" class="section level1">
 <h1>PCR</h1>
@@ -1838,6 +1850,18 @@ Não realizado            &quot;803&quot;   &quot;78.113%&quot;   </code></pre>
 <blockquote>
 <p>Diferença significativa (valor-<em>p</em> &lt; 0.0001).</p>
 </blockquote>
+<div id="pcr-por-presença-de-comorbidade" class="section level2">
+<h2>PCR por presença de comorbidade</h2>
+<pre><code># A tibble: 2 × 3
+  `PRESENÇA DE COMORBIDADE` Alterado Normal
+                      &lt;dbl&gt;    &lt;int&gt;  &lt;int&gt;
+1                         0      114     67
+2                         1       88     30</code></pre>
+<pre><code>[1] 0.04923939</code></pre>
+<blockquote>
+<p>Diferença significativa (bem no limiar de 0.05). Entre as crianças sem comorbidade a frequência de Dímero-D alterado é quase o dobro do grupo normal. Entre as crianças com comorbidade essa frequença é quase o triplo.</p>
+</blockquote>
+</div>
 </div>
 <div id="vhs" class="section level1">
 <h1>VHS</h1>
