@@ -161,12 +161,22 @@ str(gabarito)
 
 ***
 
-```{r nu_nota_cn,fig.width=10,fig.height=4.5}
+## NU_NOTA_CN
+
+***
+
+> Nota na prova.
+
+```{r nu_nota_cn_medidas_descritivas}
 
 (nota <- rbind(
      with(dat, c(summary(NU_NOTA_CN), 'Std. Dev.'=sd(NU_NOTA_CN)))
  )|>
      tibble::as_tibble())
+
+```
+
+```{r nu_nota_cn,fig.width=10,fig.height=4.5}
 
 p1 <- ggplot()+
     geom_hline(yintercept=seq(300, 900, by=50), linetype='dashed')+
@@ -214,7 +224,19 @@ p1 + p2 + patchwork::plot_layout(widths=c(0.5, 1))
 
 ```
 
-```{r nu_nota_cn_by_co_prova_cn,fig.width=10,fig.height=5.25}
+## CO_PROVA_CN
+
+***
+
+> Tipo de prova.
+
+## NU_NOTA_CN por CO_PROVA_CN
+
+***
+
+> Nota por tipo de prova.
+
+```{r nu_nota_cn_by_co_prova_cn_medidas_descritivas}
 
 (nota_prova <- dat|>
      dplyr::group_by(CO_PROVA_CN)|>
@@ -225,6 +247,10 @@ p1 + p2 + patchwork::plot_layout(widths=c(0.5, 1))
                       '3rd Qu.'  =quantile(NU_NOTA_CN, 0.75),
                       'Max.'     =max(NU_NOTA_CN),
                       'Std. Dev.'=sd(NU_NOTA_CN)))
+
+```
+
+```{r nu_nota_cn_by_co_prova_cn,fig.width=10,fig.height=5.25}
 
 ggplot()+
     geom_hline(yintercept=seq(300, 900, by=50), linetype='dashed')+
@@ -262,6 +288,12 @@ ggplot()+
           axis.text.y  =element_text(face='bold'))
 
 ```
+
+## Questões
+
+***
+
+> 45 questões. Resposta dada e gabarito.
 
 ```{r dat_long,eval=FALSE}
 
