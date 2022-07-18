@@ -37,7 +37,8 @@ pacman::p_load(data.table,
                stringr,
                tidyr,
                ggplot2,
-               patchwork)
+               patchwork,
+               haven)
 
 ```
 
@@ -311,19 +312,22 @@ ggplot()+
 
 ```
 
-## Questões
+## Acertos
 
 ***
 
 > 45 questões. Resposta dada e gabarito.
 
-```{r acertos_data}
+### Por questão
+
+***
+
+```{r acertos_por_questao_data}
 
 acertos <- purrr::map_dbl(seq(45), 
                           function (i)
                               sum(resposta[, i] == gabarito[, i])
                           )
-
 acertos <- tibble::tibble(Questão=seq(45),
                           acertos, acertos.perc=acertos/ncn)
 
@@ -331,7 +335,7 @@ with(acertos, c(summary(acertos.perc), 'Std. Dev.'=sd(acertos.perc)))
 
 ```
 
-```{r acertos,fig.width=10,fig.height=8}
+```{r acertos_por_questao,fig.width=10,fig.height=8}
 
 p1 <- acertos|>
     ggplot(aes(x=Questão, y=acertos.perc))+
@@ -396,6 +400,49 @@ p1 + p2 + patchwork::plot_layout(design=layout)
 
 ```
 
+```{r acertos_por_questao_barras,fig.width=6,fig.height=10}
+
+acertos|>
+    dplyr::arrange(acertos.perc)|>
+    dplyr::mutate(Questão=haven::as_factor(as.character(Questão)))|>
+    ggplot(aes(x=acertos.perc, y=Questão))+
+    geom_col(col='black', fill='white')+
+    geom_text(aes(label=paste0(round(100*acertos.perc, 2), '%')),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), breaks=NULL, limits=c(0, 0.57))+
+    labs(x       =NULL,
+         y       =NULL,
+         title   ='Acerto percentual por questão',
+         subtitle=paste('n =', ncn))+
+    theme_minimal(base_size=14)+
+    theme(plot.title =element_text(face='bold'),
+          axis.text.y=element_text(face='bold'))
+
+```
+
+### Por ID
+
+***
+
+```{r acertos_por_id_data}
+
+acertosid <- purrr::map_dbl(seq(ncn), 
+                            function (i)
+                                sum(resposta[i, ] == gabarito[i, ])
+                            )
+acertosid <-
+    tibble::tibble(Questão=seq(ncn), acertosid, perc=acertosid/45)
+
+with(acertosid, c(summary(perc), 'Std. Dev.'=sd(perc)))
+
+```
+
+```{r acertos_por_id_dataraw}
+
+with(acertosid, c(summary(acertosid), 'Std. Dev.'=sd(acertosid)))
+
+```
+
 ```{r dat_long}
 
 ## dat_long <-
@@ -422,8 +469,8 @@ p1 + p2 + patchwork::plot_layout(design=layout)
 > estatística `R` (R Core Team, 2022). Os principais pacotes `R`
 > utilizados foram o {`data.table`} (Dowle & Srinivasan, 2021),
 > {`tibble`} (Müller & Wickham, {`stringr`} (Wickham, 2019), {`tidyr`}
-> (Wickham & Girlich, 2022), {`ggplot2`} (Wickham, 2016) e {`patchwork`}
-> (Pedersen, 2020).
+> (Wickham & Girlich, 2022), {`ggplot2`} (Wickham, 2016), {`patchwork`}
+> (Pedersen, 2020) e {`haven`} (Wickham et al., 2022).
 >
 > R Core Team (2022). R: A language and environment for statistical
 > computing. R Foundation for Statistical Computing, Vienna,
@@ -448,3 +495,7 @@ p1 + p2 + patchwork::plot_layout(design=layout)
 >
 > Pedersen, T. (2020). patchwork: The Composer of Plots. R package
 > version 1.1.1, https://CRAN.R-project.org/package=patchwork
+>
+> Wickham, H., Miller, E., Smith, D. (2022). haven: Import and Export
+> 'SPSS','Stata' and 'SAS' Files. R package version 2.5.0,
+> https://CRAN.R-project.org/package=haven
