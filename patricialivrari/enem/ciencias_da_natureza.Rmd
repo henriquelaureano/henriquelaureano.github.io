@@ -1,0 +1,317 @@
+---
+title: "ENEM 2021: Ciências da Natureza"
+author: "Patricia Livrari"
+date: "Julho, 2022"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r, echo=FALSE}
+
+if (!requireNamespace('knitr', quietly=TRUE)) install.packages('knitr')
+library(knitr)
+
+options(width=100)
+knitr::opts_chunk$set(fig.path  ='figuras/',
+                      fig.align ='center',
+                      cache     =TRUE,
+                      cache.path='cache/', 
+                      warning   =FALSE,
+                      message   =FALSE,
+                      prompt    =FALSE,
+                      comment   =NA)
+
+```
+
+***
+
+```{r pkgs}
+
+if (!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+
+pacman::p_load(data.table,
+               tibble,
+               parallel,
+               stringr,
+               tidyr,
+               ggplot2,
+               patchwork)
+
+```
+
+# Lendo os dados
+
+***
+
+```{r data}
+
+## gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/enem
+dat <- data.table::fread(file  ='~/Downloads/MICRODADOS_ENEM_2021.csv',
+                         select=c('TP_PRESENCA_CN',
+                                  'CO_PROVA_CN',
+                                  'NU_NOTA_CN',
+                                  'TX_RESPOSTAS_CN',
+                                  'TX_GABARITO_CN'))
+(n <- nrow(dat))
+
+```
+
+```{r dat_compareceu}
+
+dat <- dat|>
+    dplyr::filter(TP_PRESENCA_CN == 1)|>
+    dplyr::select(!TP_PRESENCA_CN)|>
+    tibble::as_tibble()
+
+```
+
+```{r data_nota_zero}
+
+dplyr::filter(dat, NU_NOTA_CN == 0)|>nrow()
+
+dplyr::filter(dat, NU_NOTA_CN < 310)|>nrow()
+
+dat <- dplyr::filter(dat, !NU_NOTA_CN < 310)
+
+(ncn <- nrow(dat))
+
+```
+
+```{r data_co_prova_cn}
+
+dat$CO_PROVA_CN <- as.character(factor(
+    dat$CO_PROVA_CN,
+    levels=c(909, 910, 911, 912, 915, 916, 917, 989, 990, 991, 992, 996,
+             1011, 1012, 1013, 1014, 1045, 1046, 1047, 1048, 1052), 
+    labels=c('Azul','Amarela','Cinza',
+             'Rosa','Laranja - Braille',
+             'Laranja - Adaptada Ledor',
+             'Verde - Videoprova - Libras',
+             'Azul (Reaplicação)',
+             'Amarela (Reaplicação)',
+             'Cinza (Reaplicação)',
+             'Rosa (Reaplicação)',
+             'Laranja - Adaptada Ledor (Reaplicação)',
+             'Azul (Digital)',
+             'Amarela (Digital)',
+             'Rosa (Digital)',
+             'Cinza (Digital)',
+             'Azul (Segunda oportunidade)',
+             'Amarela (Segunda oportunidade)',
+             'Cinza (Segunda oportunidade)',
+             'Rosa (Segunda oportunidade)',
+             'Laranja - Adaptada Ledor (Segunda oportunidade)')
+))
+
+```
+
+```{r dat}
+
+dat
+
+```
+
+# Respostas
+
+***
+
+```{r resposta}
+
+resposta <-
+    parallel::mclapply(
+                  seq(ncn),
+                  function(i)
+                      unlist(
+                          stringr::str_split(dat$TX_RESPOSTAS_CN[i], '')
+                      )
+              )
+resposta           <- t(simplify2array(resposta))
+colnames(resposta) <- paste0('Q', seq(45))
+resposta           <- tibble::as_tibble(resposta)
+
+str(resposta)
+
+```
+
+# Gabarito
+
+***
+
+```{r gabarito}
+
+gabarito <-
+    parallel::mclapply(
+                  seq(ncn),
+                  function(i)
+                      unlist(
+                          stringr::str_split(dat$TX_GABARITO_CN[i], '')
+                      )
+              )
+gabarito           <- t(simplify2array(gabarito))
+colnames(gabarito) <- paste0('Q', seq(45))
+gabarito           <- tibble::as_tibble(gabarito)
+
+str(gabarito)
+
+```
+
+# Análise Descritiva
+
+***
+
+```{r nu_nota_cn,fig.width=10,fig.height=4.5}
+
+(nota <- rbind(
+     with(dat, c(summary(NU_NOTA_CN), 'Std. Dev.'=sd(NU_NOTA_CN)))
+ )|>
+     tibble::as_tibble())
+
+p1 <- ggplot()+
+    geom_hline(yintercept=seq(300, 900, by=50), linetype='dashed')+
+    geom_boxplot(data=dat,
+                 aes(x=paste('n =', ncn), y=NU_NOTA_CN),
+                 outlier.size=3, outlier.shape=21)+
+    geom_linerange(mapping=aes(x   =1,
+                               ymin=nota$Mean-nota$`Std. Dev.`,
+                               ymax=nota$Mean+nota$`Std. Dev.`),
+                   color='#ff0000', size=1)+
+    geom_point(mapping=aes(x=1, y=nota$Mean), color='#ff0000', size=4)+
+    scale_y_continuous(breaks=seq(300, 900, by=50))+
+    labs(x=NULL, y=NULL, title='NU_NOTA_CN: Boxplot')+
+    theme_classic(base_size=14)+
+    theme(plot.title   =element_text(face='bold'),
+          plot.subtitle=element_text(face='bold', color='#ff0000'), 
+          axis.text.x  =element_text(face='bold', size=14),
+          axis.text.y  =element_text(face='bold'))
+
+p2 <- ggplot()+
+    geom_hline(yintercept=seq(0, 2.5e5, by=25e3), linetype='dashed')+
+    geom_histogram(data=dat,
+                   aes(x=NU_NOTA_CN),
+                   binwidth=25, color='black', fill='white')+
+    geom_linerange(mapping=aes(xmin=nota$Mean-nota$`Std. Dev.`,
+                               xmax=nota$Mean+nota$`Std. Dev.`,
+                               y   =2.5e5),
+                   color='#ff0000', size=1)+
+    geom_point(mapping=aes(x=nota$Mean, y=2.5e5),
+               color='#ff0000', size=4)+
+    scale_x_continuous(breaks=seq(300, 900, by=50))+
+    scale_y_continuous(breaks=seq(0, 2.5e5, by=25e3))+
+    labs(x       =NULL,
+         y       =NULL,
+         title   ='Histograma',
+         subtitle='Largura da banda: 25 pontos (nota)',
+         caption ='Em vermelho, média e desvio padrão')+
+    theme_classic(base_size=14)+
+    theme(plot.title  =element_text(face='bold'),
+          axis.text.x =element_text(face='bold'), 
+          axis.text.y =element_text(face='bold'), 
+          plot.caption=element_text(face='bold', color='#ff0000'))
+
+p1 + p2 + patchwork::plot_layout(widths=c(0.5, 1))
+
+```
+
+```{r nu_nota_cn_by_co_prova_cn,fig.width=10,fig.height=5.25}
+
+(nota_prova <- dat|>
+     dplyr::group_by(CO_PROVA_CN)|>
+     dplyr::summarise('Min.'     =min(NU_NOTA_CN),
+                      '1st Qu.'  =quantile(NU_NOTA_CN, 0.25),
+                      Median     =median(NU_NOTA_CN),
+                      Mean       =mean(NU_NOTA_CN),
+                      '3rd Qu.'  =quantile(NU_NOTA_CN, 0.75),
+                      'Max.'     =max(NU_NOTA_CN),
+                      'Std. Dev.'=sd(NU_NOTA_CN)))
+
+ggplot()+
+    geom_hline(yintercept=seq(300, 900, by=50), linetype='dashed')+
+    geom_boxplot(data=dat,
+                 aes(x=CO_PROVA_CN, y=NU_NOTA_CN),
+                 outlier.size=3, outlier.shape=21)+
+    geom_linerange(
+        mapping=aes(x   =nota_prova$CO_PROVA_CN,
+                    ymin=nota_prova$Mean-nota_prova$`Std. Dev.`,
+                    ymax=nota_prova$Mean+nota_prova$`Std. Dev.`),
+        color='#ff0000', size=1
+    )+
+    geom_point(mapping=aes(x=nota_prova$CO_PROVA_CN,
+                           y=nota_prova$Mean), color='#ff0000', size=4)+
+    geom_line(mapping=aes(x    =nota_prova$CO_PROVA_CN,
+                          y    =nota_prova$Mean,
+                          group=1), color='#ff0000', size=1)+
+    geom_line(mapping=aes(x    =nota_prova$CO_PROVA_CN,
+                          y    =nota_prova$Mean-nota_prova$`Std. Dev.`,
+                          group=1),
+              color='#ff0000', size=1, linetype='dashed')+
+    geom_line(mapping=aes(x    =nota_prova$CO_PROVA_CN,
+                          y    =nota_prova$Mean+nota_prova$`Std. Dev.`,
+                          group=1),
+              color='#ff0000', size=1, linetype='dashed')+
+    scale_y_continuous(breaks=seq(300, 900, by=50))+
+    labs(x       =NULL,
+         y       =NULL,
+         title   ='Boxplots de NU_NOTA_CN por CO_PROVA_CN',
+         subtitle='Em vermelho, média e desvio padrão')+
+    theme_classic(base_size=14)+
+    theme(plot.title   =element_text(face='bold'),
+          plot.subtitle=element_text(face='bold', color='#ff0000'), 
+          axis.text.x  =element_text(face='bold', angle=30, hjust=1),
+          axis.text.y  =element_text(face='bold'))
+
+```
+
+```{r dat_long,eval=FALSE}
+
+dat_long <-
+    dplyr::bind_rows(
+               tibble::tibble(
+                           type='Resposta',
+                           tidyr::pivot_longer(
+                                      cbind(CO_PROVA_CN=dat$CO_PROVA_CN,
+                                            resposta), Q1:Q45)),
+               tibble::tibble(
+                           type='Gabarito',
+                           tidyr::pivot_longer(
+                                      cbind(CO_PROVA_CN=dat$CO_PROVA_CN,
+                                            gabarito), Q1:Q45)))
+str(dat_long)
+
+```
+
+# Referências
+
+***
+
+> A análise estatística foi realizada no ambiente de computação
+> estatística `R` (R Core Team, 2022). Os principais pacotes `R`
+> utilizados foram o {`data.table`} (Dowle & Srinivasan, 2021),
+> {`tibble`} (Müller & Wickham, {`stringr`} (Wickham, 2019), {`tidyr`}
+> (Wickham & Girlich, 2022), {`ggplot2`} (Wickham, 2016) e {`patchwork`}
+> (Pedersen, 2020).
+>
+> R Core Team (2022). R: A language and environment for statistical
+> computing. R Foundation for Statistical Computing, Vienna,
+> Austria. URL https://www.R-project.org/
+>
+> Dowle, M., Srinivasan, A. (2021). data.table: Extension of
+> `data.frame`. R package version 1.14.2,
+> https://CRAN.R-project.org/package=data.table
+>
+> Müller, K., Wickham, H. (2022). tibble: Simple Data Frames. R package
+> version 3.1.7, https://CRAN.R-project.org/package=tibble
+>
+> Wickham, H. (2019). stringr: Simple, Consistent Wrappers for Common
+> String Operations. R package version 1.4.0,
+> https://CRAN.R-project.org/package=stringr
+>
+> Wickham, H., Girlich, M. (2022). tidyr: Tidy Messy Data. R package
+> version 1.2.0, https://CRAN.R-project.org/package=tidyr
+>
+> Wickham, H. (2016). ggplot2: Elegant Graphics for Data
+> Analysis. Springer-Verlag New York
+>
+> Pedersen, T. (2020). patchwork: The Composer of Plots. R package
+> version 1.1.1, https://CRAN.R-project.org/package=patchwork
