@@ -66,7 +66,7 @@
   risks data\
   **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
   Junior, W. H. Bonat\
-  Submitted to *Journal of Computational and Graphical Statistics*
+  Submitted to *Computational Statistics*
   
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
