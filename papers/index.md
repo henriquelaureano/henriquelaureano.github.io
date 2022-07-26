@@ -36,8 +36,16 @@
   Ribeiro, B. C. Figueiredo\
   *Cancers* 13(23) (2021), 6111
 
-<!-- ### Accepted for publication -->
+***
 
+### Accepted for publication
+
++ [2022]\
+  Occupational exposure to pesticides and its association with telomere
+  length - A systematic review and meta-analysis\
+  J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
+  Accepted in *Science of the Total Environment*
+  
 ***
 
 ### Submitted for publication
@@ -56,18 +64,18 @@
   Submitted to *Journal of Statistical Computation and Simulation*
 
 + [2022]\
-  Occupational exposure to pesticides and its association with telomere
-  length - A systematic review and meta-analysis\
-  J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
-  Submitted to *Science of the Total Environment*
-
-+ [2022]\
   A multinomial generalized linear mixed model for clustered competing
   risks data\
   **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
   Junior, W. H. Bonat\
   Submitted to *Computational Statistics*
-  
+
++ [2022]\
+  Multivariate Generalized Linear Mixed Models for Count Data\
+  G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  Submitted to *Austrian Journal of Statistics*
+
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
   <!-- inhibitors in women in menopause: a systematic review and -->
