@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>PCA</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="pca_files/libs/clipboard/clipboard.min.js"></script>
+<script src="pca_files/libs/quarto-html/quarto.js"></script>
+<script src="pca_files/libs/quarto-html/popper.min.js"></script>
+<script src="pca_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="pca_files/libs/quarto-html/anchor.min.js"></script>
+<link href="pca_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="pca_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="pca_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="pca_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="pca_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sod-gpx-gst-gsh-mt" id="toc-sod-gpx-gst-gsh-mt" class="nav-link active" data-scroll-target="#sod-gpx-gst-gsh-mt">SOD, GPx, GST, GSH, MT</a>
+  <ul class="collapse">
+  <li><a href="#group" id="toc-group" class="nav-link" data-scroll-target="#group">Group</a></li>
+  <li><a href="#tissue" id="toc-tissue" class="nav-link" data-scroll-target="#tissue">Tissue</a></li>
+  <li><a href="#time-after-exposure" id="toc-time-after-exposure" class="nav-link" data-scroll-target="#time-after-exposure">Time after exposure</a></li>
+  <li><a href="#injury-index" id="toc-injury-index" class="nav-link" data-scroll-target="#injury-index">Injury index</a></li>
+  </ul></li>
+  <li><a href="#sod-gpx-gst-gsh-ache" id="toc-sod-gpx-gst-gsh-ache" class="nav-link" data-scroll-target="#sod-gpx-gst-gsh-ache">SOD, GPx, GST, GSH, AChE</a>
+  <ul class="collapse">
+  <li><a href="#group-1" id="toc-group-1" class="nav-link" data-scroll-target="#group-1">Group</a></li>
+  <li><a href="#tissue-1" id="toc-tissue-1" class="nav-link" data-scroll-target="#tissue-1">Tissue</a></li>
+  <li><a href="#time-after-exposure-1" id="toc-time-after-exposure-1" class="nav-link" data-scroll-target="#time-after-exposure-1">Time after exposure</a></li>
+  <li><a href="#injury-index-1" id="toc-injury-index-1" class="nav-link" data-scroll-target="#injury-index-1">Injury index</a></li>
+  </ul></li>
+  <li><a href="#sod-gpx-gst-gsh" id="toc-sod-gpx-gst-gsh" class="nav-link" data-scroll-target="#sod-gpx-gst-gsh">SOD, GPx, GST, GSH</a>
+  <ul class="collapse">
+  <li><a href="#group-2" id="toc-group-2" class="nav-link" data-scroll-target="#group-2">Group</a></li>
+  <li><a href="#tissue-2" id="toc-tissue-2" class="nav-link" data-scroll-target="#tissue-2">Tissue</a></li>
+  <li><a href="#time-after-exposure-2" id="toc-time-after-exposure-2" class="nav-link" data-scroll-target="#time-after-exposure-2">Time after exposure</a></li>
+  </ul></li>
+  <li><a href="#quantification-of-al-hg" id="toc-quantification-of-al-hg" class="nav-link" data-scroll-target="#quantification-of-al-hg">Quantification of Al &amp; Hg</a>
+  <ul class="collapse">
+  <li><a href="#group-3" id="toc-group-3" class="nav-link" data-scroll-target="#group-3">Group</a></li>
+  <li><a href="#tissue-3" id="toc-tissue-3" class="nav-link" data-scroll-target="#tissue-3">Tissue</a></li>
+  <li><a href="#time-after-exposure-3" id="toc-time-after-exposure-3" class="nav-link" data-scroll-target="#time-after-exposure-3">Time after exposure</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">PCA</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>Maria Eduarda Andrade Galiciolli,<br>
+Cláudia Sirlene Oliveira, Izonete Guiloski e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-08-01 11:40:37</p>
+<hr>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<blockquote class="blockquote">
+<p>To compute a PCA <span class="citation" data-cites="mardiaetal venables&amp;ripley">(<a href="#ref-mardiaetal" role="doc-biblioref">Mardia, Kent, and Bibby 1979</a>; <a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span> we can’t have empty cells in the database. Thus, to use all biomarkers, we split the whole data into three datasets.</p>
+</blockquote>
+<section id="sod-gpx-gst-gsh-mt" class="level1">
+<h1>SOD, GPx, GST, GSH, MT</h1>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                           PC1     PC2     PC3     PC4     PC5
+Proportion of Variance 0.40447 0.22879 0.18875 0.13906 0.03894
+Cumulative Proportion  0.40447 0.63326 0.82200 0.96106 1.00000</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Since we have five biomarkers (possible dependents - correlation different from zero) we can obtain five (independent) principal components (PCs). The first one, alone, explains 40% of all variation derived from the five biomarkers. The second PC adds by itself more 23% of explanation. Thus, with the first two PCs, we explain 63% of all variation generated by the five biomarkers.</p>
+<p>Using the five biomarkers mentioned in the title of this section, we have a complete (no empty cells) sample of size 45.</p>
+</blockquote>
+<section id="group" class="level2">
+<h2 class="anchored" data-anchor-id="group">Group</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-AChE-group-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Al    SAL    TMS TMS+Al 
+    11     11     11     12 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Below the graph, we always present the number of observations per variable level/class.</p>
+</blockquote>
+</section>
+<section id="tissue" class="level2">
+<h2 class="anchored" data-anchor-id="tissue">Tissue</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-AChE-tissue-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Kidney  Liver 
+    24     21 </code></pre>
+</div>
+</div>
+</section>
+<section id="time-after-exposure" class="level2">
+<h2 class="anchored" data-anchor-id="time-after-exposure">Time after exposure</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-AChE-time-after-exposure-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+24h 96h 
+ 24  21 </code></pre>
+</div>
+</div>
+</section>
+<section id="injury-index" class="level2">
+<h2 class="anchored" data-anchor-id="injury-index">Injury index</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-AChE-injury-index-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 0  4  6  8 
+26 11  7  1 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sod-gpx-gst-gsh-ache" class="level1">
+<h1>SOD, GPx, GST, GSH, AChE</h1>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                           PC1     PC2     PC3     PC4    PC5
+Proportion of Variance 0.45239 0.26161 0.16766 0.08425 0.0341
+Cumulative Proportion  0.45239 0.71400 0.88165 0.96590 1.0000</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Just the first PC explains 45% of all variation. The second PC adds more 26% of explanation. With the first two PCs, we explain 71% of all variation.</p>
+<p>With these five biomarkers, we have a complete (no empty cells) sample of size 50.</p>
+</blockquote>
+<section id="group-1" class="level2">
+<h2 class="anchored" data-anchor-id="group-1">Group</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-MT-group-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Al    SAL    TMS TMS+Al 
+    11     12     14     13 </code></pre>
+</div>
+</div>
+</section>
+<section id="tissue-1" class="level2">
+<h2 class="anchored" data-anchor-id="tissue-1">Tissue</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-MT-tissue-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Brain 
+   50 </code></pre>
+</div>
+</div>
+</section>
+<section id="time-after-exposure-1" class="level2">
+<h2 class="anchored" data-anchor-id="time-after-exposure-1">Time after exposure</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-MT-time-after-exposure-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+24h 96h 
+ 25  25 </code></pre>
+</div>
+</div>
+</section>
+<section id="injury-index-1" class="level2">
+<h2 class="anchored" data-anchor-id="injury-index-1">Injury index</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-MT-injury-index-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 0 12 14  6  8 
+38  1  1  4  6 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sod-gpx-gst-gsh" class="level1">
+<h1>SOD, GPx, GST, GSH</h1>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                           PC1     PC2     PC3     PC4
+Proportion of Variance 0.42576 0.32518 0.14260 0.10646
+Cumulative Proportion  0.42576 0.75094 0.89354 1.00000</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Just the first PC explains 41% of all variation. The second PC adds more 33% of explanation. With the first two PCs, we explain 74% of all variation.</p>
+<p>With these four biomarkers, we have a complete (no empty cells) sample of size 138.</p>
+</blockquote>
+<section id="group-2" class="level2">
+<h2 class="anchored" data-anchor-id="group-2">Group</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-AChE-and-MT-group-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Al    SAL    TMS TMS+Al 
+    33     34     34     37 </code></pre>
+</div>
+</div>
+</section>
+<section id="tissue-2" class="level2">
+<h2 class="anchored" data-anchor-id="tissue-2">Tissue</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-AChE-and-MT-tissue-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Brain Kidney  Liver 
+    50     41     47 </code></pre>
+</div>
+</div>
+</section>
+<section id="time-after-exposure-2" class="level2">
+<h2 class="anchored" data-anchor-id="time-after-exposure-2">Time after exposure</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/without-AChE-and-MT-time-after-exposure-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+24h 96h 
+ 63  75 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="quantification-of-al-hg" class="level1">
+<h1>Quantification of Al &amp; Hg</h1>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                           PC1     PC2
+Proportion of Variance 0.52645 0.47355
+Cumulative Proportion  0.52645 1.00000</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>The first PC explains 53% of all variation. The second PC adds more 47%.</p>
+<p>With these two variables, we have a complete (no empty cells) sample of size 68.</p>
+</blockquote>
+<section id="group-3" class="level2">
+<h2 class="anchored" data-anchor-id="group-3">Group</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/quantifications-group-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Al    SAL    TMS TMS+Al 
+    16     16     18     18 </code></pre>
+</div>
+</div>
+</section>
+<section id="tissue-3" class="level2">
+<h2 class="anchored" data-anchor-id="tissue-3">Tissue</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/quantifications-tissue-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      Body       Head Whole fish 
+        16         16         36 </code></pre>
+</div>
+</div>
+</section>
+<section id="time-after-exposure-3" class="level2">
+<h2 class="anchored" data-anchor-id="time-after-exposure-3">Time after exposure</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pca_files/figure-html/quantifications-time-after-exposure-1.png" class="img-fluid figure-img" width="456"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+24h 96h 
+ 35  33 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<blockquote class="blockquote">
+<p>The analysis was performed with the R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span> language and environment for statistical computing. The following R packages were used: {dplyr} <span class="citation" data-cites="dplyr1.0.9">(<a href="#ref-dplyr1.0.9" role="doc-biblioref">Wickham et al. 2022</a>)</span>, {tidyr} <span class="citation" data-cites="tidyr1.2.0">(<a href="#ref-tidyr1.2.0" role="doc-biblioref">Wickham and Girlich 2022</a>)</span>, {ggplot2} <span class="citation" data-cites="ggplot2.16">(<a href="#ref-ggplot2.16" role="doc-biblioref">Wickham 2016</a>)</span> and {rlang} <span class="citation" data-cites="rlang1.0.3">(<a href="#ref-rlang1.0.3" role="doc-biblioref">Henry and Wickham 2022</a>)</span>.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-rlang1.0.3" class="csl-entry" role="doc-biblioentry">
+Henry, L., and H. Wickham. 2022. <em><span class="nocase">rlang</span>: Functions for Base Types and Core r and ’Tidyverse’ Features</em>. R package version 1.0.3. <a href="https://CRAN.R-project.org/package=rlang">https://CRAN.R-project.org/package=rlang</a>.
+</div>
+<div id="ref-mardiaetal" class="csl-entry" role="doc-biblioentry">
+Mardia, K. V., J. T. Kent, and J. M. Bibby. 1979. <em>Multivariate Analysis</em>. London: Academic Press.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-venables&amp;ripley" class="csl-entry" role="doc-biblioentry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with s</em>. Springer-Verlag.
+</div>
+<div id="ref-ggplot2.16" class="csl-entry" role="doc-biblioentry">
+Wickham, H. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN 978-3-319-24277-4. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-dplyr1.0.9" class="csl-entry" role="doc-biblioentry">
+Wickham, H., R. François, L. Henry, and K. Müller. 2022. <em><span class="nocase">dplyr</span>: A Grammar of Data Manipulation</em>. R package version 1.0.9. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+<div id="ref-tidyr1.2.0" class="csl-entry" role="doc-biblioentry">
+Wickham, H., and M. Girlich. 2022. <em><span class="nocase">tidyr</span>: Tidy Messy Data</em>. R package version 1.2.0. <a href="https://CRAN.R-project.org/package=tidyr">https://CRAN.R-project.org/package=tidyr</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
