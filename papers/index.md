@@ -36,16 +36,14 @@
   Ribeiro, B. C. Figueiredo\
   *Cancers* 13(23) (2021), 6111
 
-***
-
-### Accepted for publication
-
-+ [2022]\
-  Occupational exposure to pesticides and its association with telomere
-  length - A systematic review and meta-analysis\
++ [Occupational exposure to pesticides and its association with telomere length - A systematic review and meta-analysis](https://www.sciencedirect.com/science/article/abs/pii/S0048969722048148)\
   J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
-  Accepted in *Science of the Total Environment*
-  
+  *Science of the Total Environment* (2022)
+
+<!-- *** -->
+
+<!-- ### Accepted for publication -->
+
 ***
 
 ### Submitted for publication
