@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Indicadores sociais e renda</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="analise_files/libs/clipboard/clipboard.min.js"></script>
+<script src="analise_files/libs/quarto-html/quarto.js"></script>
+<script src="analise_files/libs/quarto-html/popper.min.js"></script>
+<script src="analise_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="analise_files/libs/quarto-html/anchor.min.js"></script>
+<link href="analise_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="analise_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="analise_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="analise_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="analise_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="analise_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="analise_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#dicionário" id="toc-dicionário" class="nav-link active" data-scroll-target="#dicionário">Dicionário</a></li>
+  <li><a href="#medidas-descritivas" id="toc-medidas-descritivas" class="nav-link" data-scroll-target="#medidas-descritivas">Medidas descritivas</a>
+  <ul class="collapse">
+  <li><a href="#variáveis-quantitativas" id="toc-variáveis-quantitativas" class="nav-link" data-scroll-target="#variáveis-quantitativas">Variáveis quantitativas</a>
+  <ul class="collapse">
+  <li><a href="#geral" id="toc-geral" class="nav-link" data-scroll-target="#geral">Geral</a></li>
+  <li><a href="#por-uf" id="toc-por-uf" class="nav-link" data-scroll-target="#por-uf">Por UF</a></li>
+  <li><a href="#por-ano" id="toc-por-ano" class="nav-link" data-scroll-target="#por-ano">Por Ano</a></li>
+  </ul></li>
+  <li><a href="#variáveis-qualitativas" id="toc-variáveis-qualitativas" class="nav-link" data-scroll-target="#variáveis-qualitativas">Variáveis qualitativas</a>
+  <ul class="collapse">
+  <li><a href="#uf" id="toc-uf" class="nav-link" data-scroll-target="#uf">UF</a></li>
+  <li><a href="#ano" id="toc-ano" class="nav-link" data-scroll-target="#ano">Ano</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#modelagem" id="toc-modelagem" class="nav-link" data-scroll-target="#modelagem">Modelagem</a>
+  <ul class="collapse">
+  <li><a href="#relações-e-correlações" id="toc-relações-e-correlações" class="nav-link" data-scroll-target="#relações-e-correlações">Relações e correlações</a></li>
+  <li><a href="#modelo-linear-gaussiano" id="toc-modelo-linear-gaussiano" class="nav-link" data-scroll-target="#modelo-linear-gaussiano">Modelo linear Gaussiano</a></li>
+  <li><a href="#modelo-linar-com-pca" id="toc-modelo-linar-com-pca" class="nav-link" data-scroll-target="#modelo-linar-com-pca">Modelo linar com PCA</a></li>
+  <li><a href="#modelo-linear-beta" id="toc-modelo-linear-beta" class="nav-link" data-scroll-target="#modelo-linear-beta">Modelo linear Beta</a></li>
+  </ul></li>
+  <li><a href="#discussão" id="toc-discussão" class="nav-link" data-scroll-target="#discussão">Discussão</a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Indicadores sociais e renda</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>Suelen Priscila Buffon e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-08-05 14:19:06</p>
+<hr>
+<div class="cell">
+
+</div>
+<section id="dicionário" class="level1">
+<h1>Dicionário</h1>
+<hr>
+<blockquote class="blockquote">
+<p>Para facilitar o manuseio renomeamos a maioria das variáveis, abaixo listamos o que cada <code>label</code> utilizado significa.</p>
+<ul>
+<li><p><code>RDpCmeioSM.perc</code>: Porcentagem de pessoas com renda domiciliar per capita igual ou inferior a meio salário mínimo (de 2010);</p></li>
+<li><p><code>deso.taxa</code>: Taxa de desocupação da população de 18 anos ou mais de idade;</p></li>
+<li><p><code>esc.ind</code>: Subíndice de escolaridade - IDHM Educação;</p></li>
+<li><p><code>FC18.perc</code>: % de 18 anos ou mais com fundamental completo;</p></li>
+<li><p><code>FE.ind</code>: Subíndice de frequência escolar - IDHM Educação;</p></li>
+<li><p><code>esc5a8anos.perc</code>: % de 5 a 6 anos na escola;</p></li>
+<li><p><code>F11a13.perc</code>: % de 11 a 13 anos nos anos finais do fundamental ou com fundamental completo;</p></li>
+<li><p><code>FC15a17.perc</code>: % de 15 a 17 anos com fundamental completo;</p></li>
+<li><p><code>MC18a20.perc</code>: % de 18 a 20 anos com médio completo.</p></li>
+</ul>
+</blockquote>
+<div class="cell">
+
+</div>
+<blockquote class="blockquote">
+<p>Banco de dados com 2586 registros.</p>
+</blockquote>
+</section>
+<section id="medidas-descritivas" class="level1">
+<h1>Medidas descritivas</h1>
+<hr>
+<section id="variáveis-quantitativas" class="level2">
+<h2 class="anchored" data-anchor-id="variáveis-quantitativas">Variáveis quantitativas</h2>
+<hr>
+<div class="cell">
+
+</div>
+<section id="geral" class="level3">
+<h3 class="anchored" data-anchor-id="geral">Geral</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variable </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o Quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> Média </th>
+   <th style="text-align:right;"> Desvio Padrão </th>
+   <th style="text-align:right;"> 3o Quartil </th>
+   <th style="text-align:right;"> Maximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> RDpCmeioSM.perc </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> 0.085 </td>
+   <td style="text-align:right;"> 0.193 </td>
+   <td style="text-align:right;"> 0.235 </td>
+   <td style="text-align:right;"> 0.180 </td>
+   <td style="text-align:right;"> 0.347 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> deso.taxa </td>
+   <td style="text-align:right;"> 0.011 </td>
+   <td style="text-align:right;"> 0.048 </td>
+   <td style="text-align:right;"> 0.078 </td>
+   <td style="text-align:right;"> 0.094 </td>
+   <td style="text-align:right;"> 0.058 </td>
+   <td style="text-align:right;"> 0.132 </td>
+   <td style="text-align:right;"> 0.980 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc.ind </td>
+   <td style="text-align:right;"> 0.078 </td>
+   <td style="text-align:right;"> 0.388 </td>
+   <td style="text-align:right;"> 0.520 </td>
+   <td style="text-align:right;"> 0.549 </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.705 </td>
+   <td style="text-align:right;"> 0.960 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC18.perc </td>
+   <td style="text-align:right;"> 0.078 </td>
+   <td style="text-align:right;"> 0.388 </td>
+   <td style="text-align:right;"> 0.520 </td>
+   <td style="text-align:right;"> 0.549 </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.705 </td>
+   <td style="text-align:right;"> 0.960 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FE.ind </td>
+   <td style="text-align:right;"> 0.220 </td>
+   <td style="text-align:right;"> 0.506 </td>
+   <td style="text-align:right;"> 0.625 </td>
+   <td style="text-align:right;"> 0.623 </td>
+   <td style="text-align:right;"> 0.161 </td>
+   <td style="text-align:right;"> 0.752 </td>
+   <td style="text-align:right;"> 0.965 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc5a6anos.perc </td>
+   <td style="text-align:right;"> 0.121 </td>
+   <td style="text-align:right;"> 0.578 </td>
+   <td style="text-align:right;"> 0.741 </td>
+   <td style="text-align:right;"> 0.718 </td>
+   <td style="text-align:right;"> 0.195 </td>
+   <td style="text-align:right;"> 0.885 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F11a13.perc </td>
+   <td style="text-align:right;"> 0.398 </td>
+   <td style="text-align:right;"> 0.754 </td>
+   <td style="text-align:right;"> 0.848 </td>
+   <td style="text-align:right;"> 0.812 </td>
+   <td style="text-align:right;"> 0.120 </td>
+   <td style="text-align:right;"> 0.897 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC15a17.perc </td>
+   <td style="text-align:right;"> 0.108 </td>
+   <td style="text-align:right;"> 0.452 </td>
+   <td style="text-align:right;"> 0.568 </td>
+   <td style="text-align:right;"> 0.571 </td>
+   <td style="text-align:right;"> 0.177 </td>
+   <td style="text-align:right;"> 0.706 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> MC18a20.perc </td>
+   <td style="text-align:right;"> 0.030 </td>
+   <td style="text-align:right;"> 0.222 </td>
+   <td style="text-align:right;"> 0.356 </td>
+   <td style="text-align:right;"> 0.391 </td>
+   <td style="text-align:right;"> 0.216 </td>
+   <td style="text-align:right;"> 0.550 </td>
+   <td style="text-align:right;"> 0.942 </td>
+   <td style="text-align:right;"> 2586 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="por-uf" class="level3">
+<h3 class="anchored" data-anchor-id="por-uf">Por UF</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variable </th>
+   <th style="text-align:left;"> UF </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o Quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> Média </th>
+   <th style="text-align:right;"> Desvio Padrão </th>
+   <th style="text-align:right;"> 3o Quartil </th>
+   <th style="text-align:right;"> Maximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> RDpCmeioSM.perc </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.011 </td>
+   <td style="text-align:right;"> 0.108 </td>
+   <td style="text-align:right;"> 0.216 </td>
+   <td style="text-align:right;"> 0.262 </td>
+   <td style="text-align:right;"> 0.180 </td>
+   <td style="text-align:right;"> 0.385 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> RDpCmeioSM.perc </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> 0.106 </td>
+   <td style="text-align:right;"> 0.224 </td>
+   <td style="text-align:right;"> 0.254 </td>
+   <td style="text-align:right;"> 0.180 </td>
+   <td style="text-align:right;"> 0.368 </td>
+   <td style="text-align:right;"> 0.980 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> RDpCmeioSM.perc </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> 0.048 </td>
+   <td style="text-align:right;"> 0.086 </td>
+   <td style="text-align:right;"> 0.147 </td>
+   <td style="text-align:right;"> 0.152 </td>
+   <td style="text-align:right;"> 0.195 </td>
+   <td style="text-align:right;"> 0.900 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> deso.taxa </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.016 </td>
+   <td style="text-align:right;"> 0.045 </td>
+   <td style="text-align:right;"> 0.072 </td>
+   <td style="text-align:right;"> 0.090 </td>
+   <td style="text-align:right;"> 0.052 </td>
+   <td style="text-align:right;"> 0.132 </td>
+   <td style="text-align:right;"> 0.224 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> deso.taxa </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.011 </td>
+   <td style="text-align:right;"> 0.054 </td>
+   <td style="text-align:right;"> 0.079 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 0.062 </td>
+   <td style="text-align:right;"> 0.142 </td>
+   <td style="text-align:right;"> 0.980 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> deso.taxa </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.044 </td>
+   <td style="text-align:right;"> 0.068 </td>
+   <td style="text-align:right;"> 0.081 </td>
+   <td style="text-align:right;"> 0.053 </td>
+   <td style="text-align:right;"> 0.113 </td>
+   <td style="text-align:right;"> 0.810 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc.ind </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.078 </td>
+   <td style="text-align:right;"> 0.366 </td>
+   <td style="text-align:right;"> 0.486 </td>
+   <td style="text-align:right;"> 0.508 </td>
+   <td style="text-align:right;"> 0.186 </td>
+   <td style="text-align:right;"> 0.639 </td>
+   <td style="text-align:right;"> 0.948 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc.ind </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.134 </td>
+   <td style="text-align:right;"> 0.370 </td>
+   <td style="text-align:right;"> 0.504 </td>
+   <td style="text-align:right;"> 0.529 </td>
+   <td style="text-align:right;"> 0.196 </td>
+   <td style="text-align:right;"> 0.670 </td>
+   <td style="text-align:right;"> 0.952 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc.ind </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.195 </td>
+   <td style="text-align:right;"> 0.514 </td>
+   <td style="text-align:right;"> 0.679 </td>
+   <td style="text-align:right;"> 0.658 </td>
+   <td style="text-align:right;"> 0.191 </td>
+   <td style="text-align:right;"> 0.819 </td>
+   <td style="text-align:right;"> 0.960 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC18.perc </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.078 </td>
+   <td style="text-align:right;"> 0.366 </td>
+   <td style="text-align:right;"> 0.486 </td>
+   <td style="text-align:right;"> 0.508 </td>
+   <td style="text-align:right;"> 0.186 </td>
+   <td style="text-align:right;"> 0.639 </td>
+   <td style="text-align:right;"> 0.948 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC18.perc </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.134 </td>
+   <td style="text-align:right;"> 0.370 </td>
+   <td style="text-align:right;"> 0.504 </td>
+   <td style="text-align:right;"> 0.529 </td>
+   <td style="text-align:right;"> 0.196 </td>
+   <td style="text-align:right;"> 0.670 </td>
+   <td style="text-align:right;"> 0.952 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC18.perc </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.195 </td>
+   <td style="text-align:right;"> 0.514 </td>
+   <td style="text-align:right;"> 0.679 </td>
+   <td style="text-align:right;"> 0.658 </td>
+   <td style="text-align:right;"> 0.191 </td>
+   <td style="text-align:right;"> 0.819 </td>
+   <td style="text-align:right;"> 0.960 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FE.ind </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.220 </td>
+   <td style="text-align:right;"> 0.531 </td>
+   <td style="text-align:right;"> 0.642 </td>
+   <td style="text-align:right;"> 0.635 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.735 </td>
+   <td style="text-align:right;"> 0.965 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FE.ind </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.242 </td>
+   <td style="text-align:right;"> 0.473 </td>
+   <td style="text-align:right;"> 0.587 </td>
+   <td style="text-align:right;"> 0.590 </td>
+   <td style="text-align:right;"> 0.160 </td>
+   <td style="text-align:right;"> 0.706 </td>
+   <td style="text-align:right;"> 0.949 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FE.ind </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.270 </td>
+   <td style="text-align:right;"> 0.625 </td>
+   <td style="text-align:right;"> 0.733 </td>
+   <td style="text-align:right;"> 0.700 </td>
+   <td style="text-align:right;"> 0.156 </td>
+   <td style="text-align:right;"> 0.817 </td>
+   <td style="text-align:right;"> 0.945 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc5a6anos.perc </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.133 </td>
+   <td style="text-align:right;"> 0.633 </td>
+   <td style="text-align:right;"> 0.787 </td>
+   <td style="text-align:right;"> 0.761 </td>
+   <td style="text-align:right;"> 0.177 </td>
+   <td style="text-align:right;"> 0.921 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc5a6anos.perc </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.121 </td>
+   <td style="text-align:right;"> 0.519 </td>
+   <td style="text-align:right;"> 0.675 </td>
+   <td style="text-align:right;"> 0.653 </td>
+   <td style="text-align:right;"> 0.194 </td>
+   <td style="text-align:right;"> 0.813 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc5a6anos.perc </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.474 </td>
+   <td style="text-align:right;"> 0.733 </td>
+   <td style="text-align:right;"> 0.880 </td>
+   <td style="text-align:right;"> 0.841 </td>
+   <td style="text-align:right;"> 0.139 </td>
+   <td style="text-align:right;"> 0.952 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F11a13.perc </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.398 </td>
+   <td style="text-align:right;"> 0.717 </td>
+   <td style="text-align:right;"> 0.837 </td>
+   <td style="text-align:right;"> 0.800 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;"> 0.881 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F11a13.perc </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.418 </td>
+   <td style="text-align:right;"> 0.762 </td>
+   <td style="text-align:right;"> 0.843 </td>
+   <td style="text-align:right;"> 0.809 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;"> 0.897 </td>
+   <td style="text-align:right;"> 0.992 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F11a13.perc </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.437 </td>
+   <td style="text-align:right;"> 0.777 </td>
+   <td style="text-align:right;"> 0.872 </td>
+   <td style="text-align:right;"> 0.835 </td>
+   <td style="text-align:right;"> 0.128 </td>
+   <td style="text-align:right;"> 0.939 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC15a17.perc </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.182 </td>
+   <td style="text-align:right;"> 0.501 </td>
+   <td style="text-align:right;"> 0.599 </td>
+   <td style="text-align:right;"> 0.602 </td>
+   <td style="text-align:right;"> 0.142 </td>
+   <td style="text-align:right;"> 0.709 </td>
+   <td style="text-align:right;"> 0.965 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC15a17.perc </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.166 </td>
+   <td style="text-align:right;"> 0.411 </td>
+   <td style="text-align:right;"> 0.533 </td>
+   <td style="text-align:right;"> 0.539 </td>
+   <td style="text-align:right;"> 0.182 </td>
+   <td style="text-align:right;"> 0.670 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC15a17.perc </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.108 </td>
+   <td style="text-align:right;"> 0.504 </td>
+   <td style="text-align:right;"> 0.641 </td>
+   <td style="text-align:right;"> 0.621 </td>
+   <td style="text-align:right;"> 0.183 </td>
+   <td style="text-align:right;"> 0.752 </td>
+   <td style="text-align:right;"> 0.973 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> MC18a20.perc </td>
+   <td style="text-align:left;"> PR </td>
+   <td style="text-align:right;"> 0.030 </td>
+   <td style="text-align:right;"> 0.222 </td>
+   <td style="text-align:right;"> 0.367 </td>
+   <td style="text-align:right;"> 0.377 </td>
+   <td style="text-align:right;"> 0.194 </td>
+   <td style="text-align:right;"> 0.500 </td>
+   <td style="text-align:right;"> 0.905 </td>
+   <td style="text-align:right;"> 658 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> MC18a20.perc </td>
+   <td style="text-align:left;"> RS </td>
+   <td style="text-align:right;"> 0.030 </td>
+   <td style="text-align:right;"> 0.186 </td>
+   <td style="text-align:right;"> 0.313 </td>
+   <td style="text-align:right;"> 0.357 </td>
+   <td style="text-align:right;"> 0.209 </td>
+   <td style="text-align:right;"> 0.487 </td>
+   <td style="text-align:right;"> 0.942 </td>
+   <td style="text-align:right;"> 1411 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> MC18a20.perc </td>
+   <td style="text-align:left;"> SC </td>
+   <td style="text-align:right;"> 0.061 </td>
+   <td style="text-align:right;"> 0.298 </td>
+   <td style="text-align:right;"> 0.500 </td>
+   <td style="text-align:right;"> 0.503 </td>
+   <td style="text-align:right;"> 0.224 </td>
+   <td style="text-align:right;"> 0.670 </td>
+   <td style="text-align:right;"> 0.927 </td>
+   <td style="text-align:right;"> 517 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="por-ano" class="level3">
+<h3 class="anchored" data-anchor-id="por-ano">Por Ano</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variable </th>
+   <th style="text-align:left;"> Ano </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o Quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> Média </th>
+   <th style="text-align:right;"> Desvio Padrão </th>
+   <th style="text-align:right;"> 3o Quartil </th>
+   <th style="text-align:right;"> Maximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> RDpCmeioSM.perc </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> 0.153 </td>
+   <td style="text-align:right;"> 0.276 </td>
+   <td style="text-align:right;"> 0.299 </td>
+   <td style="text-align:right;"> 0.181 </td>
+   <td style="text-align:right;"> 0.436 </td>
+   <td style="text-align:right;"> 0.900 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> RDpCmeioSM.perc </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> 0.064 </td>
+   <td style="text-align:right;"> 0.130 </td>
+   <td style="text-align:right;"> 0.173 </td>
+   <td style="text-align:right;"> 0.157 </td>
+   <td style="text-align:right;"> 0.246 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> deso.taxa </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.023 </td>
+   <td style="text-align:right;"> 0.110 </td>
+   <td style="text-align:right;"> 0.132 </td>
+   <td style="text-align:right;"> 0.136 </td>
+   <td style="text-align:right;"> 0.037 </td>
+   <td style="text-align:right;"> 0.165 </td>
+   <td style="text-align:right;"> 0.233 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> deso.taxa </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.011 </td>
+   <td style="text-align:right;"> 0.039 </td>
+   <td style="text-align:right;"> 0.049 </td>
+   <td style="text-align:right;"> 0.053 </td>
+   <td style="text-align:right;"> 0.045 </td>
+   <td style="text-align:right;"> 0.064 </td>
+   <td style="text-align:right;"> 0.980 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc.ind </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.078 </td>
+   <td style="text-align:right;"> 0.305 </td>
+   <td style="text-align:right;"> 0.434 </td>
+   <td style="text-align:right;"> 0.471 </td>
+   <td style="text-align:right;"> 0.195 </td>
+   <td style="text-align:right;"> 0.618 </td>
+   <td style="text-align:right;"> 0.918 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc.ind </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.212 </td>
+   <td style="text-align:right;"> 0.475 </td>
+   <td style="text-align:right;"> 0.613 </td>
+   <td style="text-align:right;"> 0.625 </td>
+   <td style="text-align:right;"> 0.175 </td>
+   <td style="text-align:right;"> 0.787 </td>
+   <td style="text-align:right;"> 0.960 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC18.perc </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.078 </td>
+   <td style="text-align:right;"> 0.305 </td>
+   <td style="text-align:right;"> 0.434 </td>
+   <td style="text-align:right;"> 0.471 </td>
+   <td style="text-align:right;"> 0.196 </td>
+   <td style="text-align:right;"> 0.618 </td>
+   <td style="text-align:right;"> 0.918 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC18.perc </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.212 </td>
+   <td style="text-align:right;"> 0.475 </td>
+   <td style="text-align:right;"> 0.613 </td>
+   <td style="text-align:right;"> 0.625 </td>
+   <td style="text-align:right;"> 0.175 </td>
+   <td style="text-align:right;"> 0.786 </td>
+   <td style="text-align:right;"> 0.960 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FE.ind </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.220 </td>
+   <td style="text-align:right;"> 0.421 </td>
+   <td style="text-align:right;"> 0.528 </td>
+   <td style="text-align:right;"> 0.546 </td>
+   <td style="text-align:right;"> 0.159 </td>
+   <td style="text-align:right;"> 0.645 </td>
+   <td style="text-align:right;"> 0.948 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FE.ind </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.454 </td>
+   <td style="text-align:right;"> 0.603 </td>
+   <td style="text-align:right;"> 0.698 </td>
+   <td style="text-align:right;"> 0.698 </td>
+   <td style="text-align:right;"> 0.122 </td>
+   <td style="text-align:right;"> 0.791 </td>
+   <td style="text-align:right;"> 0.965 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc5a6anos.perc </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.121 </td>
+   <td style="text-align:right;"> 0.474 </td>
+   <td style="text-align:right;"> 0.616 </td>
+   <td style="text-align:right;"> 0.613 </td>
+   <td style="text-align:right;"> 0.187 </td>
+   <td style="text-align:right;"> 0.746 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> esc5a6anos.perc </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.405 </td>
+   <td style="text-align:right;"> 0.720 </td>
+   <td style="text-align:right;"> 0.849 </td>
+   <td style="text-align:right;"> 0.820 </td>
+   <td style="text-align:right;"> 0.142 </td>
+   <td style="text-align:right;"> 0.940 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F11a13.perc </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.398 </td>
+   <td style="text-align:right;"> 0.646 </td>
+   <td style="text-align:right;"> 0.750 </td>
+   <td style="text-align:right;"> 0.734 </td>
+   <td style="text-align:right;"> 0.120 </td>
+   <td style="text-align:right;"> 0.822 </td>
+   <td style="text-align:right;"> 0.987 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> F11a13.perc </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.712 </td>
+   <td style="text-align:right;"> 0.853 </td>
+   <td style="text-align:right;"> 0.887 </td>
+   <td style="text-align:right;"> 0.887 </td>
+   <td style="text-align:right;"> 0.054 </td>
+   <td style="text-align:right;"> 0.926 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC15a17.perc </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.108 </td>
+   <td style="text-align:right;"> 0.384 </td>
+   <td style="text-align:right;"> 0.513 </td>
+   <td style="text-align:right;"> 0.517 </td>
+   <td style="text-align:right;"> 0.181 </td>
+   <td style="text-align:right;"> 0.636 </td>
+   <td style="text-align:right;"> 0.976 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC15a17.perc </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.266 </td>
+   <td style="text-align:right;"> 0.507 </td>
+   <td style="text-align:right;"> 0.615 </td>
+   <td style="text-align:right;"> 0.623 </td>
+   <td style="text-align:right;"> 0.156 </td>
+   <td style="text-align:right;"> 0.742 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> MC18a20.perc </td>
+   <td style="text-align:left;"> 2000 </td>
+   <td style="text-align:right;"> 0.030 </td>
+   <td style="text-align:right;"> 0.168 </td>
+   <td style="text-align:right;"> 0.268 </td>
+   <td style="text-align:right;"> 0.318 </td>
+   <td style="text-align:right;"> 0.201 </td>
+   <td style="text-align:right;"> 0.450 </td>
+   <td style="text-align:right;"> 0.896 </td>
+   <td style="text-align:right;"> 1272 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> MC18a20.perc </td>
+   <td style="text-align:left;"> 2010 </td>
+   <td style="text-align:right;"> 0.062 </td>
+   <td style="text-align:right;"> 0.293 </td>
+   <td style="text-align:right;"> 0.431 </td>
+   <td style="text-align:right;"> 0.462 </td>
+   <td style="text-align:right;"> 0.207 </td>
+   <td style="text-align:right;"> 0.610 </td>
+   <td style="text-align:right;"> 0.942 </td>
+   <td style="text-align:right;"> 1314 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+</section>
+<section id="variáveis-qualitativas" class="level2">
+<h2 class="anchored" data-anchor-id="variáveis-qualitativas">Variáveis qualitativas</h2>
+<hr>
+<section id="uf" class="level3">
+<h3 class="anchored" data-anchor-id="uf">UF</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> PR </th>
+   <th style="text-align:right;"> RS </th>
+   <th style="text-align:right;"> SC </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> n </td>
+   <td style="text-align:right;"> 658.000 </td>
+   <td style="text-align:right;"> 1411.000 </td>
+   <td style="text-align:right;"> 517.0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Percentual </td>
+   <td style="text-align:right;"> 0.254 </td>
+   <td style="text-align:right;"> 0.546 </td>
+   <td style="text-align:right;"> 0.2 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="ano" class="level3">
+<h3 class="anchored" data-anchor-id="ano">Ano</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> 2000 </th>
+   <th style="text-align:right;"> 2010 </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> n </td>
+   <td style="text-align:right;"> 1272.000 </td>
+   <td style="text-align:right;"> 1314.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Percentual </td>
+   <td style="text-align:right;"> 0.492 </td>
+   <td style="text-align:right;"> 0.508 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="modelagem" class="level1">
+<h1>Modelagem</h1>
+<hr>
+<blockquote class="blockquote">
+<p>Tentando entender o Subíndice de escolaridade - IDHM Educação (<code>esc.ind</code>) em termos das demais variáveis.</p>
+</blockquote>
+<section id="relações-e-correlações" class="level2">
+<h2 class="anchored" data-anchor-id="relações-e-correlações">Relações e correlações</h2>
+<hr>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analise_files/figure-html/pairs-panels-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Podemos chamar a figura acima de matriz. Na diagonal principal temos o histograma de cada variável, indicando a forma como sua massa de probabilidade se distribui. Abaixo da diagonal temos a dispersão entre todas as variáveis, uma <em>versus</em> outra. Acima da diagonal temos o correspondente coeficiente de correlação linear de <em>Pearson</em> <span class="citation" data-cites="beckeretal">(<a href="#ref-beckeretal" role="doc-biblioref">Becker, Chambers, and Wilks 1988</a>)</span>. A quantidade de asteriscos ao lado da correlação indica o nível de significância associado ao seu correspondente teste de hipótese.</p>
+<ul>
+<li>Zero asterisco indica valor-<em>p</em> &gt; 0.05;</li>
+<li>Um asterisco indica 0.01 &lt; valor-<em>p</em> &lt; 0.05;</li>
+<li>Dois asteriscos indica 0.001 &lt; valor-<em>p</em> &lt; 0.01;</li>
+<li>Três asteriscos indica valor-<em>p</em> &lt; 0.001.</li>
+</ul>
+</blockquote>
+<blockquote class="blockquote">
+<p>Podemos ver várias coisas a partir dessa matriz, mas provavelmente a que seja mais interessante pontuar agora é:</p>
+<ul>
+<li>Todas as variáveis educacionais são fortemente e positivamente correlacionadas. A correlação mais fraca é de 0.69 (um valor alto e forte) e a mais forte é de 1, correlação perfeita.</li>
+</ul>
+<p>A conclusão a partir dessa observação é a redundância em termos no modelo a variável <code>FC18.perc</code>, perfeitamente correlacionada com a resposta <code>esc.ind</code>. Dado que as demais variáveis educacionais também são fortemente correlacionadas, uma abordagem que pode ser seguida é a criação de um indicador que as representa. Essas são medidas para contornar o problema da multicolinearidade (forte correlação entre variáveis) que pode prejudicar o processo de ajuste de modelos.</p>
+</blockquote>
+</section>
+<section id="modelo-linear-gaussiano" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-linear-gaussiano">Modelo linear Gaussiano</h2>
+<hr>
+<blockquote class="blockquote">
+<p>Por mais que a nossa resposta seja limitada ao intervalo [0, 1], nada nos impede de assumir distribuição Normal. O que devemos nos atentar é na verificação dos pressupostos para assim obter um ajuste de qualidade. A principal vantagem em assumir distribuição Normal <span class="citation" data-cites="chambers wilkinson&amp;rogers">(<a href="#ref-chambers" role="doc-biblioref">Chambers 1992</a> Linear models, Chapter 4; <a href="#ref-wilkinson&amp;rogers" role="doc-biblioref">Wilkinson and Rogers 1973</a>)</span> é a direta interpretação dos coeficientes estimados.</p>
+<p>Começamos com todas as variáveis: <code>UF</code>, <code>Ano</code>, <code>RDpCmeioSM.perc</code>, <code>deso.taxa</code>, <code>FE.ind</code>, <code>esc5a6anos.perc</code>, <code>F11a13.perc</code>, <code>FC15a17.perc</code> e <code>MC18a20.perc</code>.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(esc.ind<span class="sc">~</span>.<span class="sc">-</span>FC18.perc, dat);<span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = esc.ind ~ . - FC18.perc, data = dat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.36477 -0.03827  0.00597  0.04470  0.20348 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       0.175920   0.018291   9.618  &lt; 2e-16 ***
+UFRS              0.047586   0.003435  13.855  &lt; 2e-16 ***
+UFSC              0.048252   0.004187  11.524  &lt; 2e-16 ***
+Ano2010           0.031232   0.004182   7.469 1.10e-13 ***
+RDpCmeioSM.perc  -0.138034   0.011032 -12.513  &lt; 2e-16 ***
+deso.taxa         0.110163   0.033967   3.243   0.0012 ** 
+FE.ind          -18.155336   4.332814  -4.190 2.88e-05 ***
+esc5a6anos.perc   4.606635   1.082946   4.254 2.18e-05 ***
+F11a13.perc       4.492902   1.084628   4.142 3.55e-05 ***
+FC15a17.perc      4.684357   1.082992   4.325 1.58e-05 ***
+MC18a20.perc      5.177068   1.083276   4.779 1.86e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06418 on 2575 degrees of freedom
+Multiple R-squared:  0.8978,    Adjusted R-squared:  0.8974 
+F-statistic:  2263 on 10 and 2575 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Vemos que tudo é altamente significativo.</p>
+<p>Apenas para descargo de consciência, performamos uma processo <em>stepwise</em> de seleção de variáveis basedo no Critério de Informação de <em>Akaike</em> (AIC, em inglês) <span class="citation" data-cites="venables&amp;ripley">(<a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>. Como podemos ver abaixo, todas as variáveis se mantém.</p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>mod <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(mod, <span class="at">trace=</span><span class="cn">FALSE</span>);<span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = esc.ind ~ (UF + Ano + RDpCmeioSM.perc + deso.taxa + 
+    FC18.perc + FE.ind + esc5a6anos.perc + F11a13.perc + FC15a17.perc + 
+    MC18a20.perc) - FC18.perc, data = dat)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.36477 -0.03827  0.00597  0.04470  0.20348 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       0.175920   0.018291   9.618  &lt; 2e-16 ***
+UFRS              0.047586   0.003435  13.855  &lt; 2e-16 ***
+UFSC              0.048252   0.004187  11.524  &lt; 2e-16 ***
+Ano2010           0.031232   0.004182   7.469 1.10e-13 ***
+RDpCmeioSM.perc  -0.138034   0.011032 -12.513  &lt; 2e-16 ***
+deso.taxa         0.110163   0.033967   3.243   0.0012 ** 
+FE.ind          -18.155336   4.332814  -4.190 2.88e-05 ***
+esc5a6anos.perc   4.606635   1.082946   4.254 2.18e-05 ***
+F11a13.perc       4.492902   1.084628   4.142 3.55e-05 ***
+FC15a17.perc      4.684357   1.082992   4.325 1.58e-05 ***
+MC18a20.perc      5.177068   1.083276   4.779 1.86e-06 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06418 on 2575 degrees of freedom
+Multiple R-squared:  0.8978,    Adjusted R-squared:  0.8974 
+F-statistic:  2263 on 10 and 2575 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>));<span class="fu">plot</span>(mod);<span class="fu">layout</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analise_files/figure-html/lm-overall-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Nos gráficos acima verificamos visualmente a qualidade do modelo ajustado. No gráfico superior-esquerdo vemos uma fulga da normalidade na calda inferior, e nos demais gráficos vemos um padrão: três observações discrepantes.</p>
+<p>Essas três observações discrepantes são apresentadas a seguir.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">as.data.frame</span>(dat[<span class="fu">c</span>(<span class="dv">2201</span>, <span class="dv">2203</span>, <span class="dv">2585</span>), ])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  UF  Ano RDpCmeioSM.perc deso.taxa esc.ind FC18.perc FE.ind esc5a6anos.perc
+1 RS 2010          0.2486      0.98   0.267    0.2669  0.621          0.5700
+2 RS 2010          0.2486      0.98   0.267    0.2669  0.621          0.5700
+3 SC 2010          0.0856      0.81   0.418    0.4182  0.752          0.9474
+  F11a13.perc FC15a17.perc MC18a20.perc
+1      0.9219       0.6419       0.3483
+2      0.9219       0.6419       0.3483
+3      0.8716       0.7336       0.4544</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A variável em que elas se destacam é <code>deso.taxa</code>. O quantil 99 dessa variável é 0.2111%. Ou seja, as três apresentam valores extremamente discrepantes das demais. Sendo assim, removemos essas três linhas da base de dados e reajustamos o modelo.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>dat2 <span class="ot">&lt;-</span> dat[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2201</span>, <span class="dv">2203</span>, <span class="dv">2585</span>), ]</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a>mod <span class="ot">&lt;-</span> <span class="fu">update</span>(mod, <span class="at">data=</span>dat2)</span>
+<span id="cb8-4"><a href="#cb8-4"></a></span>
+<span id="cb8-5"><a href="#cb8-5"></a>mod <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(mod, <span class="at">trace=</span><span class="cn">FALSE</span>);<span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = esc.ind ~ (UF + Ano + RDpCmeioSM.perc + deso.taxa + 
+    FC18.perc + FE.ind + esc5a6anos.perc + F11a13.perc + FC15a17.perc + 
+    MC18a20.perc) - FC18.perc, data = dat2)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.285037 -0.038851  0.001595  0.039581  0.216965 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       0.011463   0.019966   0.574 0.565937    
+UFRS              0.046438   0.003264  14.227  &lt; 2e-16 ***
+UFSC              0.052492   0.003988  13.163  &lt; 2e-16 ***
+Ano2010           0.075737   0.004781  15.843  &lt; 2e-16 ***
+RDpCmeioSM.perc  -0.146441   0.010494 -13.955  &lt; 2e-16 ***
+deso.taxa         0.824325   0.053496  15.409  &lt; 2e-16 ***
+FE.ind          -12.334771   4.131698  -2.985 0.002859 ** 
+esc5a6anos.perc   3.181667   1.032534   3.081 0.002082 ** 
+F11a13.perc       3.096129   1.033980   2.994 0.002776 ** 
+FC15a17.perc      3.255814   1.032594   3.153 0.001634 ** 
+MC18a20.perc      3.705394   1.033075   3.587 0.000341 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06098 on 2572 degrees of freedom
+Multiple R-squared:  0.9077,    Adjusted R-squared:  0.9074 
+F-statistic:  2530 on 10 and 2572 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Ainda assim todas as variáveis são significativas. Abaixo vemos que a qualidade do ajuste melhorou bastante, mas que ainda temos algumas observações discrepantes (não como antes, mas ainda discrepantes).</p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>));<span class="fu">plot</span>(mod);<span class="fu">layout</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analise_files/figure-html/lm-overall-update-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>as três novas observações discrepantes são apresentadas abaixo.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">as.data.frame</span>(dat2[<span class="fu">c</span>(<span class="dv">1551</span>, <span class="dv">2322</span>, <span class="dv">2583</span>), ])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  UF  Ano RDpCmeioSM.perc deso.taxa esc.ind FC18.perc FE.ind esc5a6anos.perc
+1 PR 2010          0.4099    0.0432   0.376    0.3758  0.763          0.8283
+2 SC 2010          0.0710    0.0122   0.405    0.4049  0.757          0.8851
+3 SC 2010          0.0672    0.0131   0.390    0.3902  0.756          0.8696
+  F11a13.perc FC15a17.perc MC18a20.perc
+1      0.9483       0.7348       0.5410
+2      0.9345       0.6750       0.5315
+3      0.9161       0.7320       0.5055</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Também as retiramos da base de dados e reajustamos o modelo.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>dat3 <span class="ot">&lt;-</span> dat2[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1551</span>, <span class="dv">2322</span>, <span class="dv">2583</span>), ]</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a>mod <span class="ot">&lt;-</span> <span class="fu">update</span>(mod, <span class="at">data=</span>dat3)</span>
+<span id="cb13-4"><a href="#cb13-4"></a></span>
+<span id="cb13-5"><a href="#cb13-5"></a>mod <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(mod, <span class="at">trace=</span><span class="cn">FALSE</span>);<span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = esc.ind ~ (UF + Ano + RDpCmeioSM.perc + deso.taxa + 
+    FC18.perc + FE.ind + esc5a6anos.perc + F11a13.perc + FC15a17.perc + 
+    MC18a20.perc) - FC18.perc, data = dat3)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.205767 -0.038186  0.001659  0.039990  0.215759 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)       0.011353   0.019757   0.575 0.565595    
+UFRS              0.046070   0.003230  14.262  &lt; 2e-16 ***
+UFSC              0.053606   0.003951  13.569  &lt; 2e-16 ***
+Ano2010           0.075765   0.004729  16.022  &lt; 2e-16 ***
+RDpCmeioSM.perc  -0.144569   0.010391 -13.913  &lt; 2e-16 ***
+deso.taxa         0.812981   0.052941  15.356  &lt; 2e-16 ***
+FE.ind          -11.820102   4.088769  -2.891 0.003874 ** 
+esc5a6anos.perc   3.050252   1.021813   2.985 0.002861 ** 
+F11a13.perc       2.969393   1.023241   2.902 0.003740 ** 
+FC15a17.perc      3.130758   1.021859   3.064 0.002208 ** 
+MC18a20.perc      3.575016   1.022347   3.497 0.000479 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06032 on 2569 degrees of freedom
+Multiple R-squared:  0.9097,    Adjusted R-squared:  0.9094 
+F-statistic:  2589 on 10 and 2569 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Abaixo vemos como a qualidade do ajuste do modelo melhorou com a retirada destes três pontos (seis no total). Todas as variáveis são significativas.</p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>));<span class="fu">plot</span>(mod);<span class="fu">layout</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analise_files/figure-html/lm-overall-update2-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="modelo-linar-com-pca" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-linar-com-pca">Modelo linar com PCA</h2>
+<hr>
+<blockquote class="blockquote">
+<p>Dado que temos várias variáveis educacionais super correlacionadas, é interessante tentar as resumir num único indicador. Para tal tarefa fazemos uso da Análise de Componentes Principais (PCA, em inglês) <span class="citation" data-cites="beckeretal mardiaetal venables&amp;ripley">(<a href="#ref-beckeretal" role="doc-biblioref">Becker, Chambers, and Wilks 1988</a>; <a href="#ref-mardiaetal" role="doc-biblioref">Mardia, Kent, and Bibby 1979</a>; <a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>.</p>
+<p>Utilizamos cinco variáveis: <code>FE.ind</code>, <code>esc5a6anos.perc</code>, <code>F11a13.perc</code>, <code>FC15a17.perc</code> e <code>MC18a20.perc</code>.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>dat.pca <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(dat3<span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>                  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(UF,</span>
+<span id="cb16-3"><a href="#cb16-3"></a>                                   Ano,</span>
+<span id="cb16-4"><a href="#cb16-4"></a>                                   RDpCmeioSM.perc,</span>
+<span id="cb16-5"><a href="#cb16-5"></a>                                   deso.taxa,</span>
+<span id="cb16-6"><a href="#cb16-6"></a>                                   esc.ind,</span>
+<span id="cb16-7"><a href="#cb16-7"></a>                                   FC18.perc)))</span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="fu">summary</span>(dat.pca)<span class="sc">$</span>importance[<span class="sc">-</span><span class="dv">1</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                          PC1     PC2     PC3     PC4 PC5
+Proportion of Variance 0.8628 0.07748 0.03545 0.02426   0
+Cumulative Proportion  0.8628 0.94029 0.97574 1.00000   1</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A ideia embutida no PCA é que agora temos cinco variáveis independentes, cada uma agregando uma <em>coisa</em> única na explicação de toda a variabilidade gerada pelas cinco variáveis educacionais.</p>
+<p>Utilizando apenas o 1o Componente Principal (<code>PC1</code>) explicamos 86% de toda essa variabilidade. Assim, o <code>PC1</code> se mostra como um bom indicador.</p>
+<p>Por definição, os PCs variam de 0 até 1. Aqui, todas as variáveis numéricas estão no intervalo (0, 1). Portanto, <em>normalizamos</em> o <code>PC1</code> para ficar também em tal intervalo.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>dat3 <span class="ot">&lt;-</span> dat3<span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">PC1=</span>dat.pca<span class="sc">$</span>x[, <span class="st">'PC1'</span>],</span>
+<span id="cb18-3"><a href="#cb18-3"></a>                  <span class="at">PC1=</span>(PC1<span class="sc">-</span><span class="fu">min</span>(PC1))<span class="sc">/</span>(<span class="fu">max</span>(PC1)<span class="sc">-</span><span class="fu">min</span>(PC1)))</span>
+<span id="cb18-4"><a href="#cb18-4"></a></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="fu">summary</span>(dat3<span class="sc">$</span>PC1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.3598  0.5253  0.5241  0.6984  1.0000 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Agora ajustamos o modelo com <code>PC1</code> como covariável no lugar das cinco variáveis educacionais. Fazemos isso no banco de dados sem as seis observações discrepantes encontradas na seção anterior.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>f.pca <span class="ot">&lt;-</span> esc.ind <span class="sc">~</span> UF <span class="sc">+</span> Ano <span class="sc">+</span> RDpCmeioSM.perc <span class="sc">+</span> deso.taxa <span class="sc">+</span> PC1</span>
+<span id="cb20-2"><a href="#cb20-2"></a></span>
+<span id="cb20-3"><a href="#cb20-3"></a>mod.pca <span class="ot">&lt;-</span> <span class="fu">lm</span>(f.pca, dat3)</span>
+<span id="cb20-4"><a href="#cb20-4"></a></span>
+<span id="cb20-5"><a href="#cb20-5"></a>mod.pca <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">stepAIC</span>(mod.pca, <span class="at">trace=</span><span class="cn">FALSE</span>);<span class="fu">summary</span>(mod.pca)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = esc.ind ~ UF + Ano + RDpCmeioSM.perc + deso.taxa + 
+    PC1, data = dat3)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.246603 -0.040018  0.004499  0.044310  0.232301 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)     -0.081721   0.011718  -6.974 3.91e-12 ***
+UFRS             0.068131   0.003294  20.685  &lt; 2e-16 ***
+UFSC             0.070347   0.004110  17.118  &lt; 2e-16 ***
+Ano2010          0.062365   0.005004  12.464  &lt; 2e-16 ***
+RDpCmeioSM.perc -0.096129   0.011320  -8.492  &lt; 2e-16 ***
+deso.taxa        1.146768   0.057503  19.943  &lt; 2e-16 ***
+PC1              0.887041   0.010370  85.538  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.06793 on 2573 degrees of freedom
+Multiple R-squared:  0.8854,    Adjusted R-squared:  0.8851 
+F-statistic:  3312 on 6 and 2573 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Todas as variáveis são significativas e a adequação do modelo é satisfatória.</p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>));<span class="fu">plot</span>(mod.pca);<span class="fu">layout</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analise_files/figure-html/lm-pca-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="modelo-linear-beta" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-linear-beta">Modelo linear Beta</h2>
+<hr>
+<blockquote class="blockquote">
+<p>Dado que a variável resposta <code>esc.ind</code> está contida no intervalo (0, 1), temos uma outra opção de distribuição de probabilidade e consequentemente, de modelo de regressão. Podemos ajustar um modelo linear generalzado com resposta Beta, i.e.&nbsp;com distribuição Beta para a resposta e função de ligação logit para a média. Uma regressão linear Beta <span class="citation" data-cites="betareg ferrari&amp;cribari">(<a href="#ref-betareg" role="doc-biblioref">Cribari-Neto and Zeileis 2010</a>; <a href="#ref-ferrari&amp;cribari" role="doc-biblioref">Ferrari and Cribari-Neto 2004</a>)</span>.</p>
+<p>Além do fato de estarmos utilizando uma distribuição com domínio adequado a estrutura do nosso dado, uma outra característica e vantagem dessa abordagem é a possibilidade de interpretarmos os coeficientes em termos de razão de chance (<em>odds ratio</em>), já que consideramos um <em>link</em> logit para a estrutura de média.</p>
+<p>Ajustamos o modelo com <code>PC1</code> como covariável e na base de dados sem as seis observações discrepantes.</p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>mod.bet <span class="ot">&lt;-</span> betareg<span class="sc">::</span><span class="fu">betareg</span>(f.pca, dat3)</span>
+<span id="cb23-2"><a href="#cb23-2"></a></span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>));<span class="fu">plot</span>(mod.bet);<span class="fu">layout</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="analise_files/figure-html/betareg-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Vemos acima a adequação do modelo. Os resíduos não estão com comportamento ótima, mas satisfatório. Abaixo vemos os coeficientes estimados.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">summary</span>(mod.bet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+betareg::betareg(formula = f.pca, data = dat3)
+
+Standardized weighted residuals 2:
+    Min      1Q  Median      3Q     Max 
+-3.3975 -0.6233  0.0856  0.6943  3.8720 
+
+Coefficients (mean model with logit link):
+                Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)     -2.92525    0.06016 -48.629   &lt;2e-16 ***
+UFRS             0.33495    0.01562  21.443   &lt;2e-16 ***
+UFSC             0.35985    0.01990  18.082   &lt;2e-16 ***
+Ano2010          0.30905    0.02436  12.686   &lt;2e-16 ***
+RDpCmeioSM.perc -0.11718    0.06285  -1.864   0.0623 .  
+deso.taxa        5.66633    0.27853  20.344   &lt;2e-16 ***
+PC1              4.30549    0.05667  75.980   &lt;2e-16 ***
+
+Phi coefficients (precision model with identity link):
+      Estimate Std. Error z value Pr(&gt;|z|)    
+(phi)   44.085      1.216   36.25   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
+
+Type of estimator: ML (maximum likelihood)
+Log-likelihood:  3314 on 8 Df
+Pseudo R-squared: 0.8748
+Number of iterations: 14 (BFGS) + 2 (Fisher scoring) </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Todas as variáveis são significativas, mas <code>RDpCmeioSM.perc</code> não é mais tão significativa quanto nas regressões normais.</p>
+</blockquote>
+</section>
+</section>
+<section id="discussão" class="level1">
+<h1>Discussão</h1>
+<hr>
+<blockquote class="blockquote">
+<p>Apresentamos três modelos:</p>
+<ul>
+<li>Duas regressões lineares Normais, uma com cinco variáveis educacionais no preditor linear e outra com o <code>PC1</code> oriundo do PCA destas mesmas cinco variáveis;</li>
+<li>Uma regressão Beta, também um modelo linear.</li>
+</ul>
+<p>Em todos os três modelos, todas as variáveis apresentaram significância estatística. Uma maneira de escolher um entre eles como o melhor/mais adequado é através do critério de máxima verossimilhança, i.e.&nbsp;qual modelo apresenta maior (log-) verossimilhança.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Modelo   logLik df
+1       Regressão Linear 3589.444 12
+2 Regressão Linear (PCA) 3280.945  8
+3         Regressão Beta 3314.397  8</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A maior log-verossimilhança (<em>logLikelihood</em>) é obtida com o primeiro modelo, mas isso é algo esperado já que se trata do modelo com mais variáveis (12 graus de liberdade sendo utilizados) - quanto mais variáveis maior será a verossimilhança, independente do fato das variáveis serem ou não significativas. Contudo, a diferença em verossimilhança para os demais modelos é pequena, dado que utlizamos 4 graus de liberdade a menos.</p>
+<p>Quando utilizamos o <code>PC1</code> no lugar das cinco variáveis educacionais a verossimilhança decai apenas 0.09%. Contudo, simplificamos o modelo em 1/3. Ou seja, perdemos apenas 0.09 em verossimilhança reduzindo o modelo em 0.33%. Uma troca super vantajosa.</p>
+<p>Quando utlizamos o <code>PC1</code> no modelo Beta, a perda em verossimilhança comparado ao maior modelo é de apenas 0.08%. Ou seja, muito similar (levemento melhor) ao modelo Normal. Com o modelo também temos uma simplicação de 0.33%.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Em termos da praticidade podemos escolher o modelo Normal com PCA como o melhor. Todavia, o modelo Beta também é muito interessante por nos proporcionar interpretações por um diferente ângulo.</p>
+<p>Abaixo mostramos novamente os coeficientes estimados pelo modelo Normal.</p>
+<ul>
+<li>A variável com maior efeito é a taxa de desocupação (<code>deso.taxa</code>);</li>
+<li>O estado com menor subíndice de escolaridade (<code>esc.ind</code>) estimado é o PR, já o estado com maior <code>esc.ind</code> estimado é o SC;</li>
+<li>No ano de 2010 se estima maiores <code>esc.ind</code> do que em 2000.</li>
+</ul>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+t test of coefficients:
+
+                  Estimate Std. Error t value  Pr(&gt;|t|)    
+(Intercept)     -0.0817214  0.0117183 -6.9738 3.907e-12 ***
+UFRS             0.0681314  0.0032937 20.6851 &lt; 2.2e-16 ***
+UFSC             0.0703470  0.0041096 17.1179 &lt; 2.2e-16 ***
+Ano2010          0.0623653  0.0050038 12.4637 &lt; 2.2e-16 ***
+RDpCmeioSM.perc -0.0961289  0.0113195 -8.4923 &lt; 2.2e-16 ***
+deso.taxa        1.1467680  0.0575026 19.9429 &lt; 2.2e-16 ***
+PC1              0.8870406  0.0103701 85.5379 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A equação do modelo é apresentada abaixo:</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<p><span class="math display">\[
+\begin{aligned}
+\operatorname{\widehat{esc.ind}} &amp;= -0.08 + 0.07(\operatorname{UF}_{\operatorname{RS}}) + 0.07(\operatorname{UF}_{\operatorname{SC}}) + 0.06(\operatorname{Ano}_{\operatorname{2010}})\\
+&amp;\quad - 0.1(\operatorname{RDpCmeioSM.perc}) + 1.15(\operatorname{deso.taxa}) + 0.89(\operatorname{PC1})
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Além de tudo isso, podemos capturar os efeitos marginais das variáveis categóricas. Abaixo mostramos os <code>esc.ind</code> estimados para cada nível das variáveis. Tais valores são baseados na média das variáveis numéricas. Como podemos observar, todos são significativos.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">summary</span>(marginaleffects<span class="sc">::</span><span class="fu">marginalmeans</span>(mod.pca))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimated marginal means 
+  Term Value   Mean Std. Error z value   Pr(&gt;|z|)  2.5 % 97.5 %
+1  Ano  2000 0.5131   0.002840   180.6 &lt; 2.22e-16 0.5075 0.5186
+2  Ano  2010 0.5754   0.002967   193.9 &lt; 2.22e-16 0.5696 0.5812
+3   UF    PR 0.4981   0.002686   185.4 &lt; 2.22e-16 0.4928 0.5033
+4   UF    RS 0.5662   0.001854   305.4 &lt; 2.22e-16 0.5626 0.5698
+5   UF    SC 0.5684   0.003111   182.7 &lt; 2.22e-16 0.5623 0.5745
+
+Model type:  lm 
+Prediction type:  response </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Mais especificamente, a diferença entre anos:</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(marginaleffects<span class="sc">::</span><span class="fu">comparisons</span>(mod.pca,</span>
+<span id="cb30-2"><a href="#cb30-2"></a>                                         <span class="at">variables=</span><span class="fu">list</span>(<span class="at">Ano=</span><span class="st">'all'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      type term    contrast   estimate  std.error statistic p.value   conf.low
+1 response  Ano 2010 - 2000 0.06236528 0.00500377  12.46366       0 0.05255807
+   conf.high
+1 0.07217249</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>E entre estados:</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(marginaleffects<span class="sc">::</span><span class="fu">comparisons</span>(mod.pca,</span>
+<span id="cb32-2"><a href="#cb32-2"></a>                                         <span class="at">variables=</span><span class="fu">list</span>(<span class="at">UF=</span><span class="st">'all'</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      type term contrast    estimate   std.error  statistic   p.value
+1 response   UF  RS - PR 0.068131399 0.003293745 20.6850840 0.0000000
+2 response   UF  SC - PR 0.070346978 0.004109563 17.1178752 0.0000000
+3 response   UF  SC - RS 0.002215579 0.003697638  0.5991877 0.5490477
+      conf.low   conf.high
+1  0.061675777 0.074587022
+2  0.062292384 0.078401573
+3 -0.005031658 0.009462817</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A única diferença não significativa é entre SC e RS.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Agora a regressão Beta:</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+z test of coefficients:
+
+                 Estimate Std. Error  z value Pr(&gt;|z|)    
+(Intercept)     -2.925253   0.060155 -48.6285  &lt; 2e-16 ***
+UFRS             0.334954   0.015621  21.4432  &lt; 2e-16 ***
+UFSC             0.359849   0.019901  18.0820  &lt; 2e-16 ***
+Ano2010          0.309052   0.024362  12.6857  &lt; 2e-16 ***
+RDpCmeioSM.perc -0.117178   0.062853  -1.8643  0.06228 .  
+deso.taxa        5.666327   0.278530  20.3437  &lt; 2e-16 ***
+PC1              4.305491   0.056666  75.9799  &lt; 2e-16 ***
+(phi)           44.084824   1.216051  36.2525  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>O parâmetro <code>phi</code> podemos ignorar, pois se trata do parâmetro de dispersão da distribuição Beta.</p>
+<p>Abaixo temos as razões de chance junto dos limites de um intervalo de 95% de confiança.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Odds ratio </th>
+   <th style="text-align:right;"> OR 2.5% CI </th>
+   <th style="text-align:right;"> OR 97.5% CI </th>
+   <th style="text-align:right;"> P-value </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (Intercept) </td>
+   <td style="text-align:right;"> 0.054 </td>
+   <td style="text-align:right;"> 0.048 </td>
+   <td style="text-align:right;"> 0.060 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> UFRS </td>
+   <td style="text-align:right;"> 1.398 </td>
+   <td style="text-align:right;"> 1.356 </td>
+   <td style="text-align:right;"> 1.441 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> UFSC </td>
+   <td style="text-align:right;"> 1.433 </td>
+   <td style="text-align:right;"> 1.378 </td>
+   <td style="text-align:right;"> 1.490 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Ano2010 </td>
+   <td style="text-align:right;"> 1.362 </td>
+   <td style="text-align:right;"> 1.299 </td>
+   <td style="text-align:right;"> 1.429 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> RDpCmeioSM.perc </td>
+   <td style="text-align:right;"> 0.889 </td>
+   <td style="text-align:right;"> 0.786 </td>
+   <td style="text-align:right;"> 1.006 </td>
+   <td style="text-align:right;"> 0.062 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> deso.taxa </td>
+   <td style="text-align:right;"> 288.971 </td>
+   <td style="text-align:right;"> 167.405 </td>
+   <td style="text-align:right;"> 498.815 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PC1 </td>
+   <td style="text-align:right;"> 74.106 </td>
+   <td style="text-align:right;"> 66.316 </td>
+   <td style="text-align:right;"> 82.810 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Como nossa resposta é uma probabilidade/um percentual, não uma classe, a interpretação da razão de chances não é automática como numa regressão logística. A lógica da interpretação é a seguinte:</p>
+<p>Considere um dado percentual, e.g.&nbsp;<span class="math inline">\(\hat{p} = 0.1\)</span>. Fazemos: <span class="math inline">\(\hat{p}/(1 - \hat{p}) = 1/9\)</span>.</p>
+<p>Esse valor será então multiplicado pela razão de chance de cada variável apresentada na tabela. Vamos chamar esse produto de <span class="math inline">\(p\)</span>.</p>
+<p>Se (considere que) <span class="math inline">\(q = p/(1 - p)\)</span> então <span class="math inline">\(\hat{p} = q/(1 + q)\)</span> é a nova probabilidade.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Para esse percentual de 0.1 fazemos a conta para todas as variáveis:</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>p <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a></span>
+<span id="cb35-3"><a href="#cb35-3"></a>q <span class="ot">&lt;-</span> p <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p) <span class="sc">*</span> out[<span class="sc">-</span><span class="dv">1</span>, <span class="st">'Odds ratio'</span>]</span>
+<span id="cb35-4"><a href="#cb35-4"></a></span>
+<span id="cb35-5"><a href="#cb35-5"></a><span class="fu">cbind</span>(newp <span class="ot">&lt;-</span> q <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> q))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      [,1]
+UFRS            0.13443867
+UFSC            0.13736203
+Ano2010         0.13145294
+RDpCmeioSM.perc 0.08993715
+deso.taxa       0.96979574
+PC1             0.89170404</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Ou seja, para um subíndice de escolaridade de 0.1 (no PR, ano 2000) e demais variáveis na média:</p>
+<ul>
+<li>Mudando para o estado RS o <code>esc.ind</code> muda para 0.13;</li>
+<li>Mudando para o estado SC o <code>esc.ind</code> muda para 0.14;</li>
+<li>Mudando para o ano 2010 o <code>esc.ind</code> muda para 0.13;</li>
+<li>Acrescentando um ponto percentual na <code>RDpCmeioSm.perc</code> o <code>esc.ind</code> muda para 0.09;</li>
+<li>Acrescentando um ponto percentual na <code>deso.taxa</code> o <code>esc.ind</code> muda para 0.97;</li>
+<li>Acrescentando um ponto percentual no <code>PC1</code> o <code>esc.ind</code> munda para 0.89.</li>
+</ul>
+<p>As drásticas mudanças nas últimas duas variáveis indicam o impacto do <code>PC1</code> no modelo. Mesmo resumindo as cinco variáveis educacionais num indicador, esse indicador super correlacionado com a resposta ( correlação de 0.92) ainda impacta na análise. Esse impacto provavelmente também afeta a variável <code>deso.taxa</code>.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Para não ficarmos num único exemplo, abaixo, para finalizar, fazemos com um percentual de <code>esc.ind</code> de 0.5 (no PR, ano 2000 e demais variáveis na média) e vemos as mudanças nos percentuais.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a>p <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb37-2"><a href="#cb37-2"></a></span>
+<span id="cb37-3"><a href="#cb37-3"></a>q <span class="ot">&lt;-</span> p <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p) <span class="sc">*</span> out[<span class="sc">-</span><span class="dv">1</span>, <span class="st">'Odds ratio'</span>]</span>
+<span id="cb37-4"><a href="#cb37-4"></a></span>
+<span id="cb37-5"><a href="#cb37-5"></a><span class="fu">cbind</span>(newp <span class="ot">&lt;-</span> q <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> q))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     [,1]
+UFRS            0.5829644
+UFSC            0.5890040
+Ano2010         0.5766538
+RDpCmeioSM.perc 0.4707390
+deso.taxa       0.9965514
+PC1             0.9866854</code></pre>
+</div>
+</div>
+</section>
+<section id="referências" class="level1">
+<h1>Referências</h1>
+<hr>
+<blockquote class="blockquote">
+<p>A anaĺise foi performada com a linguagem e ambiente para computação estatística R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span>. Os seguintes pacotes R foram utilizados: {dplyr} <span class="citation" data-cites="dplyr1.0.9">(<a href="#ref-dplyr1.0.9" role="doc-biblioref">Wickham et al. 2022</a>)</span>, {tidyr} <span class="citation" data-cites="tidyr1.2.0">(<a href="#ref-tidyr1.2.0" role="doc-biblioref">Wickham and Girlich 2022</a>)</span>, {rlang} <span class="citation" data-cites="rlang1.0.3">(<a href="#ref-rlang1.0.3" role="doc-biblioref">Henry and Wickham 2022</a>)</span> {purrr} <span class="citation" data-cites="purrr0.3.4">(<a href="#ref-purrr0.3.4" role="doc-biblioref">Henry and Wickham 2020</a>)</span>, {psych} <span class="citation" data-cites="psych2.2.3">(<a href="#ref-psych2.2.3" role="doc-biblioref">Revelle 2022</a>)</span>, {MASS} <span class="citation" data-cites="venables&amp;ripley">(<a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>, {betareg} <span class="citation" data-cites="betareg">(<a href="#ref-betareg" role="doc-biblioref">Cribari-Neto and Zeileis 2010</a>)</span>, {marginaleffects} <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span> e {broom} <span class="citation" data-cites="broom0.8.0">(<a href="#ref-broom0.8.0" role="doc-biblioref">Robinson, Hayes, and Couch 2022</a>)</span>.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-marginaleffects0.5.0" class="csl-entry" role="doc-biblioentry">
+Arel-Bundock, V. 2022. <em><span class="nocase">marginaleffects</span>: Marginal Effects, Marginal Means, Predictions, and Contrasts</em>. R package version 0.5.0. <a href="https://CRAN.R-project.org/package=marginaleffects">https://CRAN.R-project.org/package=marginaleffects</a>.
+</div>
+<div id="ref-beckeretal" class="csl-entry" role="doc-biblioentry">
+Becker, R. A., J. M. Chambers, and A. R. Wilks. 1988. <em>The New <span>S</span> Language</em>. Wadsworth &amp; Brooks/Cole.
+</div>
+<div id="ref-chambers" class="csl-entry" role="doc-biblioentry">
+Chambers, J. M. 1992. <em>Statistical Models in <span>S</span></em>. Wadsworth &amp; Brooks/Cole.
+</div>
+<div id="ref-betareg" class="csl-entry" role="doc-biblioentry">
+Cribari-Neto, F., and A. Zeileis. 2010. <span>“Beta Regression in <span>R</span>.”</span> <em>Journal of Statistical Software</em> 34 (2): 1–24. <a href="https://doi.org/10.18637/jss.v034.i02">https://doi.org/10.18637/jss.v034.i02</a>.
+</div>
+<div id="ref-ferrari&amp;cribari" class="csl-entry" role="doc-biblioentry">
+Ferrari, S. L. P., and F. Cribari-Neto. 2004. <span>“Beta Regression for Modeling Rates and Proportions.”</span> <em>Journal of Applied Statistics</em> 31 (7): 799–815.
+</div>
+<div id="ref-purrr0.3.4" class="csl-entry" role="doc-biblioentry">
+Henry, L., and H. Wickham. 2020. <em><span class="nocase">purrr</span>: Functional Programming Tools</em>. R package version 0.3.4. <a href="https://CRAN.R-project.org/package=purrr">https://CRAN.R-project.org/package=purrr</a>.
+</div>
+<div id="ref-rlang1.0.3" class="csl-entry" role="doc-biblioentry">
+———. 2022. <em><span class="nocase">rlang</span>: Functions for Base Types and Core <span>R</span> and ’Tidyverse’ Features</em>. R package version 1.0.3. <a href="https://CRAN.R-project.org/package=rlang">https://CRAN.R-project.org/package=rlang</a>.
+</div>
+<div id="ref-mardiaetal" class="csl-entry" role="doc-biblioentry">
+Mardia, K. V., J. T. Kent, and J. M. Bibby. 1979. <em>Multivariate Analysis</em>. London: Academic Press.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-psych2.2.3" class="csl-entry" role="doc-biblioentry">
+Revelle, W. 2022. <em><span class="nocase">psych</span>: Procedures for Psychological, Psychometric, and Personality Research</em>. Evanston, Illinois: Northwestern University. R package version 2.2.3. <a href="https://CRAN.R-project.org/package=psych">https://CRAN.R-project.org/package=psych</a>.
+</div>
+<div id="ref-broom0.8.0" class="csl-entry" role="doc-biblioentry">
+Robinson, D., A. Hayes, and S. Couch. 2022. <em><span class="nocase">broom</span>: Convert Statistical Objects into Tidy Tibbles</em>. R package version 0.8.0. <a href="https://CRAN.R-project.org/package=broom">https://CRAN.R-project.org/package=broom</a>.
+</div>
+<div id="ref-venables&amp;ripley" class="csl-entry" role="doc-biblioentry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with <span>S</span></em>. Fourth Edition. New York: Springer-Verlag. ISBN 0-387-95457-0. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-dplyr1.0.9" class="csl-entry" role="doc-biblioentry">
+Wickham, H., R. François, L. Henry, and K. Müller. 2022. <em><span class="nocase">dplyr</span>: A Grammar of Data Manipulation</em>. R package version 1.0.9. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+<div id="ref-tidyr1.2.0" class="csl-entry" role="doc-biblioentry">
+Wickham, H., and M. Girlich. 2022. <em><span class="nocase">tidyr</span>: Tidy Messy Data</em>. R package version 1.2.0. <a href="https://CRAN.R-project.org/package=tidyr">https://CRAN.R-project.org/package=tidyr</a>.
+</div>
+<div id="ref-wilkinson&amp;rogers" class="csl-entry" role="doc-biblioentry">
+Wilkinson, G. N., and C. E. Rogers. 1973. <span>“Symbolic Descriptions of Factorial Models for Analysis of Variance.”</span> <em>Applied Statistics</em> 22: 392–99. <a href="https://doi.org/10.2307/2346786">https://doi.org/10.2307/2346786</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
