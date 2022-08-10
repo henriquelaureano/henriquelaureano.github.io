@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>CDI by Season</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="analysis_files/libs/quarto-html/quarto.js"></script>
+<script src="analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="analysis_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="analysis_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="analysis_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#cdi-differences-by-season" id="toc-cdi-differences-by-season" class="nav-link active" data-scroll-target="#cdi-differences-by-season">CDI differences by Season</a></li>
+  <li><a href="#season-effects" id="toc-season-effects" class="nav-link" data-scroll-target="#season-effects">Season effects</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">CDI by Season</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>Keite da Silva Nogueira and <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-08-10 13:54:54</p>
+<hr>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<section id="cdi-differences-by-season" class="level1">
+<h1>CDI differences by Season</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Season </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> CDI: Yes </th>
+   <th style="text-align:right;"> CDI: No </th>
+   <th style="text-align:left;"> pvalue </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Summer </td>
+   <td style="text-align:right;"> 557 </td>
+   <td style="text-align:right;"> 42 </td>
+   <td style="text-align:right;"> 515 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Fall </td>
+   <td style="text-align:right;"> 494 </td>
+   <td style="text-align:right;"> 39 </td>
+   <td style="text-align:right;"> 455 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Winter </td>
+   <td style="text-align:right;"> 703 </td>
+   <td style="text-align:right;"> 73 </td>
+   <td style="text-align:right;"> 630 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Spring </td>
+   <td style="text-align:right;"> 518 </td>
+   <td style="text-align:right;"> 43 </td>
+   <td style="text-align:right;"> 475 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Basically, from the total <code>n</code> of each season, we want to know if the amount of people with CDI differs statistically from the amount without CDI.</p>
+<p>The amounts are clearly different, whose differences are expressed in terms of highly significant <em>p</em>-values. In the table we simplified, the exact <em>p</em>-values are:</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  Season pvalue              
+  &lt;chr&gt;  &lt;chr&gt;               
+1 Summer 2.38706139426109e-89
+2 Fall   3.61719616361755e-78
+3 Winter 5.58267500222516e-98
+4 Spring 2.44935652714071e-80</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>i.e., very smalls (e.g., 2.5e-5 = 0.000025).</p>
+<p>To compute these <em>p</em>-values we used <em>Pearson</em>’s Chi-squared Tests <span class="citation" data-cites="agresti patefield">(<a href="#ref-agresti" role="doc-biblioref">Agresti 2007</a>; <a href="#ref-patefield" role="doc-biblioref">Patefield 1981</a>)</span>.</p>
+</blockquote>
+</section>
+<section id="season-effects" class="level1">
+<h1>Season effects</h1>
+<hr>
+<blockquote class="blockquote">
+<p>Besides looking marginally, at each season, we can look globally.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table (Type II tests)
+
+Response: CDI
+       LR Chisq Df Pr(&gt;Chisq)
+Season   3.8779  3      0.275</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Also through a <em>Pearson</em>’s Chi-squared test, we see that when we compare all seasons there is no statistically significant difference between the prevalences.</p>
+<p>Fitting a <em>Bernoulli</em> generalized linear model with logit link function, <em>a.k.a.</em> logistic regression <span class="citation" data-cites="mccullagh&amp;nelder venables&amp;ripley">(<a href="#ref-mccullagh&amp;nelder" role="doc-biblioref">McCullagh and Nelder 1989</a>; <a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>, we are able to estimate the prevalences per season.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> term </th>
+   <th style="text-align:left;"> value </th>
+   <th style="text-align:right;"> estimate </th>
+   <th style="text-align:right;"> std.error </th>
+   <th style="text-align:right;"> statistic </th>
+   <th style="text-align:left;"> p.value </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Summer </td>
+   <td style="text-align:right;"> 0.0754 </td>
+   <td style="text-align:right;"> 0.0112 </td>
+   <td style="text-align:right;"> 6.7395 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+   <td style="text-align:right;"> 0.0535 </td>
+   <td style="text-align:right;"> 0.0973 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Fall </td>
+   <td style="text-align:right;"> 0.0789 </td>
+   <td style="text-align:right;"> 0.0121 </td>
+   <td style="text-align:right;"> 6.5069 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+   <td style="text-align:right;"> 0.0552 </td>
+   <td style="text-align:right;"> 0.1027 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Winter </td>
+   <td style="text-align:right;"> 0.1038 </td>
+   <td style="text-align:right;"> 0.0115 </td>
+   <td style="text-align:right;"> 9.0251 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+   <td style="text-align:right;"> 0.0813 </td>
+   <td style="text-align:right;"> 0.1264 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Spring </td>
+   <td style="text-align:right;"> 0.0830 </td>
+   <td style="text-align:right;"> 0.0121 </td>
+   <td style="text-align:right;"> 6.8475 </td>
+   <td style="text-align:left;font-weight: bold;"> &lt; 0.0001 </td>
+   <td style="text-align:right;"> 0.0593 </td>
+   <td style="text-align:right;"> 0.1068 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<blockquote class="blockquote">
+<p>The highest prevalence is estimated in the winter, the smallest in the summer. The limits of 95% confidence interval are also provided. The <em>p</em>-values are based on the hypothesis: the estimated prevalence is significantly different from zero? They all are.</p>
+<p>Also, we can test <em>contrasts</em>, i.e.&nbsp;differences between estimated effects. We test for all possibilities. The biggest difference, but still not statistically significant, is between the seasons of winter and summer. Basically, two-by-two, there is no statistical difference between the seasons.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> type </th>
+   <th style="text-align:left;"> term </th>
+   <th style="text-align:left;"> contrast </th>
+   <th style="text-align:right;"> estimate </th>
+   <th style="text-align:right;"> std.error </th>
+   <th style="text-align:right;"> statistic </th>
+   <th style="text-align:right;"> p.value </th>
+   <th style="text-align:right;"> conf.low </th>
+   <th style="text-align:right;"> conf.high </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Fall - Summer </td>
+   <td style="text-align:right;"> 0.0035 </td>
+   <td style="text-align:right;"> 0.0165 </td>
+   <td style="text-align:right;"> 0.2147 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.8300 </td>
+   <td style="text-align:right;"> -0.0288 </td>
+   <td style="text-align:right;"> 0.0359 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Winter - Summer </td>
+   <td style="text-align:right;"> 0.0284 </td>
+   <td style="text-align:right;"> 0.0160 </td>
+   <td style="text-align:right;"> 1.7719 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.0764 </td>
+   <td style="text-align:right;"> -0.0030 </td>
+   <td style="text-align:right;"> 0.0599 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Spring - Summer </td>
+   <td style="text-align:right;"> 0.0076 </td>
+   <td style="text-align:right;"> 0.0165 </td>
+   <td style="text-align:right;"> 0.4612 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.6447 </td>
+   <td style="text-align:right;"> -0.0247 </td>
+   <td style="text-align:right;"> 0.0399 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Winter - Fall </td>
+   <td style="text-align:right;"> 0.0249 </td>
+   <td style="text-align:right;"> 0.0167 </td>
+   <td style="text-align:right;"> 1.4887 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.1366 </td>
+   <td style="text-align:right;"> -0.0079 </td>
+   <td style="text-align:right;"> 0.0577 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Spring - Fall </td>
+   <td style="text-align:right;"> 0.0041 </td>
+   <td style="text-align:right;"> 0.0172 </td>
+   <td style="text-align:right;"> 0.2370 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.8127 </td>
+   <td style="text-align:right;"> -0.0296 </td>
+   <td style="text-align:right;"> 0.0377 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> response </td>
+   <td style="text-align:left;"> Season </td>
+   <td style="text-align:left;"> Spring - Winter </td>
+   <td style="text-align:right;"> -0.0208 </td>
+   <td style="text-align:right;"> 0.0167 </td>
+   <td style="text-align:right;"> -1.2462 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.2127 </td>
+   <td style="text-align:right;"> -0.0536 </td>
+   <td style="text-align:right;"> 0.0119 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<hr>
+<blockquote class="blockquote">
+<p>The analysis was performed through the R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span> language and environment for statistical computing. The following packages were used: {dplyr} <span class="citation" data-cites="dplyr1.0.9">(<a href="#ref-dplyr1.0.9" role="doc-biblioref">Wickham et al. 2022</a>)</span>, {car} <span class="citation" data-cites="car19">(<a href="#ref-car19" role="doc-biblioref">Fox and Weisberg 2019</a>)</span> and {marginaleffects} <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span>.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-agresti" class="csl-entry" role="doc-biblioentry">
+Agresti, A. 2007. <em>An Introduction to Categorical Data Analysis</em>. 2nd Edition. New York: John Wiley &amp; Sons.
+</div>
+<div id="ref-marginaleffects0.5.0" class="csl-entry" role="doc-biblioentry">
+Arel-Bundock, Vincent. 2022. <em><span class="nocase">marginaleffects</span>: Marginal Effects, Marginal Means, Predictions, and Contrasts</em>. R package version 0.5.0. <a href="https://CRAN.R-project.org/package=marginaleffects">https://CRAN.R-project.org/package=marginaleffects</a>.
+</div>
+<div id="ref-car19" class="csl-entry" role="doc-biblioentry">
+Fox, John, and Sanford Weisberg. 2019. <em>An <span>R</span> Companion to Applied Regression</em>. Third Edition. Thousand Oaks <span>CA</span>: Sage. <a href="https://socialsciences.mcmaster.ca/jfox/Books/Companion/">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a>.
+</div>
+<div id="ref-mccullagh&amp;nelder" class="csl-entry" role="doc-biblioentry">
+McCullagh, P., and J. A. Nelder. 1989. <em>Generalized Linear Models</em>. London: Chapman; Hall.
+</div>
+<div id="ref-patefield" class="csl-entry" role="doc-biblioentry">
+Patefield, W. M. 1981. <span>“<span class="nocase">Algorithm AS 159: An efficient method of generating r x c tables with given row and column totals</span>.”</span> <em>Applied Statistics</em> 30: 91–97. <a href="https://doi.org/10.2307/2346669">https://doi.org/10.2307/2346669</a>.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-venables&amp;ripley" class="csl-entry" role="doc-biblioentry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with <span>S</span></em>. Fourth Edition. New York: Springer-Verlag. ISBN 0-387-95457-0. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-dplyr1.0.9" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2022. <em><span class="nocase">dplyr</span>: A Grammar of Data Manipulation</em>. R package version 1.0.9. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
