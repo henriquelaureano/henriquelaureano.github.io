@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>VACAS: O que entra no paper</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="paper_files/libs/clipboard/clipboard.min.js"></script>
+<script src="paper_files/libs/quarto-html/quarto.js"></script>
+<script src="paper_files/libs/quarto-html/popper.min.js"></script>
+<script src="paper_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="paper_files/libs/quarto-html/anchor.min.js"></script>
+<link href="paper_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="paper_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="paper_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="paper_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="paper_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="paper_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="paper_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#médias-marginais" id="toc-médias-marginais" class="nav-link active" data-scroll-target="#médias-marginais">Médias marginais</a>
+  <ul class="collapse">
+  <li><a href="#estação" id="toc-estação" class="nav-link" data-scroll-target="#estação">Estação</a></li>
+  <li><a href="#mês" id="toc-mês" class="nav-link" data-scroll-target="#mês">Mês</a></li>
+  </ul></li>
+  <li><a href="#contrastes" id="toc-contrastes" class="nav-link" data-scroll-target="#contrastes">Contrastes</a></li>
+  <li><a href="#efeitos-marginais" id="toc-efeitos-marginais" class="nav-link" data-scroll-target="#efeitos-marginais">Efeitos marginais</a></li>
+  <li><a href="#plots" id="toc-plots" class="nav-link" data-scroll-target="#plots">Plots</a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">VACAS: O que entra no paper</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>Flavio Damasceno e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-08-12 11:29:27</p>
+<hr>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/correlation-matrix-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<section id="médias-marginais" class="level1">
+<h1>Médias marginais</h1>
+<hr>
+<section id="estação" class="level2">
+<h2 class="anchored" data-anchor-id="estação">Estação</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; font-size: 17px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:left;"> Verão </th>
+   <th style="text-align:left;"> Outono </th>
+   <th style="text-align:left;"> Inverno </th>
+   <th style="text-align:left;"> Primavera </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="2"><td colspan="5" style="border-bottom: 0;"><strong>CCS</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Efeito (EP) </td>
+   <td style="text-align:left;"> 293.03 (18609.97) </td>
+   <td style="text-align:left;"> 343.54 (18604.06) </td>
+   <td style="text-align:left;"> 251.64 (18612.08) </td>
+   <td style="text-align:left;"> 239.74 (18604.58) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Valor-p </td>
+   <td style="text-align:left;"> 0.987 </td>
+   <td style="text-align:left;"> 0.985 </td>
+   <td style="text-align:left;"> 0.989 </td>
+   <td style="text-align:left;"> 0.99 </td>
+  </tr>
+  <tr grouplength="2"><td colspan="5" style="border-bottom: 0;"><strong>Esc higiene</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Efeito (EP) </td>
+   <td style="text-align:left;"> 1.43 (36.99) </td>
+   <td style="text-align:left;"> 1.39 (37.08) </td>
+   <td style="text-align:left;"> 1.04 (37.09) </td>
+   <td style="text-align:left;"> 0.92 (37.08) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Valor-p </td>
+   <td style="text-align:left;"> 0.969 </td>
+   <td style="text-align:left;"> 0.97 </td>
+   <td style="text-align:left;"> 0.978 </td>
+   <td style="text-align:left;"> 0.98 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="mês" class="level2">
+<h2 class="anchored" data-anchor-id="mês">Mês</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; font-size: 17px; margin-left: auto; margin-right: auto;">
+ <thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1"></th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #111111; margin-bottom: -1px; ">Peso</div></th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #111111; margin-bottom: -1px; ">Umid cama sup</div></th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #111111; margin-bottom: -1px; ">Temp cama sup</div></th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"><div style="border-bottom: 1px solid #111111; margin-bottom: -1px; ">Temp cama 20</div></th>
+</tr>
+  <tr>
+   <th style="text-align:left;"> Mês </th>
+   <th style="text-align:left;"> Efeito (EP) </th>
+   <th style="text-align:left;"> Valor-p </th>
+   <th style="text-align:left;"> Efeito (EP) </th>
+   <th style="text-align:left;"> Valor-p </th>
+   <th style="text-align:left;"> Efeito (EP) </th>
+   <th style="text-align:left;"> Valor-p </th>
+   <th style="text-align:left;"> Efeito (EP) </th>
+   <th style="text-align:left;"> Valor-p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Mar </td>
+   <td style="text-align:left;"> 622.37 (10.79) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 18.81 (131.4) </td>
+   <td style="text-align:left;"> 0.886 </td>
+   <td style="text-align:left;"> 30.15 (8.69) </td>
+   <td style="text-align:left;"> 0.001 </td>
+   <td style="text-align:left;"> 37.51 (449.98) </td>
+   <td style="text-align:left;"> 0.934 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Abr </td>
+   <td style="text-align:left;"> 620.32 (10.48) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 28.48 (134.7) </td>
+   <td style="text-align:left;"> 0.833 </td>
+   <td style="text-align:left;"> 29.78 (8.63) </td>
+   <td style="text-align:left;"> 0.001 </td>
+   <td style="text-align:left;"> 47.22 (450) </td>
+   <td style="text-align:left;"> 0.916 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Mai </td>
+   <td style="text-align:left;"> 625.58 (9.45) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 35.15 (135.13) </td>
+   <td style="text-align:left;"> 0.795 </td>
+   <td style="text-align:left;"> 22.97 (9.01) </td>
+   <td style="text-align:left;"> 0.011 </td>
+   <td style="text-align:left;"> 50.95 (450) </td>
+   <td style="text-align:left;"> 0.91 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Jun </td>
+   <td style="text-align:left;"> 625.86 (9.25) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 39.72 (136.87) </td>
+   <td style="text-align:left;"> 0.772 </td>
+   <td style="text-align:left;"> 23.43 (9.24) </td>
+   <td style="text-align:left;"> 0.011 </td>
+   <td style="text-align:left;"> 56.53 (450.1) </td>
+   <td style="text-align:left;"> 0.9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Jul </td>
+   <td style="text-align:left;"> 622.49 (9.52) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 41.98 (135.41) </td>
+   <td style="text-align:left;"> 0.757 </td>
+   <td style="text-align:left;"> 21.89 (9.37) </td>
+   <td style="text-align:left;"> 0.019 </td>
+   <td style="text-align:left;"> 51.76 (450.14) </td>
+   <td style="text-align:left;"> 0.908 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Ago </td>
+   <td style="text-align:left;"> 619.71 (10.17) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 43.27 (135.28) </td>
+   <td style="text-align:left;"> 0.749 </td>
+   <td style="text-align:left;"> 27.44 (9.44) </td>
+   <td style="text-align:left;"> 0.004 </td>
+   <td style="text-align:left;"> 50.84 (450.12) </td>
+   <td style="text-align:left;"> 0.91 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Set </td>
+   <td style="text-align:left;"> 629.6 (10.34) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 35.16 (135.86) </td>
+   <td style="text-align:left;"> 0.796 </td>
+   <td style="text-align:left;"> 28.77 (9.88) </td>
+   <td style="text-align:left;"> 0.004 </td>
+   <td style="text-align:left;"> 51.65 (449.99) </td>
+   <td style="text-align:left;"> 0.909 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Out </td>
+   <td style="text-align:left;"> 651.16 (10.54) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 36.97 (136.4) </td>
+   <td style="text-align:left;"> 0.786 </td>
+   <td style="text-align:left;"> 34.32 (9.96) </td>
+   <td style="text-align:left;"> 0.001 </td>
+   <td style="text-align:left;"> 54.6 (449.82) </td>
+   <td style="text-align:left;"> 0.903 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Nov </td>
+   <td style="text-align:left;"> 640.08 (10.96) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 42.51 (135.47) </td>
+   <td style="text-align:left;"> 0.754 </td>
+   <td style="text-align:left;"> 25.58 (10.53) </td>
+   <td style="text-align:left;"> 0.015 </td>
+   <td style="text-align:left;"> 52.86 (449.75) </td>
+   <td style="text-align:left;"> 0.906 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Dez </td>
+   <td style="text-align:left;"> 659.65 (11.24) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 53.07 (134.82) </td>
+   <td style="text-align:left;"> 0.694 </td>
+   <td style="text-align:left;"> 26.11 (11.71) </td>
+   <td style="text-align:left;"> 0.026 </td>
+   <td style="text-align:left;"> 50.48 (449.2) </td>
+   <td style="text-align:left;"> 0.911 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Jan </td>
+   <td style="text-align:left;"> 644.12 (11.11) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 49.07 (135.37) </td>
+   <td style="text-align:left;"> 0.717 </td>
+   <td style="text-align:left;"> 27.12 (10.96) </td>
+   <td style="text-align:left;"> 0.013 </td>
+   <td style="text-align:left;"> 49.05 (449.51) </td>
+   <td style="text-align:left;"> 0.913 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Fev </td>
+   <td style="text-align:left;"> 657.02 (10.91) </td>
+   <td style="text-align:left;"> 0 </td>
+   <td style="text-align:left;"> 40.46 (135.55) </td>
+   <td style="text-align:left;"> 0.765 </td>
+   <td style="text-align:left;"> 26.98 (10.69) </td>
+   <td style="text-align:left;"> 0.012 </td>
+   <td style="text-align:left;"> 50.22 (449.63) </td>
+   <td style="text-align:left;"> 0.911 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+</section>
+<section id="contrastes" class="level1">
+<h1>Contrastes</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; font-size: 17px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:left;"> Efeito (EP) </th>
+   <th style="text-align:left;"> Valor-p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="6"><td colspan="3" style="border-bottom: 0;"><strong>CCS</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Outono - Verão </td>
+   <td style="text-align:left;"> 50.51 (28) </td>
+   <td style="text-align:left;"> 0.071 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Inverno - Verão </td>
+   <td style="text-align:left;"> -41.39 (18.06) </td>
+   <td style="text-align:left;"> 0.022 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Primavera - Verão </td>
+   <td style="text-align:left;"> -53.29 (17.22) </td>
+   <td style="text-align:left;"> 0.002 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Inverno - Outono </td>
+   <td style="text-align:left;"> -91.89 (19.7) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Primavera - Outono </td>
+   <td style="text-align:left;"> -103.8 (23.5) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Primavera - Inverno </td>
+   <td style="text-align:left;"> -11.9 (19.97) </td>
+   <td style="text-align:left;"> 0.551 </td>
+  </tr>
+  <tr grouplength="6"><td colspan="3" style="border-bottom: 0;"><strong>Esc higiene</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Outono - Verão </td>
+   <td style="text-align:left;"> 50.51 (28) </td>
+   <td style="text-align:left;"> 0.071 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Inverno - Verão </td>
+   <td style="text-align:left;"> -41.39 (18.06) </td>
+   <td style="text-align:left;"> 0.022 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Primavera - Verão </td>
+   <td style="text-align:left;"> -53.29 (17.22) </td>
+   <td style="text-align:left;"> 0.002 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Inverno - Outono </td>
+   <td style="text-align:left;"> -91.89 (19.7) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Primavera - Outono </td>
+   <td style="text-align:left;"> -103.8 (23.5) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Primavera - Inverno </td>
+   <td style="text-align:left;"> -11.9 (19.97) </td>
+   <td style="text-align:left;"> 0.551 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="efeitos-marginais" class="level1">
+<h1>Efeitos marginais</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto; font-size: 17px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:left;"> Efeito (EP) </th>
+   <th style="text-align:left;"> Valor-p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="6"><td colspan="3" style="border-bottom: 0;"><strong>CCS</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Temp cama sup </td>
+   <td style="text-align:left;"> 1.98 (1.691) </td>
+   <td style="text-align:left;"> 0.241 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Umid cama 20 </td>
+   <td style="text-align:left;"> 6.08 (0.002) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Temp cama 20 </td>
+   <td style="text-align:left;"> -3.89 (4.513) </td>
+   <td style="text-align:left;"> 0.389 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> pH cama </td>
+   <td style="text-align:left;"> 27.17 (0.002) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU int </td>
+   <td style="text-align:left;"> 0.97 (6.204) </td>
+   <td style="text-align:left;"> 0.876 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU ext </td>
+   <td style="text-align:left;"> -0.6 (2.822) </td>
+   <td style="text-align:left;"> 0.83 </td>
+  </tr>
+  <tr grouplength="7"><td colspan="3" style="border-bottom: 0;"><strong>Esc higiene</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Umid cama sup </td>
+   <td style="text-align:left;"> 0.04 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Temp cama sup </td>
+   <td style="text-align:left;"> 0.03 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Umid cama 20 </td>
+   <td style="text-align:left;"> -0.02 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Temp cama 20 </td>
+   <td style="text-align:left;"> 0.07 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> pH cama </td>
+   <td style="text-align:left;"> -0.11 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU int </td>
+   <td style="text-align:left;"> -0.01 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU ext </td>
+   <td style="text-align:left;"> 0.03 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr grouplength="1"><td colspan="3" style="border-bottom: 0;"><strong>Peso</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU ext </td>
+   <td style="text-align:left;"> 0.19 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="3" style="border-bottom: 0;"><strong>Umid cama sup</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Temp cama 20 </td>
+   <td style="text-align:left;"> -0.56 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> pH cama </td>
+   <td style="text-align:left;"> -0.8 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU int </td>
+   <td style="text-align:left;"> -0.27 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU ext </td>
+   <td style="text-align:left;"> 0.19 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr grouplength="3"><td colspan="3" style="border-bottom: 0;"><strong>Temp cama sup</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Umid cama 20 </td>
+   <td style="text-align:left;"> 0.25 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> pH cama </td>
+   <td style="text-align:left;"> 1.16 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU int </td>
+   <td style="text-align:left;"> -0.1 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="3" style="border-bottom: 0;"><strong>Temp cama 20</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> Umid cama 20 </td>
+   <td style="text-align:left;"> -0.07 (0) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> pH cama </td>
+   <td style="text-align:left;"> 1.97 (0.005) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU int </td>
+   <td style="text-align:left;"> -0.11 (0.004) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> ITU ext </td>
+   <td style="text-align:left;"> 0.06 (0.006) </td>
+   <td style="text-align:left;"> 0 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</section>
+<section id="plots" class="level1">
+<h1>Plots</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/plots-1.png" class="img-fluid" width="960"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="paper_files/figure-html/plots-2.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="referências" class="level1">
+<h1>Referências</h1>
+<hr>
+<blockquote class="blockquote">
+<p>A anaĺise foi performada com a linguagem e ambiente para computação estatística R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span>. Os seguintes pacotes R foram utilizados: {dplyr} <span class="citation" data-cites="dplyr1.0.9">(<a href="#ref-dplyr1.0.9" role="doc-biblioref">Wickham et al. 2022</a>)</span>, {tidyr} <span class="citation" data-cites="tidyr1.2.0">(<a href="#ref-tidyr1.2.0" role="doc-biblioref">Wickham and Girlich 2022</a>)</span>, {ggcorrplot} <span class="citation" data-cites="ggcorrplot0.1.3">(<a href="#ref-ggcorrplot0.1.3" role="doc-biblioref">Kassambara 2019</a>)</span>, {ggplot2} <span class="citation" data-cites="ggplot2.16">(<a href="#ref-ggplot2.16" role="doc-biblioref">Wickham 2016</a>)</span>, {lubridate} <span class="citation" data-cites="lubridate11">(<a href="#ref-lubridate11" role="doc-biblioref">Grolemund and Wickham 2011</a>)</span>, {MASS} <span class="citation" data-cites="venables&amp;ripley">(<a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>, {broom} <span class="citation" data-cites="broom0.8.0">(<a href="#ref-broom0.8.0" role="doc-biblioref">Robinson, Hayes, and Couch 2022</a>)</span>, {rlang} <span class="citation" data-cites="rlang1.0.3">(<a href="#ref-rlang1.0.3" role="doc-biblioref">Henry and Wickham 2022</a>)</span>, {patchwork} <span class="citation" data-cites="patchwork1.1.1">(<a href="#ref-patchwork1.1.1" role="doc-biblioref">Pedersen 2020</a>)</span> e {marginaleffects} <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span>.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-marginaleffects0.5.0" class="csl-entry" role="doc-biblioentry">
+Arel-Bundock, Vincent. 2022. <em><span class="nocase">marginaleffects</span>: Marginal Effects, Marginal Means, Predictions, and Contrasts</em>. R package version 0.5.0. <a href="https://CRAN.R-project.org/package=marginaleffects">https://CRAN.R-project.org/package=marginaleffects</a>.
+</div>
+<div id="ref-lubridate11" class="csl-entry" role="doc-biblioentry">
+Grolemund, Garrett, and Hadley Wickham. 2011. <span>“Dates and Times Made Easy with <span class="nocase">lubridate</span>.”</span> <em>Journal of Statistical Software</em> 40 (3): 1–25. <a href="https://www.jstatsoft.org/v40/i03/">https://www.jstatsoft.org/v40/i03/</a>.
+</div>
+<div id="ref-rlang1.0.3" class="csl-entry" role="doc-biblioentry">
+Henry, Lionel, and Hadley Wickham. 2022. <em><span class="nocase">rlang</span>: Functions for Base Types and Core <span>R</span> and ’Tidyverse’ Features</em>. R package version 1.0.3. <a href="https://CRAN.R-project.org/package=rlang">https://CRAN.R-project.org/package=rlang</a>.
+</div>
+<div id="ref-ggcorrplot0.1.3" class="csl-entry" role="doc-biblioentry">
+Kassambara, Alboukadel. 2019. <em><span class="nocase">ggcorrplot</span>: Visualization of a Correlation Matrix Using ’<span class="nocase">ggplot2</span>’</em>. R package version 0.1.3. <a href="https://CRAN.R-project.org/package=ggcorrplot">https://CRAN.R-project.org/package=ggcorrplot</a>.
+</div>
+<div id="ref-patchwork1.1.1" class="csl-entry" role="doc-biblioentry">
+Pedersen, Thomas Lin. 2020. <em><span class="nocase">patchwork</span>: The Composer of Plots</em>. R package version 1.1.1. <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-broom0.8.0" class="csl-entry" role="doc-biblioentry">
+Robinson, David, Alex Hayes, and Simon Couch. 2022. <em><span class="nocase">broom</span>: Convert Statistical Objects into Tidy Tibbles</em>. R package version 0.8.0. <a href="https://CRAN.R-project.org/package=broom">https://CRAN.R-project.org/package=broom</a>.
+</div>
+<div id="ref-venables&amp;ripley" class="csl-entry" role="doc-biblioentry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with <span>S</span></em>. Fourth Edition. New York: Springer-Verlag. ISBN 0-387-95457-0. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-ggplot2.16" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN 978-3-319-24277-4. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-dplyr1.0.9" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2022. <em><span class="nocase">dplyr</span>: A Grammar of Data Manipulation</em>. R package version 1.0.9. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+<div id="ref-tidyr1.2.0" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, and Maximilian Girlich. 2022. <em><span class="nocase">tidyr</span>: Tidy Messy Data</em>. R package version 1.2.0. <a href="https://CRAN.R-project.org/package=tidyr">https://CRAN.R-project.org/package=tidyr</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
