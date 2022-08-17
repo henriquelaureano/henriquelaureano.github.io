@@ -76,6 +76,10 @@ dat  <- readxl::read_xlsx(paste0(path, file), sheet='Gemeos')|>
     dplyr::select(!ID2)
 
 n   <- nrow(dat)
+N   <- dat|>
+    dplyr::group_by(Zigocidade)|>
+    dplyr::summarise(n=dplyr::n()/2)|>
+    tidyr::spread(Zigocidade, n)
 
 ## str(dat)
 
@@ -137,15 +141,79 @@ o par que não tem essa informação foi descartado. Ficamos/usamos 198
 gêmeos.
 
 ```{r}
-#| label: mglm4twin_data
+#| label: bivariate-models
+#| fig-height: 4.25
+#| fig-width: 8.75
 
 ## ---------------------------------------------------------------------
 ## all models were chosen with 194 twins but since the weight is never
 ## significant we dropped that variable to be able to use all 198 twins
 ## ---------------------------------------------------------------------
 
+## mean linear predictors ----------------------------------------------
 form_TREC <- TREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
 form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
+
+## ACE model -----------------------------------------------------------
+
+## biv_ACE <- mglm4twin::mt_twin(N_DZ=N$DZ,
+##                               N_MZ=N$MZ, n_resp=2, model='ACE')
+
+## GAUSSIAN 
+
+## fitACEbiv <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ACE,
+##                    control_algorithm=list(tuning=0.75),
+##                    link             =rep('identity', 2),
+##                    variance         =rep('constant', 2),
+##                    power_fixed      =rep(TRUE, 2),
+##                    data             =dat
+##                )
+## summary(fitACEbiv, model='ACE', biometric=TRUE)
+
+## TWEEDIE
+
+## fitACEbiv_tw <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ACE,
+##                    control_algorithm=list(tuning=0.01, max_iter=750),
+##                    link             =rep(    'log', 2),
+##                    variance         =rep('tweedie', 2),
+##                    power_fixed      =rep(FALSE, 2),
+##                    data             =dat
+##                )
+## summary(fitACEbiv_tw, model='ACE', biometric=TRUE)
+
+## GAMMA
+
+## fitACEbiv_ga <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ACE,
+##                    control_algorithm=list(tuning=0.01, max_iter=1e3),
+##                    link             =rep('inverse', 2),
+##                    variance         =rep('tweedie', 2),
+##                    power_fixed      =rep(TRUE, 2),
+##                    data             =dat
+##                )
+## summary(fitACEbiv_ga, model='ACE', biometric=TRUE)
+
+## cbind(Model=c('Gaussian', 'Tweedie', 'Gamma'),
+##       rbind(mglm4twin::gof(fitACEbiv),
+##             mglm4twin::gof(fitACEbiv_tw),
+##             mglm4twin::gof(fitACEbiv_ga)))
+
+## par(mfrow=c(1, 2))
+## 
+## hist(      dat$TREC            );hist(      dat$KREC              )
+## hist(resid(fitACEbiv   )[1:198]);hist(resid(fitACEbiv   )[199:396])
+## hist(resid(fitACEbiv_tw)[1:198]);hist(resid(fitACEbiv_tw)[199:396])
+## hist(resid(fitACEbiv_ga)[1:198]);hist(resid(fitACEbiv_ga)[199:396])
+## 
+## layout(1)
 
 ```
 
@@ -155,68 +223,6 @@ componente C. Tal fato indica que tal componente não é necessário.
 Portanto, ajustamos um modelo AE e vemos se é melhor ficar com
 ele. Abaixo temos algumas medidas de qualidade do ajuste dos dois
 modelos.
-
-```{r}
-#| label: mglm4twin_bivACE
-
-biv_ACE <-
-    mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=2, model='ACE')
-
-## fitACEbiv <-
-##     mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
-##                          matrix_pred=biv_ACE,
-##                          control_algorithm=list(tuning=0.75),
-##                          link=rep('identity', 2),
-##                          variance=rep('constant', 2),
-##                          power_fixed=rep(TRUE, 2),
-##                          data=dat)
-
-## summary(fitACEbiv, model='ACE', biometric=TRUE)
-
-## fitACEbiv_tw <-
-##     mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
-##                          matrix_pred=biv_ACE,
-##                          control_algorithm=list(tuning=0.01,
-##                                                 max_iter=750),
-##                          link=rep('log', 2),
-##                          variance=rep('tweedie', 2),
-##                          power_fixed=rep(FALSE, 2),
-##                          data=dat)
-
-## summary(fitACEbiv_tw, model='ACE', biometric=TRUE)
-
-## fitACEbiv_ga <-
-##     mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
-##                          matrix_pred=biv_ACE,
-##                          control_algorithm=list(tuning=0.01,
-##                                                 max_iter=1e3),
-##                          link=rep('inverse', 2),
-##                          variance=rep('tweedie', 2),
-##                          power_fixed=rep(TRUE, 2),
-##                          data=dat)
-
-## summary(fitACEbiv_ga, model='ACE', biometric=TRUE)
-
-## cbind(Model=c('Gaussian', 'Tweedie', 'Gamma'),
-##       rbind(mglm4twin::gof(fitACEbiv),
-##             mglm4twin::gof(fitACEbiv_tw),
-##             mglm4twin::gof(fitACEbiv_ga)))
-
-```
-
-```{r}
-#| label: mglm4twin_bivACE_hists
-#| fig-height: 4.25
-#| fig-width: 8.75
-
-## par(mfrow=c(1, 2))
-## hist(dat$TREC);hist(dat$KREC)
-## hist(resid(fitACEbiv)[1:198]);hist(resid(fitACEbiv)[199:396])
-## hist(resid(fitACEbiv_tw)[1:198]);hist(resid(fitACEbiv_tw)[199:396])
-## hist(resid(fitACEbiv_ga)[1:198]);hist(resid(fitACEbiv_ga)[199:396])
-## layout(1)
-
-```
 
 ```{r }
 #| label: mglm4twin_bivAE
