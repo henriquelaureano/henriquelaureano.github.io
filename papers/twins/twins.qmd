@@ -58,43 +58,26 @@ library(mglm4twin)
 
 path <- '/home/laureano/Git/carolina-I4P/trec_and_krec/'
 file <- 'Dados 50k amostras.xlsx'
-
-dat <- readxl::read_xlsx(paste0(path, file), sheet='Gemeos')|>
-    dplyr::rename('complic_no_parto'=`complicação no parto`,
-                  'infec_pos_nasc'=`infecção pós nascimento`,
-                  'qual_infec'=`qual infecção`)|>
+dat  <- readxl::read_xlsx(paste0(path, file), sheet='Gemeos')|>
     dplyr::mutate(parto=dplyr::recode(parto,
                                       'cesariana'='Cesariana',
-                                      'NI'='Não informado'),
-                  complic_gest=stringr::str_to_title(complic_gest), 
-                  complic_gest=dplyr::recode(complic_gest,
-                                             'Ni'='Não informado'),
-                  qual_complic_gest_1=stringr::str_to_title(
-                                                   qual_complic_gest_1
-                                               ),
-                  qual_complic_gest_1=dplyr::recode(qual_complic_gest_1,
-                                                    'Has'='HAS',
-                                                    'Itu'='ITU',
-                                                    'Tpp'='TPP'),
-                  complic_no_parto=stringr::str_to_title(
-                                                complic_no_parto
-                                            ), 
-                  complic_no_parto=dplyr::recode(complic_no_parto,
-                                                 'Ni'='Não informado'), 
-                  qual=stringr::str_to_title(qual),
-                  qual=dplyr::recode(qual, 'Has'='HAS'),
-                  infec_pos_nasc=stringr::str_to_title(infec_pos_nasc), 
-                  infec_pos_nasc=dplyr::recode(infec_pos_nasc,
-                                               'Ni'='Não informado'),
-                  ID2=gsub('.$', '', ID)
-                  )|>
-    dplyr::relocate(ID2, .after=ID)
-## dat|>
-##     ## filter(KREC==6582)
-##     filter(ID2=='PG74')|>
-##     dplyr::select(ID, id_gest, peso, sexo, TREC, KREC)
-dat <- dplyr::filter(dat, !ID2=='PG74')
+                                      'NI'       ='Não informado'),
+                  ID2  =gsub('.$', '', ID))|>
+    dplyr::select(
+               ID2, TREC, KREC, peso, id_gest, parto, sexo, Zigocidade
+           )|>
+    dplyr::filter(!Zigocidade %in% 'ERRADO' & !ID2 %in% 'PG74')|>
+    dplyr::arrange(Zigocidade)|>
+    dplyr::group_by(ID2)|>
+    dplyr::mutate(Twin_pair =rep(c(1, 2), times=length(unique(ID2))),
+                  Zigocidade=dplyr::recode(Zigocidade,
+                                           'diz'='DZ', 'monoz'='MZ'))|>
+    dplyr::ungroup()|>
+    dplyr::select(!ID2)
+
 n   <- nrow(dat)
+
+## str(dat)
 
 ```
 
@@ -121,95 +104,72 @@ The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{stringr}`
 
 # Results
 
-> Modelamos as medidas de TREC e KREC conjuntamente em duas frentes: na
-> média e na variância. Como temos mais de uma variável e vamos também
-> modelar a correlação entre elas, chamamos de covariância.
->
-> Para estudar a herdabilidade e o relacionamento genético e ambiental
-> das medidas, usamos um modelo chamado de ACE. Basicamente, decompomos
-> a matriz de variância-covariância (a partir daqui chamaremos
-> simplesmente de matriz de covariância) em três matrizes:
->
-> + A: efeito/componente genético/herdabilidade;
-> + C: efeito/componente mútuo do ambiente (common environment);
-> + E: efeito/componente único do ambiente (unique environment).
->
-> Além de considerarmos essa decomposição da covariância podemos também
-> colocar covariáveis nela.
->
-> Tanto na média quanto na covariância usamos/testamos o efeito de seis
-> covariáveis:
->
-> + Peso;
-> + Idade gestacional;
-> + Tipo de parto;
-> + Sexo;
-> + Zigocidade;
-> + Gêmeo (1 ou 2, para ver se realmente existe uma aleatoriedade na
->   disposição sdos dados).
->
-> A zigocidade é um termo chave dessa modelagem, dado que precisamos
-> informar quantos pares de gêmeos são monozigotos e
-> dizigotos. Portanto, o par que não tem essa informação foi
-> descartado. Ficamos/usamos 198 gêmeos.
+Modelamos as medidas de TREC e KREC conjuntamente em duas frentes: na
+média e na variância. Como temos mais de uma variável e vamos também
+modelar a correlação entre elas, chamamos de covariância.
 
-```{r mglm4twin_data}
+Para estudar a herdabilidade e o relacionamento genético e ambiental das
+medidas, usamos um modelo chamado de ACE. Basicamente, decompomos a
+matriz de variância-covariância (a partir daqui chamaremos simplesmente
+de matriz de covariância) em três matrizes:
 
-datm <- dat|>
-    dplyr::select(
-               ID2, TREC, KREC, peso, id_gest, parto, sexo, Zigocidade
-           )|>
-    dplyr::filter(!Zigocidade %in% 'ERRADO')|>
-    ## tidyr::drop_na(peso)|>
-    dplyr::arrange(Zigocidade)|>
-    dplyr::group_by(ID2)|>
-    dplyr::mutate(Twin_pair=rep(c(1, 2), times=length(unique(ID2))),
-                  Zigocidade=dplyr::recode(Zigocidade,
-                                           'diz'='DZ', 'monoz'='MZ'))|>
-    dplyr::ungroup()|>
-    dplyr::select(!ID2)
++ A: efeito/componente genético/herdabilidade;
++ C: efeito/componente mútuo do ambiente (common environment);
++ E: efeito/componente único do ambiente (unique environment).
+
+Além de considerarmos essa decomposição da covariância podemos também
+colocar covariáveis nela.
+
+Tanto na média quanto na covariância usamos/testamos o efeito de seis
+covariáveis:
+
++ Peso;
++ Idade gestacional;
++ Tipo de parto;
++ Sexo;
++ Zigocidade;
++ Gêmeo (1 ou 2, para ver se realmente existe uma aleatoriedade na
+  disposição sdos dados).
+
+A zigocidade é um termo chave dessa modelagem, dado que precisamos
+informar quantos pares de gêmeos são monozigotos e dizigotos. Portanto,
+o par que não tem essa informação foi descartado. Ficamos/usamos 198
+gêmeos.
+
+```{r}
+#| label: mglm4twin_data
 
 ## ---------------------------------------------------------------------
 ## all models were chosen with 194 twins but since the weight is never
 ## significant we dropped that variable to be able to use all 198 twins
 ## ---------------------------------------------------------------------
 
-## form_TREC <-
-##     TREC ~ peso + id_gest + parto + sexo + Zigocidade*Twin_pair
-## form_KREC <-
-##     KREC ~ peso + id_gest + parto + sexo + Zigocidade*Twin_pair
-
-form_TREC <- TREC ~ id_gest + parto + sexo + Zigocidade*Twin_pair
-form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade*Twin_pair
-
-N <-
-    datm|>
-    dplyr::group_by(Zigocidade)|>
-    dplyr::summarise(n=dplyr::n()/2)|>
-    tidyr::spread(Zigocidade, n)
+form_TREC <- TREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
+form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
 
 ```
 
-> Começamos com um modelo bivariado ACE, modelando TREC e KREC
-> conjuntamento. Contudo, observamos \(p\)-valores muito altos para o
-> componente C. Tal fato indica que tal componente não é necessário.
-> Portanto, ajustamos um modelo AE e vemos se é melhor ficar com
-> ele. Abaixo temos algumas medidas de qualidade do ajuste dos dois
-> modelos.
+Começamos com um modelo bivariado ACE, modelando TREC e KREC
+conjuntamento. Contudo, observamos valores-$p$ muito altos para o
+componente C. Tal fato indica que tal componente não é necessário.
+Portanto, ajustamos um modelo AE e vemos se é melhor ficar com
+ele. Abaixo temos algumas medidas de qualidade do ajuste dos dois
+modelos.
 
-```{r mglm4twin_bivACE,results=FALSE}
+```{r}
+#| label: mglm4twin_bivACE
 
 biv_ACE <-
     mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=2, model='ACE')
 
-fitACEbiv <-
-    mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
-                         matrix_pred=biv_ACE,
-                         control_algorithm=list(tuning=0.75),
-                         link=rep('identity', 2),
-                         variance=rep('constant', 2),
-                         power_fixed=rep(TRUE, 2),
-                         data=datm)
+## fitACEbiv <-
+##     mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
+##                          matrix_pred=biv_ACE,
+##                          control_algorithm=list(tuning=0.75),
+##                          link=rep('identity', 2),
+##                          variance=rep('constant', 2),
+##                          power_fixed=rep(TRUE, 2),
+##                          data=dat)
 
 ## summary(fitACEbiv, model='ACE', biometric=TRUE)
 
@@ -221,7 +181,7 @@ fitACEbiv <-
 ##                          link=rep('log', 2),
 ##                          variance=rep('tweedie', 2),
 ##                          power_fixed=rep(FALSE, 2),
-##                          data=datm)
+##                          data=dat)
 
 ## summary(fitACEbiv_tw, model='ACE', biometric=TRUE)
 
@@ -233,7 +193,7 @@ fitACEbiv <-
 ##                          link=rep('inverse', 2),
 ##                          variance=rep('tweedie', 2),
 ##                          power_fixed=rep(TRUE, 2),
-##                          data=datm)
+##                          data=dat)
 
 ## summary(fitACEbiv_ga, model='ACE', biometric=TRUE)
 
@@ -244,10 +204,13 @@ fitACEbiv <-
 
 ```
 
-```{r mglm4twin_bivACE_hists,fig.height=4.25,fig.width=8.75}
+```{r}
+#| label: mglm4twin_bivACE_hists
+#| fig-height: 4.25
+#| fig-width: 8.75
 
 ## par(mfrow=c(1, 2))
-## hist(datm$TREC);hist(datm$KREC)
+## hist(dat$TREC);hist(dat$KREC)
 ## hist(resid(fitACEbiv)[1:198]);hist(resid(fitACEbiv)[199:396])
 ## hist(resid(fitACEbiv_tw)[1:198]);hist(resid(fitACEbiv_tw)[199:396])
 ## hist(resid(fitACEbiv_ga)[1:198]);hist(resid(fitACEbiv_ga)[199:396])
@@ -255,45 +218,47 @@ fitACEbiv <-
 
 ```
 
-```{r mglm4twin_bivAE,results=FALSE}
+```{r }
+#| label: mglm4twin_bivAE
 
 biv_AE <-
     mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=2, model='AE')
 
-fitAEbiv <-
-    mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
-                         matrix_pred=biv_AE,
-                         control_algorithm=list(tuning=0.75),
-                         link=rep('identity', 2),
-                         variance=rep('constant', 2),
-                         power_fixed=rep(TRUE, 2),
-                         data=datm)
+## fitAEbiv <-
+##     mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
+##                          matrix_pred=biv_AE,
+##                          control_algorithm=list(tuning=0.75),
+##                          link=rep('identity', 2),
+##                          variance=rep('constant', 2),
+##                          power_fixed=rep(TRUE, 2),
+##                          data=dat)
 
 ## summary(fitAEbiv, model='AE', biometric=TRUE)
 
 ```
 
-```{r mglm4twin_biv_gof}
+```{r }
+#| label: mglm4twin_biv_gof
 
-cbind(Model=c('ACE', 'AE'),
-      rbind(mglm4twin::gof(fitACEbiv), mglm4twin::gof(fitAEbiv)))
+## cbind(Model=c('ACE', 'AE'),
+##       rbind(mglm4twin::gof(fitACEbiv), mglm4twin::gof(fitAEbiv)))
 
 ```
 
-> A primeira medida, plogLik, é do tipo maior-melhor, as demais são do
-> tipo menor-melhor. De modo geral, o modelo ACE apresenta melhores
-> medidas. Contudo ele tem três parâmetros a mais. A diferença das
-> medidas entre os modelos não é grande o suficiente para justificar
-> permanecermos com um modelo maior sendo que o componente C não é
-> estatisticamente significativo. Assim, ficamos com o modelo bivariado
-> AE.
->
-> Agora, a seleção de variáveis. Começamos pela média. Das seis
-> variáveis ficamos com apenas duas, ou seja, das seis apenas duas se
-> mostram significativas. As medidas do modelo inicial e do final são
-> apresentadas abaixo.
+De modo geral, o modelo ACE apresenta melhores medidas. Contudo ele tem
+três parâmetros a mais. A diferença das medidas entre os modelos não é
+grande o suficiente para justificar permanecermos com um modelo maior
+sendo que o componente C não é estatisticamente significativo. Assim,
+ficamos com o modelo bivariado AE.
 
-```{r mglm4twin_bivAE_final,results=FALSE}
+Agora, a seleção de variáveis. Começamos pela média. Das seis
+variáveis ficamos com apenas duas, ou seja, das seis apenas duas se
+mostram significativas. As medidas do modelo inicial e do final são
+apresentadas abaixo.
+
+```{r}
+#| label: mglm4twin_bivAE_final
+#| results: false
 
 form_TREC <- TREC ~ id_gest + sexo
 form_KREC <- KREC ~ id_gest
@@ -305,31 +270,35 @@ fitAEbivf <-
                          link=rep('identity', 2),
                          variance=rep('constant', 2),
                          power_fixed=rep(TRUE, 2),
-                         data=datm)
+                         data=dat)
 
 fitAEbiv <- fitAEbivf
 
 ```
 
-```{r mglm4twin_bivAE_gof}
+```{r }
+#| label: mglm4twin_bivAE_gof
 
-cbind(Model=c('AE initial', 'AE final'),
-      rbind(mglm4twin::gof(fitAEbiv), mglm4twin::gof(fitAEbivf)))
+## cbind(Model=c('AE initial', 'AE final'),
+##       rbind(mglm4twin::gof(fitAEbiv), mglm4twin::gof(fitAEbivf)))
 
 ```
 
-> Vemos que as medidas dos modelos são bem similares, apesar do modelo
-> final ter praticamente metade dos parâmetros do modelo inicial. No
-> modelo final ficamos com duas covariáveis como significativas para o
-> TREC e com uma variável significativa para o KREC.
+Vemos que as medidas dos modelos são bem similares, apesar do modelo
+final ter praticamente metade dos parâmetros do modelo inicial. No
+modelo final ficamos com duas covariáveis como significativas para o
+TREC e com uma variável significativa para o KREC.
 
-```{r mglm4twin_bivAE_summary,results=FALSE}
+```{r}
+#| label: mglm4twin_bivAE_summary
+#| results: false
 
 tt <- summary(fitAEbiv, model='AE', biometric=TRUE)
 
 ```
 
-```{r mglm4twin_bivAE_regression}
+```{r}
+#| label: mglm4twin_bivAE_regression
 
 rbind(cbind(' '=rownames(tt[[1]][[1]]), 
             tibble(tt[[1]][[1]])), 
@@ -343,27 +312,25 @@ rbind(cbind(' '=rownames(tt[[1]][[1]]),
 
 ```
 
-> Para TREC as variáveis significativas são a idade gestacional e o
-> sexo, i.e. a idade gestacional e o sexo do gêmeo tem uma associação
-> significativa com os valor de TREC. Para o KREC, apenas a idade
-> gestacional é significativa, o sexo é irrelevante (sem diferença
-> significativa de um sexo para outro).
->
-> Em todo modelo de regressão/estatístico temos um intercepto, quando
-> falamos da interpretação dos coeficientes estimados. O intercepto é o
-> nível de referência. Para o TREC, o intercepto corresponde a um gêmeo
-> de idade gestacional média e do sexo feminino. Conforme aumentamos a
-> idade gestacional aumentamos seu TREC no valor de seu coeficiente
-> estimado (8.0203). Se o gêmeo é do sexo masculino, estimamos que seu
-> TREC diminua 34.7133, em relação ao intercepto. Mesma ideia para o
-> KREC e a idade gestacional.
->
-> Agora, a covariância. Decompomos a variância do TREC
-> (`r round(var(datm$TREC),4)`), a variância do KREC
-> (`r round(var(datm$KREC), 4)`) e a covariância entre os dois
-> (`r round(cov(datm$TREC, datm$KREC),4)`) da seguinte maneira.
+Para TREC as variáveis significativas são a idade gestacional e o sexo,
+i.e. a idade gestacional e o sexo do gêmeo tem uma associação
+significativa com o valor de TREC. Para o KREC, apenas a idade
+gestacional é significativa, o sexo é irrelevante (sem diferença
+significativa de um sexo para outro).
 
-```{r mglm4twin_bivAE_covcomponents}
+Para o TREC, o intercepto corresponde a um gêmeo de idade gestacional
+média e do sexo feminino. Conforme aumentamos a idade gestacional
+aumentamos seu TREC no valor de seu coeficiente estimado (8.0203). Se o
+gêmeo é do sexo masculino, estimamos que seu TREC diminua 34.7133, em
+relação ao intercepto. Mesma ideia para o KREC e a idade gestacional.
+
+Agora, a covariância. Decompomos a variância do TREC
+(`r round(var(dat$TREC),4)`), a variância do KREC
+(`r round(var(dat$KREC), 4)`) e a covariância entre os dois
+(`r round(cov(dat$TREC, dat$KREC),4)`) da seguinte maneira.
+
+```{r}
+#| label: mglm4twin_bivAE_covcomponents
 
 tibble::tibble(tt$Dispersion)|>
     dplyr::mutate(' '=dplyr::recode(Parameters,
@@ -373,9 +340,9 @@ tibble::tibble(tt$Dispersion)|>
                                     'A1' ='TREC',
                                     'A2' ='KREC',
                                     'A12'='TREC & KREC'),
-                  Percentage=Estimates/rep(c(var(datm$TREC),
-                                             var(datm$KREC),
-                                             cov(datm$TREC, datm$KREC)),
+                  Percentage=Estimates/rep(c(var(dat$TREC),
+                                             var(dat$KREC),
+                                             cov(dat$TREC, dat$KREC)),
                                            2)*100)|>
     select(!Parameters)|>
     dplyr::relocate(` `, .before='Estimates')|>
@@ -388,23 +355,18 @@ tibble::tibble(tt$Dispersion)|>
 
 ```
 
-> Temos as estimativas divididas pelos componentes ambiental e
-> genético. Em outras palavras, quanto da variabilidade dos dados é
-> explicada pelos tais componentes. Como podemos ver pela coluna
-> percentage, a soma das estimativas (do TREC, por exemplo) não
-> dá 1. Isso quer dizer que nem toda a variabilidade observada é
-> explicada pelo componente ambiental ou genético.
->
-> Vemos que o componente genético é muito mais significativo,
-> principalmente no TREC. Continunando no TREC, a fim de didática, 27%
-> (não significativo, \(p\)-valor de 0.177) da variabilidade observada é
-> explicada pelo componente ambiental e 63% (significativo, \(p\)-valor
-> de 0.0098) pelo componente genético.
->
-> Abaixo temos as medidas de ambientalidade e herdabilidade. Vemos que
-> apenas a herdabilidade é significativa, para ambos TREC e KREC.
+Temos as estimativas divididas pelos componentes ambiental e
+genético. Como podemos ver pela coluna percentage, a soma das
+estimativas (do TREC, por exemplo) não dá 1. Isso quer dizer que nem
+toda a variabilidade observada é explicada pelo componente ambiental ou
+genético. Vemos que o componente genético é muito mais significativo,
+principalmente no TREC.
 
-```{r mglm4twin_bivAE_results}
+Abaixo temos as medidas de ambientalidade e herdabilidade. Vemos que
+apenas a herdabilidade é significativa, para ambos TREC e KREC.
+
+```{r}
+#| label: mglm4twin_bivAE_results
 
 tibble::tibble(cbind(' '=c('TREC', 'KREC', 'TREC', 'KREC'), 
                      rbind(tt$Env_main, tt$A_main)))|>
@@ -430,32 +392,30 @@ tibble::tibble(
 
 ```
 
-> A única correlação significativa é a genética, a ambiental não
-> é. Seguindo a mesma ideia, a herdabilidade bivariada/conjunta é
-> significativa. A ambiental não é.
->
-> Tentamos verificar o efeito das covariáveis também na covariância,
-> i.e. "quebrar" as medidas apresentadas acima pelas covariáveis, mas
-> não conseguimos. Estamos lidando com um modelo bem complexo e nosso
-> tamanho amostral não é grande. Portanto, não conseguimos convergência
-> nos modelos bivariados com covariáveis na covariância. Solução?
-> Ajustar modelos univariados. Os componentes de média se mantém
-> exatamente os mesmos.
+A única correlação significativa é a genética, a ambiental não
+é. Seguindo a mesma ideia, a herdabilidade bivariada/conjunta é
+significativa. A ambiental não é.
+
+Tentamos verificar o efeito das covariáveis também na covariância, mas
+não conseguimos. Não conseguimos convergência. Solução?  Ajustar modelos
+univariados. Os componentes de média se mantém exatamente os mesmos.
 
 ## TREC
 
-> Partimos do modelo AE com idade gestacional e sexo como covariáveis na
-> média e fizemos a seleção de covariáveis na covariância. Das seis
-> covariáveis nenhuma é significativa no componente E, ambiental. No
-> componente A, genético, a variável parto é significativa.
+Partimos do modelo AE com idade gestacional e sexo como covariáveis na
+média e fizemos a seleção de covariáveis na covariância. Das seis
+covariáveis nenhuma é significativa no componente E, ambiental. No
+componente A, genético, a variável parto é significativa.
 
-```{r mglm4twin_trec,results=FALSE}
+```{r}
+#| label: mglm4twin_trec
+#| results: false
 
 cov_TREC <- list(formE=~ 1, formA=~ parto)
 
 uni_AEtrec <-
     mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=1, model='AE',
-                       formula=cov_TREC, dat=datm)
+                       formula=cov_TREC, dat=dat)
 
 fitAEtrec <-
     mglm4twin::mglm4twin(linear_pred=c(form_TREC),
@@ -463,11 +423,12 @@ fitAEtrec <-
                          link='identity',
                          variance='constant',
                          power_fixed=TRUE,
-                         data=datm)
+                         data=dat)
 
 ```
 
-```{r mglm4twin_trec_results}
+```{r}
+#| label: mglm4twin_trec_results
 
 tt <- rbind(cbind(fitAEtrec$Covariance, 
                   sqrt(diag(fitAEtrec$vcov))[-c(1:3)])[1, ], 
@@ -478,41 +439,41 @@ tibble::tibble(' '=c('Environment component (E)',
                      'partoCesariana', 'partoNormal'),
                Estimates=tt[, 1],
                'Std.error'=tt[, 2],
-               Percentage=Estimates/rep(var(datm$TREC), 3)*100)|>
+               Percentage=Estimates/rep(var(dat$TREC), 3)*100)|>
     kableExtra::kbl(booktabs=TRUE, digits=4)|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::pack_rows('Genetic component (A)', 2, 3)
 
 ```
 
-> 26% da variabilidade observada é explicada/atribuída pelo componente
-> ambiental. O tipo de parto é significativo no componente genético. Com
-> um gêmeo que teve parto do tipo cesaria, o componente genético explica
-> 72% da variabilidade. Ou seja, os componentes ambiental e genético
-> explicam cerca de 98% de toda a variabilidade da variável TREC. Agora,
-> num gêmeo que teve parto normal, (o poder de) explicação cai 80%. Ou
-> seja, num gêmeo com parto normal o componente genético não explica
-> nada da variabilidade. Isso é justificado pela (baixa)
-> representatividade nos dados, `r 100*table(datm$parto)[[2]]/n `%
-> apenas dos gêmeos tiveram parto normal (ou seja, a incerteza inerente
-> é muito alta).
+26% da variabilidade observada é explicada/atribuída pelo componente
+ambiental. O tipo de parto é significativo no componente genético. Com
+um gêmeo que teve parto do tipo cesaria, o componente genético explica
+72% da variabilidade. Ou seja, os componentes ambiental e genético
+explicam cerca de 98% de toda a variabilidade da variável TREC. Agora,
+num gêmeo que teve parto normal, (o poder de) explicação cai 80%. Ou
+seja, num gêmeo com parto normal o componente genético não explica nada
+da variabilidade. Isso é justificado pela (baixa) representatividade nos
+dados, `r 100*table(dat$parto)[[2]]/n `% apenas dos gêmeos tiveram
+parto normal.
 
 ## KREC
 
-> Partimos do modelo AE com idade gestacional como covariável na média e
-> fizemos a seleção de covariáveis na covariância. Das seis covariáveis,
-> tipo de parto e zigocidade são significativas no componente E,
-> ambiental. No componente A, genético, a variável parto é
-> significativa.
+Partimos do modelo AE com idade gestacional como covariável na média e
+fizemos a seleção de covariáveis na covariância. Das seis covariáveis,
+tipo de parto e zigocidade são significativas no componente E,
+ambiental. No componente A, genético, a variável parto é significativa.
 
-```{r mglm4twin_krec,results=FALSE}
+```{r}
+#| label: mglm4twin_krec
+#| results: false
 
 cov_KREC <- list(formE=~ parto + Zigocidade,
                  formA=~ parto)
 
 uni_AEkrec <-
     mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=1, model='AE',
-                       formula=cov_KREC, dat=datm)
+                       formula=cov_KREC, dat=dat)
 
 fitAEkrec <-
     mglm4twin::mglm4twin(linear_pred=c(form_KREC),
@@ -522,11 +483,12 @@ fitAEkrec <-
                          link='identity',
                          variance='constant',
                          power_fixed=TRUE,
-                         data=datm)
+                         data=dat)
 
 ```
 
-```{r mglm4twin_krec_results}
+```{r}
+#| label: mglm4twin_krec_results
 
 tt <- rbind(cbind(fitAEkrec$Covariance, 
                   sqrt(diag(fitAEkrec$vcov))[-c(1:2)])[1:3, ], 
@@ -540,7 +502,7 @@ tibble::tibble(' '=c('partoCesariana.zigocidadeDZ',
                      'partoNormal'),
                Estimates=tt[, 1],
                'Std.error'=tt[, 2],
-               Percentage=Estimates/rep(var(datm$KREC), 5)*100)|>
+               Percentage=Estimates/rep(var(dat$KREC), 5)*100)|>
     kableExtra::kbl(booktabs=TRUE, digits=4)|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::pack_rows('Environment component (E)', 1, 3)|>
@@ -548,19 +510,19 @@ tibble::tibble(' '=c('partoCesariana.zigocidadeDZ',
 
 ```
 
-> Num gêmeo com parto tipo cesaria e dizigoto, nada da variabilidade do
-> KREC é explicada pelo componente ambiental (-62%). Contudo, se mudamos
-> para um gêmeo de parto normal a explicação cresce 66%, ou seja, 4%
-> (-62 + 66) da variabilidade é explicada pelo componente ambiental. Num
-> gêmeo monozigoto o percentual explicado é 9% (-62 + 71).
->
-> Quando olhamos para o componente genético a diferença entre tipos de
-> parto é abismal. Num gëmeo dizigoto de parto tipo cesaria temos 103%
-> (-62 + 165) da variabilidade unicamente explicada pelo componente
-> genético. Tal efeito é tão grande mas ao mesmo incerto, que o
-> percentual estoura. No caso de parto normal temos exatamente o
-> contrário. O desbalancemanto das frequências de tipo de parto na base
-> de dados acaba gerando esses resultados "estranhos".
+Num gêmeo com parto tipo cesaria e dizigoto, nada da variabilidade do
+KREC é explicada pelo componente ambiental (-62%). Contudo, se mudamos
+para um gêmeo de parto normal a explicação cresce 66%, ou seja, 4%
+(-62 + 66) da variabilidade é explicada pelo componente ambiental. Num
+gêmeo monozigoto o percentual explicado é 9% (-62 + 71).
+
+Quando olhamos para o componente genético a diferença entre tipos de
+parto é abismal. Num gëmeo dizigoto de parto tipo cesaria temos 103%
+(-62 + 165) da variabilidade unicamente explicada pelo componente
+genético. Tal efeito é tão grande mas ao mesmo incerto, que o percentual
+estoura. No caso de parto normal temos exatamente o contrário. O
+desbalancemanto das frequências de tipo de parto na base de dados acaba
+gerando esses resultados "estranhos".
 
 # References
 
