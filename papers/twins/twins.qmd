@@ -95,9 +95,30 @@ dat <- readxl::read_xlsx(paste0(path, file), sheet='Gemeos')|>
 ##     dplyr::select(ID, id_gest, peso, sexo, TREC, KREC)
 dat <- dplyr::filter(dat, !ID2=='PG74')
 n   <- nrow(dat)
+
+## citation('stringr')
+
 ```
 
 # Introduction
+
+# Methods
+
+## Data
+
+## Statistical analysis
+
+The statistical analysis was performed through the R [@R22] language and
+environment for statistical computing.
+
+> Modelos multivariados de regressão feitos para lidar com as
+> interrelações genéticas e ambientais de dados de gêmeos (Bonat and
+> Hjelmborg, 2022) foram aplicados para entender a dinâmica das medidas
+> de TREc e KREC.
+
+The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{stringr}` [],
+`{ggplot2}` [@ggplot2.16], `{tidyr}` [@tidyr1.2.0], `{broom}`
+[@broom0.8.0] and `{mglm4twin}` (Bonat, 2018).
 
 # Results
 
@@ -542,25 +563,7 @@ tibble::tibble(' '=c('partoCesariana.zigocidadeDZ',
 > contrário. O desbalancemanto das frequências de tipo de parto na base
 > de dados acaba gerando esses resultados "estranhos".
 
-# Discussion
-
 # References
-
-> A análise estatística foi performada com a linguagem e ambiente para
-> computação estatística `R` (R Core Team, 2021). Para descrever a
-> relação das medidas de TREC, KREC, idade gestacional e peso ao
-> nascimento, gráficos de dispersão em conjunto com análises de
-> regressão linear foram aplicadas. Já para as variáveis qualitativas,
-> gráficos de caixa (*boxplots*) e medidas descritivas e exploratórias
-> foram calculadas. Diferenças de média entre grupos tiveram sua
-> significância testada através de testes-*t* de hipótese. Modelos
-> multivariados de regressão feitos para lidar com as interrelações
-> genéticas e ambientais de dados de gêmeos (Bonat and Hjelmborg, 2022)
-> foram aplicados para entender a dinâmica das medidas de TREc e
-> KREC. Os principais pacotes `R` utlizados na análise foram: `{dplyr}`
-> (Wickham et al., 2021), `{stringr}` (Wickham, 2019), `{ggplot2}`
-> (Wickham, 2016), `{tidyr}` (Wickham, 2021), `{broom}` (Robinson et
-> al., 2021), e `{mglm4twin}` (Bonat, 2018).
 
 ::: {#refs}
 :::
