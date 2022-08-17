@@ -1,8 +1,33 @@
 ---
 title: "TREC & KREC of twins: Decomposing the covariance matrix"
-author: Henrique A Laureano et al
-format: pdf
+author:
+  - name: Henrique Aparecido Laureano
+    affiliations:
+      - name: Carnegie Mellon University
+        city: Pittsburgh
+        state: PA
+      - id: chicago
+        name: University of Chicago
+        city: Chicago
+        state: IL
+  - name: Stéfanne Maria Jeha Bortoletto
+    affiliations:
+      - name: University of California, San Diego
+        city: San Diego
+        state: CA
+  - name: Carolina Cardoso de Mello Prando
+  - name: Wagner Hugo Bonat
+format:
+  pdf:
+    echo: false
 ---
+
+```{r}
+#| label: setup
+
+## setwd('papers/twins/')
+
+```
 
 # Introduction
 
