@@ -96,8 +96,6 @@ dat <- readxl::read_xlsx(paste0(path, file), sheet='Gemeos')|>
 dat <- dplyr::filter(dat, !ID2=='PG74')
 n   <- nrow(dat)
 
-## citation('stringr')
-
 ```
 
 # Introduction
@@ -112,13 +110,14 @@ The statistical analysis was performed through the R [@R22] language and
 environment for statistical computing.
 
 > Modelos multivariados de regressão feitos para lidar com as
-> interrelações genéticas e ambientais de dados de gêmeos (Bonat and
-> Hjelmborg, 2022) foram aplicados para entender a dinâmica das medidas
-> de TREc e KREC.
+> interrelações genéticas e ambientais de dados de gêmeos
+> [@bonat&hjelmborg] foram aplicados para entender a dinâmica das
+> medidas de TREc e KREC.
 
-The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{stringr}` [],
-`{ggplot2}` [@ggplot2.16], `{tidyr}` [@tidyr1.2.0], `{broom}`
-[@broom0.8.0] and `{mglm4twin}` (Bonat, 2018).
+The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{stringr}`
+[@stringr1.4.0], `{ggplot2}` [@ggplot2.16], `{tidyr}` [@tidyr1.2.0],
+`{broom}` [@broom0.8.0] and `{mglm4twin}` [@mglm4twin; @bonat&hjelmborg;
+@mcglm.seriesc; @mcglm].
 
 # Results
 
