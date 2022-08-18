@@ -156,49 +156,49 @@ form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
 
 ## ACE model -----------------------------------------------------------
 
-## biv_ACE <- mglm4twin::mt_twin(N_DZ=N$DZ,
-##                               N_MZ=N$MZ, n_resp=2, model='ACE')
+biv_ACE <- mglm4twin::mt_twin(N_DZ=N$DZ,
+                              N_MZ=N$MZ, n_resp=2, model='ACE')
 
 ## GAUSSIAN 
 
-## fitACEbiv <-
-##     mglm4twin::mglm4twin(
-##                    linear_pred      =c(form_TREC, form_KREC),
-##                    matrix_pred      =biv_ACE,
-##                    control_algorithm=list(tuning=0.75),
-##                    link             =rep('identity', 2),
-##                    variance         =rep('constant', 2),
-##                    power_fixed      =rep(TRUE, 2),
-##                    data             =dat
-##                )
+fitACEbiv <-
+    mglm4twin::mglm4twin(
+                   linear_pred      =c(form_TREC, form_KREC),
+                   matrix_pred      =biv_ACE,
+                   control_algorithm=list(tuning=0.75),
+                   link             =rep('identity', 2),
+                   variance         =rep('constant', 2),
+                   power_fixed      =rep(TRUE, 2),
+                   data             =dat
+               )
 ## summary(fitACEbiv, model='ACE', biometric=TRUE)
 
 ## TWEEDIE
 
-## fitACEbiv_tw <-
-##     mglm4twin::mglm4twin(
-##                    linear_pred      =c(form_TREC, form_KREC),
-##                    matrix_pred      =biv_ACE,
-##                    control_algorithm=list(tuning=0.01, max_iter=750),
-##                    link             =rep(    'log', 2),
-##                    variance         =rep('tweedie', 2),
-##                    power_fixed      =rep(FALSE, 2),
-##                    data             =dat
-##                )
+fitACEbiv_tw <-
+    mglm4twin::mglm4twin(
+                   linear_pred      =c(form_TREC, form_KREC),
+                   matrix_pred      =biv_ACE,
+                   control_algorithm=list(tuning=0.01, max_iter=750),
+                   link             =rep(    'log', 2),
+                   variance         =rep('tweedie', 2),
+                   power_fixed      =rep(FALSE, 2),
+                   data             =dat
+               )
 ## summary(fitACEbiv_tw, model='ACE', biometric=TRUE)
 
 ## GAMMA
 
-## fitACEbiv_ga <-
-##     mglm4twin::mglm4twin(
-##                    linear_pred      =c(form_TREC, form_KREC),
-##                    matrix_pred      =biv_ACE,
-##                    control_algorithm=list(tuning=0.01, max_iter=1e3),
-##                    link             =rep('inverse', 2),
-##                    variance         =rep('tweedie', 2),
-##                    power_fixed      =rep(TRUE, 2),
-##                    data             =dat
-##                )
+fitACEbiv_ga <-
+    mglm4twin::mglm4twin(
+                   linear_pred      =c(form_TREC, form_KREC),
+                   matrix_pred      =biv_ACE,
+                   control_algorithm=list(tuning=0.01, max_iter=1e3),
+                   link             =rep('inverse', 2),
+                   variance         =rep('tweedie', 2),
+                   power_fixed      =rep(TRUE, 2),
+                   data             =dat
+               )
 ## summary(fitACEbiv_ga, model='ACE', biometric=TRUE)
 
 ## cbind(Model=c('Gaussian', 'Tweedie', 'Gamma'),
@@ -206,14 +206,14 @@ form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
 ##             mglm4twin::gof(fitACEbiv_tw),
 ##             mglm4twin::gof(fitACEbiv_ga)))
 
-## par(mfrow=c(1, 2))
-## 
-## hist(      dat$TREC            );hist(      dat$KREC              )
-## hist(resid(fitACEbiv   )[1:198]);hist(resid(fitACEbiv   )[199:396])
-## hist(resid(fitACEbiv_tw)[1:198]);hist(resid(fitACEbiv_tw)[199:396])
-## hist(resid(fitACEbiv_ga)[1:198]);hist(resid(fitACEbiv_ga)[199:396])
-## 
-## layout(1)
+par(mfrow=c(2, 2))
+
+hist(      dat$TREC            );hist(      dat$KREC              )
+hist(resid(fitACEbiv   )[1:198]);hist(resid(fitACEbiv   )[199:396])
+hist(resid(fitACEbiv_tw)[1:198]);hist(resid(fitACEbiv_tw)[199:396])
+hist(resid(fitACEbiv_ga)[1:198]);hist(resid(fitACEbiv_ga)[199:396])
+
+layout(1)
 
 ```
 
