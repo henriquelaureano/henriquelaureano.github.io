@@ -35,22 +35,14 @@ format:
 
 if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 
-pacman::p_load(readxl,
-               dplyr,
-               stringr,
-               ggplot2,
-               ggthemes,
-               tidyr,
-               patchwork,
-               haven,
-               kableExtra,
-               broom,
-               tibble,
-               devtools,
-               Matrix)
+pacman::p_load(readxl, dplyr, tidyr, haven, ggplot2, patchwork, tibble,
+               kableExtra, Matrix)
 
+## if(!requireNamespace('devtools', quietly=TRUE))
+##     install.packages('devtools')
 ## devtools::install_github('wbonat/mglm4twin')
 library(mglm4twin)
+
 ```
 
 ```{r}
@@ -91,6 +83,200 @@ N   <- dat|>
 
 ## Data
 
+```{r}
+#| label: TREC-and-KREC-plots
+#| fig-width: 10
+#| fig-height: 9
+#| fig-cap: Graph A) TREC and KREC boxplots with their means in
+#|          asterisks; Graph B) TREC and KREC scatterplot with tendency
+#|          curve in solid black; Graph C) Twins scatterplots per TREC
+#|          and KREC with tendency curves in solid black.
+#| fig-pos: 'H'
+
+p1 <- dat|>
+    tidyr::pivot_longer(TREC:KREC, names_to='var')|>
+    dplyr::mutate(var=haven::as_factor(var))|>
+    ggplot()+
+    aes(x=var, y=value)+
+    scale_y_continuous(breaks=seq(0, 800, by=100))+
+    geom_hline(yintercept=seq(0, 800, by=100),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_boxplot(outlier.shape=21, outlier.size=2)+
+    stat_summary(fun='mean', geom='point', size=3, shape=8)+
+    labs(x=NULL, y=NULL)+
+    theme_classic(base_size=14)+
+    theme(axis.text.x=element_text(
+              face  ='bold',
+              size  =14,
+              margin=ggplot2::unit(c(t=3, r=0, b=0, l=0), 'mm')
+          ))
+
+p2 <- dat|>
+    ggplot()+
+    aes(x=TREC, y=KREC)+
+    scale_x_continuous(breaks=seq(0, 800, by=100))+
+    scale_y_continuous(breaks=seq(0, 800, by=100))+
+    geom_vline(xintercept=seq(0, 800, by=100),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_hline(yintercept=seq(0, 800, by=100),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_point(size=3, shape=21)+
+    geom_smooth(method='loess',
+                formula=y ~ x, se=FALSE, size=1, color='black')+
+    labs(x='TREC', y='KREC')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(face='bold'),
+          axis.title.y=element_text(face='bold'))
+
+p3 <- dplyr::bind_cols(
+                 by=rep(c('TREC', 'KREC'), each=99), 
+                 dplyr::bind_rows(
+                            dat|>
+                            dplyr::select(Twin_pair, TREC)|>
+                            tidyr::pivot_wider(names_from =Twin_pair,
+                                               values_from=TREC,
+                                               values_fn  =list)|>
+                            tidyr::unnest(c(`1`, `2`)), 
+                            dat|>
+                            dplyr::select(Twin_pair, KREC)|>
+                            tidyr::pivot_wider(names_from =Twin_pair,
+                                               values_from=KREC,
+                                               values_fn  =list)|>
+                            tidyr::unnest(c(`1`, `2`))
+                        )
+             )|>
+    dplyr::mutate(by=haven::as_factor(by))|>
+    ggplot()+
+    aes(x=`1`, y=`2`)+
+    scale_x_continuous(breaks=seq(0, 800, by=100))+
+    scale_y_continuous(breaks=seq(0, 800, by=100))+
+    geom_vline(xintercept=seq(0, 800, by=100),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_hline(yintercept=seq(0, 800, by=100),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_point(size=3, shape=21)+
+    geom_smooth(method='loess',
+                formula=y ~ x, se=FALSE, size=1, color='black')+
+    facet_wrap(~ by)+
+    labs(x='Twin 1', y='Twin 2')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(face  ='bold',
+                                    margin=ggplot2::unit(c(
+                                                        t=3, r=0,
+                                                        b=0, l=0
+                                                    ), 'mm')),
+          axis.title.y=element_text(face='bold'),
+          strip.text.x=element_text(face='bold', size=14))
+
+layout <- '
+AABBBBB
+CCCCCCC
+'
+p1 + p2 + p3 +
+    patchwork::plot_annotation(tag_levels='A', tag_suffix=')')+
+    patchwork::plot_layout(design=layout)
+
+```
+
+```{r}
+#| label: covariate-plots
+#| fig-width: 10
+#| fig-height: 5.75
+#| fig-cap: Graphs A) and B) are the boxplots of the numerical
+#|          variables with their means in asterisks; Graphs C), D) and
+#|          E) are the barplots of the categorial variables with their
+#|          level frequencies and respective sample percentages.
+#| fig-pos: 'H'
+
+p1 <- dat|>
+    dplyr::rename(Weight='peso')|>
+    ggplot()+
+    aes(x=Weight, y=' ')+
+    scale_x_continuous(breaks=seq(1e3, 3750, by=250))+
+    geom_vline(xintercept=seq(1e3, 3750, by=250),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_boxplot(outlier.shape=21, outlier.size=3)+
+    stat_summary(fun='mean', geom='point', size=4, shape=8)+
+    labs(x=NULL, y=NULL, title='Weight')+
+    theme_classic(base_size=14)+
+    theme(plot.title =element_text(face='bold'),
+          axis.text.x=element_text(face='bold', size=12))
+
+p2 <- dat|>
+    dplyr::rename(`Gestational age`='id_gest')|>
+    ggplot()+
+    aes(x=`Gestational age`, y=' ')+
+    scale_x_continuous(breaks=seq(27, 40, by=1))+
+    geom_vline(xintercept=seq(27, 40, by=1),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_boxplot(outlier.shape=21, outlier.size=3)+
+    stat_summary(fun='mean', geom='point', size=4, shape=8)+
+    labs(x=NULL, y=NULL, title='Gestational age')+
+    theme_classic(base_size=14)+
+    theme(plot.title =element_text(face='bold'),
+          axis.text.x=element_text(face='bold', size=12))
+
+p3 <- dat|>
+    dplyr::mutate(parto=dplyr::recode(parto, Cesariana='Cesarean'))|>
+    ggplot()+
+    aes(y=parto)+
+    geom_bar(fill='white', color='black')+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../n, 3), '%)'
+                               )),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), breaks=NULL, limits=c(0, 320))+
+    labs(x=NULL, y=NULL, title='Type of childbirth')+
+    theme_classic(base_size=14)+
+    theme(axis.text.y=element_text(face='bold', size=14),
+          plot.title =element_text(face='bold'))
+
+p4 <- dat|>
+    dplyr::mutate(sexo=dplyr::recode(sexo,
+                                     Feminino ='Female',
+                                     Masculino='Male'))|>
+    ggplot()+
+    aes(y=sexo)+
+    geom_bar(fill='white', color='black')+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../n, 3), '%)'
+                               )),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), breaks=NULL, limits=c(0, 190))+
+    labs(x=NULL, y=NULL, title='Sex')+
+    theme_classic(base_size=14)+
+    theme(axis.text.y=element_text(face='bold', size=14),
+          plot.title =element_text(face='bold'))
+
+p5 <- dat|>
+    ggplot()+
+    aes(y=Zigocidade)+
+    geom_bar(fill='white', color='black')+
+    geom_text(stat='count',
+              aes(label=paste0(..count..,
+                               ' (', 100*round(..count../n, 3), '%)'
+                               )),
+              hjust=-0.1, fontface='bold')+
+    scale_x_continuous(expand=c(0, 0), breaks=NULL, limits=c(0, 270))+
+    labs(x=NULL, y=NULL, title='Zigosity')+
+    theme_classic(base_size=14)+
+    theme(axis.text.y=element_text(face='bold', size=14),
+          plot.title =element_text(face='bold'))
+
+p1 / p2 / (p3 + p4 + p5) +
+    patchwork::plot_annotation(tag_levels='A', tag_suffix=')')
+
+```
+
 ## Statistical analysis
 
 The statistical analysis was performed through the R [@R22] language and
@@ -101,10 +287,10 @@ environment for statistical computing.
 > [@bonat&hjelmborg] foram aplicados para entender a dinâmica das
 > medidas de TREc e KREC.
 
-The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{stringr}`
-[@stringr1.4.0], `{ggplot2}` [@ggplot2.16], `{tidyr}` [@tidyr1.2.0],
-`{broom}` [@broom0.8.0] and `{mglm4twin}` [@mglm4twin; @bonat&hjelmborg;
-@mcglm.seriesc; @mcglm].
+The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{tidyr}`
+[@tidyr1.2.0], `{ggplot2}` [@ggplot2.16], `patchwork` [@patchwork1.1.1],
+`{kableExtra}` [@kableExtra1.3.4], `{Matrix}` [@matrix1.4.1] and
+`{mglm4twin}` [@mglm4twin; @bonat&hjelmborg; @mcglm.seriesc; @mcglm].
 
 # Results
 
@@ -142,8 +328,9 @@ gêmeos.
 
 ```{r}
 #| label: bivariate-models
-#| fig-height: 4.25
-#| fig-width: 8.75
+#| fig-height: 10
+#| fig-width: 10
+#| results: false
 
 ## ---------------------------------------------------------------------
 ## all models were chosen with 194 twins but since the weight is never
@@ -151,54 +338,54 @@ gêmeos.
 ## ---------------------------------------------------------------------
 
 ## mean linear predictors ----------------------------------------------
-form_TREC <- TREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
-form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
+## form_TREC <- TREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
+## form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
 
 ## ACE model -----------------------------------------------------------
 
-biv_ACE <- mglm4twin::mt_twin(N_DZ=N$DZ,
-                              N_MZ=N$MZ, n_resp=2, model='ACE')
+## biv_ACE <- mglm4twin::mt_twin(N_DZ=N$DZ,
+##                               N_MZ=N$MZ, n_resp=2, model='ACE')
 
 ## GAUSSIAN 
 
-fitACEbiv <-
-    mglm4twin::mglm4twin(
-                   linear_pred      =c(form_TREC, form_KREC),
-                   matrix_pred      =biv_ACE,
-                   control_algorithm=list(tuning=0.75),
-                   link             =rep('identity', 2),
-                   variance         =rep('constant', 2),
-                   power_fixed      =rep(TRUE, 2),
-                   data             =dat
-               )
+## fitACEbiv <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ACE,
+##                    control_algorithm=list(tuning=0.75),
+##                    link             =rep('identity', 2),
+##                    variance         =rep('constant', 2),
+##                    power_fixed      =rep(TRUE, 2),
+##                    data             =dat
+##                )
 ## summary(fitACEbiv, model='ACE', biometric=TRUE)
 
 ## TWEEDIE
 
-fitACEbiv_tw <-
-    mglm4twin::mglm4twin(
-                   linear_pred      =c(form_TREC, form_KREC),
-                   matrix_pred      =biv_ACE,
-                   control_algorithm=list(tuning=0.01, max_iter=750),
-                   link             =rep(    'log', 2),
-                   variance         =rep('tweedie', 2),
-                   power_fixed      =rep(FALSE, 2),
-                   data             =dat
-               )
+## fitACEbiv_tw <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ACE,
+##                    control_algorithm=list(tuning=0.01, max_iter=750),
+##                    link             =rep(    'log', 2),
+##                    variance         =rep('tweedie', 2),
+##                    power_fixed      =rep(FALSE, 2),
+##                    data             =dat
+##                )
 ## summary(fitACEbiv_tw, model='ACE', biometric=TRUE)
 
 ## GAMMA
 
-fitACEbiv_ga <-
-    mglm4twin::mglm4twin(
-                   linear_pred      =c(form_TREC, form_KREC),
-                   matrix_pred      =biv_ACE,
-                   control_algorithm=list(tuning=0.01, max_iter=1e3),
-                   link             =rep('inverse', 2),
-                   variance         =rep('tweedie', 2),
-                   power_fixed      =rep(TRUE, 2),
-                   data             =dat
-               )
+## fitACEbiv_ga <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ACE,
+##                    control_algorithm=list(tuning=0.01, max_iter=1e3),
+##                    link             =rep('inverse', 2),
+##                    variance         =rep('tweedie', 2),
+##                    power_fixed      =rep(TRUE, 2),
+##                    data             =dat
+##                )
 ## summary(fitACEbiv_ga, model='ACE', biometric=TRUE)
 
 ## cbind(Model=c('Gaussian', 'Tweedie', 'Gamma'),
@@ -206,14 +393,59 @@ fitACEbiv_ga <-
 ##             mglm4twin::gof(fitACEbiv_tw),
 ##             mglm4twin::gof(fitACEbiv_ga)))
 
-par(mfrow=c(2, 2))
+## par(mfrow=c(4, 2))
+## 
+## hist(      dat$TREC            );hist(      dat$KREC              )
+## hist(resid(fitACEbiv   )[1:198]);hist(resid(fitACEbiv   )[199:396])
+## hist(resid(fitACEbiv_tw)[1:198]);hist(resid(fitACEbiv_tw)[199:396])
+## hist(resid(fitACEbiv_ga)[1:198]);hist(resid(fitACEbiv_ga)[199:396])
+## 
+## layout(1)
 
-hist(      dat$TREC            );hist(      dat$KREC              )
-hist(resid(fitACEbiv   )[1:198]);hist(resid(fitACEbiv   )[199:396])
-hist(resid(fitACEbiv_tw)[1:198]);hist(resid(fitACEbiv_tw)[199:396])
-hist(resid(fitACEbiv_ga)[1:198]);hist(resid(fitACEbiv_ga)[199:396])
+## AE model ------------------------------------------------------------
 
-layout(1)
+biv_AE <- mglm4twin::mt_twin(N_DZ=N$DZ,
+                             N_MZ=N$MZ, n_resp=2, model='AE')
+
+## GAUSSIAN
+
+## fitAEbiv <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_AE,
+##                    control_algorithm=list(tuning=0.75),
+##                    link             =rep('identity', 2),
+##                    variance         =rep('constant', 2),
+##                    power_fixed      =rep(TRUE, 2),
+##                    data             =dat
+##                )
+## summary(fitAEbiv, model='AE', biometric=TRUE)
+
+## ACE vs AE `gof`s ----------------------------------------------------
+
+## cbind(Model=c('ACE', 'AE'), rbind(mglm4twin::gof(fitACEbiv),
+##                                   mglm4twin::gof( fitAEbiv)))
+
+## FINAL MODEL ---------------------------------------------------------
+
+## mean linear predictors ----------------------------------------------
+form_TREC <- TREC ~ id_gest + sexo
+form_KREC <- KREC ~ id_gest
+
+fitAEbivf <-
+    mglm4twin::mglm4twin(linear_pred      =c(form_TREC, form_KREC),
+                         matrix_pred      =biv_AE,
+                         control_algorithm=list(tuning=0.75), 
+                         link             =rep('identity', 2),
+                         variance         =rep('constant', 2),
+                         power_fixed      =rep(TRUE, 2),
+                         data             =dat)
+
+## cbind(Model=c('AE initial', 'AE final'),
+##       rbind(mglm4twin::gof(fitAEbiv), mglm4twin::gof(fitAEbivf)))
+
+fitAEbiv <- fitAEbivf
+tt       <- summary(fitAEbiv, model='AE', biometric=TRUE)
 
 ```
 
@@ -223,33 +455,6 @@ componente C. Tal fato indica que tal componente não é necessário.
 Portanto, ajustamos um modelo AE e vemos se é melhor ficar com
 ele. Abaixo temos algumas medidas de qualidade do ajuste dos dois
 modelos.
-
-```{r }
-#| label: mglm4twin_bivAE
-
-biv_AE <-
-    mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=2, model='AE')
-
-## fitAEbiv <-
-##     mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
-##                          matrix_pred=biv_AE,
-##                          control_algorithm=list(tuning=0.75),
-##                          link=rep('identity', 2),
-##                          variance=rep('constant', 2),
-##                          power_fixed=rep(TRUE, 2),
-##                          data=dat)
-
-## summary(fitAEbiv, model='AE', biometric=TRUE)
-
-```
-
-```{r }
-#| label: mglm4twin_biv_gof
-
-## cbind(Model=c('ACE', 'AE'),
-##       rbind(mglm4twin::gof(fitACEbiv), mglm4twin::gof(fitAEbiv)))
-
-```
 
 De modo geral, o modelo ACE apresenta melhores medidas. Contudo ele tem
 três parâmetros a mais. A diferença das medidas entre os modelos não é
@@ -262,59 +467,26 @@ variáveis ficamos com apenas duas, ou seja, das seis apenas duas se
 mostram significativas. As medidas do modelo inicial e do final são
 apresentadas abaixo.
 
-```{r}
-#| label: mglm4twin_bivAE_final
-#| results: false
-
-form_TREC <- TREC ~ id_gest + sexo
-form_KREC <- KREC ~ id_gest
-
-fitAEbivf <-
-    mglm4twin::mglm4twin(linear_pred=c(form_TREC, form_KREC),
-                         matrix_pred=biv_AE,
-                         control_algorithm=list(tuning=0.75), 
-                         link=rep('identity', 2),
-                         variance=rep('constant', 2),
-                         power_fixed=rep(TRUE, 2),
-                         data=dat)
-
-fitAEbiv <- fitAEbivf
-
-```
-
-```{r }
-#| label: mglm4twin_bivAE_gof
-
-## cbind(Model=c('AE initial', 'AE final'),
-##       rbind(mglm4twin::gof(fitAEbiv), mglm4twin::gof(fitAEbivf)))
-
-```
-
 Vemos que as medidas dos modelos são bem similares, apesar do modelo
 final ter praticamente metade dos parâmetros do modelo inicial. No
 modelo final ficamos com duas covariáveis como significativas para o
 TREC e com uma variável significativa para o KREC.
 
 ```{r}
-#| label: mglm4twin_bivAE_summary
-#| results: false
+#| label: AE-bivariate-model-summary
 
-tt <- summary(fitAEbiv, model='AE', biometric=TRUE)
+cap <- 'AE bivariate model summary'
 
-```
-
-```{r}
-#| label: mglm4twin_bivAE_regression
-
-rbind(cbind(' '=rownames(tt[[1]][[1]]), 
-            tibble(tt[[1]][[1]])), 
-      cbind(' '=rownames(tt[[2]][[1]]), 
-            tibble(tt[[2]][[1]])))|>
-    kableExtra::kbl(booktabs=TRUE, digits=4)|>
+rbind(cbind(' '=rownames(tt[[1]][[1]]), tibble::tibble(tt[[1]][[1]])),
+      cbind(' '=rownames(tt[[2]][[1]]), tibble::tibble(tt[[2]][[1]])))|>
+    kableExtra::            kbl(booktabs=TRUE,
+                                digits  =4,
+                                caption =cap,
+                                position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::column_spec(5, bold=TRUE)|>
-    kableExtra::pack_rows('TREC', 1, 3)|>
-    kableExtra::pack_rows('KREC', 4, 5)
+    kableExtra::    column_spec(5, bold=TRUE)|>
+    kableExtra::      pack_rows('TREC', 1, 3)|>
+    kableExtra::      pack_rows('KREC', 4, 5)
 
 ```
 
@@ -336,7 +508,9 @@ Agora, a covariância. Decompomos a variância do TREC
 (`r round(cov(dat$TREC, dat$KREC),4)`) da seguinte maneira.
 
 ```{r}
-#| label: mglm4twin_bivAE_covcomponents
+#| label: AE-bivariate-model-covariance-components-dispersion
+
+cap <- 'AE bivariate model covariance components / dispersion'
 
 tibble::tibble(tt$Dispersion)|>
     dplyr::mutate(' '=dplyr::recode(Parameters,
@@ -351,13 +525,16 @@ tibble::tibble(tt$Dispersion)|>
                                              cov(dat$TREC, dat$KREC)),
                                            2)*100)|>
     select(!Parameters)|>
-    dplyr::relocate(` `, .before='Estimates')|>
+    dplyr::relocate(       ` `, .before='Estimates')|>
     dplyr::relocate(Percentage, .before='z value')|>
-    kableExtra::kbl(booktabs=TRUE, digits=4)|>
+    kableExtra::            kbl(booktabs=TRUE,
+                                digits  =4,
+                                caption =cap,
+                                position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::column_spec(6, bold=TRUE)|>
-    kableExtra::pack_rows('Environment\ncomponent (E)', 1, 3)|>
-    kableExtra::pack_rows('Genetic\ncomponent (A)', 4, 6)
+    kableExtra::    column_spec(6, bold=TRUE)|>
+    kableExtra::      pack_rows('Environment\ncomponent (E)', 1, 3)|>
+    kableExtra::      pack_rows(    'Genetic\ncomponent (A)', 4, 6)
 
 ```
 
@@ -372,15 +549,27 @@ Abaixo temos as medidas de ambientalidade e herdabilidade. Vemos que
 apenas a herdabilidade é significativa, para ambos TREC e KREC.
 
 ```{r}
-#| label: mglm4twin_bivAE_results
+#| label: AE-bivariate-model-covariance-components-estimates
+
+cap <- 'AE bivariate model covariance components / estimates'
 
 tibble::tibble(cbind(' '=c('TREC', 'KREC', 'TREC', 'KREC'), 
                      rbind(tt$Env_main, tt$A_main)))|>
-    kableExtra::kbl(booktabs=TRUE, digits=4)|>
+    kableExtra::            kbl(booktabs=TRUE,
+                                digits  =4,
+                                caption =cap,
+                                position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::column_spec(5, bold=TRUE)|>
-    kableExtra::pack_rows('Environmentability', 1, 2)|>
-    kableExtra::pack_rows('Heritability', 3, 4)
+    kableExtra::column_spec    (5, bold=TRUE)|>
+    kableExtra::pack_rows      ('Environmentability', 1, 2)|>
+    kableExtra::pack_rows      (      'Heritability', 3, 4)
+
+```
+
+```{r}
+#| label: AE-bivariate-model-covariance-components-cross
+
+cap <- 'AE bivariate model covariance components / cross'
 
 tibble::tibble(
             cbind(' '=c('Bivariate environmentability',
@@ -392,9 +581,12 @@ tibble::tibble(
                       c(0.3795164, 0.5943252, 0.6385669, 0.5231047), 
                       tt$A_cross,
                       c(0.2824055, 0.1397447, 2.020867, 0.04329349))))|>
-    kableExtra::kbl(booktabs=TRUE, digits=4)|>
+    kableExtra::            kbl(booktabs=TRUE,
+                                digits  =4,
+                                caption =cap,
+                                position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::column_spec(5, bold=TRUE)
+    kableExtra::column_spec    (5, bold=TRUE)
 
 ```
 
@@ -414,41 +606,47 @@ covariáveis nenhuma é significativa no componente E, ambiental. No
 componente A, genético, a variável parto é significativa.
 
 ```{r}
-#| label: mglm4twin_trec
+#| label: TREC-model
 #| results: false
 
-cov_TREC <- list(formE=~ 1, formA=~ parto)
-
-uni_AEtrec <-
-    mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=1, model='AE',
-                       formula=cov_TREC, dat=dat)
-
-fitAEtrec <-
+cov_TREC   <- list(formE=~ 1, formA=~ parto)
+uni_AEtrec <- mglm4twin::mt_twin(N_DZ   =N$DZ,
+                                 N_MZ   =N$MZ,
+                                 n_resp =1,
+                                 model  ='AE',
+                                 formula=cov_TREC,
+                                 dat    =dat)
+fitAEtrec  <-
     mglm4twin::mglm4twin(linear_pred=c(form_TREC),
                          matrix_pred=uni_AEtrec,
-                         link='identity',
-                         variance='constant',
+                         link       ='identity',
+                         variance   ='constant',
                          power_fixed=TRUE,
-                         data=dat)
+                         data       =dat)
+
+tt         <- rbind(cbind(fitAEtrec$Covariance, 
+                          sqrt(diag(fitAEtrec$vcov))[-c(1:3)])[1, ], 
+                    cbind(fitAEtrec$Covariance, 
+                          sqrt(diag(fitAEtrec$vcov))[-c(1:3)])[2:3, ])
 
 ```
 
 ```{r}
-#| label: mglm4twin_trec_results
+#| label: TREC-AE-model-covariance components
 
-tt <- rbind(cbind(fitAEtrec$Covariance, 
-                  sqrt(diag(fitAEtrec$vcov))[-c(1:3)])[1, ], 
-            cbind(fitAEtrec$Covariance, 
-                  sqrt(diag(fitAEtrec$vcov))[-c(1:3)])[2:3, ])
+cap <- 'TREC AE model covariance components'
 
-tibble::tibble(' '=c('Environment component (E)',
-                     'partoCesariana', 'partoNormal'),
-               Estimates=tt[, 1],
+tibble::tibble(' '        =c('Environment component (E)',
+                             'partoCesariana', 'partoNormal'),
+               Estimates  =tt[, 1],
                'Std.error'=tt[, 2],
-               Percentage=Estimates/rep(var(dat$TREC), 3)*100)|>
-    kableExtra::kbl(booktabs=TRUE, digits=4)|>
+               Percentage =Estimates/rep(var(dat$TREC), 3)*100)|>
+    kableExtra::            kbl(booktabs=TRUE,
+                                digits  =4,
+                                caption =cap,
+                                position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::pack_rows('Genetic component (A)', 2, 3)
+    kableExtra::pack_rows      ('Genetic component (A)', 2, 3)
 
 ```
 
@@ -471,48 +669,53 @@ tipo de parto e zigocidade são significativas no componente E,
 ambiental. No componente A, genético, a variável parto é significativa.
 
 ```{r}
-#| label: mglm4twin_krec
+#| label: KREC-model
 #| results: false
 
-cov_KREC <- list(formE=~ parto + Zigocidade,
-                 formA=~ parto)
-
-uni_AEkrec <-
-    mglm4twin::mt_twin(N_DZ=N$DZ, N_MZ=N$MZ, n_resp=1, model='AE',
-                       formula=cov_KREC, dat=dat)
-
-fitAEkrec <-
-    mglm4twin::mglm4twin(linear_pred=c(form_KREC),
-                         matrix_pred=uni_AEkrec,
-                         control_algorithm=list(tuning=0.5,
-                                                max_iter=80),
-                         link='identity',
-                         variance='constant',
-                         power_fixed=TRUE,
-                         data=dat)
-
-```
-
-```{r}
-#| label: mglm4twin_krec_results
-
+cov_KREC   <- list(formE=~ parto + Zigocidade, formA=~ parto)
+uni_AEkrec <- mglm4twin::mt_twin(N_DZ   =N$DZ,
+                                 N_MZ   =N$MZ,
+                                 n_resp =1,
+                                 model  ='AE',
+                                 formula=cov_KREC,
+                                 dat    =dat)
+fitAEkrec  <-
+    mglm4twin::mglm4twin(
+                   linear_pred      =c(form_KREC),
+                   matrix_pred      =uni_AEkrec,
+                   control_algorithm=list(tuning=0.5, max_iter=80),
+                   link             ='identity',
+                   variance         ='constant',
+                   power_fixed      =TRUE,
+                   data             =dat
+               )
 tt <- rbind(cbind(fitAEkrec$Covariance, 
                   sqrt(diag(fitAEkrec$vcov))[-c(1:2)])[1:3, ], 
             cbind(fitAEkrec$Covariance, 
                   sqrt(diag(fitAEkrec$vcov))[-c(1:2)])[4:5, ])
 
-tibble::tibble(' '=c('partoCesariana.zigocidadeDZ',
-                     'partoNormal',
-                     'zigocidadeMZ',
-                     'partoCesariana', 
-                     'partoNormal'),
-               Estimates=tt[, 1],
+```
+
+```{r}
+#| label: KREC-AE-model-covariance components
+
+cap <- 'KREC AE model covariance components'
+
+tibble::tibble(' '        =c('partoCesariana.zigocidadeDZ',
+                             'partoNormal',
+                             'zigocidadeMZ',
+                             'partoCesariana', 
+                             'partoNormal'),
+               Estimates  =tt[, 1],
                'Std.error'=tt[, 2],
-               Percentage=Estimates/rep(var(dat$KREC), 5)*100)|>
-    kableExtra::kbl(booktabs=TRUE, digits=4)|>
+               Percentage =Estimates/rep(var(dat$KREC), 5)*100)|>
+    kableExtra::            kbl(booktabs=TRUE,
+                                digits  =4,
+                                caption =cap,
+                                position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::pack_rows('Environment component (E)', 1, 3)|>
-    kableExtra::pack_rows('Genetic component (A)', 4, 5)
+    kableExtra::pack_rows      ('Environment component (E)', 1, 3)|>
+    kableExtra::pack_rows      (    'Genetic component (A)', 4, 5)
 
 ```
 
