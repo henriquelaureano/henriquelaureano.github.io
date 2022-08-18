@@ -124,7 +124,7 @@ p2 <- dat|>
                color     ='gray',
                linetype  ='dashed')+
     geom_point(size=3, shape=21)+
-    geom_smooth(method='loess',
+    geom_smooth(method ='loess',
                 formula=y ~ x, se=FALSE, size=1, color='black')+
     labs(x='TREC', y='KREC')+
     theme_classic(base_size=14)+
@@ -160,7 +160,7 @@ p3 <- dplyr::bind_cols(
                color     ='gray',
                linetype  ='dashed')+
     geom_point(size=3, shape=21)+
-    geom_smooth(method='loess',
+    geom_smooth(method ='loess',
                 formula=y ~ x, se=FALSE, size=1, color='black')+
     facet_wrap(~ by)+
     labs(x='Twin 1', y='Twin 2')+
@@ -295,13 +295,10 @@ The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{tidyr}`
 # Results
 
 Modelamos as medidas de TREC e KREC conjuntamente em duas frentes: na
-média e na variância. Como temos mais de uma variável e vamos também
-modelar a correlação entre elas, chamamos de covariância.
-
-Para estudar a herdabilidade e o relacionamento genético e ambiental das
-medidas, usamos um modelo chamado de ACE. Basicamente, decompomos a
-matriz de variância-covariância (a partir daqui chamaremos simplesmente
-de matriz de covariância) em três matrizes:
+média e na covariância. Para estudar a herdabilidade e o relacionamento
+genético e ambiental das medidas, usamos um modelo chamado de
+ACE. Basicamente, decompomos a matriz de variância-covariância (*just*
+matriz de covariância) em três matrizes:
 
 + A: efeito/componente genético/herdabilidade;
 + C: efeito/componente mútuo do ambiente (common environment);
@@ -737,3 +734,38 @@ gerando esses resultados "estranhos".
 
 ::: {#refs}
 :::
+
+# Appendix
+
+```{r}
+#| label: gestational-age-vs-weight
+#| fig-height: 3.75
+#| fig-width: 4.25
+#| fig-cap: Gestational age and weight scatterplot with tendency curve
+#|          in solid black.
+#| fig-pos: 'H'
+
+dat|>
+    ggplot()+
+    aes(x=id_gest, y=peso)+
+    scale_x_continuous(breaks=seq(27, 40, by=1))+
+    scale_y_continuous(breaks=seq(1e3, 3750, by=250))+
+    geom_vline(xintercept=seq(27, 40, by=1),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_hline(yintercept=seq(1e3, 3750, by=250),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_jitter(pch=21, size=2)+
+    geom_smooth(method ='loess',
+                formula=y ~ x, se=FALSE, color='black', size=1)+
+    labs(x='Gestational age', y='Weight')+
+    theme_classic()+
+    theme(axis.title.x=element_text(face  ='bold',
+                                    margin=ggplot2::unit(c(
+                                                        t=3, r=0,
+                                                        b=0, l=0
+                                                    ), 'mm')),
+          axis.title.y=element_text(face='bold'))
+
+```
