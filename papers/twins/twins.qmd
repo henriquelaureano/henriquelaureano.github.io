@@ -83,6 +83,13 @@ N   <- dat|>
 
 ## Data
 
++ Weight;
++ Gestational age;
++ Type of childbirth;
++ Sex;
++ Zigosity;
++ Twin (1 or 2, to verify the randomness supposition).
+
 ```{r}
 #| label: TREC-and-KREC-plots
 #| fig-width: 10
@@ -294,29 +301,18 @@ The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{tidyr}`
 
 # Results
 
-Modelamos as medidas de TREC e KREC conjuntamente em duas frentes: na
-média e na covariância. Para estudar a herdabilidade e o relacionamento
-genético e ambiental das medidas, usamos um modelo chamado de
-ACE. Basicamente, decompomos a matriz de variância-covariância (*just*
-matriz de covariância) em três matrizes:
+We model the TREC and KREC measures in a bivariate fashion and in two
+fronts, in the mean and covariance structures. We use a model called ACE
+to study heritability and the genetic and environmental
+relationships. Basically, we decompose the covariance matrix into three:
 
-+ A: efeito/componente genético/herdabilidade;
-+ C: efeito/componente mútuo do ambiente (common environment);
-+ E: efeito/componente único do ambiente (unique environment).
++ A: genetic/heritability effect or component;
++ C: common environment effect or component;
++ E: unique environment effect or component.
 
-Além de considerarmos essa decomposição da covariância podemos também
-colocar covariáveis nela.
-
-Tanto na média quanto na covariância usamos/testamos o efeito de seis
-covariáveis:
-
-+ Peso;
-+ Idade gestacional;
-+ Tipo de parto;
-+ Sexo;
-+ Zigocidade;
-+ Gêmeo (1 ou 2, para ver se realmente existe uma aleatoriedade na
-  disposição sdos dados).
+Besides the covariance decomposition itself, we can also insert
+covariates/regressors in it. In both mean and covariance structures we
+tested for the effect of six regressors.
 
 A zigocidade é um termo chave dessa modelagem, dado que precisamos
 informar quantos pares de gêmeos são monozigotos e dizigotos. Portanto,
