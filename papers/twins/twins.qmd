@@ -447,10 +447,24 @@ from this performed a regressors selection procedure.
 
 ```{r}
 #| label: tbl-AE-bivariate-model-mean-summary
-#| tbl-cap: "Summary for the mean structure of an AE bivariate model."
+#| tbl-cap: "Summary for the mean structure of the AE bivariate model."
 
-rbind(cbind(' '=rownames(tt[[1]][[1]]), tibble::tibble(tt[[1]][[1]])),
-      cbind(' '=rownames(tt[[2]][[1]]), tibble::tibble(tt[[2]][[1]])))|>
+dplyr::bind_rows(
+           cbind(
+               ' '=rownames(tt[[1]][[1]]), tibble::tibble(tt[[1]][[1]])
+           ),
+           cbind(
+               ' '=rownames(tt[[2]][[1]]), tibble::tibble(tt[[2]][[1]])
+           )
+       )|>
+    dplyr::mutate(` `=c('Mean gestational age & female sex',
+                        'A week in the gestational age',
+                        'Male sex',
+                        'Mean gestational age',
+                        'A week in the gestational age'))|>
+    dplyr::rename(Estimate ='Estimates',
+                  SD       ='std.error',
+                  'z-value'='z value')|>
     kableExtra::            kbl(booktabs=TRUE,
                                 digits  =4,
                                 caption =NA,
@@ -460,8 +474,6 @@ rbind(cbind(' '=rownames(tt[[1]][[1]]), tibble::tibble(tt[[1]][[1]])),
     kableExtra::      pack_rows('TREC', 1, 3)|>
     kableExtra::      pack_rows('KREC', 4, 5)
 
-?kableExtra::kbl
-
 ```
 
 Starting from the mean, from the six initial regressors we end up with
@@ -470,21 +482,14 @@ two. The significant ones, for each response, are presented in
 statistically significant regressors are the gestational age and the
 twin sex.  For KREC, only the gestational age is significant.
 
-For the TREC measures, o intercepto corresponde a um gêmeo de idade
-gestacional média e do sexo feminino. Conforme aumentamos a idade
-gestacional aumentamos seu TREC no valor de seu coeficiente estimado
-(8.0203). Se o gêmeo é do sexo masculino, estimamos que seu TREC diminua
-34.7133, em relação ao intercepto. Mesma ideia para o KREC e a idade
-gestacional.
-
-Agora, a covariância. Decompomos a variância do TREC
-(`r round(var(dat$TREC),4)`), a variância do KREC
-(`r round(var(dat$KREC), 4)`) e a covariância entre os dois
-(`r round(cov(dat$TREC, dat$KREC),4)`) da seguinte maneira.
-
 ```{r}
-#| label: AE-bivariate-model-covariance-components-dispersion
-#| tbl-cap: "AE-bivariate-model-covariance-components-dispersion"
+#| label: tbl-AE-bivariate-model-covariance
+#| tbl-cap:
+#|   "Summary for the covariance structure of the AE bivariate model."
+
+## (`r round(var(dat$TREC)`)
+## (`r round(var(dat$KREC), 4)`)
+## (`r round(cov(dat$TREC, dat$KREC), 4)`)
 
 tibble::tibble(tt$Dispersion)|>
     dplyr::mutate(' '=dplyr::recode(Parameters,
