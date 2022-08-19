@@ -630,13 +630,18 @@ explanation. We can justify that by the low representation in our data,
 with only `r round(100*table(dat$parto)[[2]]/n, 2) `% of the twins being
 born from normal childbirth.
 
-In the KREC measure (@tbl-KREC-AE-model-covariance),
-
-Num gêmeo com parto tipo cesaria e dizigoto, nada da variabilidade do
-KREC é explicada pelo componente ambiental (-62%). Contudo, se mudamos
-para um gêmeo de parto normal a explicação cresce 66%, ou seja, 4%
-(-62 + 66) da variabilidade é explicada pelo componente ambiental. Num
-gêmeo monozigoto o percentual explicado é 9% (-62 + 71).
+In the KREC measure (@tbl-KREC-AE-model-covariance), in a twin born from
+a cesarean and dizygotic, nothing of the observed variance is explained
+by the environment component (-62%). Nevertheless, if we change to a
+twin born from normal childbirth the attributed explanation grows by
+66%, i.e. 4% (-62 + 66) of variance explanation. In a monozygotic twin,
+the explanation by the environment component is 9% (-62 + 71). In the
+genetic component, the difference in terms of variance explained by the
+type of childbirth is abysmal. In a twin born from cesarean, we have
+103% (-62 + 165) of variance explained. The effect is so big and
+uncertain that it blows up. In a twin born from normal childbirth, we
+have the opposite. The unbalance in the data frequencies ends up
+generating these unrealistic results.
 
 ```{r}
 #| label: KREC-model
@@ -687,14 +692,6 @@ tibble::tibble(' '       =c('Cesarean childbirth & DZ zygosity',
     kableExtra::pack_rows      (    'Genetic component (A)', 4, 5)
 
 ```
-
-Quando olhamos para o componente genético a diferença entre tipos de
-parto é abismal. Num gëmeo dizigoto de parto tipo cesaria temos 103%
-(-62 + 165) da variabilidade unicamente explicada pelo componente
-genético. Tal efeito é tão grande mas ao mesmo incerto, que o percentual
-estoura. No caso de parto normal temos exatamente o contrário. O
-desbalancemanto das frequências de tipo de parto na base de dados acaba
-gerando esses resultados "estranhos".
 
 # References
 
