@@ -447,7 +447,7 @@ from this performed a regressors selection procedure.
 
 ```{r}
 #| label: tbl-AE-bivariate-model-mean-summary
-#| tbl-cap: "Summary for the mean structure of the AE bivariate model."
+#| tbl-cap: "Summary of the mean structure of the AE bivariate model."
 
 dplyr::bind_rows(
            cbind(
@@ -482,14 +482,18 @@ two. The significant ones, for each response, are presented in
 statistically significant regressors are the gestational age and the
 twin sex.  For KREC, only the gestational age is significant.
 
+<!-- (`r round(var(dat$TREC), 4)`) -->
+<!-- (`r round(var(dat$KREC), 4)`) -->
+
+About the covariance, what we do is decompose the TREC variance
+(13698.107), KREC variance (13787.069), and their covariance
+(`r round(cov(dat$TREC, dat$KREC), 4)`) in the manner described in
+@tbl-AE-bivariate-model-covariance.
+
 ```{r}
 #| label: tbl-AE-bivariate-model-covariance
 #| tbl-cap:
-#|   "Summary for the covariance structure of the AE bivariate model."
-
-## (`r round(var(dat$TREC)`)
-## (`r round(var(dat$KREC), 4)`)
-## (`r round(cov(dat$TREC, dat$KREC), 4)`)
+#|   "Summary of the covariance structure of the AE bivariate model."
 
 tibble::tibble(tt$Dispersion)|>
     dplyr::mutate(' '=dplyr::recode(Parameters,
@@ -506,6 +510,9 @@ tibble::tibble(tt$Dispersion)|>
     select(!Parameters)|>
     dplyr::relocate(       ` `, .before='Estimates')|>
     dplyr::relocate(Percentage, .before='z value')|>
+    dplyr::rename(Estimate ='Estimates',
+                  SD       ='std.error',
+                  'z-value'='z value')|>
     kableExtra::            kbl(booktabs=TRUE,
                                 digits  =4,
                                 caption =NA,
@@ -517,72 +524,46 @@ tibble::tibble(tt$Dispersion)|>
 
 ```
 
-Temos as estimativas divididas pelos componentes ambiental e
-genético. Como podemos ver pela coluna percentage, a soma das
-estimativas (do TREC, por exemplo) não dá 1. Isso quer dizer que nem
-toda a variabilidade observada é explicada pelo componente ambiental ou
-genético. Vemos que o componente genético é muito mais significativo,
-principalmente no TREC.
-
-Abaixo temos as medidas de ambientalidade e herdabilidade. Vemos que
-apenas a herdabilidade é significativa, para ambos TREC e KREC.
+At @tbl-AE-bivariate-model-genetic-components we have the environment
+and heritability measures. The heritability is statistically significant
+in all scenarios, marginally, jointly, and its correlation.
 
 ```{r}
-#| label: AE-bivariate-model-covariance-components-estimates
+#| label: tbl-AE-bivariate-model-genetic-components
+#| tbl-cap:
+#|   "Summary of the genetic components of the AE bivariate model."
 
-cap <- 'AE bivariate model covariance components / estimates'
-
-tibble::tibble(cbind(' '=c('TREC', 'KREC', 'TREC', 'KREC'), 
-                     rbind(tt$Env_main, tt$A_main)))|>
+tibble::tibble(
+            cbind(' '=rep(c('TREC',
+                            'KREC', 'TREC & KREC', 'Correlation'),
+                          2), 
+                  rbind(tt$Env_main,
+                        tt$Env_cross,
+                        c(0.3795164, 0.5943252, 0.6385669, 0.5231047), 
+                        tt$A_main,
+                        tt$A_cross,
+                        c(0.2824055, 0.1397447, 2.020867, 0.04329349))
+                  )
+        )|>
+    dplyr::rename(Estimate ='Estimates',
+                  SD       ='std.error',
+                  'z-value'='z value')|>
     kableExtra::            kbl(booktabs=TRUE,
-                                digits  =4,
-                                caption =cap,
+                                digits  =6,
+                                caption =NA,
                                 position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::column_spec    (5, bold=TRUE)|>
-    kableExtra::pack_rows      ('Environmentability', 1, 2)|>
-    kableExtra::pack_rows      (      'Heritability', 3, 4)
+    kableExtra::pack_rows      ('Environmentability', 1, 4)|>
+    kableExtra::pack_rows      (      'Heritability', 5, 8)
 
 ```
 
-```{r}
-#| label: AE-bivariate-model-covariance-components-cross
-
-cap <- 'AE bivariate model covariance components / cross'
-
-tibble::tibble(
-            cbind(' '=c('Bivariate environmentability',
-                        'Environment correlation',
-                        'Bivariate heritability',
-                        'Genetic correlation'), 
-                  rbind(
-                      tt$Env_cross,
-                      c(0.3795164, 0.5943252, 0.6385669, 0.5231047), 
-                      tt$A_cross,
-                      c(0.2824055, 0.1397447, 2.020867, 0.04329349))))|>
-    kableExtra::            kbl(booktabs=TRUE,
-                                digits  =4,
-                                caption =cap,
-                                position='h')|>
-    kableExtra::kable_classic_2(full_width=FALSE)|>
-    kableExtra::column_spec    (5, bold=TRUE)
-
-```
-
-A única correlação significativa é a genética, a ambiental não
-é. Seguindo a mesma ideia, a herdabilidade bivariada/conjunta é
-significativa. A ambiental não é.
-
-Tentamos verificar o efeito das covariáveis também na covariância, mas
-não conseguimos. Não conseguimos convergência. Solução?  Ajustar modelos
-univariados. Os componentes de média se mantém exatamente os mesmos.
-
-## TREC
-
-Partimos do modelo AE com idade gestacional e sexo como covariáveis na
-média e fizemos a seleção de covariáveis na covariância. Das seis
-covariáveis nenhuma é significativa no componente E, ambiental. No
-componente A, genético, a variável parto é significativa.
+Given the small sample size and the inferential level of complexity
+involved in the bivariate model, we were not able to obtain numerical
+convergence by inserting regressors in the covariance. As a solution, we
+fitted univariate AE models with the same mean structure as in the
+bivariate scenario.
 
 ```{r}
 #| label: TREC-model
@@ -610,19 +591,27 @@ tt         <- rbind(cbind(fitAEtrec$Covariance,
 
 ```
 
+We started with the same six regressors. In the TREC model, we end up
+with no significant regressors in the environmental E component and with
+the type of childbirth as significant in the genetic A component. In the
+KREC model, the type of childbirth and zygosity are statistically
+significant in the E component, and in the A component, only the type of
+childbirth is significant. @tbl-TREC-AE-model-covariance and
+@tbl-KREC-AE-model-covariance.
+
 ```{r}
-#| label: TREC-AE-model-covariance components
+#| label: tbl-TREC-AE-model-covariance
+#| tbl-cap: "Summary of the covariance structure of the AE TREC model."
 
-cap <- 'TREC AE model covariance components'
-
-tibble::tibble(' '        =c('Environment component (E)',
-                             'partoCesariana', 'partoNormal'),
-               Estimates  =tt[, 1],
-               'Std.error'=tt[, 2],
-               Percentage =Estimates/rep(var(dat$TREC), 3)*100)|>
+tibble::tibble(' '       =c('Environment component (E)',
+                            'Cesarean childbirth',
+                            'Normal childbirth'),
+               Estimate  =tt[, 1],
+               SD        =tt[, 2],
+               Percentage=Estimate/rep(var(dat$TREC), 3)*100)|>
     kableExtra::            kbl(booktabs=TRUE,
                                 digits  =4,
-                                caption =cap,
+                                caption =NA,
                                 position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::pack_rows      ('Genetic component (A)', 2, 3)
@@ -639,13 +628,6 @@ seja, num gêmeo com parto normal o componente genético não explica nada
 da variabilidade. Isso é justificado pela (baixa) representatividade nos
 dados, `r 100*table(dat$parto)[[2]]/n `% apenas dos gêmeos tiveram
 parto normal.
-
-## KREC
-
-Partimos do modelo AE com idade gestacional como covariável na média e
-fizemos a seleção de covariáveis na covariância. Das seis covariáveis,
-tipo de parto e zigocidade são significativas no componente E,
-ambiental. No componente A, genético, a variável parto é significativa.
 
 ```{r}
 #| label: KREC-model
@@ -676,21 +658,20 @@ tt <- rbind(cbind(fitAEkrec$Covariance,
 ```
 
 ```{r}
-#| label: KREC-AE-model-covariance components
+#| label: tbl-KREC-AE-model-covariance
+#| tbl-cap: "Summary of the covariance structure of the AE KREC model."
 
-cap <- 'KREC AE model covariance components'
-
-tibble::tibble(' '        =c('partoCesariana.zigocidadeDZ',
-                             'partoNormal',
-                             'zigocidadeMZ',
-                             'partoCesariana', 
-                             'partoNormal'),
-               Estimates  =tt[, 1],
-               'Std.error'=tt[, 2],
-               Percentage =Estimates/rep(var(dat$KREC), 5)*100)|>
+tibble::tibble(' '       =c('Cesarean childbirth & DZ zygosity',
+                            'Normal childbirth',
+                            'MZ zygosity',
+                            'Cesarean childbirth', 
+                            'Normal childbirth'),
+               Estimate  =tt[, 1],
+               SD        =tt[, 2],
+               Percentage=Estimate/rep(var(dat$KREC), 5)*100)|>
     kableExtra::            kbl(booktabs=TRUE,
                                 digits  =4,
-                                caption =cap,
+                                caption =NA,
                                 position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::pack_rows      ('Environment component (E)', 1, 3)|>
