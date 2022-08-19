@@ -596,8 +596,10 @@ with no significant regressors in the environmental E component and with
 the type of childbirth as significant in the genetic A component. In the
 KREC model, the type of childbirth and zygosity are statistically
 significant in the E component, and in the A component, only the type of
-childbirth is significant. @tbl-TREC-AE-model-covariance and
-@tbl-KREC-AE-model-covariance.
+childbirth is significant. In @tbl-TREC-AE-model-covariance and
+@tbl-KREC-AE-model-covariance we have a summary of the covariances
+decompositions in terms of the significant regressors for the TREC and
+KREC measures, respectively.
 
 ```{r}
 #| label: tbl-TREC-AE-model-covariance
@@ -618,16 +620,23 @@ tibble::tibble(' '       =c('Environment component (E)',
 
 ```
 
-26% da variabilidade observada é explicada/atribuída pelo componente
-ambiental. O tipo de parto é significativo no componente genético. Com
-um gêmeo que teve parto do tipo cesaria, o componente genético explica
-72% da variabilidade. Ou seja, os componentes ambiental e genético
-explicam cerca de 98% de toda a variabilidade da variável TREC. Agora,
-num gêmeo que teve parto normal, (o poder de) explicação cai 80%. Ou
-seja, num gêmeo com parto normal o componente genético não explica nada
-da variabilidade. Isso é justificado pela (baixa) representatividade nos
-dados, `r 100*table(dat$parto)[[2]]/n `% apenas dos gêmeos tiveram
-parto normal.
+In the TREC measure (@tbl-TREC-AE-model-covariance), 26% of the observed
+variance has its explanation attributed to the environment component. In
+a twin born from a cesarean, 72% of the observed variance is explained
+by the genetic component. Together, both components explain 98% of the
+variance. In a twin born from normal childbirth, the explanation by
+means of the genetic component decreases by 80% - no variance
+explanation. We can justify that by the low representation in our data,
+with only `r round(100*table(dat$parto)[[2]]/n, 2) `% of the twins being
+born from normal childbirth.
+
+In the KREC measure (@tbl-KREC-AE-model-covariance),
+
+Num gêmeo com parto tipo cesaria e dizigoto, nada da variabilidade do
+KREC é explicada pelo componente ambiental (-62%). Contudo, se mudamos
+para um gêmeo de parto normal a explicação cresce 66%, ou seja, 4%
+(-62 + 66) da variabilidade é explicada pelo componente ambiental. Num
+gêmeo monozigoto o percentual explicado é 9% (-62 + 71).
 
 ```{r}
 #| label: KREC-model
@@ -678,12 +687,6 @@ tibble::tibble(' '       =c('Cesarean childbirth & DZ zygosity',
     kableExtra::pack_rows      (    'Genetic component (A)', 4, 5)
 
 ```
-
-Num gêmeo com parto tipo cesaria e dizigoto, nada da variabilidade do
-KREC é explicada pelo componente ambiental (-62%). Contudo, se mudamos
-para um gêmeo de parto normal a explicação cresce 66%, ou seja, 4%
-(-62 + 66) da variabilidade é explicada pelo componente ambiental. Num
-gêmeo monozigoto o percentual explicado é 9% (-62 + 71).
 
 Quando olhamos para o componente genético a diferença entre tipos de
 parto é abismal. Num gëmeo dizigoto de parto tipo cesaria temos 103%
