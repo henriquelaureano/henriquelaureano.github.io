@@ -18,7 +18,12 @@ author:
                                       Pelé Pequeno Príncipe,
                                       Curitiba, Paraná, Brazil]
 date: August, 2022
-abstract: Abstract
+
+abstract: Multivariate linear *regression* models built to handle
+          multiple responses and with genetic and environmental
+          interrelations of twins data [@bonat&hjelmborg] were applied
+          to understand the dynamics from the TREC and KREC measures.
+
 bibliography: /home/laureano/Git/consu/references.bib
 format:
   pdf:
@@ -87,8 +92,12 @@ N   <- dat|>
 + Gestational age;
 + Type of childbirth;
 + Sex;
-+ Zigosity;
++ Zygosity;
 + Twin (1 or 2, to verify the randomness supposition).
+
+Zygosity is a key term in our modeling framework since we need to inform
+how many twin pairs are monozygotic and dizygotic. Therefore, we drop a
+pair that do not present this information. We stay with 198 twins.
 
 ```{r}
 #| label: TREC-and-KREC-plots
@@ -274,7 +283,7 @@ p5 <- dat|>
                                )),
               hjust=-0.1, fontface='bold')+
     scale_x_continuous(expand=c(0, 0), breaks=NULL, limits=c(0, 270))+
-    labs(x=NULL, y=NULL, title='Zigosity')+
+    labs(x=NULL, y=NULL, title='Zygosity')+
     theme_classic(base_size=14)+
     theme(axis.text.y=element_text(face='bold', size=14),
           plot.title =element_text(face='bold'))
@@ -287,17 +296,11 @@ p1 / p2 / (p3 + p4 + p5) +
 ## Statistical analysis
 
 The statistical analysis was performed through the R [@R22] language and
-environment for statistical computing.
-
-> Modelos multivariados de regressão feitos para lidar com as
-> interrelações genéticas e ambientais de dados de gêmeos
-> [@bonat&hjelmborg] foram aplicados para entender a dinâmica das
-> medidas de TREc e KREC.
-
-The main used R packages are: `{dplyr}` [@dplyr1.0.9], `{tidyr}`
-[@tidyr1.2.0], `{ggplot2}` [@ggplot2.16], `patchwork` [@patchwork1.1.1],
-`{kableExtra}` [@kableExtra1.3.4], `{Matrix}` [@matrix1.4.1] and
-`{mglm4twin}` [@mglm4twin; @bonat&hjelmborg; @mcglm.seriesc; @mcglm].
+environment for statistical computing. The main used R packages are:
+`{dplyr}` [@dplyr1.0.9], `{tidyr}` [@tidyr1.2.0], `{ggplot2}`
+[@ggplot2.16], `patchwork` [@patchwork1.1.1], `{kableExtra}`
+[@kableExtra1.3.4], `{Matrix}` [@matrix1.4.1] and `{mglm4twin}`
+[@mglm4twin; @bonat&hjelmborg; @mcglm.seriesc; @mcglm].
 
 # Results
 
@@ -313,11 +316,6 @@ relationships. Basically, we decompose the covariance matrix into three:
 Besides the covariance decomposition itself, we can also insert
 covariates/regressors in it. In both mean and covariance structures we
 tested for the effect of six regressors.
-
-A zigocidade é um termo chave dessa modelagem, dado que precisamos
-informar quantos pares de gêmeos são monozigotos e dizigotos. Portanto,
-o par que não tem essa informação foi descartado. Ficamos/usamos 198
-gêmeos.
 
 ```{r}
 #| label: bivariate-models
@@ -442,58 +440,42 @@ tt       <- summary(fitAEbiv, model='AE', biometric=TRUE)
 
 ```
 
-Começamos com um modelo bivariado ACE, modelando TREC e KREC
-conjuntamento. Contudo, observamos valores-$p$ muito altos para o
-componente C. Tal fato indica que tal componente não é necessário.
-Portanto, ajustamos um modelo AE e vemos se é melhor ficar com
-ele. Abaixo temos algumas medidas de qualidade do ajuste dos dois
-modelos.
-
-De modo geral, o modelo ACE apresenta melhores medidas. Contudo ele tem
-três parâmetros a mais. A diferença das medidas entre os modelos não é
-grande o suficiente para justificar permanecermos com um modelo maior
-sendo que o componente C não é estatisticamente significativo. Assim,
-ficamos com o modelo bivariado AE.
-
-Agora, a seleção de variáveis. Começamos pela média. Das seis
-variáveis ficamos com apenas duas, ou seja, das seis apenas duas se
-mostram significativas. As medidas do modelo inicial e do final são
-apresentadas abaixo.
-
-Vemos que as medidas dos modelos são bem similares, apesar do modelo
-final ter praticamente metade dos parâmetros do modelo inicial. No
-modelo final ficamos com duas covariáveis como significativas para o
-TREC e com uma variável significativa para o KREC.
+With a bivariate model, we are able to handle the TREC and KREC measures
+jointly. We started with the ACE model, however, the C component
+presented to be non-significant. Thus, we stayed with an AE model and
+from this performed a regressors selection procedure.
 
 ```{r}
-#| label: AE-bivariate-model-summary
-
-cap <- 'AE bivariate model summary'
+#| label: tbl-AE-bivariate-model-mean-summary
+#| tbl-cap: "Summary for the mean structure of an AE bivariate model."
 
 rbind(cbind(' '=rownames(tt[[1]][[1]]), tibble::tibble(tt[[1]][[1]])),
       cbind(' '=rownames(tt[[2]][[1]]), tibble::tibble(tt[[2]][[1]])))|>
     kableExtra::            kbl(booktabs=TRUE,
                                 digits  =4,
-                                caption =cap,
+                                caption =NA,
                                 position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::    column_spec(5, bold=TRUE)|>
     kableExtra::      pack_rows('TREC', 1, 3)|>
     kableExtra::      pack_rows('KREC', 4, 5)
 
+?kableExtra::kbl
+
 ```
 
-Para TREC as variáveis significativas são a idade gestacional e o sexo,
-i.e. a idade gestacional e o sexo do gêmeo tem uma associação
-significativa com o valor de TREC. Para o KREC, apenas a idade
-gestacional é significativa, o sexo é irrelevante (sem diferença
-significativa de um sexo para outro).
+Starting from the mean, from the six initial regressors we end up with
+two. The significant ones, for each response, are presented in
+@tbl-AE-bivariate-model-mean-summary. For the TREC measures, the
+statistically significant regressors are the gestational age and the
+twin sex.  For KREC, only the gestational age is significant.
 
-Para o TREC, o intercepto corresponde a um gêmeo de idade gestacional
-média e do sexo feminino. Conforme aumentamos a idade gestacional
-aumentamos seu TREC no valor de seu coeficiente estimado (8.0203). Se o
-gêmeo é do sexo masculino, estimamos que seu TREC diminua 34.7133, em
-relação ao intercepto. Mesma ideia para o KREC e a idade gestacional.
+For the TREC measures, o intercepto corresponde a um gêmeo de idade
+gestacional média e do sexo feminino. Conforme aumentamos a idade
+gestacional aumentamos seu TREC no valor de seu coeficiente estimado
+(8.0203). Se o gêmeo é do sexo masculino, estimamos que seu TREC diminua
+34.7133, em relação ao intercepto. Mesma ideia para o KREC e a idade
+gestacional.
 
 Agora, a covariância. Decompomos a variância do TREC
 (`r round(var(dat$TREC),4)`), a variância do KREC
@@ -502,8 +484,7 @@ Agora, a covariância. Decompomos a variância do TREC
 
 ```{r}
 #| label: AE-bivariate-model-covariance-components-dispersion
-
-cap <- 'AE bivariate model covariance components / dispersion'
+#| tbl-cap: "AE-bivariate-model-covariance-components-dispersion"
 
 tibble::tibble(tt$Dispersion)|>
     dplyr::mutate(' '=dplyr::recode(Parameters,
@@ -522,7 +503,7 @@ tibble::tibble(tt$Dispersion)|>
     dplyr::relocate(Percentage, .before='z value')|>
     kableExtra::            kbl(booktabs=TRUE,
                                 digits  =4,
-                                caption =cap,
+                                caption =NA,
                                 position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::    column_spec(6, bold=TRUE)|>
