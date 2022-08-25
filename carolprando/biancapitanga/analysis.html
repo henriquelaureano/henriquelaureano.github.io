@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Deleção 22q: TREC &amp; KREC</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="analysis_files/libs/quarto-html/quarto.js"></script>
+<script src="analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="analysis_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="analysis_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="analysis_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#medidas-descritivas" id="toc-medidas-descritivas" class="nav-link active" data-scroll-target="#medidas-descritivas">Medidas descritivas</a></li>
+  <li><a href="#trec-krec" id="toc-trec-krec" class="nav-link" data-scroll-target="#trec-krec">TREC &amp; KREC</a></li>
+  <li><a href="#idade-gestacional" id="toc-idade-gestacional" class="nav-link" data-scroll-target="#idade-gestacional">Idade gestacional</a></li>
+  <li><a href="#peso-ao-nascimento" id="toc-peso-ao-nascimento" class="nav-link" data-scroll-target="#peso-ao-nascimento">Peso ao nascimento</a></li>
+  <li><a href="#presença-de-infecções" id="toc-presença-de-infecções" class="nav-link" data-scroll-target="#presença-de-infecções">Presença de infecções</a></li>
+  <li><a href="#tempo" id="toc-tempo" class="nav-link" data-scroll-target="#tempo">Tempo</a>
+  <ul class="collapse">
+  <li><a href="#entre-internamento-e-primeira-infecção" id="toc-entre-internamento-e-primeira-infecção" class="nav-link" data-scroll-target="#entre-internamento-e-primeira-infecção">Entre internamento e primeira infecção</a></li>
+  <li><a href="#de-internamento" id="toc-de-internamento" class="nav-link" data-scroll-target="#de-internamento">De internamento</a></li>
+  </ul></li>
+  <li><a href="#linfopenia" id="toc-linfopenia" class="nav-link" data-scroll-target="#linfopenia">Linfopenia</a></li>
+  <li><a href="#desfecho-óbito" id="toc-desfecho-óbito" class="nav-link" data-scroll-target="#desfecho-óbito">Desfecho (óbito)</a></li>
+  <li><a href="#tipo-de-cardiopatia" id="toc-tipo-de-cardiopatia" class="nav-link" data-scroll-target="#tipo-de-cardiopatia">Tipo de cardiopatia</a>
+  <ul class="collapse">
+  <li><a href="#trec-krec-1" id="toc-trec-krec-1" class="nav-link" data-scroll-target="#trec-krec-1">TREC &amp; KREC</a></li>
+  <li><a href="#desfecho" id="toc-desfecho" class="nav-link" data-scroll-target="#desfecho">Desfecho</a></li>
+  </ul></li>
+  <li><a href="#função-cardíaca-fc" id="toc-função-cardíaca-fc" class="nav-link" data-scroll-target="#função-cardíaca-fc">Função cardíaca (FC)</a>
+  <ul class="collapse">
+  <li><a href="#encurtamento-percentual-ep" id="toc-encurtamento-percentual-ep" class="nav-link" data-scroll-target="#encurtamento-percentual-ep">Encurtamento percentual (EP)</a>
+  <ul class="collapse">
+  <li><a href="#trec-krec-2" id="toc-trec-krec-2" class="nav-link" data-scroll-target="#trec-krec-2">TREC &amp; KREC</a></li>
+  <li><a href="#infecções" id="toc-infecções" class="nav-link" data-scroll-target="#infecções">Infecções</a></li>
+  </ul></li>
+  <li><a href="#fração-de-injeção-fi" id="toc-fração-de-injeção-fi" class="nav-link" data-scroll-target="#fração-de-injeção-fi">Fração de injeção (FI)</a>
+  <ul class="collapse">
+  <li><a href="#trec-krec-3" id="toc-trec-krec-3" class="nav-link" data-scroll-target="#trec-krec-3">TREC &amp; KREC</a></li>
+  <li><a href="#infecções-1" id="toc-infecções-1" class="nav-link" data-scroll-target="#infecções-1">Infecções</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#extra" id="toc-extra" class="nav-link" data-scroll-target="#extra">Extra</a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Deleção 22q: TREC &amp; KREC</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>Bianca Pitanga, Carolina Prando e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-08-25 13:25:44</p>
+<hr>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<section id="medidas-descritivas" class="level1">
+<h1>Medidas descritivas</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-resumo" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 1:  Medidas resumo. Desvio Padrão (DP) é a raiz quadrada da variância. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Media </th>
+   <th style="text-align:right;"> DP </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o.quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> 3o.quartil </th>
+   <th style="text-align:right;"> Máximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 87.115 </td>
+   <td style="text-align:right;"> 79.556 </td>
+   <td style="text-align:right;"> 3.000 </td>
+   <td style="text-align:right;"> 28.00 </td>
+   <td style="text-align:right;"> 71.0 </td>
+   <td style="text-align:right;"> 110.75 </td>
+   <td style="text-align:right;"> 433.333 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 104.579 </td>
+   <td style="text-align:right;"> 114.262 </td>
+   <td style="text-align:right;"> 3.667 </td>
+   <td style="text-align:right;"> 38.00 </td>
+   <td style="text-align:right;"> 59.0 </td>
+   <td style="text-align:right;"> 131.00 </td>
+   <td style="text-align:right;"> 628.000 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Idade.Gestacional </td>
+   <td style="text-align:right;"> 38.095 </td>
+   <td style="text-align:right;"> 2.109 </td>
+   <td style="text-align:right;"> 30.000 </td>
+   <td style="text-align:right;"> 37.75 </td>
+   <td style="text-align:right;"> 38.0 </td>
+   <td style="text-align:right;"> 39.00 </td>
+   <td style="text-align:right;"> 41.000 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Peso </td>
+   <td style="text-align:right;"> 3116.440 </td>
+   <td style="text-align:right;"> 667.334 </td>
+   <td style="text-align:right;"> 1255.000 </td>
+   <td style="text-align:right;"> 2741.25 </td>
+   <td style="text-align:right;"> 3169.0 </td>
+   <td style="text-align:right;"> 3496.25 </td>
+   <td style="text-align:right;"> 4995.000 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC.EP </td>
+   <td style="text-align:right;"> 38.527 </td>
+   <td style="text-align:right;"> 7.443 </td>
+   <td style="text-align:right;"> 21.000 </td>
+   <td style="text-align:right;"> 34.00 </td>
+   <td style="text-align:right;"> 39.0 </td>
+   <td style="text-align:right;"> 44.00 </td>
+   <td style="text-align:right;"> 54.000 </td>
+   <td style="text-align:right;"> 55 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FC.FI </td>
+   <td style="text-align:right;"> 71.345 </td>
+   <td style="text-align:right;"> 9.064 </td>
+   <td style="text-align:right;"> 46.000 </td>
+   <td style="text-align:right;"> 65.25 </td>
+   <td style="text-align:right;"> 73.5 </td>
+   <td style="text-align:right;"> 78.00 </td>
+   <td style="text-align:right;"> 88.000 </td>
+   <td style="text-align:right;"> 58 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Número.Infecções </td>
+   <td style="text-align:right;"> 1.655 </td>
+   <td style="text-align:right;"> 2.193 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;"> 0.00 </td>
+   <td style="text-align:right;"> 1.0 </td>
+   <td style="text-align:right;"> 2.00 </td>
+   <td style="text-align:right;"> 12.000 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Dias.1a.Infecção </td>
+   <td style="text-align:right;"> 14.638 </td>
+   <td style="text-align:right;"> 18.883 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;"> 2.50 </td>
+   <td style="text-align:right;"> 9.0 </td>
+   <td style="text-align:right;"> 18.00 </td>
+   <td style="text-align:right;"> 86.000 </td>
+   <td style="text-align:right;"> 47 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Dias.Internamento </td>
+   <td style="text-align:right;"> 51.417 </td>
+   <td style="text-align:right;"> 56.068 </td>
+   <td style="text-align:right;"> 4.000 </td>
+   <td style="text-align:right;"> 15.00 </td>
+   <td style="text-align:right;"> 33.5 </td>
+   <td style="text-align:right;"> 59.50 </td>
+   <td style="text-align:right;"> 339.000 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="trec-krec" class="level1">
+<h1>TREC &amp; KREC</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-krec" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-trec-krec-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 1: A. Boxplot com média em asterisco; B. Dispersão com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Vemos na <a href="#fig-trec-krec">Figure&nbsp;1</a>, a partir do polinômio de segundo grau ajustado, que não existe uma relação estritamente linear. De qualquer modo, podemos ainda assim calcular e testar seu coeficiente de correlação linear <span class="citation" data-cites="beckeretal">(<a href="#ref-beckeretal" role="doc-biblioref">Becker, Chambers, and Wilks 1988</a>)</span>.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-krec" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 2:  Correlação de Pearson com limites dum intervalo de 95% de confiança e correspondente valor-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 0.346 </td>
+   <td style="text-align:right;"> 0.142 </td>
+   <td style="text-align:right;"> 0.522 </td>
+   <td style="text-align:right;"> 3.339 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.001 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A correlação positiva é estatisticamente significativa (valor-<em>p</em> &lt; 0.05).</p>
+<p>Como curiosidade, tentamos entender o que acontece para alguns pacientes divergirem do padrão amostral. Estamos falando principalmente dos cinco pacientes com KREC acima de 300. Olhando ao menos para as principais características avaliadas nesta análise, nada de anormal que justifique.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-krec-acima-de-300" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 3:  Algumas variáveis dos pacientes com KREC acima de 300. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Idade.Gestacional </th>
+   <th style="text-align:right;"> Peso </th>
+   <th style="text-align:right;"> Número.Infecções </th>
+   <th style="text-align:left;"> Dias.Internamento </th>
+   <th style="text-align:right;"> DESFECHO </th>
+   <th style="text-align:right;"> SHVE </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 39 </td>
+   <td style="text-align:right;"> 3625 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> (1,30] </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 36 </td>
+   <td style="text-align:right;"> 2895 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> (90,120] </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:right;"> 2535 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:left;"> (1,30] </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:right;"> 3500 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> (30,60] </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:right;"> 3455 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> (1,30] </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Na <a href="#tbl-krec-acima-de-300">Table&nbsp;3</a> DESFECHO 0 significa não-óbito, SHVE 0 significa “não” e os dias de internamento estão categorizados.</p>
+</blockquote>
+</section>
+<section id="idade-gestacional" class="level1">
+<h1>Idade gestacional</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-idade-gestacional" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-idade-gestacional-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 2: Dispersão da idade gestacional com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Vemos que independente da idade gestacional, os valores médios observados de TREC e KREC não diferem significativamente.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-idade-gestacional" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 4:  Correlação de Pearson da idade gestacional com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> -0.117 </td>
+   <td style="text-align:right;"> 0.308 </td>
+   <td style="text-align:right;"> 0.908 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.366 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 0.024 </td>
+   <td style="text-align:right;"> -0.191 </td>
+   <td style="text-align:right;"> 0.237 </td>
+   <td style="text-align:right;"> 0.217 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.829 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="peso-ao-nascimento" class="level1">
+<h1>Peso ao nascimento</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-peso" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-peso-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 3: Dispersão do peso ao nascimento com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Vemos que independente do peso ao nascimento, os valores médios observados de TREC e KREC não diferem significativamente.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-peso" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 5:  Correlação de Pearson do peso ao nascimento com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 0.047 </td>
+   <td style="text-align:right;"> -0.169 </td>
+   <td style="text-align:right;"> 0.259 </td>
+   <td style="text-align:right;"> 0.430 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.668 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 0.024 </td>
+   <td style="text-align:right;"> -0.192 </td>
+   <td style="text-align:right;"> 0.237 </td>
+   <td style="text-align:right;"> 0.214 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.831 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="presença-de-infecções" class="level1">
+<h1>Presença de infecções</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-presenca-de-infeccoes" class="anchored">
+
+<table class="table lightable-classic-2" style="font-size: 15px; margin-left: auto; margin-right: auto; font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 6:  Medidas resumo das infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Media </th>
+   <th style="text-align:right;"> DP </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o.quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> 3o.quartil </th>
+   <th style="text-align:right;"> Máximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Sepse </td>
+   <td style="text-align:right;"> 0.607 </td>
+   <td style="text-align:right;"> 0.944 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Infecção de trato urinario </td>
+   <td style="text-align:right;"> 0.345 </td>
+   <td style="text-align:right;"> 0.668 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Pneumonia </td>
+   <td style="text-align:right;"> 0.167 </td>
+   <td style="text-align:right;"> 0.406 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Infecção de ferida operatória </td>
+   <td style="text-align:right;"> 0.107 </td>
+   <td style="text-align:right;"> 0.311 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Infecção de trato respiratorio superior </td>
+   <td style="text-align:right;"> 0.095 </td>
+   <td style="text-align:right;"> 0.295 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Síndrome respiratória aguda grave </td>
+   <td style="text-align:right;"> 0.071 </td>
+   <td style="text-align:right;"> 0.259 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Candidíase </td>
+   <td style="text-align:right;"> 0.083 </td>
+   <td style="text-align:right;"> 0.278 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Candidemia </td>
+   <td style="text-align:right;"> 0.036 </td>
+   <td style="text-align:right;"> 0.187 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Peritonite </td>
+   <td style="text-align:right;"> 0.036 </td>
+   <td style="text-align:right;"> 0.187 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Pneumonia associada a ventilação mecanica </td>
+   <td style="text-align:right;"> 0.048 </td>
+   <td style="text-align:right;"> 0.214 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Enterocolite </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.109 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Mediastinite </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.109 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Osteomelite </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.109 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Infecção respiratória aguda </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.109 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Meningite viral </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.109 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 84 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-presenca-de-infeccoes" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-presenca-de-infeccoes-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 4: Mapa de calor da frequência das infecções.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-infeccoes" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 7:  Medidas descritivas de TREC e KREC pela presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Infeccṍes </th>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Media </th>
+   <th style="text-align:right;"> DP </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o.quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> 3o.quartil </th>
+   <th style="text-align:right;"> Máximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Não </td>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 99.396 </td>
+   <td style="text-align:right;"> 89.621 </td>
+   <td style="text-align:right;"> 5.000 </td>
+   <td style="text-align:right;"> 34.25 </td>
+   <td style="text-align:right;"> 76.0 </td>
+   <td style="text-align:right;"> 141.25 </td>
+   <td style="text-align:right;"> 433.333 </td>
+   <td style="text-align:right;"> 32 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Sim </td>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 79.558 </td>
+   <td style="text-align:right;"> 72.563 </td>
+   <td style="text-align:right;"> 3.000 </td>
+   <td style="text-align:right;"> 28.00 </td>
+   <td style="text-align:right;"> 63.5 </td>
+   <td style="text-align:right;"> 97.50 </td>
+   <td style="text-align:right;"> 348.000 </td>
+   <td style="text-align:right;"> 52 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Não </td>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 96.656 </td>
+   <td style="text-align:right;"> 91.950 </td>
+   <td style="text-align:right;"> 3.667 </td>
+   <td style="text-align:right;"> 41.75 </td>
+   <td style="text-align:right;"> 57.5 </td>
+   <td style="text-align:right;"> 148.75 </td>
+   <td style="text-align:right;"> 446.000 </td>
+   <td style="text-align:right;"> 32 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Sim </td>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 109.455 </td>
+   <td style="text-align:right;"> 126.668 </td>
+   <td style="text-align:right;"> 18.333 </td>
+   <td style="text-align:right;"> 36.75 </td>
+   <td style="text-align:right;"> 59.0 </td>
+   <td style="text-align:right;"> 122.75 </td>
+   <td style="text-align:right;"> 628.000 </td>
+   <td style="text-align:right;"> 52 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-infeccoes-teste-t" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 8:  Teste-t comparando as médias de TREC e KREC por ausência e presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Diferença </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 19.838 </td>
+   <td style="text-align:right;"> -17.766 </td>
+   <td style="text-align:right;"> 57.442 </td>
+   <td style="text-align:right;"> 1.057 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.295 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> -12.799 </td>
+   <td style="text-align:right;"> -60.429 </td>
+   <td style="text-align:right;"> 34.832 </td>
+   <td style="text-align:right;"> -0.535 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.594 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Vemos pela <a href="#tbl-trec-e-krec-por-presenca-de-infeccoes-teste-t">Table&nbsp;8</a> que as médias de TREC e KREC não diferem do grupo de pacientes sem infecções para o grupo com infecções.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-e-krec-numero-de-infeccoes" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-trec-e-krec-numero-de-infeccoes-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 5: Dispersão do número de infecções com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Correlações negativas mas não estatisticamente significativas.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-numero-de-infeccoes-correlacao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 9:  Correlação de Pearson do número de infecções com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> -0.178 </td>
+   <td style="text-align:right;"> -0.378 </td>
+   <td style="text-align:right;"> 0.038 </td>
+   <td style="text-align:right;"> -1.640 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.105 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> -0.056 </td>
+   <td style="text-align:right;"> -0.267 </td>
+   <td style="text-align:right;"> 0.161 </td>
+   <td style="text-align:right;"> -0.505 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.615 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="tempo" class="level1">
+<h1>Tempo</h1>
+<hr>
+<section id="entre-internamento-e-primeira-infecção" class="level2">
+<h2 class="anchored" data-anchor-id="entre-internamento-e-primeira-infecção">Entre internamento e primeira infecção</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-tempo-entre-internamento-e-primeira-infeccao" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-tempo-entre-internamento-e-primeira-infeccao-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 6: Dispersão do tempo em dias transcorridos entre o internamento e a primeira infecção com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Correlações não significativas.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-tempo-entre-internamento-e-primeira-infeccao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 10:  Correlação de Pearson do tempo entre internamento e primeira internação com TREC e KREC, limites dum intervalo intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 0.094 </td>
+   <td style="text-align:right;"> -0.198 </td>
+   <td style="text-align:right;"> 0.371 </td>
+   <td style="text-align:right;"> 0.636 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.528 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> -0.121 </td>
+   <td style="text-align:right;"> -0.394 </td>
+   <td style="text-align:right;"> 0.173 </td>
+   <td style="text-align:right;"> -0.815 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.419 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="de-internamento" class="level2">
+<h2 class="anchored" data-anchor-id="de-internamento">De internamento</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-tempo-de-internamento" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-tempo-de-internamento-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 7: Dispersão do tempo em dias de internamento com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Correlações não significativas.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-tempo-de-internamento" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 11:  Correlação de Pearson do tempo de internamento com TREC e KREC, limites dum intervalo intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> -0.153 </td>
+   <td style="text-align:right;"> -0.355 </td>
+   <td style="text-align:right;"> 0.064 </td>
+   <td style="text-align:right;"> -1.398 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.166 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> -0.127 </td>
+   <td style="text-align:right;"> -0.333 </td>
+   <td style="text-align:right;"> 0.089 </td>
+   <td style="text-align:right;"> -1.164 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.248 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="linfopenia" class="level1">
+<h1>Linfopenia</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-linfopenia" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 12:  Medidas descritivas de TREC e KREC pela presença de linfopenia. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Linfopenia </th>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Media </th>
+   <th style="text-align:right;"> DP </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o.quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> 3o.quartil </th>
+   <th style="text-align:right;"> Máximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Não </td>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 86.717 </td>
+   <td style="text-align:right;"> 62.043 </td>
+   <td style="text-align:right;"> 3.000 </td>
+   <td style="text-align:right;"> 43.25 </td>
+   <td style="text-align:right;"> 79.5 </td>
+   <td style="text-align:right;"> 109.50 </td>
+   <td style="text-align:right;"> 239.000 </td>
+   <td style="text-align:right;"> 40 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Sim </td>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 87.477 </td>
+   <td style="text-align:right;"> 93.409 </td>
+   <td style="text-align:right;"> 6.000 </td>
+   <td style="text-align:right;"> 25.75 </td>
+   <td style="text-align:right;"> 56.0 </td>
+   <td style="text-align:right;"> 110.75 </td>
+   <td style="text-align:right;"> 433.333 </td>
+   <td style="text-align:right;"> 44 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Não </td>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 145.300 </td>
+   <td style="text-align:right;"> 144.476 </td>
+   <td style="text-align:right;"> 9.000 </td>
+   <td style="text-align:right;"> 45.00 </td>
+   <td style="text-align:right;"> 98.5 </td>
+   <td style="text-align:right;"> 158.25 </td>
+   <td style="text-align:right;"> 628.000 </td>
+   <td style="text-align:right;"> 40 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Sim </td>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 67.561 </td>
+   <td style="text-align:right;"> 57.657 </td>
+   <td style="text-align:right;"> 3.667 </td>
+   <td style="text-align:right;"> 30.00 </td>
+   <td style="text-align:right;"> 45.0 </td>
+   <td style="text-align:right;"> 83.50 </td>
+   <td style="text-align:right;"> 245.000 </td>
+   <td style="text-align:right;"> 44 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Existe diferença significativa entre as médias de KREC dos grupos com e sem linfopenia.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-linfopenia-teste-t" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 13:  Teste-t comparando as médias de TREC e KREC por ausência e presença de linfopenia. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Diferença </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> -0.761 </td>
+   <td style="text-align:right;"> -34.947 </td>
+   <td style="text-align:right;"> 33.425 </td>
+   <td style="text-align:right;"> -0.044 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.965 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 77.739 </td>
+   <td style="text-align:right;"> 28.651 </td>
+   <td style="text-align:right;"> 126.828 </td>
+   <td style="text-align:right;"> 3.181 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.003 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="desfecho-óbito" class="level1">
+<h1>Desfecho (óbito)</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-desfecho-obito" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 14:  Frequências e percentuais do desfecho óbito. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Alta </th>
+   <th style="text-align:right;"> Internado </th>
+   <th style="text-align:right;"> Obito </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Frequência </td>
+   <td style="text-align:right;"> 63.00 </td>
+   <td style="text-align:right;"> 1.000 </td>
+   <td style="text-align:right;"> 20.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Proporção </td>
+   <td style="text-align:right;"> 0.75 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 0.238 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-krec-por-desfecho" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 15:  Medidas descritivas de TREC e KREC por desfecho. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Desfecho </th>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Media </th>
+   <th style="text-align:right;"> DP </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o.quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> 3o.quartil </th>
+   <th style="text-align:right;"> Máximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Alta </td>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 89.651 </td>
+   <td style="text-align:right;"> 78.010 </td>
+   <td style="text-align:right;"> 5.000 </td>
+   <td style="text-align:right;"> 34.000 </td>
+   <td style="text-align:right;"> 72.0 </td>
+   <td style="text-align:right;"> 112.50 </td>
+   <td style="text-align:right;"> 433.333 </td>
+   <td style="text-align:right;"> 63 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Óbito </td>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 83.333 </td>
+   <td style="text-align:right;"> 85.917 </td>
+   <td style="text-align:right;"> 5.000 </td>
+   <td style="text-align:right;"> 21.500 </td>
+   <td style="text-align:right;"> 62.5 </td>
+   <td style="text-align:right;"> 99.25 </td>
+   <td style="text-align:right;"> 348.000 </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Alta </td>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 117.259 </td>
+   <td style="text-align:right;"> 126.882 </td>
+   <td style="text-align:right;"> 3.667 </td>
+   <td style="text-align:right;"> 40.167 </td>
+   <td style="text-align:right;"> 64.0 </td>
+   <td style="text-align:right;"> 149.50 </td>
+   <td style="text-align:right;"> 628.000 </td>
+   <td style="text-align:right;"> 63 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Óbito </td>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 67.267 </td>
+   <td style="text-align:right;"> 48.532 </td>
+   <td style="text-align:right;"> 9.000 </td>
+   <td style="text-align:right;"> 33.750 </td>
+   <td style="text-align:right;"> 49.5 </td>
+   <td style="text-align:right;"> 95.50 </td>
+   <td style="text-align:right;"> 170.000 </td>
+   <td style="text-align:right;"> 20 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A diferença média de KREC por desfecho é significativa.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-desfecho-teste-t" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 16:  Teste-t comparando as médias de TREC e KREC por ausência e presença de linfopenia. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Diferença </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 6.317 </td>
+   <td style="text-align:right;"> -37.777 </td>
+   <td style="text-align:right;"> 50.412 </td>
+   <td style="text-align:right;"> 0.293 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.772 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 49.993 </td>
+   <td style="text-align:right;"> 11.528 </td>
+   <td style="text-align:right;"> 88.457 </td>
+   <td style="text-align:right;"> 2.587 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.012 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="tipo-de-cardiopatia" class="level1">
+<h1>Tipo de cardiopatia</h1>
+<hr>
+<section id="trec-krec-1" class="level2">
+<h2 class="anchored" data-anchor-id="trec-krec-1">TREC &amp; KREC</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-cardiopatia" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 17:  Frequências, percentuais e médias de TREC e KREC por tipo de cardiopatia. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> CARDIOPATIA </th>
+   <th style="text-align:right;"> Frequência </th>
+   <th style="text-align:right;"> Proporção </th>
+   <th style="text-align:right;"> TREC.média </th>
+   <th style="text-align:right;"> KREC.media </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 57.639 </td>
+   <td style="text-align:right;"> 47.833 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.119 </td>
+   <td style="text-align:right;"> 100.267 </td>
+   <td style="text-align:right;"> 107.433 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.107 </td>
+   <td style="text-align:right;"> 109.704 </td>
+   <td style="text-align:right;"> 77.370 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.095 </td>
+   <td style="text-align:right;"> 50.125 </td>
+   <td style="text-align:right;"> 111.125 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.095 </td>
+   <td style="text-align:right;"> 87.750 </td>
+   <td style="text-align:right;"> 119.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EPV </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.083 </td>
+   <td style="text-align:right;"> 118.190 </td>
+   <td style="text-align:right;"> 88.476 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0.060 </td>
+   <td style="text-align:right;"> 80.800 </td>
+   <td style="text-align:right;"> 48.200 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0.060 </td>
+   <td style="text-align:right;"> 128.200 </td>
+   <td style="text-align:right;"> 107.600 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> DSAVT </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.036 </td>
+   <td style="text-align:right;"> 105.667 </td>
+   <td style="text-align:right;"> 279.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EAO </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.036 </td>
+   <td style="text-align:right;"> 64.889 </td>
+   <td style="text-align:right;"> 96.556 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.036 </td>
+   <td style="text-align:right;"> 91.000 </td>
+   <td style="text-align:right;"> 158.333 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> DATVVPP </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.024 </td>
+   <td style="text-align:right;"> 91.000 </td>
+   <td style="text-align:right;"> 60.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EBSTEIN </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.024 </td>
+   <td style="text-align:right;"> 154.000 </td>
+   <td style="text-align:right;"> 102.500 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> IAAO </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.024 </td>
+   <td style="text-align:right;"> 6.000 </td>
+   <td style="text-align:right;"> 45.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ARRITMIA </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 102.000 </td>
+   <td style="text-align:right;"> 437.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 19.000 </td>
+   <td style="text-align:right;"> 38.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> BAVT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 28.000 </td>
+   <td style="text-align:right;"> 30.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> CIA </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 63.000 </td>
+   <td style="text-align:right;"> 51.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SUBCLAVIA ANOMALA </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;"> 162.000 </td>
+   <td style="text-align:right;"> 628.000 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-cardiopatia" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-cardiopatia-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 8: Dispersão de TREC (A) e KREC (B) por tipos de cardiopatia e com valor médio em vermelho.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Das 30 comparações feitas na <a href="#tbl-cardiopatia-contrasts">Table&nbsp;18</a>, nenhuma é estatisticamente significativa. A mais próxima de ser é a de KREC, cardiopatias SHVE e COMPLEXA.</p>
+<p>Para tais comparações ajustamos um modelo linear de regressão <span class="citation" data-cites="chambers">(<a href="#ref-chambers" role="doc-biblioref">Chambers 1992</a>)</span> com os tipos de cardiopatia “explicando” (sendo associados ao) o TREC ou KREC (um modelo para cada) e performamos o que é chamado de comparações múltiplas entre contrastes <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span>.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-cardiopatia-contrasts" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 18:  Comparações múltiplas dos tipos de cardiopatia com frequência &gt; 5, em termos da médias de TREC e KREC. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Diferença </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="15"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> COAO - CIV </td>
+   <td style="text-align:right;"> 59.579 </td>
+   <td style="text-align:right;"> -17.034 </td>
+   <td style="text-align:right;"> 136.191 </td>
+   <td style="text-align:right;"> 1.524 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.127 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> COMPLEXA - CIV </td>
+   <td style="text-align:right;"> 37.625 </td>
+   <td style="text-align:right;"> -41.209 </td>
+   <td style="text-align:right;"> 116.459 </td>
+   <td style="text-align:right;"> 0.935 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.350 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> EPV - CIV </td>
+   <td style="text-align:right;"> 68.065 </td>
+   <td style="text-align:right;"> -13.535 </td>
+   <td style="text-align:right;"> 149.666 </td>
+   <td style="text-align:right;"> 1.635 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.102 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - CIV </td>
+   <td style="text-align:right;"> 7.514 </td>
+   <td style="text-align:right;"> -64.451 </td>
+   <td style="text-align:right;"> 79.479 </td>
+   <td style="text-align:right;"> 0.205 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.838 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - CIV </td>
+   <td style="text-align:right;"> 50.142 </td>
+   <td style="text-align:right;"> -24.647 </td>
+   <td style="text-align:right;"> 124.930 </td>
+   <td style="text-align:right;"> 1.314 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.189 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> COMPLEXA - COAO </td>
+   <td style="text-align:right;"> -21.954 </td>
+   <td style="text-align:right;"> -98.566 </td>
+   <td style="text-align:right;"> 54.659 </td>
+   <td style="text-align:right;"> -0.562 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.574 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> EPV - COAO </td>
+   <td style="text-align:right;"> 8.487 </td>
+   <td style="text-align:right;"> -70.970 </td>
+   <td style="text-align:right;"> 87.944 </td>
+   <td style="text-align:right;"> 0.209 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.834 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - COAO </td>
+   <td style="text-align:right;"> -52.065 </td>
+   <td style="text-align:right;"> -121.590 </td>
+   <td style="text-align:right;"> 17.460 </td>
+   <td style="text-align:right;"> -1.468 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.142 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - COAO </td>
+   <td style="text-align:right;"> -9.437 </td>
+   <td style="text-align:right;"> -81.880 </td>
+   <td style="text-align:right;"> 63.006 </td>
+   <td style="text-align:right;"> -0.255 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.798 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> EPV - COMPLEXA </td>
+   <td style="text-align:right;"> 30.440 </td>
+   <td style="text-align:right;"> -51.160 </td>
+   <td style="text-align:right;"> 112.041 </td>
+   <td style="text-align:right;"> 0.731 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.465 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - COMPLEXA </td>
+   <td style="text-align:right;"> -30.111 </td>
+   <td style="text-align:right;"> -102.076 </td>
+   <td style="text-align:right;"> 41.854 </td>
+   <td style="text-align:right;"> -0.820 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.412 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - COMPLEXA </td>
+   <td style="text-align:right;"> 12.517 </td>
+   <td style="text-align:right;"> -62.272 </td>
+   <td style="text-align:right;"> 87.305 </td>
+   <td style="text-align:right;"> 0.328 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.743 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - EPV </td>
+   <td style="text-align:right;"> -60.552 </td>
+   <td style="text-align:right;"> -135.538 </td>
+   <td style="text-align:right;"> 14.434 </td>
+   <td style="text-align:right;"> -1.583 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.113 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - EPV </td>
+   <td style="text-align:right;"> -17.924 </td>
+   <td style="text-align:right;"> -95.623 </td>
+   <td style="text-align:right;"> 59.776 </td>
+   <td style="text-align:right;"> -0.452 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.651 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - SHVE </td>
+   <td style="text-align:right;"> 42.628 </td>
+   <td style="text-align:right;"> -24.881 </td>
+   <td style="text-align:right;"> 110.137 </td>
+   <td style="text-align:right;"> 1.238 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.216 </td>
+  </tr>
+  <tr grouplength="15"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> COAO - CIV </td>
+   <td style="text-align:right;"> -33.755 </td>
+   <td style="text-align:right;"> -115.844 </td>
+   <td style="text-align:right;"> 48.334 </td>
+   <td style="text-align:right;"> -0.806 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.420 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> COMPLEXA - CIV </td>
+   <td style="text-align:right;"> 7.875 </td>
+   <td style="text-align:right;"> -76.594 </td>
+   <td style="text-align:right;"> 92.344 </td>
+   <td style="text-align:right;"> 0.183 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.855 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> EPV - CIV </td>
+   <td style="text-align:right;"> -22.649 </td>
+   <td style="text-align:right;"> -110.082 </td>
+   <td style="text-align:right;"> 64.785 </td>
+   <td style="text-align:right;"> -0.508 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.612 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - CIV </td>
+   <td style="text-align:right;"> -63.292 </td>
+   <td style="text-align:right;"> -140.401 </td>
+   <td style="text-align:right;"> 13.818 </td>
+   <td style="text-align:right;"> -1.609 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.108 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - CIV </td>
+   <td style="text-align:right;"> -3.692 </td>
+   <td style="text-align:right;"> -83.826 </td>
+   <td style="text-align:right;"> 76.443 </td>
+   <td style="text-align:right;"> -0.090 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.928 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> COMPLEXA - COAO </td>
+   <td style="text-align:right;"> 41.630 </td>
+   <td style="text-align:right;"> -40.459 </td>
+   <td style="text-align:right;"> 123.719 </td>
+   <td style="text-align:right;"> 0.994 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.320 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> EPV - COAO </td>
+   <td style="text-align:right;"> 11.106 </td>
+   <td style="text-align:right;"> -74.031 </td>
+   <td style="text-align:right;"> 96.242 </td>
+   <td style="text-align:right;"> 0.256 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.798 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - COAO </td>
+   <td style="text-align:right;"> -29.537 </td>
+   <td style="text-align:right;"> -104.032 </td>
+   <td style="text-align:right;"> 44.958 </td>
+   <td style="text-align:right;"> -0.777 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.437 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - COAO </td>
+   <td style="text-align:right;"> 30.063 </td>
+   <td style="text-align:right;"> -47.559 </td>
+   <td style="text-align:right;"> 107.685 </td>
+   <td style="text-align:right;"> 0.759 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.448 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> EPV - COMPLEXA </td>
+   <td style="text-align:right;"> -30.524 </td>
+   <td style="text-align:right;"> -117.957 </td>
+   <td style="text-align:right;"> 56.910 </td>
+   <td style="text-align:right;"> -0.684 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.494 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - COMPLEXA </td>
+   <td style="text-align:right;"> -71.167 </td>
+   <td style="text-align:right;"> -148.276 </td>
+   <td style="text-align:right;"> 5.943 </td>
+   <td style="text-align:right;"> -1.809 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.070 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - COMPLEXA </td>
+   <td style="text-align:right;"> -11.567 </td>
+   <td style="text-align:right;"> -91.701 </td>
+   <td style="text-align:right;"> 68.568 </td>
+   <td style="text-align:right;"> -0.283 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.777 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> SHVE - EPV </td>
+   <td style="text-align:right;"> -40.643 </td>
+   <td style="text-align:right;"> -120.989 </td>
+   <td style="text-align:right;"> 39.703 </td>
+   <td style="text-align:right;"> -0.991 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.321 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - EPV </td>
+   <td style="text-align:right;"> 18.957 </td>
+   <td style="text-align:right;"> -64.296 </td>
+   <td style="text-align:right;"> 102.211 </td>
+   <td style="text-align:right;"> 0.446 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.655 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> TGA - SHVE </td>
+   <td style="text-align:right;"> 59.600 </td>
+   <td style="text-align:right;"> -12.735 </td>
+   <td style="text-align:right;"> 131.935 </td>
+   <td style="text-align:right;"> 1.615 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.106 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="desfecho" class="level2">
+<h2 class="anchored" data-anchor-id="desfecho">Desfecho</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-cardiopatia-desfecho" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 19:  Tipos de cardiopatia por desfecho. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> CARDIOPATIA </th>
+   <th style="text-align:right;"> Alta </th>
+   <th style="text-align:right;"> Internado </th>
+   <th style="text-align:right;"> Obito </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> Obito.Percentual </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 0.833 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EBSTEIN </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.500 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> IAAO </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.500 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0.400 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.333 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 0.200 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.125 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0.125 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0.111 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 0.100 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ARRITMIA </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> BAVT </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> CIA </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> DATVVPP </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> DSAVT </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EAO </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> EPV </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SUBCLAVIA ANOMALA </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Queremos testar se as proporções <span class="citation" data-cites="wilson27 newcombe98a newcombe98b">(<a href="#ref-wilson27" role="doc-biblioref">Wilson 1927</a>; <a href="#ref-newcombe98a" role="doc-biblioref">Newcombe 1998b</a>, <a href="#ref-newcombe98b" role="doc-biblioref">1998a</a>)</span> de óbito diferem de um tipo de cardiopatia para outro. Contudo, não podemos fazer com todos os tipos por dois motivos: São muitos tipos, o que daria um número gigantesco de comparações 2 a 2; e pelo de que em algumas cardiopatias o tamanho amostral é muito pequeno ou nem se teve óbitos. O que fizemos? Selecionamos apenas as cardiopatias com óbitos e que tiveram mais que dois pacientes. Ficamos assim com 8 tipos de cardiopatia.</p>
+<p>Na <a href="#tbl-cardiopatia-desfecho-prop-test">Table&nbsp;20</a> temos 28 comparações. Destas, apenas cinco são estatisticamente significativas (valor-<em>p</em> &lt; 0.05). Todas envolvendo a cardiopatia SHVE.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-cardiopatia-desfecho-prop-test" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 20:  Comparações múltiplas dos tipos de cardiopatia em termos das proporções de óbito. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> var1 </th>
+   <th style="text-align:left;"> var2 </th>
+   <th style="text-align:right;"> var1.percentual </th>
+   <th style="text-align:right;"> var2.percentual </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:right;"> 0.833 </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> 1.446 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.229 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:right;"> 0.833 </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 1.044 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.307 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:right;"> 0.833 </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 3.736 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.053 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:right;"> 0.833 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 7.079 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.008 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:right;"> 0.833 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 7.079 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.008 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 0.833 </td>
+   <td style="text-align:right;"> 0.111 </td>
+   <td style="text-align:right;"> 8.054 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.005 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SHVE </td>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 0.833 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 8.983 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.003 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.219 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.640 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.219 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.640 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> 0.111 </td>
+   <td style="text-align:right;"> 0.339 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.560 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> AP </td>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 0.469 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.494 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.111 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> PCA </td>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 0.005 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.944 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.111 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> T4F </td>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 0.200 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.111 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> CIV </td>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.111 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> COMPLEXA </td>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 0.125 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> COAO </td>
+   <td style="text-align:left;"> TGA </td>
+   <td style="text-align:right;"> 0.111 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="função-cardíaca-fc" class="level1">
+<h1>Função cardíaca (FC)</h1>
+<hr>
+<section id="encurtamento-percentual-ep" class="level2">
+<h2 class="anchored" data-anchor-id="encurtamento-percentual-ep">Encurtamento percentual (EP)</h2>
+<hr>
+<section id="trec-krec-2" class="level3">
+<h3 class="anchored" data-anchor-id="trec-krec-2">TREC &amp; KREC</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-e-krec-funcao-cardiaca-encurtamento-percentual" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-trec-e-krec-funcao-cardiaca-encurtamento-percentual-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 9: Dispersão da FC: EP com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Para o TREC, correlação não significativa. Para o KREC, bem no limiar de 5%. Pode ser interpretado como correlação de baixa significância.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-funcao-cardiaca-encurtamento-percentual" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 21:  Correlação de Pearson da FC: EP com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 0.162 </td>
+   <td style="text-align:right;"> -0.108 </td>
+   <td style="text-align:right;"> 0.409 </td>
+   <td style="text-align:right;"> 1.192 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.239 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 0.262 </td>
+   <td style="text-align:right;"> -0.004 </td>
+   <td style="text-align:right;"> 0.493 </td>
+   <td style="text-align:right;"> 1.975 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.053 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="infecções" class="level3">
+<h3 class="anchored" data-anchor-id="infecções">Infecções</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-encurtamento-percentual-por-presenca-de-infeccoes" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 22:  Medidas descritivas do encurtamento percentual pela presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Infeccṍes </th>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Media </th>
+   <th style="text-align:right;"> DP </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o.quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> 3o.quartil </th>
+   <th style="text-align:right;"> Máximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Não </td>
+   <td style="text-align:left;"> FC.EP </td>
+   <td style="text-align:right;"> 41.609 </td>
+   <td style="text-align:right;"> 7.680 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 37.50 </td>
+   <td style="text-align:right;"> 42.0 </td>
+   <td style="text-align:right;"> 46 </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 23 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Sim </td>
+   <td style="text-align:left;"> FC.EP </td>
+   <td style="text-align:right;"> 36.312 </td>
+   <td style="text-align:right;"> 6.523 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 33.75 </td>
+   <td style="text-align:right;"> 36.5 </td>
+   <td style="text-align:right;"> 41 </td>
+   <td style="text-align:right;"> 46 </td>
+   <td style="text-align:right;"> 32 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A diferença média de encurtamento percentual difere significativamente dos grupos com e sem infecções.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-encurtamento-percentual-por-presenca-de-infeccoes-teste-t" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 23:  Teste-t comparando as médias de encurtamento percentual por ausência e presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Diferença </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> FC.EP </td>
+   <td style="text-align:right;"> 5.296 </td>
+   <td style="text-align:right;"> 1.316 </td>
+   <td style="text-align:right;"> 9.277 </td>
+   <td style="text-align:right;"> 2.684 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.01 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-encurtamento-percentual-numero-de-infeccoes" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-encurtamento-percentual-numero-de-infeccoes-1.png" class="img-fluid figure-img" width="480"></p>
+<p></p><figcaption class="figure-caption">Figure 10: Dispersão do número de infecções por encurtamento percentual com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Correlação negativa e estatisticamente significativa.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-encurtament-percentual-numero-de-infeccoes-correlacao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 24:  Correlação de Pearson do número de infecções com o encurtamento percentual, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> FC.EP </td>
+   <td style="text-align:right;"> -0.326 </td>
+   <td style="text-align:right;"> -0.544 </td>
+   <td style="text-align:right;"> -0.066 </td>
+   <td style="text-align:right;"> -2.51 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.015 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="fração-de-injeção-fi" class="level2">
+<h2 class="anchored" data-anchor-id="fração-de-injeção-fi">Fração de injeção (FI)</h2>
+<hr>
+<section id="trec-krec-3" class="level3">
+<h3 class="anchored" data-anchor-id="trec-krec-3">TREC &amp; KREC</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-e-krec-funcao-cardiaca-fracao-de-injecao" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-trec-e-krec-funcao-cardiaca-fracao-de-injecao-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 11: Dispersão da FC: FI com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Ambos estatisticamente não significativos.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-funcao-cardiaca-fracao_de-injecao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 25:  Correlação de Pearson da FC: FI com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 0.105 </td>
+   <td style="text-align:right;"> -0.158 </td>
+   <td style="text-align:right;"> 0.354 </td>
+   <td style="text-align:right;"> 0.791 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.433 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 0.221 </td>
+   <td style="text-align:right;"> -0.040 </td>
+   <td style="text-align:right;"> 0.453 </td>
+   <td style="text-align:right;"> 1.694 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.096 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="infecções-1" class="level3">
+<h3 class="anchored" data-anchor-id="infecções-1">Infecções</h3>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-fracao-de-injecao-por-presenca-de-infeccoes" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 26:  Medidas descritivas do encurtamento percentual pela presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Infeccṍes </th>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Media </th>
+   <th style="text-align:right;"> DP </th>
+   <th style="text-align:right;"> Mínimo </th>
+   <th style="text-align:right;"> 1o.quartil </th>
+   <th style="text-align:right;"> Mediana </th>
+   <th style="text-align:right;"> 3o.quartil </th>
+   <th style="text-align:right;"> Máximo </th>
+   <th style="text-align:right;"> n </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Não </td>
+   <td style="text-align:left;"> FC.FI </td>
+   <td style="text-align:right;"> 74.750 </td>
+   <td style="text-align:right;"> 8.284 </td>
+   <td style="text-align:right;"> 56 </td>
+   <td style="text-align:right;"> 69.25 </td>
+   <td style="text-align:right;"> 75.5 </td>
+   <td style="text-align:right;"> 81.25 </td>
+   <td style="text-align:right;"> 88 </td>
+   <td style="text-align:right;"> 24 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Sim </td>
+   <td style="text-align:left;"> FC.FI </td>
+   <td style="text-align:right;"> 68.941 </td>
+   <td style="text-align:right;"> 8.927 </td>
+   <td style="text-align:right;"> 46 </td>
+   <td style="text-align:right;"> 64.25 </td>
+   <td style="text-align:right;"> 71.5 </td>
+   <td style="text-align:right;"> 75.75 </td>
+   <td style="text-align:right;"> 79 </td>
+   <td style="text-align:right;"> 34 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A diferença média de fração de injeção difere significativamente dos grupos com e sem infecções.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-fracao-de-injecao-por-presenca-de-infeccoes-teste-t" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 27:  Teste-t comparando as médias de fração de injeção por ausência e presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Diferença </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> FC.FI </td>
+   <td style="text-align:right;"> 5.809 </td>
+   <td style="text-align:right;"> 1.231 </td>
+   <td style="text-align:right;"> 10.387 </td>
+   <td style="text-align:right;"> 2.546 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.014 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-fracao-de-injecao-numero-de-infeccoes" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="analysis_files/figure-html/fig-fracao-de-injecao-numero-de-infeccoes-1.png" class="img-fluid figure-img" width="480"></p>
+<p></p><figcaption class="figure-caption">Figure 12: Dispersão do número de infecções por fração de injeção com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Correlação negativa mas não estatisticamente significativa.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-fracao-de-injecao-numero-de-infeccoes-correlacao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 28:  Correlação de Pearson do número de infecções com a fração de injeção, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variável </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> FC.FI </td>
+   <td style="text-align:right;"> -0.228 </td>
+   <td style="text-align:right;"> -0.459 </td>
+   <td style="text-align:right;"> 0.032 </td>
+   <td style="text-align:right;"> -1.75 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.086 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="extra" class="level1">
+<h1>Extra</h1>
+<hr>
+<blockquote class="blockquote">
+<p>Ajustamos modelos lineares de regressão tentando associar várias características ao TREC e KREC. Desconsideramos as variáveis <code>FC.EP</code>, <code>FC.FI</code> e <code>Dias.1a.Infecção</code>, devido a presença de dados faltantes nas mesmas.</p>
+<p>Dado que temos alguns outliers nos dias de internamento, categorizamos em intervalos por meses.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   (1,30]   (30,60]   (60,90]  (90,120] (120,360] 
+       39        24         7         6         8 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>39 pacientes internados entre 1 e 30 dias, e assim por diante.</p>
+<p>Simplificamos a variável DESFECHO, considerando apenas óbito (20, 23.81%) ou não; e criamos a variável SHVE - com 12 ( 14.29%) tendo.</p>
+<p>Antes do ajuste do modelo olhamos para a correlação das variáveis, temos a matriz abaixo com todas as correlações.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>               term TREC KREC Idade.Gestacional Peso Número.Infecções
+1              TREC                                                  
+2              KREC  .35                                             
+3 Idade.Gestacional  .10  .02                                        
+4              Peso  .05  .02               .61                      
+5  Número.Infecções -.18 -.06              -.07  .01                 </code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A correlação mais forte é do peso ao nascimento com a idade gestacional, i.e.&nbsp;quanto mais semanas de gestação maior tende a ser o peso da criança.</p>
+<p>Por mais que essas duas variáveis sejam fortemente correlacionadas, elas não parecem ter relação com o TREC/KREC. Verificamos o efeito dessa possível interação, mas ela não se mostrou significante para TREC/KREC.</p>
+<p>Testamos o efeito de seis características:</p>
+<ul>
+<li>Idade gestacional;</li>
+<li>Peso ao nascimento;</li>
+<li>Número de infecções;</li>
+<li>Dias de internamento (categorizados por meses);</li>
+<li>Desfecho (óbito, sim ou não);</li>
+<li>Cardiopatia SHVE (sim ou não).</li>
+</ul>
+<p>Não obtivemos ajustes de qualidade modelando TREC/KREC em sua escala natural. Contudo, aplicando a transformação logaritmica (logaritmo natural / base exponencial) fomos capazes de obter ajustes de qualidade, com base numa análise gráfica de resíduos.</p>
+<p>Performamos seleção de variáveis a partir dum processo <em>stepwise</em> com base no AIC, Critério de Informação de <em>Akaike</em> <span class="citation" data-cites="akaike venables&amp;ripley">(<a href="#ref-akaike" role="doc-biblioref">Sakamoto, Ishiguro, and Kitagawa 1986</a>; <a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>.</p>
+<p>Na <a href="#tbl-trec-krec-model">Table&nbsp;29</a> temos um resumo dos resultados. Dentre as seis variáveis testadas, apenas o número de infecções foi significativo para o TREC e apenas o SHVE foi significativo para o KREC. Com base nas variáveis se estima um valor médio de TREC de 69.4 com intervalo de confiança (IC) de 95% variando de 53 até 91. Para cada infecção a mais se espera que o TREC decaia 10.77 (IC: 1.6, 19). Se estima um KREC médio de 74.44 para quem não apresenta a cardiopatia SHVE. Se apresenta, KREC médio de 39.68 (IC: 18, 86.4).</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-krec-model" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 29:  Resumo dos modelos lineares ajustados. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Estimativa </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:left;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> TREC </td>
+   <td style="text-align:right;"> 69.408 </td>
+   <td style="text-align:right;"> 52.985 </td>
+   <td style="text-align:right;"> 90.922 </td>
+   <td style="text-align:right;"> 31.60 </td>
+   <td style="text-align:left;font-weight: bold;"> - </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> TREC: Número de infecções </td>
+   <td style="text-align:right;"> -10.774 </td>
+   <td style="text-align:right;"> -19.023 </td>
+   <td style="text-align:right;"> -1.607 </td>
+   <td style="text-align:right;"> -2.32 </td>
+   <td style="text-align:left;font-weight: bold;"> 0.0229 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC </td>
+   <td style="text-align:right;"> 74.440 </td>
+   <td style="text-align:right;"> 59.740 </td>
+   <td style="text-align:right;"> 91.836 </td>
+   <td style="text-align:right;"> 39.90 </td>
+   <td style="text-align:left;font-weight: bold;"> - </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KREC: SHVE </td>
+   <td style="text-align:right;"> 39.686 </td>
+   <td style="text-align:right;"> 17.993 </td>
+   <td style="text-align:right;"> 86.392 </td>
+   <td style="text-align:right;"> -2.20 </td>
+   <td style="text-align:left;font-weight: bold;"> 0.0304 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="referências" class="level1">
+<h1>Referências</h1>
+<hr>
+<blockquote class="blockquote">
+<p>A análise estatística foi performada através da linguagem e ambiente para computação estatística R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span>. Os principais pacotes R utilizados foram os seguintes: {dplyr} <span class="citation" data-cites="dplyr1.0.9">(<a href="#ref-dplyr1.0.9" role="doc-biblioref">Wickham et al. 2022</a>)</span>, {tidyr} <span class="citation" data-cites="tidyr1.2.0">(<a href="#ref-tidyr1.2.0" role="doc-biblioref">Wickham and Girlich 2022</a>)</span>, {stringr} <span class="citation" data-cites="stringr1.4.0">(<a href="#ref-stringr1.4.0" role="doc-biblioref">Wickham 2019</a>)</span>, {ggplot2} <span class="citation" data-cites="ggplot2.16">(<a href="#ref-ggplot2.16" role="doc-biblioref">Wickham 2016</a>)</span>, {patchwork} <span class="citation" data-cites="patchwork1.1.1">(<a href="#ref-patchwork1.1.1" role="doc-biblioref">Pedersen 2020</a>)</span>, {purrr} <span class="citation" data-cites="purrr0.3.4">(<a href="#ref-purrr0.3.4" role="doc-biblioref">Henry and Wickham 2020</a>)</span>, {marginaleffects} <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span> e {MASS} <span class="citation" data-cites="venables&amp;ripley">(<a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>.</p>
+<p>Além da obtenção das medidas descritivas e gráficos explorando as relações entre as variáveis, Foram testadas correlações <span class="citation" data-cites="beckeretal">(<a href="#ref-beckeretal" role="doc-biblioref">Becker, Chambers, and Wilks 1988</a>)</span>; médias foram comparadas via Welch Test-<em>t</em> de Student <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span>; proporções foram testadas <span class="citation" data-cites="wilson27 newcombe98a newcombe98b">(<a href="#ref-wilson27" role="doc-biblioref">Wilson 1927</a>; <a href="#ref-newcombe98a" role="doc-biblioref">Newcombe 1998b</a>, <a href="#ref-newcombe98b" role="doc-biblioref">1998a</a>)</span>; e modelos lineares de regressão <span class="citation" data-cites="chambers venables&amp;ripley">(<a href="#ref-chambers" role="doc-biblioref">Chambers 1992</a>; <a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span> foram também ajustados para testar e quantificar associações.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-marginaleffects0.5.0" class="csl-entry" role="doc-biblioentry">
+Arel-Bundock, Vincent. 2022. <em><span class="nocase">marginaleffects</span>: Marginal Effects, Marginal Means, Predictions, and Contrasts</em>. R package version 0.5.0. <a href="https://CRAN.R-project.org/package=marginaleffects">https://CRAN.R-project.org/package=marginaleffects</a>.
+</div>
+<div id="ref-beckeretal" class="csl-entry" role="doc-biblioentry">
+Becker, R. A., J. M. Chambers, and A. R. Wilks. 1988. <em>The New <span>S</span> Language</em>. Wadsworth &amp; Brooks/Cole.
+</div>
+<div id="ref-chambers" class="csl-entry" role="doc-biblioentry">
+Chambers, J. M. 1992. <em>Statistical Models in <span>S</span></em>. Wadsworth &amp; Brooks/Cole.
+</div>
+<div id="ref-purrr0.3.4" class="csl-entry" role="doc-biblioentry">
+Henry, Lionel, and Hadley Wickham. 2020. <em><span class="nocase">purrr</span>: Functional Programming Tools</em>. R package version 0.3.4. <a href="https://CRAN.R-project.org/package=purrr">https://CRAN.R-project.org/package=purrr</a>.
+</div>
+<div id="ref-newcombe98b" class="csl-entry" role="doc-biblioentry">
+Newcombe, R. G. 1998a. <span>“Interval Estimation for the Difference Between Independent Proportions: Comparison of Eleven Method.”</span> <em>Statistics in Medicine</em> 17: 873–90. <a href="https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8<873::AID-SIM779>3.0.CO;2-I">https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8&lt;873::AID-SIM779&gt;3.0.CO;2-I</a>.
+</div>
+<div id="ref-newcombe98a" class="csl-entry" role="doc-biblioentry">
+———. 1998b. <span>“Two-Sided Confidence Intervals for the Single Proportion: Comparison of Seven Methods.”</span> <em>Statistics in Medicine</em> 17: 857–72. <a href="https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8<857::AID-SIM777>3.0.CO;2-E">https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8&lt;857::AID-SIM777&gt;3.0.CO;2-E</a>.
+</div>
+<div id="ref-patchwork1.1.1" class="csl-entry" role="doc-biblioentry">
+Pedersen, Thomas Lin. 2020. <em><span class="nocase">patchwork</span>: The Composer of Plots</em>. R package version 1.1.1. <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-akaike" class="csl-entry" role="doc-biblioentry">
+Sakamoto, Y., M. Ishiguro, and G. Kitagawa. 1986. <em><a href="">Akaike Information Criterion Statistics</a></em>. D. Reidel Publishing Company.
+</div>
+<div id="ref-venables&amp;ripley" class="csl-entry" role="doc-biblioentry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with <span>S</span></em>. Fourth Edition. New York: Springer-Verlag. ISBN 0-387-95457-0. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-ggplot2.16" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN 978-3-319-24277-4. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-stringr1.4.0" class="csl-entry" role="doc-biblioentry">
+———. 2019. <em><span class="nocase">stringr</span>: Simple, Consistent Wrappers for Common String Operations</em>. R package version 1.4.0. <a href="https://CRAN.R-project.org/package=stringr">https://CRAN.R-project.org/package=stringr</a>.
+</div>
+<div id="ref-dplyr1.0.9" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2022. <em><span class="nocase">dplyr</span>: A Grammar of Data Manipulation</em>. R package version 1.0.9. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+<div id="ref-tidyr1.2.0" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, and Maximilian Girlich. 2022. <em><span class="nocase">tidyr</span>: Tidy Messy Data</em>. R package version 1.2.0. <a href="https://CRAN.R-project.org/package=tidyr">https://CRAN.R-project.org/package=tidyr</a>.
+</div>
+<div id="ref-wilson27" class="csl-entry" role="doc-biblioentry">
+Wilson, E. B. 1927. <span>“Probable Inference, the Law of Succession, and Statistical Inference.”</span> <em>Statistics in Medicine</em> 22: 209–12. <a href="https://doi.org/10.2307/2276774">https://doi.org/10.2307/2276774</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
