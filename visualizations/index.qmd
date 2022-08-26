@@ -27,168 +27,168 @@ if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 ```
 
 ![A linear model with two covariates seen at the same time in terms of
-both (3d).](linear_model_in_3d.png){width=70%}
+both (3d).](linear_model_in_3d.png){fig-align='center'}
 
 ***
 
 ![US Real interest ex-post trimester time series from 1961 until 1986,
 with empiric M-fluctuation process based on the scores of a fitted model
-(break/change points).](time_serie_with_breakpoints.png){width=60%}
+(break/change points).](time_serie_with_breakpoints.png){fig-align='center'}
 
 ***
 
 ![The curve fits obtained through each gradient descent iteration until
-convergence, in red.](linear_model_gradient_descent.png){width=65%}
+convergence, in red.](linear_model_gradient_descent.png){fig-align='center'}
 
 ***
 
 ![Sequential Bayesian learning of a simple linear model with one
-covariate.](sequential_bayesian_learning.png){width=70%}
+covariate.](sequential_bayesian_learning.png){fig-align='center'}
 
 ***
 
 ![Clustering results of the DbScan algorithm for different *minpts*
-parameter values.](dbscan_minpts.png){width=70%}
+parameter values.](dbscan_minpts.png){fig-align='center'}
 
 ***
 
 ![Clustering results of the DbScan algorithm for different *eps*
-parameter values.](dbscan_eps.png){width=70%}
+parameter values.](dbscan_eps.png){width=75%, fig-align='center'}
 
 ***
 
 ![A: Deviance contour of the quadritic approximation for a bivariate
 Gaussian with zero mean; B: Quadratic approx. added into the original
 likelihood-based deviance
-contour.](deviance_with_quad_approx.png){width=75%}
+contour.](deviance_with_quad_approx.png){width=75%, fig-align='center'}
 
 ***
 
 ![Deviance contours for a bivariate Gaussian with zero
-mean.](deviance_contours.png){width=75%}
+mean.](deviance_contours.png){width=75%, fig-align='center'}
 
 ***
 
 ![Deviance contours with the parameters estimate at each optimization
 algorithm function
-evaluation.](deviance_contours_function_evaluations.png){width=80%}
+evaluation.](deviance_contours_function_evaluations.png){width=85%, fig-align='center'}
 
 ***
 
-![Posterior mean and 95% credible interval of a random walk model of 1st
+![Posterior mean and 95%, fig-align='center' credible interval of a random walk model of 1st
 order for smoothing splines without
-intercept.](random_walk_smoothing_splines.png){width=70%}
+intercept.](random_walk_smoothing_splines.png){width=75%, fig-align='center'}
 
 ***
 
-![Spider plots.](spider_plot.png){width=80%}
+![Spider plots.](spider_plot.png){width=90%, fig-align='center'}
 
-![](spiders_plot.png){width=80%}
+![](spiders_plot.png){width=90%, fig-align='center'}
 
 ***
 
-![Buffon's (500) needles problem.](buffon_needles.png){width=70%}
+![Buffon's (500) needles problem.](buffon_needles.png){width=75%, fig-align='center', fig-align='center'}
 
-![](buffon_needles_eqm.png){width=70%}
+![](buffon_needles_eqm.png){width=75%, fig-align='center'}
 
 ***
 
 ![Logistic regression (binomial generalized linear model with logistic
-link function) stratified by a covariate and with 95% confidence
+link function) stratified by a covariate and with 95%, fig-align='center' confidence
 bands. A) whole dataset; B) model fitting without the three biggest
-outliers.](logistic_linear_model.png){width=70%}
+outliers.](logistic_linear_model.png){width=70%, fig-align='center'}
 
 ***
 
 ![Boxplot and histograms with some extra descriptive measures of the
-marathon times of 40 guys.](marathon_times.png){width=80%}
+marathon times of 40 guys.](marathon_times.png){width=80%, fig-align='center'}
 
 ***
 
-![Pre and post-competition body measures.](pre_and_post.png){width=75%}
+![Pre and post-competition body measures.](pre_and_post.png){width=75%, fig-align='center'}
 
 ***
 
 ![Heatmap of pains distribution in a group of 98 elderlies during the
-COVID-19 pandemic.](heatmap_pains.png){width=80%}
+COVID-19 pandemic.](heatmap_pains.png){width=80%, fig-align='center'}
 
 ***
 
 ![Malaria incidence versus relative humidity in a five years period in
-the Amazon biome.](malaria_versus_relative_humidity.png){width=80%}
+the Amazon biome.](malaria_versus_relative_humidity.png){width=80%, fig-align='center'}
 
-![](malaria_incidence_maps.png){width=80%}
+![](malaria_incidence_maps.png){width=80%, fig-align='center'}
 
 ***
 
 ![WHO severity score distribuitionof 206
-pacients.](who_severity_score_dist.png){width=60%}
+pacients.](who_severity_score_dist.png){width=60%, fig-align='center'}
 
 ***
 
 ![Heatmap of adverse effects
-(meta-analysis).](heatmap_adverse_effects.png){width=80%}
+(meta-analysis).](heatmap_adverse_effects.png){width=80%, fig-align='center'}
 
 ***
 
 ![Prevalence of neoplasias in hospitalizations in Curitiba's health
-regional, Paraná state.](map_neoplasia_cwb_rs.png){width=80%}
+regional, Paraná state.](map_neoplasia_cwb_rs.png){width=80%, fig-align='center'}
 
 ***
 
-![Heatmap of correlations.](heatmap_correlations.png){width=75%}
+![Heatmap of correlations.](heatmap_correlations.png){width=75%, fig-align='center'}
 
 ***
 
 ![Prevalence of anomalies in ambulatorial calls in Paraná state, by
 municipality and by health
-regionals.](map_parana_anomalia.png){width=80%}
+regionals.](map_parana_anomalia.png){width=80%, fig-align='center'}
 
 ***
 
 ![Average prevalences in the Paraná state by health
-regionals.](maps_parana.png){width=80%}
+regionals.](maps_parana.png){width=80%, fig-align='center'}
 
 ***
 
 ![Impact Hazard Index for relative humidity, a PCA made from several
-variables.](map_brasil.png){width=70%}
+variables.](map_brasil.png){width=70%, fig-align='center'}
 
 ***
 
-![Paraná state (Brazil) map.](map_parana_hpp.png){width=70%}
+![Paraná state (Brazil) map.](map_parana_hpp.png){width=70%, fig-align='center'}
 
 ***
 
-![Barplots of comorbidities.](comorbidities.png){width=95%}
+![Barplots of comorbidities.](comorbidities.png){width=95%, fig-align='center'}
 
 ***
 
 ![Confusion matrix of two different (outcomes) logistic regressions
 (binomial GLM with logit link
-function).](confusion_matrices.png){width=70%}
+function).](confusion_matrices.png){width=70%, fig-align='center'}
 
 ***
 
 ![Barplot and heatmap of long-term symptoms in a group of people who had
-COVID-19.](barplot_and_heatmap.png){width=95%}
+COVID-19.](barplot_and_heatmap.png){width=95%, fig-align='center'}
 
 ***
 
 ![Heatmaps of presented symptoms during and long-term in a group of
-people who had COVID-19.](heatmaps.png){width=90%}
+people who had COVID-19.](heatmaps.png){width=90%, fig-align='center'}
 
 ***
 
 ![Symptoms split-barplot of during/long-term outcomes in a group of
-people who had COVID-19.](split_barplot.png){width=90%}
+people who had COVID-19.](split_barplot.png){width=90%, fig-align='center'}
 
 ***
 
 ![Heatmap of reinfections in a group of people who had
-COVID-19.](heatmap_reinfeccoes.png){width=90%}
+COVID-19.](heatmap_reinfeccoes.png){width=90%, fig-align='center'}
 
 ***
 
 ![Boxplots with means and standard deviations of grades by type of test
-in a population of almost 2 million people.](boxplots.png){width=85%}
+in a population of almost 2 million people.](boxplots.png){width=85%, fig-align='center'}
