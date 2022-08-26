@@ -26,227 +26,169 @@ if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 
 ```
 
-> A linear model with two covariates seen at the same time in terms of
-> both (3d).
-
 ![A linear model with two covariates seen at the same time in terms of
 both (3d).](linear_model_in_3d.png){width=70%}
 
 ***
 
-> US Real interest ex-post trimester time series from 1961 until 1986,
-> with empiric M-fluctuation process based on the scores of a fitted
-> model (break/change points).
-
-![](time_serie_with_breakpoints.png){width=60%}
+![US Real interest ex-post trimester time series from 1961 until 1986,
+with empiric M-fluctuation process based on the scores of a fitted model
+(break/change points).](time_serie_with_breakpoints.png){width=60%}
 
 ***
 
-> The curve fits obtained through each gradient descent iteration until
-> convergence, in red.
-
-![](linear_model_gradient_descent.png){width=65%}
+![The curve fits obtained through each gradient descent iteration until
+convergence, in red.](linear_model_gradient_descent.png){width=65%}
 
 ***
 
-> Sequential Bayesian learning of a simple linear model with one
-> covariate.
-
-![](sequential_bayesian_learning.png){width=70%}
+![Sequential Bayesian learning of a simple linear model with one
+covariate.](sequential_bayesian_learning.png){width=70%}
 
 ***
 
-> Clustering results of the DbScan algorithm for different *minpts*
-> parameter values.
-
-![](dbscan_minpts.png){width=70%}
+![Clustering results of the DbScan algorithm for different *minpts*
+parameter values.](dbscan_minpts.png){width=70%}
 
 ***
 
-> Clustering results of the DbScan algorithm for different *eps*
-> parameter values.
-
-![](dbscan_eps.png){width=70%}
+![Clustering results of the DbScan algorithm for different *eps*
+parameter values.](dbscan_eps.png){width=70%}
 
 ***
 
-> A: Deviance contour of the quadritic approximation for a bivariate
-> Gaussian with zero mean;
->
-> B: Quadratic approx. added into the original likelihood-based deviance
-> contour.
-
-![](deviance_with_quad_approx.png){width=75%}
+![A: Deviance contour of the quadritic approximation for a bivariate
+Gaussian with zero mean; B: Quadratic approx. added into the original
+likelihood-based deviance
+contour.](deviance_with_quad_approx.png){width=75%}
 
 ***
 
-> Deviance contours for a bivariate Gaussian with zero mean.
-
-![](deviance_contours.png){width=75%}
-
-***
-
-> Deviance contours with the parameters estimate at each optimization
-> algorithm function evaluation.
-
-![](deviance_contours_function_evaluations.png){width=80%}
+![Deviance contours for a bivariate Gaussian with zero
+mean.](deviance_contours.png){width=75%}
 
 ***
 
-> Posterior mean and 95% credible interval of a random walk model of 1st
-> order for smoothing splines without intercept.
-
-![](random_walk_smoothing_splines.png){width=70%}
+![Deviance contours with the parameters estimate at each optimization
+algorithm function
+evaluation.](deviance_contours_function_evaluations.png){width=80%}
 
 ***
 
-> Spider plots.
+![Posterior mean and 95% credible interval of a random walk model of 1st
+order for smoothing splines without
+intercept.](random_walk_smoothing_splines.png){width=70%}
 
-![](spider_plot.png){width=80%}
+***
+
+![Spider plots.](spider_plot.png){width=80%}
 
 ![](spiders_plot.png){width=80%}
 
 ***
 
-> Buffon's (500) needles problem.
-
-![](buffon_needles.png){width=70%}
+![Buffon's (500) needles problem.](buffon_needles.png){width=70%}
 
 ![](buffon_needles_eqm.png){width=70%}
 
 ***
 
-> Logistic regression (binomial generalized linear model with logistic
-> link function) stratified by a covariate and with 95% confidence
-> bands.
->
-> A) whole dataset; B) model fitting without the three biggest outliers.
-
-![](logistic_linear_model.png){width=70%}
+![Logistic regression (binomial generalized linear model with logistic
+link function) stratified by a covariate and with 95% confidence
+bands. A) whole dataset; B) model fitting without the three biggest
+outliers.](logistic_linear_model.png){width=70%}
 
 ***
 
-> Boxplot and histograms with some extra descriptive measures of the
-> marathon times of 40 guys.
-
-![](marathon_times.png){width=80%}
+![Boxplot and histograms with some extra descriptive measures of the
+marathon times of 40 guys.](marathon_times.png){width=80%}
 
 ***
 
-> Pre and post-competition body measures.
-
-![](pre_and_post.png){width=75%}
+![Pre and post-competition body measures.](pre_and_post.png){width=75%}
 
 ***
 
-> Heatmap of pains distribution in a group of 98 elderlies during the
-> COVID-19 pandemic.
-
-![](heatmap_pains.png){width=80%}
+![Heatmap of pains distribution in a group of 98 elderlies during the
+COVID-19 pandemic.](heatmap_pains.png){width=80%}
 
 ***
 
-> Malaria incidence versus relative humidity in a five years period in
-> the Amazon biome.
-
-![](malaria_versus_relative_humidity.png){width=80%}
+![Malaria incidence versus relative humidity in a five years period in
+the Amazon biome.](malaria_versus_relative_humidity.png){width=80%}
 
 ![](malaria_incidence_maps.png){width=80%}
 
 ***
 
-> WHO severity score distribuitionof 206 pacients.
-
-![](who_severity_score_dist.png){width=60%}
-
-***
-
-> Heatmap of adverse effects (meta-analysis).
-
-![](heatmap_adverse_effects.png){width=80%}
+![WHO severity score distribuitionof 206
+pacients.](who_severity_score_dist.png){width=60%}
 
 ***
 
-> Prevalence of neoplasias in hospitalizations in Curitiba's health
-> regional, Paraná state.
-
-![](map_neoplasia_cwb_rs.png){width=80%}
+![Heatmap of adverse effects
+(meta-analysis).](heatmap_adverse_effects.png){width=80%}
 
 ***
 
-> Heatmap of correlations.
-
-![](heatmap_correlations.png){width=75%}
-
-***
-
-> Prevalence of anomalies in ambulatorial calls in Paraná state, by
-> municipality and by health regionals.
-
-![](map_parana_anomalia.png){width=80%}
+![Prevalence of neoplasias in hospitalizations in Curitiba's health
+regional, Paraná state.](map_neoplasia_cwb_rs.png){width=80%}
 
 ***
 
-> Average prevalences in the Paraná state by health regionals.
-
-![](maps_parana.png){width=80%}
+![Heatmap of correlations.](heatmap_correlations.png){width=75%}
 
 ***
 
-> Impact Hazard Index for relative humidity, a PCA made from several
-> variables.
-
-![](map_brasil.png){width=70%}
-
-***
-
-> Paraná state (Brazil) map.
-
-![](map_parana_hpp.png){width=70%}
+![Prevalence of anomalies in ambulatorial calls in Paraná state, by
+municipality and by health
+regionals.](map_parana_anomalia.png){width=80%}
 
 ***
 
-> Barplots of comorbidities.
-
-![](comorbidities.png){width=95%}
-
-***
-
-> Confusion matrix of two different (outcomes) logistic regressions
-> (binomial GLM with logit link function).
-
-![](confusion_matrices.png){width=70%}
+![Average prevalences in the Paraná state by health
+regionals.](maps_parana.png){width=80%}
 
 ***
 
-> Barplot and heatmap of long-term symptoms in a group of people who had
-> COVID-19.
-
-![](barplot_and_heatmap.png){width=95%}
+![Impact Hazard Index for relative humidity, a PCA made from several
+variables.](map_brasil.png){width=70%}
 
 ***
 
-> Heatmaps of presented symptoms during and long-term in a group of
-> people who had COVID-19.
-
-![](heatmaps.png){width=90%}
+![Paraná state (Brazil) map.](map_parana_hpp.png){width=70%}
 
 ***
 
-> Symptoms split-barplot of during/long-term outcomes in a group of
-> people who had COVID-19.
-
-![](split_barplot.png){width=90%}
+![Barplots of comorbidities.](comorbidities.png){width=95%}
 
 ***
 
-> Heatmap of reinfections in a group of people who had COVID-19.
-
-![](heatmap_reinfeccoes.png){width=90%}
+![Confusion matrix of two different (outcomes) logistic regressions
+(binomial GLM with logit link
+function).](confusion_matrices.png){width=70%}
 
 ***
 
-> Boxplots with means and standard deviations of grades by type of test
-> in a population of almost 2 million people.
+![Barplot and heatmap of long-term symptoms in a group of people who had
+COVID-19.](barplot_and_heatmap.png){width=95%}
 
-![](boxplots.png){width=85%}
+***
+
+![Heatmaps of presented symptoms during and long-term in a group of
+people who had COVID-19.](heatmaps.png){width=90%}
+
+***
+
+![Symptoms split-barplot of during/long-term outcomes in a group of
+people who had COVID-19.](split_barplot.png){width=90%}
+
+***
+
+![Heatmap of reinfections in a group of people who had
+COVID-19.](heatmap_reinfeccoes.png){width=90%}
+
+***
+
+![Boxplots with means and standard deviations of grades by type of test
+in a population of almost 2 million people.](boxplots.png){width=85%}
