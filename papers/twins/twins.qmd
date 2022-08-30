@@ -84,23 +84,34 @@ N   <- dat|>
 
 # Introduction
 
-# Methods
+# Data
 
-## Data
+We have the TREC and KREC measures of 100 pairs of twins. From these 200
+twins, we have five covariates, as follow:
 
-+ Weight;
-+ Gestational age;
-+ Type of childbirth;
-+ Sex;
-+ Zygosity;
-+ Twin (1 or 2, to verify the randomness supposition).
++ Birth weight (grams);
++ Gestational age (weeks);
++ Type of childbirth (normal or cesarean);
++ Sex (male of female);
++ Zygosity (MZ: monozygotic or DZ: dizygotic).
 
 Zygosity is a key term in our modeling framework since we need to inform
 how many twin pairs are monozygotic and dizygotic. Therefore, we drop a
-pair that do not present this information. We stay with 198 twins.
+pair that do not present this information. We stay with 198
+twins. Besides these five covariates, we may also consider the twin
+covariate (1 or 2), to verify a randomness supposition.
+
+In @fig-TREC-and-KREC-plots we have some plots to see how our two
+responses behave. We can see that they are asymmetric with both having
+some upper outliers. For the TREC we have a mean of
+`r round(mean(dat$TREC), 3)` and a median of
+`r round(median(dat$TREC), 3)`. For the KREC we have a mean of
+`r round(mean(dat$KREC), 3)` and a median of
+`r round(median(dat$KREC), 3)`. In the scatterplots we see a clear
+positive association, linear until the outliers started to act.
 
 ```{r}
-#| label: TREC-and-KREC-plots
+#| label: fig-TREC-and-KREC-plots
 #| fig-width: 10
 #| fig-height: 9
 #| fig-cap: Graph A) TREC and KREC boxplots with their means in
@@ -199,8 +210,10 @@ p1 + p2 + p3 +
 
 ```
 
+In @fig-covariate-plots
+
 ```{r}
-#| label: covariate-plots
+#| label: fig-covariate-plots
 #| fig-width: 10
 #| fig-height: 6
 #| fig-cap: Graphs A) and B) are the boxplots of the numerical
@@ -219,7 +232,7 @@ p1 <- dat|>
                linetype  ='dashed')+
     geom_boxplot(outlier.shape=21, outlier.size=3)+
     stat_summary(fun='mean', geom='point', size=4, shape=8)+
-    labs(x='Grams', y=NULL, title='Weight')+
+    labs(x='Grams', y=NULL, title='Birth weight')+
     theme_classic(base_size=14)+
     theme(plot.title  =element_text(face='bold'),
           axis.title.x=element_text(
@@ -299,14 +312,15 @@ p1 / p2 / (p3 + p4 + p5) +
 
 ```
 
-## Statistical analysis
+# Modeling framework
 
 The statistical analysis was performed through the R [@R22] language and
-environment for statistical computing. The main used R packages are:
+environment for statistical computing. Besides the model fitting
+performed through the `{mglm4twin}` [@mglm4twin; @bonat&hjelmborg;
+@mcglm.seriesc; @mcglm] package, the leading R packages used are:
 `{dplyr}` [@dplyr1.0.9], `{tidyr}` [@tidyr1.2.0], `{ggplot2}`
 [@ggplot2.16], `patchwork` [@patchwork1.1.1], `{kableExtra}`
-[@kableExtra1.3.4], `{Matrix}` [@matrix1.4.1] and `{mglm4twin}`
-[@mglm4twin; @bonat&hjelmborg; @mcglm.seriesc; @mcglm].
+[@kableExtra1.3.4] and `{Matrix}` [@matrix1.4.1].
 
 # Results
 
@@ -707,7 +721,7 @@ tibble::tibble(' '       =c('Cesarean childbirth & DZ zygosity',
 # Appendix
 
 ```{r}
-#| label: gestational-age-vs-weight
+#| label: fig-gestational-age-vs-weight
 #| fig-height: 3.75
 #| fig-width: 4.25
 #| fig-cap: Gestational age and weight scatterplot with tendency curve
