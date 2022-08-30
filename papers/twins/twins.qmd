@@ -499,17 +499,17 @@ dplyr::bind_rows(
 
 ```
 
-Starting from the mean, from the six initial regressors we end up with
+Starting from the mean structure, from the six covariates we end up with
 two. The significant ones, for each response, are presented in
 @tbl-AE-bivariate-model-mean-summary. For the TREC measures, the
-statistically significant regressors are the gestational age and the
-twin sex.  For KREC, only the gestational age is significant.
+statistically significant covariates are the gestational age and the
+twin sex. For KREC, only the gestational age is significant.
 
 <!-- (`r round(var(dat$TREC), 4)`) -->
 <!-- (`r round(var(dat$KREC), 4)`) -->
 
-About the covariance, what we do is decompose the TREC variance
-(13698.107), KREC variance (13787.069), and their covariance
+About the covariance structure, what we do is decompose the TREC
+variance (13698.107), KREC variance (13787.069), and their covariance
 (`r round(cov(dat$TREC, dat$KREC), 4)`) in the manner described in
 @tbl-AE-bivariate-model-covariance.
 
@@ -549,7 +549,7 @@ tibble::tibble(tt$Dispersion)|>
 
 At @tbl-AE-bivariate-model-genetic-components we have the environment
 and heritability measures. The heritability is statistically significant
-in all scenarios, marginally, jointly, and its correlation.
+in all scenarios, marginally; jointly; and its correlation.
 
 ```{r}
 #| label: tbl-AE-bivariate-model-genetic-components
@@ -584,9 +584,9 @@ tibble::tibble(
 
 Given the small sample size and the inferential level of complexity
 involved in the bivariate model, we were not able to obtain numerical
-convergence by inserting regressors in the covariance. As a solution, we
-fitted univariate AE models with the same mean structure as in the
-bivariate scenario.
+convergence by inserting covariates in the covariance structure. As a
+solution, we fitted univariate AE models with the same mean structure as
+in the bivariate scenario.
 
 ```{r}
 #| label: TREC-model
@@ -614,7 +614,7 @@ tt         <- rbind(cbind(fitAEtrec$Covariance,
 
 ```
 
-We started with the same six regressors. In the TREC model, we end up
+We started with the same six covariates. In the TREC model, we end up
 with no significant regressors in the environmental E component and with
 the type of childbirth as significant in the genetic A component. In the
 KREC model, the type of childbirth and zygosity are statistically
