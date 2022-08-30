@@ -615,13 +615,13 @@ tt         <- rbind(cbind(fitAEtrec$Covariance,
 ```
 
 We started with the same six covariates. In the TREC model, we end up
-with no significant regressors in the environmental E component and with
+with no significant covariates in the environmental E component and with
 the type of childbirth as significant in the genetic A component. In the
 KREC model, the type of childbirth and zygosity are statistically
 significant in the E component, and in the A component, only the type of
 childbirth is significant. In @tbl-TREC-AE-model-covariance and
 @tbl-KREC-AE-model-covariance we have a summary of the covariances
-decompositions in terms of the significant regressors for the TREC and
+decompositions in terms of the significant covariates for the TREC and
 KREC measures, respectively.
 
 ```{r}
