@@ -104,10 +104,10 @@ covariate (1 or 2), to verify a randomness supposition.
 In @fig-TREC-and-KREC-plots we have some plots to see how our two
 responses behave. We can see that they are asymmetric with both having
 some upper outliers. For the TREC we have a mean of
-`r round(mean(dat$TREC), 3)` and a median of
-`r round(median(dat$TREC), 3)`. For the KREC we have a mean of
-`r round(mean(dat$KREC), 3)` and a median of
-`r round(median(dat$KREC), 3)`. In the scatterplots we see a clear
+`r round(mean(dat$TREC), 2)` and a median of
+`r round(median(dat$TREC), 2)`. For the KREC we have a mean of
+`r round(mean(dat$KREC), 2)` and a median of
+`r round(median(dat$KREC), 2)`. In the scatterplots we see a clear
 positive association, linear until the outliers started to act.
 
 ```{r}
@@ -210,7 +210,11 @@ p1 + p2 + p3 +
 
 ```
 
-In @fig-covariate-plots
+In @fig-covariate-plots we have the plots of the covariates. We have a
+mean birth weight of `r round(mean(dat$peso, na.rm=TRUE), 2)` grams and
+a mean gestational age of `r round(mean(dat$id_gest), 2)` weeks. 92.9%
+of the twins were born from cesarean childbirth and 76.8% are
+zygotes. In terms of sex, the sample is balanced.
 
 ```{r}
 #| label: fig-covariate-plots
@@ -332,10 +336,6 @@ relationships. Basically, we decompose the covariance matrix into three:
 + A: genetic/heritability effect or component;
 + C: common environment effect or component;
 + E: unique environment effect or component.
-
-Besides the covariance decomposition itself, we can also insert
-covariates/regressors in it. In both mean and covariance structures we
-tested for the effect of six regressors.
 
 ```{r}
 #| label: bivariate-models
@@ -460,10 +460,13 @@ tt       <- summary(fitAEbiv, model='AE', biometric=TRUE)
 
 ```
 
-With a bivariate model, we are able to handle the TREC and KREC measures
-jointly. We started with the ACE model, however, the C component
-presented to be non-significant. Thus, we stayed with an AE model and
-from this performed a regressors selection procedure.
+Besides the covariance decomposition itself, we can also insert
+covariates in it. In both mean and covariance structures we tested for
+the effect of six covariates. With a bivariate model, we are able to
+handle the TREC and KREC measures jointly. We started with the ACE
+model, however, the C component presented to be non-significant. Thus,
+we stayed with an AE model and from this performed a covariates
+selection procedure.
 
 ```{r}
 #| label: tbl-AE-bivariate-model-mean-summary
