@@ -25,7 +25,7 @@ style](THESIS/aqua/tikzit.sty)) at the defense slides.
 My main research interests lie in computational statistics and data
 analysis, under statistical modeling frameworks if the goal is to
 understand some process or machine learning frameworks if the goal is
-prediction/forecasting. Besides all that, I love to make pretty and
+prediction / forecasting. Besides all that, I love to make pretty and
 useful visualizations (I ensembled some [here](visualizations/)).
 
 <span style="background-color: #FFFF00">
