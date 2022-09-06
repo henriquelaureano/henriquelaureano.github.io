@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Deleção 22q: TREC &amp; KREC por quartis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="quartiles_files/libs/clipboard/clipboard.min.js"></script>
+<script src="quartiles_files/libs/quarto-html/quarto.js"></script>
+<script src="quartiles_files/libs/quarto-html/popper.min.js"></script>
+<script src="quartiles_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="quartiles_files/libs/quarto-html/anchor.min.js"></script>
+<link href="quartiles_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="quartiles_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="quartiles_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="quartiles_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="quartiles_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="quartiles_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="quartiles_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#trec-krec" id="toc-trec-krec" class="nav-link active" data-scroll-target="#trec-krec">TREC &amp; KREC</a></li>
+  <li><a href="#idade-gestacional" id="toc-idade-gestacional" class="nav-link" data-scroll-target="#idade-gestacional">Idade gestacional</a></li>
+  <li><a href="#peso-ao-nascimento" id="toc-peso-ao-nascimento" class="nav-link" data-scroll-target="#peso-ao-nascimento">Peso ao nascimento</a></li>
+  <li><a href="#presença-de-infecções" id="toc-presença-de-infecções" class="nav-link" data-scroll-target="#presença-de-infecções">Presença de infecções</a></li>
+  <li><a href="#tempo" id="toc-tempo" class="nav-link" data-scroll-target="#tempo">Tempo</a>
+  <ul class="collapse">
+  <li><a href="#entre-internamento-e-primeira-infecção" id="toc-entre-internamento-e-primeira-infecção" class="nav-link" data-scroll-target="#entre-internamento-e-primeira-infecção">Entre internamento e primeira infecção</a></li>
+  <li><a href="#de-internamento" id="toc-de-internamento" class="nav-link" data-scroll-target="#de-internamento">De internamento</a></li>
+  </ul></li>
+  <li><a href="#linfopenia" id="toc-linfopenia" class="nav-link" data-scroll-target="#linfopenia">Linfopenia</a></li>
+  <li><a href="#desfecho-óbito" id="toc-desfecho-óbito" class="nav-link" data-scroll-target="#desfecho-óbito">Desfecho (óbito)</a></li>
+  <li><a href="#tipo-de-cardiopatia" id="toc-tipo-de-cardiopatia" class="nav-link" data-scroll-target="#tipo-de-cardiopatia">Tipo de cardiopatia</a></li>
+  <li><a href="#função-cardíaca-fc" id="toc-função-cardíaca-fc" class="nav-link" data-scroll-target="#função-cardíaca-fc">Função cardíaca (FC)</a>
+  <ul class="collapse">
+  <li><a href="#encurtamento-percentual-ep" id="toc-encurtamento-percentual-ep" class="nav-link" data-scroll-target="#encurtamento-percentual-ep">Encurtamento percentual (EP)</a></li>
+  <li><a href="#fração-de-ejeção-fe" id="toc-fração-de-ejeção-fe" class="nav-link" data-scroll-target="#fração-de-ejeção-fe">Fração de ejeção (FE)</a></li>
+  </ul></li>
+  <li><a href="#extra" id="toc-extra" class="nav-link" data-scroll-target="#extra">Extra</a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Deleção 22q: TREC &amp; KREC por quartis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>Bianca Pitanga, Carolina Prando e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-09-06 16:09:34</p>
+<hr>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<section id="trec-krec" class="level1">
+<h1>TREC &amp; KREC</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-krec" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-trec-krec-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 1: Dispersão com curva polinomial de 2o grau representando a tendência média estimada. A. Quartis do TREC; B. Quartis do KREC.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-krec" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 1:  Correlação de Pearson com limites dum intervalo de 95% de confiança e correspondente valor-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.011 </td>
+   <td style="text-align:right;"> -0.431 </td>
+   <td style="text-align:right;"> 0.412 </td>
+   <td style="text-align:right;"> -0.050 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.961 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> -0.178 </td>
+   <td style="text-align:right;"> -0.566 </td>
+   <td style="text-align:right;"> 0.275 </td>
+   <td style="text-align:right;"> -0.787 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.441 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.241 </td>
+   <td style="text-align:right;"> -0.626 </td>
+   <td style="text-align:right;"> 0.240 </td>
+   <td style="text-align:right;"> -1.022 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.321 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.038 </td>
+   <td style="text-align:right;"> -0.462 </td>
+   <td style="text-align:right;"> 0.400 </td>
+   <td style="text-align:right;"> -0.166 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.870 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 0.188 </td>
+   <td style="text-align:right;"> -0.254 </td>
+   <td style="text-align:right;"> 0.565 </td>
+   <td style="text-align:right;"> 0.856 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.402 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> -0.006 </td>
+   <td style="text-align:right;"> -0.447 </td>
+   <td style="text-align:right;"> 0.438 </td>
+   <td style="text-align:right;"> -0.025 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.981 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 0.099 </td>
+   <td style="text-align:right;"> -0.359 </td>
+   <td style="text-align:right;"> 0.519 </td>
+   <td style="text-align:right;"> 0.424 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.676 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 0.137 </td>
+   <td style="text-align:right;"> -0.314 </td>
+   <td style="text-align:right;"> 0.537 </td>
+   <td style="text-align:right;"> 0.601 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.555 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Dependendo da variável que utilizamos para criar os grupos (quartis) vemos como as correlações diferem. Contudo, nenhuma é estatisticamente significativa (valor-<em>p</em> &lt; 0.05).</p>
+</blockquote>
+</section>
+<section id="idade-gestacional" class="level1">
+<h1>Idade gestacional</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-idade-gestacional" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-idade-gestacional-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 2: Dispersão da idade gestacional com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Sem diferenças estatisticamente significativas, mas bem próximo para o 2o quartil de TREC.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-idade-gestacional" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 2:  Correlação de Pearson da idade gestacional com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.127 </td>
+   <td style="text-align:right;"> -0.521 </td>
+   <td style="text-align:right;"> 0.311 </td>
+   <td style="text-align:right;"> -0.575 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.572 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> -0.405 </td>
+   <td style="text-align:right;"> -0.712 </td>
+   <td style="text-align:right;"> 0.032 </td>
+   <td style="text-align:right;"> -1.932 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.068 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 0.036 </td>
+   <td style="text-align:right;"> -0.425 </td>
+   <td style="text-align:right;"> 0.483 </td>
+   <td style="text-align:right;"> 0.150 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.882 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.169 </td>
+   <td style="text-align:right;"> -0.560 </td>
+   <td style="text-align:right;"> 0.284 </td>
+   <td style="text-align:right;"> -0.746 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.465 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.267 </td>
+   <td style="text-align:right;"> -0.619 </td>
+   <td style="text-align:right;"> 0.174 </td>
+   <td style="text-align:right;"> -1.239 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.230 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> -0.282 </td>
+   <td style="text-align:right;"> -0.644 </td>
+   <td style="text-align:right;"> 0.184 </td>
+   <td style="text-align:right;"> -1.246 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.229 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 0.309 </td>
+   <td style="text-align:right;"> -0.155 </td>
+   <td style="text-align:right;"> 0.661 </td>
+   <td style="text-align:right;"> 1.377 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.186 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.378 </td>
+   <td style="text-align:right;"> -0.696 </td>
+   <td style="text-align:right;"> 0.064 </td>
+   <td style="text-align:right;"> -1.781 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.091 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="peso-ao-nascimento" class="level1">
+<h1>Peso ao nascimento</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-peso" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-peso-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 3: Dispersão do peso ao nascimento com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>De quartil pra quartil as correlações mudam bastante, mas nenhuma se mostra estatisticamente significante.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-peso" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 3:  Correlação de Pearson do peso ao nascimento com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.197 </td>
+   <td style="text-align:right;"> -0.571 </td>
+   <td style="text-align:right;"> 0.244 </td>
+   <td style="text-align:right;"> -0.901 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.378 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> -0.216 </td>
+   <td style="text-align:right;"> -0.592 </td>
+   <td style="text-align:right;"> 0.238 </td>
+   <td style="text-align:right;"> -0.964 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.347 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 0.387 </td>
+   <td style="text-align:right;"> -0.082 </td>
+   <td style="text-align:right;"> 0.715 </td>
+   <td style="text-align:right;"> 1.730 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.102 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.252 </td>
+   <td style="text-align:right;"> -0.617 </td>
+   <td style="text-align:right;"> 0.201 </td>
+   <td style="text-align:right;"> -1.136 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.270 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.267 </td>
+   <td style="text-align:right;"> -0.619 </td>
+   <td style="text-align:right;"> 0.175 </td>
+   <td style="text-align:right;"> -1.237 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.230 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> -0.358 </td>
+   <td style="text-align:right;"> -0.691 </td>
+   <td style="text-align:right;"> 0.100 </td>
+   <td style="text-align:right;"> -1.627 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.121 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> -0.128 </td>
+   <td style="text-align:right;"> 0.676 </td>
+   <td style="text-align:right;"> 1.499 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.151 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.187 </td>
+   <td style="text-align:right;"> -0.572 </td>
+   <td style="text-align:right;"> 0.267 </td>
+   <td style="text-align:right;"> -0.828 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.418 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="presença-de-infecções" class="level1">
+<h1>Presença de infecções</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-infeccoes" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 4:  Presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> 0 </th>
+   <th style="text-align:right;"> 1 </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> perc </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 0.682 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.619 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 0.737 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.476 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 0.727 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 0.550 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 0.700 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.524 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Quando comparamos os quartis de TREC/KREC por percentuais de pacientes com infecções, vemos que nenhum quartil difere estatisticamente.</p>
+<p>Independente do quartil de TREC/KREC, não temos evidências de que a proporção de pacientes com infecções mude.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-infeccoes-prop-test" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 5:  Comparando proporções de presença de infecções. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> var1 </th>
+   <th style="text-align:left;"> var2 </th>
+   <th style="text-align:right;"> var1.percentual </th>
+   <th style="text-align:right;"> var2.percentual </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.682 </td>
+   <td style="text-align:right;"> 0.619 </td>
+   <td style="text-align:right;"> 0.012 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.911 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.682 </td>
+   <td style="text-align:right;"> 0.737 </td>
+   <td style="text-align:right;"> 0.002 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.967 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.682 </td>
+   <td style="text-align:right;"> 0.476 </td>
+   <td style="text-align:right;"> 1.117 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.290 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.619 </td>
+   <td style="text-align:right;"> 0.737 </td>
+   <td style="text-align:right;"> 0.208 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.648 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.619 </td>
+   <td style="text-align:right;"> 0.476 </td>
+   <td style="text-align:right;"> 0.384 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.535 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.737 </td>
+   <td style="text-align:right;"> 0.476 </td>
+   <td style="text-align:right;"> 1.842 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.175 </td>
+  </tr>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.727 </td>
+   <td style="text-align:right;"> 0.550 </td>
+   <td style="text-align:right;"> 0.766 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.382 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.727 </td>
+   <td style="text-align:right;"> 0.700 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.727 </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 1.132 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.287 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.550 </td>
+   <td style="text-align:right;"> 0.700 </td>
+   <td style="text-align:right;"> 0.427 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.514 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.550 </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.700 </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.699 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.403 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-e-krec-numero-de-infeccoes" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-trec-e-krec-numero-de-infeccoes-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 4: Dispersão do número de infecções com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Nenhuma correlação estatisticamente significativa.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-numero-de-infeccoes-correlacao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 6:  Correlação de Pearson do número de infecções com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.296 </td>
+   <td style="text-align:right;"> -0.638 </td>
+   <td style="text-align:right;"> 0.144 </td>
+   <td style="text-align:right;"> -1.385 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.181 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.112 </td>
+   <td style="text-align:right;"> -0.336 </td>
+   <td style="text-align:right;"> 0.519 </td>
+   <td style="text-align:right;"> 0.492 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.628 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.066 </td>
+   <td style="text-align:right;"> -0.505 </td>
+   <td style="text-align:right;"> 0.401 </td>
+   <td style="text-align:right;"> -0.271 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.790 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.178 </td>
+   <td style="text-align:right;"> -0.566 </td>
+   <td style="text-align:right;"> 0.275 </td>
+   <td style="text-align:right;"> -0.788 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.441 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 0.302 </td>
+   <td style="text-align:right;"> -0.137 </td>
+   <td style="text-align:right;"> 0.642 </td>
+   <td style="text-align:right;"> 1.415 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.172 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.142 </td>
+   <td style="text-align:right;"> -0.320 </td>
+   <td style="text-align:right;"> 0.550 </td>
+   <td style="text-align:right;"> 0.610 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.550 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.057 </td>
+   <td style="text-align:right;"> -0.487 </td>
+   <td style="text-align:right;"> 0.396 </td>
+   <td style="text-align:right;"> -0.241 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.812 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 0.252 </td>
+   <td style="text-align:right;"> -0.202 </td>
+   <td style="text-align:right;"> 0.616 </td>
+   <td style="text-align:right;"> 1.133 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.271 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="tempo" class="level1">
+<h1>Tempo</h1>
+<hr>
+<section id="entre-internamento-e-primeira-infecção" class="level2">
+<h2 class="anchored" data-anchor-id="entre-internamento-e-primeira-infecção">Entre internamento e primeira infecção</h2>
+<hr>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 37 rows containing non-finite values (stat_smooth).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 37 rows containing missing values (geom_point).</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-tempo-entre-internamento-e-primeira-infeccao" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-tempo-entre-internamento-e-primeira-infeccao-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 5: Dispersão do tempo em dias transcorridos entre o internamento e a primeira infecção com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Correlação positiva, forte e significativa apenas para o segundo quartil de KREC.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-tempo-entre-internamento-e-primeira-infeccao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 7:  Correlação de Pearson do tempo entre internamento e primeira internação com TREC e KREC, limites dum intervalo intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 0.286 </td>
+   <td style="text-align:right;"> -0.314 </td>
+   <td style="text-align:right;"> 0.723 </td>
+   <td style="text-align:right;"> 0.990 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.343 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.563 </td>
+   <td style="text-align:right;"> -0.103 </td>
+   <td style="text-align:right;"> 0.881 </td>
+   <td style="text-align:right;"> 1.927 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.090 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.075 </td>
+   <td style="text-align:right;"> -0.601 </td>
+   <td style="text-align:right;"> 0.496 </td>
+   <td style="text-align:right;"> -0.250 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.807 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.065 </td>
+   <td style="text-align:right;"> -0.667 </td>
+   <td style="text-align:right;"> 0.589 </td>
+   <td style="text-align:right;"> -0.184 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.858 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.277 </td>
+   <td style="text-align:right;"> -0.691 </td>
+   <td style="text-align:right;"> 0.275 </td>
+   <td style="text-align:right;"> -1.038 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.318 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.752 </td>
+   <td style="text-align:right;"> 0.101 </td>
+   <td style="text-align:right;"> 0.952 </td>
+   <td style="text-align:right;"> 2.795 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.031 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 0.340 </td>
+   <td style="text-align:right;"> -0.233 </td>
+   <td style="text-align:right;"> 0.737 </td>
+   <td style="text-align:right;"> 1.251 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.235 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 0.196 </td>
+   <td style="text-align:right;"> -0.538 </td>
+   <td style="text-align:right;"> 0.761 </td>
+   <td style="text-align:right;"> 0.530 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.612 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="de-internamento" class="level2">
+<h2 class="anchored" data-anchor-id="de-internamento">De internamento</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-tempo-de-internamento" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-tempo-de-internamento-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 6: Dispersão do tempo em dias de internamento com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Correlações não significativas.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-tempo-de-internamento" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 8:  Correlação de Pearson do tempo de internamento com TREC e KREC, limites dum intervalo intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.339 </td>
+   <td style="text-align:right;"> -0.665 </td>
+   <td style="text-align:right;"> 0.097 </td>
+   <td style="text-align:right;"> -1.609 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.123 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.055 </td>
+   <td style="text-align:right;"> -0.386 </td>
+   <td style="text-align:right;"> 0.475 </td>
+   <td style="text-align:right;"> 0.239 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.814 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.143 </td>
+   <td style="text-align:right;"> -0.561 </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> -0.596 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.559 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.109 </td>
+   <td style="text-align:right;"> -0.516 </td>
+   <td style="text-align:right;"> 0.339 </td>
+   <td style="text-align:right;"> -0.476 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.640 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 0.351 </td>
+   <td style="text-align:right;"> -0.083 </td>
+   <td style="text-align:right;"> 0.673 </td>
+   <td style="text-align:right;"> 1.675 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.110 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.181 </td>
+   <td style="text-align:right;"> -0.284 </td>
+   <td style="text-align:right;"> 0.577 </td>
+   <td style="text-align:right;"> 0.781 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.445 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 0.034 </td>
+   <td style="text-align:right;"> -0.415 </td>
+   <td style="text-align:right;"> 0.469 </td>
+   <td style="text-align:right;"> 0.144 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.887 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 0.355 </td>
+   <td style="text-align:right;"> -0.091 </td>
+   <td style="text-align:right;"> 0.682 </td>
+   <td style="text-align:right;"> 1.653 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.115 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="linfopenia" class="level1">
+<h1>Linfopenia</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-linfopenia" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 9:  Proporções de linfopenia. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> N </th>
+   <th style="text-align:right;"> S </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> perc </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 0.682 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.524 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 0.368 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.524 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 0.773 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 0.500 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 0.600 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.238 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Nenhuma diferença é estatisticamente significativa para o TREC.</p>
+<p>No KREC, em termos das proporções de pacientes com linfopenia quando estratificamos o KREC por quartis, verificamos diferença estatisticamente significativa entre os quartis 1 e 4 e entre os quartis 3 e 4.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-presenca-de-linfopenia-prop-test" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 10:  Comparando proporções de presença de linfopenia. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> var1 </th>
+   <th style="text-align:left;"> var2 </th>
+   <th style="text-align:right;"> var1.percentual </th>
+   <th style="text-align:right;"> var2.percentual </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.682 </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.558 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.455 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.682 </td>
+   <td style="text-align:right;"> 0.368 </td>
+   <td style="text-align:right;"> 2.865 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.091 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.682 </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.558 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.455 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.368 </td>
+   <td style="text-align:right;"> 0.447 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.504 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.368 </td>
+   <td style="text-align:right;"> 0.524 </td>
+   <td style="text-align:right;"> 0.447 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.504 </td>
+  </tr>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.773 </td>
+   <td style="text-align:right;"> 0.500 </td>
+   <td style="text-align:right;"> 2.310 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.129 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.773 </td>
+   <td style="text-align:right;"> 0.600 </td>
+   <td style="text-align:right;"> 0.766 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.381 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.773 </td>
+   <td style="text-align:right;"> 0.238 </td>
+   <td style="text-align:right;"> 10.244 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.001 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.500 </td>
+   <td style="text-align:right;"> 0.600 </td>
+   <td style="text-align:right;"> 0.101 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.751 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.500 </td>
+   <td style="text-align:right;"> 0.238 </td>
+   <td style="text-align:right;"> 2.005 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.157 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.600 </td>
+   <td style="text-align:right;"> 0.238 </td>
+   <td style="text-align:right;"> 4.137 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.042 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="desfecho-óbito" class="level1">
+<h1>Desfecho (óbito)</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-krec-por-desfecho" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 11:  Proporções de desfecho por quartis de TREC e KREC. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Alta </th>
+   <th style="text-align:right;"> Obito </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> perc </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.333 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.190 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 0.211 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.238 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 0.364 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 0.158 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 0.350 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.095 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Nenhuma diferença é estatisticamente significativa.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-desfecho-prop-test" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 12:  Comparando proporções de óbito por quartis de TREC e KREC. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> var1 </th>
+   <th style="text-align:left;"> var2 </th>
+   <th style="text-align:right;"> var1.percentual </th>
+   <th style="text-align:right;"> var2.percentual </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.190 </td>
+   <td style="text-align:right;"> 0.493 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.483 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.211 </td>
+   <td style="text-align:right;"> 0.264 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.607 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.333 </td>
+   <td style="text-align:right;"> 0.238 </td>
+   <td style="text-align:right;"> 0.117 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.733 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.190 </td>
+   <td style="text-align:right;"> 0.211 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.190 </td>
+   <td style="text-align:right;"> 0.238 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.211 </td>
+   <td style="text-align:right;"> 0.238 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.364 </td>
+   <td style="text-align:right;"> 0.158 </td>
+   <td style="text-align:right;"> 1.275 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.259 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.364 </td>
+   <td style="text-align:right;"> 0.350 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.364 </td>
+   <td style="text-align:right;"> 0.095 </td>
+   <td style="text-align:right;"> 2.963 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.085 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.158 </td>
+   <td style="text-align:right;"> 0.350 </td>
+   <td style="text-align:right;"> 1.013 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.314 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.158 </td>
+   <td style="text-align:right;"> 0.095 </td>
+   <td style="text-align:right;"> 0.014 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.905 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.350 </td>
+   <td style="text-align:right;"> 0.095 </td>
+   <td style="text-align:right;"> 2.536 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.111 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="tipo-de-cardiopatia" class="level1">
+<h1>Tipo de cardiopatia</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-krec-por-shve" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 13:  Proporções de SHVE por quartis de TREC e KREC. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> 0 </th>
+   <th style="text-align:right;"> 1 </th>
+   <th style="text-align:right;"> n </th>
+   <th style="text-align:right;"> perc </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 0.182 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.143 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:right;"> 0.211 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.048 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="5" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:right;"> 0.273 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 0.150 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 0.150 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0 </td>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Em termos de frequência de SHVE, a única diferença estatisticamente significativa é entre os quartis 1 e 4 do KREC.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-por-shve-prop-test" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 14:  Comparando proporções de SHVE por quartis de TREC e KREC. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> var1 </th>
+   <th style="text-align:left;"> var2 </th>
+   <th style="text-align:right;"> var1.percentual </th>
+   <th style="text-align:right;"> var2.percentual </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.182 </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.182 </td>
+   <td style="text-align:right;"> 0.211 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.182 </td>
+   <td style="text-align:right;"> 0.048 </td>
+   <td style="text-align:right;"> 0.803 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.370 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.211 </td>
+   <td style="text-align:right;"> 0.021 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.884 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.143 </td>
+   <td style="text-align:right;"> 0.048 </td>
+   <td style="text-align:right;"> 0.276 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.599 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.211 </td>
+   <td style="text-align:right;"> 0.048 </td>
+   <td style="text-align:right;"> 1.160 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.281 </td>
+  </tr>
+  <tr grouplength="6"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 2o quartil </td>
+   <td style="text-align:right;"> 0.273 </td>
+   <td style="text-align:right;"> 0.150 </td>
+   <td style="text-align:right;"> 0.350 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.554 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.273 </td>
+   <td style="text-align:right;"> 0.150 </td>
+   <td style="text-align:right;"> 0.350 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.554 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.273 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;"> 4.578 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.032 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 3o quartil </td>
+   <td style="text-align:right;"> 0.150 </td>
+   <td style="text-align:right;"> 0.150 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;font-weight: bold;"> 1.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.150 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;"> 1.547 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.214 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:left;"> 4o quartil </td>
+   <td style="text-align:right;"> 0.150 </td>
+   <td style="text-align:right;"> 0.000 </td>
+   <td style="text-align:right;"> 1.547 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.214 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="função-cardíaca-fc" class="level1">
+<h1>Função cardíaca (FC)</h1>
+<hr>
+<section id="encurtamento-percentual-ep" class="level2">
+<h2 class="anchored" data-anchor-id="encurtamento-percentual-ep">Encurtamento percentual (EP)</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-e-krec-funcao-cardiaca-encurtamento-percentual" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-trec-e-krec-funcao-cardiaca-encurtamento-percentual-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 7: Dispersão da FC: EP com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Nenhuma correlação estatisticamente significativa.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-funcao-cardiaca-encurtamento-percentual" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 15:  Correlação de Pearson da FC: EP com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 0.270 </td>
+   <td style="text-align:right;"> -0.330 </td>
+   <td style="text-align:right;"> 0.715 </td>
+   <td style="text-align:right;"> 0.932 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.371 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.363 </td>
+   <td style="text-align:right;"> -0.266 </td>
+   <td style="text-align:right;"> 0.776 </td>
+   <td style="text-align:right;"> 1.234 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.246 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.481 </td>
+   <td style="text-align:right;"> -0.827 </td>
+   <td style="text-align:right;"> 0.128 </td>
+   <td style="text-align:right;"> -1.735 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.113 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.109 </td>
+   <td style="text-align:right;"> -0.560 </td>
+   <td style="text-align:right;"> 0.393 </td>
+   <td style="text-align:right;"> -0.423 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.678 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> -0.155 </td>
+   <td style="text-align:right;"> -0.690 </td>
+   <td style="text-align:right;"> 0.491 </td>
+   <td style="text-align:right;"> -0.470 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.650 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.244 </td>
+   <td style="text-align:right;"> -0.329 </td>
+   <td style="text-align:right;"> 0.686 </td>
+   <td style="text-align:right;"> 0.873 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.400 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.123 </td>
+   <td style="text-align:right;"> -0.631 </td>
+   <td style="text-align:right;"> 0.459 </td>
+   <td style="text-align:right;"> -0.411 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.689 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 0.279 </td>
+   <td style="text-align:right;"> -0.252 </td>
+   <td style="text-align:right;"> 0.681 </td>
+   <td style="text-align:right;"> 1.087 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.296 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="fração-de-ejeção-fe" class="level2">
+<h2 class="anchored" data-anchor-id="fração-de-ejeção-fe">Fração de ejeção (FE)</h2>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-trec-e-krec-funcao-cardiaca-fracao-de-ejecao" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="quartiles_files/figure-html/fig-trec-e-krec-funcao-cardiaca-fracao-de-ejecao-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 8: Dispersão da FC: FE com TREC (A) e KREC (B) com curva polinomial de 2o grau representando a tendência média estimada.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Nenhuma correlação é estatisticamente significativa.</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-e-krec-funcao-cardiaca-fracao_de-ejecao" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 16:  Correlação de Pearson da FC: FE com TREC e KREC, limites dum intervalo de 95% de confiança e valores-p. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Correlação </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>TREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 0.228 </td>
+   <td style="text-align:right;"> -0.322 </td>
+   <td style="text-align:right;"> 0.663 </td>
+   <td style="text-align:right;"> 0.843 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.414 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.185 </td>
+   <td style="text-align:right;"> -0.436 </td>
+   <td style="text-align:right;"> 0.686 </td>
+   <td style="text-align:right;"> 0.594 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.566 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.518 </td>
+   <td style="text-align:right;"> -0.842 </td>
+   <td style="text-align:right;"> 0.079 </td>
+   <td style="text-align:right;"> -1.917 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.084 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> -0.088 </td>
+   <td style="text-align:right;"> -0.533 </td>
+   <td style="text-align:right;"> 0.395 </td>
+   <td style="text-align:right;"> -0.352 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.730 </td>
+  </tr>
+  <tr grouplength="4"><td colspan="6" style="border-bottom: 0;"><strong>KREC</strong></td></tr>
+<tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 1o quartil </td>
+   <td style="text-align:right;"> 0.002 </td>
+   <td style="text-align:right;"> -0.549 </td>
+   <td style="text-align:right;"> 0.553 </td>
+   <td style="text-align:right;"> 0.008 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.994 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 2o quartil </td>
+   <td style="text-align:right;"> 0.296 </td>
+   <td style="text-align:right;"> -0.279 </td>
+   <td style="text-align:right;"> 0.714 </td>
+   <td style="text-align:right;"> 1.072 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.305 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 3o quartil </td>
+   <td style="text-align:right;"> -0.200 </td>
+   <td style="text-align:right;"> -0.660 </td>
+   <td style="text-align:right;"> 0.370 </td>
+   <td style="text-align:right;"> -0.706 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.494 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;padding-left: 2em;" indentlevel="1"> 4o quartil </td>
+   <td style="text-align:right;"> 0.309 </td>
+   <td style="text-align:right;"> -0.221 </td>
+   <td style="text-align:right;"> 0.698 </td>
+   <td style="text-align:right;"> 1.215 </td>
+   <td style="text-align:right;font-weight: bold;"> 0.244 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="extra" class="level1">
+<h1>Extra</h1>
+<hr>
+<blockquote class="blockquote">
+<p>Ajustamos modelos lineares de regressão tentando associar várias características ao TREC e KREC. Desconsideramos as variáveis <code>FC.EP</code>, <code>FC.FE</code> e <code>Dias.1a.Infecção</code>, devido a presença de dados faltantes nas mesmas.</p>
+<p>Simplificamos a variável DESFECHO, considerando apenas óbito (20, 24.1%) ou não; e criamos a variável SHVE - com 12 (14.46%) tendo.</p>
+<p>Testamos o efeito de seis características:</p>
+<ul>
+<li>Idade gestacional (categorizada por quartis);</li>
+<li>Peso ao nascimento (categorizada por quartis);</li>
+<li>Número de infecções (categorizada por quartis);</li>
+<li>Dias de internamento (categorizada por quartis);</li>
+<li>Desfecho (óbito, sim ou não);</li>
+<li>Cardiopatia SHVE (sim ou não).</li>
+</ul>
+<p>Não obtivemos ajustes de qualidade modelando TREC/KREC em sua escala natural. Contudo, aplicando a transformação logaritmica (logaritmo natural / base exponencial) fomos capazes de obter ajustes de qualidade, com base numa análise gráfica de resíduos.</p>
+<p>Performamos seleção de variáveis a partir dum processo <em>stepwise</em> com base no AIC, Critério de Informação de <em>Akaike</em> <span class="citation" data-cites="akaike venables&amp;ripley">(<a href="#ref-akaike" role="doc-biblioref">Sakamoto, Ishiguro, and Kitagawa 1986</a>; <a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>.</p>
+<p>Na <a href="#tbl-trec-krec-model">Table&nbsp;17</a> temos um resumo dos resultados. Dentre as seis variáveis testadas, nenhuma foi significativa para o TREC. Ou seja, na tabela temos apenas resultados para o KREC. Apenas o idade gestacional e a cardiopatia SHVE foram significativos para o KREC.</p>
+<p>Com base nas variáveis se estima um valor médio de KREC de 91.84 com intervalo de confiança (IC) de 95% variando de 62.18 até 134.29. Esse valor médio é para pacientes no 1o quartil da idade gestacional e sem SHVE. Mudando para o 2o quartil da idade gestacional o TREC médio muda 53.89; Mudando para o 3o quartil o TREC médio muda para 60.95; e para o último quartil, 90.99. Os valores-<em>p</em> reportados indicam se esssas mudanças em relação ao 1o quartil são ou não estatisticamente significativas. Por fim, se o paciente tem SHVE seu TREC médio muda para 55.04 (IC: 21.33, 140.3).</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-trec-krec-model" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 17:  Resumo do modelo linear ajustado para o KREC. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> Estimativa </th>
+   <th style="text-align:right;"> Limite.inferior </th>
+   <th style="text-align:right;"> Limite.superior </th>
+   <th style="text-align:right;"> Estatística </th>
+   <th style="text-align:left;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Idade gestacional: 1o quartil &amp; sem SHVE </td>
+   <td style="text-align:right;"> 91.836 </td>
+   <td style="text-align:right;"> 62.178 </td>
+   <td style="text-align:right;"> 134.290 </td>
+   <td style="text-align:right;"> 23.200 </td>
+   <td style="text-align:left;font-weight: bold;"> - </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Idade gestacional: 2o quartil </td>
+   <td style="text-align:right;"> 53.893 </td>
+   <td style="text-align:right;"> 21.392 </td>
+   <td style="text-align:right;"> 134.424 </td>
+   <td style="text-align:right;"> -1.960 </td>
+   <td style="text-align:left;font-weight: bold;"> 0.0538 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Idade gestacional: 3o quartil </td>
+   <td style="text-align:right;"> 60.947 </td>
+   <td style="text-align:right;"> 24.167 </td>
+   <td style="text-align:right;"> 152.323 </td>
+   <td style="text-align:right;"> -1.500 </td>
+   <td style="text-align:left;font-weight: bold;"> 0.1378 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Idade gestacional: 4o quartil </td>
+   <td style="text-align:right;"> 90.995 </td>
+   <td style="text-align:right;"> 35.588 </td>
+   <td style="text-align:right;"> 230.442 </td>
+   <td style="text-align:right;"> -0.033 </td>
+   <td style="text-align:left;font-weight: bold;"> 0.9739 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Com SHVE </td>
+   <td style="text-align:right;"> 55.037 </td>
+   <td style="text-align:right;"> 21.328 </td>
+   <td style="text-align:right;"> 140.302 </td>
+   <td style="text-align:right;"> -1.830 </td>
+   <td style="text-align:left;font-weight: bold;"> 0.0705 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>A partir da tabela acima somos capazes de obter todas as comparações entre quartis da idade gestacional. Contudo, o modelo não nos retorna os valores-<em>p</em> dessas extra comparações. Para tal é necessário uma etapa extra de processamento. Segue abaixo os valores-<em>p</em>:</p>
+</blockquote>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-krec-model-comparions" class="anchored">
+
+<table class=" lightable-classic-2" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;"><caption>Table 18:  Comparações / diferenças restantes. </caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Comparação </th>
+   <th style="text-align:right;"> valor.p </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 3o quartil - 2o quartil </td>
+   <td style="text-align:right;font-weight: bold;"> 0.648 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4o quartil - 2o quartil </td>
+   <td style="text-align:right;font-weight: bold;"> 0.060 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4o quartil - 3o quartil </td>
+   <td style="text-align:right;font-weight: bold;"> 0.153 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="referências" class="level1">
+<h1>Referências</h1>
+<hr>
+<blockquote class="blockquote">
+<p>A análise estatística foi performada através da linguagem e ambiente para computação estatística R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span>. Os principais pacotes R utilizados foram os seguintes: {dplyr} <span class="citation" data-cites="dplyr1.0.9">(<a href="#ref-dplyr1.0.9" role="doc-biblioref">Wickham et al. 2022</a>)</span>, {tidyr} <span class="citation" data-cites="tidyr1.2.0">(<a href="#ref-tidyr1.2.0" role="doc-biblioref">Wickham and Girlich 2022</a>)</span>, {stringr} <span class="citation" data-cites="stringr1.4.0">(<a href="#ref-stringr1.4.0" role="doc-biblioref">Wickham 2019</a>)</span>, {ggplot2} <span class="citation" data-cites="ggplot2.16">(<a href="#ref-ggplot2.16" role="doc-biblioref">Wickham 2016</a>)</span>, {patchwork} <span class="citation" data-cites="patchwork1.1.1">(<a href="#ref-patchwork1.1.1" role="doc-biblioref">Pedersen 2020</a>)</span>, {purrr} <span class="citation" data-cites="purrr0.3.4">(<a href="#ref-purrr0.3.4" role="doc-biblioref">Henry and Wickham 2020</a>)</span>, {marginaleffects} <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span> e {MASS} <span class="citation" data-cites="venables&amp;ripley">(<a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span>.</p>
+<p>Além da obtenção das medidas descritivas e gráficos explorando as relações entre as variáveis, Foram testadas correlações <span class="citation" data-cites="beckeretal">(<a href="#ref-beckeretal" role="doc-biblioref">Becker, Chambers, and Wilks 1988</a>)</span>; médias foram comparadas via Welch Test-<em>t</em> de Student <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span>; proporções foram testadas <span class="citation" data-cites="wilson27 newcombe98a newcombe98b">(<a href="#ref-wilson27" role="doc-biblioref">Wilson 1927</a>; <a href="#ref-newcombe98a" role="doc-biblioref">Newcombe 1998b</a>, <a href="#ref-newcombe98b" role="doc-biblioref">1998a</a>)</span>; e modelos lineares de regressão <span class="citation" data-cites="chambers venables&amp;ripley">(<a href="#ref-chambers" role="doc-biblioref">Chambers 1992</a>; <a href="#ref-venables&amp;ripley" role="doc-biblioref">Venables and Ripley 2002</a>)</span> foram também ajustados para testar e quantificar associações.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-marginaleffects0.5.0" class="csl-entry" role="doc-biblioentry">
+Arel-Bundock, Vincent. 2022. <em><span class="nocase">marginaleffects</span>: Marginal Effects, Marginal Means, Predictions, and Contrasts</em>. R package version 0.5.0. <a href="https://CRAN.R-project.org/package=marginaleffects">https://CRAN.R-project.org/package=marginaleffects</a>.
+</div>
+<div id="ref-beckeretal" class="csl-entry" role="doc-biblioentry">
+Becker, R. A., J. M. Chambers, and A. R. Wilks. 1988. <em>The New <span>S</span> Language</em>. Wadsworth &amp; Brooks/Cole.
+</div>
+<div id="ref-chambers" class="csl-entry" role="doc-biblioentry">
+Chambers, J. M. 1992. <em>Statistical Models in <span>S</span></em>. Wadsworth &amp; Brooks/Cole.
+</div>
+<div id="ref-purrr0.3.4" class="csl-entry" role="doc-biblioentry">
+Henry, Lionel, and Hadley Wickham. 2020. <em><span class="nocase">purrr</span>: Functional Programming Tools</em>. R package version 0.3.4. <a href="https://CRAN.R-project.org/package=purrr">https://CRAN.R-project.org/package=purrr</a>.
+</div>
+<div id="ref-newcombe98b" class="csl-entry" role="doc-biblioentry">
+Newcombe, R. G. 1998a. <span>“Interval Estimation for the Difference Between Independent Proportions: Comparison of Eleven Method.”</span> <em>Statistics in Medicine</em> 17: 873–90. <a href="https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8<873::AID-SIM779>3.0.CO;2-I">https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8&lt;873::AID-SIM779&gt;3.0.CO;2-I</a>.
+</div>
+<div id="ref-newcombe98a" class="csl-entry" role="doc-biblioentry">
+———. 1998b. <span>“Two-Sided Confidence Intervals for the Single Proportion: Comparison of Seven Methods.”</span> <em>Statistics in Medicine</em> 17: 857–72. <a href="https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8<857::AID-SIM777>3.0.CO;2-E">https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8&lt;857::AID-SIM777&gt;3.0.CO;2-E</a>.
+</div>
+<div id="ref-patchwork1.1.1" class="csl-entry" role="doc-biblioentry">
+Pedersen, Thomas Lin. 2020. <em><span class="nocase">patchwork</span>: The Composer of Plots</em>. R package version 1.1.1. <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-akaike" class="csl-entry" role="doc-biblioentry">
+Sakamoto, Y., M. Ishiguro, and G. Kitagawa. 1986. <em><a href="">Akaike Information Criterion Statistics</a></em>. D. Reidel Publishing Company.
+</div>
+<div id="ref-venables&amp;ripley" class="csl-entry" role="doc-biblioentry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics with <span>S</span></em>. Fourth Edition. New York: Springer-Verlag. ISBN 0-387-95457-0. <a href="https://www.stats.ox.ac.uk/pub/MASS4/">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+<div id="ref-ggplot2.16" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN 978-3-319-24277-4. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-stringr1.4.0" class="csl-entry" role="doc-biblioentry">
+———. 2019. <em><span class="nocase">stringr</span>: Simple, Consistent Wrappers for Common String Operations</em>. R package version 1.4.0. <a href="https://CRAN.R-project.org/package=stringr">https://CRAN.R-project.org/package=stringr</a>.
+</div>
+<div id="ref-dplyr1.0.9" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2022. <em><span class="nocase">dplyr</span>: A Grammar of Data Manipulation</em>. R package version 1.0.9. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+<div id="ref-tidyr1.2.0" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, and Maximilian Girlich. 2022. <em><span class="nocase">tidyr</span>: Tidy Messy Data</em>. R package version 1.2.0. <a href="https://CRAN.R-project.org/package=tidyr">https://CRAN.R-project.org/package=tidyr</a>.
+</div>
+<div id="ref-wilson27" class="csl-entry" role="doc-biblioentry">
+Wilson, E. B. 1927. <span>“Probable Inference, the Law of Succession, and Statistical Inference.”</span> <em>Statistics in Medicine</em> 22: 209–12. <a href="https://doi.org/10.2307/2276774">https://doi.org/10.2307/2276774</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
