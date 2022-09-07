@@ -460,6 +460,7 @@ fitAEbivf <-
                          variance         =rep('constant', 2),
                          power_fixed      =rep(TRUE, 2),
                          data             =dat)
+
 ## summary(fitAEbivf, model='AE', biometric=TRUE)
 
 ## cbind(Model=c('AE initial', 'AE final'),
