@@ -230,7 +230,7 @@ zygotes. In terms of sex, the sample is balanced.
 ```{r}
 #| label: fig-covariate-plots
 #| fig-width: 10
-#| fig-height: 6
+#| fig-height: 4
 #| fig-cap: Graphs A. and B. are the boxplots of the numerical
 #|          variables with their means in asterisks; Graphs C., D. and
 #|          E. are the barplots of the categorial variables with their
@@ -241,8 +241,8 @@ p1 <- dat|>
     dplyr::rename(Weight='peso')|>
     ggplot()+
     aes(x=Weight, y=' ')+
-    scale_x_continuous(breaks=seq(1e3, 3800, by=200))+
-    geom_vline(xintercept=seq(1e3, 3800, by=200),
+    scale_x_continuous(breaks=seq(1e3, 3800, by=400))+
+    geom_vline(xintercept=seq(1e3, 3800, by=400),
                color     ='gray',
                linetype  ='dashed')+
     geom_boxplot(outlier.shape=21, outlier.size=3)+
@@ -322,7 +322,10 @@ p5 <- dat|>
     theme(axis.text.y=element_text(face='bold', size=14),
           plot.title =element_text(face='bold'))
 
-p1 / p2 / (p3 + p4 + p5) +
+## p1 / p2 / (p3 + p4 + p5) +
+##     patchwork::plot_annotation(tag_levels='A', tag_suffix='.')
+
+(p1 + p2) / (p3 + p4 + p5) +
     patchwork::plot_annotation(tag_levels='A', tag_suffix='.')
 
 ```
@@ -487,10 +490,10 @@ dplyr::bind_rows(
                ' '=rownames(tt[[2]][[1]]), tibble::tibble(tt[[2]][[1]])
            )
        )|>
-    dplyr::mutate(` `=c('Mean gestational age & female sex',
-                        'A week in the gestational age',
-                        'Mean gestational age',
-                        'A week in the gestational age'))|>
+    dplyr::mutate(` `=c('Cesarean childbirth (intercept)',
+                        'Normal childbirth (add to intercept)',
+                        'Cesarean childbirth (intercept)',
+                        'Normal childbirth (add to intercept)'))|>
     dplyr::rename(Estimate ='Estimates',
                   SD       ='std.error',
                   'z-value'='z value')|>
@@ -523,7 +526,6 @@ variance (13698.107), KREC variance (13787.069), and their covariance
 #| label: tbl-AE-bivariate-model-covariance
 #| tbl-cap:
 #|   "Summary of the covariance structure of the AE bivariate model."
-#| eval: false
 
 tibble::tibble(tt$Dispersion)|>
     dplyr::mutate(' '=dplyr::recode(Parameters,
