@@ -41,7 +41,7 @@ format:
 if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 
 pacman::p_load(readxl, dplyr, tidyr, haven, ggplot2, patchwork, tibble,
-               kableExtra, Matrix)
+               kableExtra, Matrix, ggfortify)
 
 ## if(!requireNamespace('devtools', quietly=TRUE))
 ##     install.packages('devtools')
@@ -81,6 +81,9 @@ dat <- dat|>
     dplyr::filter(!ID2 %in% id2drop)|>
     dplyr::select(!ID2)
 
+dat$PC1 <- prcomp(~ peso + id_gest,
+                  data=dat, center=TRUE, scale.=TRUE)$x[, 'PC1']|>
+                                                    as.numeric()
 n   <- nrow(dat)
 N   <- dat|>
     dplyr::group_by(Zigocidade)|>
@@ -352,26 +355,25 @@ relationships. Basically, we decompose the covariance matrix into three:
 #| results: false
 
 ## mean linear predictors ----------------------------------------------
-form_TREC <- TREC ~ peso *id_gest + parto + sexo + Zigocidade *Twin_pair
-form_KREC <- KREC ~ peso *id_gest + parto + sexo + Zigocidade *Twin_pair
+## form_TREC <- TREC ~ PC1 + parto + sexo + Zigocidade * Twin_pair
+## form_KREC <- KREC ~ PC1 + parto + sexo + Zigocidade * Twin_pair
 
 ## ACE model -----------------------------------------------------------
 
-biv_ACE <- mglm4twin::mt_twin(N_DZ=N$DZ,
-                              N_MZ=N$MZ, n_resp=2, model='ACE')
-
+## biv_ACE <- mglm4twin::mt_twin(N_DZ=N$DZ,
+##                               N_MZ=N$MZ, n_resp=2, model='ACE')
 ## GAUSSIAN 
-fitACEbiv <-
-    mglm4twin::mglm4twin(
-                   linear_pred      =c(form_TREC, form_KREC),
-                   matrix_pred      =biv_ACE,
-                   control_algorithm=list(tuning=0.75),
-                   link             =rep('identity', 2),
-                   variance         =rep('constant', 2),
-                   power_fixed      =rep(TRUE, 2),
-                   data             =dat
-               )
-summary(fitACEbiv, model='ACE', biometric=TRUE)
+## fitACEbiv <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ACE,
+##                    control_algorithm=list(tuning=0.75, max_iter=40),
+##                    link             =rep('identity', 2),
+##                    variance         =rep('constant', 2),
+##                    power_fixed      =rep(TRUE, 2),
+##                    data             =dat
+##                )
+## summary(fitACEbiv, model='ACE', biometric=TRUE)
 
 ## TWEEDIE
 ## control_algorithm=list(tuning=0.01, max_iter=750),
@@ -399,13 +401,31 @@ summary(fitACEbiv, model='ACE', biometric=TRUE)
 ## 
 ## layout(1)
 
+## ADE model -----------------------------------------------------------
+
+## biv_ADE <- mglm4twin::mt_twin(N_DZ=N$DZ,
+##                               N_MZ=N$MZ, n_resp=2, model='ADE')
+## fitADEbiv <-
+##     mglm4twin::mglm4twin(
+##                    linear_pred      =c(form_TREC, form_KREC),
+##                    matrix_pred      =biv_ADE,
+##                    control_algorithm=list(tuning=0.75, max_iter=40),
+##                    link             =rep('identity', 2),
+##                    variance         =rep('constant', 2),
+##                    power_fixed      =rep(TRUE, 2),
+##                    data             =dat
+##                )
+## summary(fitADEbiv, model='ADE', biometric=TRUE)
+
+## ACE vs ADE `gof`s ---------------------------------------------------
+
+## cbind(Model=c('ACE', 'ADE'),
+##       rbind(mglm4twin::gof(fitACEbiv), mglm4twin::gof(fitADEbiv)))
+
 ## AE model ------------------------------------------------------------
 
 biv_AE <- mglm4twin::mt_twin(N_DZ=N$DZ,
                              N_MZ=N$MZ, n_resp=2, model='AE')
-
-## GAUSSIAN
-
 ## fitAEbiv <-
 ##     mglm4twin::mglm4twin(
 ##                    linear_pred      =c(form_TREC, form_KREC),
@@ -426,17 +446,18 @@ biv_AE <- mglm4twin::mt_twin(N_DZ=N$DZ,
 ## FINAL MODEL ---------------------------------------------------------
 
 ## mean linear predictors ----------------------------------------------
-form_TREC <- TREC ~ id_gest + sexo
-form_KREC <- KREC ~ id_gest
+form_TREC <- TREC ~ parto
+form_KREC <- KREC ~ parto
 
 fitAEbivf <-
     mglm4twin::mglm4twin(linear_pred      =c(form_TREC, form_KREC),
                          matrix_pred      =biv_AE,
-                         control_algorithm=list(tuning=0.75, max_iter=25), 
+                         control_algorithm=list(tuning=0.75), 
                          link             =rep('identity', 2),
                          variance         =rep('constant', 2),
                          power_fixed      =rep(TRUE, 2),
                          data             =dat)
+## summary(fitAEbivf, model='AE', biometric=TRUE)
 
 ## cbind(Model=c('AE initial', 'AE final'),
 ##       rbind(mglm4twin::gof(fitAEbiv), mglm4twin::gof(fitAEbivf)))
@@ -468,7 +489,6 @@ dplyr::bind_rows(
        )|>
     dplyr::mutate(` `=c('Mean gestational age & female sex',
                         'A week in the gestational age',
-                        'Male sex',
                         'Mean gestational age',
                         'A week in the gestational age'))|>
     dplyr::rename(Estimate ='Estimates',
@@ -480,8 +500,8 @@ dplyr::bind_rows(
                                 position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::    column_spec(5, bold=TRUE)|>
-    kableExtra::      pack_rows('TREC', 1, 3)|>
-    kableExtra::      pack_rows('KREC', 4, 5)
+    kableExtra::      pack_rows('TREC', 1, 2)|>
+    kableExtra::      pack_rows('KREC', 3, 4)
 
 ```
 
@@ -503,6 +523,7 @@ variance (13698.107), KREC variance (13787.069), and their covariance
 #| label: tbl-AE-bivariate-model-covariance
 #| tbl-cap:
 #|   "Summary of the covariance structure of the AE bivariate model."
+#| eval: false
 
 tibble::tibble(tt$Dispersion)|>
     dplyr::mutate(' '=dplyr::recode(Parameters,
@@ -541,6 +562,7 @@ in all scenarios, marginally; jointly; and its correlation.
 #| label: tbl-AE-bivariate-model-genetic-components
 #| tbl-cap:
 #|   "Summary of the genetic components of the AE bivariate model."
+#| eval: false
 
 tibble::tibble(
             cbind(' '=rep(c('TREC',
@@ -715,13 +737,15 @@ tibble::tibble(' '       =c('Cesarean childbirth & DZ zygosity',
 
 ```{r}
 #| label: fig-gestational-age-vs-weight
-#| fig-height: 3.75
-#| fig-width: 4.25
-#| fig-cap: Gestational age and weight scatterplot with tendency curve
-#|          in solid black and 95% confidence band in gray.
+#| fig-height: 4.5
+#| fig-width: 10
+#| fig-cap: Graph A. Gestational age and weight scatterplot with
+#|          tendency curve in solid black and 95% confidence band in
+#|          gray; Graph B. Gestational age and weight biplot from a
+#|          Principal Components Analysis (PCA).
 #| fig-pos: 'H'
 
-dat|>
+p1 <- dat|>
     ggplot()+
     aes(x=id_gest, y=peso)+
     scale_x_continuous(breaks=seq(27, 39, by=1))+
@@ -732,16 +756,40 @@ dat|>
     geom_hline(yintercept=seq(750, 3750, by=250),
                color     ='gray',
                linetype  ='dashed')+
-    geom_jitter(pch=21, size=2)+
+    geom_point(pch=21, size=3)+
     geom_smooth(method ='loess',
                 formula=y ~ x, se=TRUE, color='black', size=1)+
     labs(x='Gestational age\n(Weeks)', y='Weight\n(Grams)')+
-    theme_classic()+
+    theme_classic(base_size=14)+
     theme(axis.title.x=element_text(face  ='bold',
                                     margin=ggplot2::unit(c(
                                                         t=3, r=0,
                                                         b=0, l=0
                                                     ), 'mm')),
           axis.title.y=element_text(face='bold'))
+
+dat.pca <- dat|>
+    dplyr::select(peso, id_gest)|>
+    dplyr::rename(Weight='peso', Age='id_gest')
+
+p2 <- autoplot(prcomp(dat.pca, center=TRUE, scale.=TRUE),
+               data=dat.pca, shape=21, size=3, 
+               loadings             =TRUE,
+               loadings.colour      ='black', 
+               loadings.label       =TRUE,
+               loadings.label.size  =4.5,
+               loadings.label.colour='black')+
+    geom_vline(xintercept=seq(-0.2, 0.2, by=0.1),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_hline(yintercept=seq(-0.2, 0.2, by=0.1),
+               color     ='gray',
+               linetype  ='dashed')+
+    theme_classic(base_size=14)+
+    theme(axis.title.x=element_text(face='bold'),
+          axis.title.y=element_text(face='bold'))
+
+p1 + p2 +
+    patchwork::plot_annotation(tag_levels='A', tag_suffix='.')
 
 ```
