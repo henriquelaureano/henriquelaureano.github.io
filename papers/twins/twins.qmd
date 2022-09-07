@@ -70,7 +70,19 @@ dat  <- readxl::read_xlsx(paste0(path, file), sheet='Gemeos')|>
                   Zigocidade=dplyr::recode(Zigocidade,
                                            'diz'='DZ', 'monoz'='MZ'))|>
     dplyr::ungroup()|>
+    dplyr::filter(TREC <= 200 & KREC <= 200)
+
+id2drop <- dat|>
+    dplyr::count(ID2)|>
+    dplyr::filter(n == 1)|>
+    dplyr::pull(ID2)
+
+dat <- dat|>
+    dplyr::filter(!ID2 %in% id2drop)|>
     dplyr::select(!ID2)
+
+## summary(dat$TREC)
+## summary(dat$KREC)
 
 n   <- nrow(dat)
 N   <- dat|>
@@ -126,9 +138,9 @@ p1 <- dat|>
     ggplot()+
     aes(x=var, y=value)+
     scale_y_continuous(breaks=seq(0, 800, by=100))+
-    geom_hline(yintercept=seq(0, 800, by=100),
-               color     ='gray',
-               linetype  ='dashed')+
+    ## geom_hline(yintercept=seq(0, 800, by=100),
+    ##            color     ='gray',
+    ##            linetype  ='dashed')+
     geom_boxplot(outlier.shape=21, outlier.size=2)+
     stat_summary(fun='mean', geom='point', size=3, shape=8)+
     labs(x=NULL, y=NULL)+
@@ -144,12 +156,12 @@ p2 <- dat|>
     aes(x=TREC, y=KREC)+
     scale_x_continuous(breaks=seq(0, 800, by=100))+
     scale_y_continuous(breaks=seq(0, 800, by=100))+
-    geom_vline(xintercept=seq(0, 800, by=100),
-               color     ='gray',
-               linetype  ='dashed')+
-    geom_hline(yintercept=seq(0, 800, by=100),
-               color     ='gray',
-               linetype  ='dashed')+
+    ## geom_vline(xintercept=seq(0, 800, by=100),
+    ##            color     ='gray',
+    ##            linetype  ='dashed')+
+    ## geom_hline(yintercept=seq(0, 800, by=100),
+    ##            color     ='gray',
+    ##            linetype  ='dashed')+
     geom_point(size=3, shape=21)+
     geom_smooth(method ='loess',
                 formula=y ~ x, se=FALSE, size=1, color='black')+
@@ -159,7 +171,7 @@ p2 <- dat|>
           axis.title.y=element_text(face='bold'))
 
 p3 <- dplyr::bind_cols(
-                 by=rep(c('TREC', 'KREC'), each=99), 
+                 by=rep(c('TREC', 'KREC'), each=n/2), 
                  dplyr::bind_rows(
                             dat|>
                             dplyr::select(Twin_pair, TREC)|>
@@ -180,12 +192,12 @@ p3 <- dplyr::bind_cols(
     aes(x=`1`, y=`2`)+
     scale_x_continuous(breaks=seq(0, 800, by=100))+
     scale_y_continuous(breaks=seq(0, 800, by=100))+
-    geom_vline(xintercept=seq(0, 800, by=100),
-               color     ='gray',
-               linetype  ='dashed')+
-    geom_hline(yintercept=seq(0, 800, by=100),
-               color     ='gray',
-               linetype  ='dashed')+
+    ## geom_vline(xintercept=seq(0, 800, by=100),
+    ##            color     ='gray',
+    ##            linetype  ='dashed')+
+    ## geom_hline(yintercept=seq(0, 800, by=100),
+    ##            color     ='gray',
+    ##            linetype  ='dashed')+
     geom_point(size=3, shape=21)+
     geom_smooth(method ='loess',
                 formula=y ~ x, se=FALSE, size=1, color='black')+
@@ -231,9 +243,9 @@ p1 <- dat|>
     ggplot()+
     aes(x=Weight, y=' ')+
     scale_x_continuous(breaks=seq(1e3, 3750, by=250))+
-    geom_vline(xintercept=seq(1e3, 3750, by=250),
-               color     ='gray',
-               linetype  ='dashed')+
+    ## geom_vline(xintercept=seq(1e3, 3750, by=250),
+    ##            color     ='gray',
+    ##            linetype  ='dashed')+
     geom_boxplot(outlier.shape=21, outlier.size=3)+
     stat_summary(fun='mean', geom='point', size=4, shape=8)+
     labs(x='Grams', y=NULL, title='Birth weight')+
@@ -249,9 +261,9 @@ p2 <- dat|>
     ggplot()+
     aes(x=`Gestational age`, y=' ')+
     scale_x_continuous(breaks=seq(27, 40, by=1))+
-    geom_vline(xintercept=seq(27, 40, by=1),
-               color     ='gray',
-               linetype  ='dashed')+
+    ## geom_vline(xintercept=seq(27, 40, by=1),
+    ##            color     ='gray',
+    ##            linetype  ='dashed')+
     geom_boxplot(outlier.shape=21, outlier.size=3)+
     stat_summary(fun='mean', geom='point', size=4, shape=8)+
     labs(x='Weeks', y=NULL, title='Gestational age')+
@@ -349,8 +361,8 @@ relationships. Basically, we decompose the covariance matrix into three:
 ## ---------------------------------------------------------------------
 
 ## mean linear predictors ----------------------------------------------
-## form_TREC <- TREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
-## form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
+form_TREC <- TREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
+form_KREC <- KREC ~ id_gest + parto + sexo + Zigocidade * Twin_pair
 
 ## ACE model -----------------------------------------------------------
 
@@ -446,7 +458,7 @@ form_KREC <- KREC ~ id_gest
 fitAEbivf <-
     mglm4twin::mglm4twin(linear_pred      =c(form_TREC, form_KREC),
                          matrix_pred      =biv_AE,
-                         control_algorithm=list(tuning=0.75), 
+                         control_algorithm=list(tuning=0.75, max_iter=25), 
                          link             =rep('identity', 2),
                          variance         =rep('constant', 2),
                          power_fixed      =rep(TRUE, 2),
@@ -591,6 +603,7 @@ in the bivariate scenario.
 ```{r}
 #| label: TREC-model
 #| results: false
+#| eval: false
 
 cov_TREC   <- list(formE=~ 1, formA=~ parto)
 uni_AEtrec <- mglm4twin::mt_twin(N_DZ   =N$DZ,
@@ -627,6 +640,7 @@ KREC measures, respectively.
 ```{r}
 #| label: tbl-TREC-AE-model-covariance
 #| tbl-cap: "Summary of the covariance structure of the AE TREC model."
+#| eval: false
 
 tibble::tibble(' '       =c('Environment component (E)',
                             'Cesarean childbirth',
