@@ -105,30 +105,30 @@ We have the TREC and KREC measures of `r n/2` pairs of twins. From these
 + Sex (male of female);
 + Zygosity (MZ: monozygotic or DZ: dizygotic).
 
-Zygosity is a key term in our modeling framework since we need to inform
-how many twin pairs are monozygotic and dizygotic. Therefore, we drop a
-pair that do not present this information. We stay with 198
-twins. Besides these five covariates, we may also consider the twin
-covariate (1 or 2), to verify a randomness supposition.
+Zygosity is a key term since we need to inform how many twin pairs are
+monozygotic and dizygotic. Besides these five covariates, we may also
+consider the twin covariate (1 or 2), to verify a randomness
+supposition.
 
-In @fig-TREC-and-KREC-plots we have some plots to see how our two
-responses behave. We can see that they are asymmetric with both having
-some upper outliers. For the TREC we have a mean of
-`r round(mean(dat$TREC), 2)` and a median of
-`r round(median(dat$TREC), 2)`. For the KREC we have a mean of
-`r round(mean(dat$KREC), 2)` and a median of
-`r round(median(dat$KREC), 2)`. In the scatterplots we see a clear
-positive association, linear until the outliers started to act.
+In @fig-TREC-and-KREC-plots and the C panel of @fig-appendix we have
+some plots to see how our two responses behave. We can see that the KREC
+measures are asymmetric with a stronger left tail. Both are positively
+correlated with an almost linear correspondence. By crossing twins, we do
+not see any clear leakage. For the TREC we have a mean (standard
+deviation - SD) of
+`r round(mean(dat$TREC), 2)` (`r round(sd(dat$TREC), 2)`) and for the
+KREC a mean (SD) of
+`r round(mean(dat$KREC), 2)` (`r round(sd(dat$KREC), 2)`).
 
 ```{r}
 #| label: fig-TREC-and-KREC-plots
 #| fig-width: 10
 #| fig-height: 9
-#| fig-cap: Graph A. TREC and KREC boxplots with their means in
-#|          asterisks; Graph B. TREC and KREC scatterplot with tendency
-#|          curve in solid black and 95% confidence band in gray; Graph
-#|          C. Twins scatterplots per TREC and KREC with tendency curves
-#|          in solid black and 95% confidence bands in gray.
+#| fig-cap: 'Graph A: TREC and KREC boxplots with their means in
+#|           asterisks; Graph B: TREC and KREC scatterplot with tendency
+#|           curve in solid black and 95% confidence band in gray; Graph
+#|           C: Twins scatterplots per TREC and KREC with tendency
+#|           curves in solid black and 95% confidence bands in gray.'
 #| fig-pos: 'H'
 
 p1 <- dat|>
@@ -216,8 +216,8 @@ AABBBBB
 CCCCCCC
 '
 p1 + p2 + p3 +
-    patchwork::plot_annotation(tag_levels='A', tag_suffix='.')+
-    patchwork::plot_layout(design=layout)
+    patchwork::plot_annotation(tag_levels='A') +
+    patchwork::    plot_layout(design=layout)
 
 ```
 
@@ -231,10 +231,10 @@ zygotes. In terms of sex, the sample is balanced.
 #| label: fig-covariate-plots
 #| fig-width: 10
 #| fig-height: 4
-#| fig-cap: Graphs A. and B. are the boxplots of the numerical
-#|          variables with their means in asterisks; Graphs C., D. and
-#|          E. are the barplots of the categorial variables with their
-#|          level frequencies and respective sample percentages.
+#| fig-cap: Graphs A and B are the boxplots of the numerical variables
+#|          with their means in asterisks; Graphs C, D and E are the
+#|          barplots of the categorial variables with their levels
+#|          frequencies and respective sample percentages.
 #| fig-pos: 'H'
 
 p1 <- dat|>
@@ -322,11 +322,7 @@ p5 <- dat|>
     theme(axis.text.y=element_text(face='bold', size=14),
           plot.title =element_text(face='bold'))
 
-## p1 / p2 / (p3 + p4 + p5) +
-##     patchwork::plot_annotation(tag_levels='A', tag_suffix='.')
-
-(p1 + p2) / (p3 + p4 + p5) +
-    patchwork::plot_annotation(tag_levels='A', tag_suffix='.')
+(p1 + p2) / (p3 + p4 + p5) + patchwork::plot_annotation(tag_levels='A')
 
 ```
 
@@ -338,7 +334,8 @@ performed through the `{mglm4twin}` [@mglm4twin; @bonat&hjelmborg;
 @mcglm.seriesc; @mcglm] package, the leading R packages used are:
 `{dplyr}` [@dplyr1.0.9], `{tidyr}` [@tidyr1.2.0], `{ggplot2}`
 [@ggplot2.16], `patchwork` [@patchwork1.1.1], `{kableExtra}`
-[@kableExtra1.3.4] and `{Matrix}` [@matrix1.4.1].
+[@kableExtra1.3.4], `{Matrix}` [@matrix1.4.1] and `{ggfortify}`
+[@ggfortify.16].
 
 # Results
 
@@ -519,7 +516,7 @@ twin sex. For KREC, only the gestational age is significant.
 <!-- (`r round(var(dat$KREC), 4)`) -->
 
 About the covariance structure, what we do is decompose the TREC
-variance (13698.107), KREC variance (13787.069), and their covariance
+variance (2167.713), KREC variance (1820.538), and their covariance
 (`r round(cov(dat$TREC, dat$KREC), 4)`) in the manner described in
 @tbl-AE-bivariate-model-covariance.
 
@@ -565,7 +562,6 @@ in all scenarios, marginally; jointly; and its correlation.
 #| label: tbl-AE-bivariate-model-genetic-components
 #| tbl-cap:
 #|   "Summary of the genetic components of the AE bivariate model."
-#| eval: false
 
 tibble::tibble(
             cbind(' '=rep(c('TREC',
@@ -573,17 +569,17 @@ tibble::tibble(
                           2), 
                   rbind(tt$Env_main,
                         tt$Env_cross,
-                        c(0.3795164, 0.5943252, 0.6385669, 0.5231047), 
+                        c(0.4210331, 0.3306534, 1.273336, 0.2028987), 
                         tt$A_main,
                         tt$A_cross,
-                        c(0.2824055, 0.1397447, 2.020867, 0.04329349))
+                        c(0.3201396, 0.1929394, 1.659276, 0.09706021))
                   )
         )|>
     dplyr::rename(Estimate ='Estimates',
                   SD       ='std.error',
                   'z-value'='z value')|>
     kableExtra::            kbl(booktabs=TRUE,
-                                digits  =6,
+                                digits  =8,
                                 caption =NA,
                                 position='h')|>
     kableExtra::kable_classic_2(full_width=FALSE)|>
@@ -600,11 +596,13 @@ solution, we fitted univariate AE models with the same mean structure as
 in the bivariate scenario.
 
 ```{r}
-#| label: TREC-model
+#| label: univariate-models
 #| results: false
 #| eval: false
 
-cov_TREC   <- list(formE=~ 1, formA=~ parto)
+cov_TREC   <- list(formE=~ sexo + parto,
+                   formA=~ sexo,
+                   formAE=~ PC1 + sexo + parto)
 uni_AEtrec <- mglm4twin::mt_twin(N_DZ   =N$DZ,
                                  N_MZ   =N$MZ,
                                  n_resp =1,
@@ -612,31 +610,22 @@ uni_AEtrec <- mglm4twin::mt_twin(N_DZ   =N$DZ,
                                  formula=cov_TREC,
                                  dat    =dat)
 fitAEtrec  <-
-    mglm4twin::mglm4twin(linear_pred=c(form_TREC),
-                         matrix_pred=uni_AEtrec,
-                         link       ='identity',
-                         variance   ='constant',
-                         power_fixed=TRUE,
-                         data       =dat)
+    mglm4twin::mglm4twin(linear_pred      =c(form_TREC),
+                         matrix_pred      =uni_AEtrec,
+                         control_algorithm=list(tuning=0.25, max_iter=1e3), 
+                         link             ='identity',
+                         variance         ='constant',
+                         power_fixed      =TRUE,
+                         data             =dat)
+
+fitAEtrec$Covariance
+sqrt(diag(fitAEtrec$vcov))
 
 tt         <- rbind(cbind(fitAEtrec$Covariance, 
                           sqrt(diag(fitAEtrec$vcov))[-c(1:3)])[1, ], 
                     cbind(fitAEtrec$Covariance, 
                           sqrt(diag(fitAEtrec$vcov))[-c(1:3)])[2:3, ])
 
-```
-
-We started with the same six covariates. In the TREC model, we end up
-with no significant covariates in the environmental E component and with
-the type of childbirth as significant in the genetic A component. In the
-KREC model, the type of childbirth and zygosity are statistically
-significant in the E component, and in the A component, only the type of
-childbirth is significant. In @tbl-TREC-AE-model-covariance and
-@tbl-KREC-AE-model-covariance we have a summary of the covariances
-decompositions in terms of the significant covariates for the TREC and
-KREC measures, respectively.
-
-```{r}
 #| label: tbl-TREC-AE-model-covariance
 #| tbl-cap: "Summary of the covariance structure of the AE TREC model."
 #| eval: false
@@ -654,32 +643,6 @@ tibble::tibble(' '       =c('Environment component (E)',
     kableExtra::kable_classic_2(full_width=FALSE)|>
     kableExtra::pack_rows      ('Genetic component (A)', 2, 3)
 
-```
-
-In the TREC measure (@tbl-TREC-AE-model-covariance), 26% of the observed
-variance has its explanation attributed to the environment component. In
-a twin born from a cesarean, 72% of the observed variance is explained
-by the genetic component. Together, both components explain 98% of the
-variance. In a twin born from normal childbirth, the explanation by
-means of the genetic component decreases by 80% - no variance
-explanation. We can justify that by the low representation in our data,
-with only `r round(100*table(dat$parto)[[2]]/n, 2) `% of the twins being
-born from normal childbirth.
-
-In the KREC measure (@tbl-KREC-AE-model-covariance), in a twin born from
-a cesarean and dizygotic, nothing of the observed variance is explained
-by the environment component (-62%). Nevertheless, if we change to a
-twin born from normal childbirth the attributed explanation grows by
-66%, i.e. 4% (-62 + 66) of variance explanation. In a monozygotic twin,
-the explanation by the environment component is 9% (-62 + 71). In the
-genetic component, the difference in terms of variance explained by the
-type of childbirth is abysmal. In a twin born from cesarean, we have
-103% (-62 + 165) of variance explained. The effect is so big and
-uncertain that it blows up. In a twin born from normal childbirth, we
-have the opposite. The unbalance in the data frequencies ends up
-generating these unrealistic results.
-
-```{r}
 #| label: KREC-model
 #| results: false
 #| eval: false
@@ -706,9 +669,6 @@ tt <- rbind(cbind(fitAEkrec$Covariance,
             cbind(fitAEkrec$Covariance, 
                   sqrt(diag(fitAEkrec$vcov))[-c(1:2)])[4:5, ])
 
-```
-
-```{r}
 #| label: tbl-KREC-AE-model-covariance
 #| tbl-cap: "Summary of the covariance structure of the AE KREC model."
 #| eval: false
@@ -739,13 +699,14 @@ tibble::tibble(' '       =c('Cesarean childbirth & DZ zygosity',
 # Appendix
 
 ```{r}
-#| label: fig-gestational-age-vs-weight
-#| fig-height: 4.5
+#| label: fig-appendix
+#| fig-height: 9
 #| fig-width: 10
-#| fig-cap: Graph A. Gestational age and weight scatterplot with
-#|          tendency curve in solid black and 95% confidence band in
-#|          gray; Graph B. Gestational age and weight biplot from a
-#|          Principal Components Analysis (PCA).
+#| fig-cap: 'Graph A: Gestational age and weight scatterplot with
+#|           tendency curve in solid black and 95% confidence band in
+#|           gray; Graph B: Gestational age and weight biplot from a
+#|           Principal Components Analysis (PCA); Graph C: TREC and KREC
+#|           histograms with density curve estimations in solid black.'
 #| fig-pos: 'H'
 
 p1 <- dat|>
@@ -792,7 +753,30 @@ p2 <- autoplot(prcomp(dat.pca, center=TRUE, scale.=TRUE),
     theme(axis.title.x=element_text(face='bold'),
           axis.title.y=element_text(face='bold'))
 
-p1 + p2 +
-    patchwork::plot_annotation(tag_levels='A', tag_suffix='.')
+p3 <- dat|>
+    tidyr::pivot_longer(c(TREC, KREC))|>
+    dplyr::mutate(name=haven::as_factor(name))|>
+    ggplot()+
+    aes(x=value)+
+    scale_x_continuous(breaks=seq(20, 220, by=20))+
+    scale_y_continuous(breaks=NULL)+
+    geom_vline(xintercept=seq(20, 220, by=10),
+               color     ='gray',
+               linetype  ='dashed')+
+    geom_histogram(aes(y=..density..),
+                   binwidth=10, color='black', fill='white')+
+    geom_density(size=1)+
+    facet_wrap(~ name)+
+    labs(x=NULL, y=NULL)+
+    theme_classic(base_size=14)+
+    theme(strip.text.x=element_text(face='bold', size=14))
+
+layout <- '
+AB
+CC
+'
+p1 + p2 + p3 +
+    patchwork::plot_annotation(tag_levels='A') +
+    patchwork::    plot_layout(design=layout)
 
 ```
