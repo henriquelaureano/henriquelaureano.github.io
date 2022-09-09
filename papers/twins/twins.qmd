@@ -110,16 +110,6 @@ monozygotic and dizygotic. Besides these five covariates, we may also
 consider the twin covariate (1 or 2), to verify a randomness
 supposition.
 
-In @fig-TREC-and-KREC-plots and the C panel of @fig-appendix we have
-some plots to see how our two responses behave. We can see that the KREC
-measures are asymmetric with a stronger left tail. Both are positively
-correlated with an almost linear correspondence. By crossing twins, we do
-not see any clear leakage. For the TREC we have a mean (standard
-deviation - SD) of
-`r round(mean(dat$TREC), 2)` (`r round(sd(dat$TREC), 2)`) and for the
-KREC a mean (SD) of
-`r round(mean(dat$KREC), 2)` (`r round(sd(dat$KREC), 2)`).
-
 ```{r}
 #| label: fig-TREC-and-KREC-plots
 #| fig-width: 10
@@ -221,11 +211,22 @@ p1 + p2 + p3 +
 
 ```
 
+In @fig-TREC-and-KREC-plots and the C panel of @fig-appendix we have
+some plots to see how our two responses behave. We can see that the KREC
+measures are asymmetric with a stronger left tail. Both are positively
+correlated with an almost linear correspondence. By crossing twins, we do
+not see any clear leakage. For the TREC we have a mean (standard
+deviation, sd) of
+`r round(mean(dat$TREC), 2)` (`r round(sd(dat$TREC), 2)`) and for the
+KREC a mean (sd) of
+`r round(mean(dat$KREC), 2)` (`r round(sd(dat$KREC), 2)`).
+
 In @fig-covariate-plots we have the plots of the covariates. We have a
-mean birth weight of `r round(mean(dat$peso, na.rm=TRUE), 2)` grams and
-a mean gestational age of `r round(mean(dat$id_gest), 2)` weeks. 92.9%
-of the twins were born from cesarean childbirth and 76.8% are
-zygotes. In terms of sex, the sample is balanced.
+mean (sd) birth weight of `r round(mean(dat$peso), 2)`
+(`r round(sd(dat$peso), 2)`) grams and a mean (sd) gestational age of
+`r round(mean(dat$id_gest), 2)` (`r round(sd(dat$id_gest), 2)`) weeks.
+88.2% of the twins were born from cesarean childbirth, 74.5% are
+zygotes, and 60.9% are from the male sex.
 
 ```{r}
 #| label: fig-covariate-plots
@@ -339,9 +340,8 @@ performed through the `{mglm4twin}` [@mglm4twin; @bonat&hjelmborg;
 
 # Results
 
-We model the TREC and KREC measures in a bivariate fashion and in two
-fronts, in the mean and covariance structures. We use a model called ACE
-to study heritability and the genetic and environmental
+We model the TREC and KREC measures in a bivariate fashion. We use a
+model called ACE to study heritability and the genetic and environmental
 relationships. Basically, we decompose the covariance matrix into three:
 
 + A: genetic/heritability effect or component;
@@ -468,13 +468,11 @@ tt       <- summary(fitAEbiv, model='AE', biometric=TRUE)
 
 ```
 
-Besides the covariance decomposition itself, we can also insert
-covariates in it. In both mean and covariance structures we tested for
-the effect of six covariates. With a bivariate model, we are able to
-handle the TREC and KREC measures jointly. We started with the ACE
-model, however, the C component presented to be non-significant. Thus,
-we stayed with an AE model and from this performed a covariates
-selection procedure.
+In the mean structure we tested for the effect of six covariates. With a
+bivariate model, we are able to handle the TREC and KREC measures
+jointly. We started with the ACE model, however, the C component
+presented to be non-significant. Thus, we stayed with an AE model and
+from this performed a covariates selection procedure.
 
 ```{r}
 #| label: tbl-AE-bivariate-model-mean-summary
@@ -506,19 +504,16 @@ dplyr::bind_rows(
 
 ```
 
-Starting from the mean structure, from the six covariates we end up with
-two. The significant ones, for each response, are presented in
-@tbl-AE-bivariate-model-mean-summary. For the TREC measures, the
-statistically significant covariates are the gestational age and the
-twin sex. For KREC, only the gestational age is significant.
-
 <!-- (`r round(var(dat$TREC), 4)`) -->
 <!-- (`r round(var(dat$KREC), 4)`) -->
 
-About the covariance structure, what we do is decompose the TREC
-variance (2167.713), KREC variance (1820.538), and their covariance
-(`r round(cov(dat$TREC, dat$KREC), 4)`) in the manner described in
-@tbl-AE-bivariate-model-covariance.
+From the six tested covariates we end up with two. For both responses,
+only the type of chilbirth presented to be as statistically
+significant. In @tbl-AE-bivariate-model-mean-summary we have a summary
+of the estimated effects. About the covariance structure, what we do is
+decompose the TREC variance (2167.713), KREC variance (1820.538), and
+their covariance (`r round(cov(dat$TREC, dat$KREC), 4)`) in the manner
+described in @tbl-AE-bivariate-model-covariance.
 
 ```{r}
 #| label: tbl-AE-bivariate-model-covariance
@@ -588,12 +583,6 @@ tibble::tibble(
     kableExtra::pack_rows      (      'Heritability', 5, 8)
 
 ```
-
-Given the small sample size and the inferential level of complexity
-involved in the bivariate model, we were not able to obtain numerical
-convergence by inserting covariates in the covariance structure. As a
-solution, we fitted univariate AE models with the same mean structure as
-in the bivariate scenario.
 
 ```{r}
 #| label: univariate-models
