@@ -1,11 +1,10 @@
 ## About
 
-[Twitter](https://twitter.com/hap_laureano) |
-[Tumblr](tumblr/) |
-[Spotify](https://open.spotify.com/user/12147941733) |
-[CV](vitae.pdf) |
+CV ([pt-br](vitae.pdf) | [eng](cv.pdf)) |
+[Google Scholar](https://scholar.google.com/citations?user=CWYkCEQAAAAJ&hl=en) |
 [LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/) |
-[Google Scholar](https://scholar.google.com/citations?user=CWYkCEQAAAAJ&hl=en)
+[Tumblr](tumblr/) |
+[Twitter](https://twitter.com/hap_laureano)
 
 Hi! I'm a Statistician | Biostatistician | Data Scientist based in
 [Curitiba](https://goo.gl/K1Qcdv) and working in the [Pele Pequeno
@@ -30,10 +29,10 @@ useful visualizations (I ensembled some [here](visualizations/)).
 
 <span style="background-color: #FFFF00">
       [Courses](courses/) |
-      [Stuff](stuff/) |
-      [Presentations](presentations/) |
       [Papers](papers/) |
-      [R Visualizations](visualizations/)</span>
+      [Presentations](presentations/) |
+      [R Visualizations](visualizations/) |
+      [Stuff](stuff/)</span>
 
 ## Contact
 
