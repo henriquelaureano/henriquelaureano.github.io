@@ -46,3 +46,11 @@
 + [pdf](likelihood/likelihood.pdf)
   ([.Rnw](likelihood/likelihood.Rnw)) |
   [bookdown](likelihood/lkl_ex_bookdown/)
+
+***
+
+### [Cake dataset analysis](cake/)
+
+***
+
+> A linear mixed / multilevel / hierarchical model application
