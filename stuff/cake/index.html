@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>data(cake, package=‘lme4’)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data">Data</a></li>
+  <li><a href="#linear-mixed-model" id="toc-linear-mixed-model" class="nav-link" data-scroll-target="#linear-mixed-model">Linear Mixed Model</a>
+  <ul class="collapse">
+  <li><a href="#quality-of-adjustment" id="toc-quality-of-adjustment" class="nav-link" data-scroll-target="#quality-of-adjustment">Quality-Of-Adjustment</a></li>
+  <li><a href="#model-summary" id="toc-model-summary" class="nav-link" data-scroll-target="#model-summary">Model summary</a></li>
+  <li><a href="#random-effects" id="toc-random-effects" class="nav-link" data-scroll-target="#random-effects">Random effects</a></li>
+  </ul></li>
+  <li><a href="#final-remarks" id="toc-final-remarks" class="nav-link" data-scroll-target="#final-remarks">Final remarks</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">data(cake, package=‘lme4’)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p><a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-09-14 10:51:24</p>
+<hr>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">'pacman'</span>, <span class="at">quietly=</span><span class="cn">TRUE</span>))</span>
+<span id="cb1-2"><a href="#cb1-2"></a>    <span class="fu">install.packages</span>(<span class="st">'pacman'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(lme4, car, ggplot2, tibble, dplyr, marginaleffects,</span>
+<span id="cb1-4"><a href="#cb1-4"></a>               broom, equatiomatic, patchwork)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="fu">theme_set</span>(<span class="fu">theme_classic</span>(<span class="at">base_size=</span><span class="dv">14</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="data" class="level1">
+<h1>Data</h1>
+<hr>
+<p>The data is described in <code>?cake</code> as</p>
+<pre><code>Data on the breakage angle of chocolate cakes made with three different
+recipes and baked at six different temperatures.</code></pre>
+<p>An interesting note</p>
+<pre><code>The experimental notes suggest that the replicate numbering represents
+temporal ordering.</code></pre>
+<p>is approached at the end.</p>
+<p>Looking at the data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">data</span>(cake, <span class="at">package=</span><span class="st">'lme4'</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">summary</span>(cake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   replicate   recipe temperature     angle            temp    
+ 1      : 18   A:90   175:45      Min.   :18.00   Min.   :175  
+ 2      : 18   B:90   185:45      1st Qu.:26.00   1st Qu.:185  
+ 3      : 18   C:90   195:45      Median :31.00   Median :200  
+ 4      : 18          205:45      Mean   :32.12   Mean   :200  
+ 5      : 18          215:45      3rd Qu.:36.75   3rd Qu.:215  
+ 6      : 18          225:45      Max.   :63.00   Max.   :225  
+ (Other):162                                                   </code></pre>
+</div>
+</div>
+<p>We see that the baking temperatures are provided in two forms, numerically and as a factor. Below we have a histogram of the breakage angle to see if it is ok to assume a normal distribution to our model - the easiest / simplest one in terms of the estimation procedure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">hist</span>(cake<span class="sc">$</span>angle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-angle-hist" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-angle-hist-1.png" class="img-fluid figure-img" width="480"></p>
+<p></p><figcaption class="figure-caption">Figure 1: Breakage angle of chocolate cakes (our response variable) histogram.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Well, our response is not symmetric. Neverthless, since we have a dependence structure that will still be commented on, we’ll start with a normal distribution. We hope that the dependence structure compensates for this - let’s say, misspecification -, by accommodating a good amount of variability.</p>
+<p>Before talking about the dependence structure,</p>
+<blockquote class="blockquote">
+<p>we still need to state our hypothesis/goals:</p>
+<ul>
+<li>There is a difference between the recipes in terms of the breakage angle of chocolate cakes? If there is, estimate them;</li>
+<li>The same for the baking temperatures;</li>
+<li>And if there is an interaction between recipes and temperatures.</li>
+</ul>
+</blockquote>
+<p>We can’t forget the replications!<br>
+However, there is no practical interest in estimating differences between replications. We only need to accommodate this extra level of variability. The idea is: that maybe there is a dependence between each replication. Maybe the same cooker baked all that cakes following a given recipe in all considered temperatures. So makes sense to believe that bakings from that cooker are similar, dependent, and independent from a different cooker following a different recipe.</p>
+<p>We consider that there is a possible dependence or inter-variance in each replication for each recipe, turning out in 15 replications <span class="math inline">\(\times\)</span> 3 recipes, totalizing 45 different levels. This forms a dependence structure that we do not want to infer about, but need to properly accommodate to not inflame our parameter estimates and mislead our final inferences. In practical terms we just consider an extra normal distribution (of zero mean) with 45 sampled values and what we want is to estimate / predict their standard error.</p>
+<p>The two following figures end the summarization of the data.<br>
+Below we see how the replications vary according to the temperatures in terms of the angles. All this is split by recipes. In red, for each recipe, we have the mean of the replications for each of the temperatures. We see that there is an actual difference between replications but not between recipes. We have a difference between temperatures, but at this point, looking at this figure I’m not confident at the point to state that there is a statistical difference between them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>cake<span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">recipe=</span><span class="fu">paste</span>(<span class="st">'recipe:'</span>, recipe))<span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>    <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>    <span class="fu">aes</span>(<span class="at">x=</span>temperature, <span class="at">y=</span>angle, <span class="at">group=</span>replicate)<span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">unique</span>(cake<span class="sc">$</span>temperature),</span>
+<span id="cb7-6"><a href="#cb7-6"></a>               <span class="at">linetype=</span><span class="st">'dashed'</span>, <span class="at">color=</span><span class="st">'gray'</span>)<span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>    <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>),</span>
+<span id="cb7-9"><a href="#cb7-9"></a>                 <span class="at">fun=</span>mean, <span class="at">geom=</span><span class="st">'line'</span>, <span class="at">color=</span><span class="st">'red'</span>, <span class="at">size=</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> recipe)<span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x=</span><span class="fu">element_text</span>(<span class="at">face=</span><span class="st">'bold'</span>, <span class="at">size=</span><span class="dv">14</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-angle-temperature-by-recipe" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-angle-temperature-by-recipe-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 2: Scatterplot of the breakage angles according to temperatures per recipe and grouped by replications. In red, is the mean.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now we inverted. We look at the angles according to replications and grouped them by temperatures. Again, we don’t see a recipe effect. However, we can see a pattern of dependence between replications and a small effect on temperatures. Generally, as bigger the temperature bigger is the angle. Nevertheless, the biggest angles aren’t obtained with the highest temperatures. If there is a temperature effect, the effect is probably small.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>cake<span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">recipe=</span><span class="fu">paste</span>(<span class="st">'recipe:'</span>, recipe))<span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>    <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="fu">aes</span>(<span class="at">x=</span>replicate, <span class="at">y=</span>angle, <span class="at">group=</span>temperature, <span class="at">color=</span>temperature)<span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>    <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a>    <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group=</span><span class="dv">1</span>), </span>
+<span id="cb8-7"><a href="#cb8-7"></a>                 <span class="at">fun=</span>mean, <span class="at">geom=</span><span class="st">'line'</span>, <span class="at">color=</span><span class="st">'red'</span>, <span class="at">size=</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> recipe)<span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>    <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">'bottom'</span>,</span>
+<span id="cb8-10"><a href="#cb8-10"></a>          <span class="at">strip.text.x   =</span><span class="fu">element_text</span>(<span class="at">face=</span><span class="st">'bold'</span>, <span class="at">size=</span><span class="dv">14</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-angle-replicate-by-recipe-and-temperature" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-angle-replicate-by-recipe-and-temperature-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 3: Scatterplot of the breakage angles according to replications per recipe and grouped by temperatures. In red, is the mean.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The last thing to say here is to point out the fact that this experiment is balanced, all levels have the same number of data points and in total, we’re working with a sample of size 270 - Not huge, but also not small.</p>
+</section>
+<section id="linear-mixed-model" class="level1">
+<h1>Linear Mixed Model</h1>
+<hr>
+<p>We state a linear mixed model, i.e.&nbsp;normal distribution for the response and fixed and random/latent effects on the linear predictor.</p>
+<p>We tried three characteristics as a fixed effect: the recipes; the temperatures; and their interaction. Only the temperatures appeared statistically significant (we performed a standard covariates selection procedure). In the random effect, i.e.&nbsp;to accommodate the extra variance, we used the 45 levels created by the combination of replications and recipes. This final model can be fitted as follows</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>mod <span class="ot">&lt;-</span> lme4<span class="sc">::</span><span class="fu">lmer</span>(angle <span class="sc">~</span> temperature <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> recipe <span class="sc">:</span> replicate), cake)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The temperature was tried numerically and as a factor. All the results were the same, so we chose to work within the final model as a factor, to them be able to compare all the temperatures - since they’re just a few. This model is mathematically written as</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>equatiomatic<span class="sc">::</span><span class="fu">extract_eq</span>(mod,</span>
+<span id="cb10-2"><a href="#cb10-2"></a>                         <span class="at">wrap=</span><span class="cn">TRUE</span>, <span class="at">terms_per_line=</span><span class="dv">1</span>, <span class="at">use_coef=</span><span class="cn">TRUE</span>,</span>
+<span id="cb10-3"><a href="#cb10-3"></a>                         <span class="at">swap_subscript_names=</span><span class="fu">c</span>(<span class="st">'.L'</span><span class="ot">=</span><span class="st">'185'</span>,</span>
+<span id="cb10-4"><a href="#cb10-4"></a>                                                <span class="st">'.Q'</span><span class="ot">=</span><span class="st">'195'</span>,</span>
+<span id="cb10-5"><a href="#cb10-5"></a>                                                <span class="st">'.C'</span><span class="ot">=</span><span class="st">'205'</span>,</span>
+<span id="cb10-6"><a href="#cb10-6"></a>                                                <span class="st">'^4'</span><span class="ot">=</span><span class="st">'215'</span>,</span>
+<span id="cb10-7"><a href="#cb10-7"></a>                                                <span class="st">'^5'</span><span class="ot">=</span><span class="st">'225'</span>),</span>
+<span id="cb10-8"><a href="#cb10-8"></a>                         <span class="at">operator_location=</span><span class="st">'start'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><span class="math display">\[
+\begin{aligned}
+  \operatorname{\widehat{angle}}_{i}  &amp;\sim N \left(\mu, \sigma^2 \right) \\
+    \mu &amp;=32.12_{\alpha_{j[i]}}\\
+&amp;\quad + 6.61_{\beta_{1}}(\operatorname{temperature}_{\operatorname{185}})\\
+&amp;\quad - 0.39_{\beta_{2}}(\operatorname{temperature}_{\operatorname{195}})\\
+&amp;\quad - 0.55_{\beta_{3}}(\operatorname{temperature}_{\operatorname{205}})\\
+&amp;\quad - 1.3_{\beta_{4}}(\operatorname{temperature}_{\operatorname{215}})\\
+&amp;\quad - 0.91_{\beta_{5}}(\operatorname{temperature}_{\operatorname{225}}) \\
+    \alpha_{j}  &amp;\sim N \left(0, 6.35 \right)
+    \text{, for recipe:replicate j = 1,} \dots \text{,J}
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+<p>The estimated parameters are already in the equation.<br>
+We can see how the random effects (replication : recipe) standard deviation is big.</p>
+<section id="quality-of-adjustment" class="level2">
+<h2 class="anchored" data-anchor-id="quality-of-adjustment">Quality-Of-Adjustment</h2>
+<hr>
+<p>Before starting to comment on the results, we check if the fitted model is ok, i.e.&nbsp;if the proposed model fitted well with the data. In the residual plots below we don’t see any critical pattern or behavior that leads us to a bad evaluation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(mod), <span class="fu">resid</span>(mod)) ; <span class="fu">abline</span>(<span class="at">a=</span><span class="dv">0</span>, <span class="at">b=</span><span class="dv">0</span>, <span class="at">lty=</span><span class="dv">2</span>)</span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="fu">qqnorm</span>(<span class="fu">resid</span>(mod)) ; <span class="fu">qqline</span>(<span class="fu">resid</span>(mod))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-lmer-quality-of-adjustment" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-lmer-quality-of-adjustment-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 4: Left: Fitted / predicted values <em>vs.</em> residuals; Right: quantile-quantile plot of the model residuals.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-summary" class="level2">
+<h2 class="anchored" data-anchor-id="model-summary">Model summary</h2>
+<hr>
+<p>Below we have the summary of our model.<br>
+We see that the scaled residuals are well behaved and, mainly, we have the latent effects variance estimates. We have a variance of 40.29 for the 45 levels of replications crossed with recipes. The non-explained variance is 20.48. Thus, our extra structure shows to be correctly necessary and that there is a clear difference between replications and dependence within replication.</p>
+<p>For the rest is better to talk by showing other things.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML ['lmerMod']
+Formula: angle ~ temperature + (1 | recipe:replicate)
+   Data: cake
+
+REML criterion at convergence: 1683.1
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.49523 -0.63378 -0.09213  0.55451  2.84177 
+
+Random effects:
+ Groups           Name        Variance Std.Dev.
+ recipe:replicate (Intercept) 40.29    6.348   
+ Residual                     20.48    4.525   
+Number of obs: 270, groups:  recipe:replicate, 45
+
+Fixed effects:
+              Estimate Std. Error t value
+(Intercept)    32.1222     0.9855  32.595
+temperature.L   6.6109     0.6746   9.800
+temperature.Q  -0.3855     0.6746  -0.572
+temperature.C  -0.5483     0.6746  -0.813
+temperature^4  -1.2977     0.6746  -1.924
+temperature^5  -0.9141     0.6746  -1.355
+
+Correlation of Fixed Effects:
+            (Intr) tmpr.L tmpr.Q tmpr.C tmpr^4
+temperatr.L 0.000                             
+temperatr.Q 0.000  0.000                      
+temperatr.C 0.000  0.000  0.000               
+temperatr^4 0.000  0.000  0.000  0.000        
+temperatr^5 0.000  0.000  0.000  0.000  0.000 </code></pre>
+</div>
+</div>
+<p>To start talking about the temperature findings, let’s start by computing the analysis of variance (ANOVA). We see that there is a strong difference between them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table (Type II Wald chisquare tests)
+
+Response: angle
+             Chisq Df Pr(&gt;Chisq)    
+temperature 102.57  5  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>We can compute all the marginal means of our response, breakage angle of chocolate cakes, for each temperature and even for each of the levels of the latent effect - even not being our interest to infer on that, just accommodate it.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>(mm <span class="ot">&lt;-</span> marginaleffects<span class="sc">::</span><span class="fu">marginalmeans</span>(mod))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          term value marginalmean std.error conf.low conf.high
+1       recipe     A     33.04413 0.9854924 31.11260  34.97566
+2       recipe     B     31.68175 0.9854924 29.75022  33.61328
+3       recipe     C     31.64078 0.9854924 29.70925  33.57231
+4    replicate     1     45.68456 0.9854924 43.75303  47.61609
+5    replicate     2     44.50656 0.9854924 42.57503  46.43809
+6    replicate     3     36.56788 0.9854924 34.63635  38.49941
+7    replicate     4     33.18754 0.9854924 31.25601  35.11907
+8    replicate     5     32.36807 0.9854924 30.43654  34.29959
+9    replicate     6     28.98772 0.9854924 27.05619  30.91925
+10   replicate     7     27.70729 0.9854924 25.77576  29.63882
+11   replicate     8     27.75851 0.9854924 25.82698  29.69004
+12   replicate     9     27.70729 0.9854924 25.77576  29.63882
+13   replicate    10     29.09016 0.9854924 27.15863  31.02169
+14   replicate    11     30.06329 0.9854924 28.13176  31.99482
+15   replicate    12     31.03642 0.9854924 29.10489  32.96795
+16   replicate    13     31.90711 0.9854924 29.97558  33.83864
+17   replicate    14     28.21946 0.9854924 26.28794  30.15099
+18   replicate    15     27.04147 0.9854924 25.10994  28.97300
+19 temperature   175     27.97778 1.1620640 25.70017  30.25538
+20 temperature   185     29.95556 1.1620640 27.67795  32.23316
+21 temperature   195     31.42222 1.1620640 29.14462  33.69983
+22 temperature   205     32.17778 1.1620640 29.90017  34.45538
+23 temperature   215     35.84444 1.1620640 33.56684  38.12205
+24 temperature   225     35.35556 1.1620640 33.07795  37.63316</code></pre>
+</div>
+</div>
+<p>Still, is better to look at all that graphically.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>mm<span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>    <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a>    <span class="fu">aes</span>(<span class="at">x=</span>marginalmean, <span class="at">y=</span>value, <span class="at">xmin=</span>conf.low, <span class="at">xmax=</span>conf.high)<span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a>    <span class="fu">geom_pointrange</span>(<span class="at">shape=</span><span class="dv">21</span>)<span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> term, <span class="at">scales=</span><span class="st">'free'</span>)<span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a>    <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x=</span><span class="fu">element_text</span>(<span class="at">face=</span><span class="st">'bold'</span>, <span class="at">size=</span><span class="dv">14</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-marginalmeans" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-marginalmeans-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 5: Marginal means with a 95% confidence interval for all recipes, replications and temperatures.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Above, we see how there is no practical difference between recipes; how the two first replications are bigger than the others; <strong>and how the breakage angle increase as the temperature increases, but reaches a plateau or maximum point at 215</strong>.</p>
+<p>Besides computing the mean breakage angle for each temperature, we can compute and test for the significance of all pairwise differences (here, contrasts).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>(comp.temp <span class="ot">&lt;-</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>     marginaleffects<span class="sc">::</span><span class="fu">comparisons</span>(</span>
+<span id="cb19-3"><a href="#cb19-3"></a>                          mod,</span>
+<span id="cb19-4"><a href="#cb19-4"></a>                          <span class="at">variables=</span><span class="fu">list</span>(<span class="at">temperature=</span><span class="st">'pairwise'</span>)</span>
+<span id="cb19-5"><a href="#cb19-5"></a>                      )<span class="sc">|&gt;</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a>     broom<span class="sc">::</span><span class="fu">tidy</span>()<span class="sc">|&gt;</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a>     dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(type, term, std.error))<span class="sc">|&gt;</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a>     dplyr<span class="sc">::</span><span class="fu">relocate</span>(conf.low , <span class="at">.after=</span>estimate)<span class="sc">|&gt;</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a>     dplyr<span class="sc">::</span><span class="fu">relocate</span>(conf.high, <span class="at">.after=</span>conf.low)</span>
+<span id="cb19-10"><a href="#cb19-10"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    contrast   estimate   conf.low conf.high  statistic      p.value
+1  185 - 175  1.9777778  0.1080152  3.847540  2.0731901 3.815459e-02
+2  195 - 175  3.4444444  1.5746819  5.314207  3.6106119 3.054754e-04
+3  205 - 175  4.2000000  2.3302374  6.069763  4.4026171 1.069528e-05
+4  215 - 175  7.8666667  5.9969041  9.736429  8.2461718 2.220446e-16
+5  225 - 175  7.3777778  5.5080152  9.247540  7.7336978 1.043610e-14
+6  195 - 185  1.4666667 -0.4030959  3.336429  1.5374219 1.241900e-01
+7  205 - 185  2.2222222  0.3524597  4.091985  2.3294271 1.983645e-02
+8  215 - 185  5.8888889  4.0191263  7.758651  6.1729817 6.701397e-10
+9  225 - 185  5.4000000  3.5302374  7.269763  5.6605078 1.509258e-08
+10 205 - 195  0.7555556 -1.1142070  2.625318  0.7920052 4.283576e-01
+11 215 - 195  4.4222222  2.5524597  6.291985  4.6355598 3.559727e-06
+12 225 - 195  3.9333333  2.0635708  5.803096  4.1230859 3.738302e-05
+13 215 - 205  3.6666667  1.7969041  5.536429  3.8435546 1.212650e-04
+14 225 - 205  3.1777778  1.3080152  5.047540  3.3310807 8.650952e-04
+15 225 - 215 -0.4888889 -2.3586515  1.380874 -0.5124740 6.083193e-01</code></pre>
+</div>
+</div>
+<p>The same contrasts are seen below graphically, where is simpler to see which differences are not statistically significant. Almost all differences in breakage angles between baking temperates are statistically significant. Just three aren’t - the ones in which the 95% confidence interval reaches the value 0.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>comp.temp<span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>    <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>    <span class="fu">aes</span>(<span class="at">x=</span>estimate, <span class="at">y=</span>contrast, <span class="at">xmin=</span>conf.low, <span class="at">xmax=</span>conf.high)<span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>    <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="dv">10</span>, <span class="at">by=</span><span class="fl">1.25</span>))<span class="sc">+</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="dv">10</span>, <span class="at">by=</span><span class="fl">1.25</span>),</span>
+<span id="cb21-7"><a href="#cb21-7"></a>               <span class="at">linetype=</span><span class="st">'dashed'</span>, <span class="at">color=</span><span class="st">'gray'</span>)<span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="dv">0</span>, <span class="at">linetype=</span><span class="st">'dashed'</span>, <span class="at">color=</span><span class="st">'red'</span>)<span class="sc">+</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a>    <span class="fu">geom_pointrange</span>(<span class="at">shape=</span><span class="dv">21</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-comparisons-temperature" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-comparisons-temperature-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 6: Estimated differences (contrasts) between temperatures with respective 95% confidence intervals.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="random-effects" class="level2">
+<h2 class="anchored" data-anchor-id="random-effects">Random effects</h2>
+<hr>
+<p>Here we look at the 45 estimated / predicted latent effects. They vary considerably</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>ranef.mod <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">as_tibble</span>(<span class="fu">ranef</span>(mod))<span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(grpvar, term))<span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb22-4"><a href="#cb22-4"></a>               <span class="at">recipe     =</span><span class="fu">gsub</span>(<span class="st">':.*$'</span>, <span class="st">''</span>, grp, <span class="at">perl=</span><span class="cn">TRUE</span>),</span>
+<span id="cb22-5"><a href="#cb22-5"></a>               <span class="at">replication=</span><span class="fu">factor</span>(<span class="fu">gsub</span>(<span class="st">'^.:'</span>, <span class="st">''</span>, grp), <span class="at">levels=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>)</span>
+<span id="cb22-6"><a href="#cb22-6"></a>           )</span>
+<span id="cb22-7"><a href="#cb22-7"></a><span class="fu">summary</span>(ranef.mod<span class="sc">$</span>condval)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -7.642  -3.800  -2.264   0.000   1.731  15.253 </code></pre>
+</div>
+</div>
+<p>We can also see splitting by recipe</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>ranef.mod<span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(recipe)<span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean  =</span>  <span class="fu">mean</span>(condval),</span>
+<span id="cb24-4"><a href="#cb24-4"></a>                     <span class="at">sd    =</span>    <span class="fu">sd</span>(condval),</span>
+<span id="cb24-5"><a href="#cb24-5"></a>                     <span class="at">median=</span><span class="fu">median</span>(condval))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  recipe   mean    sd median
+  &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+1 A       0.922  5.08 -0.881
+2 B      -0.440  6.46 -2.57 
+3 C      -0.481  6.92 -2.26 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>p1 <span class="ot">&lt;-</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>    ranef.mod<span class="sc">|&gt;</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">recipe=</span><span class="fu">paste</span>(<span class="st">'recipe:'</span>, recipe))<span class="sc">|&gt;</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>    <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a>    <span class="fu">aes</span>(<span class="at">x=</span>replication, <span class="at">y=</span>condval)<span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>    <span class="fu">geom_line</span>(<span class="at">group=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> recipe)<span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x=</span><span class="fu">element_text</span>(<span class="at">face=</span><span class="st">'bold'</span>, <span class="at">size=</span><span class="dv">14</span>))</span>
+<span id="cb26-9"><a href="#cb26-9"></a>p2 <span class="ot">&lt;-</span></span>
+<span id="cb26-10"><a href="#cb26-10"></a>    ranef.mod<span class="sc">|&gt;</span></span>
+<span id="cb26-11"><a href="#cb26-11"></a>    <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb26-12"><a href="#cb26-12"></a>    <span class="fu">aes</span>(<span class="at">x=</span>replication, <span class="at">y=</span>condval, <span class="at">group=</span>recipe, <span class="at">color=</span>recipe)<span class="sc">+</span></span>
+<span id="cb26-13"><a href="#cb26-13"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept=</span><span class="fu">unique</span>(cake<span class="sc">$</span>replicate),</span>
+<span id="cb26-14"><a href="#cb26-14"></a>               <span class="at">linetype=</span><span class="st">'dashed'</span>, <span class="at">color=</span><span class="st">'gray'</span>)<span class="sc">+</span></span>
+<span id="cb26-15"><a href="#cb26-15"></a>    <span class="fu">geom_line</span>(<span class="at">size=</span><span class="dv">1</span>)<span class="sc">+</span></span>
+<span id="cb26-16"><a href="#cb26-16"></a>    <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">'bottom'</span>)</span>
+<span id="cb26-17"><a href="#cb26-17"></a>p1 <span class="sc">/</span> p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-condval-replication-by-recipe" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-condval-replication-by-recipe-1.png" class="img-fluid figure-img" width="960"></p>
+<p></p><figcaption class="figure-caption">Figure 7: Scatterplot of the predicted random effects according to replications per recipe.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We have already looked at the estimated breakage angle means per replications and recipes. Here, to see which levels appear to have a bigger variance, we look at the predicted random effects. Again, no considerable differences between recipes and bigger values for the first replications. It’s as if the first replications were used / necessary to practice. <strong>Very interesting</strong>.</p>
+</section>
+</section>
+<section id="final-remarks" class="level1">
+<h1>Final remarks</h1>
+<hr>
+<blockquote class="blockquote">
+<p>There is</p>
+<ul>
+<li><p>no statistically significant difference between recipes in terms of the breakage angle of chocolate cakes;</p></li>
+<li><p>no statistically significant interaction between recipes and baking temperatures in terms of the breakage angle of chocolate cakes;</p></li>
+<li><p>a statistically significant difference between baking temperatures in terms of the breakage angle of chocolate cakes;</p></li>
+<li><p>a non-negligible difference between recipe replications, i.e.&nbsp;the replications don’t present an equal and all random variance. The data asks for a model with a dependence / latent-effects structure.</p></li>
+</ul>
+</blockquote>
+<p>About the replicate numbering representing temporal ordering, we also addressed this point.</p>
+<p>Basically, instead of considering the replication as a factor, we consider it as numeric in the model latent effects. Let’s say that we called the numeric representation of the replication as <code>rep</code>, to correctly accommodate this new dependence structure we just need to enter the latent structure as</p>
+<pre><code>(rep | recipe)</code></pre>
+<p>into the {<code>lme4::lmer()</code>} model specification.</p>
+<p>We did it and basically: the fixed effects inferences don’t change and the model fitting presents some numerical instability and problems of convergence. All issues that we didn’t have dealt with the replication as a factor.</p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<hr>
+<blockquote class="blockquote">
+<p>The analysis was performed with the R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span> language and environment for statistical computing. The following R packages were used: {lme4} <span class="citation" data-cites="lme4">(<a href="#ref-lme4" role="doc-biblioref">Bates et al. 2015</a>)</span>, {car} <span class="citation" data-cites="car19">(<a href="#ref-car19" role="doc-biblioref">Fox and Weisberg 2019</a>)</span>, {tibble} <span class="citation" data-cites="tibble3.1.7">(<a href="#ref-tibble3.1.7" role="doc-biblioref">Müller and Wickham 2022</a>)</span>, {dplyr} <span class="citation" data-cites="dplyr1.0.9">(<a href="#ref-dplyr1.0.9" role="doc-biblioref">Wickham et al. 2022</a>)</span>, {ggplot2} <span class="citation" data-cites="ggplot2.16">(<a href="#ref-ggplot2.16" role="doc-biblioref">Wickham 2016</a>)</span>, {marginaleffects} <span class="citation" data-cites="marginaleffects0.5.0">(<a href="#ref-marginaleffects0.5.0" role="doc-biblioref">Arel-Bundock 2022</a>)</span>, {broom} <span class="citation" data-cites="broom0.8.0">(<a href="#ref-broom0.8.0" role="doc-biblioref">Robinson, Hayes, and Couch 2022</a>)</span>, {equatiomatic} <span class="citation" data-cites="equatiomatic0.3.1">(<a href="#ref-equatiomatic0.3.1" role="doc-biblioref">Anderson, Heiss, and Sumners 2022</a>)</span> and {patchwork} <span class="citation" data-cites="patchwork1.1.1">(<a href="#ref-patchwork1.1.1" role="doc-biblioref">Pedersen 2020</a>)</span>.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-equatiomatic0.3.1" class="csl-entry" role="doc-biblioentry">
+Anderson, Daniel, Andrew Heiss, and Jay Sumners. 2022. <em><span class="nocase">equatiomatic</span>: Transform Models into ’LaTeX’ Equations</em>. R package version 0.3.1. <a href="https://CRAN.R-project.org/package=equatiomatic">https://CRAN.R-project.org/package=equatiomatic</a>.
+</div>
+<div id="ref-marginaleffects0.5.0" class="csl-entry" role="doc-biblioentry">
+Arel-Bundock, Vincent. 2022. <em><span class="nocase">marginaleffects</span>: Marginal Effects, Marginal Means, Predictions, and Contrasts</em>. R package version 0.5.0. <a href="https://CRAN.R-project.org/package=marginaleffects">https://CRAN.R-project.org/package=marginaleffects</a>.
+</div>
+<div id="ref-lme4" class="csl-entry" role="doc-biblioentry">
+Bates, Douglas, Martin Mächler, Ben Bolker, and Steve Walker. 2015. <span>“Fitting Linear Mixed-Effects Models Using <span class="nocase">lme4</span>.”</span> <em>Journal of Statistical Software</em> 67 (1): 1–48. <a href="https://doi.org/10.18637/jss.v067.i01">https://doi.org/10.18637/jss.v067.i01</a>.
+</div>
+<div id="ref-car19" class="csl-entry" role="doc-biblioentry">
+Fox, John, and Sanford Weisberg. 2019. <em>An <span>R</span> Companion to Applied Regression</em>. Third Edition. Thousand Oaks <span>CA</span>: Sage. <a href="https://socialsciences.mcmaster.ca/jfox/Books/Companion/">https://socialsciences.mcmaster.ca/jfox/Books/Companion/</a>.
+</div>
+<div id="ref-tibble3.1.7" class="csl-entry" role="doc-biblioentry">
+Müller, Kirill, and Hadley Wickham. 2022. <em><span class="nocase">tible</span>: Simple Data Frames</em>. R package version 3.1.7. <a href="https://CRAN.R-project.org/package=tibble">https://CRAN.R-project.org/package=tibble</a>.
+</div>
+<div id="ref-patchwork1.1.1" class="csl-entry" role="doc-biblioentry">
+Pedersen, Thomas Lin. 2020. <em><span class="nocase">patchwork</span>: The Composer of Plots</em>. R package version 1.1.1. <a href="https://CRAN.R-project.org/package=patchwork">https://CRAN.R-project.org/package=patchwork</a>.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-broom0.8.0" class="csl-entry" role="doc-biblioentry">
+Robinson, David, Alex Hayes, and Simon Couch. 2022. <em><span class="nocase">broom</span>: Convert Statistical Objects into Tidy Tibbles</em>. R package version 0.8.0. <a href="https://CRAN.R-project.org/package=broom">https://CRAN.R-project.org/package=broom</a>.
+</div>
+<div id="ref-ggplot2.16" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York. ISBN 978-3-319-24277-4. <a href="https://ggplot2.tidyverse.org">https://ggplot2.tidyverse.org</a>.
+</div>
+<div id="ref-dplyr1.0.9" class="csl-entry" role="doc-biblioentry">
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2022. <em><span class="nocase">dplyr</span>: A Grammar of Data Manipulation</em>. R package version 1.0.9. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

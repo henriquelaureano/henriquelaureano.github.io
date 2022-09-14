@@ -1,0 +1,465 @@
+---
+title: "data(cake, package='lme4')"
+bibliography: /home/laureano/Git/consu/references.bib
+format:
+  html:
+    toc: true
+    toc-fold: true
+    echo: true
+    code-line-numbers: true
+    fig-width: 10
+---
+
+> [Henrique Laureano](https://henriquelaureano.github.io/)
+
+*Last modification on* `r Sys.time()`
+
+```{r}
+#| include: false
+
+## setwd('stuff/cake/')
+
+```
+
+***
+
+```{r}
+#| label: pkgs
+
+if (!requireNamespace('pacman', quietly=TRUE))
+    install.packages('pacman')
+pacman::p_load(lme4, car, ggplot2, tibble, dplyr, marginaleffects,
+               broom, equatiomatic, patchwork)
+theme_set(theme_classic(base_size=14))
+
+```
+
+# Data
+
+***
+
+The data is described in `?cake` as
+
+```
+Data on the breakage angle of chocolate cakes made with three different
+recipes and baked at six different temperatures.
+```
+
+An interesting note
+
+```
+The experimental notes suggest that the replicate numbering represents
+temporal ordering.
+```
+
+is approached at the end.
+
+Looking at the data
+
+```{r}
+#| label: data
+
+data(cake, package='lme4')
+summary(cake)
+
+```
+
+We see that the baking temperatures are provided in two forms,
+numerically and as a factor. Below we have a histogram of the breakage
+angle to see if it is ok to assume a normal distribution to our model -
+the easiest / simplest one in terms of the estimation procedure.
+
+```{r}
+#| label: fig-angle-hist
+#| fig-width: 5
+#| fig-height: 4.5
+#| fig-cap: Breakage angle of chocolate cakes (our response variable)
+#|          histogram.
+
+hist(cake$angle)
+
+```
+
+Well, our response is not symmetric. Neverthless, since we have a
+dependence structure that will still be commented on, we'll start with a
+normal distribution. We hope that the dependence structure compensates
+for this - let's say, misspecification -, by accommodating a good amount
+of variability.
+
+Before talking about the dependence structure,
+
+> we still need to state our hypothesis/goals:
+>
+> - There is a difference between the recipes in terms of the breakage
+>   angle of chocolate cakes? If there is, estimate them;
+> - The same for the baking temperatures;
+> - And if there is an interaction between recipes and temperatures.
+
+We can't forget the replications!\
+However, there is no practical interest in estimating differences
+between replications. We only need to accommodate this extra level of
+variability. The idea is: that maybe there is a dependence between each
+replication. Maybe the same cooker baked all that cakes following a
+given recipe in all considered temperatures. So makes sense to believe
+that bakings from that cooker are similar, dependent, and independent
+from a different cooker following a different recipe.
+
+We consider that there is a possible dependence or inter-variance in
+each replication for each recipe, turning out in 15 replications
+$\times$ 3 recipes, totalizing 45 different levels. This forms a
+dependence structure that we do not want to infer about, but need to
+properly accommodate to not inflame our parameter estimates and mislead
+our final inferences. In practical terms we just consider an extra
+normal distribution (of zero mean) with 45 sampled values and what we
+want is to estimate / predict their standard error.
+
+The two following figures end the summarization of the data.\
+Below we see how the replications vary according to the temperatures in
+terms of the angles. All this is split by recipes. In red, for each
+recipe, we have the mean of the replications for each of the
+temperatures. We see that there is an actual difference between
+replications but not between recipes. We have a difference between
+temperatures, but at this point, looking at this figure I'm not
+confident at the point to state that there is a statistical difference
+between them.
+
+```{r}
+#| label: fig-angle-temperature-by-recipe
+#| fig-height: 3.5
+#| fig-cap: 'Scatterplot of the breakage angles according to
+#|          temperatures per recipe and grouped by replications.
+#|          In red, is the mean.'
+
+cake|>
+    dplyr::mutate(recipe=paste('recipe:', recipe))|>
+    ggplot()+
+    aes(x=temperature, y=angle, group=replicate)+
+    geom_vline(xintercept=unique(cake$temperature),
+               linetype='dashed', color='gray')+
+    geom_line()+
+    stat_summary(aes(group=1),
+                 fun=mean, geom='line', color='red', size=1)+
+    facet_wrap(~ recipe)+
+    theme(strip.text.x=element_text(face='bold', size=14))
+
+```
+
+Now we inverted. We look at the angles according to replications and
+grouped them by temperatures. Again, we don't see a recipe
+effect. However, we can see a pattern of dependence between replications
+and a small effect on temperatures. Generally, as bigger the temperature
+bigger is the angle. Nevertheless, the biggest angles aren't obtained
+with the highest temperatures. If there is a temperature effect, the
+effect is probably small.
+
+```{r}
+#| label: fig-angle-replicate-by-recipe-and-temperature
+#| fig-height: 4.5
+#| fig-cap: 'Scatterplot of the breakage angles according to
+#|          replications per recipe and grouped by temperatures.
+#|          In red, is the mean.'
+
+cake|>
+    dplyr::mutate(recipe=paste('recipe:', recipe))|>
+    ggplot()+
+    aes(x=replicate, y=angle, group=temperature, color=temperature)+
+    geom_line()+
+    stat_summary(aes(group=1), 
+                 fun=mean, geom='line', color='red', size=1)+
+    facet_wrap(~ recipe)+
+    theme(legend.position='bottom',
+          strip.text.x   =element_text(face='bold', size=14))
+
+```
+
+The last thing to say here is to point out the fact that this experiment
+is balanced, all levels have the same number of data points and in
+total, we're working with a sample of size 270 - Not huge, but also not
+small.
+
+# Linear Mixed Model
+
+***
+
+We state a linear mixed model, i.e. normal distribution for the response
+and fixed and random/latent effects on the linear predictor.
+
+We tried three characteristics as a fixed effect: the recipes; the
+temperatures; and their interaction. Only the temperatures appeared
+statistically significant (we performed a standard covariates selection
+procedure). In the random effect, i.e. to accommodate the extra
+variance, we used the 45 levels created by the combination of
+replications and recipes. This final model can be fitted as follows
+
+```{r}
+
+mod <- lme4::lmer(angle ~ temperature + (1 | recipe : replicate), cake)
+
+```
+
+The temperature was tried numerically and as a factor. All the results
+were the same, so we chose to work within the final model as a factor,
+to them be able to compare all the temperatures - since they're just a
+few. This model is mathematically written as
+
+```{r}
+
+equatiomatic::extract_eq(mod,
+                         wrap=TRUE, terms_per_line=1, use_coef=TRUE,
+                         swap_subscript_names=c('.L'='185',
+                                                '.Q'='195',
+                                                '.C'='205',
+                                                '^4'='215',
+                                                '^5'='225'),
+                         operator_location='start')
+
+```
+
+The estimated parameters are already in the equation.\
+We can see how the random effects (replication : recipe) standard
+deviation is big.
+
+## Quality-Of-Adjustment
+
+***
+
+Before starting to comment on the results, we check if the fitted model
+is ok, i.e. if the proposed model fitted well with the data. In the
+residual plots below we don't see any critical pattern or behavior that
+leads us to a bad evaluation.
+
+```{r}
+#| label: fig-lmer-quality-of-adjustment
+#| fig-height: 5
+#| fig-cap: 'Left: Fitted / predicted values *vs.* residuals; Right:
+#|          quantile-quantile plot of the model residuals.'
+
+par(mfrow=c(1, 2))
+plot(fitted(mod), resid(mod)) ; abline(a=0, b=0, lty=2)
+qqnorm(resid(mod)) ; qqline(resid(mod))
+
+```
+
+## Model summary
+
+***
+
+Below we have the summary of our model.\
+We see that the scaled residuals are well behaved and, mainly, we have
+the latent effects variance estimates. We have a variance of 40.29 for
+the 45 levels of replications crossed with recipes. The non-explained
+variance is 20.48. Thus, our extra structure shows to be correctly
+necessary and that there is a clear difference between replications and
+dependence within replication.
+
+For the rest is better to talk by showing other things.
+
+```{r}
+
+summary(mod)
+
+```
+
+To start talking about the temperature findings, let's start by
+computing the analysis of variance (ANOVA). We see that there is a
+strong difference between them.
+
+```{r}
+
+car::Anova(mod)
+
+```
+
+We can compute all the marginal means of our response, breakage angle of
+chocolate cakes, for each temperature and even for each of the levels of
+the latent effect - even not being our interest to infer on that, just
+accommodate it.
+
+```{r}
+
+(mm <- marginaleffects::marginalmeans(mod))
+
+```
+
+Still, is better to look at all that graphically.
+
+```{r}
+#| label: fig-marginalmeans
+#| fig-height: 4.25
+#| fig-cap: Marginal means with a 95% confidence interval for all
+#|          recipes, replications and temperatures.
+
+mm|>
+    ggplot()+
+    aes(x=marginalmean, y=value, xmin=conf.low, xmax=conf.high)+
+    geom_pointrange(shape=21)+
+    facet_wrap(~ term, scales='free')+
+    labs(x=NULL, y=NULL)+
+    theme(strip.text.x=element_text(face='bold', size=14))
+
+```
+
+Above, we see how there is no practical difference between recipes; how
+the two first replications are bigger than the others; **and how the
+breakage angle increase as the temperature increases, but reaches a
+plateau or maximum point at 215**.
+
+Besides computing the mean breakage angle for each temperature, we can
+compute and test for the significance of all pairwise differences (here,
+contrasts).
+
+```{r}
+
+(comp.temp <-
+     marginaleffects::comparisons(
+                          mod,
+                          variables=list(temperature='pairwise')
+                      )|>
+     broom::tidy()|>
+     dplyr::select(!c(type, term, std.error))|>
+     dplyr::relocate(conf.low , .after=estimate)|>
+     dplyr::relocate(conf.high, .after=conf.low)
+)
+
+```
+
+The same contrasts are seen below graphically, where is simpler to see
+which differences are not statistically significant. Almost all
+differences in breakage angles between baking temperates are
+statistically significant. Just three aren't - the ones in which the 95%
+confidence interval reaches the value 0.
+
+```{r}
+#| label: fig-comparisons-temperature
+#| fig-height: 4.5
+#| fig-cap: Estimated differences (contrasts) between temperatures
+#|          with respective 95% confidence intervals.
+
+comp.temp|>
+    ggplot()+
+    aes(x=estimate, y=contrast, xmin=conf.low, xmax=conf.high)+
+    labs(x=NULL, y=NULL)+
+    scale_x_continuous(breaks=seq(-2.5, 10, by=1.25))+
+    geom_vline(xintercept=seq(-2.5, 10, by=1.25),
+               linetype='dashed', color='gray')+
+    geom_vline(xintercept=0, linetype='dashed', color='red')+
+    geom_pointrange(shape=21)
+
+```
+
+## Random effects
+
+***
+
+Here we look at the 45 estimated / predicted latent effects. They vary
+considerably
+
+```{r}
+
+ranef.mod <- tibble::as_tibble(ranef(mod))|>
+    dplyr::select(!c(grpvar, term))|>
+    dplyr::mutate(
+               recipe     =gsub(':.*$', '', grp, perl=TRUE),
+               replication=factor(gsub('^.:', '', grp), levels=1:15)
+           )
+summary(ranef.mod$condval)
+
+```
+
+We can also see splitting by recipe
+
+```{r}
+
+ranef.mod|>
+    dplyr::group_by(recipe)|>
+    dplyr::summarise(mean  =  mean(condval),
+                     sd    =    sd(condval),
+                     median=median(condval))
+
+```
+
+```{r}
+#| label: fig-condval-replication-by-recipe
+#| fig-height: 6.5
+#| fig-cap: Scatterplot of the predicted random effects according to
+#|          replications per recipe.
+
+p1 <-
+    ranef.mod|>
+    dplyr::mutate(recipe=paste('recipe:', recipe))|>
+    ggplot()+
+    aes(x=replication, y=condval)+
+    geom_line(group=1, size=1)+
+    facet_wrap(~ recipe)+
+    theme(strip.text.x=element_text(face='bold', size=14))
+p2 <-
+    ranef.mod|>
+    ggplot()+
+    aes(x=replication, y=condval, group=recipe, color=recipe)+
+    geom_vline(xintercept=unique(cake$replicate),
+               linetype='dashed', color='gray')+
+    geom_line(size=1)+
+    theme(legend.position='bottom')
+p1 / p2
+
+```
+
+We have already looked at the estimated breakage angle means per
+replications and recipes. Here, to see which levels appear to have a
+bigger variance, we look at the predicted random effects. Again, no
+considerable differences between recipes and bigger values for the first
+replications. It's as if the first replications were used / necessary to
+practice. **Very interesting**.
+
+# Final remarks
+
+***
+
+> There is
+>
+> - no statistically significant difference between recipes in terms of
+>   the breakage angle of chocolate cakes;
+>
+> - no statistically significant interaction between recipes and baking
+>   temperatures in terms of the breakage angle of chocolate cakes;
+>
+> - a statistically significant difference between baking temperatures
+>   in terms of the breakage angle of chocolate cakes;
+>
+> - a non-negligible difference between recipe replications, i.e. the
+>   replications don't present an equal and all random variance. The
+>   data asks for a model with a dependence / latent-effects structure.
+
+About the replicate numbering representing temporal ordering, we also
+addressed this point.
+
+Basically, instead of considering the replication as a factor, we
+consider it as numeric in the model latent effects. Let's say that we
+called the numeric representation of the replication as `rep`, to
+correctly accommodate this new dependence structure we just need to
+enter the latent structure as
+
+```
+(rep | recipe)
+```
+
+into the {`lme4::lmer()`} model specification.
+
+We did it and basically: the fixed effects inferences don't change and
+the model fitting presents some numerical instability and problems of
+convergence. All issues that we didn't have dealt with the replication
+as a factor.
+
+# References
+
+***
+
+> The analysis was performed with the R [@R22] language and environment
+> for statistical computing. The following R packages were used: {lme4}
+> [@lme4], {car} [@car19], {tibble} [@tibble3.1.7], {dplyr}
+> [@dplyr1.0.9], {ggplot2} [@ggplot2.16], {marginaleffects}
+> [@marginaleffects0.5.0], {broom} [@broom0.8.0], {equatiomatic}
+> [@equatiomatic0.3.1] and {patchwork} [@patchwork1.1.1].
+
+::: {#refs}
+:::
