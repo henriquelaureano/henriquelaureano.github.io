@@ -172,3 +172,6 @@
 <img src='wutangclan.jpg'>
 <img src='train.jpg'>
 <img src='future3.jpg'>
+<img src='nicelivingroom1.jpg'>
+<img src='nicelivingroom2.jpg'>
+<img src='houseoutside.jpg'>
