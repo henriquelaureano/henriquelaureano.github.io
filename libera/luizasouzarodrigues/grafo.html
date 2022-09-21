@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Grafo: dados de microssatélite de isolados de C. parapsilosis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="grafo_files/libs/clipboard/clipboard.min.js"></script>
+<script src="grafo_files/libs/quarto-html/quarto.js"></script>
+<script src="grafo_files/libs/quarto-html/popper.min.js"></script>
+<script src="grafo_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="grafo_files/libs/quarto-html/anchor.min.js"></script>
+<link href="grafo_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="grafo_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="grafo_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="grafo_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="grafo_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#dendrograma" id="toc-dendrograma" class="nav-link active" data-scroll-target="#dendrograma">Dendrograma</a></li>
+  <li><a href="#grafos" id="toc-grafos" class="nav-link" data-scroll-target="#grafos">Grafos</a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Grafo: dados de microssatélite de isolados de <em>C. parapsilosis</em></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<blockquote class="blockquote">
+<p>Luiza Souza Rodrigues e <a href="https://henriquelaureano.github.io/">Henrique Laureano</a></p>
+</blockquote>
+<p><em>Last modification on</em> 2022-09-21 10:04:46</p>
+<hr>
+<div class="cell">
+
+</div>
+<section id="dendrograma" class="level1">
+<h1>Dendrograma</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="grafo_files/figure-html/clustering-tree-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="grafos" class="level1">
+<h1>Grafos</h1>
+<hr>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="grafo_files/figure-html/graphs-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="referências" class="level1">
+<h1>Referências</h1>
+<hr>
+<blockquote class="blockquote">
+<p>A análise estatística foi realizada no ambiente de computação estatística R <span class="citation" data-cites="R22">(<a href="#ref-R22" role="doc-biblioref">R Core Team 2022</a>)</span>. Os principais pacotes <code>R</code> utilizados foram o {<code>cluster</code>} <span class="citation" data-cites="cluster2.1.3">(<a href="#ref-cluster2.1.3" role="doc-biblioref">Maechler et al. 2022</a>)</span> e o {<code>ggraph</code>} <span class="citation" data-cites="ggraph2.0.6">(<a href="#ref-ggraph2.0.6" role="doc-biblioref">Pedersen 2022</a>)</span>.</p>
+<p>Para clusterização utilizamos a rotina <code>agnes</code> (Agglomerative Nesting - Hierarchical Clustering), baseada numa generalização do algoritmo UPGMA <span class="citation" data-cites="kaufman&amp;rousseeuw belbinetal struyfetal">(<a href="#ref-kaufman&amp;rousseeuw" role="doc-biblioref">Kaufman and Rousseeuw 1990</a>; <a href="#ref-belbinetal" role="doc-biblioref">Belbin, Faith, and Milligan 1992</a>; <a href="#ref-struyfetal" role="doc-biblioref">Struyf, Hubert, and Rousseeuw 1997</a>)</span>.</p>
+</blockquote>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-belbinetal" class="csl-entry" role="doc-biblioentry">
+Belbin, L., D. P. Faith, and G. W. Milligan. 1992. <span>“<a href="">A Comparison of Two Approaches to Beta-Flexible Clustering</a>.”</span> <em>Multivariate Behavioral Research</em> 9: 373–80.
+</div>
+<div id="ref-kaufman&amp;rousseeuw" class="csl-entry" role="doc-biblioentry">
+Kaufman, L., and P. J. Rousseeuw. 1990. <em><a href="">Finding Groups in Data: An Introduction to Cluster Analysis</a></em>. Wiley, New York.
+</div>
+<div id="ref-cluster2.1.3" class="csl-entry" role="doc-biblioentry">
+Maechler, Martin, Peter Rousseeuw, Anja Struyf, Mia Hubert, and Kurt Hornik. 2022. <em><span class="nocase">cluster</span>: Cluster Analysis Basics and Extensions</em>. R package version 2.1.3. <a href="https://CRAN.R-project.org/package=cluster">https://CRAN.R-project.org/package=cluster</a>.
+</div>
+<div id="ref-ggraph2.0.6" class="csl-entry" role="doc-biblioentry">
+Pedersen, Thomas Lin. 2022. <em><span class="nocase">ggraph</span>: An Implementation of Grammar of Graphics for Graphs and Networks</em>. R package version 2.0.6. <a href="https://CRAN.R-project.org/package=ggraph">https://CRAN.R-project.org/package=ggraph</a>.
+</div>
+<div id="ref-R22" class="csl-entry" role="doc-biblioentry">
+R Core Team. 2022. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+<div id="ref-struyfetal" class="csl-entry" role="doc-biblioentry">
+Struyf, A., M. Hubert, and P. J. Rousseeuw. 1997. <span>“<a href="">Integrating Robust Clustering Techniques in <span>S-PLUS</span></a>.”</span> <em>Computational Statistics and Data Analysis</em> 26: 17–37.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
