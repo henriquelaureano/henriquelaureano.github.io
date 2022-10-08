@@ -7,7 +7,8 @@ CV ([pt-br](vitae.pdf) | [eng](cv.pdf)) |
 [Twitter](https://twitter.com/hap_laureano)
 
 Hi! I'm a Data Scientist based in [Curitiba](https://goo.gl/K1Qcdv) and
-working in the Volvo Trucks & Buses, at the Advanced Analytics team.
+working in the Volvo Trucks Latin America, at the BI & Advanced
+Analytics team.
 
 I hold a BSc in Statistics (2016) and an MSc in Statistics and Numerical
 Methods in Engineering (2021), both @ [UFPR](https://goo.gl/DtVAbi). In
