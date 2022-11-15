@@ -1,0 +1,356 @@
+---
+title: "North of France"
+bibliography: /home/laureano/Git/consu/references.bib
+format:
+  html:
+    toc: true
+    toc-fold: true
+    echo: false
+    code-line-numbers: true
+---
+
+> Leidi Prado e
+> [Henrique Laureano](https://henriquelaureano.github.io/)
+
+*Last modification on* `r Sys.time()`
+
+***
+
+```{r}
+#| label: pkgs
+
+## setwd('leidiprado/northfrance')
+
+if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+
+pacman::p_load(quarto, data.table, dplyr, tidyr, ggplot2, purrr)
+
+```
+
+***
+
+```{r}
+#| label: totale
+#| fig-width: 10
+#| fig-height: 8
+
+dat <- data.table::fread('dataset.csv')
+
+communes <- data.table::fread('Liste communes.csv')
+
+dat2 <- dat|>
+    dplyr::filter(`Code Commune` %in% communes$CODGEO)
+
+## str(dat2)
+
+## unique(dat2$'Libellé Commune')
+
+dat2 %>%
+    dplyr::group_by(Année, `Libellé Commune`, Filière) %>%
+    dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+    dplyr::filter(n > 1L)|>
+    print(n=100)
+
+datp <- dat2|>
+    dplyr::select(Année, Filière,
+                  'Consommation totale (MWh)', 'Libellé Commune')|>
+    tidyr::pivot_wider(names_from ='Filière',
+                       values_from='Consommation totale (MWh)',
+                       values_fn  =sum)
+
+datp|>
+    ggplot(aes(x=Electricité, y=Gaz))+
+    geom_point(size=3, shape=21)+
+    ggrepel::geom_text_repel(data=dplyr::filter(datp,
+                                                Gaz > 500000),
+                             aes(label=`Libellé Commune`))+
+    geom_smooth(method=lm, formula=y ~ stats::poly(x, degree=2),
+                se=FALSE, color='orange', size=1.25)+
+    facet_wrap(~ Année)+
+    theme_classic(base_size=14)+
+    theme(strip.text.x=element_text(face='bold', size=14))
+
+datp|>
+    ggplot(aes(x=log(Electricité), y=log(Gaz)))+
+    geom_point(size=3, shape=21)+
+    ggrepel::geom_text_repel(data=dplyr::filter(datp,
+                                               log(Gaz) > 13.25 |
+                                               log(Gaz) < 7.5),
+                             aes(label=`Libellé Commune`))+
+    geom_smooth(method=lm, formula=y ~ stats::poly(x, degree=2),
+                se=FALSE, color='orange', size=1.25)+
+    facet_wrap(~ Année)+
+    theme_classic(base_size=14)+
+    theme(strip.text.x=element_text(face='bold', size=14))
+
+```
+
+# Agriculture
+
+***
+
+```{r}
+#| label: agriculture
+#| fig-width: 10
+#| fig-height: 9
+
+datp <- dat2|>
+    dplyr::select(Année, Filière,
+                  'Consommation Agriculture (MWh)', 'Libellé Commune',
+                  'Indique qualité Agriculture')|>
+    tidyr::pivot_wider(names_from ='Filière',
+                       values_from='Consommation Agriculture (MWh)',
+                       values_fn  =sum)
+
+nrow(datp)
+
+datp <- datp|>
+    tidyr::drop_na()
+
+nrow(datp)
+
+datp|>
+    ggplot(aes(x=Electricité, y=Gaz, fill=`Indique qualité Agriculture`))+
+    geom_point(size=3, shape=21)+
+    ggrepel::geom_text_repel(data=dplyr::filter(datp,
+                                                Gaz > 0),
+                             aes(label=`Libellé Commune`))+
+    facet_wrap(~ Année)+
+    scale_fill_distiller(palette='Spectral')+
+    theme_classic(base_size=14)+
+    theme(strip.text.x        =element_text(face='bold', size=14),
+          legend.position='bottom', 
+          legend.justification=c(1, 0),
+          legend.key.height   =ggplot2::unit(0.45, 'cm'),
+          legend.key.width    =ggplot2::unit(1.5, 'cm'))
+
+```
+
+# Industrie
+
+***
+
+```{r}
+#| label: industrie
+#| fig-width: 10
+#| fig-height: 9
+
+datp <- dat2|>
+    dplyr::select(Année, Filière,
+                  'Consommation Industrie (MWh)', 'Libellé Commune',
+                  'Indice qualité Industrie')|>
+    tidyr::pivot_wider(names_from ='Filière',
+                       values_from='Consommation Industrie (MWh)',
+                       values_fn  =sum)
+
+nrow(datp)
+
+datp <- datp|>
+    tidyr::drop_na()
+
+nrow(datp)
+
+datp|>
+    ggplot(aes(x=Electricité, y=Gaz, fill=`Indice qualité Industrie`))+
+    geom_point(size=3, shape=21)+
+    ggrepel::geom_text_repel(data=dplyr::filter(datp,
+                                                Gaz > 0),
+                             aes(label=`Libellé Commune`))+
+    facet_wrap(~ Année)+
+    scale_fill_distiller(palette='Spectral')+
+    ## scale_x_continuous(breaks=seq(0, 100, by=10))+
+    ## scale_y_continuous(breaks=seq(0, 100, by=5))+
+    ## labs(x='Prevalência\nde anomalias (100K)',
+    ##      y='Prevalência\nde neoplasias (10K)', 
+    ##      title='SIH')+
+    theme_classic(base_size=14)+
+    theme(strip.text.x        =element_text(face='bold', size=14),
+          legend.position='bottom', 
+          legend.justification=c(1, 0),
+          legend.key.height   =ggplot2::unit(0.45, 'cm'),
+          legend.key.width    =ggplot2::unit(1.5, 'cm'))
+
+```
+
+# Tertiaire
+
+***
+
+```{r}
+#| label: tertiaire
+#| fig-width: 10
+#| fig-height: 9
+
+datp <- dat2|>
+    dplyr::select(Année, Filière,
+                  'Consommation Tertiaire  (MWh)', 'Libellé Commune',
+                  'Indice qualité Tertiaire')|>
+    tidyr::pivot_wider(names_from ='Filière',
+                       values_from='Consommation Tertiaire  (MWh)',
+                       values_fn  =sum)
+nrow(datp)
+
+datp <- datp|>
+    tidyr::drop_na()
+
+nrow(datp)
+
+datp|>
+    ggplot(aes(x=Electricité, y=Gaz, fill=`Indice qualité Tertiaire`))+
+    geom_point(size=3, shape=21)+
+    ggrepel::geom_text_repel(data=dplyr::filter(datp,
+                                                Gaz > 0),
+                             aes(label=`Libellé Commune`))+
+    facet_wrap(~ Année)+
+    scale_fill_distiller(palette='Spectral')+
+    ## scale_x_continuous(breaks=seq(0, 100, by=10))+
+    ## scale_y_continuous(breaks=seq(0, 100, by=5))+
+    ## labs(x='Prevalência\nde anomalias (100K)',
+    ##      y='Prevalência\nde neoplasias (10K)', 
+    ##      title='SIH')+
+    theme_classic(base_size=14)+
+    theme(strip.text.x        =element_text(face='bold', size=14),
+          legend.position='bottom', 
+          legend.justification=c(1, 0),
+          legend.key.height   =ggplot2::unit(0.45, 'cm'),
+          legend.key.width    =ggplot2::unit(1.5, 'cm'))
+
+```
+
+# Résidentiel
+
+***
+
+```{r}
+#| label: residentiel
+#| fig-width: 10
+#| fig-height: 9
+
+datp <- dat2|>
+    dplyr::select(Année, Filière,
+                  'Consommation Résidentiel  (MWh)', 'Libellé Commune',
+                  'Indice qualité Résidentiel')|>
+    tidyr::pivot_wider(names_from ='Filière',
+                       values_from='Consommation Résidentiel  (MWh)',
+                       values_fn  =sum)
+
+nrow(datp)
+
+datp <- datp|>
+    tidyr::drop_na()
+
+nrow(datp)
+
+datp|>
+    ggplot(aes(x=Electricité, y=Gaz, fill=`Indice qualité Résidentiel`))+
+    geom_point(size=3, shape=21)+
+    ggrepel::geom_text_repel(data=dplyr::filter(datp,
+                                                Gaz > 0),
+                             aes(label=`Libellé Commune`))+
+    facet_wrap(~ Année)+
+    scale_fill_distiller(palette='Spectral')+
+    ## scale_x_continuous(breaks=seq(0, 100, by=10))+
+    ## scale_y_continuous(breaks=seq(0, 100, by=5))+
+    ## labs(x='Prevalência\nde anomalias (100K)',
+    ##      y='Prevalência\nde neoplasias (10K)', 
+    ##      title='SIH')+
+    theme_classic(base_size=14)+
+    theme(strip.text.x        =element_text(face='bold', size=14),
+          legend.position='bottom', 
+          legend.justification=c(1, 0),
+          legend.key.height   =ggplot2::unit(0.45, 'cm'),
+          legend.key.width    =ggplot2::unit(1.5, 'cm'))
+```
+
+# Secteur Inconnu
+
+***
+
+```{r}
+#| label: secteur-inconnu
+#| fig-width: 10
+#| fig-height: 9
+
+datp <- dat2|>
+    dplyr::select(Année, Filière,
+                  'Consommation Secteur Inconnu (MWh)', 'Libellé Commune',
+                  'Indice qualité Non Affecté')|>
+    tidyr::pivot_wider(names_from ='Filière',
+                       values_from='Consommation Secteur Inconnu (MWh)',
+                       values_fn  =sum)
+
+nrow(datp)
+
+datp <- datp|>
+    tidyr::drop_na()
+
+nrow(datp)
+
+datp|>
+    ggplot(aes(x=Electricité, y=Gaz, fill=`Indice qualité Non Affecté`))+
+    geom_point(size=3, shape=21)+
+    ggrepel::geom_text_repel(data=dplyr::filter(datp,
+                                                Gaz > 0),
+                             aes(label=`Libellé Commune`))+
+    facet_wrap(~ Année)+
+    scale_fill_distiller(palette='Spectral')+
+    ## scale_x_continuous(breaks=seq(0, 100, by=10))+
+    ## scale_y_continuous(breaks=seq(0, 100, by=5))+
+    ## labs(x='Prevalência\nde anomalias (100K)',
+    ##      y='Prevalência\nde neoplasias (10K)', 
+    ##      title='SIH')+
+    theme_classic(base_size=14)+
+    theme(strip.text.x        =element_text(face='bold', size=14),
+          legend.position='bottom', 
+          legend.justification=c(1, 0),
+          legend.key.height   =ggplot2::unit(0.45, 'cm'),
+          legend.key.width    =ggplot2::unit(1.5, 'cm'))
+
+```
+
+# Tabela
+
+***
+
+```{r}
+#| label: tabela
+#| fig-width: 10
+#| fig-height: 9
+
+datp <- dat2|>
+    dplyr::select(Année, Filière,
+                  'Consommation totale (MWh)', 'Libellé Commune')|>
+    tidyr::pivot_wider(names_from ='Filière',
+                       values_from='Consommation totale (MWh)',
+                       values_fn  =sum)
+
+d1 <- purrr::map_df(c(2011:2021),
+                    ~ cbind(rbind(datp|>
+                                  dplyr::filter(Année == .x)|>
+                                  dplyr::arrange(Electricité)|>
+                                  dplyr::slice(1)|>
+                                  dplyr::select(!Gaz),
+                                  datp|>
+                                  dplyr::filter(Année == .x)|>
+                                  dplyr::arrange(desc(Electricité))|>
+                                  dplyr::slice(1)|>
+                                  dplyr::select(!Gaz)),
+                            value=c('min', 'max'))
+                    )
+d2 <- purrr::map_df(c(2011:2021),
+                    ~ cbind(rbind(datp|>
+                                  dplyr::filter(Année == .x)|>
+                                  dplyr::arrange(Gaz)|>
+                                  dplyr::slice(1)|>
+                                  dplyr::select(!Electricité), 
+                                  datp|>
+                                  dplyr::filter(Année == .x)|>
+                                  dplyr::arrange(desc(Gaz))|>
+                                  dplyr::slice(1)|>
+                                  dplyr::select(!Electricité)),
+                            value=c('min', 'max'))
+                    )
+
+cbind(d1, d2)
+
+```
