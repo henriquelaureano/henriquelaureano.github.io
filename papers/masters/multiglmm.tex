@@ -216,14 +216,20 @@ structure. The model specification and the inferential routine are much
 simpler than the usually used approaches, increasing its practical
 relevance. The latent effects, the key complicator factor, are handled
 out by means of an efficient Laplace approximation and automatic
-differentiation routines. The main contributions of this article are:
-(i) introducing the modeling of cause/cluster-specific CIFs of clustered
-competing risks data into an efficient implementation of the GLMMs
-framework; (ii) performing a extensive simulation study to check the
-properties of the maximum likelihood estimator to learn the
-cause-specific CIF forms and the feasibility of the within-cluster
-dependence structure.; (iii) providing R code and \texttt{C++}
-implementation for the used GLMMs.
+differentiation routines. {\color{red} We use the CIF specification as
+  \cite{SCHEIKE}, but with a different likelihood formulation and
+  parameter and uncertainty estimation and quantification. Instead of a
+  composite likelihood and Adaptative Gaussian Quadrature routine we
+  propose a full-likelihood formulation combined with an efficient
+  Laplace approximation scheme.}
+
+The main contributions of this article are: (i) introducing the modeling
+of cause/cluster-specific CIFs of clustered competing risks data into an
+efficient implementation of the GLMMs framework; (ii) performing a
+extensive simulation study to check the properties of the maximum
+likelihood estimator to learn the cause-specific CIF forms and the
+feasibility of the within-cluster dependence structure.; (iii) providing
+R code and \texttt{C++} implementation for the used GLMMs.
 
 The work is organized as follows. Section \ref{model} presents the CIF
 specification and the multinomial GLMM. Section \ref{inference} presents
