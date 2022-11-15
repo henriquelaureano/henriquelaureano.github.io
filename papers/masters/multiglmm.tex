@@ -187,15 +187,16 @@ Besides the interpretation, by modeling the CIF it is possible to
 specify complex within-cluster dependence structures. We follow
 \cite{SCHEIKE} and work with a CIF specification based on its
 decomposition in instantaneous risk and failure time trajectory
-functions, with both being cluster-specifics and possible correlated. As
-a modeling framework, we use a generalized linear mixed model (GLMM)
-specification. Through a GLMM we have a straightforward full likelihood
-specification, easy to virtually extend to any number of competing
-causes, and capable to allow for complex CIF structures. To make the
-estimation and inferential process the most efficient as possible we
-take advantage of state-of-art computational libraries and efficiently
-implemented routines under the \texttt{TMB} \citep{TMB} package of the R
-\citep{R21} statistical software.
+functions, with both being cluster-specifics and possible
+correlated. {\color{red} Instead of an elaborated composite likelihood
+  approach, as} \sout{As} a modeling framework, we use a generalized
+linear mixed model (GLMM) specification. Through a GLMM we have a
+straightforward full likelihood specification, easy to virtually extend
+to any number of competing causes, and capable to allow for complex CIF
+structures. To make the estimation and inferential process the most
+efficient as possible we take advantage of state-of-art computational
+libraries and efficiently implemented routines under the \texttt{TMB}
+\citep{TMB} package of the R \citep{R21} statistical software.
 
 The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
