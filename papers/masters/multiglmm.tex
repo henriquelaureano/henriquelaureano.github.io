@@ -19,6 +19,7 @@
 \usetikzlibrary{positioning,shapes,arrows}
 \usepackage{adjustbox}
 \usepackage{blkarray}
+\usepackage{ulem}
 \input{tikzit.sty}
 \usepackage{setspace}
 \onehalfspacing
@@ -411,8 +412,10 @@ associated with a high absolute risk of another failure cause.
 The generalized linear mixed model (GLMM) for clustered competing risks
 data is specified in the following hierarchical fashion. By simplicity,
 we focus on two competing causes of failure but an extension is
-straightforward. For two competing causes of failure, a subject \(i\),
-in the cluster/family \(j\) and time \(t\), we have
+straightforward. For two competing causes of failure, {\color{red} the
+  failure or censorship, \(y\), of} a subject \(i\), in the
+cluster/family \(j\) and time \(t\), \sout{we have} {\color{red} is
+  modeled by}
 \begin{align}
  y_{i j t} \mid \{u_{1j},~u_{2j},~\eta_{1j},~\eta_{2j}\}
  &\sim\text{Multinomial}(p_{1ijt},~p_{2ijt},~p_{3ijt})\nonumber\\
