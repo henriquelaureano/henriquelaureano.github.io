@@ -92,7 +92,8 @@ likelihood formulation (a full likelihood approach instead of a
 composite one) and parameter estimation routine (a Laplace approximation
 instead an expensive AGQ), taking advantage of state-of-the-art
 computational libraries and algorithm implementations. We stress out
-these points in the paper, as recommended.
+these points in the paper, as recommended. In terms of motivational
+applications, it was also added to the introduction.
 
 \subsection*{Reviewer #1}
 
@@ -106,6 +107,18 @@ Cedervisk et al?  Can they give more insight for simulation cases where
 the latent effects didn't work well?
 
 \subsection*{Author's response}
+
+{\color{red} We are very grateful for the insightful comments of the
+  reviewer. We had access to \cite{SCHEIKE}'s code through
+  GitHub. Running their code we've not been able to reproduce their
+  results. By adapting it to perform some extra simulation studies like
+  the ones that we did with our model, in the majority of the scenarios
+  convergence has not been reached. Given that and the facts that 1) our
+  likelihood functions, formulations, and estimation procedures are very
+  different and not directly comparable; 2) our model runs in parallel
+  and its running time is quite fast considering its complexity and
+  sample size, we end up choosing not to make any statement about these
+  differences in the results section.}
 
 \subsection*{Reviewer #1}
 
