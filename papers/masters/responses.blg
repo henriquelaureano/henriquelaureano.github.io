@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: responses.aux
 The style file: dcu.bst
 Database file #1: references.bib
-You've used 1 entry,
+You've used 2 entries,
             2921 wiz_defined-function locations,
-            644 strings with 4970 characters,
-and the built_in function-call counts, 7139 in all, are:
-= -- 1187
-> -- 91
+            651 strings with 5164 characters,
+and the built_in function-call counts, 11421 in all, are:
+= -- 1860
+> -- 182
 < -- 0
-+ -- 584
-- -- 28
-* -- 639
-:= -- 1396
-add.period$ -- 2
-call.type$ -- 1
-change.case$ -- 14
-chr.to.int$ -- 1
-cite$ -- 1
-duplicate$ -- 14
-empty$ -- 35
-format.name$ -- 31
-if$ -- 1282
++ -- 910
+- -- 56
+* -- 1019
+:= -- 2260
+add.period$ -- 4
+call.type$ -- 2
+change.case$ -- 28
+chr.to.int$ -- 2
+cite$ -- 2
+duplicate$ -- 28
+empty$ -- 70
+format.name$ -- 62
+if$ -- 2050
 int.to.chr$ -- 5
 int.to.str$ -- 0
-missing$ -- 1
-newline$ -- 7
-num.names$ -- 11
-pop$ -- 1
+missing$ -- 2
+newline$ -- 11
+num.names$ -- 22
+pop$ -- 2
 preamble$ -- 1
-purify$ -- 15
+purify$ -- 30
 quote$ -- 0
-skip$ -- 15
+skip$ -- 29
 stack$ -- 0
-substring$ -- 1717
-swap$ -- 2
-text.length$ -- 14
+substring$ -- 2666
+swap$ -- 4
+text.length$ -- 28
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 4
+type$ -- 8
 warning$ -- 0
-while$ -- 23
+while$ -- 46
 width$ -- 0
-write$ -- 17
+write$ -- 32

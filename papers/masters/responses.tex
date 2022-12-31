@@ -163,13 +163,24 @@ proposed method (a parametric one if I understand it correctly)?
 
 \subsection*{Author's response}
 
-We are very grateful for the insightful comments of the reviewer.
+We are very grateful for the insightful literature recommendation. The
+model proposed by \cite{ahnetal22} is also a valid approach to handling
+clustered competing risk data. The mentioned approach is similar to ours
+in the sense that it is not necessary to model the censoring
+distribution. The differences lie in the model category and parameter
+estimation and uncertainty quantification. We have a parametric approach
+based on a proper likelihood function instead a semiparametric one based
+on a pseudo-likelihood. With a standard likelihood formulation based on
+GLMM, we can take advantage of all well-established inferential
+frameworks. With the semiparametric pseudo-likelihood formulation a
+nonparametric estimator was needed to be proposed together with a
+sandwich covariance estimator extra computations.
 
 \subsection*{Reviewer #2}
 
-3. The Laplace-approximated maximum likelihood looks similar to the EM
-algorithm with the latent variables u_i treated as missing data. Can you
-clarify the difference?
+The Laplace-approximated maximum likelihood looks similar to the EM
+algorithm with the latent variables \(u_{i}\) treated as missing
+data. Can you clarify the difference?
 
 \subsection*{Author's response}
 
