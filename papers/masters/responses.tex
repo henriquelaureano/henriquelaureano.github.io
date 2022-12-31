@@ -184,7 +184,16 @@ data. Can you clarify the difference?
 
 \subsection*{Author's response}
 
-We are very grateful for the insightful comments of the reviewer.
+We are very grateful for the insightful comments of the reviewer. EM
+algorithms are a very interesting maximization routine since they can be
+applied virtually to any model with latent components, but they present
+the caveats of being slow, in the majority of the cases, and that each
+model requests a specific EM formulation. Here, with our model being
+easily written in the exponential family framework, a very general and
+immediate Laplace approximation is easily obtained. This very practical
+formulation together with state-of-the-art Laplace approximation
+implementation and the automatic-differentiation tool makes it a better
+deal than the EM algorithm for our model specification.
 
 \bibliographystyle{dcu} \bibliography{references}
 
