@@ -48,27 +48,28 @@ proposed a very similar model.
 
 \subsection*{Author's response}
 
-We are very grateful for the positive evaluation and clarified in the
-paper the differences between our work and \cite{SCHEIKE}, these
-clarifications were made in the introduction and discussion sections.
+We thanks the positive evaluation and clarified in the paper the
+differences between our work and \cite{SCHEIKE}, these clarifications
+were made in the introduction and discussion sections.  Furthermore, we
+restate our main goal to let clear that our contribution relies mainly
+on computational aspects of the model proposed by \cite{SCHEIKE}.
 
 In summary, the differences are: we follow \cite{SCHEIKE} and work with
 the Cumulative Incidence Function (CIF) specification proposed by
 them. However, there, to be able to model and infer the CIF parameters
 and within-cluster dependence, an elaborated composite likelihood
-approach was proposed together with an Adaptative Gaussian Quadrature
+approach was proposed combined with an Adaptative Gaussian Quadrature
 (AGQ) scheme to marginalize the composite likelihood. Extra steps were
-needed to take to be able to quantify the uncertainty around the
-parameters. We, on the other side, modeled the same CIF specification
-via a much simpler and known formulation - a generalized linear mixed
-model (GLMM) formulation. Besides the simpler formulation (which also
-provides a full and proper likelihood function) we used a Laplace
-approximation scheme, simpler, in contrast to the used AGQ. To make this
-much simpler framework feasible, we took advantage of state-of-the-art
-numerical algorithms implementations and computational
-libraries. Basically, is the same CIF specification but with different
-likelihood functions/formulations and parameter estimation
-routines/schemes.
+needed to be able to quantify the uncertainty around the parameters. We,
+on the other hand, modeled the same CIF specification via a simpler and
+known formulation - a generalized linear mixed model (GLMM)
+formulation. Along with the simpler formulation which also provides a
+full and proper likelihood function, we used a Laplace approximation
+scheme in contrast to the used AGQ. To make this simpler framework
+feasible, we took advantage of state-of-the-art numerical algorithms
+implementations and computational libraries. Basically, is the same CIF
+specification but with different likelihood functions/formulations and
+parameter estimation routines/schemes.
 
 \section*{Reviewer #1}
 
@@ -86,14 +87,16 @@ figure out in a clearer way the possible applications.
 
 \subsection*{Author's response}
 
-We are very grateful for the insightful comments of the reviewer. We use
-the same CIF specification of \cite{SCHEIKE} but with a different
-likelihood formulation (a full likelihood approach instead of a
-composite one) and parameter estimation routine (a Laplace approximation
-instead an expensive AGQ), taking advantage of state-of-the-art
-computational libraries and algorithm implementations. We stress out
-these points in the paper, as recommended. In terms of motivational
-applications, it was also added to the introduction.
+We thanks for the insightful comments of the reviewer. We use the same
+CIF specification of \cite{SCHEIKE} but with a different likelihood
+formulation, a full likelihood approach instead of a composite one for
+parameter estimation. Laplace approximation instead an expensive AGQ,
+taking advantage of state-of-the-art computational libraries and
+algorithm implementations. We restate our main goal to let clear that we
+adopted the same model specification proposed by \cite{SCHEIKE},
+however, we use a different parameter estimation procedure. Please, see
+Introduction section.
+
 
 \subsection*{Reviewer #1}
 
@@ -108,17 +111,19 @@ the latent effects didn't work well?
 
 \subsection*{Author's response}
 
-{\color{red} We are very grateful for the insightful comments of the
-  reviewer. We had access to \cite{SCHEIKE}'s code through
-  GitHub. Running their code we've not been able to reproduce their
-  results. By adapting it to perform some extra simulation studies like
-  the ones that we did with our model, in the majority of the scenarios
-  convergence has not been reached. Given that and the facts that 1) our
-  likelihood functions, formulations, and estimation procedures are very
-  different and not directly comparable; 2) our model runs in parallel
-  and its running time is quite fast considering its complexity and
-  sample size, we end up choosing not to make any statement about these
-  differences in the results section.}
+We access \cite{SCHEIKE}'s code through GitHub. Running their code we've
+not been able to reproduce their results. By adapting it to perform some
+extra simulation studies like the ones that we did with our model, at
+most scenarios convergence has not been reached. Given that and the
+facts that 1) our likelihood functions, formulations, and estimation
+procedures are very different and not directly comparable; 2) our model
+runs in parallel and its running time is fast considering its complexity
+and sample size, we end up choosing not to make any statement about
+these differences in the results section. We emphasize that our focus
+were to propose a new estimation procedure and not to compare two
+different estimation procedures. We completly agree that the comparison
+is an interesting topic, however, it is beyound the goal of our
+paper. We included it as a topic for future work.
 
 \subsection*{Reviewer #1}
 
@@ -129,8 +134,7 @@ Page 3 row 52 and page 29 row 1 is Vaupel not Valpel
 
 \subsection*{Author's response}
 
-We are very grateful for the insightful comments of the reviewer. The
-clarification and the correction were made.
+The clarification and the correction were made.
 
 \section*{Reviewer #2}
 
@@ -146,13 +150,14 @@ approach with Cederkvist et al. (2019)?
 
 \subsection*{Author's response}
 
-We are very grateful for the insightful comments of the reviewer. We use
-the same CIF specification of \cite{SCHEIKE} but with a different
-likelihood formulation (a full likelihood approach instead of a
-composite one) and parameter estimation routine (a Laplace approximation
-instead an expensive AGQ), taking advantage of state-of-the-art
-computational libraries and algorithm implementations. We stress out
-these points in the paper, as recommended.
+We thanks fot the insightful comments. We use the same CIF specification
+of \cite{SCHEIKE} but with a different likelihood formulation (a full
+likelihood approach instead of a composite one) and parameter estimation
+routine (a Laplace approximation instead an expensive AGQ), taking
+advantage of state-of-the-art computational libraries and algorithm
+implementations. We restate our main goal to let our contribution
+clearer.
+
 
 \subsection*{Reviewer #2}
 
@@ -163,15 +168,15 @@ proposed method (a parametric one if I understand it correctly)?
 
 \subsection*{Author's response}
 
-We are very grateful for the insightful literature recommendation. The
-model proposed by \cite{ahnetal22} is also a valid approach to handling
-clustered competing risk data. The mentioned approach is similar to ours
-in the sense that it is not necessary to model the censoring
-distribution. The differences lie in the model category and parameter
-estimation and uncertainty quantification. We have a parametric approach
-based on a proper likelihood function instead a semiparametric one based
-on a pseudo-likelihood. With a standard likelihood formulation based on
-GLMM, we can take advantage of all well-established inferential
+We thanks for the literature recommendation. The model proposed by
+\cite{ahnetal22} is also a valid approach to handling clustered
+competing risk data. The mentioned approach is similar to ours in the
+sense that it is not necessary to model the censoring distribution. The
+differences lie in the model category and parameter estimation and
+uncertainty quantification. We have a parametric approach based on a
+proper likelihood function instead a semiparametric one based on a
+pseudo-likelihood. With a standard likelihood formulation based on GLMM,
+we can take advantage of all well-established inferential
 frameworks. With the semiparametric pseudo-likelihood formulation a
 nonparametric estimator was needed to be proposed together with a
 sandwich covariance estimator extra computations.
@@ -184,13 +189,12 @@ data. Can you clarify the difference?
 
 \subsection*{Author's response}
 
-We are very grateful for the insightful comments of the reviewer. EM
-algorithms are a very interesting maximization routine since they can be
-applied virtually to any model with latent components, but they present
-the caveats of being slow, in the majority of the cases, and that each
-model requests a specific EM formulation. Here, with our model being
-easily written in the exponential family framework, a very general and
-immediate Laplace approximation is easily obtained. This very practical
+EM algorithms are a very interesting maximization routine since they can
+be applied virtually to any model with latent components, but they
+present the caveats of being slow, in the majority of the cases, and
+that each model requests a specific EM formulation. Here, with our model
+being easily written in the exponential family framework, a very general
+and immediate Laplace approximation is easily obtained. This practical
 formulation together with state-of-the-art Laplace approximation
 implementation and the automatic-differentiation tool makes it a better
 deal than the EM algorithm for our model specification.
