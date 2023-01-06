@@ -171,11 +171,11 @@ rates. A less usual scale but with a more appealing interpretation is
 the probability scale. For competing risks data, the work on the
 probability scale is done by means of the cumulative incidence function
 (CIF) \citep{andersen12}, with the main modeling approach being the
-subdistribution \citep{fine&gray}. {\color{red} In family studies or
-  populational studies, where the main interest relies on describing and
-  understanding, in terms of regressors, the long-run behavior of a
-  process, the CIF is a very suitable modeling choice having the bonus
-  of the interpretation in terms of the probability scale.}
+subdistribution \citep{fine&gray}. In family studies or populational
+studies, where the main interest relies on describing and understanding,
+in terms of regressors, the long-run behavior of a process, the CIF is a
+suitable modeling choice having the bonus of the interpretation in terms
+of the probability scale.
 
 For clustered competing risks data there are some available options but
 with a lack of predominance. The options vary in terms of likelihood
@@ -193,15 +193,15 @@ specify complex within-cluster dependence structures. We follow
 \cite{SCHEIKE} and work with a CIF specification based on its
 decomposition in instantaneous risk and failure time trajectory
 functions, with both being cluster-specifics and possible
-correlated. {\color{red} Instead of an elaborated composite likelihood
-  approach, as} \sout{As} a modeling framework, we use a generalized
-linear mixed model (GLMM) specification. Through a GLMM we have a
-straightforward full likelihood specification, easy to virtually extend
-to any number of competing causes, and capable to allow for complex CIF
-structures. To make the estimation and inferential process the most
-efficient as possible we take advantage of state-of-art computational
-libraries and efficiently implemented routines under the \texttt{TMB}
-\citep{TMB} package of the R \citep{R21} statistical software.
+correlated. Instead of an elaborated composite likelihood approach, as a
+modeling framework, we use a generalized linear mixed model (GLMM)
+specification. Through a GLMM we have a straightforward full likelihood
+specification, easy to virtually extend to any number of competing
+causes, and capable to allow for complex CIF structures. To make the
+estimation and inferential process the most efficient as possible we
+take advantage of state-of-art computational libraries and efficiently
+implemented routines under the \texttt{TMB} \citep{TMB} package of the R
+\citep{R21} statistical software.
 
 The class of generalized linear models (GLMs) \citep{GLM72} is probably
 the most popular statistical modelling framework. Despite its
@@ -215,18 +215,17 @@ latent within-cluster dependence is accommodated via a multivariate
 normal distribution, and the cause-specific CIFs via the model's link
 function.
 
-The main goal of this work is to propose a GLMM approach to handle
-clustered competing risks data with a flexible within-cluster dependence
-structure. The model specification and the inferential routine are much
-simpler than the usually used approaches, increasing its practical
-relevance. The latent effects, the key complicator factor, are handled
-out by means of an efficient Laplace approximation and automatic
-differentiation routines. {\color{red} We use the CIF specification as
-  \cite{SCHEIKE}, but with a different likelihood formulation and
-  parameter and uncertainty estimation and quantification. Instead of a
-  composite likelihood and Adaptative Gaussian Quadrature routine we
-  propose a full-likelihood formulation combined with an efficient
-  Laplace approximation scheme.}
+The main goal of this article is to propose a likelihood approach for
+parameter estimation and inference in the context of clustered competing
+risks data with a flexible within-cluster dependence structure.  The
+model specification is based on the approach of \cite{SCHEIKE} which in
+turn resembles the GLMM framework. However, for parameter estimation, we
+propose a full likelihood approach where the marginal likelihood
+function is obtained using the Laplace approximation. On the other hand,
+\cite{SCHEIKE} employed an intricate composite likelihood combined with
+Adaptative Gaussian Quadrature.  The main advantage of our approach is
+the computational efficiency allowing us to use state-of-art numerical
+libraries for automatic differentiation and paralell computation.
 
 The main contributions of this article are: (i) introducing the modeling
 of cause/cluster-specific CIFs of clustered competing risks data into an
@@ -412,10 +411,9 @@ associated with a high absolute risk of another failure cause.
 The generalized linear mixed model (GLMM) for clustered competing risks
 data is specified in the following hierarchical fashion. By simplicity,
 we focus on two competing causes of failure but an extension is
-straightforward. For two competing causes of failure, {\color{red} the
-  failure or censorship, \(y\), of} a subject \(i\), in the
-cluster/family \(j\) and time \(t\), \sout{we have} {\color{red} is
-  modeled by}
+straightforward. For two competing causes of failure, the failure or
+censorship, \(y\), of a subject \(i\), in the cluster/family \(j\) and
+time \(t\), is modeled by
 \begin{align}
  y_{i j t} \mid \{u_{1j},~u_{2j},~\eta_{1j},~\eta_{2j}\}
  &\sim\text{Multinomial}(p_{1ijt},~p_{2ijt},~p_{3ijt})\nonumber\\
