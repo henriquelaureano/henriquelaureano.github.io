@@ -40,9 +40,14 @@
   J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
   *Science of the Total Environment* (2022)
 
-<!-- *** -->
+***
 
-<!-- ### Accepted for publication -->
+### Accepted for publication
+
++ [Multivariate generalized linear mixed models for underdispersed count data](https://doi.org/10.1080/00949655.2023.2184474)\
+  G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  *Journal of Statistical Computation and Simulation* (2023)
 
 ***
 
@@ -55,25 +60,18 @@
   Submitted to *ABCS Health Sciences*
 
 + [2022]\
-  Multivariate generalized linear mixed models for underdispersed count
-  data\
-  G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
-  Junior, W. H. Bonat\
-  Submitted to *Journal of Statistical Computation and Simulation*
-
-+ [2022]\
-  A multinomial generalized linear mixed model for clustered competing
-  risks data\
-  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
-  Junior, W. H. Bonat\
-  Submitted to *Computational Statistics*
-
-+ [2022]\
   Multivariate Generalized Linear Mixed Models for Count Data\
   G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
   Junior, W. H. Bonat\
   Submitted to *Austrian Journal of Statistics*
 
++ [2023]\
+  A multinomial generalized linear mixed model for clustered competing
+  risks data\
+  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  Submitted to *Computational Statistics*
+  
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
   <!-- inhibitors in women in menopause: a systematic review and -->
