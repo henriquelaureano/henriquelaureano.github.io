@@ -40,14 +40,19 @@
   J. D. C. Passos, K. Felisbino, **H. A. Laureano**, I. C. Guiloski\
   *Science of the Total Environment* (2022)
 
-***
-
-### Accepted for publication
-
 + [Multivariate generalized linear mixed models for underdispersed count data](https://doi.org/10.1080/00949655.2023.2184474)\
   G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
   Junior, W. H. Bonat\
   *Journal of Statistical Computation and Simulation* (2023)
+
+***
+
+### Accepted for publication
+
++ Multivariate Generalized Linear Mixed Models for Count Data\
+  G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  *Austrian Journal of Statistics* (2023)
 
 ***
 
@@ -58,12 +63,6 @@
   Systematic Review and Meta-Analysis\
   J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
   Submitted to *ABCS Health Sciences*
-
-+ [2022]\
-  Multivariate Generalized Linear Mixed Models for Count Data\
-  G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
-  Junior, W. H. Bonat\
-  Submitted to *Austrian Journal of Statistics*
 
 + [2023]\
   A multinomial generalized linear mixed model for clustered competing
