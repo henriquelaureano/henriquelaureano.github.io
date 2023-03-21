@@ -1,0 +1,88 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+%% \usepackage[brazil,brazilian]{babel}
+\usepackage{amsmath, nccmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}  
+\usepackage{float}
+\usepackage{pdflscape} % horizontal page
+\usepackage{tabularx}
+\usepackage[english,vlined,ruled]{algorithm2e}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows}
+\usepackage{adjustbox}
+\usepackage{blkarray}
+\input{tikzit.sty}
+\usepackage{setspace}
+\onehalfspacing
+
+\title{
+
+  List of responses to the comments for the author of:
+  A multinomial generalized linear mixed model for clustered competing
+  risks data
+
+}
+
+\begin{document}
+\maketitle
+
+\section*{Co-Editor}
+
+Based on the advice received, I have decided that your manuscript can be
+accepted for publication after you have carried out the corrections as
+suggested by the reviewer(s).
+
+\subsection*{Author's response}
+
+We thanks the positive evaluation and we addressed in the paper the
+corrections and suggestions of the reviewers.
+
+\section*{Reviewer #1}
+
+The authors have positively answered to all the issues arisen.
+
+\section*{Reviewer #2}
+
+1. Please incorporate the comparison with He et al. (2022) discussed in
+the author's response into the paper (Introduction/Discussion).
+
+\subsection*{Author's response}
+
+We thanks for the literature recommendation. The robust approach
+proposed by \cite{ahnetal22} has been incorporated into the paper (
+\textcolor{red}{na verdade eu ja tinha incorporado na introducao, na
+                linha em que cito os linear transformation models. Ela
+                ficou discreta, é só mais uma citacao no meio de várias.
+                Dou um jeito de dar mais destaque, o que vai ficar meio
+                sem nocao, ou deixo como está?}).
+
+\subsection*{Reviewer #2}
+
+2. The authors mentioned that the Laplace-approximated MLE converges
+faster than the EM (which has a linear convergence rate), do we know at
+what rate it converges, e.g., approximately quadratic?
+
+\subsection*{Author's response}
+
+We thanks fot the insightful comment. The Laplace approximation for the
+latent effects of a mixed model consists of two optimizations, an inner
+and an outer optimization. The inner one is made through a
+Newton-Raphson algorithm, Newton´s method with a quadratic convergence
+rate. The external optimization is made through a Quasi-Newton Method,
+the BFGS for instance, which in our class of models has a superlinear
+convergence rate ( \textcolor{red}{tá bom assim ou preciso por
+                                   referencias? acho que assim ja ta bom.
+                                   tambem nao acrescentei nada no paper,
+                                   só respondi aqui}).
+
+\bibliographystyle{dcu} \bibliography{references}
+
+\end{document}
