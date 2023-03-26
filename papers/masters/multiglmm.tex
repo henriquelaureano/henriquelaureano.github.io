@@ -937,11 +937,13 @@ caring about the specification of a probability distribution to the
 competing causes conditioned on the latent effects, we just care about
 the specification of a mean and a variance structure. This approach does
 not have a likelihood function per se, but the estimation procedure
-tends to be easier than with the GLMM one. A marginal modeling framework
-that can be used here is the multivariate covariance generalized linear
-model (McGLM) \citep{mcglm, rmcglm}. How to exactly model the CIF of
-clustered competing risks data in this framework, is something to still
-be figured out.
+tends to be easier than with the GLMM one. Marginal modeling frameworks
+that can be used here are the semiparametric linear transformation model
+\citep{ahnetal22}, also with the advantage of the non-necessity of
+modeling the censoring distribution, and the multivariate covariance
+generalized linear model (McGLM) \citep{mcglm, rmcglm}. How to exactly
+model the CIF of clustered competing risks data in this framework, is
+something to still be figured out.
 
 The other path is by the use of a different way of modeling the
 dependence structure. Instead of a latent-effects approach, we could use
