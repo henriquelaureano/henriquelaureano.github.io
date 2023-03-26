@@ -74,7 +74,7 @@
   Population-based assessment for major congenital malformations in the
   United States: smoking risk association\
   D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
-  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\ 
+  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
   Submitted to *International Journal of Environmental Research and
   Public Health*
   
