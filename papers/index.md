@@ -54,6 +54,12 @@
   Junior, W. H. Bonat\
   *Austrian Journal of Statistics* (2023)
 
++ A multinomial generalized linear mixed model for clustered competing
+  risks data\
+  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  *Computational Statistics* (2023)
+
 ***
 
 ### Submitted for publication
@@ -63,13 +69,14 @@
   Systematic Review and Meta-Analysis\
   J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
   Submitted to *ABCS Health Sciences*
-
+  
 + [2023]\
-  A multinomial generalized linear mixed model for clustered competing
-  risks data\
-  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
-  Junior, W. H. Bonat\
-  Submitted to *Computational Statistics*
+  Population-based assessment for major congenital malformations in the
+  United States: smoking risk association\
+  D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
+  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\ 
+  Submitted to *International Journal of Environmental Research and
+  Public Health*
   
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
