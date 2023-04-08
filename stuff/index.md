@@ -52,3 +52,7 @@
 ### [Cake dataset analysis](cake/)
 
 > A linear mixed / multilevel / hierarchical model application
+
+***
+
+### [Fubá's daily development](../fuba/)
