@@ -45,6 +45,11 @@
   Junior, W. H. Bonat\
   *Journal of Statistical Computation and Simulation* (2023)
 
++ [A multinomial generalized linear mixed model for clustered competing risks data](https://link.springer.com/epdf/10.1007/s00180-023-01353-5?sharing_token=3vXm4b9Vz-z0rtjL7yzwpfe4RwlQNchNByi7wbcMAY517pyMnY3C1MThdd0d7PnDza2qIskNVWZe76vaswKMz-9eTCIox50k0aNKigRIvL1TsSmF1Hkpeu-4iuEHM3p3Q9M-NF9zxL3hv76MK4mqqJbia3NbsvukubthChm4SY4=)\
+  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  *Computational Statistics* (2023) https://link.springer.com/article/10.1007/s00180-023-01353-5
+  
 ***
 
 ### Accepted for publication
@@ -53,12 +58,6 @@
   G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
   Junior, W. H. Bonat\
   *Austrian Journal of Statistics* (2023)
-
-+ A multinomial generalized linear mixed model for clustered competing
-  risks data\
-  **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
-  Junior, W. H. Bonat\
-  *Computational Statistics* (2023)
 
 ***
 
