@@ -1,0 +1,66 @@
+---
+format:
+  html:
+    toc: false
+    toc-fold: false
+    echo: false
+    code-line-numbers: false
+---
+
+![**FUBÁ**](fuba.jpeg){width=50% fig-align="left"}
+
+*Last modification on* `r Sys.time()`
+
+***
+
+```{r}
+#| label: fuba
+#| fig-width: 10
+#| fig-height: 7.5
+#| warning: false
+
+if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
+
+pacman::p_load(quarto, lubridate, tibble, ggplot2, patchwork)
+
+dates <- seq.Date(
+    as.Date("2023/03/20"), lubridate::today() - 1, by = "1 day"
+)
+weight <- c(48, 59, 59, 64, 71, 78, 85, 91, 92, 90, 106, 93, 99, 99,
+            116, 116, 129, 114, 130)
+
+dat <- tibble::tibble(dates, weight)
+
+p1 <- dat|>
+    ggplot()+
+    aes(dates, weight)+
+    geom_point(size = 2)+
+    geom_line()+
+    scale_x_date(date_breaks = "2 day", date_labels = "%b %d")+
+    scale_y_continuous(breaks = seq(50, 130, by = 10))+
+    labs(x = NULL, y = NULL,
+         title = "Fubá's daily development, in grams")+
+    theme_minimal(base_size = 14)
+
+diffs <- numeric(length(weight) - 1)
+
+for (i in seq(length(diffs))) diffs[i] <- weight[i + 1] - weight[i]
+
+datd <- tibble::tibble(dates, diffs = c(NA, diffs))
+
+p2 <- datd|>
+    ggplot()+
+    aes(dates, diffs)+
+    geom_point(size = 2)+
+    geom_line()+
+    scale_x_date(date_breaks = "2 day", date_labels = "%b %d")+
+    scale_y_continuous(breaks = seq(-15, 15, by = 5))+
+    labs(
+        x = NULL,  y = NULL,
+        title = paste("Daily gain", round(mean(diffs), 2), "in average")
+    )+
+    theme_minimal(base_size = 14)
+
+p1 + p2 + patchwork::plot_layout(nrow = 2, heights = c(1, 0.75))
+
+```
