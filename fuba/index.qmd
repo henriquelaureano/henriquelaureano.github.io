@@ -21,7 +21,7 @@ format:
 
 if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 
-pacman::p_load(quarto, lubridate, tibble, ggplot2, patchwork)
+pacman::p_load(quarto, lubridate, tibble, ggplot2, patchwork, zoo)
 
 dates <- seq.Date(
     as.Date("2023/03/20"), lubridate::today() - 1, by = "1 day"
@@ -57,13 +57,17 @@ p2 <- datd|>
     geom_hline(yintercept = mean(diffs), linetype = "dashed")+
     geom_point(size = 2)+
     geom_line()+
+    geom_line(aes(x = dates, y = zoo::rollmean(diffs, k = 7, fill = 0)),
+              color = "brown", size = 0.75)+
     scale_x_date(date_breaks = "2 day", date_labels = "%b %d")+
     scale_y_continuous(breaks = seq(-15, 15, by = 5))+
     labs(
         x = NULL,  y = NULL,
-        title = paste("Daily gain", round(mean(diffs), 2), "in average")
+        title = paste("Daily gain", round(mean(diffs), 2), "in average"),
+        subtitle = "Weekly moving averages"
     )+
-    theme_minimal(base_size = 14)
+    theme_minimal(base_size = 14)+
+    theme(plot.subtitle = element_text(color = "brown"))
 
 p1 + p2 + patchwork::plot_layout(nrow = 2, heights = c(1, 0.75))
 
