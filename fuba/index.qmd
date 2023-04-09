@@ -27,13 +27,16 @@ dates <- seq.Date(
     as.Date("2023/03/20"), lubridate::today() - 1, by = "1 day"
 )
 weight <- c(48, 59, 59, 64, 71, 78, 85, 91, 92, 90, 106, 93, 99, 99,
-            116, 116, 129, 114, 130)
+            116, 116, 129, 114, 130, 134)
 
 dat <- tibble::tibble(dates, weight)
 
 p1 <- dat|>
     ggplot()+
     aes(dates, weight)+
+    geom_vline(xintercept = as.Date("2023/04/07"), linetype = "dashed")+
+    geom_label(aes(x = as.Date("2023/04/07"), y = 100,
+                   label = "1st-day\neating\nchicken"))+
     geom_point(size = 2)+
     geom_line()+
     scale_x_date(date_breaks = "2 day", date_labels = "%b %d")+
@@ -51,6 +54,7 @@ datd <- tibble::tibble(dates, diffs = c(NA, diffs))
 p2 <- datd|>
     ggplot()+
     aes(dates, diffs)+
+    geom_hline(yintercept = mean(diffs), linetype = "dashed")+
     geom_point(size = 2)+
     geom_line()+
     scale_x_date(date_breaks = "2 day", date_labels = "%b %d")+
