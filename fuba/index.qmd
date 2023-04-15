@@ -24,10 +24,10 @@ if(!requireNamespace('pacman', quietly=TRUE)) install.packages('pacman')
 pacman::p_load(quarto, lubridate, tibble, ggplot2, patchwork, zoo)
 
 dates <- seq.Date(
-    as.Date("2023/03/20"), lubridate::today(), by = "1 day"
+    as.Date("2023/03/20"), lubridate::today()-1, by = "1 day"
 )
 weight <- c(48, 59, 59, 64, 71, 78, 85, 91, 92, 90, 106, 93, 99, 99,
-            116, 116, 129, 114, 130, 134, 115, 121, 129, 117, 137)
+            116, 116, 129, 114, 130, 134, 115, 121, 129, 117, 137, 137)
 
 dat <- tibble::tibble(dates, weight)
 
