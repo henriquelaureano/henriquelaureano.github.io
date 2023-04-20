@@ -17,7 +17,7 @@
 + [Unit gamma mixed regression models for continuous bounded data](https://www.tandfonline.com/doi/full/10.1080/00949655.2021.1970164?scroll=top&needAccess=true)\
   R. R. Petterle, C. A. Taconeli, J. L. P. da Silva, G. P. da Silva,
   **H. A. Laureano**, W. H. Bonat\
-  *Journal of Statistical Computation and Simulation* (2021)
+  *Journal of Statistical Computation and Simulation* 93(6) (2021)
 
 + [Multivariate generalized linear mixed models for continuous bounded outcomes: Analyzing the body fat percentage data](https://journals.sagepub.com/doi/abs/10.1177/09622802211043276)\
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
@@ -74,8 +74,7 @@
   United States: smoking risk association\
   D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
   L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
-  Submitted to *International Journal of Environmental Research and
-  Public Health*
+  Submitted to *Science of the Total Environment*
   
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
