@@ -28,7 +28,7 @@ dates <- seq.Date(
 )
 weight <- c(48, 59, 59, 64, 71, 78, 85, 91, 92, 90, 106, 93, 99, 99,
             116, 116, 129, 114, 130, 134, 115, 121, 129, 117, 137, 137,
-            158, 175)
+            158, 175, 230, 218, 223)
 
 dat <- tibble::tibble(dates, weight)
 
@@ -36,12 +36,13 @@ p1 <- dat|>
     ggplot()+
     aes(dates, weight)+
     geom_vline(xintercept = as.Date("2023/04/07"), linetype = "dashed")+
+    geom_hline(yintercept = 48 * seq(4), linetype = "dashed")+
     geom_label(aes(x = as.Date("2023/04/07"), y = 100,
                    label = "1st-day\neating\nchicken"))+
     geom_point(size = 2)+
     geom_line()+
     scale_x_date(date_breaks = "2 day", date_labels = "%b %d")+
-    scale_y_continuous(breaks = seq(50, 180, by = 10))+
+    scale_y_continuous(breaks = seq(50, 230, by = 15))+
     labs(x = NULL, y = NULL,
          title = "Fubá's daily development, in grams")+
     theme_minimal(base_size = 14)
@@ -61,7 +62,7 @@ p2 <- datd|>
     geom_line(aes(x = dates, y = zoo::rollmean(diffs, k = 7, fill = 0)),
               color = "brown", size = 0.75)+
     scale_x_date(date_breaks = "2 day", date_labels = "%b %d")+
-    scale_y_continuous(breaks = seq(-20, 25, by = 5))+
+    scale_y_continuous(breaks = seq(-20, 55, by = 7.5))+
     labs(
         x = NULL,  y = NULL,
         title = paste("Daily gain", round(mean(diffs), 2), "in average"),
