@@ -37,42 +37,46 @@ weight <- c(48, 59, 59, 64, 71, 78, 85, 91, 92, 90, 106, 93, 99, 99,
             116, 116, 129, 114, 130, 134, 115, 121, 129, 117, 137, 137,
             158, 175, 230, 218, 223, 244, 255, 265, 266, 279, 295, 299,
             290, 290, 324, 337, 346, 356, 362, 371, 373, 398, 437, 459,
-            485, 480, 502, 526, 551, 579, 549, 620, 617)
+            485, 480, 502, 526, 551, 579, 549, 620, 617, 678, 681, 686)
 
 dat <- tibble::tibble(dates, weight)
 
 p1 <- dat|>
     ggplot()+
     aes(dates, weight)+
-    geom_hline(yintercept = 48 * seq(13), linetype = "dashed")+
-    geom_label(aes(x = as.Date("2023/03/21"), y = 48*2,
+    geom_hline(yintercept = 48 * seq(14), linetype = "dashed")+
+    geom_label(aes(x = as.Date("2023/03/20"), y = 48*2,
                    label = "2 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/03/26"), y = 48*3,
+    geom_label(aes(x = as.Date("2023/03/24"), y = 48*3,
                    label = "3 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/03/31"), y = 48*4,
+    geom_label(aes(x = as.Date("2023/03/29"), y = 48*4,
                    label = "4 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/04/05"), y = 48*5,
+    geom_label(aes(x = as.Date("2023/04/03"), y = 48*5,
                    label = "5 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/04/10"), y = 48*6,
+    geom_label(aes(x = as.Date("2023/04/08"), y = 48*6,
                    label = "6 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/04/15"), y = 48*7,
+    geom_label(aes(x = as.Date("2023/04/13"), y = 48*7,
                    label = "7 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/04/20"), y = 48*8,
+    geom_label(aes(x = as.Date("2023/04/18"), y = 48*8,
                    label = "8 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/04/25"), y = 48*9,
+    geom_label(aes(x = as.Date("2023/04/23"), y = 48*9,
                    label = "9 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/04/30"), y = 48*10,
+    geom_label(aes(x = as.Date("2023/04/28"), y = 48*10,
                    label = "10 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/05/05"), y = 48*11,
+    geom_label(aes(x = as.Date("2023/05/03"), y = 48*11,
                    label = "11 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/05/10"), y = 48*12,
+    geom_label(aes(x = as.Date("2023/05/08"), y = 48*12,
                    label = "12 times\ninitial weight"))+
-    geom_label(aes(x = as.Date("2023/05/15"), y = 48*13,
+    geom_label(aes(x = as.Date("2023/05/13"), y = 48*13,
                    label = "13 times\ninitial weight"))+
+    geom_label(aes(x = as.Date("2023/05/18"), y = 48*14,
+                   label = "14 times\ninitial weight"))+
+    #geom_label(aes(x = as.Date("2023/05/23"), y = 48*15,
+    #               label = "15 times\ninitial weight"))+
     geom_point(size = 2)+
     geom_line()+
     scale_x_date(date_breaks = "3 days", date_labels = "%m-%d")+
-    scale_y_continuous(breaks = seq(50, 650, by = 50))+
+    scale_y_continuous(breaks = seq(50, 700, by = 50))+
     labs(x = NULL, y = NULL,
          title = "Fubá's daily development, in grams")+
     theme_minimal(base_size = 14)
