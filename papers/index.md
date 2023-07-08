@@ -75,7 +75,20 @@
   D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
   L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
   Submitted to *Science of the Total Environment*
-  
+
++ [2023]\
+  Toxicologial effects of trimerosal and aluminum in the liver, kidney, and
+  brain of zebrafish (Danio rerio)\
+  M. E. A. Galiciolli, J. F. Silva, M. M. Prodocimo, **H. A. Laureano**,
+  S. L. de Morais Calado, C. S. Oliveira, I. C. Guiloski\
+  Submitted to *Metabolites*
+
++ [2023]\
+  Multivariate augmented unit-gamma mixed regression models for correlated
+  continuous bounded outcomes\
+  R. R. Petterle, **H. A. Laureano**, G. P da Silva, W. H. Bonat\
+  Submitted to *Statistics in Medicine*
+
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
   <!-- inhibitors in women in menopause: a systematic review and -->
