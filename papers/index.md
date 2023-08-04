@@ -59,15 +59,14 @@
   Junior, W. H. Bonat\
   *Austrian Journal of Statistics* (2023)
 
++ The Long Term Loss of Smell and Taste in COVID-19 Patients – A
+  Systematic Review and Meta-Analysis\
+  J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
+  *ABCS Health Sciences* (2023)
+  
 ***
 
 ### Submitted for publication
-
-+ [2022]\
-  The Long Term Loss of Smell and Taste in COVID-19 Patients – A
-  Systematic Review and Meta-Analysis\
-  J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
-  Submitted to *ABCS Health Sciences*
   
 + [2023]\
   Population-based assessment for major congenital malformations in the
