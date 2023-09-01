@@ -49,6 +49,11 @@
   **H. A. Laureano**, R. R. Petterle, G. P. da Silva, P. J. Ribeiro
   Junior, W. H. Bonat\
   *Computational Statistics* (2023) https://link.springer.com/article/10.1007/s00180-023-01353-5
+
++ [Toxicologial effects of trimerosal and aluminum in the liver, kidney, and brain of zebrafish (Danio rerio)](https://www.mdpi.com/2218-1989/13/9/975)\
+  M. E. A. Galiciolli, J. F. Silva, M. M. Prodocimo, **H. A. Laureano**,
+  S. L. de Morais Calado, C. S. Oliveira, I. C. Guiloski\
+  *Metabolites* (2023)
   
 ***
 
@@ -63,7 +68,7 @@
   Systematic Review and Meta-Analysis\
   J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
   *ABCS Health Sciences* (2023)
-  
+
 ***
 
 ### Submitted for publication
@@ -73,20 +78,13 @@
   United States: smoking risk association\
   D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
   L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
-  Submitted to *Science of the Total Environment*
-
-+ [2023]\
-  Toxicologial effects of trimerosal and aluminum in the liver, kidney, and
-  brain of zebrafish (Danio rerio)\
-  M. E. A. Galiciolli, J. F. Silva, M. M. Prodocimo, **H. A. Laureano**,
-  S. L. de Morais Calado, C. S. Oliveira, I. C. Guiloski\
-  Submitted to *Metabolites*
+  Submitted to *Environmental Science and Pollution Research*
 
 + [2023]\
   Multivariate augmented unit-gamma mixed regression models for correlated
   continuous bounded outcomes\
   R. R. Petterle, **H. A. Laureano**, G. P da Silva, W. H. Bonat\
-  Submitted to *Statistics in Medicine*
+  Submitted to *Statistical Methods in Medical Research*
 
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
