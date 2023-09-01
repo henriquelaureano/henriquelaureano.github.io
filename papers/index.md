@@ -50,7 +50,7 @@
   Junior, W. H. Bonat\
   *Computational Statistics* (2023) https://link.springer.com/article/10.1007/s00180-023-01353-5
 
-+ [Toxicologial effects of trimerosal and aluminum in the liver, kidney, and brain of zebrafish (Danio rerio)](https://www.mdpi.com/2218-1989/13/9/975)\
++ [Toxicological effects of thimerosal and aluminum in the liver, kidney, and brain of zebrafish (Danio rerio)](https://www.mdpi.com/2218-1989/13/9/975)\
   M. E. A. Galiciolli, J. F. Silva, M. M. Prodocimo, **H. A. Laureano**,
   S. L. de Morais Calado, C. S. Oliveira, I. C. Guiloski\
   *Metabolites* (2023)
