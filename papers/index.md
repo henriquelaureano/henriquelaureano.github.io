@@ -53,7 +53,7 @@
 + [Toxicological effects of thimerosal and aluminum in the liver, kidney, and brain of zebrafish (Danio rerio)](https://www.mdpi.com/2218-1989/13/9/975)\
   M. E. A. Galiciolli, J. F. Silva, M. M. Prodocimo, **H. A. Laureano**,
   S. L. de Morais Calado, C. S. Oliveira, I. C. Guiloski\
-  *Metabolites* (2023)
+  *Metabolites* 13(9) (2023), 975 https://doi.org/10.3390/metabo13090975
   
 ***
 
