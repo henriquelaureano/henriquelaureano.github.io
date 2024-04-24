@@ -54,15 +54,15 @@
   M. E. A. Galiciolli, J. F. Silva, M. M. Prodocimo, **H. A. Laureano**,
   S. L. de Morais Calado, C. S. Oliveira, I. C. Guiloski\
   *Metabolites* 13(9) (2023), 975 https://doi.org/10.3390/metabo13090975
-  
+
++ [Multivariate Generalized Linear Mixed Models for Count Data](https://ajs.or.at/index.php/ajs/article/view/1574)\
+  G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
+  Junior, W. H. Bonat\
+  *Austrian Journal of Statistics* 53(1) (2024), 44–69. https://doi.org/10.17713/ajs.v53i1.1574
+
 ***
 
 ### Accepted for publication
-
-+ Multivariate Generalized Linear Mixed Models for Count Data\
-  G. P. da Silva, **H. A. Laureano**, R. R. Petterle, P. J. Ribeiro
-  Junior, W. H. Bonat\
-  *Austrian Journal of Statistics* (2023)
 
 + The Long Term Loss of Smell and Taste in COVID-19 Patients – A
   Systematic Review and Meta-Analysis\
@@ -80,11 +80,20 @@
   L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
   Submitted to *Environmental Science and Pollution Research*
 
-+ [2023]\
++ [2024]\
   Multivariate augmented unit-gamma mixed regression models for correlated
   continuous bounded outcomes\
   R. R. Petterle, **H. A. Laureano**, G. P da Silva, W. H. Bonat\
   Submitted to *Statistical Methods in Medical Research*
+
++ [2024]\
+  COVID-19 in Brazilian pediatric patients: a retrospective cross-sectional
+  study with a predictive model for hospitalization\
+  A. P. O. Pacheco, **H. A. Laureano**, L. Schidlowski, N. M. Ciorcero, T.
+  Z. Pinto, A. V. Borgmann, G. R. Fragoso, A. L. G. Giamberardino, R. M.
+  Dourado, K. dos Anjos, P. R. D. João, M. H. K. Assahide, M. C. M. da
+  Silveira, H. I. G. Giamberardino, V. H. S. Costa-Junior, C. Prando\
+  Submitted to *Jornal de Pediatria*
 
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
