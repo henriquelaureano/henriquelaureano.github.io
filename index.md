@@ -1,6 +1,6 @@
 ## About
 
-CV ([pt-br](vitae.pdf) | [eng](cv.pdf)) |
+CV ([eng](cv.pdf) | [pt-br](vitae.pdf)) |
 [LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/) |
 [Google Scholar](https://scholar.google.com/citations?user=CWYkCEQAAAAJ&hl=en) |
 [Tumblr](tumblr/) |
