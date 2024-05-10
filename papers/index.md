@@ -60,31 +60,29 @@
   Junior, W. H. Bonat\
   *Austrian Journal of Statistics* 53(1) (2024), 44–69. https://doi.org/10.17713/ajs.v53i1.1574
 
-***
-
-### Accepted for publication
-
 + The Long Term Loss of Smell and Taste in COVID-19 Patients – A
   Systematic Review and Meta-Analysis\
   J. D. C. Passos, **H. A. Laureano**, Y. S. Borges, I. C. Guiloski\
-  *ABCS Health Sciences* (2023)
+  *ABCS Health Sciences* (2024), https://doi.org/10.7322/abcshs.2022057.2114
 
 ***
 
+<!-- ### Accepted for publication -->
+
 ### Submitted for publication
   
-+ [2023]\
-  Population-based assessment for major congenital malformations in the
-  United States: smoking risk association\
-  D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
-  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
-  Submitted to *Environmental Science and Pollution Research*
-
 + [2024]\
   Multivariate augmented unit-gamma mixed regression models for correlated
   continuous bounded outcomes\
   R. R. Petterle, **H. A. Laureano**, G. P da Silva, W. H. Bonat\
   Submitted to *Statistical Methods in Medical Research*
+
++ [2024]\
+  Population-based assessment for major congenital malformations in the
+  United States: smoking risk association\
+  D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
+  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
+  Submitted to *Frontiers in Pediatrics*
 
 + [2024]\
   COVID-19 in Brazilian pediatric patients: a retrospective cross-sectional
