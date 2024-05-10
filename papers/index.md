@@ -78,13 +78,6 @@
   Submitted to *Statistical Methods in Medical Research*
 
 + [2024]\
-  Population-based assessment for major congenital malformations in the
-  United States: smoking risk association\
-  D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
-  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
-  Submitted to *Frontiers in Pediatrics*
-
-+ [2024]\
   COVID-19 in Brazilian pediatric patients: a retrospective cross-sectional
   study with a predictive model for hospitalization\
   A. P. O. Pacheco, **H. A. Laureano**, L. Schidlowski, N. M. Ciorcero, T.
@@ -92,6 +85,13 @@
   Dourado, K. dos Anjos, P. R. D. João, M. H. K. Assahide, M. C. M. da
   Silveira, H. I. G. Giamberardino, V. H. S. Costa-Junior, C. Prando\
   Submitted to *Jornal de Pediatria*
+
++ [2024]\
+  Population-based assessment for major congenital malformations in the
+  United States: smoking risk association\
+  D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
+  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
+  Submitted to *Reproductive Toxicology*
 
 <!-- + [2022]\ -->
   <!-- Increased risk of fractures caused by the use of proton pump -->
