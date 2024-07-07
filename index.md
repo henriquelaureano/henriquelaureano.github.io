@@ -14,9 +14,9 @@ I hold a BSc in Statistics and an MSc in Statistics and Numerical Methods in
 Engineering, both @ [UFPR](https://goo.gl/DtVAbi). In the masters, I handled mainly 
 multivariate failure time data (also known as multivariate survival / confiability 
 data). You may take a look [here](THESIS/thesis/thesis.pdf) at my thesis and 
-[here](THESIS/aqua/slides.pdf)( [.Rmd](THESIS/aqua/slides.Rmd) | 
-[in_header file](THESIS/aqua/beamerheader.txt) | [TikZ style](THESIS/aqua/tikzit.sty)
-) at the defense slides.
+[here](THESIS/aqua/slides.pdf) ( [.Rmd](THESIS/aqua/slides.Rmd) | 
+[in_header file](THESIS/aqua/beamerheader.txt) | [TikZ style](THESIS/aqua/tikzit.sty))
+at the defense slides.
 
 My main interests lie in computational statistics, programming, and data 
 analysis.
