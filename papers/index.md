@@ -79,24 +79,24 @@
 ### Submitted for publication
   
 + [2024]\
-  Multivariate augmented unit-gamma mixed regression models for correlated
-  continuous bounded outcomes\
-  R. R. Petterle, **H. A. Laureano**, G. P da Silva, W. H. Bonat\
-  Submitted to *Statistical Methods in Medical Research*
-
-+ [2024]\
   Population-based assessment for major congenital malformations in the
   United States: smoking risk association\
   D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
   L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
   Submitted to *Reproductive Toxicology*
 
-<!-- + [2022]\ -->
-  <!-- Increased risk of fractures caused by the use of proton pump -->
-  <!-- inhibitors in women in menopause: a systematic review and -->
-  <!-- meta-analysis\ -->
-  <!-- T. Maia, B. Gafo, **H. A. Laureano**, I. C. Guiloski\ -->
-  <!-- Submitted to *EXCLI Journal: Experimental and Clinical Sciences* -->
++ [2024]\
+  Non-steroidal anti-inflammatory drugs and oxidative stress biomarkers
+  in fish: a systematic review and meta-analysis\
+  L. H. Z. Justi, J. F. da Silva, M. S. Santana, **H. A. Laureano**,
+  M. E. Pereira, C. S. Oliveira, I. C. Guiloski\
+  Submitted to *Toxicology Reports*
+
++ [2024]\
+  Multivariate augmented unit-gamma mixed regression models for correlated
+  continuous bounded outcomes\
+  R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
+  Submitted to *Scientific Reports*
 
 <!-- *** -->
 
