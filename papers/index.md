@@ -96,7 +96,7 @@
   Multivariate augmented unit-gamma mixed regression models for correlated
   continuous bounded outcomes\
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
-  Submitted to *Statistics and Computing*
+  Submitted to *International Journal of Biostatistics*
 
 <!-- *** -->
 
