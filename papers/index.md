@@ -74,7 +74,14 @@
 
 ***
 
-<!-- ### Accepted for publication -->
+### Accepted for publication
+
++ [2025]\
+  Non-steroidal anti-inflammatory drugs and oxidative stress biomarkers
+  in fish: a systematic review and meta-analysis\
+  L. H. Z. Justi, J. F. da Silva, M. S. Santana, **H. A. Laureano**,
+  M. E. Pereira, C. S. Oliveira, I. C. Guiloski\
+  *Toxicology Reports*
 
 ### Submitted for publication
   
@@ -84,13 +91,6 @@
   D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
   L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
   Submitted to *Reproductive Toxicology*
-
-+ [2024]\
-  Non-steroidal anti-inflammatory drugs and oxidative stress biomarkers
-  in fish: a systematic review and meta-analysis\
-  L. H. Z. Justi, J. F. da Silva, M. S. Santana, **H. A. Laureano**,
-  M. E. Pereira, C. S. Oliveira, I. C. Guiloski\
-  Submitted to *Toxicology Reports*
 
 + [2024]\
   Multivariate augmented unit-gamma mixed regression models for correlated
