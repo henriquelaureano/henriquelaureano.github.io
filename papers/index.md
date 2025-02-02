@@ -72,16 +72,14 @@
   Silveira, H. I. G. Giamberardino, V. H. S. Costa-Junior, C. Prando\
   *life* 14(9) (2024), 1083 https://doi.org/10.3390/life14091083
 
++ [Non-steroidal anti-inflammatory drugs and oxidative stress biomarkers in fish: a meta-analytic review](https://www.sciencedirect.com/science/article/pii/S2214750025000289?utm_campaign=STMJ_219742_AUTH_SERV_PA&utm_medium=email&utm_acid=265441905&SIS_ID=&dgcid=STMJ_219742_AUTH_SERV_PA&CMX_ID=&utm_in=DM536301&utm_source=AC_)\
+  L. H. Z. Justi, J. F. Silva, M. S. Santana, **H. A. Laureano**,
+  M. E. Pereira, C. S. Oliveira, I. C. Guiloski\
+  *Toxicology Reports* 14 (2025), https://doi.org/10.1016/j.toxrep.2025.101910
+
 ***
 
-### Accepted for publication
-
-+ [2025]\
-  Non-steroidal anti-inflammatory drugs and oxidative stress biomarkers
-  in fish: a systematic review and meta-analysis\
-  L. H. Z. Justi, J. F. da Silva, M. S. Santana, **H. A. Laureano**,
-  M. E. Pereira, C. S. Oliveira, I. C. Guiloski\
-  *Toxicology Reports*
+<!-- ### Accepted for publication -->
 
 ### Submitted for publication
   
