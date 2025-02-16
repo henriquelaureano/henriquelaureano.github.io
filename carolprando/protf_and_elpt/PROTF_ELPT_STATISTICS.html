@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Henrique Laureano">
+
+<title>PROTF &amp; ELPT</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="PROTF_ELPT_STATISTICS_files/libs/clipboard/clipboard.min.js"></script>
+<script src="PROTF_ELPT_STATISTICS_files/libs/quarto-html/quarto.js"></script>
+<script src="PROTF_ELPT_STATISTICS_files/libs/quarto-html/popper.min.js"></script>
+<script src="PROTF_ELPT_STATISTICS_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="PROTF_ELPT_STATISTICS_files/libs/quarto-html/anchor.min.js"></script>
+<link href="PROTF_ELPT_STATISTICS_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="PROTF_ELPT_STATISTICS_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="PROTF_ELPT_STATISTICS_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="PROTF_ELPT_STATISTICS_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="PROTF_ELPT_STATISTICS_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="PROTF_ELPT_STATISTICS_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="PROTF_ELPT_STATISTICS_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">PROTF &amp; ELPT</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Henrique Laureano </p>
+          </div>
+  </div>
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">February 16, 2025</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"pacman"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) </span>
+<span id="cb1-2"><a href="#cb1-2"></a>  <span class="fu">install.packages</span>(<span class="st">"pacman"</span>) </span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(googlesheets4, dplyr, lubridate, writexl, kableExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="protf" class="level1">
+<h1>PROTF</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>protf_url <span class="ot">&lt;-</span> </span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="st">"https://docs.google.com/spreadsheets/d/"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    <span class="st">"1kG4ED-WejJzI5_NyMkOjf33GL6hXxbb_Uvmr2HOKcds/"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    <span class="st">"edit?gid=0#gid=0"</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7"></a>protf <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(protf_url)</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a>protf <span class="ot">&lt;-</span> protf <span class="sc">|&gt;</span> </span>
+<span id="cb2-10"><a href="#cb2-10"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb2-11"><a href="#cb2-11"></a>    <span class="at">IDADE =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(</span>
+<span id="cb2-12"><a href="#cb2-12"></a>      lubridate<span class="sc">::</span><span class="fu">interval</span>(DN, DC), <span class="st">"years"</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a>    ),</span>
+<span id="cb2-14"><a href="#cb2-14"></a>    <span class="at">CUTOFF =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb2-15"><a href="#cb2-15"></a>      IDADE  <span class="sc">&lt;</span>  <span class="dv">1</span>              <span class="sc">~</span> <span class="fl">1.90</span>,</span>
+<span id="cb2-16"><a href="#cb2-16"></a>      IDADE <span class="sc">&gt;=</span>  <span class="dv">1</span> <span class="sc">&amp;</span> IDADE <span class="sc">&lt;</span>  <span class="dv">4</span> <span class="sc">~</span> <span class="fl">2.30</span>,</span>
+<span id="cb2-17"><a href="#cb2-17"></a>      IDADE <span class="sc">&gt;=</span>  <span class="dv">4</span> <span class="sc">&amp;</span> IDADE <span class="sc">&lt;</span> <span class="dv">10</span> <span class="sc">~</span> <span class="fl">2.48</span>,</span>
+<span id="cb2-18"><a href="#cb2-18"></a>      IDADE <span class="sc">&gt;=</span> <span class="dv">10</span> <span class="sc">&amp;</span> IDADE <span class="sc">&lt;</span> <span class="dv">18</span> <span class="sc">~</span> <span class="fl">2.41</span>,</span>
+<span id="cb2-19"><a href="#cb2-19"></a>      IDADE <span class="sc">&gt;=</span> <span class="dv">18</span>              <span class="sc">~</span> <span class="fl">2.40</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a>    ),</span>
+<span id="cb2-21"><a href="#cb2-21"></a>    <span class="at">GRUPO =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb2-22"><a href="#cb2-22"></a>      CUTOFF <span class="sc">==</span> <span class="fl">1.90</span> <span class="sc">~</span>      <span class="st">"&lt; 1 ano"</span>,</span>
+<span id="cb2-23"><a href="#cb2-23"></a>      CUTOFF <span class="sc">==</span> <span class="fl">2.30</span> <span class="sc">~</span>   <span class="st">"1 a 3 anos"</span>,</span>
+<span id="cb2-24"><a href="#cb2-24"></a>      CUTOFF <span class="sc">==</span> <span class="fl">2.48</span> <span class="sc">~</span>   <span class="st">"4 a 9 anos"</span>,</span>
+<span id="cb2-25"><a href="#cb2-25"></a>      CUTOFF <span class="sc">==</span> <span class="fl">2.41</span> <span class="sc">~</span> <span class="st">"10 a 17 anos"</span>,</span>
+<span id="cb2-26"><a href="#cb2-26"></a>      CUTOFF <span class="sc">==</span> <span class="fl">2.40</span> <span class="sc">~</span>    <span class="st">"&gt; 18 anos"</span></span>
+<span id="cb2-27"><a href="#cb2-27"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-28"><a href="#cb2-28"></a>      <span class="fu">factor</span>(</span>
+<span id="cb2-29"><a href="#cb2-29"></a>        <span class="at">levels =</span> <span class="fu">c</span>(</span>
+<span id="cb2-30"><a href="#cb2-30"></a>          <span class="st">"&lt; 1 ano"</span>, </span>
+<span id="cb2-31"><a href="#cb2-31"></a>          <span class="st">"1 a 3 anos"</span>, <span class="st">"4 a 9 anos"</span>, <span class="st">"10 a 17 anos"</span>, <span class="st">"&gt; 18 anos"</span></span>
+<span id="cb2-32"><a href="#cb2-32"></a>        )</span>
+<span id="cb2-33"><a href="#cb2-33"></a>      )</span>
+<span id="cb2-34"><a href="#cb2-34"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Medidas resumo das datas de nascimento:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">summary</span>(protf<span class="sc">$</span>DN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Min.                    1st Qu. 
+"1929-10-09 00:00:00.0000" "2006-01-11 00:00:00.0000" 
+                    Median                       Mean 
+"2011-01-08 00:00:00.0000" "2010-09-18 18:03:02.4643" 
+                   3rd Qu.                       Max. 
+"2015-08-20 00:00:00.0000" "2024-10-25 00:00:00.0000" </code></pre>
+</div>
+</div>
+<p>E das datas de coleta:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">summary</span>(protf<span class="sc">$</span>DC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Min.                    1st Qu. 
+"2015-01-02 00:00:00.0000" "2016-11-20 18:00:00.0000" 
+                    Median                       Mean 
+"2019-03-27 12:00:00.0000" "2019-05-29 23:20:46.8394" 
+                   3rd Qu.                       Max. 
+"2021-10-02 00:00:00.0000" "2024-10-31 00:00:00.0000" </code></pre>
+</div>
+</div>
+<p>Calculando as idades vemos que temos pacientes com idade negativa.</p>
+<p>São 56 diferentes situações/prontuários. Por e-mail envio on xlsx com os 56 casos.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">summary</span>(protf<span class="sc">$</span>IDADE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -1.477   3.515   8.558   8.693  13.156  88.575 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>protf <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(IDADE <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(PRONTUARIO, DC, DN, IDADE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 56 × 4
+   PRONTUARIO DC                  DN                    IDADE
+        &lt;dbl&gt; &lt;dttm&gt;              &lt;dttm&gt;                &lt;dbl&gt;
+ 1     687687 2023-02-01 00:00:00 2024-06-14 00:00:00 -1.36  
+ 2     650859 2023-03-01 00:00:00 2023-06-08 00:00:00 -0.271 
+ 3     668619 2023-05-01 00:00:00 2023-11-21 00:00:00 -0.559 
+ 4     656035 2023-05-01 00:00:00 2023-05-09 00:00:00 -0.0219
+ 5     693335 2023-05-01 00:00:00 2024-10-22 00:00:00 -1.48  
+ 6     647516 2023-06-01 00:00:00 2023-06-27 00:00:00 -0.0712
+ 7     652197 2023-07-01 00:00:00 2023-08-15 00:00:00 -0.123 
+ 8     666073 2023-02-02 00:00:00 2023-11-23 00:00:00 -0.805 
+ 9     685515 2024-07-02 00:00:00 2024-07-22 00:00:00 -0.0546
+10     654881 2023-05-03 00:00:00 2023-09-14 00:00:00 -0.367 
+# ℹ 46 more rows</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>protf <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(IDADE <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb11-4"><a href="#cb11-4"></a>    <span class="st">"C:/Users/A447988/Desktop/ip4/PROTF_IDADES_NEGATIVAS.xlsx"</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Aqui é apenas um detalhe. Temos 2031 (14.79`) prontuários com o resultado do exame em branco.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">summary</span>(protf<span class="sc">$</span>RESULTADO)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+  0.000   2.400   2.700   2.789   3.100   7.600    2031 </code></pre>
+</div>
+</div>
+<p>Como as datas serão corrigidas, os números abaixo irão mudar.</p>
+<p>De qualquer forma, já segue os resultados:</p>
+<ul>
+<li>Para cada grupo temos sua nota de corte, e assim mostramos quantos exames (<strong>E</strong>) estão abaixo (<strong>ABA</strong>) de tal <em>cutoff</em> e de quantos pacientes (<strong>P</strong>) diferentes geram esses exames (junto temos a média de exames por paciente).</li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>dplyr<span class="sc">::</span><span class="fu">full_join</span>(</span>
+<span id="cb14-2"><a href="#cb14-2"></a>  protf <span class="sc">|&gt;</span> </span>
+<span id="cb14-3"><a href="#cb14-3"></a>  dplyr<span class="sc">::</span><span class="fu">reframe</span>(</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="at">E     =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), </span>
+<span id="cb14-5"><a href="#cb14-5"></a>    <span class="at">P     =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(PRONTUARIO),</span>
+<span id="cb14-6"><a href="#cb14-6"></a>    <span class="at">MEDIA =</span> E <span class="sc">/</span> P,</span>
+<span id="cb14-7"><a href="#cb14-7"></a>    <span class="at">.by   =</span> <span class="fu">c</span>(GRUPO, CUTOFF)</span>
+<span id="cb14-8"><a href="#cb14-8"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-9"><a href="#cb14-9"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(GRUPO),</span>
+<span id="cb14-10"><a href="#cb14-10"></a>  </span>
+<span id="cb14-11"><a href="#cb14-11"></a>  protf <span class="sc">|&gt;</span> </span>
+<span id="cb14-12"><a href="#cb14-12"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(RESULTADO <span class="sc">&lt;</span> CUTOFF) <span class="sc">|&gt;</span> </span>
+<span id="cb14-13"><a href="#cb14-13"></a>    dplyr<span class="sc">::</span><span class="fu">reframe</span>(</span>
+<span id="cb14-14"><a href="#cb14-14"></a>      <span class="at">E_ABA     =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), </span>
+<span id="cb14-15"><a href="#cb14-15"></a>      <span class="at">P_ABA     =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(PRONTUARIO),</span>
+<span id="cb14-16"><a href="#cb14-16"></a>      <span class="at">MEDIA_ABA =</span> E_ABA <span class="sc">/</span> P_ABA,</span>
+<span id="cb14-17"><a href="#cb14-17"></a>      <span class="at">.by       =</span> <span class="fu">c</span>(GRUPO, CUTOFF)</span>
+<span id="cb14-18"><a href="#cb14-18"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-19"><a href="#cb14-19"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(GRUPO), </span>
+<span id="cb14-20"><a href="#cb14-20"></a>  </span>
+<span id="cb14-21"><a href="#cb14-21"></a>  <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"GRUPO"</span>, <span class="st">"CUTOFF"</span>)</span>
+<span id="cb14-22"><a href="#cb14-22"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-23"><a href="#cb14-23"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb14-24"><a href="#cb14-24"></a>    <span class="at">PROP_E =</span> E_ABA <span class="sc">/</span> E,</span>
+<span id="cb14-25"><a href="#cb14-25"></a>    <span class="at">PROP_P =</span> P_ABA <span class="sc">/</span> P</span>
+<span id="cb14-26"><a href="#cb14-26"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-27"><a href="#cb14-27"></a>  kableExtra<span class="sc">::</span><span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-28"><a href="#cb14-28"></a>  kableExtra<span class="sc">::</span><span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-29"><a href="#cb14-29"></a>  kableExtra<span class="sc">::</span><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold;">GRUPO</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">CUTOFF</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">E</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">P</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">MEDIA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">E_ABA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">P_ABA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">MEDIA_ABA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">PROP_E</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">PROP_P</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">&lt; 1 ano</td>
+<td style="text-align: right;">1.90</td>
+<td style="text-align: right;">1545</td>
+<td style="text-align: right;">1020</td>
+<td style="text-align: right;">1.515</td>
+<td style="text-align: right;">306</td>
+<td style="text-align: right;">225</td>
+<td style="text-align: right;">1.360</td>
+<td style="text-align: right;">0.198</td>
+<td style="text-align: right;">0.221</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">1 a 3 anos</td>
+<td style="text-align: right;">2.30</td>
+<td style="text-align: right;">2184</td>
+<td style="text-align: right;">1147</td>
+<td style="text-align: right;">1.904</td>
+<td style="text-align: right;">379</td>
+<td style="text-align: right;">238</td>
+<td style="text-align: right;">1.592</td>
+<td style="text-align: right;">0.174</td>
+<td style="text-align: right;">0.207</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">4 a 9 anos</td>
+<td style="text-align: right;">2.48</td>
+<td style="text-align: right;">4112</td>
+<td style="text-align: right;">1511</td>
+<td style="text-align: right;">2.721</td>
+<td style="text-align: right;">801</td>
+<td style="text-align: right;">338</td>
+<td style="text-align: right;">2.370</td>
+<td style="text-align: right;">0.195</td>
+<td style="text-align: right;">0.224</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">10 a 17 anos</td>
+<td style="text-align: right;">2.41</td>
+<td style="text-align: right;">5544</td>
+<td style="text-align: right;">1690</td>
+<td style="text-align: right;">3.280</td>
+<td style="text-align: right;">783</td>
+<td style="text-align: right;">278</td>
+<td style="text-align: right;">2.817</td>
+<td style="text-align: right;">0.141</td>
+<td style="text-align: right;">0.164</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">&gt; 18 anos</td>
+<td style="text-align: right;">2.40</td>
+<td style="text-align: right;">347</td>
+<td style="text-align: right;">244</td>
+<td style="text-align: right;">1.422</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.667</td>
+<td style="text-align: right;">0.029</td>
+<td style="text-align: right;">0.025</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="elpt" class="level1">
+<h1>ELPT</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>elpt_url <span class="ot">&lt;-</span> </span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb15-3"><a href="#cb15-3"></a>    <span class="st">"https://docs.google.com/spreadsheets/d/"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="st">"1h3FjWJsUuuGQFBAVHQJaUgQ3jqgImb5Ioi3JAx900Rc/"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5"></a>    <span class="st">"edit?gid=1275014391#gid=1275014391"</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a>  )</span>
+<span id="cb15-7"><a href="#cb15-7"></a>elpt <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(elpt_url)</span>
+<span id="cb15-8"><a href="#cb15-8"></a></span>
+<span id="cb15-9"><a href="#cb15-9"></a>elpt <span class="ot">&lt;-</span> elpt <span class="sc">|&gt;</span> </span>
+<span id="cb15-10"><a href="#cb15-10"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb15-11"><a href="#cb15-11"></a>    <span class="at">IDADE =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(</span>
+<span id="cb15-12"><a href="#cb15-12"></a>      lubridate<span class="sc">::</span><span class="fu">interval</span>(DN, DC), <span class="st">"years"</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a>    ),</span>
+<span id="cb15-14"><a href="#cb15-14"></a>    <span class="at">RESULTADO =</span> <span class="fu">unlist</span>(elpt<span class="sc">$</span>RESULTADO),</span>
+<span id="cb15-15"><a href="#cb15-15"></a>    <span class="at">RESULTADO =</span> <span class="fu">gsub</span>(<span class="st">","</span>, <span class="st">"."</span>, RESULTADO) <span class="sc">|&gt;</span> <span class="fu">as.numeric</span>(),</span>
+<span id="cb15-16"><a href="#cb15-16"></a>    <span class="at">CUTOFF =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb15-17"><a href="#cb15-17"></a>      IDADE  <span class="sc">&lt;</span>  <span class="dv">1</span>              <span class="sc">~</span>    <span class="cn">NA</span>,</span>
+<span id="cb15-18"><a href="#cb15-18"></a>      IDADE <span class="sc">&gt;=</span>  <span class="dv">1</span> <span class="sc">&amp;</span> IDADE <span class="sc">&lt;</span>  <span class="dv">4</span> <span class="sc">~</span> <span class="fl">0.550</span>,</span>
+<span id="cb15-19"><a href="#cb15-19"></a>      IDADE <span class="sc">&gt;=</span>  <span class="dv">4</span> <span class="sc">&amp;</span> IDADE <span class="sc">&lt;</span> <span class="dv">10</span> <span class="sc">~</span> <span class="fl">0.565</span>,</span>
+<span id="cb15-20"><a href="#cb15-20"></a>      IDADE <span class="sc">&gt;=</span> <span class="dv">10</span> <span class="sc">&amp;</span> IDADE <span class="sc">&lt;</span> <span class="dv">18</span> <span class="sc">~</span> <span class="fl">0.620</span>,</span>
+<span id="cb15-21"><a href="#cb15-21"></a>      IDADE <span class="sc">&gt;=</span> <span class="dv">18</span>              <span class="sc">~</span> <span class="fl">0.715</span></span>
+<span id="cb15-22"><a href="#cb15-22"></a>    ),</span>
+<span id="cb15-23"><a href="#cb15-23"></a>    <span class="at">GRUPO =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb15-24"><a href="#cb15-24"></a>      CUTOFF  <span class="sc">%in%</span> <span class="cn">NA</span> <span class="sc">~</span>      <span class="st">"&lt; 1 ano"</span>,</span>
+<span id="cb15-25"><a href="#cb15-25"></a>      CUTOFF <span class="sc">==</span> <span class="fl">0.550</span> <span class="sc">~</span>   <span class="st">"1 a 3 anos"</span>,</span>
+<span id="cb15-26"><a href="#cb15-26"></a>      CUTOFF <span class="sc">==</span> <span class="fl">0.565</span> <span class="sc">~</span>   <span class="st">"4 a 9 anos"</span>,</span>
+<span id="cb15-27"><a href="#cb15-27"></a>      CUTOFF <span class="sc">==</span> <span class="fl">0.620</span> <span class="sc">~</span> <span class="st">"10 a 17 anos"</span>,</span>
+<span id="cb15-28"><a href="#cb15-28"></a>      CUTOFF <span class="sc">==</span> <span class="fl">0.715</span> <span class="sc">~</span>    <span class="st">"&gt; 18 anos"</span></span>
+<span id="cb15-29"><a href="#cb15-29"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb15-30"><a href="#cb15-30"></a>      <span class="fu">factor</span>(</span>
+<span id="cb15-31"><a href="#cb15-31"></a>        <span class="at">levels =</span> <span class="fu">c</span>(</span>
+<span id="cb15-32"><a href="#cb15-32"></a>          <span class="st">"&lt; 1 ano"</span>, </span>
+<span id="cb15-33"><a href="#cb15-33"></a>          <span class="st">"1 a 3 anos"</span>, <span class="st">"4 a 9 anos"</span>, <span class="st">"10 a 17 anos"</span>, <span class="st">"&gt; 18 anos"</span></span>
+<span id="cb15-34"><a href="#cb15-34"></a>        )</span>
+<span id="cb15-35"><a href="#cb15-35"></a>      )</span>
+<span id="cb15-36"><a href="#cb15-36"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Apenas um exame com resultado em branco/faltante, mas é de um paciente com mais de 18 anos.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">summary</span>(elpt<span class="sc">$</span>RESULTADO)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+  0.040   0.790   1.020   1.115   1.290  12.000       1 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>elpt <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">is.na</span>(RESULTADO)) <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a href="#cb18-3"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(PRONTUARIO, DC, DN, IDADE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  PRONTUARIO DC                  DN                  IDADE
+  &lt;chr&gt;      &lt;dttm&gt;              &lt;dttm&gt;              &lt;dbl&gt;
+1 491432     2024-07-02 00:00:00 1994-11-25 00:00:00  29.6</code></pre>
+</div>
+</div>
+<p>Medidas resumo das datas de nascimento:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">summary</span>(elpt<span class="sc">$</span>DN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Min.                    1st Qu. 
+"1935-02-19 00:00:00.0000" "2006-08-17 00:00:00.0000" 
+                    Median                       Mean 
+"2011-04-26 00:00:00.0000" "2010-09-25 04:55:05.5091" 
+                   3rd Qu.                       Max. 
+"2016-01-23 00:00:00.0000" "2024-07-22 00:00:00.0000" </code></pre>
+</div>
+</div>
+<p>E das datas de coleta:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">summary</span>(elpt<span class="sc">$</span>DC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Min.                    1st Qu. 
+"2015-01-06 00:00:00.0000" "2018-05-19 18:00:00.0000" 
+                    Median                       Mean 
+"2021-03-15 12:00:00.0000" "2020-09-18 00:54:59.4991" 
+                   3rd Qu.                       Max. 
+"2022-12-05 00:00:00.0000" "2024-10-31 00:00:00.0000" </code></pre>
+</div>
+</div>
+<p>Nenhum paciente com idade negativa.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">summary</span>(elpt<span class="sc">$</span>IDADE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+ 0.02466  4.43151  9.37671  9.98183 13.68353 89.63388 </code></pre>
+</div>
+</div>
+<p>Para cada grupo temos sua nota de corte, e assim mostramos quantos exames (<strong>E</strong>) estão abaixo (<strong>ABA</strong>) de tal <em>cutoff</em> e de quantos pacientes (<strong>P</strong>) diferentes geram esses exames (junto temos a média de exames por paciente).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>dplyr<span class="sc">::</span><span class="fu">full_join</span>(</span>
+<span id="cb26-2"><a href="#cb26-2"></a>  elpt <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href="#cb26-3"></a>  dplyr<span class="sc">::</span><span class="fu">reframe</span>(</span>
+<span id="cb26-4"><a href="#cb26-4"></a>    <span class="at">E     =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), </span>
+<span id="cb26-5"><a href="#cb26-5"></a>    <span class="at">P     =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(PRONTUARIO),</span>
+<span id="cb26-6"><a href="#cb26-6"></a>    <span class="at">MEDIA =</span> E <span class="sc">/</span> P,</span>
+<span id="cb26-7"><a href="#cb26-7"></a>    <span class="at">.by   =</span> <span class="fu">c</span>(GRUPO, CUTOFF)</span>
+<span id="cb26-8"><a href="#cb26-8"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb26-9"><a href="#cb26-9"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(GRUPO),</span>
+<span id="cb26-10"><a href="#cb26-10"></a>  </span>
+<span id="cb26-11"><a href="#cb26-11"></a>  elpt <span class="sc">|&gt;</span> </span>
+<span id="cb26-12"><a href="#cb26-12"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(RESULTADO <span class="sc">&lt;</span> CUTOFF) <span class="sc">|&gt;</span> </span>
+<span id="cb26-13"><a href="#cb26-13"></a>    dplyr<span class="sc">::</span><span class="fu">reframe</span>(</span>
+<span id="cb26-14"><a href="#cb26-14"></a>      <span class="at">E_ABA     =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), </span>
+<span id="cb26-15"><a href="#cb26-15"></a>      <span class="at">P_ABA     =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(PRONTUARIO),</span>
+<span id="cb26-16"><a href="#cb26-16"></a>      <span class="at">MEDIA_ABA =</span> E_ABA <span class="sc">/</span> P_ABA,</span>
+<span id="cb26-17"><a href="#cb26-17"></a>      <span class="at">.by       =</span> <span class="fu">c</span>(GRUPO, CUTOFF)</span>
+<span id="cb26-18"><a href="#cb26-18"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb26-19"><a href="#cb26-19"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(GRUPO), </span>
+<span id="cb26-20"><a href="#cb26-20"></a>  </span>
+<span id="cb26-21"><a href="#cb26-21"></a>  <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"GRUPO"</span>, <span class="st">"CUTOFF"</span>)</span>
+<span id="cb26-22"><a href="#cb26-22"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-23"><a href="#cb26-23"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb26-24"><a href="#cb26-24"></a>    <span class="at">PROP_E =</span> E_ABA <span class="sc">/</span> E,</span>
+<span id="cb26-25"><a href="#cb26-25"></a>    <span class="at">PROP_P =</span> P_ABA <span class="sc">/</span> P</span>
+<span id="cb26-26"><a href="#cb26-26"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb26-27"><a href="#cb26-27"></a>  kableExtra<span class="sc">::</span><span class="fu">kbl</span>(<span class="at">digits =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-28"><a href="#cb26-28"></a>  kableExtra<span class="sc">::</span><span class="fu">row_spec</span>(<span class="dv">0</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-29"><a href="#cb26-29"></a>  kableExtra<span class="sc">::</span><span class="fu">column_spec</span>(<span class="dv">1</span>, <span class="at">bold =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; font-weight: bold;">GRUPO</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">CUTOFF</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">E</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">P</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">MEDIA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">E_ABA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">P_ABA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">MEDIA_ABA</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">PROP_E</th>
+<th data-quarto-table-cell-role="th" style="text-align: right; font-weight: bold;">PROP_P</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">&lt; 1 ano</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">176</td>
+<td style="text-align: right;">145</td>
+<td style="text-align: right;">1.214</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">1 a 3 anos</td>
+<td style="text-align: right;">0.550</td>
+<td style="text-align: right;">914</td>
+<td style="text-align: right;">577</td>
+<td style="text-align: right;">1.584</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">1.242</td>
+<td style="text-align: right;">0.129</td>
+<td style="text-align: right;">0.165</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">4 a 9 anos</td>
+<td style="text-align: right;">0.565</td>
+<td style="text-align: right;">1476</td>
+<td style="text-align: right;">837</td>
+<td style="text-align: right;">1.763</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">1.674</td>
+<td style="text-align: right;">0.052</td>
+<td style="text-align: right;">0.055</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold;">10 a 17 anos</td>
+<td style="text-align: right;">0.620</td>
+<td style="text-align: right;">1993</td>
+<td style="text-align: right;">1012</td>
+<td style="text-align: right;">1.969</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">1.350</td>
+<td style="text-align: right;">0.041</td>
+<td style="text-align: right;">0.059</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; font-weight: bold;">&gt; 18 anos</td>
+<td style="text-align: right;">0.715</td>
+<td style="text-align: right;">233</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">1.523</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1.625</td>
+<td style="text-align: right;">0.056</td>
+<td style="text-align: right;">0.052</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

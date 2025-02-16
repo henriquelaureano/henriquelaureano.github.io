@@ -1,1 +1,269 @@
+---
+title: "PROTF & ELPT"
+author: "Henrique Laureano"
+format: html
+editor: visual
+code-line-numbers: true
+code-fold: true
+code-block-border-left: true
+date-modified: 2025/02/16
+---
 
+```{r pkgs}
+
+if (!requireNamespace("pacman", quietly = TRUE)) 
+  install.packages("pacman") 
+
+pacman::p_load(googlesheets4, dplyr, lubridate, writexl, kableExtra)
+
+```
+
+# PROTF
+
+```{r protf_data, warning=FALSE, message=FALSE}
+
+protf_url <- 
+  paste0(
+    "https://docs.google.com/spreadsheets/d/",
+    "1kG4ED-WejJzI5_NyMkOjf33GL6hXxbb_Uvmr2HOKcds/",
+    "edit?gid=0#gid=0"
+)
+protf <- googlesheets4::read_sheet(protf_url)
+
+protf <- protf |> 
+  dplyr::mutate(
+    IDADE = lubridate::time_length(
+      lubridate::interval(DN, DC), "years"
+    ),
+    CUTOFF = dplyr::case_when(
+      IDADE  <  1              ~ 1.90,
+      IDADE >=  1 & IDADE <  4 ~ 2.30,
+      IDADE >=  4 & IDADE < 10 ~ 2.48,
+      IDADE >= 10 & IDADE < 18 ~ 2.41,
+      IDADE >= 18              ~ 2.40
+    ),
+    GRUPO = dplyr::case_when(
+      CUTOFF == 1.90 ~      "< 1 ano",
+      CUTOFF == 2.30 ~   "1 a 3 anos",
+      CUTOFF == 2.48 ~   "4 a 9 anos",
+      CUTOFF == 2.41 ~ "10 a 17 anos",
+      CUTOFF == 2.40 ~    "> 18 anos"
+    ) |> 
+      factor(
+        levels = c(
+          "< 1 ano", 
+          "1 a 3 anos", "4 a 9 anos", "10 a 17 anos", "> 18 anos"
+        )
+      )
+  )
+
+```
+
+Medidas resumo das datas de nascimento:
+
+```{r}
+
+summary(protf$DN)
+
+```
+
+E das datas de coleta:
+
+```{r}
+
+summary(protf$DC)
+
+```
+
+Calculando as idades vemos que temos pacientes com idade negativa.
+
+São 56 diferentes situações/prontuários. Por e-mail envio on xlsx com os
+56 casos.
+
+```{r}
+
+summary(protf$IDADE)
+
+protf |> 
+  dplyr::filter(IDADE <= 0) |> 
+  dplyr::select(PRONTUARIO, DC, DN, IDADE)
+
+protf |> 
+  dplyr::filter(IDADE <= 0) |>
+  writexl::write_xlsx(
+    "C:/Users/A447988/Desktop/ip4/PROTF_IDADES_NEGATIVAS.xlsx"
+  )
+
+```
+
+Aqui é apenas um detalhe. Temos 2031 
+(`r round(2031/nrow(protf) * 100, 2)``) prontuários com o resultado do 
+exame em branco.
+
+```{r}
+
+summary(protf$RESULTADO)
+
+```
+
+Como as datas serão corrigidas, os números abaixo irão mudar.
+
+De qualquer forma, já segue os resultados:
+
+- Para cada grupo temos sua nota de corte, e assim mostramos quantos 
+exames (**E**) estão abaixo (**ABA**) de tal *cutoff* e de quantos 
+pacientes (**P**) diferentes geram esses exames (junto temos a média de
+exames por paciente).
+
+```{r}
+
+dplyr::full_join(
+  protf |> 
+  dplyr::reframe(
+    E     = dplyr::n(), 
+    P     = dplyr::n_distinct(PRONTUARIO),
+    MEDIA = E / P,
+    .by   = c(GRUPO, CUTOFF)
+  ) |> 
+  dplyr::arrange(GRUPO),
+  
+  protf |> 
+    dplyr::filter(RESULTADO < CUTOFF) |> 
+    dplyr::reframe(
+      E_ABA     = dplyr::n(), 
+      P_ABA     = dplyr::n_distinct(PRONTUARIO),
+      MEDIA_ABA = E_ABA / P_ABA,
+      .by       = c(GRUPO, CUTOFF)
+    ) |> 
+    dplyr::arrange(GRUPO), 
+  
+  by = c("GRUPO", "CUTOFF")
+) |> 
+  dplyr::mutate(
+    PROP_E = E_ABA / E,
+    PROP_P = P_ABA / P
+  ) |> 
+  kableExtra::kbl(digits = 3) |> 
+  kableExtra::row_spec(0, bold = TRUE) |> 
+  kableExtra::column_spec(1, bold = TRUE)
+
+```
+
+# ELPT
+
+```{r elpt_data, warning=FALSE, message=FALSE}
+
+elpt_url <- 
+  paste0(
+    "https://docs.google.com/spreadsheets/d/",
+    "1h3FjWJsUuuGQFBAVHQJaUgQ3jqgImb5Ioi3JAx900Rc/",
+    "edit?gid=1275014391#gid=1275014391"
+  )
+elpt <- googlesheets4::read_sheet(elpt_url)
+
+elpt <- elpt |> 
+  dplyr::mutate(
+    IDADE = lubridate::time_length(
+      lubridate::interval(DN, DC), "years"
+    ),
+    RESULTADO = unlist(elpt$RESULTADO),
+    RESULTADO = gsub(",", ".", RESULTADO) |> as.numeric(),
+    CUTOFF = dplyr::case_when(
+      IDADE  <  1              ~    NA,
+      IDADE >=  1 & IDADE <  4 ~ 0.550,
+      IDADE >=  4 & IDADE < 10 ~ 0.565,
+      IDADE >= 10 & IDADE < 18 ~ 0.620,
+      IDADE >= 18              ~ 0.715
+    ),
+    GRUPO = dplyr::case_when(
+      CUTOFF  %in% NA ~      "< 1 ano",
+      CUTOFF == 0.550 ~   "1 a 3 anos",
+      CUTOFF == 0.565 ~   "4 a 9 anos",
+      CUTOFF == 0.620 ~ "10 a 17 anos",
+      CUTOFF == 0.715 ~    "> 18 anos"
+    ) |> 
+      factor(
+        levels = c(
+          "< 1 ano", 
+          "1 a 3 anos", "4 a 9 anos", "10 a 17 anos", "> 18 anos"
+        )
+      )
+  )
+
+```
+
+Apenas um exame com resultado em branco/faltante, mas é de um paciente
+com mais de 18 anos.
+
+```{r}
+
+summary(elpt$RESULTADO)
+
+elpt |> 
+  dplyr::filter(is.na(RESULTADO)) |> 
+  dplyr::select(PRONTUARIO, DC, DN, IDADE)
+
+```
+
+Medidas resumo das datas de nascimento:
+
+```{r}
+
+summary(elpt$DN)
+
+```
+
+E das datas de coleta:
+
+```{r}
+
+summary(elpt$DC)
+
+```
+
+Nenhum paciente com idade negativa.
+
+```{r}
+
+summary(elpt$IDADE)
+
+```
+
+Para cada grupo temos sua nota de corte, e assim mostramos quantos 
+exames (**E**) estão abaixo (**ABA**) de tal *cutoff* e de quantos 
+pacientes (**P**) diferentes geram esses exames (junto temos a média de
+exames por paciente).
+
+```{r}
+
+dplyr::full_join(
+  elpt |> 
+  dplyr::reframe(
+    E     = dplyr::n(), 
+    P     = dplyr::n_distinct(PRONTUARIO),
+    MEDIA = E / P,
+    .by   = c(GRUPO, CUTOFF)
+  ) |> 
+  dplyr::arrange(GRUPO),
+  
+  elpt |> 
+    dplyr::filter(RESULTADO < CUTOFF) |> 
+    dplyr::reframe(
+      E_ABA     = dplyr::n(), 
+      P_ABA     = dplyr::n_distinct(PRONTUARIO),
+      MEDIA_ABA = E_ABA / P_ABA,
+      .by       = c(GRUPO, CUTOFF)
+    ) |> 
+    dplyr::arrange(GRUPO), 
+  
+  by = c("GRUPO", "CUTOFF")
+) |> 
+  dplyr::mutate(
+    PROP_E = E_ABA / E,
+    PROP_P = P_ABA / P
+  ) |> 
+  kableExtra::kbl(digits = 3) |> 
+  kableExtra::row_spec(0, bold = TRUE) |> 
+  kableExtra::column_spec(1, bold = TRUE)
+
+```
