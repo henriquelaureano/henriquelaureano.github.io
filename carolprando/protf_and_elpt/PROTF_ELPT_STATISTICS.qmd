@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/02/16
+date-modified: 2025/02/24
 ---
 
 ```{r pkgs}
@@ -14,7 +14,20 @@ date-modified: 2025/02/16
 if (!requireNamespace("pacman", quietly = TRUE)) 
   install.packages("pacman") 
 
-pacman::p_load(googlesheets4, dplyr, lubridate, writexl, kableExtra)
+pacman::p_load(
+  ggplot2, googlesheets4, dplyr, lubridate, writexl, kableExtra, tidyr,
+  patchwork
+)
+ggplot2::theme_set(
+  theme_classic(base_size = 14) +
+    theme(plot.title    = element_text(size = 14, face = "bold"),
+          plot.subtitle = element_text(size = 13, face = "bold"),
+          axis.text.x   = element_text(face = "bold"),
+          axis.text.y   = element_text(face = "bold"),
+          axis.title.x  = element_text(hjust = 0),
+          axis.title.y  = element_text(hjust = 0, angle = 360),
+          strip.text    = element_text(size = 13, face = "bold"))
+)
 
 ```
 
@@ -25,8 +38,8 @@ pacman::p_load(googlesheets4, dplyr, lubridate, writexl, kableExtra)
 protf_url <- 
   paste0(
     "https://docs.google.com/spreadsheets/d/",
-    "1kG4ED-WejJzI5_NyMkOjf33GL6hXxbb_Uvmr2HOKcds/",
-    "edit?gid=0#gid=0"
+    "1LnxvmEtdfOg2GRh2tIqtpbbSM6hcMHUym4vECO0OQuA/",
+    "edit?gid=1659899554#gid=1659899554"
 )
 protf <- googlesheets4::read_sheet(protf_url)
 
@@ -75,30 +88,15 @@ summary(protf$DC)
 
 ```
 
-Calculando as idades vemos que temos pacientes com idade negativa.
-
-São 56 diferentes situações/prontuários. Por e-mail envio on xlsx com os
-56 casos.
+Idade:
 
 ```{r}
 
 summary(protf$IDADE)
 
-protf |> 
-  dplyr::filter(IDADE <= 0) |> 
-  dplyr::select(PRONTUARIO, DC, DN, IDADE)
-
-protf |> 
-  dplyr::filter(IDADE <= 0) |>
-  writexl::write_xlsx(
-    "C:/Users/A447988/Desktop/ip4/PROTF_IDADES_NEGATIVAS.xlsx"
-  )
-
 ```
 
-Aqui é apenas um detalhe. Temos 2031 
-(`r round(2031/nrow(protf) * 100, 2)``) prontuários com o resultado do 
-exame em branco.
+Resultados:
 
 ```{r}
 
@@ -106,14 +104,7 @@ summary(protf$RESULTADO)
 
 ```
 
-Como as datas serão corrigidas, os números abaixo irão mudar.
-
-De qualquer forma, já segue os resultados:
-
-- Para cada grupo temos sua nota de corte, e assim mostramos quantos 
-exames (**E**) estão abaixo (**ABA**) de tal *cutoff* e de quantos 
-pacientes (**P**) diferentes geram esses exames (junto temos a média de
-exames por paciente).
+Para cada grupo temos sua nota de corte, e assim mostramos quantos exames (**E**) estão abaixo (**ABA**) de tal *cutoff* e de quantos pacientes (**P**) diferentes geram esses exames (junto temos a média de exames por paciente).
 
 ```{r}
 
@@ -148,6 +139,129 @@ dplyr::full_join(
   kableExtra::column_spec(1, bold = TRUE)
 
 ```
+
+4961 diferentes prontuários / pacientes.
+
+```{r}
+
+protf |> 
+  dplyr::count(PRONTUARIO) |> 
+  dplyr::arrange(dplyr::desc(n))
+
+```
+
+Destes, 1738 fizeram o exame mais de uma vez 
+(`r round(1738/4961 * 100, 2)`%) - o que fez mais vezes, fez 69 vezes.
+
+```{r}
+
+protf |> 
+  dplyr::count(PRONTUARIO) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  dplyr::filter(n > 1)
+
+```
+
+```{r}
+
+protf_ids <- protf |> 
+  dplyr::count(PRONTUARIO) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  dplyr::filter(n > 1) |> 
+  dplyr::pull(PRONTUARIO)
+
+protf |>
+  dplyr::select(
+    c(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO)
+  ) |> 
+  dplyr::arrange(PRONTUARIO, DC) |>
+  dplyr::group_by(PRONTUARIO, SEXO, DN) |>
+  dplyr::mutate(COLETA = dplyr::row_number()) |>
+  tidyr::pivot_wider(
+    names_from = COLETA,
+    values_from = c(DC, RESULTADO, IDADE, CUTOFF, GRUPO),
+    names_glue = "{.value}_{COLETA}",
+    names_vary = "slowest"
+  ) |>
+  dplyr::ungroup() |> 
+  writexl::write_xlsx("C:/Users/A447988/Desktop/ip4/protf_wide.xlsx")
+
+```
+
+Abaixo, cada linha é um paciente/prontuário.
+
+```{r protf, fig.width=10, fig.height=8}
+
+protf_p1 <- protf |>
+  dplyr::filter(PRONTUARIO %in% protf_ids) |>
+  dplyr::select(c(PRONTUARIO, SEXO, DC, GRUPO, RESULTADO)) |> 
+  dplyr::arrange(PRONTUARIO, DC) |>
+  dplyr::group_by(PRONTUARIO, SEXO) |>
+  dplyr::mutate(COLETA = dplyr::row_number()) |>
+  dplyr::ungroup() |> 
+  ggplot() +
+  aes(x = COLETA, y = RESULTADO, group = PRONTUARIO, color = GRUPO) +
+  geom_vline(
+    xintercept = c(1, seq(from = 5, to = 65, by = 5), 69),
+    linetype = "dashed"
+  ) +
+  geom_hline(
+    yintercept = seq(from = 0, to = 7.5, by = 0.5),
+    linetype = "dashed"
+  ) +
+  geom_line(linewidth = 0.75) +
+  facet_wrap(
+    ~ SEXO,
+    labeller = ggplot2::labeller(SEXO = \(x) paste("Sexo:", x))
+  ) +
+  scale_x_continuous(
+    breaks = c(1, seq(from = 10, to = 60, by = 10), 69)
+  ) +
+  scale_y_continuous(breaks = seq(from = 0, to = 8, by = 1)) +
+  labs(x = "Coleta", y = "Resultado", color = "Grupo", 
+    title = "PROTF - Proteínas Totais e Frações",
+    subtitle = paste(
+      "Apenas pacientes que fizeram o exame mais de uma vez", 
+      "(1738 pacientes)"
+    )
+  )
+
+protf_p2 <- protf |>
+  dplyr::filter(PRONTUARIO %in% protf_ids) |>
+  dplyr::select(c(PRONTUARIO, SEXO, DC, CUTOFF, RESULTADO)) |> 
+  dplyr::mutate(
+    PRONTUARIO = as.character(PRONTUARIO),
+    ABAIXO = ifelse(RESULTADO < CUTOFF, "Sim", "Não")
+  ) |>
+  dplyr::arrange(PRONTUARIO, DC) |>
+  dplyr::select(PRONTUARIO, SEXO, ABAIXO) |> 
+  dplyr::group_by(PRONTUARIO, SEXO) |>
+  dplyr::mutate(COLETA = dplyr::row_number() |> as.factor()) |>
+  dplyr::ungroup() |> 
+  ggplot() +
+  aes(x = PRONTUARIO, y = COLETA, fill = ABAIXO) +
+  geom_hline(yintercept = 1:69, alpha = 0.75) +
+  geom_tile() +
+  facet_wrap(
+    ~ SEXO,
+    scales = "free_x",
+    labeller = ggplot2::labeller(SEXO = \(x) paste("Sexo:", x))
+  ) +
+  scale_x_discrete(labels = NULL, breaks = NULL) +
+  scale_y_discrete(
+    breaks = c("1", "10", "20", "30", "40", "50", "60", "69")
+  ) +
+  labs(
+    x = "Prontuário", y = "Coleta", fill = "Abaixo\ndo cutoff"
+  )
+
+protf_p1 + protf_p2 + patchwork::plot_layout(nrow = 2)
+
+```
+
+Acima, cada linha vertical é um paciente. Se ela muda de cor significa 
+que houve variação em termos de abaixo ou não do cutoff do momento (com 
+base na idade).
 
 # ELPT
 
@@ -192,16 +306,11 @@ elpt <- elpt |>
 
 ```
 
-Apenas um exame com resultado em branco/faltante, mas é de um paciente
-com mais de 18 anos.
+Resultados:
 
 ```{r}
 
 summary(elpt$RESULTADO)
-
-elpt |> 
-  dplyr::filter(is.na(RESULTADO)) |> 
-  dplyr::select(PRONTUARIO, DC, DN, IDADE)
 
 ```
 
@@ -221,7 +330,7 @@ summary(elpt$DC)
 
 ```
 
-Nenhum paciente com idade negativa.
+Idade:
 
 ```{r}
 
@@ -229,9 +338,9 @@ summary(elpt$IDADE)
 
 ```
 
-Para cada grupo temos sua nota de corte, e assim mostramos quantos 
-exames (**E**) estão abaixo (**ABA**) de tal *cutoff* e de quantos 
-pacientes (**P**) diferentes geram esses exames (junto temos a média de
+Para cada grupo temos sua nota de corte, e assim mostramos quantos
+exames (**E**) estão abaixo (**ABA**) de tal *cutoff* e de quantos
+pacientes (**P**) diferentes geram esses exames (junto temos a média de 
 exames por paciente).
 
 ```{r}
@@ -267,3 +376,128 @@ dplyr::full_join(
   kableExtra::column_spec(1, bold = TRUE)
 
 ```
+
+2543 diferentes prontuários / pacientes.
+
+```{r}
+
+elpt |> 
+  dplyr::count(PRONTUARIO) |> 
+  dplyr::arrange(dplyr::desc(n))
+
+```
+
+Destes, 997 fizeram o exame mais de uma vez 
+(`r round(997/2543 * 100, 2)`%) - o que fez mais vezes, fez 36 vezes.
+
+```{r}
+
+elpt |> 
+  dplyr::count(PRONTUARIO) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  dplyr::filter(n > 1)
+
+```
+
+```{r}
+
+elpt_ids <- elpt |> 
+  dplyr::count(PRONTUARIO) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  dplyr::filter(n > 1) |> 
+  dplyr::pull(PRONTUARIO)
+
+elpt |>
+  dplyr::select(
+    c(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO)
+  ) |> 
+  dplyr::arrange(PRONTUARIO, DC) |>
+  dplyr::group_by(PRONTUARIO, SEXO, DN) |>
+  dplyr::mutate(COLETA = dplyr::row_number()) |>
+  tidyr::pivot_wider(
+    names_from = COLETA,
+    values_from = c(DC, RESULTADO, IDADE, CUTOFF, GRUPO),
+    names_glue = "{.value}_{COLETA}",
+    names_vary = "slowest"
+  ) |>
+  dplyr::ungroup() |> 
+  writexl::write_xlsx("C:/Users/A447988/Desktop/ip4/elpt_wide.xlsx")
+
+```
+
+Abaixo, cada linha é um paciente/prontuário.
+
+```{r elpt, fig.width=10, fig.height=8}
+
+elpt_p1 <- elpt |>
+  dplyr::filter(PRONTUARIO %in% elpt_ids) |>
+  dplyr::select(c(PRONTUARIO, SEXO, DC, GRUPO, RESULTADO)) |> 
+  dplyr::arrange(PRONTUARIO, DC) |>
+  dplyr::group_by(PRONTUARIO, SEXO) |>
+  dplyr::mutate(COLETA = dplyr::row_number()) |>
+  dplyr::ungroup() |> 
+  ggplot() +
+  aes(x = COLETA, y = RESULTADO, group = PRONTUARIO, color = GRUPO) +
+  geom_vline(
+    xintercept = c(1, seq(from = 5, to = 30, by = 5), 36),
+    linetype = "dashed"
+  ) +
+  geom_hline(
+    yintercept = seq(from = 0, to = 6, by = 0.5),
+    linetype = "dashed"
+  ) +
+  geom_line(linewidth = 0.75) +
+  facet_wrap(
+    ~ SEXO,
+    labeller = ggplot2::labeller(SEXO = \(x) paste("Sexo:", x))
+  ) +
+  scale_x_continuous(
+    breaks = c(1, seq(from = 5, to = 30, by = 5), 36)
+  ) +
+  scale_y_continuous(breaks = seq(from = 0, to = 6, by = 0.5)) +
+  labs(
+    x = "Coleta", y = "Resultado", color = "Grupo", 
+    title = "ELPT - eletroforese de proteínas",
+    subtitle = paste(
+      "Apenas pacientes que fizeram o exame mais de uma vez", 
+      "(997 pacientes)"
+    )
+  )
+
+elpt_p2 <- elpt |>
+  dplyr::filter(PRONTUARIO %in% elpt_ids) |>
+  dplyr::select(c(PRONTUARIO, SEXO, DC, CUTOFF, RESULTADO)) |> 
+  dplyr::mutate(
+    PRONTUARIO = as.character(PRONTUARIO),
+    ABAIXO = ifelse(RESULTADO < CUTOFF, "Sim", "Não")
+  ) |>
+  tidyr::drop_na() |> 
+  dplyr::arrange(PRONTUARIO, DC) |>
+  dplyr::select(PRONTUARIO, SEXO, ABAIXO) |> 
+  dplyr::group_by(PRONTUARIO, SEXO) |>
+  dplyr::mutate(COLETA = dplyr::row_number() |> as.factor()) |>
+  dplyr::ungroup() |> 
+  ggplot() +
+  aes(x = PRONTUARIO, y = COLETA, fill = ABAIXO) +
+  geom_hline(yintercept = 1:36, alpha = 0.75) +
+  geom_tile() +
+  facet_wrap(
+    ~ SEXO,
+    scales = "free_x",
+    labeller = ggplot2::labeller(SEXO = \(x) paste("Sexo:", x))
+  ) +
+  scale_x_discrete(labels = NULL, breaks = NULL) +
+  scale_y_discrete(
+    breaks = c("1", "5", "10", "15", "20", "25", "30", "36")
+  ) +
+  labs(
+    x = "Prontuário", y = "Coleta", fill = "Abaixo\ndo cutoff"
+  )
+
+elpt_p1 + elpt_p2 + patchwork::plot_layout(nrow = 2)
+
+```
+
+Acima, cada linha vertical é um paciente. Se ela muda de cor significa 
+que houve variação em termos de abaixo ou não do cutoff do momento (com 
+base na idade).
