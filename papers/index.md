@@ -77,18 +77,16 @@
     M. E. Pereira, C. S. Oliveira, I. C. Guiloski\
     *Toxicology Reports* 14 (2025), https://doi.org/10.1016/j.toxrep.2025.101910
 
+14. [Population-based assessment of major congenital malformations in the United States: smoking risk association](https://www.cambridge.org/core/journals/journal-of-developmental-origins-of-health-and-disease/article/abs/populationbased-assessment-of-major-congenital-malformations-in-the-united-states-smoking-risk-association/918DC92E98697524502FCF85CDC83F0E)\
+    D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
+    L. Lenzi, C. S. Oliveira, M. E Pereira, B. C. Figueiredo\
+    *Journal of Developmental Origins of Health and Disease* 16 (2025), https://doi.org/10.1017/S2040174425000054
+
 ***
 
 <!-- ### Accepted for publication -->
 
 ### Submitted for publication
-  
-+ [2024]\
-  Population-based assessment for major congenital malformations in the
-  United States: smoking risk association\
-  D. P. de Andrade, C. M. Marques, D. C. R. Andrade, **H. A. Laureano**,
-  L. Lenzi, C. S. Oliveira, B. C. Figueiredo\
-  Submitted to *Reproductive Toxicology*
 
 + [2024]\
   Multivariate augmented unit-gamma mixed regression models for correlated
