@@ -69,9 +69,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="PROTF_ELPT_STATISTICS_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="PROTF_ELPT_STATISTICS_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script src="PROTF_ELPT_STATISTICS_files/libs/kePrint-0.0.1/kePrint.js"></script>
-
 <link href="PROTF_ELPT_STATISTICS_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-
 
 
 </head>
@@ -88,6 +86,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#elpt" id="toc-elpt" class="nav-link" data-scroll-target="#elpt">ELPT</a></li>
   <li><a href="#juntos" id="toc-juntos" class="nav-link" data-scroll-target="#juntos">Juntos</a></li>
   <li><a href="#igg" id="toc-igg" class="nav-link" data-scroll-target="#igg">IgG</a></li>
+  <li><a href="#exames-no-mesmo-mês-intervalo-de-30-dias" id="toc-exames-no-mesmo-mês-intervalo-de-30-dias" class="nav-link" data-scroll-target="#exames-no-mesmo-mês-intervalo-de-30-dias">Exames no mesmo mês (intervalo de 30 dias)</a></li>
   </ul>
 </nav>
 </div>
@@ -113,7 +112,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">March 21, 2025</p>
+      <p class="date-modified">April 12, 2025</p>
     </div>
   </div>
     
@@ -213,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>                      Min.                    1st Qu. 
 "2015-01-02 00:00:00.0000" "2016-11-20 18:00:00.0000" 
                     Median                       Mean 
-"2019-03-27 12:00:00.0000" "2019-05-31 03:34:01.7127" 
+"2019-03-27 12:00:00.0000" "2019-05-31 03:34:01.7128" 
                    3rd Qu.                       Max. 
 "2021-10-02 00:00:00.0000" "2024-10-31 00:00:00.0000" </code></pre>
 </div>
@@ -1486,39 +1485,201 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb76-28"><a href="#cb76-28"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb76-29"><a href="#cb76-29"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
 <span id="cb76-30"><a href="#cb76-30"></a></span>
-<span id="cb76-31"><a href="#cb76-31"></a>protf_wide <span class="sc">|&gt;</span> </span>
-<span id="cb76-32"><a href="#cb76-32"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(<span class="st">"C:/Users/henri/Desktop/protf_and_elpt/protf_wide.xlsx"</span>)</span>
-<span id="cb76-33"><a href="#cb76-33"></a></span>
-<span id="cb76-34"><a href="#cb76-34"></a>protf_wide <span class="sc">|&gt;</span> </span>
-<span id="cb76-35"><a href="#cb76-35"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(igg_wide, <span class="at">by =</span> <span class="st">"PRONTUARIO"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb76-36"><a href="#cb76-36"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
-<span id="cb76-37"><a href="#cb76-37"></a>    <span class="st">"C:/Users/henri/Desktop/protf_and_elpt/protf_plus_igg_wide.xlsx"</span></span>
-<span id="cb76-38"><a href="#cb76-38"></a>  )</span>
-<span id="cb76-39"><a href="#cb76-39"></a></span>
-<span id="cb76-40"><a href="#cb76-40"></a>elpt_wide <span class="ot">&lt;-</span> elpt <span class="sc">|&gt;</span></span>
-<span id="cb76-41"><a href="#cb76-41"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb76-42"><a href="#cb76-42"></a>    <span class="fu">c</span>(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO, VALOR)</span>
-<span id="cb76-43"><a href="#cb76-43"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb76-44"><a href="#cb76-44"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span></span>
-<span id="cb76-45"><a href="#cb76-45"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(PRONTUARIO, SEXO, DN) <span class="sc">|&gt;</span></span>
-<span id="cb76-46"><a href="#cb76-46"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">COLETA =</span> dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb76-47"><a href="#cb76-47"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
-<span id="cb76-48"><a href="#cb76-48"></a>    <span class="at">names_from =</span> COLETA,</span>
-<span id="cb76-49"><a href="#cb76-49"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(DC, RESULTADO, IDADE, CUTOFF, GRUPO, VALOR),</span>
-<span id="cb76-50"><a href="#cb76-50"></a>    <span class="at">names_glue =</span> <span class="st">"{.value}_{COLETA}"</span>,</span>
-<span id="cb76-51"><a href="#cb76-51"></a>    <span class="at">names_vary =</span> <span class="st">"slowest"</span></span>
-<span id="cb76-52"><a href="#cb76-52"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb76-53"><a href="#cb76-53"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
-<span id="cb76-54"><a href="#cb76-54"></a></span>
-<span id="cb76-55"><a href="#cb76-55"></a>elpt_wide <span class="sc">|&gt;</span> </span>
-<span id="cb76-56"><a href="#cb76-56"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(<span class="st">"C:/Users/henri/Desktop/protf_and_elpt/elpt_wide.xlsx"</span>)</span>
-<span id="cb76-57"><a href="#cb76-57"></a></span>
-<span id="cb76-58"><a href="#cb76-58"></a>elpt_wide <span class="sc">|&gt;</span></span>
-<span id="cb76-59"><a href="#cb76-59"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">PRONTUARIO =</span> <span class="fu">as.numeric</span>(PRONTUARIO)) <span class="sc">|&gt;</span> </span>
-<span id="cb76-60"><a href="#cb76-60"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(igg_wide, <span class="at">by =</span> <span class="st">"PRONTUARIO"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb76-61"><a href="#cb76-61"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
-<span id="cb76-62"><a href="#cb76-62"></a>    <span class="st">"C:/Users/henri/Desktop/protf_and_elpt/elpt_plus_igg_wide.xlsx"</span></span>
-<span id="cb76-63"><a href="#cb76-63"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb76-31"><a href="#cb76-31"></a><span class="co"># protf_wide |&gt; </span></span>
+<span id="cb76-32"><a href="#cb76-32"></a><span class="co">#   writexl::write_xlsx(</span></span>
+<span id="cb76-33"><a href="#cb76-33"></a><span class="co">#     paste0(</span></span>
+<span id="cb76-34"><a href="#cb76-34"></a><span class="co">#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
+<span id="cb76-35"><a href="#cb76-35"></a><span class="co">#       'carolprando/protf_and_elpt/protf_wide.xlsx'</span></span>
+<span id="cb76-36"><a href="#cb76-36"></a><span class="co">#     )</span></span>
+<span id="cb76-37"><a href="#cb76-37"></a><span class="co">#   )</span></span>
+<span id="cb76-38"><a href="#cb76-38"></a></span>
+<span id="cb76-39"><a href="#cb76-39"></a><span class="co"># protf_wide |&gt; </span></span>
+<span id="cb76-40"><a href="#cb76-40"></a><span class="co">#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |&gt; </span></span>
+<span id="cb76-41"><a href="#cb76-41"></a><span class="co">#   writexl::write_xlsx(</span></span>
+<span id="cb76-42"><a href="#cb76-42"></a><span class="co">#     paste0(</span></span>
+<span id="cb76-43"><a href="#cb76-43"></a><span class="co">#        '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
+<span id="cb76-44"><a href="#cb76-44"></a><span class="co">#        'carolprando/protf_and_elpt/protf_plus_igg_wide.xlsx'</span></span>
+<span id="cb76-45"><a href="#cb76-45"></a><span class="co">#     )</span></span>
+<span id="cb76-46"><a href="#cb76-46"></a><span class="co">#   )</span></span>
+<span id="cb76-47"><a href="#cb76-47"></a></span>
+<span id="cb76-48"><a href="#cb76-48"></a>elpt_wide <span class="ot">&lt;-</span> elpt <span class="sc">|&gt;</span></span>
+<span id="cb76-49"><a href="#cb76-49"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb76-50"><a href="#cb76-50"></a>    <span class="fu">c</span>(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO, VALOR)</span>
+<span id="cb76-51"><a href="#cb76-51"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb76-52"><a href="#cb76-52"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span></span>
+<span id="cb76-53"><a href="#cb76-53"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(PRONTUARIO, SEXO, DN) <span class="sc">|&gt;</span></span>
+<span id="cb76-54"><a href="#cb76-54"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">COLETA =</span> dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb76-55"><a href="#cb76-55"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
+<span id="cb76-56"><a href="#cb76-56"></a>    <span class="at">names_from =</span> COLETA,</span>
+<span id="cb76-57"><a href="#cb76-57"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(DC, RESULTADO, IDADE, CUTOFF, GRUPO, VALOR),</span>
+<span id="cb76-58"><a href="#cb76-58"></a>    <span class="at">names_glue =</span> <span class="st">"{.value}_{COLETA}"</span>,</span>
+<span id="cb76-59"><a href="#cb76-59"></a>    <span class="at">names_vary =</span> <span class="st">"slowest"</span></span>
+<span id="cb76-60"><a href="#cb76-60"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb76-61"><a href="#cb76-61"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
+<span id="cb76-62"><a href="#cb76-62"></a></span>
+<span id="cb76-63"><a href="#cb76-63"></a><span class="co"># elpt_wide |&gt; </span></span>
+<span id="cb76-64"><a href="#cb76-64"></a><span class="co">#   writexl::write_xlsx(</span></span>
+<span id="cb76-65"><a href="#cb76-65"></a><span class="co">#     paste0(</span></span>
+<span id="cb76-66"><a href="#cb76-66"></a><span class="co">#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
+<span id="cb76-67"><a href="#cb76-67"></a><span class="co">#       'carolprando/protf_and_elpt/elpt_wide.xlsx'</span></span>
+<span id="cb76-68"><a href="#cb76-68"></a><span class="co">#     )</span></span>
+<span id="cb76-69"><a href="#cb76-69"></a><span class="co">#   )</span></span>
+<span id="cb76-70"><a href="#cb76-70"></a></span>
+<span id="cb76-71"><a href="#cb76-71"></a><span class="co"># elpt_wide |&gt;</span></span>
+<span id="cb76-72"><a href="#cb76-72"></a><span class="co">#   dplyr::mutate(PRONTUARIO = as.numeric(PRONTUARIO)) |&gt; </span></span>
+<span id="cb76-73"><a href="#cb76-73"></a><span class="co">#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |&gt; </span></span>
+<span id="cb76-74"><a href="#cb76-74"></a><span class="co">#   writexl::write_xlsx(</span></span>
+<span id="cb76-75"><a href="#cb76-75"></a><span class="co">#     paste0(</span></span>
+<span id="cb76-76"><a href="#cb76-76"></a><span class="co">#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
+<span id="cb76-77"><a href="#cb76-77"></a><span class="co">#       'carolprando/protf_and_elpt/elpt_plus_igg_wide.xlsx'</span></span>
+<span id="cb76-78"><a href="#cb76-78"></a><span class="co">#     )</span></span>
+<span id="cb76-79"><a href="#cb76-79"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="exames-no-mesmo-mês-intervalo-de-30-dias" class="level1">
+<h1>Exames no mesmo mês (intervalo de 30 dias)</h1>
+<p>535 pacientes fizeram em algum momento PROTF e IgG com um diferença de tempo menor ou igual a 30 dias.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a>protf_igg_same30d <span class="ot">&lt;-</span> </span>
+<span id="cb77-2"><a href="#cb77-2"></a>  </span>
+<span id="cb77-3"><a href="#cb77-3"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(</span>
+<span id="cb77-4"><a href="#cb77-4"></a>    </span>
+<span id="cb77-5"><a href="#cb77-5"></a>    protf <span class="sc">|&gt;</span></span>
+<span id="cb77-6"><a href="#cb77-6"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb77-7"><a href="#cb77-7"></a>        <span class="fu">c</span>(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO, VALOR)</span>
+<span id="cb77-8"><a href="#cb77-8"></a>      ) <span class="sc">|&gt;</span> </span>
+<span id="cb77-9"><a href="#cb77-9"></a>      dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span></span>
+<span id="cb77-10"><a href="#cb77-10"></a>      dplyr<span class="sc">::</span><span class="fu">group_by</span>(PRONTUARIO, SEXO, DN) <span class="sc">|&gt;</span></span>
+<span id="cb77-11"><a href="#cb77-11"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">COLETA_PROTF =</span> dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb77-12"><a href="#cb77-12"></a>      dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb77-13"><a href="#cb77-13"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">DC_PROTF =</span> DC) <span class="sc">|&gt;</span> </span>
+<span id="cb77-14"><a href="#cb77-14"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">IDADE_PROTF =</span> IDADE) <span class="sc">|&gt;</span> </span>
+<span id="cb77-15"><a href="#cb77-15"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">GRUPO_PROTF =</span> GRUPO) <span class="sc">|&gt;</span> </span>
+<span id="cb77-16"><a href="#cb77-16"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">RESULTADO_PROTF =</span> RESULTADO),</span>
+<span id="cb77-17"><a href="#cb77-17"></a>    </span>
+<span id="cb77-18"><a href="#cb77-18"></a>    igg <span class="sc">|&gt;</span></span>
+<span id="cb77-19"><a href="#cb77-19"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb77-20"><a href="#cb77-20"></a>        <span class="fu">c</span>(PRONTUARIO, DC, IDADE, GRUPO, RESULTADO)</span>
+<span id="cb77-21"><a href="#cb77-21"></a>      ) <span class="sc">|&gt;</span> </span>
+<span id="cb77-22"><a href="#cb77-22"></a>      dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span></span>
+<span id="cb77-23"><a href="#cb77-23"></a>      dplyr<span class="sc">::</span><span class="fu">group_by</span>(PRONTUARIO) <span class="sc">|&gt;</span></span>
+<span id="cb77-24"><a href="#cb77-24"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">COLETA_IgG =</span> dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb77-25"><a href="#cb77-25"></a>      dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb77-26"><a href="#cb77-26"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">DC_IgG =</span> DC) <span class="sc">|&gt;</span> </span>
+<span id="cb77-27"><a href="#cb77-27"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">IDADE_IgG =</span> IDADE) <span class="sc">|&gt;</span> </span>
+<span id="cb77-28"><a href="#cb77-28"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">GRUPO_IgG =</span> GRUPO) <span class="sc">|&gt;</span> </span>
+<span id="cb77-29"><a href="#cb77-29"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">RESULTADO_IgG =</span> RESULTADO),</span>
+<span id="cb77-30"><a href="#cb77-30"></a>    </span>
+<span id="cb77-31"><a href="#cb77-31"></a>    <span class="at">by =</span> <span class="st">"PRONTUARIO"</span>, <span class="at">relationship =</span> <span class="st">"many-to-many"</span></span>
+<span id="cb77-32"><a href="#cb77-32"></a>    </span>
+<span id="cb77-33"><a href="#cb77-33"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb77-34"><a href="#cb77-34"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb77-35"><a href="#cb77-35"></a>    <span class="at">DIAS_ENTRE_EXAMES =</span> <span class="fu">abs</span>(</span>
+<span id="cb77-36"><a href="#cb77-36"></a>      <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(DC_PROTF, DC_IgG, <span class="at">units =</span> <span class="st">"days"</span>))</span>
+<span id="cb77-37"><a href="#cb77-37"></a>    ),</span>
+<span id="cb77-38"><a href="#cb77-38"></a>    <span class="at">SAME_30d =</span> DIAS_ENTRE_EXAMES <span class="sc">&lt;=</span> <span class="dv">30</span></span>
+<span id="cb77-39"><a href="#cb77-39"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb77-40"><a href="#cb77-40"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(SAME_30d <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>SAME_30d)</span>
+<span id="cb77-41"><a href="#cb77-41"></a></span>
+<span id="cb77-42"><a href="#cb77-42"></a>protf_igg_same30d <span class="sc">|&gt;</span> </span>
+<span id="cb77-43"><a href="#cb77-43"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb77-44"><a href="#cb77-44"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb77-45"><a href="#cb77-45"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb77-46"><a href="#cb77-46"></a>      <span class="st">'carolprando/protf_and_elpt/protf_plus_igg_same30d_window.xlsx'</span></span>
+<span id="cb77-47"><a href="#cb77-47"></a>    )</span>
+<span id="cb77-48"><a href="#cb77-48"></a>  )</span>
+<span id="cb77-49"><a href="#cb77-49"></a></span>
+<span id="cb77-50"><a href="#cb77-50"></a><span class="co"># protf_igg_same30d |&gt; dplyr::count(PRONTUARIO) |&gt; dplyr::arrange(dplyr::desc(n))</span></span>
+<span id="cb77-51"><a href="#cb77-51"></a></span>
+<span id="cb77-52"><a href="#cb77-52"></a><span class="co"># protf_igg_same30d |&gt; dplyr::count(PRONTUARIO) |&gt; nrow()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>1112 pacientes fizeram em algum momento ELPT e IgG com um diferença de tempo menor ou igual a 30 dias.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1"></a>elpt_igg_same30d <span class="ot">&lt;-</span> </span>
+<span id="cb78-2"><a href="#cb78-2"></a>  </span>
+<span id="cb78-3"><a href="#cb78-3"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(</span>
+<span id="cb78-4"><a href="#cb78-4"></a>    </span>
+<span id="cb78-5"><a href="#cb78-5"></a>    elpt <span class="sc">|&gt;</span></span>
+<span id="cb78-6"><a href="#cb78-6"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb78-7"><a href="#cb78-7"></a>        <span class="fu">c</span>(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO, VALOR)</span>
+<span id="cb78-8"><a href="#cb78-8"></a>      ) <span class="sc">|&gt;</span></span>
+<span id="cb78-9"><a href="#cb78-9"></a>      </span>
+<span id="cb78-10"><a href="#cb78-10"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">PRONTUARIO =</span> <span class="fu">as.numeric</span>(PRONTUARIO)) <span class="sc">|&gt;</span> </span>
+<span id="cb78-11"><a href="#cb78-11"></a>      </span>
+<span id="cb78-12"><a href="#cb78-12"></a>      dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span></span>
+<span id="cb78-13"><a href="#cb78-13"></a>      dplyr<span class="sc">::</span><span class="fu">group_by</span>(PRONTUARIO, SEXO, DN) <span class="sc">|&gt;</span></span>
+<span id="cb78-14"><a href="#cb78-14"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">COLETA_ELPT =</span> dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb78-15"><a href="#cb78-15"></a>      dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb78-16"><a href="#cb78-16"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">DC_ELPT =</span> DC) <span class="sc">|&gt;</span> </span>
+<span id="cb78-17"><a href="#cb78-17"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">IDADE_ELPT =</span> IDADE) <span class="sc">|&gt;</span> </span>
+<span id="cb78-18"><a href="#cb78-18"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">GRUPO_ELPT =</span> GRUPO) <span class="sc">|&gt;</span> </span>
+<span id="cb78-19"><a href="#cb78-19"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">RESULTADO_ELPT =</span> RESULTADO),</span>
+<span id="cb78-20"><a href="#cb78-20"></a>    </span>
+<span id="cb78-21"><a href="#cb78-21"></a>    igg <span class="sc">|&gt;</span></span>
+<span id="cb78-22"><a href="#cb78-22"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb78-23"><a href="#cb78-23"></a>        <span class="fu">c</span>(PRONTUARIO, DC, IDADE, GRUPO, RESULTADO)</span>
+<span id="cb78-24"><a href="#cb78-24"></a>      ) <span class="sc">|&gt;</span> </span>
+<span id="cb78-25"><a href="#cb78-25"></a>      dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span></span>
+<span id="cb78-26"><a href="#cb78-26"></a>      dplyr<span class="sc">::</span><span class="fu">group_by</span>(PRONTUARIO) <span class="sc">|&gt;</span></span>
+<span id="cb78-27"><a href="#cb78-27"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">COLETA_IgG =</span> dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb78-28"><a href="#cb78-28"></a>      dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb78-29"><a href="#cb78-29"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">DC_IgG =</span> DC) <span class="sc">|&gt;</span> </span>
+<span id="cb78-30"><a href="#cb78-30"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">IDADE_IgG =</span> IDADE) <span class="sc">|&gt;</span> </span>
+<span id="cb78-31"><a href="#cb78-31"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">GRUPO_IgG =</span> GRUPO) <span class="sc">|&gt;</span> </span>
+<span id="cb78-32"><a href="#cb78-32"></a>      dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">RESULTADO_IgG =</span> RESULTADO),</span>
+<span id="cb78-33"><a href="#cb78-33"></a>    </span>
+<span id="cb78-34"><a href="#cb78-34"></a>    <span class="at">by =</span> <span class="st">"PRONTUARIO"</span>, <span class="at">relationship =</span> <span class="st">"many-to-many"</span></span>
+<span id="cb78-35"><a href="#cb78-35"></a>    </span>
+<span id="cb78-36"><a href="#cb78-36"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb78-37"><a href="#cb78-37"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb78-38"><a href="#cb78-38"></a>    <span class="at">DIAS_ENTRE_EXAMES =</span> <span class="fu">abs</span>(</span>
+<span id="cb78-39"><a href="#cb78-39"></a>      <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(DC_ELPT, DC_IgG, <span class="at">units =</span> <span class="st">"days"</span>))</span>
+<span id="cb78-40"><a href="#cb78-40"></a>    ),</span>
+<span id="cb78-41"><a href="#cb78-41"></a>    <span class="at">SAME_30d =</span> DIAS_ENTRE_EXAMES <span class="sc">&lt;=</span> <span class="dv">30</span></span>
+<span id="cb78-42"><a href="#cb78-42"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb78-43"><a href="#cb78-43"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(SAME_30d <span class="sc">==</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb78-44"><a href="#cb78-44"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span>SAME_30d) </span>
+<span id="cb78-45"><a href="#cb78-45"></a></span>
+<span id="cb78-46"><a href="#cb78-46"></a>elpt_igg_same30d <span class="sc">|&gt;</span> </span>
+<span id="cb78-47"><a href="#cb78-47"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb78-48"><a href="#cb78-48"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb78-49"><a href="#cb78-49"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb78-50"><a href="#cb78-50"></a>      <span class="st">'carolprando/protf_and_elpt/elpt_plus_igg_same30d_window.xlsx'</span></span>
+<span id="cb78-51"><a href="#cb78-51"></a>    )</span>
+<span id="cb78-52"><a href="#cb78-52"></a>  )</span>
+<span id="cb78-53"><a href="#cb78-53"></a></span>
+<span id="cb78-54"><a href="#cb78-54"></a><span class="co"># elpt_igg_same30d |&gt; dplyr::count(PRONTUARIO) |&gt; dplyr::arrange(dplyr::desc(n))</span></span>
+<span id="cb78-55"><a href="#cb78-55"></a><span class="co"># </span></span>
+<span id="cb78-56"><a href="#cb78-56"></a><span class="co"># elpt_igg_same30d |&gt; dplyr::count(PRONTUARIO) |&gt; nrow()</span></span>
+<span id="cb78-57"><a href="#cb78-57"></a></span>
+<span id="cb78-58"><a href="#cb78-58"></a>protf <span class="sc">|&gt;</span> </span>
+<span id="cb78-59"><a href="#cb78-59"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(dplyr<span class="sc">::</span><span class="fu">everything</span>())) <span class="sc">|&gt;</span> </span>
+<span id="cb78-60"><a href="#cb78-60"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(dplyr<span class="sc">::</span><span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb78-61"><a href="#cb78-61"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb78-62"><a href="#cb78-62"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb78-63"><a href="#cb78-63"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb78-64"><a href="#cb78-64"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb78-65"><a href="#cb78-65"></a>      <span class="st">'carolprando/protf_and_elpt/protf_dplicacoes.xlsx'</span></span>
+<span id="cb78-66"><a href="#cb78-66"></a>    )</span>
+<span id="cb78-67"><a href="#cb78-67"></a>  )</span>
+<span id="cb78-68"><a href="#cb78-68"></a></span>
+<span id="cb78-69"><a href="#cb78-69"></a>elpt <span class="sc">|&gt;</span> </span>
+<span id="cb78-70"><a href="#cb78-70"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(dplyr<span class="sc">::</span><span class="fu">everything</span>())) <span class="sc">|&gt;</span> </span>
+<span id="cb78-71"><a href="#cb78-71"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(dplyr<span class="sc">::</span><span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb78-72"><a href="#cb78-72"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb78-73"><a href="#cb78-73"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span> </span>
+<span id="cb78-74"><a href="#cb78-74"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb78-75"><a href="#cb78-75"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb78-76"><a href="#cb78-76"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb78-77"><a href="#cb78-77"></a>      <span class="st">'carolprando/protf_and_elpt/elpt_duplicacoes.xlsx'</span></span>
+<span id="cb78-78"><a href="#cb78-78"></a>    )</span>
+<span id="cb78-79"><a href="#cb78-79"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>

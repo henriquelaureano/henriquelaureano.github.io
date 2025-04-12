@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/03/21
+date-modified: 2025/04/12
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -264,12 +264,9 @@ protf |>
 
 ```
 
-Acima, cada linha vertical é um paciente. Se ela muda de cor significa que
-houve variação em termos de abaixo ou não do cutoff do momento (com base na
-idade).
+Acima, cada linha vertical é um paciente. Se ela muda de cor significa que houve variação em termos de abaixo ou não do cutoff do momento (com base na idade).
 
-Abaixo, a mesma informação dos dois gráficos acima mas vistos de uma maneira
-alternativa.
+Abaixo, a mesma informação dos dois gráficos acima mas vistos de uma maneira alternativa.
 
 ```{r protf_grupo, fig.width=10, fig.height=7}
 
@@ -306,7 +303,6 @@ protf |>
   theme(legend.position = "bottom")
 
 ```
-
 
 ```{r protf_grupo_var, fig.height=5.5, fig.width=10}
 
@@ -527,9 +523,7 @@ elpt |>
 
 ```
 
-Abaixo, cada linha vertical é um paciente. Se ela muda de cor significa que
-houve variação em termos de abaixo ou não do cutoff do momento (com base na
-idade).
+Abaixo, cada linha vertical é um paciente. Se ela muda de cor significa que houve variação em termos de abaixo ou não do cutoff do momento (com base na idade).
 
 ```{r elpt_trans, fig.width=10, fig.height=5.5}
 
@@ -585,8 +579,7 @@ elpt |>
 
 ```
 
-Abaixo, a mesma informação dos dois gráficos acima mas vistos de uma maneira
-alternativa.
+Abaixo, a mesma informação dos dois gráficos acima mas vistos de uma maneira alternativa.
 
 ```{r elpt_grupo, fig.width=10, fig.height=7}
 
@@ -624,7 +617,6 @@ elpt |>
   theme(legend.position = "bottom")
 
 ```
-
 
 ```{r elpt_grupo_var, fig.height=5.5, fig.width=10}
 
@@ -731,8 +723,7 @@ dat |>
 
 ```
 
-Ou seja, 8% fizeram ambos, 63.4% fizeram apenas o PROTF e 28.6% fizeram apenas o
-ELPT.
+Ou seja, 8% fizeram ambos, 63.4% fizeram apenas o PROTF e 28.6% fizeram apenas o ELPT.
 
 ```{r}
 
@@ -740,8 +731,7 @@ c(556, 4405, 1987) |> prop.table() |> round(3)
 
 ```
 
-Dos 4.961 que fizeram PROTF, 1189 apresentaram valor abaixo da linha de corte
-pelo menos uma vez. Ou seja, 24% dos pacientes (que fizeram PROTF).
+Dos 4.961 que fizeram PROTF, 1189 apresentaram valor abaixo da linha de corte pelo menos uma vez. Ou seja, 24% dos pacientes (que fizeram PROTF).
 
 ```{r}
 
@@ -757,8 +747,7 @@ protf |>
 
 ```
 
-Dos 2.543 que fizeram ELPT, 207 apresentaram valor abaixo da linha de corte
-pelo menos uma vez. Ou seja, 8.1% dos pacientes (que fizeram ELPT).
+Dos 2.543 que fizeram ELPT, 207 apresentaram valor abaixo da linha de corte pelo menos uma vez. Ou seja, 8.1% dos pacientes (que fizeram ELPT).
 
 ```{r}
 
@@ -774,8 +763,7 @@ elpt |>
 
 ```
 
-Dos 4.961 que fizeram PROTF, 397 apresentaram valor abaixo da linha de corte
-mais que uma vez. Ou seja, 8% dos pacientes.
+Dos 4.961 que fizeram PROTF, 397 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 8% dos pacientes.
 
 ```{r}
 
@@ -793,8 +781,7 @@ protf |>
 
 ```
 
-Dos 2.543 que fizeram ELPT, 48 apresentaram valor abaixo da linha de corte
-mais que uma vez. Ou seja, 1.9% dos pacientes.
+Dos 2.543 que fizeram ELPT, 48 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 1.9% dos pacientes.
 
 ```{r}
 
@@ -812,8 +799,7 @@ elpt |>
 
 ```
 
-Dos 6.948 pacientes (total, ambos ou apenas um), 1.398 apresentaram valor abaixo
-da linha de corte pelo menos uma vez. Ou seja, 20.1% dos pacientes.
+Dos 6.948 pacientes (total, ambos ou apenas um), 1.398 apresentaram valor abaixo da linha de corte pelo menos uma vez. Ou seja, 20.1% dos pacientes.
 
 ```{r}
 
@@ -831,8 +817,7 @@ dat |>
 
 ```
 
-Dos 6.948 pacientes (total, ambos ou apenas um), 504 apresentaram valor abaixo
-da linha de corte mais que uma vez. Ou seja, 7.2% dos pacientes.
+Dos 6.948 pacientes (total, ambos ou apenas um), 504 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 7.2% dos pacientes.
 
 ```{r}
 
@@ -887,8 +872,7 @@ igg <- igg |>
 
 6012 diferentes pacientes. O que mais fez exames, fez 47 vezes.
 
-Aqui temos todos os pacientes que fizeram esse exame. Na tabela _wide da PROFT e
-ELPT, permaneceram apenas aqueles que fizeram o PROTF e ELPT.
+Aqui temos todos os pacientes que fizeram esse exame. Na tabela \_wide da PROFT e ELPT, permaneceram apenas aqueles que fizeram o PROTF e ELPT.
 
 ```{r}
 
@@ -897,7 +881,6 @@ igg |>
   dplyr::arrange(dplyr::desc(n))
 
 ```
-
 
 ```{r}
 
@@ -931,14 +914,22 @@ protf_wide <- protf |>
   ) |>
   dplyr::ungroup()
 
-protf_wide |> 
-  writexl::write_xlsx("C:/Users/henri/Desktop/protf_and_elpt/protf_wide.xlsx")
+# protf_wide |> 
+#   writexl::write_xlsx(
+#     paste0(
+#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+#       'carolprando/protf_and_elpt/protf_wide.xlsx'
+#     )
+#   )
 
-protf_wide |> 
-  dplyr::left_join(igg_wide, by = "PRONTUARIO") |> 
-  writexl::write_xlsx(
-    "C:/Users/henri/Desktop/protf_and_elpt/protf_plus_igg_wide.xlsx"
-  )
+# protf_wide |> 
+#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |> 
+#   writexl::write_xlsx(
+#     paste0(
+#        '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+#        'carolprando/protf_and_elpt/protf_plus_igg_wide.xlsx'
+#     )
+#   )
 
 elpt_wide <- elpt |>
   dplyr::select(
@@ -955,14 +946,168 @@ elpt_wide <- elpt |>
   ) |>
   dplyr::ungroup()
 
-elpt_wide |> 
-  writexl::write_xlsx("C:/Users/henri/Desktop/protf_and_elpt/elpt_wide.xlsx")
+# elpt_wide |> 
+#   writexl::write_xlsx(
+#     paste0(
+#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+#       'carolprando/protf_and_elpt/elpt_wide.xlsx'
+#     )
+#   )
 
-elpt_wide |>
-  dplyr::mutate(PRONTUARIO = as.numeric(PRONTUARIO)) |> 
-  dplyr::left_join(igg_wide, by = "PRONTUARIO") |> 
+# elpt_wide |>
+#   dplyr::mutate(PRONTUARIO = as.numeric(PRONTUARIO)) |> 
+#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |> 
+#   writexl::write_xlsx(
+#     paste0(
+#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+#       'carolprando/protf_and_elpt/elpt_plus_igg_wide.xlsx'
+#     )
+#   )
+
+```
+
+# Exames no mesmo mês (intervalo de 30 dias)
+
+535 pacientes fizeram em algum momento PROTF e IgG com um diferença de tempo menor ou igual a 30 dias.
+
+```{r}
+
+protf_igg_same30d <- 
+  
+  dplyr::inner_join(
+    
+    protf |>
+      dplyr::select(
+        c(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO, VALOR)
+      ) |> 
+      dplyr::arrange(PRONTUARIO, DC) |>
+      dplyr::group_by(PRONTUARIO, SEXO, DN) |>
+      dplyr::mutate(COLETA_PROTF = dplyr::row_number()) |>
+      dplyr::ungroup() |> 
+      dplyr::rename(DC_PROTF = DC) |> 
+      dplyr::rename(IDADE_PROTF = IDADE) |> 
+      dplyr::rename(GRUPO_PROTF = GRUPO) |> 
+      dplyr::rename(RESULTADO_PROTF = RESULTADO),
+    
+    igg |>
+      dplyr::select(
+        c(PRONTUARIO, DC, IDADE, GRUPO, RESULTADO)
+      ) |> 
+      dplyr::arrange(PRONTUARIO, DC) |>
+      dplyr::group_by(PRONTUARIO) |>
+      dplyr::mutate(COLETA_IgG = dplyr::row_number()) |> 
+      dplyr::ungroup() |> 
+      dplyr::rename(DC_IgG = DC) |> 
+      dplyr::rename(IDADE_IgG = IDADE) |> 
+      dplyr::rename(GRUPO_IgG = GRUPO) |> 
+      dplyr::rename(RESULTADO_IgG = RESULTADO),
+    
+    by = "PRONTUARIO", relationship = "many-to-many"
+    
+  ) |> 
+  dplyr::mutate(
+    DIAS_ENTRE_EXAMES = abs(
+      as.numeric(difftime(DC_PROTF, DC_IgG, units = "days"))
+    ),
+    SAME_30d = DIAS_ENTRE_EXAMES <= 30
+  ) |> 
+  dplyr::filter(SAME_30d == TRUE) |> dplyr::select(!SAME_30d)
+
+protf_igg_same30d |> 
   writexl::write_xlsx(
-    "C:/Users/henri/Desktop/protf_and_elpt/elpt_plus_igg_wide.xlsx"
+    paste0(
+      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+      'carolprando/protf_and_elpt/protf_plus_igg_same30d_window.xlsx'
+    )
   )
 
+# protf_igg_same30d |> dplyr::count(PRONTUARIO) |> dplyr::arrange(dplyr::desc(n))
+
+# protf_igg_same30d |> dplyr::count(PRONTUARIO) |> nrow()
+
+```
+
+1112 pacientes fizeram em algum momento ELPT e IgG com um diferença de tempo menor ou igual a 30 dias.
+
+```{r}
+
+elpt_igg_same30d <- 
+  
+  dplyr::inner_join(
+    
+    elpt |>
+      dplyr::select(
+        c(PRONTUARIO, SEXO, DN, DC, IDADE, CUTOFF, GRUPO, RESULTADO, VALOR)
+      ) |>
+      
+      dplyr::mutate(PRONTUARIO = as.numeric(PRONTUARIO)) |> 
+      
+      dplyr::arrange(PRONTUARIO, DC) |>
+      dplyr::group_by(PRONTUARIO, SEXO, DN) |>
+      dplyr::mutate(COLETA_ELPT = dplyr::row_number()) |>
+      dplyr::ungroup() |> 
+      dplyr::rename(DC_ELPT = DC) |> 
+      dplyr::rename(IDADE_ELPT = IDADE) |> 
+      dplyr::rename(GRUPO_ELPT = GRUPO) |> 
+      dplyr::rename(RESULTADO_ELPT = RESULTADO),
+    
+    igg |>
+      dplyr::select(
+        c(PRONTUARIO, DC, IDADE, GRUPO, RESULTADO)
+      ) |> 
+      dplyr::arrange(PRONTUARIO, DC) |>
+      dplyr::group_by(PRONTUARIO) |>
+      dplyr::mutate(COLETA_IgG = dplyr::row_number()) |> 
+      dplyr::ungroup() |> 
+      dplyr::rename(DC_IgG = DC) |> 
+      dplyr::rename(IDADE_IgG = IDADE) |> 
+      dplyr::rename(GRUPO_IgG = GRUPO) |> 
+      dplyr::rename(RESULTADO_IgG = RESULTADO),
+    
+    by = "PRONTUARIO", relationship = "many-to-many"
+    
+  ) |> 
+  dplyr::mutate(
+    DIAS_ENTRE_EXAMES = abs(
+      as.numeric(difftime(DC_ELPT, DC_IgG, units = "days"))
+    ),
+    SAME_30d = DIAS_ENTRE_EXAMES <= 30
+  ) |> 
+  dplyr::filter(SAME_30d == TRUE) |> 
+  dplyr::select(!SAME_30d) 
+
+elpt_igg_same30d |> 
+  writexl::write_xlsx(
+    paste0(
+      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+      'carolprando/protf_and_elpt/elpt_plus_igg_same30d_window.xlsx'
+    )
+  )
+
+# elpt_igg_same30d |> dplyr::count(PRONTUARIO) |> dplyr::arrange(dplyr::desc(n))
+# 
+# elpt_igg_same30d |> dplyr::count(PRONTUARIO) |> nrow()
+
+protf |> 
+  dplyr::group_by(dplyr::across(dplyr::everything())) |> 
+  dplyr::filter(dplyr::n() > 1) |> 
+  dplyr::ungroup() |> 
+  writexl::write_xlsx(
+    paste0(
+      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+      'carolprando/protf_and_elpt/protf_dplicacoes.xlsx'
+    )
+  )
+
+elpt |> 
+  dplyr::group_by(dplyr::across(dplyr::everything())) |> 
+  dplyr::filter(dplyr::n() > 1) |> 
+  dplyr::ungroup() |> 
+  dplyr::arrange(PRONTUARIO, DC) |> 
+  writexl::write_xlsx(
+    paste0(
+      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+      'carolprando/protf_and_elpt/elpt_duplicacoes.xlsx'
+    )
+  )
 ```
