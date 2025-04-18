@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/04/12
+date-modified: 2025/04/18
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -44,7 +44,7 @@ protf_url <-
     "1LnxvmEtdfOg2GRh2tIqtpbbSM6hcMHUym4vECO0OQuA/",
     "edit?gid=1659899554#gid=1659899554"
 )
-protf <- googlesheets4::read_sheet(protf_url)
+protf <- googlesheets4::read_sheet(protf_url) |> dplyr::distinct()
 
 protf <- protf |> 
   dplyr::mutate(
@@ -352,7 +352,7 @@ elpt_url <-
     "1h3FjWJsUuuGQFBAVHQJaUgQ3jqgImb5Ioi3JAx900Rc/",
     "edit?gid=1275014391#gid=1275014391"
   )
-elpt <- googlesheets4::read_sheet(elpt_url)
+elpt <- googlesheets4::read_sheet(elpt_url) |> dplyr::distinct()
 
 elpt <- elpt |> 
   dplyr::mutate(
@@ -464,7 +464,7 @@ elpt |>
 
 ```
 
-Destes, 997 fizeram o exame mais de uma vez (`r round(997/2543 * 100, 2)`%) - o que fez mais vezes, fez 36 vezes.
+Destes, 607 fizeram o exame mais de uma vez (`r round(607/2543 * 100, 2)`%) - o que fez mais vezes, fez 30 vezes.
 
 ```{r}
 
@@ -495,11 +495,11 @@ elpt |>
   ggplot() +
   aes(x = COLETA, y = RESULTADO, group = PRONTUARIO, color = GRUPO) +
   geom_vline(
-    xintercept = c(1, seq(from = 5, to = 30, by = 5), 36),
+    xintercept = c(1, seq(from = 5, to = 30, by = 5)),
     linetype = "dashed"
   ) +
   geom_hline(
-    yintercept = seq(from = 0, to = 6, by = 0.5),
+    yintercept = seq(from = 0, to = 5, by = 0.5),
     linetype = "dashed"
   ) +
   geom_line(linewidth = 0.75) +
@@ -508,15 +508,15 @@ elpt |>
     labeller = ggplot2::labeller(SEXO = \(x) paste("Sexo:", x))
   ) +
   scale_x_continuous(
-    breaks = c(1, seq(from = 5, to = 30, by = 5), 36)
+    breaks = c(1, seq(from = 5, to = 30, by = 5))
   ) +
-  scale_y_continuous(breaks = seq(from = 0, to = 6, by = 0.5)) +
+  scale_y_continuous(breaks = seq(from = 0, to = 5, by = 0.5)) +
   labs(
     x = "Coleta", y = "Resultado", color = "Grupo", 
     title = "ELPT - eletroforese de proteínas",
     subtitle = paste(
       "Apenas pacientes que fizeram o exame mais de uma vez", 
-      "(997 pacientes)"
+      "(607 pacientes)"
     )
   ) +
   theme(legend.position = "bottom")
@@ -555,7 +555,7 @@ elpt |>
   aes(x = PRONTUARIO, y = COLETA, fill = VALOR) +
   geom_tile() +
   geom_hline(
-    yintercept = seq(22) - 0.5,
+    yintercept = seq(16) - 0.5,
     linetype = "dashed", alpha = 0.5
   ) +
   facet_wrap(
@@ -564,15 +564,13 @@ elpt |>
     labeller = ggplot2::labeller(SEXO = \(x) paste("Sexo:", x))
   ) +
   scale_x_discrete(labels = NULL, breaks = NULL) +
-  scale_y_discrete(
-    breaks = c("1", "3", "6", "9", "12", "15", "18", "21")
-  ) +
+  scale_y_discrete(breaks = c("1", "3", "6", "9", "12", "15")) +
   labs(
     x = "Prontuário", y = "Coleta", fill = "Cutoff",
     title = "ELPT - eletroforese de proteínas",
     subtitle = paste(
       "Pacientes com mais de uma coleta e que ficaram abaixo do cutoff ao",
-      "menos uma vez (92 pacientes)"
+      "menos uma vez (71 pacientes)"
     )
   ) +
   theme(legend.position = "bottom")
@@ -593,25 +591,23 @@ elpt |>
   ggplot() +
   aes(x = COLETA, y = RESULTADO, group = PRONTUARIO, color = SEXO) +
   geom_vline(
-    xintercept = c(1, seq(from = 5, to = 30, by = 5), 36),
+    xintercept = c(1, seq(from = 5, to = 30, by = 5)),
     linetype = "dashed"
   ) +
   geom_hline(
-    yintercept = seq(from = 0, to = 6, by = 0.5),
+    yintercept = seq(from = 0, to = 5, by = 0.5),
     linetype = "dashed"
   ) +
   geom_line(linewidth = 0.75) +
   facet_wrap(~ GRUPO) +
-  scale_x_continuous(
-    breaks = c(1, seq(from = 5, to = 30, by = 5), 36)
-  ) +
-  scale_y_continuous(breaks = seq(from = 0, to = 6, by = 0.5)) +
+  scale_x_continuous(breaks = c(1, seq(from = 5, to = 30, by = 5))) +
+  scale_y_continuous(breaks = seq(from = 0, to = 5, by = 0.5)) +
   labs(
     x = "Coleta", y = "Resultado", color = "Grupo", 
     title = "ELPT - eletroforese de proteínas",
     subtitle = paste(
       "Apenas pacientes que fizeram o exame mais de uma vez", 
-      "(997 pacientes)"
+      "(607 pacientes)"
     )
   ) +
   theme(legend.position = "bottom")
@@ -633,7 +629,7 @@ elpt |>
   aes(y = PRONTUARIO, x = COLETA, fill = VALOR) +
   geom_tile() +
   geom_vline(
-    xintercept = seq(22) - 0.5,
+    xintercept = seq(16) - 0.5,
     linetype = "dashed", alpha = 0.5
   ) +
   facet_wrap(
@@ -642,15 +638,13 @@ elpt |>
     labeller = ggplot2::labeller(SEXO = \(x) paste("Sexo:", x))
   ) +
   scale_y_discrete(labels = NULL, breaks = NULL) +
-  scale_x_discrete(
-    breaks = c("1", "3", "6", "9", "12", "15", "18", "21")
-  ) +
+  scale_x_discrete(breaks = c("1", "3", "6", "9", "12", "15")) +
   labs(
     y = "Prontuário", x = "Coleta", fill = "Cutoff",
     title = "ELPT - eletroforese de proteínas",
     subtitle = paste(
       "Pacientes com mais de uma coleta e que ficaram abaixo do cutoff ao",
-      "menos uma vez (92 pacientes)"
+      "menos uma vez (71 pacientes)"
     )
   ) +
   theme(legend.position = "bottom")
@@ -763,7 +757,7 @@ elpt |>
 
 ```
 
-Dos 4.961 que fizeram PROTF, 397 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 8% dos pacientes.
+Dos 4.961 que fizeram PROTF, 207 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 8% dos pacientes.
 
 ```{r}
 
@@ -781,7 +775,7 @@ protf |>
 
 ```
 
-Dos 2.543 que fizeram ELPT, 48 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 1.9% dos pacientes.
+Dos 2.543 que fizeram ELPT, 17 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 0.67% dos pacientes.
 
 ```{r}
 
@@ -817,7 +811,7 @@ dat |>
 
 ```
 
-Dos 6.948 pacientes (total, ambos ou apenas um), 504 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 7.2% dos pacientes.
+Dos 6.948 pacientes (total, ambos ou apenas um), 474 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 6.8% dos pacientes.
 
 ```{r}
 
@@ -914,22 +908,22 @@ protf_wide <- protf |>
   ) |>
   dplyr::ungroup()
 
-# protf_wide |> 
-#   writexl::write_xlsx(
-#     paste0(
-#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',
-#       'carolprando/protf_and_elpt/protf_wide.xlsx'
-#     )
-#   )
+protf_wide |>
+  writexl::write_xlsx(
+    paste0(
+      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+      'carolprando/protf_and_elpt/protf_wide.xlsx'
+    )
+  )
 
-# protf_wide |> 
-#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |> 
-#   writexl::write_xlsx(
-#     paste0(
-#        '/Users/henriquelaureano/git/henriquelaureano.github.io/',
-#        'carolprando/protf_and_elpt/protf_plus_igg_wide.xlsx'
-#     )
-#   )
+protf_wide |>
+  dplyr::left_join(igg_wide, by = "PRONTUARIO") |>
+  writexl::write_xlsx(
+    paste0(
+       '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+       'carolprando/protf_and_elpt/protf_plus_igg_wide.xlsx'
+    )
+  )
 
 elpt_wide <- elpt |>
   dplyr::select(
@@ -946,23 +940,23 @@ elpt_wide <- elpt |>
   ) |>
   dplyr::ungroup()
 
-# elpt_wide |> 
-#   writexl::write_xlsx(
-#     paste0(
-#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',
-#       'carolprando/protf_and_elpt/elpt_wide.xlsx'
-#     )
-#   )
+elpt_wide |>
+  writexl::write_xlsx(
+    paste0(
+      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+      'carolprando/protf_and_elpt/elpt_wide.xlsx'
+    )
+  )
 
-# elpt_wide |>
-#   dplyr::mutate(PRONTUARIO = as.numeric(PRONTUARIO)) |> 
-#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |> 
-#   writexl::write_xlsx(
-#     paste0(
-#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',
-#       'carolprando/protf_and_elpt/elpt_plus_igg_wide.xlsx'
-#     )
-#   )
+elpt_wide |>
+  dplyr::mutate(PRONTUARIO = as.numeric(PRONTUARIO)) |>
+  dplyr::left_join(igg_wide, by = "PRONTUARIO") |>
+  writexl::write_xlsx(
+    paste0(
+      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
+      'carolprando/protf_and_elpt/elpt_plus_igg_wide.xlsx'
+    )
+  )
 
 ```
 
@@ -1085,29 +1079,37 @@ elpt_igg_same30d |>
   )
 
 # elpt_igg_same30d |> dplyr::count(PRONTUARIO) |> dplyr::arrange(dplyr::desc(n))
-# 
+
 # elpt_igg_same30d |> dplyr::count(PRONTUARIO) |> nrow()
 
-protf |> 
-  dplyr::group_by(dplyr::across(dplyr::everything())) |> 
-  dplyr::filter(dplyr::n() > 1) |> 
-  dplyr::ungroup() |> 
-  writexl::write_xlsx(
-    paste0(
-      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
-      'carolprando/protf_and_elpt/protf_dplicacoes.xlsx'
-    )
-  )
-
-elpt |> 
-  dplyr::group_by(dplyr::across(dplyr::everything())) |> 
-  dplyr::filter(dplyr::n() > 1) |> 
-  dplyr::ungroup() |> 
-  dplyr::arrange(PRONTUARIO, DC) |> 
-  writexl::write_xlsx(
-    paste0(
-      '/Users/henriquelaureano/git/henriquelaureano.github.io/',
-      'carolprando/protf_and_elpt/elpt_duplicacoes.xlsx'
-    )
-  )
 ```
+
+# Methodology & References
+
+All analyses were conducted using the `R` language and environment for statistical computing (R Core Team, 2025). The primary packages employed were `ggplot2` (Wickham, 2016), `dplyr` (Wickham et al., 2023), `lubridate` (Grolemund & Wickham, 2011), and `tidyr` (Wickham et al., 2024).
+
+Up to the present stage, we have focused on data cleaning, data manipulation, and data visualization, involving the creation of features, generation of frequency tables, calculation of averages and descriptive statistics, graphical representations, and construction of tabular summaries from various perspectives.
+
+In the next steps, we plan to apply generalized linear models (GLMs - McCullagh & Nelder, 1989) and generalized additive models (GAMs - Hastie & Tibshirani, 1990; Wood, 2017) - and, if necessary, their mixed-effects (Gelman & Hill, 2007) variants - to account for latent effects. The aim is to identify and quantify associations between the values of calculated globulin, gamma fraction, and immunoglobulin. We also intend to employ similar methodologies to describe and understand the clinical and epidemiological profiles present in the data.
+
+Once the dataset in fully prepared, and if the necessary, we also plan to implement machine learning algorithms for classification and or forecasting purposes (James et al., 2021), while reserving the statistical models primarily for inference. Defining new cutoff points in contexts where they are still unknown - or validating existing ones - is also a goal. For this, both statistical and machine learning methods will be considered.
+
+> R Core Team (2025). *R: A Language and Environment for Statistical Computing*. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
+>
+> H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+>
+> Wickham H, François R, Henry L, Müller K, Vaughan D (2023). *dplyr: A Grammar of Data Manipulation*. R package version 1.1.4, <https://CRAN.R-project.org/package=dplyr>.
+>
+> Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL <https://www.jstatsoft.org/v40/i03/.>
+>
+> Wickham H, Vaughan D, Girlich M (2024). *tidyr: Tidy Messy Data*. R package version 1.3.1, <https://CRAN.R-project.org/package=tidyr>.
+>
+> McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall.
+>
+> Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall.
+>
+> Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press.
+>
+> Gelman, A., & Hill, J. (2007). *Data Analysis Using Regression and Multilevel/Hierarchical Models*. Cambridge University Press.
+>
+> James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). *An Introduction to Statistical Learning* (2nd ed.). Springer. <https://www.statlearning.com/>

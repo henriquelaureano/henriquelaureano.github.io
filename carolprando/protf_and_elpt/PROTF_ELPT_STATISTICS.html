@@ -87,6 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#juntos" id="toc-juntos" class="nav-link" data-scroll-target="#juntos">Juntos</a></li>
   <li><a href="#igg" id="toc-igg" class="nav-link" data-scroll-target="#igg">IgG</a></li>
   <li><a href="#exames-no-mesmo-mês-intervalo-de-30-dias" id="toc-exames-no-mesmo-mês-intervalo-de-30-dias" class="nav-link" data-scroll-target="#exames-no-mesmo-mês-intervalo-de-30-dias">Exames no mesmo mês (intervalo de 30 dias)</a></li>
+  <li><a href="#methodology-references" id="toc-methodology-references" class="nav-link" data-scroll-target="#methodology-references">Methodology &amp; References</a></li>
   </ul>
 </nav>
 </div>
@@ -112,7 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">April 12, 2025</p>
+      <p class="date-modified">April 18, 2025</p>
     </div>
   </div>
     
@@ -156,7 +157,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4"></a>    <span class="st">"1LnxvmEtdfOg2GRh2tIqtpbbSM6hcMHUym4vECO0OQuA/"</span>,</span>
 <span id="cb2-5"><a href="#cb2-5"></a>    <span class="st">"edit?gid=1659899554#gid=1659899554"</span></span>
 <span id="cb2-6"><a href="#cb2-6"></a>)</span>
-<span id="cb2-7"><a href="#cb2-7"></a>protf <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(protf_url)</span>
+<span id="cb2-7"><a href="#cb2-7"></a>protf <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(protf_url) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
 <span id="cb2-8"><a href="#cb2-8"></a></span>
 <span id="cb2-9"><a href="#cb2-9"></a>protf <span class="ot">&lt;-</span> protf <span class="sc">|&gt;</span> </span>
 <span id="cb2-10"><a href="#cb2-10"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
@@ -197,7 +198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>                      Min.                    1st Qu. 
 "1929-10-09 00:00:00.0000" "2006-01-11 00:00:00.0000" 
                     Median                       Mean 
-"2011-01-08 00:00:00.0000" "2010-09-19 01:17:04.5266" 
+"2011-01-08 00:00:00.0000" "2010-09-18 18:19:13.2376" 
                    3rd Qu.                       Max. 
 "2015-08-20 00:00:00.0000" "2024-10-25 00:00:00.0000" </code></pre>
 </div>
@@ -210,9 +211,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                      Min.                    1st Qu. 
-"2015-01-02 00:00:00.0000" "2016-11-20 18:00:00.0000" 
+"2015-01-02 00:00:00.0000" "2016-11-20 00:00:00.0000" 
                     Median                       Mean 
-"2019-03-27 12:00:00.0000" "2019-05-31 03:34:01.7128" 
+"2019-03-28 00:00:00.0000" "2019-05-31 02:00:12.0620" 
                    3rd Qu.                       Max. 
 "2021-10-02 00:00:00.0000" "2024-10-31 00:00:00.0000" </code></pre>
 </div>
@@ -225,7 +226,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- -0.263   3.515   8.558   8.696  13.154  88.575 </code></pre>
+ -0.263   3.514   8.559   8.696  13.156  88.575 </code></pre>
 </div>
 </div>
 <p>Resultados:</p>
@@ -305,24 +306,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td style="text-align: left; font-weight: bold;">1 a 3 anos</td>
 <td style="text-align: right;">2.30</td>
-<td style="text-align: right;">2190</td>
+<td style="text-align: right;">2189</td>
 <td style="text-align: right;">1148</td>
-<td style="text-align: right;">1.908</td>
+<td style="text-align: right;">1.907</td>
 <td style="text-align: right;">463</td>
 <td style="text-align: right;">302</td>
 <td style="text-align: right;">1.533</td>
-<td style="text-align: right;">0.211</td>
+<td style="text-align: right;">0.212</td>
 <td style="text-align: right;">0.263</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; font-weight: bold;">4 a 9 anos</td>
 <td style="text-align: right;">2.48</td>
-<td style="text-align: right;">4112</td>
+<td style="text-align: right;">4110</td>
 <td style="text-align: right;">1511</td>
-<td style="text-align: right;">2.721</td>
-<td style="text-align: right;">954</td>
+<td style="text-align: right;">2.720</td>
+<td style="text-align: right;">953</td>
 <td style="text-align: right;">404</td>
-<td style="text-align: right;">2.361</td>
+<td style="text-align: right;">2.359</td>
 <td style="text-align: right;">0.232</td>
 <td style="text-align: right;">0.267</td>
 </tr>
@@ -621,7 +622,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-4"><a href="#cb20-4"></a>    <span class="st">"1h3FjWJsUuuGQFBAVHQJaUgQ3jqgImb5Ioi3JAx900Rc/"</span>,</span>
 <span id="cb20-5"><a href="#cb20-5"></a>    <span class="st">"edit?gid=1275014391#gid=1275014391"</span></span>
 <span id="cb20-6"><a href="#cb20-6"></a>  )</span>
-<span id="cb20-7"><a href="#cb20-7"></a>elpt <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(elpt_url)</span>
+<span id="cb20-7"><a href="#cb20-7"></a>elpt <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(elpt_url) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">distinct</span>()</span>
 <span id="cb20-8"><a href="#cb20-8"></a></span>
 <span id="cb20-9"><a href="#cb20-9"></a>elpt <span class="ot">&lt;-</span> elpt <span class="sc">|&gt;</span> </span>
 <span id="cb20-10"><a href="#cb20-10"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
@@ -662,7 +663,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.040   0.790   1.020   1.112   1.290   5.900 </code></pre>
+  0.040   0.790   1.010   1.104   1.280   5.900 </code></pre>
 </div>
 </div>
 <p>Medidas resumo das datas de nascimento:</p>
@@ -675,9 +676,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>                      Min.                    1st Qu. 
 "1935-02-19 00:00:00.0000" "2006-08-17 00:00:00.0000" 
                     Median                       Mean 
-"2011-04-29 00:00:00.0000" "2010-09-27 14:52:15.5323" 
+"2011-05-04 00:00:00.0000" "2010-10-05 10:39:45.4765" 
                    3rd Qu.                       Max. 
-"2016-01-23 00:00:00.0000" "2024-07-22 00:00:00.0000" </code></pre>
+"2016-01-27 06:00:00.0000" "2024-07-22 00:00:00.0000" </code></pre>
 </div>
 </div>
 <p>E das datas de coleta:</p>
@@ -688,11 +689,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                      Min.                    1st Qu. 
-"2015-01-06 00:00:00.0000" "2018-05-19 06:00:00.0000" 
+"2015-01-06 00:00:00.0000" "2018-04-08 00:00:00.0000" 
                     Median                       Mean 
-"2021-03-13 12:00:00.0000" "2020-09-17 11:05:53.2359" 
+"2021-02-17 00:00:00.0000" "2020-09-16 21:32:57.0045" 
                    3rd Qu.                       Max. 
-"2022-12-04 00:00:00.0000" "2024-10-31 00:00:00.0000" </code></pre>
+"2023-04-17 00:00:00.0000" "2024-10-31 00:00:00.0000" </code></pre>
 </div>
 </div>
 <p>Idade:</p>
@@ -703,7 +704,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
- 0.02466  4.42877  9.37483  9.97364 13.67945 89.63388 </code></pre>
+ 0.02466  4.32329  9.36525  9.95062 13.68699 89.63388 </code></pre>
 </div>
 </div>
 <p>Para cada grupo temos sua nota de corte, e assim mostramos quantos exames (<strong>E</strong>) estão abaixo (<strong>ABA</strong>) de tal <em>cutoff</em> e de quantos pacientes (<strong>P</strong>) diferentes geram esses exames (junto temos a média de exames por paciente).</p>
@@ -760,9 +761,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td style="text-align: left; font-weight: bold;">&lt; 1 ano</td>
 <td style="text-align: right;">NA</td>
-<td style="text-align: right;">176</td>
+<td style="text-align: right;">151</td>
 <td style="text-align: right;">145</td>
-<td style="text-align: right;">1.214</td>
+<td style="text-align: right;">1.041</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
@@ -772,49 +773,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td style="text-align: left; font-weight: bold;">1 a 3 anos</td>
 <td style="text-align: right;">0.550</td>
-<td style="text-align: right;">914</td>
+<td style="text-align: right;">765</td>
 <td style="text-align: right;">577</td>
-<td style="text-align: right;">1.584</td>
-<td style="text-align: right;">118</td>
+<td style="text-align: right;">1.326</td>
+<td style="text-align: right;">101</td>
 <td style="text-align: right;">95</td>
-<td style="text-align: right;">1.242</td>
-<td style="text-align: right;">0.129</td>
+<td style="text-align: right;">1.063</td>
+<td style="text-align: right;">0.132</td>
 <td style="text-align: right;">0.165</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; font-weight: bold;">4 a 9 anos</td>
 <td style="text-align: right;">0.565</td>
-<td style="text-align: right;">1476</td>
+<td style="text-align: right;">1212</td>
 <td style="text-align: right;">837</td>
-<td style="text-align: right;">1.763</td>
-<td style="text-align: right;">77</td>
+<td style="text-align: right;">1.448</td>
+<td style="text-align: right;">63</td>
 <td style="text-align: right;">46</td>
-<td style="text-align: right;">1.674</td>
+<td style="text-align: right;">1.370</td>
 <td style="text-align: right;">0.052</td>
 <td style="text-align: right;">0.055</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; font-weight: bold;">10 a 17 anos</td>
 <td style="text-align: right;">0.620</td>
-<td style="text-align: right;">1993</td>
+<td style="text-align: right;">1644</td>
 <td style="text-align: right;">1012</td>
-<td style="text-align: right;">1.969</td>
-<td style="text-align: right;">81</td>
+<td style="text-align: right;">1.625</td>
+<td style="text-align: right;">70</td>
 <td style="text-align: right;">60</td>
-<td style="text-align: right;">1.350</td>
-<td style="text-align: right;">0.041</td>
+<td style="text-align: right;">1.167</td>
+<td style="text-align: right;">0.043</td>
 <td style="text-align: right;">0.059</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left; font-weight: bold;">&gt; 18 anos</td>
 <td style="text-align: right;">0.715</td>
-<td style="text-align: right;">231</td>
+<td style="text-align: right;">194</td>
 <td style="text-align: right;">152</td>
-<td style="text-align: right;">1.520</td>
-<td style="text-align: right;">13</td>
+<td style="text-align: right;">1.276</td>
+<td style="text-align: right;">9</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;">1.625</td>
-<td style="text-align: right;">0.056</td>
+<td style="text-align: right;">1.125</td>
+<td style="text-align: right;">0.046</td>
 <td style="text-align: right;">0.053</td>
 </tr>
 </tbody>
@@ -835,20 +836,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 2,543 × 2
    PRONTUARIO     n
    &lt;chr&gt;      &lt;int&gt;
- 1 13166         36
- 2 466463        33
- 3 258608        29
- 4 332998        28
- 5 239252        24
- 6 307134        24
- 7 201507        21
- 8 540310        21
- 9 357376        17
-10 228772        16
+ 1 466463        30
+ 2 13166         29
+ 3 332998        23
+ 4 258608        22
+ 5 307134        21
+ 6 239252        18
+ 7 201507        15
+ 8 357376        15
+ 9 540310        14
+10 228772        13
 # ℹ 2,533 more rows</code></pre>
 </div>
 </div>
-<p>Destes, 997 fizeram o exame mais de uma vez (39.21%) - o que fez mais vezes, fez 36 vezes.</p>
+<p>Destes, 607 fizeram o exame mais de uma vez (23.87%) - o que fez mais vezes, fez 30 vezes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -858,20 +859,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb32-4"><a href="#cb32-4"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 997 × 2
+<pre><code># A tibble: 607 × 2
    PRONTUARIO     n
    &lt;chr&gt;      &lt;int&gt;
- 1 13166         36
- 2 466463        33
- 3 258608        29
- 4 332998        28
- 5 239252        24
- 6 307134        24
- 7 201507        21
- 8 540310        21
- 9 357376        17
-10 228772        16
-# ℹ 987 more rows</code></pre>
+ 1 466463        30
+ 2 13166         29
+ 3 332998        23
+ 4 258608        22
+ 5 307134        21
+ 6 239252        18
+ 7 201507        15
+ 8 357376        15
+ 9 540310        14
+10 228772        13
+# ℹ 597 more rows</code></pre>
 </div>
 </div>
 <p>Abaixo, cada linha é um paciente/prontuário.</p>
@@ -894,11 +895,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb34-14"><a href="#cb34-14"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb34-15"><a href="#cb34-15"></a>  <span class="fu">aes</span>(<span class="at">x =</span> COLETA, <span class="at">y =</span> RESULTADO, <span class="at">group =</span> PRONTUARIO, <span class="at">color =</span> GRUPO) <span class="sc">+</span></span>
 <span id="cb34-16"><a href="#cb34-16"></a>  <span class="fu">geom_vline</span>(</span>
-<span id="cb34-17"><a href="#cb34-17"></a>    <span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>), <span class="dv">36</span>),</span>
+<span id="cb34-17"><a href="#cb34-17"></a>    <span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>)),</span>
 <span id="cb34-18"><a href="#cb34-18"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
 <span id="cb34-19"><a href="#cb34-19"></a>  ) <span class="sc">+</span></span>
 <span id="cb34-20"><a href="#cb34-20"></a>  <span class="fu">geom_hline</span>(</span>
-<span id="cb34-21"><a href="#cb34-21"></a>    <span class="at">yintercept =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">6</span>, <span class="at">by =</span> <span class="fl">0.5</span>),</span>
+<span id="cb34-21"><a href="#cb34-21"></a>    <span class="at">yintercept =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.5</span>),</span>
 <span id="cb34-22"><a href="#cb34-22"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
 <span id="cb34-23"><a href="#cb34-23"></a>  ) <span class="sc">+</span></span>
 <span id="cb34-24"><a href="#cb34-24"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
@@ -907,15 +908,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb34-27"><a href="#cb34-27"></a>    <span class="at">labeller =</span> ggplot2<span class="sc">::</span><span class="fu">labeller</span>(<span class="at">SEXO =</span> \(x) <span class="fu">paste</span>(<span class="st">"Sexo:"</span>, x))</span>
 <span id="cb34-28"><a href="#cb34-28"></a>  ) <span class="sc">+</span></span>
 <span id="cb34-29"><a href="#cb34-29"></a>  <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb34-30"><a href="#cb34-30"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>), <span class="dv">36</span>)</span>
+<span id="cb34-30"><a href="#cb34-30"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>))</span>
 <span id="cb34-31"><a href="#cb34-31"></a>  ) <span class="sc">+</span></span>
-<span id="cb34-32"><a href="#cb34-32"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">6</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb34-32"><a href="#cb34-32"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
 <span id="cb34-33"><a href="#cb34-33"></a>  <span class="fu">labs</span>(</span>
 <span id="cb34-34"><a href="#cb34-34"></a>    <span class="at">x =</span> <span class="st">"Coleta"</span>, <span class="at">y =</span> <span class="st">"Resultado"</span>, <span class="at">color =</span> <span class="st">"Grupo"</span>, </span>
 <span id="cb34-35"><a href="#cb34-35"></a>    <span class="at">title =</span> <span class="st">"ELPT - eletroforese de proteínas"</span>,</span>
 <span id="cb34-36"><a href="#cb34-36"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
 <span id="cb34-37"><a href="#cb34-37"></a>      <span class="st">"Apenas pacientes que fizeram o exame mais de uma vez"</span>, </span>
-<span id="cb34-38"><a href="#cb34-38"></a>      <span class="st">"(997 pacientes)"</span></span>
+<span id="cb34-38"><a href="#cb34-38"></a>      <span class="st">"(607 pacientes)"</span></span>
 <span id="cb34-39"><a href="#cb34-39"></a>    )</span>
 <span id="cb34-40"><a href="#cb34-40"></a>  ) <span class="sc">+</span></span>
 <span id="cb34-41"><a href="#cb34-41"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -960,7 +961,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb35-26"><a href="#cb35-26"></a>  <span class="fu">aes</span>(<span class="at">x =</span> PRONTUARIO, <span class="at">y =</span> COLETA, <span class="at">fill =</span> VALOR) <span class="sc">+</span></span>
 <span id="cb35-27"><a href="#cb35-27"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
 <span id="cb35-28"><a href="#cb35-28"></a>  <span class="fu">geom_hline</span>(</span>
-<span id="cb35-29"><a href="#cb35-29"></a>    <span class="at">yintercept =</span> <span class="fu">seq</span>(<span class="dv">22</span>) <span class="sc">-</span> <span class="fl">0.5</span>,</span>
+<span id="cb35-29"><a href="#cb35-29"></a>    <span class="at">yintercept =</span> <span class="fu">seq</span>(<span class="dv">16</span>) <span class="sc">-</span> <span class="fl">0.5</span>,</span>
 <span id="cb35-30"><a href="#cb35-30"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span></span>
 <span id="cb35-31"><a href="#cb35-31"></a>  ) <span class="sc">+</span></span>
 <span id="cb35-32"><a href="#cb35-32"></a>  <span class="fu">facet_wrap</span>(</span>
@@ -969,18 +970,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb35-35"><a href="#cb35-35"></a>    <span class="at">labeller =</span> ggplot2<span class="sc">::</span><span class="fu">labeller</span>(<span class="at">SEXO =</span> \(x) <span class="fu">paste</span>(<span class="st">"Sexo:"</span>, x))</span>
 <span id="cb35-36"><a href="#cb35-36"></a>  ) <span class="sc">+</span></span>
 <span id="cb35-37"><a href="#cb35-37"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="cn">NULL</span>, <span class="at">breaks =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb35-38"><a href="#cb35-38"></a>  <span class="fu">scale_y_discrete</span>(</span>
-<span id="cb35-39"><a href="#cb35-39"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"3"</span>, <span class="st">"6"</span>, <span class="st">"9"</span>, <span class="st">"12"</span>, <span class="st">"15"</span>, <span class="st">"18"</span>, <span class="st">"21"</span>)</span>
-<span id="cb35-40"><a href="#cb35-40"></a>  ) <span class="sc">+</span></span>
-<span id="cb35-41"><a href="#cb35-41"></a>  <span class="fu">labs</span>(</span>
-<span id="cb35-42"><a href="#cb35-42"></a>    <span class="at">x =</span> <span class="st">"Prontuário"</span>, <span class="at">y =</span> <span class="st">"Coleta"</span>, <span class="at">fill =</span> <span class="st">"Cutoff"</span>,</span>
-<span id="cb35-43"><a href="#cb35-43"></a>    <span class="at">title =</span> <span class="st">"ELPT - eletroforese de proteínas"</span>,</span>
-<span id="cb35-44"><a href="#cb35-44"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
-<span id="cb35-45"><a href="#cb35-45"></a>      <span class="st">"Pacientes com mais de uma coleta e que ficaram abaixo do cutoff ao"</span>,</span>
-<span id="cb35-46"><a href="#cb35-46"></a>      <span class="st">"menos uma vez (92 pacientes)"</span></span>
-<span id="cb35-47"><a href="#cb35-47"></a>    )</span>
-<span id="cb35-48"><a href="#cb35-48"></a>  ) <span class="sc">+</span></span>
-<span id="cb35-49"><a href="#cb35-49"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-38"><a href="#cb35-38"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"3"</span>, <span class="st">"6"</span>, <span class="st">"9"</span>, <span class="st">"12"</span>, <span class="st">"15"</span>)) <span class="sc">+</span></span>
+<span id="cb35-39"><a href="#cb35-39"></a>  <span class="fu">labs</span>(</span>
+<span id="cb35-40"><a href="#cb35-40"></a>    <span class="at">x =</span> <span class="st">"Prontuário"</span>, <span class="at">y =</span> <span class="st">"Coleta"</span>, <span class="at">fill =</span> <span class="st">"Cutoff"</span>,</span>
+<span id="cb35-41"><a href="#cb35-41"></a>    <span class="at">title =</span> <span class="st">"ELPT - eletroforese de proteínas"</span>,</span>
+<span id="cb35-42"><a href="#cb35-42"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
+<span id="cb35-43"><a href="#cb35-43"></a>      <span class="st">"Pacientes com mais de uma coleta e que ficaram abaixo do cutoff ao"</span>,</span>
+<span id="cb35-44"><a href="#cb35-44"></a>      <span class="st">"menos uma vez (71 pacientes)"</span></span>
+<span id="cb35-45"><a href="#cb35-45"></a>    )</span>
+<span id="cb35-46"><a href="#cb35-46"></a>  ) <span class="sc">+</span></span>
+<span id="cb35-47"><a href="#cb35-47"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1004,28 +1003,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb36-8"><a href="#cb36-8"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
 <span id="cb36-9"><a href="#cb36-9"></a>  <span class="fu">aes</span>(<span class="at">x =</span> COLETA, <span class="at">y =</span> RESULTADO, <span class="at">group =</span> PRONTUARIO, <span class="at">color =</span> SEXO) <span class="sc">+</span></span>
 <span id="cb36-10"><a href="#cb36-10"></a>  <span class="fu">geom_vline</span>(</span>
-<span id="cb36-11"><a href="#cb36-11"></a>    <span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>), <span class="dv">36</span>),</span>
+<span id="cb36-11"><a href="#cb36-11"></a>    <span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>)),</span>
 <span id="cb36-12"><a href="#cb36-12"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
 <span id="cb36-13"><a href="#cb36-13"></a>  ) <span class="sc">+</span></span>
 <span id="cb36-14"><a href="#cb36-14"></a>  <span class="fu">geom_hline</span>(</span>
-<span id="cb36-15"><a href="#cb36-15"></a>    <span class="at">yintercept =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">6</span>, <span class="at">by =</span> <span class="fl">0.5</span>),</span>
+<span id="cb36-15"><a href="#cb36-15"></a>    <span class="at">yintercept =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.5</span>),</span>
 <span id="cb36-16"><a href="#cb36-16"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span></span>
 <span id="cb36-17"><a href="#cb36-17"></a>  ) <span class="sc">+</span></span>
 <span id="cb36-18"><a href="#cb36-18"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
 <span id="cb36-19"><a href="#cb36-19"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> GRUPO) <span class="sc">+</span></span>
-<span id="cb36-20"><a href="#cb36-20"></a>  <span class="fu">scale_x_continuous</span>(</span>
-<span id="cb36-21"><a href="#cb36-21"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>), <span class="dv">36</span>)</span>
-<span id="cb36-22"><a href="#cb36-22"></a>  ) <span class="sc">+</span></span>
-<span id="cb36-23"><a href="#cb36-23"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">6</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
-<span id="cb36-24"><a href="#cb36-24"></a>  <span class="fu">labs</span>(</span>
-<span id="cb36-25"><a href="#cb36-25"></a>    <span class="at">x =</span> <span class="st">"Coleta"</span>, <span class="at">y =</span> <span class="st">"Resultado"</span>, <span class="at">color =</span> <span class="st">"Grupo"</span>, </span>
-<span id="cb36-26"><a href="#cb36-26"></a>    <span class="at">title =</span> <span class="st">"ELPT - eletroforese de proteínas"</span>,</span>
-<span id="cb36-27"><a href="#cb36-27"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
-<span id="cb36-28"><a href="#cb36-28"></a>      <span class="st">"Apenas pacientes que fizeram o exame mais de uma vez"</span>, </span>
-<span id="cb36-29"><a href="#cb36-29"></a>      <span class="st">"(997 pacientes)"</span></span>
-<span id="cb36-30"><a href="#cb36-30"></a>    )</span>
-<span id="cb36-31"><a href="#cb36-31"></a>  ) <span class="sc">+</span></span>
-<span id="cb36-32"><a href="#cb36-32"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb36-20"><a href="#cb36-20"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">5</span>, <span class="at">to =</span> <span class="dv">30</span>, <span class="at">by =</span> <span class="dv">5</span>))) <span class="sc">+</span></span>
+<span id="cb36-21"><a href="#cb36-21"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span> <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb36-22"><a href="#cb36-22"></a>  <span class="fu">labs</span>(</span>
+<span id="cb36-23"><a href="#cb36-23"></a>    <span class="at">x =</span> <span class="st">"Coleta"</span>, <span class="at">y =</span> <span class="st">"Resultado"</span>, <span class="at">color =</span> <span class="st">"Grupo"</span>, </span>
+<span id="cb36-24"><a href="#cb36-24"></a>    <span class="at">title =</span> <span class="st">"ELPT - eletroforese de proteínas"</span>,</span>
+<span id="cb36-25"><a href="#cb36-25"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
+<span id="cb36-26"><a href="#cb36-26"></a>      <span class="st">"Apenas pacientes que fizeram o exame mais de uma vez"</span>, </span>
+<span id="cb36-27"><a href="#cb36-27"></a>      <span class="st">"(607 pacientes)"</span></span>
+<span id="cb36-28"><a href="#cb36-28"></a>    )</span>
+<span id="cb36-29"><a href="#cb36-29"></a>  ) <span class="sc">+</span></span>
+<span id="cb36-30"><a href="#cb36-30"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1051,7 +1048,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb37-11"><a href="#cb37-11"></a>  <span class="fu">aes</span>(<span class="at">y =</span> PRONTUARIO, <span class="at">x =</span> COLETA, <span class="at">fill =</span> VALOR) <span class="sc">+</span></span>
 <span id="cb37-12"><a href="#cb37-12"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
 <span id="cb37-13"><a href="#cb37-13"></a>  <span class="fu">geom_vline</span>(</span>
-<span id="cb37-14"><a href="#cb37-14"></a>    <span class="at">xintercept =</span> <span class="fu">seq</span>(<span class="dv">22</span>) <span class="sc">-</span> <span class="fl">0.5</span>,</span>
+<span id="cb37-14"><a href="#cb37-14"></a>    <span class="at">xintercept =</span> <span class="fu">seq</span>(<span class="dv">16</span>) <span class="sc">-</span> <span class="fl">0.5</span>,</span>
 <span id="cb37-15"><a href="#cb37-15"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span></span>
 <span id="cb37-16"><a href="#cb37-16"></a>  ) <span class="sc">+</span></span>
 <span id="cb37-17"><a href="#cb37-17"></a>  <span class="fu">facet_wrap</span>(</span>
@@ -1060,18 +1057,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb37-20"><a href="#cb37-20"></a>    <span class="at">labeller =</span> ggplot2<span class="sc">::</span><span class="fu">labeller</span>(<span class="at">SEXO =</span> \(x) <span class="fu">paste</span>(<span class="st">"Sexo:"</span>, x))</span>
 <span id="cb37-21"><a href="#cb37-21"></a>  ) <span class="sc">+</span></span>
 <span id="cb37-22"><a href="#cb37-22"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">labels =</span> <span class="cn">NULL</span>, <span class="at">breaks =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb37-23"><a href="#cb37-23"></a>  <span class="fu">scale_x_discrete</span>(</span>
-<span id="cb37-24"><a href="#cb37-24"></a>    <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"3"</span>, <span class="st">"6"</span>, <span class="st">"9"</span>, <span class="st">"12"</span>, <span class="st">"15"</span>, <span class="st">"18"</span>, <span class="st">"21"</span>)</span>
-<span id="cb37-25"><a href="#cb37-25"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-26"><a href="#cb37-26"></a>  <span class="fu">labs</span>(</span>
-<span id="cb37-27"><a href="#cb37-27"></a>    <span class="at">y =</span> <span class="st">"Prontuário"</span>, <span class="at">x =</span> <span class="st">"Coleta"</span>, <span class="at">fill =</span> <span class="st">"Cutoff"</span>,</span>
-<span id="cb37-28"><a href="#cb37-28"></a>    <span class="at">title =</span> <span class="st">"ELPT - eletroforese de proteínas"</span>,</span>
-<span id="cb37-29"><a href="#cb37-29"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
-<span id="cb37-30"><a href="#cb37-30"></a>      <span class="st">"Pacientes com mais de uma coleta e que ficaram abaixo do cutoff ao"</span>,</span>
-<span id="cb37-31"><a href="#cb37-31"></a>      <span class="st">"menos uma vez (92 pacientes)"</span></span>
-<span id="cb37-32"><a href="#cb37-32"></a>    )</span>
-<span id="cb37-33"><a href="#cb37-33"></a>  ) <span class="sc">+</span></span>
-<span id="cb37-34"><a href="#cb37-34"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb37-23"><a href="#cb37-23"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"3"</span>, <span class="st">"6"</span>, <span class="st">"9"</span>, <span class="st">"12"</span>, <span class="st">"15"</span>)) <span class="sc">+</span></span>
+<span id="cb37-24"><a href="#cb37-24"></a>  <span class="fu">labs</span>(</span>
+<span id="cb37-25"><a href="#cb37-25"></a>    <span class="at">y =</span> <span class="st">"Prontuário"</span>, <span class="at">x =</span> <span class="st">"Coleta"</span>, <span class="at">fill =</span> <span class="st">"Cutoff"</span>,</span>
+<span id="cb37-26"><a href="#cb37-26"></a>    <span class="at">title =</span> <span class="st">"ELPT - eletroforese de proteínas"</span>,</span>
+<span id="cb37-27"><a href="#cb37-27"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(</span>
+<span id="cb37-28"><a href="#cb37-28"></a>      <span class="st">"Pacientes com mais de uma coleta e que ficaram abaixo do cutoff ao"</span>,</span>
+<span id="cb37-29"><a href="#cb37-29"></a>      <span class="st">"menos uma vez (71 pacientes)"</span></span>
+<span id="cb37-30"><a href="#cb37-30"></a>    )</span>
+<span id="cb37-31"><a href="#cb37-31"></a>  ) <span class="sc">+</span></span>
+<span id="cb37-32"><a href="#cb37-32"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1117,16 +1112,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 6,948 × 2
    PRONTUARIO     n
    &lt;chr&gt;      &lt;int&gt;
- 1 10608        224
- 2 407197       210
- 3 156275       175
- 4 394497       154
- 5 3884         152
- 6 111249       144
- 7 11204        140
- 8 315848       133
- 9 227710       132
-10 19576        128
+ 1 407197       189
+ 2 10608        160
+ 3 156275       140
+ 4 111249       128
+ 5 43436        120
+ 6 25582        114
+ 7 3884         114
+ 8 394497       112
+ 9 11204        105
+10 227710        99
 # ℹ 6,938 more rows</code></pre>
 </div>
 </div>
@@ -1143,16 +1138,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 556 × 4
    PRONTUARIO EXAME_PROTF EXAME_ELPT         n
    &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;          &lt;int&gt;
- 1 10608      GLOBULINA   Gama Globulina   224
- 2 407197     GLOBULINA   Gama Globulina   210
- 3 156275     GLOBULINA   Gama Globulina   175
- 4 394497     GLOBULINA   Gama Globulina   154
- 5 3884       GLOBULINA   Gama Globulina   152
- 6 111249     GLOBULINA   Gama Globulina   144
- 7 11204      GLOBULINA   Gama Globulina   140
- 8 315848     GLOBULINA   Gama Globulina   133
- 9 227710     GLOBULINA   Gama Globulina   132
-10 19576      GLOBULINA   Gama Globulina   128
+ 1 407197     GLOBULINA   Gama Globulina   189
+ 2 10608      GLOBULINA   Gama Globulina   160
+ 3 156275     GLOBULINA   Gama Globulina   140
+ 4 111249     GLOBULINA   Gama Globulina   128
+ 5 43436      GLOBULINA   Gama Globulina   120
+ 6 25582      GLOBULINA   Gama Globulina   114
+ 7 3884       GLOBULINA   Gama Globulina   114
+ 8 394497     GLOBULINA   Gama Globulina   112
+ 9 11204      GLOBULINA   Gama Globulina   105
+10 227710     GLOBULINA   Gama Globulina    99
 # ℹ 546 more rows</code></pre>
 </div>
 </div>
@@ -1195,16 +1190,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 1,987 × 4
    PRONTUARIO EXAME_PROTF EXAME_ELPT         n
    &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;          &lt;int&gt;
- 1 466463     &lt;NA&gt;        Gama Globulina    33
- 2 258608     &lt;NA&gt;        Gama Globulina    29
- 3 332998     &lt;NA&gt;        Gama Globulina    28
- 4 239252     &lt;NA&gt;        Gama Globulina    24
- 5 201507     &lt;NA&gt;        Gama Globulina    21
- 6 328682     &lt;NA&gt;        Gama Globulina    15
- 7 233047     &lt;NA&gt;        Gama Globulina    14
- 8 422391     &lt;NA&gt;        Gama Globulina    14
- 9 354710     &lt;NA&gt;        Gama Globulina    12
-10 480592     &lt;NA&gt;        Gama Globulina    12
+ 1 466463     &lt;NA&gt;        Gama Globulina    30
+ 2 332998     &lt;NA&gt;        Gama Globulina    23
+ 3 258608     &lt;NA&gt;        Gama Globulina    22
+ 4 239252     &lt;NA&gt;        Gama Globulina    18
+ 5 201507     &lt;NA&gt;        Gama Globulina    15
+ 6 233047     &lt;NA&gt;        Gama Globulina    13
+ 7 480592     &lt;NA&gt;        Gama Globulina    11
+ 8 328682     &lt;NA&gt;        Gama Globulina    10
+ 9 154054     &lt;NA&gt;        Gama Globulina     9
+10 354710     &lt;NA&gt;        Gama Globulina     9
 # ℹ 1,977 more rows</code></pre>
 </div>
 </div>
@@ -1264,7 +1259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 0.08139992</code></pre>
 </div>
 </div>
-<p>Dos 4.961 que fizeram PROTF, 397 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 8% dos pacientes.</p>
+<p>Dos 4.961 que fizeram PROTF, 207 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 8% dos pacientes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1289,7 +1284,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 0.08022576</code></pre>
 </div>
 </div>
-<p>Dos 2.543 que fizeram ELPT, 48 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 1.9% dos pacientes.</p>
+<p>Dos 2.543 que fizeram ELPT, 17 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 0.67% dos pacientes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1299,7 +1294,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb61-4"><a href="#cb61-4"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(VALOR <span class="sc">%in%</span> <span class="st">"Abaixo"</span> <span class="sc">&amp;</span> n <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 48</code></pre>
+<pre><code>[1] 17</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1311,7 +1306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb63-6"><a href="#cb63-6"></a>  elpt <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">count</span>(PRONTUARIO) <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.01887534</code></pre>
+<pre><code>[1] 0.006685018</code></pre>
 </div>
 </div>
 <p>Dos 6.948 pacientes (total, ambos ou apenas um), 1.398 apresentaram valor abaixo da linha de corte pelo menos uma vez. Ou seja, 20.1% dos pacientes.</p>
@@ -1327,16 +1322,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 1,398 × 4
    PRONTUARIO VALOR_PROTF VALOR_ELPT     n
    &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;      &lt;int&gt;
- 1 20595      Abaixo      Abaixo        62
- 2 20595      Normal      Abaixo        58
- 3 57229      Abaixo      &lt;NA&gt;          45
- 4 433223     Abaixo      Abaixo        42
- 5 14820      Abaixo      &lt;NA&gt;          39
- 6 10364      Abaixo      &lt;NA&gt;          37
- 7 10608      Abaixo      Normal        35
- 8 292229     Abaixo      Normal        34
- 9 277567     Normal      Abaixo        32
-10 12913      Abaixo      Normal        30
+ 1 57229      Abaixo      &lt;NA&gt;          45
+ 2 433223     Abaixo      Abaixo        42
+ 3 14820      Abaixo      &lt;NA&gt;          39
+ 4 10364      Abaixo      &lt;NA&gt;          37
+ 5 292229     Abaixo      Normal        34
+ 6 20595      Abaixo      Abaixo        31
+ 7 12913      Abaixo      Normal        30
+ 8 20595      Normal      Abaixo        29
+ 9 251469     Abaixo      &lt;NA&gt;          27
+10 257        Abaixo      &lt;NA&gt;          27
 # ℹ 1,388 more rows</code></pre>
 </div>
 <details class="code-fold">
@@ -1352,7 +1347,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 0.201209</code></pre>
 </div>
 </div>
-<p>Dos 6.948 pacientes (total, ambos ou apenas um), 504 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 7.2% dos pacientes.</p>
+<p>Dos 6.948 pacientes (total, ambos ou apenas um), 474 apresentaram valor abaixo da linha de corte mais que uma vez. Ou seja, 6.8% dos pacientes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1366,20 +1361,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb69-8"><a href="#cb69-8"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 505 × 4
+<pre><code># A tibble: 474 × 4
    PRONTUARIO VALOR_PROTF VALOR_ELPT     n
    &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;      &lt;int&gt;
- 1 20595      Abaixo      Abaixo        62
- 2 20595      Normal      Abaixo        58
- 3 57229      Abaixo      &lt;NA&gt;          45
- 4 433223     Abaixo      Abaixo        42
- 5 14820      Abaixo      &lt;NA&gt;          39
- 6 10364      Abaixo      &lt;NA&gt;          37
- 7 10608      Abaixo      Normal        35
- 8 292229     Abaixo      Normal        34
- 9 277567     Normal      Abaixo        32
-10 12913      Abaixo      Normal        30
-# ℹ 495 more rows</code></pre>
+ 1 57229      Abaixo      &lt;NA&gt;          45
+ 2 433223     Abaixo      Abaixo        42
+ 3 14820      Abaixo      &lt;NA&gt;          39
+ 4 10364      Abaixo      &lt;NA&gt;          37
+ 5 292229     Abaixo      Normal        34
+ 6 20595      Abaixo      Abaixo        31
+ 7 12913      Abaixo      Normal        30
+ 8 20595      Normal      Abaixo        29
+ 9 251469     Abaixo      &lt;NA&gt;          27
+10 257        Abaixo      &lt;NA&gt;          27
+# ℹ 464 more rows</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1392,7 +1387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb71-7"><a href="#cb71-7"></a>  dat <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">count</span>(PRONTUARIO) <span class="sc">|&gt;</span> <span class="fu">nrow</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.07268279</code></pre>
+<pre><code>[1] 0.06822107</code></pre>
 </div>
 </div>
 </section>
@@ -1485,22 +1480,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb76-28"><a href="#cb76-28"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb76-29"><a href="#cb76-29"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
 <span id="cb76-30"><a href="#cb76-30"></a></span>
-<span id="cb76-31"><a href="#cb76-31"></a><span class="co"># protf_wide |&gt; </span></span>
-<span id="cb76-32"><a href="#cb76-32"></a><span class="co">#   writexl::write_xlsx(</span></span>
-<span id="cb76-33"><a href="#cb76-33"></a><span class="co">#     paste0(</span></span>
-<span id="cb76-34"><a href="#cb76-34"></a><span class="co">#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
-<span id="cb76-35"><a href="#cb76-35"></a><span class="co">#       'carolprando/protf_and_elpt/protf_wide.xlsx'</span></span>
-<span id="cb76-36"><a href="#cb76-36"></a><span class="co">#     )</span></span>
-<span id="cb76-37"><a href="#cb76-37"></a><span class="co">#   )</span></span>
+<span id="cb76-31"><a href="#cb76-31"></a>protf_wide <span class="sc">|&gt;</span></span>
+<span id="cb76-32"><a href="#cb76-32"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb76-33"><a href="#cb76-33"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb76-34"><a href="#cb76-34"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb76-35"><a href="#cb76-35"></a>      <span class="st">'carolprando/protf_and_elpt/protf_wide.xlsx'</span></span>
+<span id="cb76-36"><a href="#cb76-36"></a>    )</span>
+<span id="cb76-37"><a href="#cb76-37"></a>  )</span>
 <span id="cb76-38"><a href="#cb76-38"></a></span>
-<span id="cb76-39"><a href="#cb76-39"></a><span class="co"># protf_wide |&gt; </span></span>
-<span id="cb76-40"><a href="#cb76-40"></a><span class="co">#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |&gt; </span></span>
-<span id="cb76-41"><a href="#cb76-41"></a><span class="co">#   writexl::write_xlsx(</span></span>
-<span id="cb76-42"><a href="#cb76-42"></a><span class="co">#     paste0(</span></span>
-<span id="cb76-43"><a href="#cb76-43"></a><span class="co">#        '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
-<span id="cb76-44"><a href="#cb76-44"></a><span class="co">#        'carolprando/protf_and_elpt/protf_plus_igg_wide.xlsx'</span></span>
-<span id="cb76-45"><a href="#cb76-45"></a><span class="co">#     )</span></span>
-<span id="cb76-46"><a href="#cb76-46"></a><span class="co">#   )</span></span>
+<span id="cb76-39"><a href="#cb76-39"></a>protf_wide <span class="sc">|&gt;</span></span>
+<span id="cb76-40"><a href="#cb76-40"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(igg_wide, <span class="at">by =</span> <span class="st">"PRONTUARIO"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-41"><a href="#cb76-41"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb76-42"><a href="#cb76-42"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb76-43"><a href="#cb76-43"></a>       <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb76-44"><a href="#cb76-44"></a>       <span class="st">'carolprando/protf_and_elpt/protf_plus_igg_wide.xlsx'</span></span>
+<span id="cb76-45"><a href="#cb76-45"></a>    )</span>
+<span id="cb76-46"><a href="#cb76-46"></a>  )</span>
 <span id="cb76-47"><a href="#cb76-47"></a></span>
 <span id="cb76-48"><a href="#cb76-48"></a>elpt_wide <span class="ot">&lt;-</span> elpt <span class="sc">|&gt;</span></span>
 <span id="cb76-49"><a href="#cb76-49"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
@@ -1517,23 +1512,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb76-60"><a href="#cb76-60"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb76-61"><a href="#cb76-61"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
 <span id="cb76-62"><a href="#cb76-62"></a></span>
-<span id="cb76-63"><a href="#cb76-63"></a><span class="co"># elpt_wide |&gt; </span></span>
-<span id="cb76-64"><a href="#cb76-64"></a><span class="co">#   writexl::write_xlsx(</span></span>
-<span id="cb76-65"><a href="#cb76-65"></a><span class="co">#     paste0(</span></span>
-<span id="cb76-66"><a href="#cb76-66"></a><span class="co">#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
-<span id="cb76-67"><a href="#cb76-67"></a><span class="co">#       'carolprando/protf_and_elpt/elpt_wide.xlsx'</span></span>
-<span id="cb76-68"><a href="#cb76-68"></a><span class="co">#     )</span></span>
-<span id="cb76-69"><a href="#cb76-69"></a><span class="co">#   )</span></span>
+<span id="cb76-63"><a href="#cb76-63"></a>elpt_wide <span class="sc">|&gt;</span></span>
+<span id="cb76-64"><a href="#cb76-64"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb76-65"><a href="#cb76-65"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb76-66"><a href="#cb76-66"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb76-67"><a href="#cb76-67"></a>      <span class="st">'carolprando/protf_and_elpt/elpt_wide.xlsx'</span></span>
+<span id="cb76-68"><a href="#cb76-68"></a>    )</span>
+<span id="cb76-69"><a href="#cb76-69"></a>  )</span>
 <span id="cb76-70"><a href="#cb76-70"></a></span>
-<span id="cb76-71"><a href="#cb76-71"></a><span class="co"># elpt_wide |&gt;</span></span>
-<span id="cb76-72"><a href="#cb76-72"></a><span class="co">#   dplyr::mutate(PRONTUARIO = as.numeric(PRONTUARIO)) |&gt; </span></span>
-<span id="cb76-73"><a href="#cb76-73"></a><span class="co">#   dplyr::left_join(igg_wide, by = "PRONTUARIO") |&gt; </span></span>
-<span id="cb76-74"><a href="#cb76-74"></a><span class="co">#   writexl::write_xlsx(</span></span>
-<span id="cb76-75"><a href="#cb76-75"></a><span class="co">#     paste0(</span></span>
-<span id="cb76-76"><a href="#cb76-76"></a><span class="co">#       '/Users/henriquelaureano/git/henriquelaureano.github.io/',</span></span>
-<span id="cb76-77"><a href="#cb76-77"></a><span class="co">#       'carolprando/protf_and_elpt/elpt_plus_igg_wide.xlsx'</span></span>
-<span id="cb76-78"><a href="#cb76-78"></a><span class="co">#     )</span></span>
-<span id="cb76-79"><a href="#cb76-79"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb76-71"><a href="#cb76-71"></a>elpt_wide <span class="sc">|&gt;</span></span>
+<span id="cb76-72"><a href="#cb76-72"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">PRONTUARIO =</span> <span class="fu">as.numeric</span>(PRONTUARIO)) <span class="sc">|&gt;</span></span>
+<span id="cb76-73"><a href="#cb76-73"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(igg_wide, <span class="at">by =</span> <span class="st">"PRONTUARIO"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-74"><a href="#cb76-74"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
+<span id="cb76-75"><a href="#cb76-75"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb76-76"><a href="#cb76-76"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
+<span id="cb76-77"><a href="#cb76-77"></a>      <span class="st">'carolprando/protf_and_elpt/elpt_plus_igg_wide.xlsx'</span></span>
+<span id="cb76-78"><a href="#cb76-78"></a>    )</span>
+<span id="cb76-79"><a href="#cb76-79"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -1655,33 +1650,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb78-52"><a href="#cb78-52"></a>  )</span>
 <span id="cb78-53"><a href="#cb78-53"></a></span>
 <span id="cb78-54"><a href="#cb78-54"></a><span class="co"># elpt_igg_same30d |&gt; dplyr::count(PRONTUARIO) |&gt; dplyr::arrange(dplyr::desc(n))</span></span>
-<span id="cb78-55"><a href="#cb78-55"></a><span class="co"># </span></span>
-<span id="cb78-56"><a href="#cb78-56"></a><span class="co"># elpt_igg_same30d |&gt; dplyr::count(PRONTUARIO) |&gt; nrow()</span></span>
-<span id="cb78-57"><a href="#cb78-57"></a></span>
-<span id="cb78-58"><a href="#cb78-58"></a>protf <span class="sc">|&gt;</span> </span>
-<span id="cb78-59"><a href="#cb78-59"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(dplyr<span class="sc">::</span><span class="fu">everything</span>())) <span class="sc">|&gt;</span> </span>
-<span id="cb78-60"><a href="#cb78-60"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(dplyr<span class="sc">::</span><span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb78-61"><a href="#cb78-61"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb78-62"><a href="#cb78-62"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
-<span id="cb78-63"><a href="#cb78-63"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb78-64"><a href="#cb78-64"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
-<span id="cb78-65"><a href="#cb78-65"></a>      <span class="st">'carolprando/protf_and_elpt/protf_dplicacoes.xlsx'</span></span>
-<span id="cb78-66"><a href="#cb78-66"></a>    )</span>
-<span id="cb78-67"><a href="#cb78-67"></a>  )</span>
-<span id="cb78-68"><a href="#cb78-68"></a></span>
-<span id="cb78-69"><a href="#cb78-69"></a>elpt <span class="sc">|&gt;</span> </span>
-<span id="cb78-70"><a href="#cb78-70"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(dplyr<span class="sc">::</span><span class="fu">across</span>(dplyr<span class="sc">::</span><span class="fu">everything</span>())) <span class="sc">|&gt;</span> </span>
-<span id="cb78-71"><a href="#cb78-71"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(dplyr<span class="sc">::</span><span class="fu">n</span>() <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb78-72"><a href="#cb78-72"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb78-73"><a href="#cb78-73"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(PRONTUARIO, DC) <span class="sc">|&gt;</span> </span>
-<span id="cb78-74"><a href="#cb78-74"></a>  writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(</span>
-<span id="cb78-75"><a href="#cb78-75"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb78-76"><a href="#cb78-76"></a>      <span class="st">'/Users/henriquelaureano/git/henriquelaureano.github.io/'</span>,</span>
-<span id="cb78-77"><a href="#cb78-77"></a>      <span class="st">'carolprando/protf_and_elpt/elpt_duplicacoes.xlsx'</span></span>
-<span id="cb78-78"><a href="#cb78-78"></a>    )</span>
-<span id="cb78-79"><a href="#cb78-79"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb78-55"><a href="#cb78-55"></a></span>
+<span id="cb78-56"><a href="#cb78-56"></a><span class="co"># elpt_igg_same30d |&gt; dplyr::count(PRONTUARIO) |&gt; nrow()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="methodology-references" class="level1">
+<h1>Methodology &amp; References</h1>
+<p>All analyses were conducted using the <code>R</code> language and environment for statistical computing (R Core Team, 2025). The primary packages employed were <code>ggplot2</code> (Wickham, 2016), <code>dplyr</code> (Wickham et al., 2023), <code>lubridate</code> (Grolemund &amp; Wickham, 2011), and <code>tidyr</code> (Wickham et al., 2024).</p>
+<p>Up to the present stage, we have focused on data cleaning, data manipulation, and data visualization, involving the creation of features, generation of frequency tables, calculation of averages and descriptive statistics, graphical representations, and construction of tabular summaries from various perspectives.</p>
+<p>In the next steps, we plan to apply generalized linear models (GLMs - McCullagh &amp; Nelder, 1989) and generalized additive models (GAMs - Hastie &amp; Tibshirani, 1990; Wood, 2017) - and, if necessary, their mixed-effects (Gelman &amp; Hill, 2007) variants - to account for latent effects. The aim is to identify and quantify associations between the values of calculated globulin, gamma fraction, and immunoglobulin. We also intend to employ similar methodologies to describe and understand the clinical and epidemiological profiles present in the data.</p>
+<p>Once the dataset in fully prepared, and if the necessary, we also plan to implement machine learning algorithms for classification and or forecasting purposes (James et al., 2021), while reserving the statistical models primarily for inference. Defining new cutoff points in contexts where they are still unknown - or validating existing ones - is also a goal. For this, both statistical and machine learning methods will be considered.</p>
+<blockquote class="blockquote">
+<p>R Core Team (2025). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+<p>H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.</p>
+<p>Wickham H, François R, Henry L, Müller K, Vaughan D (2023). <em>dplyr: A Grammar of Data Manipulation</em>. R package version 1.1.4, <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a>.</p>
+<p>Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL <a href="https://www.jstatsoft.org/v40/i03/." class="uri">https://www.jstatsoft.org/v40/i03/.</a></p>
+<p>Wickham H, Vaughan D, Girlich M (2024). <em>tidyr: Tidy Messy Data</em>. R package version 1.3.1, <a href="https://CRAN.R-project.org/package=tidyr" class="uri">https://CRAN.R-project.org/package=tidyr</a>.</p>
+<p>McCullagh, P., &amp; Nelder, J. A. (1989).&nbsp;<em>Generalized Linear Models</em>&nbsp;(2nd ed.). Chapman &amp; Hall.</p>
+<p>Hastie, T., &amp; Tibshirani, R. (1990).&nbsp;<em>Generalized Additive Models</em>. Chapman &amp; Hall.</p>
+<p>Wood, S. N. (2017).&nbsp;<em>Generalized Additive Models: An Introduction with R</em>&nbsp;(2nd ed.). CRC Press.</p>
+<p>Gelman, A., &amp; Hill, J. (2007).&nbsp;<em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge University Press.</p>
+<p>James, G., Witten, D., Hastie, T., &amp; Tibshirani, R. (2021).&nbsp;<em>An Introduction to Statistical Learning</em>&nbsp;(2nd ed.). Springer.&nbsp;<a href="https://www.statlearning.com/" class="uri">https://www.statlearning.com/</a></p>
+</blockquote>
 </section>
 
 </main>
