@@ -94,6 +94,11 @@
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
   Submitted to *International Journal of Biostatistics*
 
++ [2025]\
+  Indicador de Ponderação de Limiares de Agrotôxicos: aplicação no Estado do Paraná\
+  V. S. Melanda, H. C. Ibañez, **H. A. Laureano**, L. S. Lima, B. C. Figueiredo, C. S. de Oliveira\
+  Submitted to *Revista Brasileira de Epidemiologia*
+
 <!-- *** -->
 
 <!-- ### In preparation -->
