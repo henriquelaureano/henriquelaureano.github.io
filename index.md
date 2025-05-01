@@ -1,14 +1,13 @@
 ## About
 
 CV ([eng](cv.pdf) | [pt-br](vitae.pdf)) |
-[LinkedIn](https://www.linkedin.com/in/henrique-laureano-msc-025328179/) |
+[LinkedIn](https://www.linkedin.com/in/henrique-laureano-025328179/) |
 [Google Scholar](https://scholar.google.com/citations?user=CWYkCEQAAAAJ&hl=en) |
 [Tumblr](tumblr/) |
 [Twitter](https://twitter.com/hap_laureano)
 
-Hi! I'm a Senior Data Scientist based in [Curitiba](https://goo.gl/K1Qcdv),
-currently working on independent validation and monitoring of credit risk models 
-at Banco Bradesco.
+Hi! I'm a Principal Data Scientist based in [Curitiba](https://goo.gl/K1Qcdv),
+currently working on time series forecasting at a payment processing company.
 
 I hold a BSc in Statistics and an MSc in Statistics and Numerical Methods in 
 Engineering, both @ [UFPR](https://goo.gl/DtVAbi). You may take a look 
