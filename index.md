@@ -6,8 +6,8 @@ CV ([eng](cv.pdf) | [pt-br](vitae.pdf)) |
 [Tumblr](tumblr/) |
 [Twitter](https://twitter.com/hap_laureano)
 
-Hi! I'm a Principal Data Scientist based in [Curitiba](https://goo.gl/K1Qcdv),
-currently working on time series forecasting at a payment processing company.
+Hi! I'm a Data Scientist based in [Curitiba](https://goo.gl/K1Qcdv).
+I work on time series forecasting and agentic AI systems - currently focusing on RAG and text-to-SQL - at a leading payment processing company.
 
 I hold a BSc in Statistics and an MSc in Statistics and Numerical Methods in 
 Engineering, both @ [UFPR](https://goo.gl/DtVAbi). You may take a look 
