@@ -7526,7 +7526,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Import Required Libraries</span>
@@ -7539,7 +7539,7 @@ a.anchor-link {
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">plotnine</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ggplot</span><span class="p">,</span> <span class="n">aes</span><span class="p">,</span> <span class="n">labs</span><span class="p">,</span>
-    <span class="n">geom_tile</span><span class="p">,</span> <span class="n">geom_boxplot</span><span class="p">,</span> <span class="n">geom_histogram</span><span class="p">,</span> <span class="n">geom_point</span><span class="p">,</span>
+    <span class="n">geom_tile</span><span class="p">,</span> <span class="n">geom_text</span><span class="p">,</span> <span class="n">geom_boxplot</span><span class="p">,</span> <span class="n">geom_histogram</span><span class="p">,</span> <span class="n">geom_point</span><span class="p">,</span>
     <span class="n">scale_fill_gradient</span><span class="p">,</span> <span class="n">scale_color_manual</span><span class="p">,</span>
     <span class="n">scale_x_discrete</span><span class="p">,</span> <span class="n">scale_x_continuous</span><span class="p">,</span> <span class="n">scale_x_datetime</span><span class="p">,</span>
     <span class="n">scale_y_discrete</span><span class="p">,</span> <span class="n">scale_y_continuous</span><span class="p">,</span>
@@ -7555,7 +7555,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [32]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Load the Excel file</span>
@@ -7628,7 +7628,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [33]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">unique_codigo</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Código'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
@@ -7685,7 +7685,7 @@ Name: Placa, Length: 72, dtype: int64
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [54]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">columns_to_analyze</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'TREC'</span><span class="p">,</span> <span class="s1">'KREC'</span><span class="p">,</span> <span class="s1">'RNAse'</span><span class="p">]</span>
@@ -7748,7 +7748,7 @@ P-Values Matrix:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">correlation_matrix</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">diag_indices_from</span><span class="p">(</span><span class="n">correlation_matrix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
@@ -7814,7 +7814,7 @@ P-Values Matrix:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [64]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">columns_to_analyze</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -7858,7 +7858,7 @@ max    731.635000  585.944000  6279.900000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [88]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">data_melted</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
@@ -7900,7 +7900,7 @@ max    731.635000  585.944000  6279.900000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [80]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">hist_plot</span> <span class="o">=</span> <span class="p">(</span>
@@ -7934,7 +7934,7 @@ max    731.635000  585.944000  6279.900000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Scatter-plots side by side</span>
@@ -7978,7 +7978,7 @@ max    731.635000  585.944000  6279.900000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [90]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Prepare the data for scatter plots</span>
@@ -8042,7 +8042,7 @@ max    731.635000  585.944000  6279.900000
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [91]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">scatter_plot</span> <span class="o">=</span> <span class="p">(</span>
