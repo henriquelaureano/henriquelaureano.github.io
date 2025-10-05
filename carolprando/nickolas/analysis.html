@@ -8201,7 +8201,7 @@ dtype: int64
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [94]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># ============================================================</span>
@@ -8333,9 +8333,9 @@ dtype: int64
     <span class="c1"># Clip cutoff if outside observed range</span>
     <span class="n">opt_main_clipped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">opt_main</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">main_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="n">main_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">opt_main_clipped</span> <span class="o">!=</span> <span class="n">opt_main</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"⚠️  [</span><span class="si">{</span><span class="n">main_col</span><span class="si">}</span><span class="s2">] Cutoff (</span><span class="si">{</span><span class="n">opt_main</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">) outside observed range "</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"⚠️ [</span><span class="si">{</span><span class="n">main_col</span><span class="si">}</span><span class="s2">] Cutoff (</span><span class="si">{</span><span class="n">opt_main</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">) outside observed range "</span>
               <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">main_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">main_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">], "</span>
-              <span class="sa">f</span><span class="s2">"clipped to </span><span class="si">{</span><span class="n">opt_main_clipped</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
+              <span class="sa">f</span><span class="s2">"clipped to </span><span class="si">{</span><span class="n">opt_main_clipped</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">opt_main</span> <span class="o">=</span> <span class="n">opt_main_clipped</span>
 
     <span class="c1"># ---- Step 6: Evaluate model performance ----</span>
@@ -8348,11 +8348,16 @@ dtype: int64
     <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">pred_label</span><span class="p">)</span>
 
     <span class="c1"># ---- Step 7: Report results ----</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">[</span><span class="si">{</span><span class="n">main_col</span><span class="si">}</span><span class="s2">] Optimal probability=</span><span class="si">{</span><span class="n">prob_star</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, "</span>
-          <span class="sa">f</span><span class="s2">"median </span><span class="si">{</span><span class="n">inv_col</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">inv_med</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, cutoff=</span><span class="si">{</span><span class="n">opt_main</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Precision=</span><span class="si">{</span><span class="n">prec</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Recall=</span><span class="si">{</span><span class="n">rec</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, F1=</span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, "</span>
-          <span class="sa">f</span><span class="s2">"F2=</span><span class="si">{</span><span class="n">f2val</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, PR-AUC=</span><span class="si">{</span><span class="n">pr_auc</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Confusion matrix [[TN FP],[FN TP]]:</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"""[</span><span class="si">{</span><span class="n">main_col</span><span class="si">}</span><span class="s2">]</span>
+<span class="s2">    </span>
+<span class="s2">    Optimal probability = </span><span class="si">{</span><span class="n">prob_star</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, median </span><span class="si">{</span><span class="n">inv_col</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">inv_med</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">    </span>
+<span class="s2">    cutoff = </span><span class="si">{</span><span class="n">opt_main</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">    </span>
+<span class="s2">    Precision = </span><span class="si">{</span><span class="n">prec</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Recall = </span><span class="si">{</span><span class="n">rec</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span>
+<span class="s2">    F1 = </span><span class="si">{</span><span class="n">f1</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, F2 = </span><span class="si">{</span><span class="n">f2val</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, PR-AUC = </span><span class="si">{</span><span class="n">pr_auc</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span>
+<span class="s2">    """</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Confusion matrix [[TN FP],[FN TP]]:</span><span class="se">\n\n</span><span class="si">{</span><span class="n">cm</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">df_cut</span><span class="p">,</span> <span class="n">inv_med</span>
 
@@ -8365,9 +8370,6 @@ dtype: int64
 
 <span class="c1"># Model 2: LB ~ KREC + RNAse</span>
 <span class="n">df_krec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">cutoff_curve</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">'LB'</span><span class="p">,</span> <span class="s1">'KREC'</span><span class="p">,</span> <span class="s1">'RNAse'</span><span class="p">)</span>
-
-<span class="c1"># Combine both cutoff curves</span>
-<span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_trec</span><span class="p">,</span> <span class="n">df_krec</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8380,19 +8382,36 @@ dtype: int64
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
-[TREC] Optimal probability=0.294, median RNAse=1564.314, cutoff=5.263
-Precision=0.545, Recall=0.857, F1=0.667, F2=0.769, PR-AUC=0.719
-Confusion matrix [[TN FP],[FN TP]]:
- [[60  5]
- [ 1  6]]
-⚠️  [KREC] Cutoff (-2.327) outside observed range [0.553, 585.944], clipped to 0.553.
+<pre>[TREC]
 
-[KREC] Optimal probability=0.234, median RNAse=1564.314, cutoff=0.553
-Precision=0.667, Recall=1.000, F1=0.800, F2=0.909, PR-AUC=0.583
+    Optimal probability = 0.294, median RNAse = 1564.314, 
+
+    cutoff = 5.263
+
+    Precision = 0.545, Recall = 0.857, 
+    F1 = 0.667, F2 = 0.769, PR-AUC = 0.719
+    
 Confusion matrix [[TN FP],[FN TP]]:
- [[69  1]
+
+[[60  5]
+ [ 1  6]]
+
+⚠️ [KREC] Cutoff (-2.327) outside observed range [0.553, 585.944], clipped to 0.553.
+
+[KREC]
+
+    Optimal probability = 0.234, median RNAse = 1564.314, 
+
+    cutoff = 0.553
+
+    Precision = 0.667, Recall = 1.000, 
+    F1 = 0.800, F2 = 0.909, PR-AUC = 0.583
+    
+Confusion matrix [[TN FP],[FN TP]]:
+
+[[69  1]
  [ 0  2]]
+
 </pre>
 </div>
 </div>
@@ -8403,13 +8422,15 @@ Confusion matrix [[TN FP],[FN TP]]:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [76]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="p">(</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Combine both cutoff curves</span>
+<span class="n">combined_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_trec</span><span class="p">,</span> <span class="n">df_krec</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">(</span>
     <span class="n">ggplot</span><span class="p">(</span><span class="n">combined_df</span><span class="p">)</span>
     <span class="o">+</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">"RNAse"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">"cutoff"</span><span class="p">)</span>
-    <span class="o">+</span> <span class="n">geom_ribbon</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">ymin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="s2">"upper"</span><span class="p">),</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"skyblue"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">geom_ribbon</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">ymin</span><span class="o">=</span><span class="s2">"lower"</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="s2">"upper"</span><span class="p">),</span> <span class="n">fill</span><span class="o">=</span><span class="s2">"skyblue"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="o">+</span> <span class="n">geom_line</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"steelblue"</span><span class="p">)</span>
     <span class="o">+</span> <span class="n">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="o">=</span><span class="n">RNAse_median</span><span class="p">,</span> <span class="n">linetype</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
     <span class="o">+</span> <span class="n">scale_x_continuous</span><span class="p">(</span><span class="n">breaks</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)))</span>
@@ -8443,10 +8464,147 @@ Confusion matrix [[TN FP],[FN TP]]:
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[76]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>&lt;Figure Size: (1200 x 400)&gt;</pre>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bf0c2f0e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Cutoff-Derivation-Methodology">Cutoff Derivation Methodology<a class="anchor-link" href="#Cutoff-Derivation-Methodology">¶</a></h2><h3 id="Using-L2-Penalized-(Ridge)-Logistic-Regression">Using L2-Penalized (Ridge) Logistic Regression<a class="anchor-link" href="#Using-L2-Penalized-(Ridge)-Logistic-Regression">¶</a></h3><h4 id="1.-Objective"><strong>1. Objective</strong><a class="anchor-link" href="#1.-Objective">¶</a></h4><p>The goal of this analysis is to derive a <strong>quantitative cutoff value</strong> for a biological marker (<code>main_col</code>, e.g., TREC or KREC) that best classifies a binary outcome (<code>y_col</code>, e.g., LT or LB).
+Because both the sample size and event frequency are small, the method must:</p>
+<ul>
+<li>Remain <strong>statistically stable</strong> under rare events (class imbalance).</li>
+<li>Provide <strong>interpretable cutoffs</strong> linked to biological variation.</li>
+<li>Incorporate an <strong>inverse covariate</strong> (<code>inv_col</code>, e.g., RNAse), which modulates the expected level of the main biomarker.</li>
+</ul>
+<p>This ensures that the final cutoff dynamically adjusts for biological context rather than being a fixed value.</p>
+<h4 id="2.-Model-Choice:-Ridge-(L2)-Logistic-Regression"><strong>2. Model Choice: Ridge (L2) Logistic Regression</strong><a class="anchor-link" href="#2.-Model-Choice:-Ridge-(L2)-Logistic-Regression">¶</a></h4><h5 id="Rationale"><strong>Rationale</strong><a class="anchor-link" href="#Rationale">¶</a></h5><p>The small dataset (72 samples) and rare outcomes (e.g., only 6 or 2 positives) make a standard logistic regression unstable:</p>
+<ul>
+<li>Maximum-likelihood estimates can diverge (separation problem).</li>
+<li>Coefficients can become inflated or non-identifiable.</li>
+</ul>
+<p>To address this, a <strong>ridge-penalized logistic regression</strong> was used.</p>
+<h5 id="Why-L2-(ridge)-instead-of-L1-or-Firth"><strong>Why L2 (ridge) instead of L1 or Firth</strong><a class="anchor-link" href="#Why-L2-(ridge)-instead-of-L1-or-Firth">¶</a></h5><ul>
+<li><strong>L2 regularization</strong> shrinks coefficients smoothly toward zero, reducing variance while keeping all predictors active.</li>
+<li><strong>L1 regularization</strong> (lasso) induces sparsity and can zero out variables — not suitable here since both predictors are biologically relevant.</li>
+<li><strong>Firth logistic regression</strong>, though ideal for small samples, is not fully supported in modern Python stacks and can be numerically unstable under Python 3.13. The ridge approach approximates its bias reduction behavior with greater stability.</li>
+</ul>
+<p>This model minimizes:
+$$
+L(\beta) = -\sum_i \Big[ y_i \log(p_i) + (1-y_i)\log(1-p_i) \Big] + \lambda \sum_j \beta_j^2
+$$
+where $\lambda = 10^{-5}$ is a light penalty controlling the degree of shrinkage.</p>
+<h4 id="3.-Incorporation-of-the-Inverse-Covariate"><strong>3. Incorporation of the Inverse Covariate</strong><a class="anchor-link" href="#3.-Incorporation-of-the-Inverse-Covariate">¶</a></h4><p>The <code>inv_col</code> (RNAse) enters the model as a <strong>biological adjustment factor</strong>.
+Empirically, RNAse levels are inversely correlated with TREC/KREC levels, so higher RNAse is expected to correspond to lower TREC/KREC.</p>
+<p>The model structure:
+$$
+\text{logit}(P(Y=1)) = \beta_0 + \beta_1 Z_{\text{main}} + \beta_2 Z_{\text{inv}}
+$$
+where $Z_{\text{main}}$ and $Z_{\text{inv}}$ are standardized predictors (mean=0, sd=1).
+This standardization improves optimization stability and makes coefficients directly comparable in scale.</p>
+<h4 id="4.-Optimization-Criterion:-F%E2%82%82-Score-(Recall-Oriented)"><strong>4. Optimization Criterion: F₂ Score (Recall-Oriented)</strong><a class="anchor-link" href="#4.-Optimization-Criterion:-F%E2%82%82-Score-(Recall-Oriented)">¶</a></h4><p>Given the imbalance (few positive outcomes), <strong>recall</strong> (true positive rate) is prioritized over precision.
+The <strong>F₂-score</strong> is used to find the optimal classification threshold:
+$$
+F_\beta = (1+\beta^2)\frac{\text{Precision} \times \text{Recall}}{(\beta^2 \times \text{Precision}) + \text{Recall}}
+$$
+with $\beta=2$, meaning recall is weighted <strong>four times</strong> more heavily than precision.</p>
+<p>The optimal probability cutoff $p^*$ is chosen as:
+$$
+p^* = \arg\max_{t \in [0,1]} F_2(t)
+$$
+This ensures the model emphasizes <strong>sensitivity</strong> — identifying all positive cases is the priority.</p>
+<h4 id="5.-Translating-Probability-Cutoff-into-Marker-Cutoff"><strong>5. Translating Probability Cutoff into Marker Cutoff</strong><a class="anchor-link" href="#5.-Translating-Probability-Cutoff-into-Marker-Cutoff">¶</a></h4><p>After finding the optimal probability threshold $p^*$, the corresponding <strong>cutoff in the main variable</strong> is derived algebraically from the fitted model:
+$$
+Z_{\text{main,cutoff}} = \frac{\text{logit}(p^*) - \beta_0 - \beta_2 Z_{\text{inv}}}{\beta_1}
+$$
+Transforming back to the original scale:
+$$
+\text{Main}*{\text{cutoff}} = \mu*{\text{main}} + \sigma_{\text{main}} \times Z_{\text{main,cutoff}}
+$$
+This yields a <strong>dynamic cutoff curve</strong> that adapts with RNAse values, capturing biological relationships between markers.</p>
+<h4 id="6.-Confidence-Intervals-via-the-Delta-Method"><strong>6. Confidence Intervals via the Delta Method</strong><a class="anchor-link" href="#6.-Confidence-Intervals-via-the-Delta-Method">¶</a></h4><p>Uncertainty in the cutoff is approximated using the <strong>delta method</strong>, propagating parameter variance through the transformation above:
+$$
+Var(\text{Cutoff}) \approx \nabla^\top \Sigma \nabla
+$$
+where:</p>
+<ul>
+<li>$\Sigma$ = covariance matrix of estimated coefficients,</li>
+<li>$\nabla$ = gradient of the cutoff function w.r.t. parameters.</li>
+</ul>
+<p>The <strong>95% confidence interval</strong> is then:
+$$
+\text{Cutoff} \pm 1.96 \times SE
+$$
+This produces the shaded ribbon on the cutoff curve plot.</p>
+<h4 id="7.-Model-Evaluation"><strong>7. Model Evaluation</strong><a class="anchor-link" href="#7.-Model-Evaluation">¶</a></h4><p>For interpretability, the following metrics are computed using the optimized threshold:</p>
+<ul>
+<li><strong>Precision (Positive Predictive Value)</strong></li>
+<li><strong>Recall (Sensitivity)</strong></li>
+<li><strong>F1 and F2 Scores</strong></li>
+<li><strong>PR-AUC</strong> (area under the Precision-Recall curve)</li>
+<li><strong>Confusion Matrix</strong> ([ [TN, FP], [FN, TP] ])</li>
+</ul>
+<p>This combination balances <strong>discrimination ability</strong> with interpretability for small, imbalanced samples.</p>
+<h4 id="8.-Summary"><strong>8. Summary</strong><a class="anchor-link" href="#8.-Summary">¶</a></h4><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Purpose</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>Stable classification under small/rare sample</td>
+<td>Ridge (L2) logistic regression</td>
+</tr>
+<tr>
+<td>Standardization</td>
+<td>Improve numerical stability</td>
+<td>z-scoring predictors</td>
+</tr>
+<tr>
+<td>Inverse covariate</td>
+<td>Account for biological modulation</td>
+<td>RNAse as covariate</td>
+</tr>
+<tr>
+<td>Threshold optimization</td>
+<td>Favor sensitivity</td>
+<td>F₂-score maximization</td>
+</tr>
+<tr>
+<td>Cutoff derivation</td>
+<td>Translate probability → marker scale</td>
+<td>Algebraic inversion</td>
+</tr>
+<tr>
+<td>CI estimation</td>
+<td>Quantify uncertainty</td>
+<td>Delta method</td>
+</tr>
+<tr>
+<td>Evaluation</td>
+<td>Validate classification quality</td>
+<td>PR-AUC, confusion matrix</td>
+</tr>
+</tbody>
+</table>
+<h5 id="Advantages-of-this-Method"><strong>Advantages of this Method</strong><a class="anchor-link" href="#Advantages-of-this-Method">¶</a></h5><ul>
+<li>Robust to separation and small samples.</li>
+<li>Produces interpretable, biologically coherent cutoffs.</li>
+<li>Provides uncertainty estimation via confidence bands.</li>
+<li>Emphasizes recall, ideal for diagnostic or screening contexts.</li>
+</ul>
 </div>
 </div>
 </div>
