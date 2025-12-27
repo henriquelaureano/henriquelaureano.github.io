@@ -111,8 +111,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#a-entre-os-menores-de-1-ano-quantos-apresentavam-a-comorbidade-prematuridade" id="toc-a-entre-os-menores-de-1-ano-quantos-apresentavam-a-comorbidade-prematuridade" class="nav-link" data-scroll-target="#a-entre-os-menores-de-1-ano-quantos-apresentavam-a-comorbidade-prematuridade">a) Entre os menores de 1 ano, quantos apresentavam a comorbidade “Prematuridade”?</a></li>
   <li><a href="#b-levando-em-consideração-pacientes-que-fizeram-os-exames-protf-igg-definir-um-valor-de-referência-para-protf-levando-como-referência-a-dosagem-de-igg" id="toc-b-levando-em-consideração-pacientes-que-fizeram-os-exames-protf-igg-definir-um-valor-de-referência-para-protf-levando-como-referência-a-dosagem-de-igg" class="nav-link" data-scroll-target="#b-levando-em-consideração-pacientes-que-fizeram-os-exames-protf-igg-definir-um-valor-de-referência-para-protf-levando-como-referência-a-dosagem-de-igg">b) Levando em consideração pacientes que fizeram os exames PROTF + IgG, definir um valor de referência para PROTF levando como referência a dosagem de IgG</a></li>
+  <li><a href="#explicação-mais-detalhada" id="toc-explicação-mais-detalhada" class="nav-link" data-scroll-target="#explicação-mais-detalhada">Explicação mais detalhada</a>
+  <ul class="collapse">
+  <li><a href="#establishment-of-the-baseline-reference" id="toc-establishment-of-the-baseline-reference" class="nav-link" data-scroll-target="#establishment-of-the-baseline-reference">1. Establishment of the Baseline Reference</a></li>
+  <li><a href="#group-dynamics-the-rise-vs.-plateau-effect" id="toc-group-dynamics-the-rise-vs.-plateau-effect" class="nav-link" data-scroll-target="#group-dynamics-the-rise-vs.-plateau-effect">2. Group Dynamics: The “Rise vs.&nbsp;Plateau” Effect</a></li>
+  <li><a href="#segmented-regression-inflection-point" id="toc-segmented-regression-inflection-point" class="nav-link" data-scroll-target="#segmented-regression-inflection-point">3. Segmented Regression (Inflection Point)</a></li>
+  <li><a href="#summary-of-statistical-findings" id="toc-summary-of-statistical-findings" class="nav-link" data-scroll-target="#summary-of-statistical-findings">Summary of Statistical Findings</a></li>
   </ul></li>
-  <li><a href="#methodology-references" id="toc-methodology-references" class="nav-link" data-scroll-target="#methodology-references">Methodology &amp; References</a></li>
+  </ul></li>
+  <li><a href="#methodology-references" id="toc-methodology-references" class="nav-link" data-scroll-target="#methodology-references">Methodology &amp; References</a>
+  <ul class="collapse">
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -138,7 +148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">December 26, 2025</p>
+      <p class="date-modified">December 27, 2025</p>
     </div>
   </div>
     
@@ -156,19 +166,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2"></a>  <span class="fu">install.packages</span>(<span class="st">"pacman"</span>) </span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb1-5"><a href="#cb1-5"></a>  ggplot2, googlesheets4, dplyr, lubridate, writexl, kableExtra, tidyr,</span>
-<span id="cb1-6"><a href="#cb1-6"></a>  patchwork</span>
-<span id="cb1-7"><a href="#cb1-7"></a>)</span>
-<span id="cb1-8"><a href="#cb1-8"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(</span>
-<span id="cb1-9"><a href="#cb1-9"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a>    <span class="fu">theme</span>(<span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-11"><a href="#cb1-11"></a>          <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-12"><a href="#cb1-12"></a>          <span class="at">axis.text.x   =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-13"><a href="#cb1-13"></a>          <span class="at">axis.text.y   =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-14"><a href="#cb1-14"></a>          <span class="at">axis.title.x  =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>),</span>
-<span id="cb1-15"><a href="#cb1-15"></a>          <span class="at">axis.title.y  =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">angle =</span> <span class="dv">360</span>),</span>
-<span id="cb1-16"><a href="#cb1-16"></a>          <span class="at">strip.text    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>))</span>
-<span id="cb1-17"><a href="#cb1-17"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5"></a>  ggplot2, googlesheets4, dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom</span>
+<span id="cb1-6"><a href="#cb1-6"></a>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>    <span class="fu">theme</span>(<span class="at">plot.title           =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-10"><a href="#cb1-10"></a>          <span class="at">plot.subtitle        =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-11"><a href="#cb1-11"></a>          <span class="at">axis.text.x          =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-12"><a href="#cb1-12"></a>          <span class="at">axis.text.y          =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-13"><a href="#cb1-13"></a>          <span class="at">axis.title.x         =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>),</span>
+<span id="cb1-14"><a href="#cb1-14"></a>          <span class="at">axis.title.y         =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">angle =</span> <span class="dv">360</span>),</span>
+<span id="cb1-15"><a href="#cb1-15"></a>          <span class="at">strip.text           =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-16"><a href="#cb1-16"></a>          <span class="at">legend.position      =</span> <span class="st">"bottom"</span>, </span>
+<span id="cb1-17"><a href="#cb1-17"></a>          <span class="at">legend.justification =</span> <span class="st">"right"</span>,</span>
+<span id="cb1-18"><a href="#cb1-18"></a>          <span class="at">panel.grid.major     =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray90"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>))</span>
+<span id="cb1-19"><a href="#cb1-19"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="lendo-os-dados" class="level1">
@@ -440,21 +452,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-11"><a href="#cb19-11"></a>         <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"Infecção (de|em) "</span>),</span>
 <span id="cb19-12"><a href="#cb19-12"></a>         <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Infection_Type)) <span class="sc">|&gt;</span></span>
 <span id="cb19-13"><a href="#cb19-13"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb19-14"><a href="#cb19-14"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Infection_Type, <span class="at">levels =</span> <span class="fu">unique</span>(proxy2<span class="sc">$</span>name)), </span>
-<span id="cb19-15"><a href="#cb19-15"></a>      <span class="at">y =</span> <span class="fu">factor</span>(<span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>, </span>
-<span id="cb19-16"><a href="#cb19-16"></a>                 <span class="at">levels =</span> <span class="fu">unique</span>(proxy<span class="sc">$</span><span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span> <span class="fu">rev</span>()), </span>
-<span id="cb19-17"><a href="#cb19-17"></a>      <span class="at">fill =</span> <span class="fu">as.factor</span>(Present)) <span class="sc">+</span></span>
-<span id="cb19-18"><a href="#cb19-18"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span> <span class="co"># Adds a grid line effect</span></span>
-<span id="cb19-19"><a href="#cb19-19"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"0"</span> <span class="ot">=</span> <span class="st">"grey95"</span>, <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>),</span>
-<span id="cb19-20"><a href="#cb19-20"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Não"</span>, <span class="st">"Sim"</span>),</span>
-<span id="cb19-21"><a href="#cb19-21"></a>                    <span class="at">name =</span> <span class="st">"Presença"</span>) <span class="sc">+</span></span>
-<span id="cb19-22"><a href="#cb19-22"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb19-23"><a href="#cb19-23"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Tipo de Infecção"</span>, </span>
-<span id="cb19-24"><a href="#cb19-24"></a>       <span class="at">y =</span> <span class="st">"Paciente"</span>,</span>
-<span id="cb19-25"><a href="#cb19-25"></a>       <span class="at">title =</span> <span class="st">"Mapa de Calor de Infecções por Paciente"</span>,</span>
-<span id="cb19-26"><a href="#cb19-26"></a>       <span class="at">subtitle =</span> <span class="st">"Apenas pacientes com ao menos dois tipos de infecção"</span>) <span class="sc">+</span></span>
-<span id="cb19-27"><a href="#cb19-27"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span> , <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb19-28"><a href="#cb19-28"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">labels =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-14"><a href="#cb19-14"></a>  <span class="fu">aes</span>(</span>
+<span id="cb19-15"><a href="#cb19-15"></a>    <span class="at">x =</span> <span class="fu">factor</span>(Infection_Type, <span class="at">levels =</span> <span class="fu">unique</span>(proxy2<span class="sc">$</span>name)), </span>
+<span id="cb19-16"><a href="#cb19-16"></a>    <span class="at">y =</span> <span class="fu">factor</span>(</span>
+<span id="cb19-17"><a href="#cb19-17"></a>      <span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>, </span>
+<span id="cb19-18"><a href="#cb19-18"></a>      <span class="at">levels =</span> <span class="fu">unique</span>(proxy<span class="sc">$</span><span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span> <span class="fu">rev</span>()</span>
+<span id="cb19-19"><a href="#cb19-19"></a>    ), </span>
+<span id="cb19-20"><a href="#cb19-20"></a>    <span class="at">fill =</span> <span class="fu">as.factor</span>(Present)</span>
+<span id="cb19-21"><a href="#cb19-21"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-22"><a href="#cb19-22"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span> <span class="co"># Adds a grid line effect</span></span>
+<span id="cb19-23"><a href="#cb19-23"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"0"</span> <span class="ot">=</span> <span class="st">"grey95"</span>, <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>),</span>
+<span id="cb19-24"><a href="#cb19-24"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Não"</span>, <span class="st">"Sim"</span>),</span>
+<span id="cb19-25"><a href="#cb19-25"></a>                    <span class="at">name =</span> <span class="st">"Presença: "</span>) <span class="sc">+</span></span>
+<span id="cb19-26"><a href="#cb19-26"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Tipo de Infecção"</span>, </span>
+<span id="cb19-27"><a href="#cb19-27"></a>       <span class="at">y =</span> <span class="st">"Paciente"</span>,</span>
+<span id="cb19-28"><a href="#cb19-28"></a>       <span class="at">title =</span> <span class="st">"Mapa de Calor de Infecções por Paciente"</span>,</span>
+<span id="cb19-29"><a href="#cb19-29"></a>       <span class="at">subtitle =</span> <span class="st">"Apenas pacientes com ao menos dois tipos de infecção"</span>) <span class="sc">+</span></span>
+<span id="cb19-30"><a href="#cb19-30"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb19-31"><a href="#cb19-31"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">labels =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -666,43 +681,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>(</span>
-<span id="cb34-2"><a href="#cb34-2"></a>  proxy <span class="ot">&lt;-</span> </span>
-<span id="cb34-3"><a href="#cb34-3"></a>    protf <span class="sc">|&gt;</span> </span>
-<span id="cb34-4"><a href="#cb34-4"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">`</span><span class="at">33 - Paciente possui registro de óbito?</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-5"><a href="#cb34-5"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>, <span class="co"># ---------------------</span></span>
-<span id="cb34-6"><a href="#cb34-6"></a>                  <span class="st">`</span><span class="at">5 - Data de Cadastro do Exame</span><span class="st">`</span>, </span>
-<span id="cb34-7"><a href="#cb34-7"></a>                  <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-8"><a href="#cb34-8"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb34-9"><a href="#cb34-9"></a>      <span class="at">Intervalo_dias =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(</span>
-<span id="cb34-10"><a href="#cb34-10"></a>        lubridate<span class="sc">::</span><span class="fu">interval</span>(<span class="st">`</span><span class="at">5 - Data de Cadastro do Exame</span><span class="st">`</span>, <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>), </span>
-<span id="cb34-11"><a href="#cb34-11"></a>        <span class="st">"days"</span></span>
-<span id="cb34-12"><a href="#cb34-12"></a>      ),</span>
-<span id="cb34-13"><a href="#cb34-13"></a>      <span class="at">Intervalo_meses =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(</span>
-<span id="cb34-14"><a href="#cb34-14"></a>        lubridate<span class="sc">::</span><span class="fu">interval</span>(<span class="st">`</span><span class="at">5 - Data de Cadastro do Exame</span><span class="st">`</span>, <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>), </span>
-<span id="cb34-15"><a href="#cb34-15"></a>        <span class="st">"months"</span></span>
-<span id="cb34-16"><a href="#cb34-16"></a>      )</span>
-<span id="cb34-17"><a href="#cb34-17"></a>    )</span>
-<span id="cb34-18"><a href="#cb34-18"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>proxy <span class="ot">&lt;-</span> </span>
+<span id="cb34-2"><a href="#cb34-2"></a>  protf <span class="sc">|&gt;</span> </span>
+<span id="cb34-3"><a href="#cb34-3"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="st">`</span><span class="at">33 - Paciente possui registro de óbito?</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-4"><a href="#cb34-4"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>, <span class="co"># ---------------------</span></span>
+<span id="cb34-5"><a href="#cb34-5"></a>                <span class="st">`</span><span class="at">5 - Data de Cadastro do Exame</span><span class="st">`</span>, </span>
+<span id="cb34-6"><a href="#cb34-6"></a>                <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-7"><a href="#cb34-7"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb34-8"><a href="#cb34-8"></a>    <span class="at">Intervalo_dias =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(</span>
+<span id="cb34-9"><a href="#cb34-9"></a>      lubridate<span class="sc">::</span><span class="fu">interval</span>(<span class="st">`</span><span class="at">5 - Data de Cadastro do Exame</span><span class="st">`</span>, <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>), </span>
+<span id="cb34-10"><a href="#cb34-10"></a>      <span class="st">"days"</span></span>
+<span id="cb34-11"><a href="#cb34-11"></a>    ),</span>
+<span id="cb34-12"><a href="#cb34-12"></a>    <span class="at">Intervalo_meses =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(</span>
+<span id="cb34-13"><a href="#cb34-13"></a>      lubridate<span class="sc">::</span><span class="fu">interval</span>(<span class="st">`</span><span class="at">5 - Data de Cadastro do Exame</span><span class="st">`</span>, <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>), </span>
+<span id="cb34-14"><a href="#cb34-14"></a>      <span class="st">"months"</span></span>
+<span id="cb34-15"><a href="#cb34-15"></a>    )</span>
+<span id="cb34-16"><a href="#cb34-16"></a>  )</span>
+<span id="cb34-17"><a href="#cb34-17"></a></span>
+<span id="cb34-18"><a href="#cb34-18"></a>proxy <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 147 × 5
-   1 - Insira o Prontuário do Pa…¹ 5 - Data de Cadastro…² `33.2 - Data de óbito`
-                             &lt;dbl&gt; &lt;dttm&gt;                 &lt;dttm&gt;                
- 1                              12 2015-01-23 00:00:00    2016-03-30 00:00:00   
- 2                             303 2015-09-30 00:00:00    2017-05-15 00:00:00   
- 3                             619 2015-03-22 00:00:00    2015-04-27 00:00:00   
- 4                            2756 2016-01-20 00:00:00    2016-01-27 00:00:00   
- 5                            1819 2015-05-28 00:00:00    2015-06-14 00:00:00   
- 6                            3947 2017-01-22 00:00:00    2017-02-01 00:00:00   
- 7                            4810 2015-05-22 00:00:00    2015-06-23 00:00:00   
- 8                            9241 2015-03-30 00:00:00    2015-08-21 00:00:00   
- 9                           12112 2019-10-23 00:00:00    2020-02-09 00:00:00   
-10                           12350 2020-11-03 00:00:00    2021-11-18 00:00:00   
+<pre><code># A tibble: 147 × 4
+   5 - Data de Cadastro …¹ `33.2 - Data de óbito` Intervalo_dias Intervalo_meses
+   &lt;dttm&gt;                  &lt;dttm&gt;                          &lt;dbl&gt;           &lt;dbl&gt;
+ 1 2015-01-23 00:00:00     2016-03-30 00:00:00               432          14.2  
+ 2 2015-09-30 00:00:00     2017-05-15 00:00:00               593          19.5  
+ 3 2015-03-22 00:00:00     2015-04-27 00:00:00                36           1.17 
+ 4 2016-01-20 00:00:00     2016-01-27 00:00:00                 7           0.226
+ 5 2015-05-28 00:00:00     2015-06-14 00:00:00                17           0.548
+ 6 2017-01-22 00:00:00     2017-02-01 00:00:00                10           0.323
+ 7 2015-05-22 00:00:00     2015-06-23 00:00:00                32           1.03 
+ 8 2015-03-30 00:00:00     2015-08-21 00:00:00               144           4.71 
+ 9 2019-10-23 00:00:00     2020-02-09 00:00:00               109           3.55 
+10 2020-11-03 00:00:00     2021-11-18 00:00:00               380          12.5  
 # ℹ 137 more rows
-# ℹ abbreviated names: ¹​`1 - Insira o Prontuário do Paciente`,
-#   ²​`5 - Data de Cadastro do Exame`
-# ℹ 2 more variables: Intervalo_dias &lt;dbl&gt;, Intervalo_meses &lt;dbl&gt;</code></pre>
+# ℹ abbreviated name: ¹​`5 - Data de Cadastro do Exame`</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -795,27 +808,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(ggpubr)</span>
-<span id="cb44-2"><a href="#cb44-2"></a></span>
-<span id="cb44-3"><a href="#cb44-3"></a>proxy <span class="sc">|&gt;</span></span>
-<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb44-5"><a href="#cb44-5"></a>  <span class="fu">aes</span>(<span class="at">x =</span> IgG, <span class="at">y =</span> PROTF) <span class="sc">+</span></span>
-<span id="cb44-6"><a href="#cb44-6"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb44-7"><a href="#cb44-7"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, </span>
-<span id="cb44-8"><a href="#cb44-8"></a>              <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">2</span>), </span>
-<span id="cb44-9"><a href="#cb44-9"></a>              <span class="at">color =</span> <span class="st">"red"</span>, </span>
-<span id="cb44-10"><a href="#cb44-10"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
-<span id="cb44-11"><a href="#cb44-11"></a>  ggpubr<span class="sc">::</span><span class="fu">stat_cor</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.x =</span> <span class="dv">1200</span>, <span class="at">label.y =</span> <span class="fl">1.5</span>) <span class="sc">+</span> </span>
-<span id="cb44-12"><a href="#cb44-12"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb44-13"><a href="#cb44-13"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlação entre IgG e protf"</span>,</span>
-<span id="cb44-14"><a href="#cb44-14"></a>       <span class="at">subtitle =</span> <span class="st">"Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%"</span>) <span class="sc">+</span></span>
-<span id="cb44-15"><a href="#cb44-15"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1500</span>, <span class="at">by =</span> <span class="dv">100</span>)) <span class="sc">+</span></span>
-<span id="cb44-16"><a href="#cb44-16"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">by =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>proxy <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3"></a>  <span class="fu">aes</span>(<span class="at">x =</span> IgG, <span class="at">y =</span> PROTF) <span class="sc">+</span></span>
+<span id="cb44-4"><a href="#cb44-4"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb44-5"><a href="#cb44-5"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, </span>
+<span id="cb44-6"><a href="#cb44-6"></a>              <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">2</span>), </span>
+<span id="cb44-7"><a href="#cb44-7"></a>              <span class="at">color =</span> <span class="st">"red"</span>, </span>
+<span id="cb44-8"><a href="#cb44-8"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb44-9"><a href="#cb44-9"></a>  ggpubr<span class="sc">::</span><span class="fu">stat_cor</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.x =</span> <span class="dv">1100</span>, <span class="at">label.y =</span> <span class="fl">1.3</span>) <span class="sc">+</span> </span>
+<span id="cb44-10"><a href="#cb44-10"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlação entre IgG e PROTF"</span>,</span>
+<span id="cb44-11"><a href="#cb44-11"></a>       <span class="at">subtitle =</span> <span class="st">"Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%"</span>,</span>
+<span id="cb44-12"><a href="#cb44-12"></a>       <span class="at">x =</span> <span class="st">"IgG (mg/dL)"</span>, <span class="at">y =</span> <span class="st">"PROTF (g/L)"</span>) <span class="sc">+</span></span>
+<span id="cb44-13"><a href="#cb44-13"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1500</span>, <span class="at">by =</span> <span class="dv">100</span>)) <span class="sc">+</span></span>
+<span id="cb44-14"><a href="#cb44-14"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">by =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="respostas_protf_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
@@ -874,17 +885,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb49-6"><a href="#cb49-6"></a>              <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">1</span>), </span>
 <span id="cb49-7"><a href="#cb49-7"></a>              <span class="at">color =</span> <span class="st">"red"</span>, </span>
 <span id="cb49-8"><a href="#cb49-8"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
-<span id="cb49-9"><a href="#cb49-9"></a>  ggpubr<span class="sc">::</span><span class="fu">stat_cor</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.x =</span> <span class="dv">450</span>, <span class="at">label.y =</span> <span class="fl">1.3</span>) <span class="sc">+</span> </span>
-<span id="cb49-10"><a href="#cb49-10"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb49-11"><a href="#cb49-11"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlação entre IgG e protf"</span>,</span>
-<span id="cb49-12"><a href="#cb49-12"></a>       <span class="at">subtitle =</span> <span class="st">"Modelo Linear (y ~ x) com banda de confiança de 95%"</span>) <span class="sc">+</span></span>
-<span id="cb49-13"><a href="#cb49-13"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">700</span>, <span class="at">by =</span> <span class="dv">50</span>)) <span class="sc">+</span></span>
+<span id="cb49-9"><a href="#cb49-9"></a>  ggpubr<span class="sc">::</span><span class="fu">stat_cor</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, <span class="at">label.x =</span> <span class="dv">400</span>, <span class="at">label.y =</span> <span class="fl">1.3</span>) <span class="sc">+</span> </span>
+<span id="cb49-10"><a href="#cb49-10"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlação entre IgG e PROTF"</span>,</span>
+<span id="cb49-11"><a href="#cb49-11"></a>       <span class="at">subtitle =</span> <span class="st">"Modelo Linear (y ~ x) com banda de confiança de 95%"</span>,</span>
+<span id="cb49-12"><a href="#cb49-12"></a>       <span class="at">x =</span> <span class="st">"IgG (mg/dL)"</span>, <span class="at">y =</span> <span class="st">"PROTF (g/L)"</span>) <span class="sc">+</span></span>
+<span id="cb49-13"><a href="#cb49-13"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">550</span>, <span class="at">by =</span> <span class="dv">50</span>)) <span class="sc">+</span></span>
 <span id="cb49-14"><a href="#cb49-14"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">by =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="respostas_protf_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
@@ -1114,69 +1125,211 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb66-3"><a href="#cb66-3"></a>  <span class="fu">aes</span>(<span class="at">x =</span> IgG, <span class="at">y =</span> PROTF, <span class="at">fill =</span>IgG_Referência, <span class="at">color =</span> IgG_Referência) <span class="sc">+</span></span>
 <span id="cb66-4"><a href="#cb66-4"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
 <span id="cb66-5"><a href="#cb66-5"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, </span>
-<span id="cb66-6"><a href="#cb66-6"></a>              <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">2</span>), </span>
+<span id="cb66-6"><a href="#cb66-6"></a>              <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">1</span>), </span>
 <span id="cb66-7"><a href="#cb66-7"></a>              <span class="at">color =</span> <span class="st">"red"</span>, </span>
 <span id="cb66-8"><a href="#cb66-8"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
 <span id="cb66-9"><a href="#cb66-9"></a>  ggpubr<span class="sc">::</span><span class="fu">stat_cor</span>(<span class="at">method =</span> <span class="st">"pearson"</span>, </span>
-<span id="cb66-10"><a href="#cb66-10"></a>                   <span class="at">label.x.npc =</span> <span class="fl">0.8</span>,   <span class="co"># 80% across the x-axis</span></span>
+<span id="cb66-10"><a href="#cb66-10"></a>                   <span class="at">label.x.npc =</span> <span class="fl">0.7</span>,   <span class="co"># 70% across the x-axis</span></span>
 <span id="cb66-11"><a href="#cb66-11"></a>                   <span class="at">label.y.npc =</span> <span class="st">"bottom"</span>) <span class="sc">+</span> </span>
-<span id="cb66-12"><a href="#cb66-12"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb66-13"><a href="#cb66-13"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlação entre IgG e protf"</span>,</span>
-<span id="cb66-14"><a href="#cb66-14"></a>       <span class="at">subtitle =</span> <span class="st">"Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%"</span>,</span>
-<span id="cb66-15"><a href="#cb66-15"></a>       <span class="at">fill =</span> <span class="st">"Referência: "</span>, <span class="at">color =</span> <span class="st">"Referência: "</span>) <span class="sc">+</span></span>
+<span id="cb66-12"><a href="#cb66-12"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Correlação entre IgG e PROTF"</span>,</span>
+<span id="cb66-13"><a href="#cb66-13"></a>       <span class="at">subtitle =</span> <span class="st">"Modelo Linear (y ~ x) com banda de confiança de 95%"</span>,</span>
+<span id="cb66-14"><a href="#cb66-14"></a>       <span class="at">fill =</span> <span class="st">"Referência: "</span>, <span class="at">color =</span> <span class="st">"Referência: "</span>,</span>
+<span id="cb66-15"><a href="#cb66-15"></a>       <span class="at">x =</span> <span class="st">"IgG (mg/dL)"</span>, <span class="at">y =</span> <span class="st">"PROTF (g/L)"</span>) <span class="sc">+</span></span>
 <span id="cb66-16"><a href="#cb66-16"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1500</span>, <span class="at">by =</span> <span class="dv">100</span>)) <span class="sc">+</span></span>
-<span id="cb66-17"><a href="#cb66-17"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="at">by =</span> <span class="fl">0.1</span>)) <span class="sc">+</span></span>
-<span id="cb66-18"><a href="#cb66-18"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="at">legend.justification =</span> <span class="st">"right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb66-17"><a href="#cb66-17"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="at">by =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="respostas_protf_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="816"></p>
 </figure>
 </div>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>proxy <span class="sc">|&gt;</span></span>
-<span id="cb67-2"><a href="#cb67-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>(</span>
+<span id="cb67-2"><a href="#cb67-2"></a>  ref_stats <span class="ot">&lt;-</span> proxy <span class="sc">|&gt;</span></span>
+<span id="cb67-3"><a href="#cb67-3"></a>    <span class="fu">filter</span>(IgG_Referência <span class="sc">==</span> <span class="st">"Normal"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb67-4"><a href="#cb67-4"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb67-5"><a href="#cb67-5"></a>      <span class="at">mean_protf =</span> <span class="fu">mean</span>(PROTF),</span>
+<span id="cb67-6"><a href="#cb67-6"></a>      <span class="at">sd_protf =</span> <span class="fu">sd</span>(PROTF),</span>
+<span id="cb67-7"><a href="#cb67-7"></a>      <span class="at">upper_ref =</span> mean_protf <span class="sc">+</span> (<span class="dv">2</span> <span class="sc">*</span> sd_protf),</span>
+<span id="cb67-8"><a href="#cb67-8"></a>      <span class="at">lower_ref =</span> mean_protf <span class="sc">-</span> (<span class="dv">2</span> <span class="sc">*</span> sd_protf)</span>
+<span id="cb67-9"><a href="#cb67-9"></a>    )</span>
+<span id="cb67-10"><a href="#cb67-10"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 125 × 3
-     IgG PROTF IgG_Referência
-   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;         
- 1  1010   1.8 Normal        
- 2   486   1.8 Normal        
- 3   790   2.4 Normal        
- 4   412   2.4 Normal        
- 5   947   2.4 Normal        
- 6  1097   1.7 Normal        
- 7  1423   2.1 Normal        
- 8   454   1.9 Normal        
- 9  1194   2.4 Normal        
-10   423   2.4 Normal        
-# ℹ 115 more rows</code></pre>
+<pre><code># A tibble: 1 × 4
+  mean_protf sd_protf upper_ref lower_ref
+       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1       2.02    0.262      2.54      1.50</code></pre>
 </div>
 </div>
+<p>Valor de referência: 2.02 (95% CI 1.50, 2.54).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1"></a>lin_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb69-2"><a href="#cb69-2"></a>  PROTF <span class="sc">~</span> IgG, </span>
+<span id="cb69-3"><a href="#cb69-3"></a>  <span class="at">data =</span> proxy <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>)</span>
+<span id="cb69-4"><a href="#cb69-4"></a>)</span>
+<span id="cb69-5"><a href="#cb69-5"></a></span>
+<span id="cb69-6"><a href="#cb69-6"></a><span class="co"># Fit a segmented model (it estimates where the 'plateau' starts)</span></span>
+<span id="cb69-7"><a href="#cb69-7"></a><span class="co"># You provide an initial guess for the breakpoint (e.g., IgG = 600)</span></span>
+<span id="cb69-8"><a href="#cb69-8"></a>seg_mod <span class="ot">&lt;-</span> <span class="fu">segmented</span>(lin_mod, <span class="at">seg.Z =</span> <span class="sc">~</span>IgG, <span class="at">psi =</span> <span class="dv">600</span>)</span>
+<span id="cb69-9"><a href="#cb69-9"></a></span>
+<span id="cb69-10"><a href="#cb69-10"></a><span class="co"># seg_mod$psi[, "Est."] + c(-1.95, 1.96) * seg_mod$psi[, "St.Err"]</span></span>
+<span id="cb69-11"><a href="#cb69-11"></a></span>
+<span id="cb69-12"><a href="#cb69-12"></a>proxy <span class="sc">|&gt;</span></span>
+<span id="cb69-13"><a href="#cb69-13"></a>  <span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb69-14"><a href="#cb69-14"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> IgG, <span class="at">y =</span> PROTF)) <span class="sc">+</span></span>
+<span id="cb69-15"><a href="#cb69-15"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> <span class="cn">Inf</span>, </span>
+<span id="cb69-16"><a href="#cb69-16"></a>           <span class="at">ymin =</span> ref_stats<span class="sc">$</span>lower_ref, <span class="at">ymax =</span> ref_stats<span class="sc">$</span>upper_ref, </span>
+<span id="cb69-17"><a href="#cb69-17"></a>           <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb69-18"><a href="#cb69-18"></a>  <span class="fu">annotate</span>(<span class="st">"segment"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xend =</span> <span class="cn">Inf</span>, </span>
+<span id="cb69-19"><a href="#cb69-19"></a>           <span class="at">y =</span> ref_stats<span class="sc">$</span>mean_protf, <span class="at">yend =</span> ref_stats<span class="sc">$</span>mean_protf, </span>
+<span id="cb69-20"><a href="#cb69-20"></a>           <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb69-21"><a href="#cb69-21"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">fill =</span> IgG_Referência), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb69-22"><a href="#cb69-22"></a>  <span class="fu">geom_smooth</span>(</span>
+<span id="cb69-23"><a href="#cb69-23"></a>    <span class="fu">aes</span>(<span class="at">color =</span> IgG_Referência), </span>
+<span id="cb69-24"><a href="#cb69-24"></a>    <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">1</span>), <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">linewidth =</span> <span class="dv">1</span></span>
+<span id="cb69-25"><a href="#cb69-25"></a>  ) <span class="sc">+</span></span>
+<span id="cb69-26"><a href="#cb69-26"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> seg_mod<span class="sc">$</span>psi[, <span class="st">"Est."</span>], <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb69-27"><a href="#cb69-27"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb69-28"><a href="#cb69-28"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Normal"</span> <span class="ot">=</span> <span class="st">"white"</span>, <span class="st">"Abaixo do valor de referência"</span> <span class="ot">=</span> <span class="st">"orange"</span>),</span>
+<span id="cb69-29"><a href="#cb69-29"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Abaixo da Referência"</span>, <span class="st">"Normal"</span>)</span>
+<span id="cb69-30"><a href="#cb69-30"></a>  ) <span class="sc">+</span></span>
+<span id="cb69-31"><a href="#cb69-31"></a>  <span class="fu">scale_color_manual</span>(</span>
+<span id="cb69-32"><a href="#cb69-32"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Normal"</span> <span class="ot">=</span> <span class="st">"darkblue"</span>, <span class="st">"Abaixo do valor de referência"</span> <span class="ot">=</span> <span class="st">"darkorange"</span>),</span>
+<span id="cb69-33"><a href="#cb69-33"></a>    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Abaixo da Referência"</span>, <span class="st">"Normal"</span>)</span>
+<span id="cb69-34"><a href="#cb69-34"></a>  ) <span class="sc">+</span></span>
+<span id="cb69-35"><a href="#cb69-35"></a>  <span class="fu">labs</span>(</span>
+<span id="cb69-36"><a href="#cb69-36"></a>    <span class="at">title =</span> <span class="st">"Baseline de PROTF Baseado no Platô de IgG (Grupo Normal)"</span>,</span>
+<span id="cb69-37"><a href="#cb69-37"></a>    <span class="at">subtitle =</span> <span class="st">"Linhas de tendência com Intervalo de Confiança de 95% (sombreado)"</span>,</span>
+<span id="cb69-38"><a href="#cb69-38"></a>    <span class="at">x =</span> <span class="st">"IgG (mg/dL)"</span>, </span>
+<span id="cb69-39"><a href="#cb69-39"></a>    <span class="at">y =</span> <span class="st">"PROTF (g/L)"</span>,</span>
+<span id="cb69-40"><a href="#cb69-40"></a>    <span class="at">fill =</span> <span class="st">"Classificação IgG: "</span>, <span class="at">color =</span> <span class="st">"Classificação IgG: "</span></span>
+<span id="cb69-41"><a href="#cb69-41"></a>  ) <span class="sc">+</span></span>
+<span id="cb69-42"><a href="#cb69-42"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1500</span>, <span class="at">by =</span> <span class="dv">100</span>)) <span class="sc">+</span></span>
+<span id="cb69-43"><a href="#cb69-43"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="at">by =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de PROTF médio em relação ao IgG, é em 423.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1"></a><span class="fu">summary</span>(seg_mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    ***Regression Model with Segmented Relationship(s)***
+
+Call: 
+segmented.lm(obj = lin_mod, seg.Z = ~IgG, psi = 600)
+
+Estimated Break-Point(s):
+          Est. St.Err
+psi1.IgG  423 81.486
+
+Coefficients of the linear terms:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.5449106  0.0635568  24.308  &lt; 2e-16 ***
+IgG          0.0010631  0.0002624   4.051 9.06e-05 ***
+U1.IgG      -0.0009636  0.0002938  -3.280       NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.253 on 121 degrees of freedom
+Multiple R-Squared: 0.2745,  Adjusted R-squared: 0.2565 
+
+Boot restarting based on 6 samples. Last fit:
+Convergence attained in 2 iterations (rel. change 1.8994e-06)</code></pre>
+</div>
+</div>
+<p>Aqui é apenas para “comprovar” que o grupo “Normal” não tem inclinação estatísticamente significativa. Neste grupo, independente do valor de IgG se espera o mesmo valor de PROTF.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1"></a>proxy <span class="sc">|&gt;</span></span>
+<span id="cb72-2"><a href="#cb72-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb72-3"><a href="#cb72-3"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(IgG_Referência) <span class="sc">|&gt;</span></span>
+<span id="cb72-4"><a href="#cb72-4"></a>  dplyr<span class="sc">::</span><span class="fu">group_modify</span>(<span class="sc">~</span> broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">lm</span>(PROTF <span class="sc">~</span> IgG, <span class="at">data =</span> .x), <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb72-5"><a href="#cb72-5"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"IgG"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb72-6"><a href="#cb72-6"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(IgG_Referência, estimate, std.error, p.value, conf.low, conf.high)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+# Groups:   IgG_Referência [2]
+  IgG_Referência                 estimate std.error p.value  conf.low conf.high
+  &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 Abaixo do valor de referência 0.000835   0.000263 0.00234  0.000309  0.00136 
+2 Normal                        0.0000827  0.000128 0.521   -0.000174  0.000339</code></pre>
+</div>
+</div>
+</section>
+<section id="explicação-mais-detalhada" class="level2">
+<h2 class="anchored" data-anchor-id="explicação-mais-detalhada">Explicação mais detalhada</h2>
+<section id="establishment-of-the-baseline-reference" class="level3">
+<h3 class="anchored" data-anchor-id="establishment-of-the-baseline-reference">1. Establishment of the Baseline Reference</h3>
+<p>To define a physiological PROTF baseline, the Normal Group (patients with IgG within the reference range) was used as the normative standard.</p>
+<ul>
+<li><p><strong>Process:</strong> We calculated the mean and standard deviation (SD) for the Normal group. The shaded area in the visualization represents the Mean ± 2 SD, covering approximately 95% of the expected physiological variation.</p></li>
+<li><p><strong>Interpretation:</strong> PROTF values falling below this band indicate a pathological deficit relative to the established biological baseline.</p></li>
+</ul>
+</section>
+<section id="group-dynamics-the-rise-vs.-plateau-effect" class="level3">
+<h3 class="anchored" data-anchor-id="group-dynamics-the-rise-vs.-plateau-effect">2. Group Dynamics: The “Rise vs.&nbsp;Plateau” Effect</h3>
+<p>The relationship was modeled separately for each group to identify how IgG deficiency impacts PROTF measurements.</p>
+<ul>
+<li><p><strong>Below Reference Group:</strong> This group exhibits a significant positive slope (p &lt; 0.05). This demonstrates that in patients with low IgG, PROTF is “coupled” to IgG levels—as IgG increases, PROTF rises proportionally.</p></li>
+<li><p><strong>Normal Group:</strong> This group shows a slope near zero (the confidence interval includes zero). This confirms a Plateau effect, where PROTF reaches a steady state and no longer responds to further IgG increases, representing the true biological baseline.</p></li>
+</ul>
+</section>
+<section id="segmented-regression-inflection-point" class="level3">
+<h3 class="anchored" data-anchor-id="segmented-regression-inflection-point">3. Segmented Regression (Inflection Point)</h3>
+<p>A Segmented (Broken-stick) Regression was applied to mathematically determine the threshold of stabilization.</p>
+<ul>
+<li><p><strong>The Breakpoint:</strong> The model identifies the specific IgG coordinate where the linear rise ends and the plateau begins.</p></li>
+<li><p><strong>Clinical Utility:</strong> This point defines the “Critical IgG Threshold” required for a PROTF measurement to be considered stable and diagnostically reliable, independent of hypogammaglobulinemia interference.</p></li>
+</ul>
+<hr>
+</section>
+<section id="summary-of-statistical-findings" class="level3">
+<h3 class="anchored" data-anchor-id="summary-of-statistical-findings">Summary of Statistical Findings</h3>
+<p>A positive linear dependency was observed between PROTF and IgG strictly within the deficient group (p &lt; 0.05). Conversely, the normal group exhibited a plateau (p &gt; 0.05), establishing a stable reference baseline.</p>
+</section>
 </section>
 </section>
 <section id="methodology-references" class="level1">
 <h1>Methodology &amp; References</h1>
-<p>All analyses were conducted using the <code>R</code> language and environment for statistical computing (R Core Team, 2025). The primary packages employed were <code>ggplot2</code> (Wickham, 2016), <code>dplyr</code> (Wickham et al., 2023), <code>lubridate</code> (Grolemund &amp; Wickham, 2011), and <code>tidyr</code> (Wickham et al., 2024).</p>
-<p>Up to the present stage, we have focused on data cleaning, data manipulation, and data visualization, involving the creation of features, generation of frequency tables, calculation of averages and descriptive statistics, graphical representations, and construction of tabular summaries from various perspectives.</p>
-<p>In the next steps, we plan to apply generalized linear models (GLMs - McCullagh &amp; Nelder, 1989) and generalized additive models (GAMs - Hastie &amp; Tibshirani, 1990; Wood, 2017) - and, if necessary, their mixed-effects (Gelman &amp; Hill, 2007) variants - to account for latent effects. The aim is to identify and quantify associations between the values of calculated globulin, gamma fraction, and immunoglobulin. We also intend to employ similar methodologies to describe and understand the clinical and epidemiological profiles present in the data.</p>
-<p>Once the dataset in fully prepared, and if the necessary, we also plan to implement machine learning algorithms for classification and or forecasting purposes (James et al., 2021), while reserving the statistical models primarily for inference. Defining new cutoff points in contexts where they are still unknown - or validating existing ones - is also a goal. For this, both statistical and machine learning methods will be considered.</p>
+<p>All analyses were conducted using the <code>R</code> language and environment for statistical computing (R Core Team, 2025). Data manipulation and string processing were performed using <code>dplyr</code> (Wickham et al., 2023), <code>tidyr</code> (Wickham et al., 2024), and <code>stringr</code> (Wickham, 2023). Temporal data were handled with <code>lubridate</code> (Grolemund &amp; Wickham, 2011).</p>
+<p>To date, the study has focused on data cleaning, feature engineering, and advanced visualization using <code>ggplot2</code> (Wickham, 2016). A key objective was the identification of biological cutoff points for PROTF where existing references were unknown or required validation. To achieve this, we utilized a two-step modeling approach:</p>
+<ol type="1">
+<li><strong>Reference Interval Modeling:</strong> We established biological baselines by calculating the mean and standard deviation (± 2 SD) of the “Normal” IgG cohort, treating this group as a stable physiological standard.</li>
+<li><strong>Threshold Discovery via Segmented Regression:</strong> To identify the specific IgG level at which PROTF stabilize, we implemented segmented (broken-stick) regression (Muggeo, 2008). This allowed us to mathematically determine the “inflection point” between the rising deficient phase and the steady-state plateau phase.</li>
+</ol>
+<p>Statistical significance of the observed slopes and the fit of the resulting plateaus were verified using tidied coefficients extracted via <code>broom</code> (Robinson et al., 2024).</p>
+<!-- In the next steps, we plan to expand these associations using generalized linear models (GLMs - McCullagh & Nelder, 1989) and generalized additive models (GAMs - Hastie & Tibshirani, 1990; Wood, 2017) to account for potential non-linear effects across the broader dataset. -->
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
 <blockquote class="blockquote">
 <p>R Core Team (2025). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
-<p>H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.</p>
-<p>Wickham H, François R, Henry L, Müller K, Vaughan D (2023). <em>dplyr: A Grammar of Data Manipulation</em>. R package version 1.1.4, <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a>.</p>
-<p>Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL <a href="https://www.jstatsoft.org/v40/i03/." class="uri">https://www.jstatsoft.org/v40/i03/.</a></p>
-<p>Wickham H, Vaughan D, Girlich M (2024). <em>tidyr: Tidy Messy Data</em>. R package version 1.3.1, <a href="https://CRAN.R-project.org/package=tidyr" class="uri">https://CRAN.R-project.org/package=tidyr</a>.</p>
-<p>McCullagh, P., &amp; Nelder, J. A. (1989).&nbsp;<em>Generalized Linear Models</em>&nbsp;(2nd ed.). Chapman &amp; Hall.</p>
-<p>Hastie, T., &amp; Tibshirani, R. (1990).&nbsp;<em>Generalized Additive Models</em>. Chapman &amp; Hall.</p>
-<p>Wood, S. N. (2017).&nbsp;<em>Generalized Additive Models: An Introduction with R</em>&nbsp;(2nd ed.). CRC Press.</p>
-<p>Gelman, A., &amp; Hill, J. (2007).&nbsp;<em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge University Press.</p>
-<p>James, G., Witten, D., Hastie, T., &amp; Tibshirani, R. (2021).&nbsp;<em>An Introduction to Statistical Learning</em>&nbsp;(2nd ed.). Springer.&nbsp;<a href="https://www.statlearning.com/" class="uri">https://www.statlearning.com/</a></p>
+<p>Wickham, H. (2016). <em>ggplot2: Elegant Graphics for Data Analysis</em>. Springer-Verlag New York.</p>
+<p>Wickham, H., François, R., Henry, L., Müller, K., &amp; Vaughan, D. (2023). <em>dplyr: A Grammar of Data Manipulation</em>. R package version 1.1.4.</p>
+<p>Wickham, H., Vaughan, D., &amp; Girlich, M. (2024). <em>tidyr: Tidy Messy Data</em>. R package version 1.3.1.</p>
+<p>Wickham, H. (2023). <em>stringr: Simple, Consistent Wrappers for Common String Operations</em>. R package version 1.5.1.</p>
+<p>Robinson, D., Hayes, A., &amp; Couch, S. (2024). <em>broom: Glance, Tidy, and Augment Regression Models</em>. R package version 1.0.6.</p>
+<p>Muggeo, V. M. R. (2008). <em>segmented: an R Package to Fit Regression Models with Broken-Line Relationships</em>. R News, 8/1, 20-25.</p>
+<p>Garrett Grolemund, Hadley Wickham (2011). <em>Dates and Times Made Easy with lubridate</em>. Journal of Statistical Software, 40(3), 1-25. <!-- > --> <!-- > McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall. --> <!-- > --> <!-- > Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall. --> <!-- > --> <!-- > Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press. --></p>
 </blockquote>
+</section>
 </section>
 
 </main>

@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/12/26
+date-modified: 2025/12/27
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -18,18 +18,20 @@ if (!requireNamespace("pacman", quietly = TRUE))
   install.packages("pacman") 
 
 pacman::p_load(
-  ggplot2, googlesheets4, dplyr, lubridate, writexl, kableExtra, tidyr,
-  patchwork
+  ggplot2, googlesheets4, dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom
 )
 ggplot2::theme_set(
   theme_classic(base_size = 14) +
-    theme(plot.title    = element_text(size = 14, face = "bold"),
-          plot.subtitle = element_text(size = 13, face = "bold"),
-          axis.text.x   = element_text(face = "bold"),
-          axis.text.y   = element_text(face = "bold"),
-          axis.title.x  = element_text(hjust = 0),
-          axis.title.y  = element_text(hjust = 0, angle = 360),
-          strip.text    = element_text(size = 13, face = "bold"))
+    theme(plot.title           = element_text(size = 14, face = "bold"),
+          plot.subtitle        = element_text(size = 13, face = "bold"),
+          axis.text.x          = element_text(face = "bold"),
+          axis.text.y          = element_text(face = "bold"),
+          axis.title.x         = element_text(hjust = 0),
+          axis.title.y         = element_text(hjust = 0, angle = 360),
+          strip.text           = element_text(size = 13, face = "bold"),
+          legend.position      = "bottom", 
+          legend.justification = "right",
+          panel.grid.major     = element_line(color = "gray90", linewidth = 0.7))
 )
 
 ```
@@ -171,7 +173,7 @@ proxy <-
 
 O máximo de infecções que um paciente apresenta são 4, e 5 pacientes ficaram em tal situação.
 
-```{r}
+```{r fig.height=7.25}
 
 proxy |>
   dplyr::mutate(value = ifelse(value == "Sim", 1, 0)) |>
@@ -192,13 +194,11 @@ proxy |>
   geom_tile(color = "white") + # Adds a grid line effect
   scale_fill_manual(values = c("0" = "grey95", "1" = "steelblue"),
                     labels = c("Não", "Sim"),
-                    name = "Presença") +
-  theme_minimal() +
-  labs(x = "Tipo de Infecção", 
-       y = "Prontuário do Paciente",
+                    name = "Presença: ") +
+  labs(x = "Tipo de Infecção", y = "Paciente",
        title = "Mapa de Calor de Infecções por Paciente",
        subtitle = "Apenas pacientes com ao menos dois tipos de infecção") +
-  theme(axis.text.x = element_text(angle = 30 , hjust = 1)) # Rotates labels for readability
+  theme(axis.text.x = element_text(angle = 30 , hjust = 1))
 
 ```
 
@@ -217,7 +217,7 @@ elpt |>
   dplyr::count(`21.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |> 
-  dplyr::arrange(dplyr::desc(n)) |> print(n = 87)
+  dplyr::arrange(dplyr::desc(n)) |> dplyr::filter(n > 1)
   
 ```
 
@@ -335,9 +335,7 @@ Correlação linear de Pearson de 0.52 (forte e estatísticamente significativa,
 Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear até um igG ao redor de 600 e a partir dali uma queda, mas temos pouquíssimos pacientes passando desse valor.
 
 
-```{r}
-
-pacman::p_load(ggpubr)
+```{r fig.width=8}
 
 proxy |>
   ggplot() +
@@ -347,10 +345,10 @@ proxy |>
               formula = y ~ poly(x, 2), 
               color = "red", 
               se = TRUE) + 
-  ggpubr::stat_cor(method = "pearson", label.x = 1100, label.y = 0.575) + 
-  theme_minimal() +
+  ggpubr::stat_cor(method = "pearson", label.x = 1000, label.y = 0.575) + 
   labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%") +
+       subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%",
+       x = "IgG (mg/dL)", y = "ELPT (g/L)") +
   scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.05))
 
@@ -391,10 +389,10 @@ proxy |>
               formula = y ~ poly(x, 1), 
               color = "red", 
               se = TRUE) + 
-  ggpubr::stat_cor(method = "pearson", label.x = 500, label.y = 0.1) + 
-  theme_minimal() +
+  ggpubr::stat_cor(method = "pearson") + 
   labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%") +
+       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
+       x = "IgG (mg/dL)", y = "ELPT (g/L)") +
   scale_x_continuous(breaks = seq(0, 700, by = 50)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.05))
   
@@ -474,7 +472,7 @@ elpt |>
 
 67 pacientes, descartaremos da análise aquele único paciente com IgG acima do valor de referência.
 
-```{r}
+```{r fig.width=8.5}
 
 (
   proxy <- 
@@ -498,49 +496,170 @@ proxy |>
   aes(x = IgG, y = ELPT, fill =IgG_Referência, color = IgG_Referência) +
   geom_point(size = 3, shape = 21, alpha = 0.6) +
   geom_smooth(method = "lm", 
-              formula = y ~ poly(x, 2), 
+              formula = y ~ poly(x, 1), 
               color = "red", 
               se = TRUE) + 
-  ggpubr::stat_cor(method = "pearson") + 
-  theme_minimal() +
+  ggpubr::stat_cor(method = "pearson", 
+                   label.x.npc = 0.6,   # 60% across the x-axis
+                   label.y.npc = "bottom") + 
   labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%",
-       fill = "Referência: ", color = "Referência: ") +
+       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
+       fill = "Referência: ", color = "Referência: ",
+       x = "IgG (mg/dL)", y = "ELPT (g/L)") +
   scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
-  scale_y_continuous(breaks = seq(0, 1, by = 0.05)) +
-  theme(legend.position = "bottom", legend.justification = "right")
+  scale_y_continuous(breaks = seq(0, 0.6, by = 0.05))
 
-proxy |>
-  dplyr::filter(IgG_Referência != "Acima do valor de referência")
+(
+  ref_stats <- proxy |>
+    filter(IgG_Referência == "Normal") |>
+    summarise(
+      mean_elpt = mean(ELPT),
+      sd_elpt = sd(ELPT),
+      upper_ref = mean_elpt + (2 * sd_elpt),
+      lower_ref = mean_elpt - (2 * sd_elpt)
+    )
+)
 
 ```
 
+Valor de referência: 0.47 (95% CI 0.35, 0.59).
+
+```{r fig.width=9, fig.height=6}
+
+lin_mod <- lm(
+  ELPT ~ IgG, 
+  data = proxy |> dplyr::filter(IgG_Referência != "Acima do valor de referência")
+)
+
+# Fit a segmented model (it estimates where the 'plateau' starts)
+# You provide an initial guess for the breakpoint (e.g., IgG = 600)
+seg_mod <- segmented(lin_mod, seg.Z = ~IgG, psi = 600)
+
+# seg_mod$psi[, "Est."] + c(-1.95, 1.96) * seg_mod$psi[, "St.Err"]
+
+proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  ggplot(aes(x = IgG, y = ELPT)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, 
+           ymin = ref_stats$lower_ref, ymax = ref_stats$upper_ref, 
+           fill = "steelblue", alpha = 0.3) +
+  annotate("segment", x = -Inf, xend = Inf, 
+           y = ref_stats$mean_elpt, yend = ref_stats$mean_elpt, 
+           color = "steelblue", linetype = "dashed", linewidth = 1) +
+  geom_point(aes(fill = IgG_Referência), shape = 21, size = 3, alpha = 0.8) +
+  geom_smooth(
+    aes(color = IgG_Referência), 
+    method = "lm", formula = y ~ poly(x, 1), se = TRUE, linewidth = 1
+  ) +
+  geom_vline(xintercept = seg_mod$psi[, "Est."], linetype = "dashed", alpha = 0.7) +
+  scale_fill_manual(
+    values = c("Normal" = "white", "Abaixo do valor de referência" = "orange"),
+    labels = c("Abaixo da Referência", "Normal")
+  ) +
+  scale_color_manual(
+    values = c("Normal" = "darkblue", "Abaixo do valor de referência" = "darkorange"),
+    labels = c("Abaixo da Referência", "Normal")
+  ) +
+  labs(
+    title = "Baseline de ELPT Baseado no Platô de IgG (Grupo Normal)",
+    subtitle = "Linhas de tendência com Intervalo de Confiança de 95% (sombreado)",
+    x = "IgG (mg/dL)", 
+    y = "ELPT (g/L)",
+    fill = "Classificação IgG: ", color = "Classificação IgG: "
+  ) +
+  scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 0.6, by = 0.05))
+
+```
+
+Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de ELPT médio em relação ao IgG, é em 588.
+
+```{r}
+
+summary(seg_mod)
+
+```
+
+Aqui é apenas para "comprovar" que o grupo "Normal" não tem inclinação estatísticamente significativa. Neste grupo, independente do valor de IgG se espera o mesmo valor de ELPT.
+
+```{r}
+
+proxy |>
+  dplyr::filter(IgG_Referência != "Acima do valor de referência") |>
+  dplyr::group_by(IgG_Referência) |>
+  dplyr::group_modify(~ broom::tidy(lm(ELPT ~ IgG, data = .x), conf.int = TRUE)) |>
+  dplyr::filter(term == "IgG") |>
+  dplyr::select(IgG_Referência, estimate, std.error, p.value, conf.low, conf.high)
+
+```
+
+## Explicação mais detalhada
+
+### 1. Establishment of the Baseline Reference
+
+To define a physiological ELPT baseline, the Normal Group (patients with IgG within the reference range) was used as the normative standard.
+
+* **Process:** We calculated the mean and standard deviation (SD) for the Normal group. The shaded area in the visualization represents the Mean ± 2 SD, covering approximately 95% of the expected physiological variation.
+
+* **Interpretation:** ELPT values falling below this band indicate a pathological deficit relative to the established biological baseline.
+
+### 2. Group Dynamics: The "Rise vs. Attenuation" Effect
+
+The relationship was modeled separately for each group to identify how IgG deficiency impacts ELPT measurements.
+
+* **Below Reference Group:** This group exhibits a significant positive slope ($p < 0.05$). This demonstrates that in patients with low IgG, ELPT is "coupled" to IgG levels—as IgG increases, ELPT rises proportionally toward the baseline.
+
+* **Normal Group:** This group shows a significant change in trajectory. While the steep recovery phase ends, the group exhibits an attenuation of the slope ($p > 0.05$ for a flat plateau or a very weak negative trend), representing the transition to a physiological steady state.
+
+### 3. Segmented Regression (Inflection Point)
+
+A Segmented (Broken-stick) Regression was applied to mathematically determine the threshold of stabilization.
+
+* **The Breakpoint:** The model identifies the specific IgG coordinate where the linear recovery phase ends and the stabilization phase begins. 
+
+* **Clinical Utility:** This point defines the "Critical IgG Threshold" required for an ELPT measurement to be considered stable and diagnostically reliable, independent of hypogammaglobulinemia interference.
+
+---
+
+### Summary of Statistical Findings
+
+A positive linear dependency was observed between ELPT and IgG strictly within the deficient group ($p < 0.05$). Conversely, the normal group exhibited a stabilization phase, establishing a stable reference baseline for clinical interpretation¹.
+
+¹ *Note: While the second segment in the ELPT model shows a statistically significant negative trend (p < 0.05), the effect size is minimal compared to the recovery phase, indicating a gradual attenuation rather than a flat plateau.*
+
 # Methodology & References
 
-All analyses were conducted using the `R` language and environment for statistical computing (R Core Team, 2025). The primary packages employed were `ggplot2` (Wickham, 2016), `dplyr` (Wickham et al., 2023), `lubridate` (Grolemund & Wickham, 2011), and `tidyr` (Wickham et al., 2024).
+All analyses were conducted using the `R` language and environment for statistical computing (R Core Team, 2025). Data manipulation and string processing were performed using `dplyr` (Wickham et al., 2023), `tidyr` (Wickham et al., 2024), and `stringr` (Wickham, 2023). Temporal data were handled with `lubridate` (Grolemund & Wickham, 2011).
 
-Up to the present stage, we have focused on data cleaning, data manipulation, and data visualization, involving the creation of features, generation of frequency tables, calculation of averages and descriptive statistics, graphical representations, and construction of tabular summaries from various perspectives.
+To date, the study has focused on data cleaning, feature engineering, and advanced visualization using `ggplot2` (Wickham, 2016). A key objective was the identification of biological cutoff points for ELPT where existing references were unknown or required validation. To achieve this, we utilized a two-step modeling approach:
 
-In the next steps, we plan to apply generalized linear models (GLMs - McCullagh & Nelder, 1989) and generalized additive models (GAMs - Hastie & Tibshirani, 1990; Wood, 2017) - and, if necessary, their mixed-effects (Gelman & Hill, 2007) variants - to account for latent effects. The aim is to identify and quantify associations between the values of calculated globulin, gamma fraction, and immunoglobulin. We also intend to employ similar methodologies to describe and understand the clinical and epidemiological profiles present in the data.
+1. **Reference Interval Modeling:** We established biological baselines by calculating the mean and standard deviation (± 2 SD) of the "Normal" IgG cohort, treating this group as a stable physiological standard.
+2. **Threshold Discovery via Segmented Regression:** To identify the specific IgG level at which ELPT stabilizes, we implemented segmented (broken-stick) regression (Muggeo, 2008). This allowed us to mathematically determine the "inflection point" between the rising deficient phase and the steady-state phase.
 
-Once the dataset in fully prepared, and if the necessary, we also plan to implement machine learning algorithms for classification and or forecasting purposes (James et al., 2021), while reserving the statistical models primarily for inference. Defining new cutoff points in contexts where they are still unknown - or validating existing ones - is also a goal. For this, both statistical and machine learning methods will be considered.
+Statistical significance of the observed slopes and the fit of the resulting models were verified using tidied coefficients extracted via `broom` (Robinson et al., 2024).
+
+<!-- In the next steps, we plan to expand these associations using generalized linear models (GLMs - McCullagh & Nelder, 1989) and generalized additive models (GAMs - Hastie & Tibshirani, 1990; Wood, 2017) to account for potential non-linear effects across the broader dataset. -->
+
+## References
 
 > R Core Team (2025). *R: A Language and Environment for Statistical Computing*. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
 >
-> H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+> Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis*. Springer-Verlag New York.
 >
-> Wickham H, François R, Henry L, Müller K, Vaughan D (2023). *dplyr: A Grammar of Data Manipulation*. R package version 1.1.4, <https://CRAN.R-project.org/package=dplyr>.
+> Wickham, H., François, R., Henry, L., Müller, K., & Vaughan, D. (2023). *dplyr: A Grammar of Data Manipulation*. R package version 1.1.4.
 >
-> Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL <https://www.jstatsoft.org/v40/i03/.>
+> Wickham, H., Vaughan, D., & Girlich, M. (2024). *tidyr: Tidy Messy Data*. R package version 1.3.1.
 >
-> Wickham H, Vaughan D, Girlich M (2024). *tidyr: Tidy Messy Data*. R package version 1.3.1, <https://CRAN.R-project.org/package=tidyr>.
+> Wickham, H. (2023). *stringr: Simple, Consistent Wrappers for Common String Operations*. R package version 1.5.1.
 >
-> McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall.
+> Robinson, D., Hayes, A., & Couch, S. (2024). *broom: Glance, Tidy, and Augment Regression Models*. R package version 1.0.6.
+> 
+> Muggeo, V. M. R. (2008). *segmented: an R Package to Fit Regression Models with Broken-Line Relationships*. R News, 8/1, 20-25.
 >
-> Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall.
->
-> Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press.
->
-> Gelman, A., & Hill, J. (2007). *Data Analysis Using Regression and Multilevel/Hierarchical Models*. Cambridge University Press.
->
-> James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). *An Introduction to Statistical Learning* (2nd ed.). Springer. <https://www.statlearning.com/>
+> Garrett Grolemund, Hadley Wickham (2011). *Dates and Times Made Easy with lubridate*. Journal of Statistical Software, 40(3), 1-25.
+<!-- > -->
+<!-- > McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall. -->
+<!-- > -->
+<!-- > Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall. -->
+<!-- > -->
+<!-- > Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press. -->
