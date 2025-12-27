@@ -1,0 +1,546 @@
+---
+title: "ELPT"
+author: "Henrique Laureano"
+format: html
+editor: visual
+code-line-numbers: true
+code-fold: true
+code-block-border-left: true
+date-modified: 2025/12/26
+editor_options: 
+  chunk_output_type: console
+toc: true
+---
+
+```{r pkgs}
+
+if (!requireNamespace("pacman", quietly = TRUE)) 
+  install.packages("pacman") 
+
+pacman::p_load(
+  ggplot2, googlesheets4, dplyr, lubridate, writexl, kableExtra, tidyr,
+  patchwork
+)
+ggplot2::theme_set(
+  theme_classic(base_size = 14) +
+    theme(plot.title    = element_text(size = 14, face = "bold"),
+          plot.subtitle = element_text(size = 13, face = "bold"),
+          axis.text.x   = element_text(face = "bold"),
+          axis.text.y   = element_text(face = "bold"),
+          axis.title.x  = element_text(hjust = 0),
+          axis.title.y  = element_text(hjust = 0, angle = 360),
+          strip.text    = element_text(size = 13, face = "bold"))
+)
+
+```
+
+# Lendo os dados
+
+```{r elpt_data, warning=FALSE, message=FALSE}
+
+elpt_url <- 
+  paste0(
+    "https://docs.google.com/spreadsheets/d/",
+    "1FHy8nsW_WfEiWfWXdk7atQlaChNAkJIrAkuNxfOuECg/",
+    "edit?gid=1057715313#gid=1057715313"
+)
+elpt <- googlesheets4::read_sheet(elpt_url) |> dplyr::distinct()
+
+elpt <- elpt |> 
+  dplyr::mutate(
+    IDADE = lubridate::time_length(
+      lubridate::interval(`6 - Data de Nascimento`, 
+                          `5 - Data de Cadastro do Exame`), "years"
+    )
+  )
+```
+
+Calculando a idade dos pacientes vemos que um possuí data de cadastro do exame anterior a sua data de nascimento.
+
+```{r}
+
+elpt |> dplyr::filter(IDADE <= 0) |>
+  dplyr::select(
+    `1 - Insira o Prontuário do Paciente`,
+    `5 - Data de Cadastro do Exame`,
+    `6 - Data de Nascimento`
+  )
+
+```
+
+# 1. Análise epidemiológica:
+
+## a) Porcentagem de cada faixa etária na amostra
+
+```{r}
+
+elpt |> dplyr::count(`3 - Insira Faixa etária do paciente`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+```
+
+## b) Setores mais representativos na amostra
+
+```{r}
+
+elpt |> dplyr::count(`2 - Insira o Setor de Solicitação do exame`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt)) |>
+  dplyr::arrange(dplyr::desc(n)) |> print(n = 22)
+
+```
+
+## c) Sexo
+
+```{r}
+
+elpt |> dplyr::count(`4 - Sexo`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+```
+
+## d) Presença/ausência de quadros infecciosos e sistema mais afetado em casos positivos para quadros infecciosos
+
+```{r}
+
+elpt |> dplyr::count(`7 - Quadros infecciosos até o momento da coleta?`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+```
+
+Em quem tem caso positivo para quadro infeccioso
+
+```{r}
+
+elpt |> dplyr::filter(
+  `7 - Quadros infecciosos até o momento da coleta?` == "Sim"
+) |>
+  dplyr::select(`8 - Infecção em sistema nervoso central?`,
+                `9 - Infecção de vias áreas superioras?`,
+                `10 - Infecção de vias áreas inferiores?`,
+                `11 - Infecção de sistema urinário?`,
+                `12 - Infecção de sistema gastrointestinal?`,
+                `13 - Infecção de pele?`,
+                `14 - Sepse?`) |>
+  tidyr::pivot_longer(`8 - Infecção em sistema nervoso central?`:`14 - Sepse?`) |>
+  dplyr::filter(value == "Sim") |>
+  dplyr::count(name) |>
+  dplyr::mutate(Percentual = n / sum(n)) |> dplyr::arrange(dplyr::desc(n))
+
+```
+
+Dos 73 pacientes com quadro infeccioso, 22 apresentaram em mais de um sistema (ao menos em dois). 30.14%.
+
+Nestes 22, estes são os sintomas que aparecem e em quantos dos 22 pacientes.
+
+```{r}
+
+proxy <- 
+  elpt |> dplyr::filter(
+    `7 - Quadros infecciosos até o momento da coleta?` == "Sim"
+  ) |>
+  dplyr::select(`1 - Insira o Prontuário do Paciente`,
+                `8 - Infecção em sistema nervoso central?`,
+                `9 - Infecção de vias áreas superioras?`,
+                `10 - Infecção de vias áreas inferiores?`,
+                `11 - Infecção de sistema urinário?`,
+                `12 - Infecção de sistema gastrointestinal?`,
+                `13 - Infecção de pele?`,
+                `14 - Sepse?`) |>
+  tidyr::pivot_longer(!`1 - Insira o Prontuário do Paciente`) |>
+  dplyr::filter(value == "Sim") |>
+  dplyr::group_by(`1 - Insira o Prontuário do Paciente`) |>
+  dplyr::mutate(n = dplyr::n()) |>
+  dplyr::ungroup() |>
+  dplyr::filter(n > 1) |>
+  dplyr::arrange(dplyr::desc(n), `1 - Insira o Prontuário do Paciente`) 
+
+(
+  proxy2 <- 
+    proxy |>
+    dplyr::select(!c(value, n)) |> 
+    mutate(name = stringr::str_remove(name, "^[0-9]+ - "),
+           name = stringr::str_remove(name, "\\?"),
+           name = stringr::str_remove(name, "Infecção (de|em) "),
+           name = stringr::str_to_sentence(name)) |>
+    dplyr::count(name) |> 
+    dplyr::arrange(dplyr::desc(n)) |>
+    dplyr::mutate(Percentual = n / 22) 
+)
+
+```
+
+O máximo de infecções que um paciente apresenta são 4, e 5 pacientes ficaram em tal situação.
+
+```{r}
+
+proxy |>
+  dplyr::mutate(value = ifelse(value == "Sim", 1, 0)) |>
+  tidyr::pivot_wider(names_from = name, values_from = value, values_fill = 0) |>
+  dplyr::select(-n) |> 
+  tidyr::pivot_longer(-`1 - Insira o Prontuário do Paciente`, 
+                      names_to = "Infection_Type", 
+                      values_to = "Present") |>
+  mutate(Infection_Type = stringr::str_remove(Infection_Type, "^[0-9]+ - "),
+         Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
+         Infection_Type = stringr::str_remove(Infection_Type, "Infecção (de|em) "),
+         Infection_Type = stringr::str_to_sentence(Infection_Type)) |>
+  ggplot() +
+  aes(x = factor(Infection_Type, levels = unique(proxy2$name)), 
+      y = factor(`1 - Insira o Prontuário do Paciente`, 
+                 levels = unique(proxy$`1 - Insira o Prontuário do Paciente`) |> rev()), 
+      fill = as.factor(Present)) +
+  geom_tile(color = "white") + # Adds a grid line effect
+  scale_fill_manual(values = c("0" = "grey95", "1" = "steelblue"),
+                    labels = c("Não", "Sim"),
+                    name = "Presença") +
+  theme_minimal() +
+  labs(x = "Tipo de Infecção", 
+       y = "Prontuário do Paciente",
+       title = "Mapa de Calor de Infecções por Paciente",
+       subtitle = "Apenas pacientes com ao menos dois tipos de infecção") +
+  theme(axis.text.x = element_text(angle = 30 , hjust = 1)) # Rotates labels for readability
+
+```
+
+## e) Porcentagem de indivíduos com comorbidade e comorbidades mais frequentes
+
+```{r}
+
+elpt |> 
+  dplyr::count(`21 - Paciente possui alguma comorbidade/diagnostico de base?`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+elpt |> 
+  dplyr::filter(
+    `21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
+  ) |>
+  dplyr::count(`21.1 -  Qual comorbidade o paciente possui?
+
+-Em caso negativo responder com NA`) |> 
+  dplyr::arrange(dplyr::desc(n)) |> print(n = 87)
+  
+```
+
+Entre os 114 pacientes com comorbidade, 87 diferentes combinações de comorbidade são observadas - mas apenas 12 aparecem em ao menos dois pacientes.
+
+## f) Porcentagem de pacientes que realizam hemodiálise
+
+```{r}
+
+elpt |> 
+  dplyr::count(`22 - Paciente realiza hemodiálise?`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+  
+```
+
+## g) Porcentagem de pacientes que passaram por cirurgia nos 30 dias antes do exame
+
+```{r}
+
+elpt |> 
+  dplyr::count(
+    `23 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame ELPT?`
+  ) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+```
+
+## h) Porcentagem de pacientes que passaram por tratamento oncológico nos 30 antes do exame
+
+```{r}
+
+elpt |> 
+  dplyr::count(
+    `24 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame ELPT?`
+  ) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+```
+
+## i) Porcentagem de pacientes que fizeram uso de medicação
+
+```{r}
+
+elpt |> 
+  dplyr::count(
+    `27 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame ELPT?`
+  ) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+```
+
+## j) Porcentagem de pacientes com registro de óbito. Definir intervalo de tempo entre a data do exame e a data do óbito.
+
+```{r}
+
+elpt |> 
+  dplyr::count(`33 - Paciente possui registro de óbito?`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+(
+  proxy <- 
+    elpt |> 
+    dplyr::filter(`33 - Paciente possui registro de óbito?` == "Sim") |>
+    dplyr::select(`5 - Data de Cadastro do Exame`, 
+                  `33.2 - Data de óbito`) |>
+    dplyr::mutate(
+      Intervalo_dias = lubridate::time_length(
+        lubridate::interval(`5 - Data de Cadastro do Exame`, `33.2 - Data de óbito`), 
+        "days"
+      ),
+      Intervalo_meses = lubridate::time_length(
+        lubridate::interval(`5 - Data de Cadastro do Exame`, `33.2 - Data de óbito`), 
+        "months"
+      )
+    )
+)
+
+summary(proxy$Intervalo_dias)
+summary(proxy$Intervalo_meses)
+
+```
+
+Oito pacientes vieram a óbito (5%), com um tempo médio de sobrevida de 246 dias (8.1 meses) - mediana de 139 dias (4.6 meses).
+
+# 2. Análise de indivíduos com dosagem de IgG
+
+## a) A partir dos valores de dosagem de IgG, verificar se existe correlação com os valores de ELPT; Não considerar na estatistica os pacientes que fazem reposição de IgG - pois é um tratamento, logo não é um dado basal
+
+63 pacientes (38.9%) tem registro do valor de IgG e não fizeram reposição.
+
+```{r}
+
+(
+  proxy <- 
+    elpt |>
+    dplyr::filter(
+      `19 - Fez reposições de Imunoglobulinas durante os 30 dias que antecederam a realização do exame ELPT?`
+    != "Sim" &
+    `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica` != "NA"
+    ) |> 
+    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`) |>
+    dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
+    dplyr::select(IgG, ELPT) |>
+    tidyr::unnest(IgG)  
+)
+
+```
+
+Correlação linear de Pearson de 0.52 (forte e estatísticamente significativa, 1e-05 = 0.00001).
+
+Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear até um igG ao redor de 600 e a partir dali uma queda, mas temos pouquíssimos pacientes passando desse valor.
+
+
+```{r}
+
+pacman::p_load(ggpubr)
+
+proxy |>
+  ggplot() +
+  aes(x = IgG, y = ELPT) +
+  geom_point(size = 3, shape = 21, fill = "steelblue", alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 2), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", label.x = 1100, label.y = 0.575) + 
+  theme_minimal() +
+  labs(title = "Correlação entre IgG e ELPT",
+       subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%") +
+  scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.05))
+
+```
+
+## b) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, qual foi o valor médio, mínimo e máximo do valor de ELPT?
+
+```{r}
+
+elpt |>
+  dplyr::count(
+    `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica`
+    ) 
+
+proxy <- 
+  elpt |>
+    dplyr::filter(
+    `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica` == "Abaixo do valor de referência"
+    ) |> 
+    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`) |>
+    dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
+    dplyr::select(IgG, ELPT) |>
+    tidyr::unnest(IgG) 
+
+summary(proxy$ELPT)
+
+proxy |>
+  ggplot() +
+  aes(x = IgG, y = ELPT) +
+  geom_point(size = 3, shape = 21, fill = "steelblue", alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 1), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", label.x = 500, label.y = 0.1) + 
+  theme_minimal() +
+  labs(title = "Correlação entre IgG e ELPT",
+       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%") +
+  scale_x_continuous(breaks = seq(0, 700, by = 50)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.05))
+  
+```
+
+ELPT médio de 0.367, min 0.06 e máx 0.6.
+
+## c)  Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de ELPT?
+
+Apenas um paciente com IgG acima do valor de referência (ele também não fez reposição de IgG).
+
+```{r}
+
+elpt |>
+    dplyr::filter(
+    `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica` == "Acima do valor de referência" &
+  `19 - Fez reposições de Imunoglobulinas durante os 30 dias que antecederam a realização do exame ELPT?`
+    != "Sim"
+    )  |> 
+    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`) |>
+    dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
+    dplyr::select(IgG, ELPT) |>
+    tidyr::unnest(IgG) 
+
+```
+
+## d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?
+
+19 pacientes.
+
+```{r}
+
+elpt |>
+  dplyr::filter(
+    `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica` == "Abaixo do valor de referência"
+  ) |>
+  dplyr::count(`21 - Paciente possui alguma comorbidade/diagnostico de base?`)
+
+elpt |>
+  dplyr::filter(
+    `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica` == "Abaixo do valor de referência" &
+  `21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
+  ) |>
+  dplyr::count(`21.1 -  Qual comorbidade o paciente possui?
+
+-Em caso negativo responder com NA`) |>
+  dplyr::arrange(dplyr::desc(n))
+
+```
+
+# 3. Análise dos menores de 1 ano
+
+## a) Entre os menores de 1 ano, quantos apresentavam a comorbidade "Prematuridade"?
+
+Apenas um paciente menor de 1 ano. Paciente sem informação de comorbidades.
+
+```{r}
+
+elpt |>
+  dplyr::count(`3 - Insira Faixa etária do paciente`)
+
+elpt |>
+  dplyr::filter(`3 - Insira Faixa etária do paciente` == "< 1 ano") |>
+  dplyr::count(`21 - Paciente possui alguma comorbidade/diagnostico de base?`)
+
+```
+
+## b) Levando em consideração pacientes que fizeram os exames ELPT + IgG, definir um valor de referência para ELPT levando como referência a dosagem de IgG
+
+67 pacientes, descartaremos da análise aquele único paciente com IgG acima do valor de referência.
+
+```{r}
+
+(
+  proxy <- 
+    elpt |>
+    dplyr::rename(IgG_Referência = `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica`) |>
+    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`) |>
+    dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
+    dplyr::filter(IgG_Referência != "NA") |> 
+    dplyr::select(IgG, ELPT, IgG_Referência) |>
+    tidyr::unnest(IgG)  
+)
+
+proxy |> dplyr::count(IgG_Referência)
+
+proxy |>
+  ggplot() +
+  aes(x = IgG, y = ELPT, fill =IgG_Referência, color = IgG_Referência) +
+  geom_point(size = 3, shape = 21, alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 2), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson") + 
+  theme_minimal() +
+  labs(title = "Correlação entre IgG e ELPT",
+       subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%",
+       fill = "Referência: ", color = "Referência: ") +
+  scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.05)) +
+  theme(legend.position = "bottom", legend.justification = "right")
+
+proxy |>
+  dplyr::filter(IgG_Referência != "Acima do valor de referência")
+
+```
+
+# Methodology & References
+
+All analyses were conducted using the `R` language and environment for statistical computing (R Core Team, 2025). The primary packages employed were `ggplot2` (Wickham, 2016), `dplyr` (Wickham et al., 2023), `lubridate` (Grolemund & Wickham, 2011), and `tidyr` (Wickham et al., 2024).
+
+Up to the present stage, we have focused on data cleaning, data manipulation, and data visualization, involving the creation of features, generation of frequency tables, calculation of averages and descriptive statistics, graphical representations, and construction of tabular summaries from various perspectives.
+
+In the next steps, we plan to apply generalized linear models (GLMs - McCullagh & Nelder, 1989) and generalized additive models (GAMs - Hastie & Tibshirani, 1990; Wood, 2017) - and, if necessary, their mixed-effects (Gelman & Hill, 2007) variants - to account for latent effects. The aim is to identify and quantify associations between the values of calculated globulin, gamma fraction, and immunoglobulin. We also intend to employ similar methodologies to describe and understand the clinical and epidemiological profiles present in the data.
+
+Once the dataset in fully prepared, and if the necessary, we also plan to implement machine learning algorithms for classification and or forecasting purposes (James et al., 2021), while reserving the statistical models primarily for inference. Defining new cutoff points in contexts where they are still unknown - or validating existing ones - is also a goal. For this, both statistical and machine learning methods will be considered.
+
+> R Core Team (2025). *R: A Language and Environment for Statistical Computing*. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
+>
+> H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+>
+> Wickham H, François R, Henry L, Müller K, Vaughan D (2023). *dplyr: A Grammar of Data Manipulation*. R package version 1.1.4, <https://CRAN.R-project.org/package=dplyr>.
+>
+> Garrett Grolemund, Hadley Wickham (2011). Dates and Times Made Easy with lubridate. Journal of Statistical Software, 40(3), 1-25. URL <https://www.jstatsoft.org/v40/i03/.>
+>
+> Wickham H, Vaughan D, Girlich M (2024). *tidyr: Tidy Messy Data*. R package version 1.3.1, <https://CRAN.R-project.org/package=tidyr>.
+>
+> McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall.
+>
+> Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall.
+>
+> Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press.
+>
+> Gelman, A., & Hill, J. (2007). *Data Analysis Using Regression and Multilevel/Hierarchical Models*. Cambridge University Press.
+>
+> James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). *An Introduction to Statistical Learning* (2nd ed.). Springer. <https://www.statlearning.com/>
