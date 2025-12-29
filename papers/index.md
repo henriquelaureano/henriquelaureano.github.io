@@ -82,6 +82,14 @@
     L. Lenzi, C. S. Oliveira, M. E Pereira, B. C. Figueiredo\
     *Journal of Developmental Origins of Health and Disease* 16 (2025), https://doi.org/10.1017/S2040174425000054
 
+15. [Indicador de Ponderação de Limiares de Agrotôxicos: aplicação no Estado do Paraná](https://www.scielosp.org/article/rbepid/2025.v28/e250045/pt/)
+    V. S. Melanda, H. C. Ibañez, **H. A. Laureano**, L. S. Lima, B. C. Figueiredo, C. S. de Oliveira\
+    *Revista Brasileira de Epidemiologia* 28 (2025), https://doi.org/10.1590/1980-549720250045.2
+
+16. [Pesticide threshold weighing indicator: application in the State of Paraná, Brazil](https://www.scielosp.org/article/rbepid/2025.v28/e250045/en/)
+    V. S. Melanda, H. C. Ibañez, **H. A. Laureano**, L. S. Lima, B. C. Figueiredo, C. S. de Oliveira\
+    *Revista Brasileira de Epidemiologia* 28 (2025), https://doi.org/10.1590/1980-549720250045
+
 ***
 
 <!-- ### Accepted for publication -->
@@ -93,11 +101,6 @@
   continuous bounded outcomes\
   R. R. Petterle, **H. A. Laureano**, G. P. da Silva, W. H. Bonat\
   Submitted to *International Journal of Biostatistics*
-
-+ [2025]\
-  Indicador de Ponderação de Limiares de Agrotôxicos: aplicação no Estado do Paraná\
-  V. S. Melanda, H. C. Ibañez, **H. A. Laureano**, L. S. Lima, B. C. Figueiredo, C. S. de Oliveira\
-  Submitted to *Revista Brasileira de Epidemiologia*
 
 <!-- *** -->
 
