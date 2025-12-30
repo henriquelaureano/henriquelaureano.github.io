@@ -72,6 +72,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="respostas_protf_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="respostas_protf_files/libs/bootstrap/bootstrap-ec567951c972cfd6b8f0c9672dede165.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -119,6 +148,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#summary-of-statistical-findings" id="toc-summary-of-statistical-findings" class="nav-link" data-scroll-target="#summary-of-statistical-findings">Summary of Statistical Findings</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#how-to-use-protf-to-predict-igg-deficiency" id="toc-how-to-use-protf-to-predict-igg-deficiency" class="nav-link" data-scroll-target="#how-to-use-protf-to-predict-igg-deficiency">How to use PROTF to predict IgG deficiency</a>
+  <ul class="collapse">
+  <li><a href="#diagnostic-screening-protf-as-a-predictor-for-igg-testing" id="toc-diagnostic-screening-protf-as-a-predictor-for-igg-testing" class="nav-link" data-scroll-target="#diagnostic-screening-protf-as-a-predictor-for-igg-testing">Diagnostic Screening: PROTF as a Predictor for IgG Testing</a>
+  <ul class="collapse">
+  <li><a href="#analysis-of-cutoff-strategies" id="toc-analysis-of-cutoff-strategies" class="nav-link" data-scroll-target="#analysis-of-cutoff-strategies">Analysis of Cutoff Strategies</a></li>
+  <li><a href="#conclusion-and-recommendation" id="toc-conclusion-and-recommendation" class="nav-link" data-scroll-target="#conclusion-and-recommendation">Conclusion and Recommendation</a></li>
+  <li><a href="#advanced-strategy-the-indeterminate-zone-approach" id="toc-advanced-strategy-the-indeterminate-zone-approach" class="nav-link" data-scroll-target="#advanced-strategy-the-indeterminate-zone-approach">Advanced Strategy: The “Indeterminate Zone” Approach</a></li>
+  </ul></li>
+  <li><a href="#infections" id="toc-infections" class="nav-link" data-scroll-target="#infections">Infections</a>
+  <ul class="collapse">
+  <li><a href="#clinical-validation-association-with-infection-history" id="toc-clinical-validation-association-with-infection-history" class="nav-link" data-scroll-target="#clinical-validation-association-with-infection-history">Clinical Validation: Association with Infection History</a></li>
+  </ul></li>
+  </ul></li>
   <li><a href="#methodology-references" id="toc-methodology-references" class="nav-link" data-scroll-target="#methodology-references">Methodology &amp; References</a>
   <ul class="collapse">
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -148,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">December 27, 2025</p>
+      <p class="date-modified">December 30, 2025</p>
     </div>
   </div>
     
@@ -166,21 +208,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2"></a>  <span class="fu">install.packages</span>(<span class="st">"pacman"</span>) </span>
 <span id="cb1-3"><a href="#cb1-3"></a></span>
 <span id="cb1-4"><a href="#cb1-4"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb1-5"><a href="#cb1-5"></a>  ggplot2, googlesheets4, dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom</span>
-<span id="cb1-6"><a href="#cb1-6"></a>)</span>
-<span id="cb1-7"><a href="#cb1-7"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(</span>
-<span id="cb1-8"><a href="#cb1-8"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a>    <span class="fu">theme</span>(<span class="at">plot.title           =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-10"><a href="#cb1-10"></a>          <span class="at">plot.subtitle        =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-11"><a href="#cb1-11"></a>          <span class="at">axis.text.x          =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-12"><a href="#cb1-12"></a>          <span class="at">axis.text.y          =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-13"><a href="#cb1-13"></a>          <span class="at">axis.title.x         =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>),</span>
-<span id="cb1-14"><a href="#cb1-14"></a>          <span class="at">axis.title.y         =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">angle =</span> <span class="dv">360</span>),</span>
-<span id="cb1-15"><a href="#cb1-15"></a>          <span class="at">strip.text           =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
-<span id="cb1-16"><a href="#cb1-16"></a>          <span class="at">legend.position      =</span> <span class="st">"bottom"</span>, </span>
-<span id="cb1-17"><a href="#cb1-17"></a>          <span class="at">legend.justification =</span> <span class="st">"right"</span>,</span>
-<span id="cb1-18"><a href="#cb1-18"></a>          <span class="at">panel.grid.major     =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray90"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>))</span>
-<span id="cb1-19"><a href="#cb1-19"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5"></a>  ggplot2, googlesheets4, </span>
+<span id="cb1-6"><a href="#cb1-6"></a>  dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, </span>
+<span id="cb1-7"><a href="#cb1-7"></a>  knitr, purrr</span>
+<span id="cb1-8"><a href="#cb1-8"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>ggplot2<span class="sc">::</span><span class="fu">theme_set</span>(</span>
+<span id="cb1-10"><a href="#cb1-10"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a>    <span class="fu">theme</span>(<span class="at">plot.title           =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-12"><a href="#cb1-12"></a>          <span class="at">plot.subtitle        =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-13"><a href="#cb1-13"></a>          <span class="at">axis.text.x          =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-14"><a href="#cb1-14"></a>          <span class="at">axis.text.y          =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-15"><a href="#cb1-15"></a>          <span class="at">axis.title.x         =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>),</span>
+<span id="cb1-16"><a href="#cb1-16"></a>          <span class="at">axis.title.y         =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">angle =</span> <span class="dv">360</span>),</span>
+<span id="cb1-17"><a href="#cb1-17"></a>          <span class="at">strip.text           =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>, <span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb1-18"><a href="#cb1-18"></a>          <span class="at">legend.position      =</span> <span class="st">"bottom"</span>, </span>
+<span id="cb1-19"><a href="#cb1-19"></a>          <span class="at">legend.justification =</span> <span class="st">"right"</span>,</span>
+<span id="cb1-20"><a href="#cb1-20"></a>          <span class="at">panel.grid.major     =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray90"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>))</span>
+<span id="cb1-21"><a href="#cb1-21"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="lendo-os-dados" class="level1">
@@ -1252,17 +1296,50 @@ Multiple R-Squared: 0.2745,  Adjusted R-squared: 0.2565
 Boot restarting based on 6 samples. Last fit:
 Convergence attained in 2 iterations (rel. change 1.8994e-06)</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1"></a>protf <span class="sc">|&gt;</span></span>
+<span id="cb72-2"><a href="#cb72-2"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(IgG_Referência <span class="ot">=</span> <span class="st">`</span><span class="at">18.1 - Como se encontra o resultado de IgG?</span></span>
+<span id="cb72-3"><a href="#cb72-3"></a></span>
+<span id="cb72-4"><a href="#cb72-4"></a><span class="at">NA = não se aplica</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb72-5"><a href="#cb72-5"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb72-6"><a href="#cb72-6"></a>    <span class="st">`</span><span class="at">33 - Paciente possui registro de óbito?</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Sim"</span> <span class="sc">&amp;</span></span>
+<span id="cb72-7"><a href="#cb72-7"></a>      IgG_Referência <span class="sc">!=</span> <span class="st">"NA"</span></span>
+<span id="cb72-8"><a href="#cb72-8"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 62
+   `Carimbo de data/hora` `Endereço de e-mail`            1 - Insira o Prontuá…¹
+   &lt;dttm&gt;                 &lt;chr&gt;                                            &lt;dbl&gt;
+ 1 2025-05-20 10:30:11    nicole.spautz@aluno.fpp.edu.br                   12112
+ 2 2025-06-26 15:56:27    nickolas.wegbecher@aluno.fpp.e…                 355066
+ 3 2025-06-27 11:56:37    smattos.luiza@gmail.com                         359500
+ 4 2025-07-22 16:54:29    lara.zawadniak@aluno.fpp.edu.br                 445564
+ 5 2025-07-31 14:37:29    smattos.luiza@gmail.com                         500365
+ 6 2025-08-01 16:36:23    smattos.luiza@gmail.com                         502377
+ 7 2025-08-04 17:06:17    lara.zawadniak@aluno.fpp.edu.br                 507259
+ 8 2025-08-05 14:42:02    maria.colodel@aluno.fpp.edu.br                  516529
+ 9 2025-08-05 16:13:15    maria.colodel@aluno.fpp.edu.br                  520422
+10 2025-08-06 09:29:06    nickolas.wegbecher@aluno.fpp.e…                 523318
+# ℹ 22 more rows
+# ℹ abbreviated name: ¹​`1 - Insira o Prontuário do Paciente`
+# ℹ 59 more variables: `2 - Insira o Setor de Solicitação do exame` &lt;chr&gt;,
+#   `3 - Insira Faixa etária do paciente` &lt;chr&gt;, `4 - Sexo` &lt;chr&gt;,
+#   `5 - Data de Cadastro do Exame` &lt;dttm&gt;, `6 - Data de Nascimento` &lt;dttm&gt;,
+#   `7 - Quadros infecciosos até o momento da coleta?` &lt;chr&gt;,
+#   `8 - Infecção em sistema nervoso central?` &lt;chr&gt;, …</code></pre>
+</div>
 </div>
 <p>Aqui é apenas para “comprovar” que o grupo “Normal” não tem inclinação estatísticamente significativa. Neste grupo, independente do valor de IgG se espera o mesmo valor de PROTF.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1"></a>proxy <span class="sc">|&gt;</span></span>
-<span id="cb72-2"><a href="#cb72-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb72-3"><a href="#cb72-3"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(IgG_Referência) <span class="sc">|&gt;</span></span>
-<span id="cb72-4"><a href="#cb72-4"></a>  dplyr<span class="sc">::</span><span class="fu">group_modify</span>(<span class="sc">~</span> broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">lm</span>(PROTF <span class="sc">~</span> IgG, <span class="at">data =</span> .x), <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb72-5"><a href="#cb72-5"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"IgG"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb72-6"><a href="#cb72-6"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(IgG_Referência, estimate, std.error, p.value, conf.low, conf.high)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1"></a>proxy <span class="sc">|&gt;</span></span>
+<span id="cb74-2"><a href="#cb74-2"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb74-3"><a href="#cb74-3"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(IgG_Referência) <span class="sc">|&gt;</span></span>
+<span id="cb74-4"><a href="#cb74-4"></a>  dplyr<span class="sc">::</span><span class="fu">group_modify</span>(<span class="sc">~</span> broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">lm</span>(PROTF <span class="sc">~</span> IgG, <span class="at">data =</span> .x), <span class="at">conf.int =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb74-5"><a href="#cb74-5"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"IgG"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb74-6"><a href="#cb74-6"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(IgG_Referência, estimate, std.error, p.value, conf.low, conf.high)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 6
@@ -1304,6 +1381,510 @@ Convergence attained in 2 iterations (rel. change 1.8994e-06)</code></pre>
 <section id="summary-of-statistical-findings" class="level3">
 <h3 class="anchored" data-anchor-id="summary-of-statistical-findings">Summary of Statistical Findings</h3>
 <p>A positive linear dependency was observed between PROTF and IgG strictly within the deficient group (p &lt; 0.05). Conversely, the normal group exhibited a plateau (p &gt; 0.05), establishing a stable reference baseline.</p>
+</section>
+</section>
+</section>
+<section id="how-to-use-protf-to-predict-igg-deficiency" class="level1">
+<h1>How to use PROTF to predict IgG deficiency</h1>
+<blockquote class="blockquote">
+<p>Minimizing false positives, prioritizing Specificity and Positive Predictive Value (PPV).</p>
+<ul>
+<li>Catch fewer sick people (lower sensitivity), but almost everyone catched will actually be sick.</li>
+</ul>
+</blockquote>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1"></a><span class="co"># 1. Prepare Data</span></span>
+<span id="cb76-2"><a href="#cb76-2"></a>proxy_roc <span class="ot">&lt;-</span> proxy <span class="sc">|&gt;</span></span>
+<span id="cb76-3"><a href="#cb76-3"></a>  <span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-4"><a href="#cb76-4"></a>  <span class="fu">mutate</span>(<span class="at">low_igg_flag =</span> <span class="fu">ifelse</span>(IgG_Referência <span class="sc">==</span> <span class="st">"Abaixo do valor de referência"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb76-5"><a href="#cb76-5"></a></span>
+<span id="cb76-6"><a href="#cb76-6"></a><span class="co"># 2. Generate ROC Object</span></span>
+<span id="cb76-7"><a href="#cb76-7"></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(proxy_roc<span class="sc">$</span>low_igg_flag, proxy_roc<span class="sc">$</span>PROTF, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb76-8"><a href="#cb76-8"></a></span>
+<span id="cb76-9"><a href="#cb76-9"></a><span class="co"># 3. Extract Scenarios</span></span>
+<span id="cb76-10"><a href="#cb76-10"></a></span>
+<span id="cb76-11"><a href="#cb76-11"></a><span class="co"># A. Max Specificity (The "Perfect" but useless one)</span></span>
+<span id="cb76-12"><a href="#cb76-12"></a>scen_max_spec <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb76-13"><a href="#cb76-13"></a>  <span class="fu">filter</span>(specificity <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-14"><a href="#cb76-14"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-15"><a href="#cb76-15"></a>  <span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Max Specificity (100%)"</span>)</span>
+<span id="cb76-16"><a href="#cb76-16"></a></span>
+<span id="cb76-17"><a href="#cb76-17"></a><span class="co"># B. High Specificity (The &gt;90% attempt)</span></span>
+<span id="cb76-18"><a href="#cb76-18"></a>scen_high_spec <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb76-19"><a href="#cb76-19"></a>  <span class="fu">filter</span>(specificity <span class="sc">&gt;=</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-20"><a href="#cb76-20"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(sensitivity)) <span class="sc">|&gt;</span> <span class="co"># Get best sensitivity in this range</span></span>
+<span id="cb76-21"><a href="#cb76-21"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-22"><a href="#cb76-22"></a>  <span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"High Specificity (&gt;90%)"</span>)</span>
+<span id="cb76-23"><a href="#cb76-23"></a></span>
+<span id="cb76-24"><a href="#cb76-24"></a><span class="co"># C. Balanced (Youden's Index - The Winner)</span></span>
+<span id="cb76-25"><a href="#cb76-25"></a>scen_balanced <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>, </span>
+<span id="cb76-26"><a href="#cb76-26"></a>                        <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb76-27"><a href="#cb76-27"></a>  <span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Balanced (Youden's Index)"</span>)</span>
+<span id="cb76-28"><a href="#cb76-28"></a></span>
+<span id="cb76-29"><a href="#cb76-29"></a><span class="co"># 4. Combine into a Summary Table</span></span>
+<span id="cb76-30"><a href="#cb76-30"></a>roc_summary <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(scen_max_spec, scen_high_spec, scen_balanced) <span class="sc">|&gt;</span></span>
+<span id="cb76-31"><a href="#cb76-31"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb76-32"><a href="#cb76-32"></a>    Strategy, </span>
+<span id="cb76-33"><a href="#cb76-33"></a>    <span class="at">Threshold =</span> threshold, </span>
+<span id="cb76-34"><a href="#cb76-34"></a>    <span class="at">Sensitivity =</span> sensitivity, <span class="at">Specificity =</span> specificity, <span class="at">PPV =</span> ppv</span>
+<span id="cb76-35"><a href="#cb76-35"></a>  )</span>
+<span id="cb76-36"><a href="#cb76-36"></a></span>
+<span id="cb76-37"><a href="#cb76-37"></a><span class="co"># Display Table</span></span>
+<span id="cb76-38"><a href="#cb76-38"></a><span class="fu">kable</span>(roc_summary, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Comparison of Cutoff Strategies"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Comparison of Cutoff Strategies</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 34%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Strategy</th>
+<th style="text-align: right;">Threshold</th>
+<th style="text-align: right;">Sensitivity</th>
+<th style="text-align: right;">Specificity</th>
+<th style="text-align: right;">PPV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">…1</td>
+<td style="text-align: left;">Max Specificity (100%)</td>
+<td style="text-align: right;">1.45</td>
+<td style="text-align: right;">0.106</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">…2</td>
+<td style="text-align: left;">High Specificity (&gt;90%)</td>
+<td style="text-align: right;">1.65</td>
+<td style="text-align: right;">0.318</td>
+<td style="text-align: right;">0.932</td>
+<td style="text-align: right;">0.840</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">threshold</td>
+<td style="text-align: left;">Balanced (Youden’s Index)</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">0.879</td>
+<td style="text-align: right;">0.542</td>
+<td style="text-align: right;">0.682</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a><span class="co"># 5. Visualization: Density Plot with the Winner Cutoff</span></span>
+<span id="cb77-2"><a href="#cb77-2"></a>optimal_cutoff <span class="ot">&lt;-</span> scen_balanced<span class="sc">$</span>threshold</span>
+<span id="cb77-3"><a href="#cb77-3"></a></span>
+<span id="cb77-4"><a href="#cb77-4"></a>proxy <span class="sc">|&gt;</span></span>
+<span id="cb77-5"><a href="#cb77-5"></a>  <span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb77-6"><a href="#cb77-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PROTF, <span class="at">fill =</span> IgG_Referência)) <span class="sc">+</span></span>
+<span id="cb77-7"><a href="#cb77-7"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb77-8"><a href="#cb77-8"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> optimal_cutoff, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb77-9"><a href="#cb77-9"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> optimal_cutoff, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">" Optimal Cutoff:"</span>, <span class="fu">round</span>(optimal_cutoff, <span class="dv">2</span>)), </span>
+<span id="cb77-10"><a href="#cb77-10"></a>           <span class="at">hjust =</span> <span class="fl">1.05</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">2</span>, <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb77-11"><a href="#cb77-11"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Normal"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Abaixo do valor de referência"</span> <span class="ot">=</span> <span class="st">"orange"</span>)) <span class="sc">+</span></span>
+<span id="cb77-12"><a href="#cb77-12"></a>  <span class="fu">labs</span>(</span>
+<span id="cb77-13"><a href="#cb77-13"></a>    <span class="at">title =</span> <span class="st">"Clinical Decision Threshold"</span>,</span>
+<span id="cb77-14"><a href="#cb77-14"></a>    <span class="at">subtitle =</span> <span class="st">"Overlap of PROTF distributions with optimal screening cutoff"</span>,</span>
+<span id="cb77-15"><a href="#cb77-15"></a>    <span class="at">x =</span> <span class="st">"PROTF (g/L)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="st">"IgG Status"</span></span>
+<span id="cb77-16"><a href="#cb77-16"></a>  ) <span class="sc">+</span></span>
+<span id="cb77-17"><a href="#cb77-17"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="at">by =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="diagnostic-screening-protf-as-a-predictor-for-igg-testing" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostic-screening-protf-as-a-predictor-for-igg-testing">Diagnostic Screening: PROTF as a Predictor for IgG Testing</h2>
+<p>While previous sections established how IgG influences PROTF, we also investigated the reverse relationship: identifying a PROTF threshold that serves as a clinical trigger for ordering an IgG quantification.</p>
+<p>To determine this threshold, we performed a Receiver Operating Characteristic (ROC) curve analysis. We evaluated three distinct cutoff strategies to balance the trade-off between <strong>Precision</strong> (minimizing unnecessary tests) and <strong>Safety</strong> (preventing missed diagnoses).</p>
+<section id="analysis-of-cutoff-strategies" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-of-cutoff-strategies">Analysis of Cutoff Strategies</h3>
+<p>The table above summarizes the performance of three potential thresholds:</p>
+<ol type="1">
+<li><strong>Max Specificity Strategy (Cutoff ~1.45):</strong>
+<ul>
+<li><strong>Pros:</strong> Zero false positives (PPV = 100%).</li>
+<li><strong>Cons:</strong> Extremely low sensitivity (~10%). This threshold misses 9 out of 10 deficient patients, rendering it useless for screening.</li>
+</ul></li>
+<li><strong>High Specificity Strategy (Cutoff ~1.65):</strong>
+<ul>
+<li><strong>Pros:</strong> High precision (PPV &gt; 80%).</li>
+<li><strong>Cons:</strong> Sensitivity remains poor (~31%). Using this cutoff would still fail to identify the majority of patients with hypogammaglobulinemia.</li>
+</ul></li>
+<li><strong>Balanced “Youden” Strategy (Cutoff ~2.05):</strong>
+<ul>
+<li><strong>Pros:</strong> Optimizes the sum of sensitivity and specificity. It achieves a <strong>Sensitivity of ~88%</strong>, ensuring that the vast majority of deficient patients are flagged.</li>
+<li><strong>Cons:</strong> Lower specificity (~53%), implying that roughly 1 in 3 positive screens will result in a normal IgG upon confirmation (False Positives).</li>
+</ul></li>
+</ol>
+</section>
+<section id="conclusion-and-recommendation" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion-and-recommendation">Conclusion and Recommendation</h3>
+<p>Based on the analysis, strictly minimizing false positives results in an unacceptable loss of diagnostic sensitivity. Therefore, we recommend the <strong>Balanced Strategy</strong> as the clinical standard.</p>
+<p><strong>Recommendation:</strong> A PROTF value below <strong>2.05 g/L</strong> should trigger a follow-up IgG test. This threshold prioritizes patient safety by maintaining high detection rates (Sensitivity ~88%), accepting a moderate rate of confirmatory testing as a necessary trade-off for an effective screening tool.</p>
+</section>
+<section id="advanced-strategy-the-indeterminate-zone-approach" class="level3">
+<h3 class="anchored" data-anchor-id="advanced-strategy-the-indeterminate-zone-approach">Advanced Strategy: The “Indeterminate Zone” Approach</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1"></a><span class="co"># 1. Prepare Data &amp; ROC</span></span>
+<span id="cb78-2"><a href="#cb78-2"></a>proxy_roc <span class="ot">&lt;-</span> proxy <span class="sc">|&gt;</span></span>
+<span id="cb78-3"><a href="#cb78-3"></a>  <span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb78-4"><a href="#cb78-4"></a>  <span class="fu">mutate</span>(<span class="at">low_igg_flag =</span> <span class="fu">ifelse</span>(IgG_Referência <span class="sc">==</span> <span class="st">"Abaixo do valor de referência"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb78-5"><a href="#cb78-5"></a></span>
+<span id="cb78-6"><a href="#cb78-6"></a>roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(proxy_roc<span class="sc">$</span>low_igg_flag, proxy_roc<span class="sc">$</span>PROTF, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb78-7"><a href="#cb78-7"></a></span>
+<span id="cb78-8"><a href="#cb78-8"></a><span class="co"># 2. Extract All Coordinates</span></span>
+<span id="cb78-9"><a href="#cb78-9"></a>all_coords <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>))</span>
+<span id="cb78-10"><a href="#cb78-10"></a></span>
+<span id="cb78-11"><a href="#cb78-11"></a><span class="co"># 3. Find the Boundaries (Using &gt;= Logic to avoid NA)</span></span>
+<span id="cb78-12"><a href="#cb78-12"></a></span>
+<span id="cb78-13"><a href="#cb78-13"></a><span class="co"># A. LOWER CUTOFF (Red Zone Boundary)</span></span>
+<span id="cb78-14"><a href="#cb78-14"></a><span class="co"># Logic: We want High Specificity (&gt;= 95%) to be sure they are sick.</span></span>
+<span id="cb78-15"><a href="#cb78-15"></a><span class="co"># We pick the threshold with the highest sensitivity possible within that constraint.</span></span>
+<span id="cb78-16"><a href="#cb78-16"></a>cutoff_red <span class="ot">&lt;-</span> all_coords <span class="sc">|&gt;</span></span>
+<span id="cb78-17"><a href="#cb78-17"></a>  <span class="fu">filter</span>(specificity <span class="sc">&gt;=</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
+<span id="cb78-18"><a href="#cb78-18"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(sensitivity)) <span class="sc">|&gt;</span> </span>
+<span id="cb78-19"><a href="#cb78-19"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb78-20"><a href="#cb78-20"></a>  <span class="fu">pull</span>(threshold)</span>
+<span id="cb78-21"><a href="#cb78-21"></a></span>
+<span id="cb78-22"><a href="#cb78-22"></a><span class="co"># B. UPPER CUTOFF (Green Zone Boundary)</span></span>
+<span id="cb78-23"><a href="#cb78-23"></a><span class="co"># Logic: We want High Sensitivity (&gt;= 95%) to be sure we don't miss anyone.</span></span>
+<span id="cb78-24"><a href="#cb78-24"></a><span class="co"># We pick the threshold with the highest specificity possible within that constraint.</span></span>
+<span id="cb78-25"><a href="#cb78-25"></a>cutoff_green <span class="ot">&lt;-</span> all_coords <span class="sc">|&gt;</span></span>
+<span id="cb78-26"><a href="#cb78-26"></a>  <span class="fu">filter</span>(sensitivity <span class="sc">&gt;=</span> <span class="fl">0.95</span>) <span class="sc">|&gt;</span></span>
+<span id="cb78-27"><a href="#cb78-27"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(specificity)) <span class="sc">|&gt;</span> </span>
+<span id="cb78-28"><a href="#cb78-28"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb78-29"><a href="#cb78-29"></a>  <span class="fu">pull</span>(threshold)</span>
+<span id="cb78-30"><a href="#cb78-30"></a></span>
+<span id="cb78-31"><a href="#cb78-31"></a><span class="co"># Check if boundaries were found (Assign default if data is too sparse)</span></span>
+<span id="cb78-32"><a href="#cb78-32"></a><span class="cf">if</span>(<span class="fu">length</span>(cutoff_red) <span class="sc">==</span> <span class="dv">0</span>) cutoff_red <span class="ot">&lt;-</span> <span class="fu">min</span>(proxy_roc<span class="sc">$</span>PROTF)</span>
+<span id="cb78-33"><a href="#cb78-33"></a><span class="cf">if</span>(<span class="fu">length</span>(cutoff_green) <span class="sc">==</span> <span class="dv">0</span>) cutoff_green <span class="ot">&lt;-</span> <span class="fu">max</span>(proxy_roc<span class="sc">$</span>PROTF)</span>
+<span id="cb78-34"><a href="#cb78-34"></a></span>
+<span id="cb78-35"><a href="#cb78-35"></a><span class="co"># 4. Print Values for verification</span></span>
+<span id="cb78-36"><a href="#cb78-36"></a><span class="fu">rbind</span>(</span>
+<span id="cb78-37"><a href="#cb78-37"></a>  <span class="fu">paste</span>(<span class="st">"Red Zone (Deficient) &lt;"</span>, <span class="fu">round</span>(cutoff_red, <span class="dv">2</span>)),</span>
+<span id="cb78-38"><a href="#cb78-38"></a>  <span class="fu">paste</span>(<span class="st">"Grey Zone (Indeterminate):"</span>, <span class="fu">round</span>(cutoff_red, <span class="dv">2</span>), <span class="st">"-"</span>, <span class="fu">round</span>(cutoff_green, <span class="dv">2</span>)),</span>
+<span id="cb78-39"><a href="#cb78-39"></a>  <span class="fu">paste</span>(<span class="st">"Green Zone (Safe) &gt;"</span>, <span class="fu">round</span>(cutoff_green, <span class="dv">2</span>))</span>
+<span id="cb78-40"><a href="#cb78-40"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]                                   
+[1,] "Red Zone (Deficient) &lt; 1.55"          
+[2,] "Grey Zone (Indeterminate): 1.55 - 2.3"
+[3,] "Green Zone (Safe) &gt; 2.3"              </code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1"></a><span class="co"># 2. Visualize the Zones</span></span>
+<span id="cb80-2"><a href="#cb80-2"></a>proxy <span class="sc">|&gt;</span></span>
+<span id="cb80-3"><a href="#cb80-3"></a>  <span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb80-4"><a href="#cb80-4"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PROTF, <span class="at">fill =</span> IgG_Referência)) <span class="sc">+</span></span>
+<span id="cb80-5"><a href="#cb80-5"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb80-6"><a href="#cb80-6"></a>  <span class="co"># Red Zone</span></span>
+<span id="cb80-7"><a href="#cb80-7"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> cutoff_red, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, </span>
+<span id="cb80-8"><a href="#cb80-8"></a>           <span class="at">fill =</span> <span class="st">"firebrick"</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb80-9"><a href="#cb80-9"></a>  <span class="co"># Grey Zone</span></span>
+<span id="cb80-10"><a href="#cb80-10"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> cutoff_red, <span class="at">xmax =</span> cutoff_green, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, </span>
+<span id="cb80-11"><a href="#cb80-11"></a>           <span class="at">fill =</span> <span class="st">"gold"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb80-12"><a href="#cb80-12"></a>  <span class="co"># Green Zone</span></span>
+<span id="cb80-13"><a href="#cb80-13"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> cutoff_green, <span class="at">xmax =</span> <span class="cn">Inf</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, </span>
+<span id="cb80-14"><a href="#cb80-14"></a>           <span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb80-15"><a href="#cb80-15"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(cutoff_red, cutoff_green), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb80-16"><a href="#cb80-16"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> cutoff_red, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"Red &lt;"</span>, <span class="fu">round</span>(cutoff_red, <span class="dv">2</span>)), </span>
+<span id="cb80-17"><a href="#cb80-17"></a>           <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">2</span>, <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb80-18"><a href="#cb80-18"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> cutoff_green, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"Green &gt;"</span>, <span class="fu">round</span>(cutoff_green, <span class="dv">2</span>)), </span>
+<span id="cb80-19"><a href="#cb80-19"></a>           <span class="at">hjust =</span> <span class="fl">1.1</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">2</span>, <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb80-20"><a href="#cb80-20"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Normal"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Abaixo do valor de referência"</span> <span class="ot">=</span> <span class="st">"orange"</span>)) <span class="sc">+</span></span>
+<span id="cb80-21"><a href="#cb80-21"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Traffic Light System: Managing Clinical Overlap"</span>,</span>
+<span id="cb80-22"><a href="#cb80-22"></a>       <span class="at">subtitle =</span> <span class="st">"Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal"</span>,</span>
+<span id="cb80-23"><a href="#cb80-23"></a>       <span class="at">x =</span> <span class="st">"PROTF (g/L)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="st">"IgG Status"</span>) <span class="sc">+</span></span>
+<span id="cb80-24"><a href="#cb80-24"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="at">by =</span> <span class="fl">0.1</span>)) <span class="sc">+</span></span>
+<span id="cb80-25"><a href="#cb80-25"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="at">by =</span> <span class="fl">0.25</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="912"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Given the significant distributional overlap between the IgG groups, a single binary cutoff forces a trade-off that compromises either diagnostic sensitivity or specificity. To address this biological reality, we applied a <strong>Two-Cutoff Strategy</strong> (Traffic Light System) to isolate the zone of diagnostic uncertainty.</p>
+<p>We defined three clinical zones based on strict statistical safety margins:</p>
+<ol type="1">
+<li><strong>Deficiency Zone (&lt; 1.55 g/L):</strong>
+<ul>
+<li><strong>Definition:</strong> Threshold established at <strong>≥95% Specificity</strong>.</li>
+<li><strong>Implication:</strong> Results in this range are highly indicative of IgG deficiency. The probability of a false positive is minimal (&lt;5%), warranting immediate clinical action.</li>
+</ul></li>
+<li><strong>Safety Zone (&gt; 2.3 g/L):</strong>
+<ul>
+<li><strong>Definition:</strong> Threshold established at <strong>≥95% Sensitivity</strong>.</li>
+<li><strong>Implication:</strong> Results in this range effectively rule out deficiency with high confidence. The risk of missing a true deficient case is minimal (&lt;5%).</li>
+</ul></li>
+<li><strong>Indeterminate “Grey” Zone (1.55 – 2.3 g/L):</strong>
+<ul>
+<li><strong>Definition:</strong> The interval between the high-specificity and high-sensitivity thresholds.</li>
+<li><strong>Implication:</strong> This range captures the patients whose PROTF values are inconclusive due to biological overlap. For these individuals, PROTF alone is insufficient, and <strong>mandatory IgG quantification</strong> is recommended to resolve the diagnosis.</li>
+</ul></li>
+</ol>
+<p><strong>Conclusion:</strong> By utilizing this tiered approach, we increase the diagnostic accuracy for patients at the extremes while clearly identifying the subset of patients for whom confirmatory testing is strictly necessary.</p>
+</section>
+</section>
+<section id="infections" class="level2">
+<h2 class="anchored" data-anchor-id="infections">Infections</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1"></a><span class="co"># Define your Cutoff (Use the Balanced one found earlier)</span></span>
+<span id="cb81-2"><a href="#cb81-2"></a>protf_cutoff <span class="ot">&lt;-</span> <span class="fl">2.05</span> </span>
+<span id="cb81-3"><a href="#cb81-3"></a></span>
+<span id="cb81-4"><a href="#cb81-4"></a>infection_analysis <span class="ot">&lt;-</span> protf <span class="sc">|&gt;</span></span>
+<span id="cb81-5"><a href="#cb81-5"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">PROTF =</span> <span class="st">`</span><span class="at">16 - Resultado do Primeiro exame</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb81-6"><a href="#cb81-6"></a>  <span class="co"># Create Binary Groups based on Cutoff</span></span>
+<span id="cb81-7"><a href="#cb81-7"></a>  <span class="fu">mutate</span>(<span class="at">Risk_Group =</span> <span class="fu">ifelse</span>(PROTF <span class="sc">&lt;</span> protf_cutoff, <span class="st">"High_Risk"</span>, <span class="st">"Low_Risk"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb81-8"><a href="#cb81-8"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb81-9"><a href="#cb81-9"></a>    Risk_Group,</span>
+<span id="cb81-10"><a href="#cb81-10"></a>    <span class="st">`</span><span class="at">8 - Infecção em sistema nervoso central?</span><span class="st">`</span>,</span>
+<span id="cb81-11"><a href="#cb81-11"></a>    <span class="st">`</span><span class="at">9 - Infecção de vias áreas superiores?</span><span class="st">`</span>,</span>
+<span id="cb81-12"><a href="#cb81-12"></a>    <span class="st">`</span><span class="at">10 - Infecção de vias áreas inferiores?</span><span class="st">`</span>,</span>
+<span id="cb81-13"><a href="#cb81-13"></a>    <span class="st">`</span><span class="at">11 - Infecção de sistema urinário?</span><span class="st">`</span>,</span>
+<span id="cb81-14"><a href="#cb81-14"></a>    <span class="st">`</span><span class="at">12 - Infecção de sistema gastrointestinal?</span><span class="st">`</span>,</span>
+<span id="cb81-15"><a href="#cb81-15"></a>    <span class="st">`</span><span class="at">13 - Infecção de pele?</span><span class="st">`</span>,</span>
+<span id="cb81-16"><a href="#cb81-16"></a>    <span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span></span>
+<span id="cb81-17"><a href="#cb81-17"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb81-18"><a href="#cb81-18"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb81-19"><a href="#cb81-19"></a>    <span class="at">cols =</span> <span class="sc">!</span>Risk_Group,</span>
+<span id="cb81-20"><a href="#cb81-20"></a>    <span class="at">names_to =</span> <span class="st">"Infection_Type"</span>,</span>
+<span id="cb81-21"><a href="#cb81-21"></a>    <span class="at">values_to =</span> <span class="st">"Status"</span></span>
+<span id="cb81-22"><a href="#cb81-22"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb81-23"><a href="#cb81-23"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb81-24"><a href="#cb81-24"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^</span><span class="sc">\\</span><span class="st">d+ - "</span>),</span>
+<span id="cb81-25"><a href="#cb81-25"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>),</span>
+<span id="cb81-26"><a href="#cb81-26"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^Infecção (de|em) "</span>),</span>
+<span id="cb81-27"><a href="#cb81-27"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Infection_Type),</span>
+<span id="cb81-28"><a href="#cb81-28"></a>    <span class="at">Is_Infected =</span> <span class="fu">ifelse</span>(Status <span class="sc">==</span> <span class="st">"Sim"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb81-29"><a href="#cb81-29"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb81-30"><a href="#cb81-30"></a>  <span class="co"># Remove NAs if any exist in Status/Risk_Group</span></span>
+<span id="cb81-31"><a href="#cb81-31"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Is_Infected))</span>
+<span id="cb81-32"><a href="#cb81-32"></a></span>
+<span id="cb81-33"><a href="#cb81-33"></a>rates_table <span class="ot">&lt;-</span> infection_analysis <span class="sc">|&gt;</span></span>
+<span id="cb81-34"><a href="#cb81-34"></a>  <span class="fu">group_by</span>(Infection_Type, Risk_Group) <span class="sc">|&gt;</span></span>
+<span id="cb81-35"><a href="#cb81-35"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb81-36"><a href="#cb81-36"></a>    <span class="at">Total_Patients =</span> <span class="fu">n</span>(),</span>
+<span id="cb81-37"><a href="#cb81-37"></a>    <span class="at">Infected_Count =</span> <span class="fu">sum</span>(Is_Infected),</span>
+<span id="cb81-38"><a href="#cb81-38"></a>    <span class="at">Rate_Pct =</span> (Infected_Count <span class="sc">/</span> Total_Patients) <span class="sc">*</span> <span class="dv">100</span>, <span class="co"># Em porcentagem</span></span>
+<span id="cb81-39"><a href="#cb81-39"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb81-40"><a href="#cb81-40"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb81-41"><a href="#cb81-41"></a>  <span class="co"># Coloca High_Risk e Low_Risk lado a lado</span></span>
+<span id="cb81-42"><a href="#cb81-42"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb81-43"><a href="#cb81-43"></a>    <span class="at">names_from =</span> Risk_Group,</span>
+<span id="cb81-44"><a href="#cb81-44"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(Total_Patients, Infected_Count, Rate_Pct)</span>
+<span id="cb81-45"><a href="#cb81-45"></a>  )</span>
+<span id="cb81-46"><a href="#cb81-46"></a></span>
+<span id="cb81-47"><a href="#cb81-47"></a>stats_table <span class="ot">&lt;-</span> infection_analysis <span class="sc">|&gt;</span></span>
+<span id="cb81-48"><a href="#cb81-48"></a>  <span class="fu">group_by</span>(Infection_Type) <span class="sc">|&gt;</span></span>
+<span id="cb81-49"><a href="#cb81-49"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb81-50"><a href="#cb81-50"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb81-51"><a href="#cb81-51"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="cf">function</span>(df) {</span>
+<span id="cb81-52"><a href="#cb81-52"></a>      <span class="co"># Tabela cruzada 2x2</span></span>
+<span id="cb81-53"><a href="#cb81-53"></a>      tbl <span class="ot">&lt;-</span> <span class="fu">table</span>(df<span class="sc">$</span>Risk_Group, df<span class="sc">$</span>Is_Infected)</span>
+<span id="cb81-54"><a href="#cb81-54"></a>      </span>
+<span id="cb81-55"><a href="#cb81-55"></a>      <span class="co"># Verifica se a tabela é válida (tem 2 grupos de risco e pelo menos infectados e não infectados no geral)</span></span>
+<span id="cb81-56"><a href="#cb81-56"></a>      <span class="co"># Se for muito esparsa, fisher.test pode falhar ou retornar NULL</span></span>
+<span id="cb81-57"><a href="#cb81-57"></a>      <span class="fu">tryCatch</span>({</span>
+<span id="cb81-58"><a href="#cb81-58"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">fisher.test</span>(tbl))</span>
+<span id="cb81-59"><a href="#cb81-59"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
+<span id="cb81-60"><a href="#cb81-60"></a>    })</span>
+<span id="cb81-61"><a href="#cb81-61"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb81-62"><a href="#cb81-62"></a>  <span class="fu">unnest</span>(model) <span class="sc">|&gt;</span></span>
+<span id="cb81-63"><a href="#cb81-63"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Infection_Type, estimate, p.value, conf.low, conf.high)</span>
+<span id="cb81-64"><a href="#cb81-64"></a></span>
+<span id="cb81-65"><a href="#cb81-65"></a>final_results <span class="ot">&lt;-</span> rates_table <span class="sc">|&gt;</span></span>
+<span id="cb81-66"><a href="#cb81-66"></a>  <span class="fu">left_join</span>(stats_table, <span class="at">by =</span> <span class="st">"Infection_Type"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb81-67"><a href="#cb81-67"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb81-68"><a href="#cb81-68"></a>    <span class="at">Odds_Ratio =</span> estimate,</span>
+<span id="cb81-69"><a href="#cb81-69"></a>    <span class="at">Significant =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>)</span>
+<span id="cb81-70"><a href="#cb81-70"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb81-71"><a href="#cb81-71"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb81-72"><a href="#cb81-72"></a>    Infection_Type, </span>
+<span id="cb81-73"><a href="#cb81-73"></a>    <span class="at">Rate_High =</span> Rate_Pct_High_Risk, </span>
+<span id="cb81-74"><a href="#cb81-74"></a>    <span class="at">Rate_Low =</span> Rate_Pct_Low_Risk,</span>
+<span id="cb81-75"><a href="#cb81-75"></a>    Odds_Ratio, </span>
+<span id="cb81-76"><a href="#cb81-76"></a>    conf.low, </span>
+<span id="cb81-77"><a href="#cb81-77"></a>    conf.high,</span>
+<span id="cb81-78"><a href="#cb81-78"></a>    p.value, </span>
+<span id="cb81-79"><a href="#cb81-79"></a>    Significant</span>
+<span id="cb81-80"><a href="#cb81-80"></a>  )</span>
+<span id="cb81-81"><a href="#cb81-81"></a></span>
+<span id="cb81-82"><a href="#cb81-82"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb81-83"><a href="#cb81-83"></a>  final_results, <span class="at">digits =</span> <span class="dv">2</span>, </span>
+<span id="cb81-84"><a href="#cb81-84"></a>  <span class="at">caption =</span> <span class="st">"Prevalência de Infecções por Grupo de Risco (PROTF &lt; 2.05)"</span></span>
+<span id="cb81-85"><a href="#cb81-85"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Prevalência de Infecções por Grupo de Risco (PROTF &lt; 2.05)</caption>
+<colgroup>
+<col style="width: 26%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Infection_Type</th>
+<th style="text-align: right;">Rate_High</th>
+<th style="text-align: right;">Rate_Low</th>
+<th style="text-align: right;">Odds_Ratio</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: left;">Significant</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Pele</td>
+<td style="text-align: right;">7.07</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">1.46</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">3.33</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sepse</td>
+<td style="text-align: right;">42.39</td>
+<td style="text-align: right;">18.42</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sistema gastrointestinal</td>
+<td style="text-align: right;">4.35</td>
+<td style="text-align: right;">21.05</td>
+<td style="text-align: right;">5.84</td>
+<td style="text-align: right;">2.59</td>
+<td style="text-align: right;">14.90</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sistema nervoso central</td>
+<td style="text-align: right;">2.17</td>
+<td style="text-align: right;">3.16</td>
+<td style="text-align: right;">1.47</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">7.18</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sistema urinário</td>
+<td style="text-align: right;">16.85</td>
+<td style="text-align: right;">19.47</td>
+<td style="text-align: right;">1.19</td>
+<td style="text-align: right;">0.68</td>
+<td style="text-align: right;">2.10</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Vias áreas inferiores</td>
+<td style="text-align: right;">32.07</td>
+<td style="text-align: right;">33.16</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">0.67</td>
+<td style="text-align: right;">1.66</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Vias áreas superiores</td>
+<td style="text-align: right;">18.48</td>
+<td style="text-align: right;">40.53</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">4.98</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Odds Ratio: Normal (&gt;= 2.05) vs.&nbsp;Low (&lt; 2.05). 0.31 means que o grupo normal tem menos chances.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1"></a>final_results <span class="sc">|&gt;</span></span>
+<span id="cb82-2"><a href="#cb82-2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Odds_Ratio)) <span class="sc">|&gt;</span> </span>
+<span id="cb82-3"><a href="#cb82-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Odds_Ratio, <span class="at">y =</span> <span class="fu">reorder</span>(Infection_Type, Odds_Ratio), <span class="at">color =</span> Significant)) <span class="sc">+</span></span>
+<span id="cb82-4"><a href="#cb82-4"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">3.5</span>) <span class="sc">+</span></span>
+<span id="cb82-5"><a href="#cb82-5"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> conf.low, <span class="at">xmax =</span> conf.high), <span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb82-6"><a href="#cb82-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb82-7"><a href="#cb82-7"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span> </span>
+<span id="cb82-8"><a href="#cb82-8"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>, <span class="st">"No"</span> <span class="ot">=</span> <span class="st">"gray60"</span>)) <span class="sc">+</span></span>
+<span id="cb82-9"><a href="#cb82-9"></a>  <span class="fu">labs</span>(</span>
+<span id="cb82-10"><a href="#cb82-10"></a>    <span class="at">title =</span> <span class="st">"Clinical Impact of Low PROTF (&lt; 2.05 g/L)"</span>,</span>
+<span id="cb82-11"><a href="#cb82-11"></a>    <span class="at">subtitle =</span> <span class="st">"Odds Ratio of Infection Risk (High Risk vs. Low Risk Group)"</span>,</span>
+<span id="cb82-12"><a href="#cb82-12"></a>    <span class="at">x =</span> <span class="st">"Odds Ratio (Log Scale) </span><span class="sc">\n</span><span class="st"> &gt;1 indicates higher risk in Low PROTF group"</span>,</span>
+<span id="cb82-13"><a href="#cb82-13"></a>    <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb82-14"><a href="#cb82-14"></a>    <span class="at">color =</span> <span class="st">"Significant (p &lt; 0.05)?"</span></span>
+<span id="cb82-15"><a href="#cb82-15"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="clinical-validation-association-with-infection-history" class="level3">
+<h3 class="anchored" data-anchor-id="clinical-validation-association-with-infection-history">Clinical Validation: Association with Infection History</h3>
+<p>To validate the clinical relevance of the established cutoff (<strong>2.05 g/L</strong>), we assessed whether patients falling below this threshold exhibited a distinct profile of infectious history compared to those above it.</p>
+<ul>
+<li><p><strong>Methodology:</strong> Patients were stratified into “High Risk” (PROTF &lt; 2.05) and “Low Risk” (PROTF ≥ 2.05) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher’s Exact Test.</p></li>
+<li><p><strong>Results:</strong></p>
+<ul>
+<li><p><strong>Severe Systemic Vulnerability (Sepsis):</strong> The most critical finding was observed for Sepsis. The “High Risk” (Low PROTF) cohort exhibited a dramatically higher prevalence of sepsis (<strong>42.39%</strong>) compared to the “Low Risk” cohort (<strong>18.42%</strong>). The Odds Ratio of <strong>0.31</strong> (for the Low Risk group) confirms that maintaining PROTF levels above the cutoff is a significant protective factor against life-threatening systemic infections (<span class="math inline">\(p &lt; 0.001\)</span>).</p></li>
+<li><p><strong>Distinct Phenotypes (Mucosal Infections):</strong> Interestingly, the “Low Risk” (Normal PROTF) group reported significantly higher rates of common mucosal infections compared to the deficient group. This included <strong>Upper Respiratory Tract Infections</strong> (40.53% vs 18.48%, <span class="math inline">\(p &lt; 0.001\)</span>) and <strong>Gastrointestinal Infections</strong> (21.05% vs 4.35%, <span class="math inline">\(p &lt; 0.001\)</span>). This suggests distinct clinical phenotypes: patients with low PROTF are prone to severe complications (Sepsis), whereas those with normal levels present with more frequent, but likely less lethal, common community-acquired infections.</p></li>
+<li><p><strong>Neutral Associations:</strong> No statistically significant difference was found for Skin, CNS, Urinary, or Lower Respiratory infections (<span class="math inline">\(p &gt; 0.05\)</span>), indicating that the cutoff is highly specific to the risk of Sepsis rather than a generalized increase in all infection types.</p></li>
+</ul></li>
+</ul>
+<p><strong>Conclusion:</strong> The PROTF cutoff of 2.05 g/L successfully identifies a patient subset with critical immunological vulnerability. While patients above this threshold frequently report common mucosal conditions, those falling below it are disproportionately susceptible to severe sepsis, validating the threshold as a vital marker for systemic risk stratification.</p>
 </section>
 </section>
 </section>

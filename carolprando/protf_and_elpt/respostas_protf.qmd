@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/12/27
+date-modified: 2025/12/30
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -18,7 +18,9 @@ if (!requireNamespace("pacman", quietly = TRUE))
   install.packages("pacman") 
 
 pacman::p_load(
-  ggplot2, googlesheets4, dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom
+  ggplot2, googlesheets4, 
+  dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, 
+  knitr, purrr
 )
 ggplot2::theme_set(
   theme_classic(base_size = 14) +
@@ -633,6 +635,15 @@ Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde
 
 summary(seg_mod)
 
+protf |>
+  dplyr::rename(IgG_Referência = `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica`) |>
+  dplyr::filter(
+    `33 - Paciente possui registro de óbito?` == "Sim" &
+      IgG_Referência != "NA"
+  )
+
 ```
 
 Aqui é apenas para "comprovar" que o grupo "Normal" não tem inclinação estatísticamente significativa. Neste grupo, independente do valor de IgG se espera o mesmo valor de PROTF.
@@ -679,6 +690,326 @@ A Segmented (Broken-stick) Regression was applied to mathematically determine th
 ### Summary of Statistical Findings
 
 A positive linear dependency was observed between PROTF and IgG strictly within the deficient group (p < 0.05). Conversely, the normal group exhibited a plateau (p > 0.05), establishing a stable reference baseline.
+
+# How to use PROTF to predict IgG deficiency
+
+> Minimizing false positives, prioritizing Specificity and Positive Predictive Value (PPV).
+>
+> - Catch fewer sick people (lower sensitivity), but almost everyone catched will actually be sick.
+
+```{r}
+
+# 1. Prepare Data
+proxy_roc <- proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+
+# 2. Generate ROC Object
+roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$PROTF, quiet = TRUE)
+
+# 3. Extract Scenarios
+
+# A. Max Specificity (The "Perfect" but useless one)
+scen_max_spec <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+  filter(specificity == 1) |>
+  slice(1) |>
+  mutate(Strategy = "Max Specificity (100%)")
+
+# B. High Specificity (The >90% attempt)
+scen_high_spec <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+  filter(specificity >= 0.90) |>
+  arrange(desc(sensitivity)) |> # Get best sensitivity in this range
+  slice(1) |>
+  mutate(Strategy = "High Specificity (>90%)")
+
+# C. Balanced (Youden's Index - The Winner)
+scen_balanced <- coords(roc_obj, "best", best.method = "youden", 
+                        ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+  mutate(Strategy = "Balanced (Youden's Index)")
+
+# 4. Combine into a Summary Table
+roc_summary <- bind_rows(scen_max_spec, scen_high_spec, scen_balanced) |>
+  dplyr::select(
+    Strategy, 
+    Threshold = threshold, 
+    Sensitivity = sensitivity, Specificity = specificity, PPV = ppv
+  )
+
+# Display Table
+kable(roc_summary, digits = 3, caption = "Comparison of Cutoff Strategies")
+
+# 5. Visualization: Density Plot with the Winner Cutoff
+optimal_cutoff <- scen_balanced$threshold
+
+proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  ggplot(aes(x = PROTF, fill = IgG_Referência)) +
+  geom_density(alpha = 0.4) +
+  geom_vline(xintercept = optimal_cutoff, linetype = "dashed", color = "black", linewidth = 1) +
+  annotate("text", x = optimal_cutoff, y = 0, label = paste(" Optimal Cutoff:", round(optimal_cutoff, 2)), 
+           hjust = 1.05, vjust = -2, angle = 0, fontface = "bold") +
+  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  labs(
+    title = "Clinical Decision Threshold",
+    subtitle = "Overlap of PROTF distributions with optimal screening cutoff",
+    x = "PROTF (g/L)", y = "Density", fill = "IgG Status"
+  ) +
+  scale_x_continuous(breaks = seq(1, 2.5, by = 0.1))
+
+```
+
+## Diagnostic Screening: PROTF as a Predictor for IgG Testing
+
+While previous sections established how IgG influences PROTF, we also investigated the reverse relationship: identifying a PROTF threshold that serves as a clinical trigger for ordering an IgG quantification.
+
+To determine this threshold, we performed a Receiver Operating Characteristic (ROC) curve analysis. We evaluated three distinct cutoff strategies to balance the trade-off between **Precision** (minimizing unnecessary tests) and **Safety** (preventing missed diagnoses).
+
+### Analysis of Cutoff Strategies
+
+The table above summarizes the performance of three potential thresholds:
+
+1.  **Max Specificity Strategy (Cutoff ~1.45):**
+    * **Pros:** Zero false positives (PPV = 100%).
+    * **Cons:** Extremely low sensitivity (~10%). This threshold misses 9 out of 10 deficient patients, rendering it useless for screening.
+
+2.  **High Specificity Strategy (Cutoff ~1.65):**
+    * **Pros:** High precision (PPV > 80%).
+    * **Cons:** Sensitivity remains poor (~31%). Using this cutoff would still fail to identify the majority of patients with hypogammaglobulinemia.
+
+3.  **Balanced "Youden" Strategy (Cutoff ~2.05):**
+    * **Pros:** Optimizes the sum of sensitivity and specificity. It achieves a **Sensitivity of ~88%**, ensuring that the vast majority of deficient patients are flagged.
+    * **Cons:** Lower specificity (~53%), implying that roughly 1 in 3 positive screens will result in a normal IgG upon confirmation (False Positives).
+
+### Conclusion and Recommendation
+
+Based on the analysis, strictly minimizing false positives results in an unacceptable loss of diagnostic sensitivity. Therefore, we recommend the **Balanced Strategy** as the clinical standard.
+
+**Recommendation:** A PROTF value below **2.05 g/L** should trigger a follow-up IgG test. This threshold prioritizes patient safety by maintaining high detection rates (Sensitivity ~88%), accepting a moderate rate of confirmatory testing as a necessary trade-off for an effective screening tool.
+
+### Advanced Strategy: The "Indeterminate Zone" Approach
+
+```{r}
+
+# 1. Prepare Data & ROC
+proxy_roc <- proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+
+roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$PROTF, quiet = TRUE)
+
+# 2. Extract All Coordinates
+all_coords <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity"))
+
+# 3. Find the Boundaries (Using >= Logic to avoid NA)
+
+# A. LOWER CUTOFF (Red Zone Boundary)
+# Logic: We want High Specificity (>= 95%) to be sure they are sick.
+# We pick the threshold with the highest sensitivity possible within that constraint.
+cutoff_red <- all_coords |>
+  filter(specificity >= 0.95) |>
+  arrange(desc(sensitivity)) |> 
+  slice(1) |>
+  pull(threshold)
+
+# B. UPPER CUTOFF (Green Zone Boundary)
+# Logic: We want High Sensitivity (>= 95%) to be sure we don't miss anyone.
+# We pick the threshold with the highest specificity possible within that constraint.
+cutoff_green <- all_coords |>
+  filter(sensitivity >= 0.95) |>
+  arrange(desc(specificity)) |> 
+  slice(1) |>
+  pull(threshold)
+
+# Check if boundaries were found (Assign default if data is too sparse)
+if(length(cutoff_red) == 0) cutoff_red <- min(proxy_roc$PROTF)
+if(length(cutoff_green) == 0) cutoff_green <- max(proxy_roc$PROTF)
+
+# 4. Print Values for verification
+rbind(
+  paste("Red Zone (Deficient) <", round(cutoff_red, 2)),
+  paste("Grey Zone (Indeterminate):", round(cutoff_red, 2), "-", round(cutoff_green, 2)),
+  paste("Green Zone (Safe) >", round(cutoff_green, 2))
+)
+
+```
+
+```{r fig.width=9.5, fig.height=6}
+
+# 2. Visualize the Zones
+proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  ggplot(aes(x = PROTF, fill = IgG_Referência)) +
+  geom_density(alpha = 0.4) +
+  # Red Zone
+  annotate("rect", xmin = -Inf, xmax = cutoff_red, ymin = 0, ymax = Inf, 
+           fill = "firebrick", alpha = 0.1) +
+  # Grey Zone
+  annotate("rect", xmin = cutoff_red, xmax = cutoff_green, ymin = 0, ymax = Inf, 
+           fill = "gold", alpha = 0.15) +
+  # Green Zone
+  annotate("rect", xmin = cutoff_green, xmax = Inf, ymin = 0, ymax = Inf, 
+           fill = "forestgreen", alpha = 0.1) +
+  geom_vline(xintercept = c(cutoff_red, cutoff_green), linetype = "dashed") +
+  annotate("text", x = cutoff_red, y = 0, label = paste("Red <", round(cutoff_red, 2)), 
+           hjust = 1.1, vjust = -2, angle = 0, color = "firebrick") +
+  annotate("text", x = cutoff_green, y = 0, label = paste("Green >", round(cutoff_green, 2)), 
+           hjust = 1.1, vjust = -2, angle = 0, color = "forestgreen") +
+  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  labs(title = "Traffic Light System: Managing Clinical Overlap",
+       subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
+       x = "PROTF (g/L)", y = "Density", fill = "IgG Status") +
+  scale_x_continuous(breaks = seq(1, 2.5, by = 0.1)) +
+  scale_y_continuous(breaks = seq(0, 2, by = 0.25))
+
+```
+
+Given the significant distributional overlap between the IgG groups, a single binary cutoff forces a trade-off that compromises either diagnostic sensitivity or specificity. To address this biological reality, we applied a **Two-Cutoff Strategy** (Traffic Light System) to isolate the zone of diagnostic uncertainty.
+
+We defined three clinical zones based on strict statistical safety margins:
+
+1.  **Deficiency Zone (< 1.55 g/L):**
+    * **Definition:** Threshold established at **≥95% Specificity**.
+    * **Implication:** Results in this range are highly indicative of IgG deficiency. The probability of a false positive is minimal (<5%), warranting immediate clinical action.
+
+2.  **Safety Zone (> 2.3 g/L):**
+    * **Definition:** Threshold established at **≥95% Sensitivity**.
+    * **Implication:** Results in this range effectively rule out deficiency with high confidence. The risk of missing a true deficient case is minimal (<5%).
+
+3.  **Indeterminate "Grey" Zone (1.55 – 2.3 g/L):**
+    * **Definition:** The interval between the high-specificity and high-sensitivity thresholds.
+    * **Implication:** This range captures the patients whose PROTF values are inconclusive due to biological overlap. For these individuals, PROTF alone is insufficient, and **mandatory IgG quantification** is recommended to resolve the diagnosis.
+
+**Conclusion:** By utilizing this tiered approach, we increase the diagnostic accuracy for patients at the extremes while clearly identifying the subset of patients for whom confirmatory testing is strictly necessary.
+
+## Infections
+
+```{r}
+
+# Define your Cutoff (Use the Balanced one found earlier)
+protf_cutoff <- 2.05 
+
+infection_analysis <- protf |>
+  dplyr::rename(PROTF = `16 - Resultado do Primeiro exame`) |>
+  # Create Binary Groups based on Cutoff
+  mutate(Risk_Group = ifelse(PROTF < protf_cutoff, "High_Risk", "Low_Risk")) |>
+  dplyr::select(
+    Risk_Group,
+    `8 - Infecção em sistema nervoso central?`,
+    `9 - Infecção de vias áreas superiores?`,
+    `10 - Infecção de vias áreas inferiores?`,
+    `11 - Infecção de sistema urinário?`,
+    `12 - Infecção de sistema gastrointestinal?`,
+    `13 - Infecção de pele?`,
+    `14 - Sepse?`
+  ) |>
+  pivot_longer(
+    cols = !Risk_Group,
+    names_to = "Infection_Type",
+    values_to = "Status"
+  ) |>
+  mutate(
+    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
+    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
+    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
+    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Is_Infected = ifelse(Status == "Sim", 1, 0)
+  ) |>
+  # Remove NAs if any exist in Status/Risk_Group
+  filter(!is.na(Is_Infected))
+
+rates_table <- infection_analysis |>
+  group_by(Infection_Type, Risk_Group) |>
+  summarise(
+    Total_Patients = n(),
+    Infected_Count = sum(Is_Infected),
+    Rate_Pct = (Infected_Count / Total_Patients) * 100, # Em porcentagem
+    .groups = "drop"
+  ) |>
+  # Coloca High_Risk e Low_Risk lado a lado
+  pivot_wider(
+    names_from = Risk_Group,
+    values_from = c(Total_Patients, Infected_Count, Rate_Pct)
+  )
+
+stats_table <- infection_analysis |>
+  group_by(Infection_Type) |>
+  nest() |>
+  mutate(
+    model = map(data, function(df) {
+      # Tabela cruzada 2x2
+      tbl <- table(df$Risk_Group, df$Is_Infected)
+      
+      # Verifica se a tabela é válida (tem 2 grupos de risco e pelo menos infectados e não infectados no geral)
+      # Se for muito esparsa, fisher.test pode falhar ou retornar NULL
+      tryCatch({
+        broom::tidy(fisher.test(tbl))
+      }, error = function(e) NULL)
+    })
+  ) |>
+  unnest(model) |>
+  dplyr::select(Infection_Type, estimate, p.value, conf.low, conf.high)
+
+final_results <- rates_table |>
+  left_join(stats_table, by = "Infection_Type") |>
+  mutate(
+    Odds_Ratio = estimate,
+    Significant = ifelse(p.value < 0.05, "Yes", "No")
+  ) |>
+  dplyr::select(
+    Infection_Type, 
+    Rate_High = Rate_Pct_High_Risk, 
+    Rate_Low = Rate_Pct_Low_Risk,
+    Odds_Ratio, 
+    conf.low, 
+    conf.high,
+    p.value, 
+    Significant
+  )
+
+knitr::kable(
+  final_results, digits = 2, 
+  caption = "Prevalência de Infecções por Grupo de Risco (PROTF < 2.05)"
+)
+
+```
+
+Odds Ratio: Normal (>= 2.05) vs. Low (< 2.05). 0.31 means que o grupo normal tem menos chances.
+
+```{r fig.width=8, fig.height=4}
+
+final_results |>
+  filter(!is.na(Odds_Ratio)) |> 
+  ggplot(aes(x = Odds_Ratio, y = reorder(Infection_Type, Odds_Ratio), color = Significant)) +
+  geom_point(size = 3.5) +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), width = 0.3, linewidth = 0.8) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray40", linewidth = 1) +
+  scale_x_log10() + 
+  scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
+  labs(
+    title = "Clinical Impact of Low PROTF (< 2.05 g/L)",
+    subtitle = "Odds Ratio of Infection Risk (High Risk vs. Low Risk Group)",
+    x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low PROTF group",
+    y = NULL,
+    color = "Significant (p < 0.05)?"
+  )
+
+```
+
+### Clinical Validation: Association with Infection History
+
+To validate the clinical relevance of the established cutoff (**2.05 g/L**), we assessed whether patients falling below this threshold exhibited a distinct profile of infectious history compared to those above it.
+
+* **Methodology:** Patients were stratified into "High Risk" (PROTF < 2.05) and "Low Risk" (PROTF ≥ 2.05) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher's Exact Test.
+
+* **Results:**
+
+    * **Severe Systemic Vulnerability (Sepsis):** The most critical finding was observed for Sepsis. The "High Risk" (Low PROTF) cohort exhibited a dramatically higher prevalence of sepsis (**42.39%**) compared to the "Low Risk" cohort (**18.42%**). The Odds Ratio of **0.31** (for the Low Risk group) confirms that maintaining PROTF levels above the cutoff is a significant protective factor against life-threatening systemic infections ($p < 0.001$).
+
+    * **Distinct Phenotypes (Mucosal Infections):** Interestingly, the "Low Risk" (Normal PROTF) group reported significantly higher rates of common mucosal infections compared to the deficient group. This included **Upper Respiratory Tract Infections** (40.53% vs 18.48%, $p < 0.001$) and **Gastrointestinal Infections** (21.05% vs 4.35%, $p < 0.001$). This suggests distinct clinical phenotypes: patients with low PROTF are prone to severe complications (Sepsis), whereas those with normal levels present with more frequent, but likely less lethal, common community-acquired infections.
+
+    * **Neutral Associations:** No statistically significant difference was found for Skin, CNS, Urinary, or Lower Respiratory infections ($p > 0.05$), indicating that the cutoff is highly specific to the risk of Sepsis rather than a generalized increase in all infection types.
+
+**Conclusion:** The PROTF cutoff of 2.05 g/L successfully identifies a patient subset with critical immunological vulnerability. While patients above this threshold frequently report common mucosal conditions, those falling below it are disproportionately susceptible to severe sepsis, validating the threshold as a vital marker for systemic risk stratification.
 
 # Methodology & References
 

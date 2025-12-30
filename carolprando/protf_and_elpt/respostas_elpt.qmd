@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/12/27
+date-modified: 2025/12/30
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -18,7 +18,8 @@ if (!requireNamespace("pacman", quietly = TRUE))
   install.packages("pacman") 
 
 pacman::p_load(
-  ggplot2, googlesheets4, dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom
+  ggplot2, googlesheets4, 
+  dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, knitr, purrr
 )
 ggplot2::theme_set(
   theme_classic(base_size = 14) +
@@ -626,6 +627,322 @@ A Segmented (Broken-stick) Regression was applied to mathematically determine th
 A positive linear dependency was observed between ELPT and IgG strictly within the deficient group ($p < 0.05$). Conversely, the normal group exhibited a stabilization phase, establishing a stable reference baseline for clinical interpretation¹.
 
 ¹ *Note: While the second segment in the ELPT model shows a statistically significant negative trend (p < 0.05), the effect size is minimal compared to the recovery phase, indicating a gradual attenuation rather than a flat plateau.*
+
+# How to use ELPT to predict IgG deficiency
+
+> Minimizing false positives, prioritizing Specificity and Positive Predictive Value (PPV).
+>
+> - Catch fewer sick people (lower sensitivity), but almost everyone catched will actually be sick.
+
+```{r}
+
+# 1. Prepare Data
+proxy_roc <- proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+
+# 2. Generate ROC Object
+roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$ELPT, quiet = TRUE)
+
+# 3. Extract Scenarios
+
+# A. Max Specificity (The "Perfect" but useless one)
+scen_max_spec <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+  filter(specificity == 1) |>
+  slice(1) |>
+  mutate(Strategy = "Max Specificity (100%)")
+
+# B. High Specificity (The >90% attempt)
+scen_high_spec <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+  filter(specificity >= 0.90) |>
+  arrange(desc(sensitivity)) |> # Get best sensitivity in this range
+  slice(1) |>
+  mutate(Strategy = "High Specificity (>90%)")
+
+# C. Balanced (Youden's Index - The Winner)
+scen_balanced <- coords(roc_obj, "best", best.method = "youden", 
+                        ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+  mutate(Strategy = "Balanced (Youden's Index)")
+
+# 4. Combine into a Summary Table
+roc_summary <- bind_rows(scen_max_spec, scen_high_spec, scen_balanced) |>
+  dplyr::select(
+    Strategy, 
+    Threshold = threshold, 
+    Sensitivity = sensitivity, Specificity = specificity, PPV = ppv
+  )
+
+# Display Table
+kable(roc_summary, digits = 3, caption = "Comparison of Cutoff Strategies")
+
+# 5. Visualization: Density Plot with the Winner Cutoff
+optimal_cutoff <- scen_balanced$threshold
+
+proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  ggplot(aes(x = ELPT, fill = IgG_Referência)) +
+  geom_density(alpha = 0.4) +
+  geom_vline(xintercept = optimal_cutoff, linetype = "dashed", color = "black", linewidth = 1) +
+  annotate("text", x = optimal_cutoff, y = 0, label = paste(" Optimal Cutoff:", round(optimal_cutoff, 2)), 
+           hjust = 1.05, vjust = -2, angle = 0, fontface = "bold") +
+  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  labs(
+    title = "Clinical Decision Threshold",
+    subtitle = "Overlap of ELPT distributions with optimal screening cutoff",
+    x = "ELPT (g/L)", y = "Density", fill = "IgG Status"
+  ) +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1))
+
+```
+
+## Diagnostic Screening: ELPT as a Predictor for IgG Testing
+
+We evaluated the diagnostic performance of **ELPT** to identify a threshold that signals IgG deficiency.
+
+We compared three cutoff strategies to determine the optimal balance between minimizing false positives (Specificity) and maximizing disease detection (Sensitivity).
+
+### Analysis of Cutoff Strategies
+
+The table above summarizes the performance of the potential thresholds:
+
+1.  **Max Specificity Strategy (Cutoff 0.250):**
+    * **Pros:** Perfect Specificity (100%) and PPV (100%). If a patient falls below this level, they are certainly deficient.
+    * **Cons:** Sensitivity is critically low (26.1%). This threshold is too conservative for screening, as it misses nearly three-quarters of the target population.
+
+2.  **High Specificity Strategy (Cutoff 0.395):**
+    * **Performance:** This threshold provides strong specificity (90.7%) with a Positive Predictive Value of 77.8%.
+    * **Trade-off:** Sensitivity increases to 60.9%, capturing a majority of cases while maintaining a low false-positive rate.
+
+3.  **Balanced "Youden" Strategy (Cutoff 0.410):**
+    * **Pros:** Optimizes the overall accuracy. It offers the highest **Sensitivity (65.2%)** among the viable options while maintaining a robust **Specificity (88.4%)**.
+    * **Clinical Context:** Unlike PROTF, which prioritized sensitivity at the cost of specificity, ELPT demonstrates naturally higher specificity. The values for the "High Specificity" and "Balanced" strategies are numerically very close (0.395 vs. 0.410), indicating a stable diagnostic zone.
+
+### Conclusion and Recommendation
+
+We recommend the **Balanced Strategy** as the clinical standard for ELPT.
+
+**Recommendation:** An ELPT value below **0.410** should trigger a follow-up IgG test.
+
+* **Performance:** At this threshold, the test detects approximately **65%** of IgG-deficient patients (Sensitivity).
+* **Precision:** Crucially, it generates very few false alarms (Specificity **88.4%**), meaning that patients flagged by ELPT have a high probability (PPV **75.0%**) of actually requiring intervention.
+
+## Advanced Strategy: The "Indeterminate Zone" Approach
+
+```{r}
+
+# 1. Prepare Data & ROC
+proxy_roc <- proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+
+roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$ELPT, quiet = TRUE)
+
+# 2. Extract All Coordinates
+all_coords <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity"))
+
+# 3. Find the Boundaries (Using >= Logic to avoid NA)
+
+# A. LOWER CUTOFF (Red Zone Boundary)
+# Logic: We want High Specificity (>= 95%) to be sure they are sick.
+# We pick the threshold with the highest sensitivity possible within that constraint.
+cutoff_red <- all_coords |>
+  filter(specificity >= 0.95) |>
+  arrange(desc(sensitivity)) |> 
+  slice(1) |>
+  pull(threshold)
+
+# B. UPPER CUTOFF (Green Zone Boundary)
+# Logic: We want High Sensitivity (>= 95%) to be sure we don't miss anyone.
+# We pick the threshold with the highest specificity possible within that constraint.
+cutoff_green <- all_coords |>
+  filter(sensitivity >= 0.95) |>
+  arrange(desc(specificity)) |> 
+  slice(2) |>
+  pull(threshold)
+
+# 4. Print Values for verification
+rbind(
+  paste("Red Zone (Deficient) <", round(cutoff_red, 2)),
+  paste("Grey Zone (Indeterminate):", round(cutoff_red, 2), "-", round(cutoff_green, 2)),
+  paste("Green Zone (Safe) >", round(cutoff_green, 2))
+)
+
+```
+
+```{r fig.width=9.5, fig.height=6}
+
+# 2. Visualize the Zones
+proxy |>
+  filter(IgG_Referência != "Acima do valor de referência") |>
+  ggplot(aes(x = ELPT, fill = IgG_Referência)) +
+  geom_density(alpha = 0.4) +
+  # Red Zone
+  annotate("rect", xmin = -Inf, xmax = cutoff_red, ymin = 0, ymax = Inf, 
+           fill = "firebrick", alpha = 0.1) +
+  # Grey Zone
+  annotate("rect", xmin = cutoff_red, xmax = cutoff_green, ymin = 0, ymax = Inf, 
+           fill = "gold", alpha = 0.15) +
+  # Green Zone
+  annotate("rect", xmin = cutoff_green, xmax = Inf, ymin = 0, ymax = Inf, 
+           fill = "forestgreen", alpha = 0.1) +
+  geom_vline(xintercept = c(cutoff_red, cutoff_green), linetype = "dashed") +
+  annotate("text", x = cutoff_red, y = 0, label = paste("Red <", round(cutoff_red, 2)), 
+           hjust = 1.1, vjust = -10, angle = 0, color = "firebrick") +
+  annotate("text", x = cutoff_green, y = 0, label = paste("Green >", round(cutoff_green, 2)), 
+           hjust = 1.1, vjust = -10, angle = 0, color = "forestgreen") +
+  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  labs(title = "Traffic Light System: Managing Clinical Overlap",
+       subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
+       x = "ELPT (g/L)", y = "Density", fill = "IgG Status") +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
+  scale_y_continuous(breaks = seq(0, 10, by = 1))
+
+```
+
+Given the distributional overlap observed in the ELPT data, a single binary cutoff may not sufficiently capture the clinical complexity. To address this, we applied a **Two-Cutoff Strategy** (Traffic Light System) to isolate the zone of diagnostic uncertainty.
+
+We defined three clinical zones based on strict statistical safety margins:
+
+1.  **Deficiency Zone (< 0.38):**
+    * **Definition:** Threshold established at **≥95% Specificity**.
+    * **Implication:** ELPT values below **0.38** are highly indicative of IgG deficiency. The probability of a false positive in this range is minimal, warranting immediate clinical action or substitution therapy consideration.
+
+2.  **Safety Zone (> 0.60):**
+    * **Definition:** Threshold established at **≥95% Sensitivity**.
+    * **Implication:** ELPT values above **0.60** effectively rule out deficiency with high confidence. The risk of missing a true deficient case in this range is negligible.
+
+3.  **Indeterminate "Grey" Zone (0.38 – 0.60):**
+    * **Definition:** The interval between the high-specificity and high-sensitivity thresholds.
+    * **Implication:** Patients falling within this range (0.38 to 0.60) represent a diagnostic challenge where ELPT alone is inconclusive due to biological overlap. For these individuals, **mandatory IgG quantification** is recommended to resolve the diagnosis.
+
+**Conclusion:** By defining 0.38 and 0.60 as the critical boundaries, we enhance diagnostic precision for patients at the extremes while clearly identifying the subset of patients requiring confirmatory testing.
+
+## Infections
+
+```{r}
+
+# Define your Cutoff (Use the Balanced one found earlier)
+elpt_cutoff <- 0.41
+
+infection_analysis <- elpt |>
+  dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
+  # Create Binary Groups based on Cutoff
+  mutate(Risk_Group = ifelse(ELPT < elpt_cutoff, "High_Risk", "Low_Risk")) |>
+  dplyr::select(
+    Risk_Group,
+    `8 - Infecção em sistema nervoso central?`,
+    `9 - Infecção de vias áreas superioras?`,
+    `10 - Infecção de vias áreas inferiores?`,
+    `11 - Infecção de sistema urinário?`,
+    `12 - Infecção de sistema gastrointestinal?`,
+    `13 - Infecção de pele?`,
+    `14 - Sepse?`
+  ) |>
+  pivot_longer(
+    cols = !Risk_Group,
+    names_to = "Infection_Type",
+    values_to = "Status"
+  ) |>
+  mutate(
+    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
+    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
+    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
+    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Is_Infected = ifelse(Status == "Sim", 1, 0)
+  ) |>
+  # Remove NAs if any exist in Status/Risk_Group
+  filter(!is.na(Is_Infected))
+
+rates_table <- infection_analysis |>
+  group_by(Infection_Type, Risk_Group) |>
+  summarise(
+    Total_Patients = n(),
+    Infected_Count = sum(Is_Infected),
+    Rate_Pct = (Infected_Count / Total_Patients) * 100, # Em porcentagem
+    .groups = "drop"
+  ) |>
+  # Coloca High_Risk e Low_Risk lado a lado
+  pivot_wider(
+    names_from = Risk_Group,
+    values_from = c(Total_Patients, Infected_Count, Rate_Pct)
+  )
+
+stats_table <- infection_analysis |>
+  group_by(Infection_Type) |>
+  nest() |>
+  mutate(
+    model = map(data, function(df) {
+      # Tabela cruzada 2x2
+      tbl <- table(df$Risk_Group, df$Is_Infected)
+      
+      # Verifica se a tabela é válida (tem 2 grupos de risco e pelo menos infectados e não infectados no geral)
+      # Se for muito esparsa, fisher.test pode falhar ou retornar NULL
+      tryCatch({
+        broom::tidy(fisher.test(tbl))
+      }, error = function(e) NULL)
+    })
+  ) |>
+  unnest(model) |>
+  dplyr::select(Infection_Type, estimate, p.value, conf.low, conf.high)
+
+final_results <- rates_table |>
+  left_join(stats_table, by = "Infection_Type") |>
+  mutate(
+    Odds_Ratio = estimate,
+    Significant = ifelse(p.value < 0.05, "Yes", "No")
+  ) |>
+  dplyr::select(
+    Infection_Type, 
+    Rate_High = Rate_Pct_High_Risk, 
+    Rate_Low = Rate_Pct_Low_Risk,
+    Odds_Ratio, 
+    conf.low, 
+    conf.high,
+    p.value, 
+    Significant
+  )
+
+knitr::kable(
+  final_results, digits = 2, 
+  caption = "Prevalência de Infecções por Grupo de Risco (ELPT < 0.41)"
+)
+
+```
+
+Odds Ratio: Normal (>= 0.41) vs. Low (< 0.41). 0.43 means que o grupo normal tem menos chances.
+
+```{r fig.width=8, fig.height=4}
+
+final_results |>
+  filter(!is.na(Odds_Ratio)) |> 
+  ggplot(aes(x = Odds_Ratio, y = reorder(Infection_Type, Odds_Ratio), color = Significant)) +
+  geom_point(size = 3.5) +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), width = 0.3, linewidth = 0.8) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray40", linewidth = 1) +
+  scale_x_log10() + 
+  scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
+  labs(
+    title = "Clinical Impact of Low ELPT (< 0.41 g/L)",
+    subtitle = "Odds Ratio of Infection Risk (High Risk vs. Low Risk Group)",
+    x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low ELPT group",
+    y = NULL,
+    color = "Significant (p < 0.05)?"
+  )
+
+```
+
+### Clinical Validation: Association with Infection History (ELPT)
+
+To determine if the ELPT cutoff (**0.410**) translates into a functional clinical marker, we assessed whether patients falling below this threshold exhibited a higher prevalence of infections compared to those above it.
+
+* **Methodology:** Patients were stratified into "High Risk" (ELPT < 0.410) and "Low Risk" (ELPT ≥ 0.410) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher's Exact Test.
+
+* **Results:**
+    * **Absence of Phenotypic Correlation:** Unlike the PROTF marker, the ELPT cutoff did not demonstrate a statistically significant association with any specific infection type. P-values for all categories exceeded the significance threshold ($p > 0.05$).
+    * **Uniform Infection Rates:** Infection rates were remarkably similar between the high-risk and low-risk groups across most categories. For example, **Sepsis** prevalence was nearly identical (18.18% in the Low ELPT group vs. 19.61% in the Normal ELPT group, $p = 1.00$).
+    * **Urinary Tract Trend:** A non-significant trend was observed for **Urinary System Infections**, which were more frequent in the "High Risk" group (27.27%) compared to the "Low Risk" group (13.73%). However, this difference did not reach statistical significance ($p = 0.19$).
+
+**Conclusion:** While the ELPT cutoff of 0.410 is statistically valid for screening IgG deficiency (as shown in the ROC analysis), it does not appear to independently stratify patients by specific infectious history in this dataset. This suggests that ELPT should be utilized primarily as a biochemical screening tool for IgG levels rather than a direct predictor of clinical infection phenotypes.
 
 # Methodology & References
 
