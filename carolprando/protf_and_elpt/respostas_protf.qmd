@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/12/30
+date-modified: 2025/12/31
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -38,8 +38,6 @@ ggplot2::theme_set(
 
 ```
 
-# Lendo os dados
-
 ```{r protf_data, warning=FALSE, message=FALSE}
 
 protf_url <- 
@@ -59,31 +57,7 @@ protf <- protf |>
   )
 ```
 
-Calculando a idade dos pacientes vemos dois casos com data de cadastro do exame anterior a sua data de nascimento.
-
-```{r}
-
-protf |> dplyr::filter(IDADE <= 0) |>
-  dplyr::select(
-    `1 - Insira o Prontuário do Paciente`,
-    `5 - Data de Cadastro do Exame`,
-    `6 - Data de Nascimento`
-  )
-
-```
-
-## Atenção! Dado duplicado mas com diferenças
-
-Nem todas as entradas são iguais. Ver com detalhe na planilha Google Sheets.
-
-```{r}
-
-protf |> dplyr::filter(`1 - Insira o Prontuário do Paciente` == 638992)
-
-```
-
-
-# 1. Análise epidemiológica:
+# 1. Análise epidemiológica
 
 ## a) Porcentagem de cada faixa etária na amostra
 
@@ -143,9 +117,9 @@ protf |> dplyr::filter(
 
 ```
 
-Dos 374 pacientes com quadro infeccioso, 302 apresentaram em mais de um sistema (ao menos em dois). 80.75%.
+Dos 373 pacientes com quadro infeccioso, 301 apresentaram em mais de um sistema (ao menos em dois). 80.7%.
 
-Nestes 302, estes são os sintomas que aparecem e em quantos dos 302 pacientes.
+Nestes 301, estes são os sintomas que aparecem e em quantos dos 301 pacientes.
 
 ```{r}
 
@@ -179,7 +153,7 @@ proxy <-
            name = stringr::str_to_sentence(name)) |>
     dplyr::count(name) |> 
     dplyr::arrange(dplyr::desc(n)) |>
-    dplyr::mutate(Percentual = n / 302) 
+    dplyr::mutate(Percentual = n / nrow(proxy)) 
 )
 
 ```
@@ -190,7 +164,6 @@ O máximo de infecções que um paciente apresenta são 5, e 5 pacientes ficaram
 
 proxy |>
   dplyr::mutate(value = ifelse(value == "Sim", 1, 0)) |>
-  dplyr::distinct() |> # -------------------------------------------------------
   tidyr::pivot_wider(names_from = name, values_from = value, values_fill = 0) |>
   dplyr::select(-n) |> 
   tidyr::pivot_longer(-`1 - Insira o Prontuário do Paciente`, 
@@ -244,7 +217,7 @@ protf |>
   
 ```
 
-Entre os 642 pacientes com comorbidade, 195 diferentes combinações de comorbidade são observadas - mas 50 aparecem em ao menos dois pacientes.
+Entre os 641 pacientes com comorbidade, 195 diferentes combinações de comorbidade são observadas - mas 50 aparecem em ao menos dois pacientes.
 
 ## f) Porcentagem de pacientes que realizam hemodiálise
 
@@ -324,16 +297,14 @@ summary(proxy$Intervalo_meses)
 
 ```
 
-147 pacientes vieram a óbito (18.4%), com um tempo médio de sobrevida de 169 dias (5.6 meses) - mediana de 35 dias (1.1 meses). 
+146 pacientes vieram a óbito (18.29%), com um tempo médio de sobrevida de 190 dias (6.3 meses) - mediana de 38 dias (1.2 meses). 
 
-**Atenção**! Temos um paciente com este campo em branco.
-
-Além de outliers, temos aqui mais inconsistências nos dados (**atenção!!**). Tempo negativo.
+**Atenção**! Temos dois pacientes com tempo negativo.
 
 ```{r}
 
 proxy |>
-  dplyr::filter(Intervalo_dias <= 0 | Intervalo_meses <= 0)
+  dplyr::filter(Intervalo_dias < 0 | Intervalo_meses < 0)
 
 ```
 
@@ -341,7 +312,7 @@ proxy |>
 
 ## a) A partir dos valores de dosagem de IgG, verificar se existe correlação com os valores de PROTF; Não considerar na estatistica os pacientes que fazem reposição de IgG - pois é um tratamento, logo não é um dado basal
 
-118 pacientes (14.8%) tem registro do valor de IgG e não fizeram reposição.
+117 pacientes (14.7%) tem registro do valor de IgG e não fizeram reposição.
 
 ```{r}
 
@@ -365,7 +336,7 @@ NA = não se aplica` != "NA"
 
 ```
 
-Correlação linear de Pearson de 0.43 (forte e estatísticamente significativa, 1.2e-06 = 0.0000012).
+Correlação linear de Pearson de 0.43 (forte e estatísticamente significativa, 1.7e-06 = 0.0000017).
 
 Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear (não tão forte) até um igG ao redor de 600 e a partir dali uma curva descendente, mas temos poucos pacientes passando desse valor.
 
@@ -432,7 +403,7 @@ proxy |>
   
 ```
 
-PROTF médio de 1.745, min 1.2 e máx 2.4.
+PROTF médio de 1.749, min 1.2 e máx 2.4.
 
 ## c) Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de PROTF?
 
@@ -459,7 +430,7 @@ NA = não se aplica` == "Acima do valor de referência" &
 
 ## d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?
 
-62 pacientes, 31 diferentes combinações de comorbidades - apenas 6 ocorrendo em ao menos dois pacientes.
+61 pacientes, 31 diferentes combinações de comorbidades - apenas 5 ocorrendo em ao menos dois pacientes.
 
 ```{r}
 
@@ -490,7 +461,7 @@ NA = não se aplica` == "Abaixo do valor de referência" &
 
 ## a) Entre os menores de 1 ano, quantos apresentavam a comorbidade "Prematuridade"?
 
-Dentre os 202 pacientes temos 77 diferentes combinações de comorbidades.
+Dentre os 201 pacientes menores de 1 ano e com comorbidade, temos 77 diferentes combinações de comorbidades.
 
 ```{r}
 
@@ -527,7 +498,7 @@ Destas 77, 20 apresentam "Prematuridade".
 
 ## b) Levando em consideração pacientes que fizeram os exames PROTF + IgG, definir um valor de referência para PROTF levando como referência a dosagem de IgG
 
-126 pacientes, descartaremos da análise aquele único paciente com IgG acima do valor de referência.
+125 pacientes, descartaremos da análise aquele único paciente com IgG acima do valor de referência.
 
 ```{r fig.width=8.5}
 
@@ -634,15 +605,6 @@ Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde
 ```{r}
 
 summary(seg_mod)
-
-protf |>
-  dplyr::rename(IgG_Referência = `18.1 - Como se encontra o resultado de IgG?
-
-NA = não se aplica`) |>
-  dplyr::filter(
-    `33 - Paciente possui registro de óbito?` == "Sim" &
-      IgG_Referência != "NA"
-  )
 
 ```
 

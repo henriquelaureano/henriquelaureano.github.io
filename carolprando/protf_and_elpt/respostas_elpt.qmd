@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/12/30
+date-modified: 2025/12/31
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -36,8 +36,6 @@ ggplot2::theme_set(
 )
 
 ```
-
-# Lendo os dados
 
 ```{r elpt_data, warning=FALSE, message=FALSE}
 
