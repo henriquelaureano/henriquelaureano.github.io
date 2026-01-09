@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/12/31
+date-modified: 2026/01/09
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -56,20 +56,7 @@ elpt <- elpt |>
   )
 ```
 
-Calculando a idade dos pacientes vemos que um possuí data de cadastro do exame anterior a sua data de nascimento.
-
-```{r}
-
-elpt |> dplyr::filter(IDADE <= 0) |>
-  dplyr::select(
-    `1 - Insira o Prontuário do Paciente`,
-    `5 - Data de Cadastro do Exame`,
-    `6 - Data de Nascimento`
-  )
-
-```
-
-# 1. Análise epidemiológica:
+# 1. Análise epidemiológica
 
 ## a) Porcentagem de cada faixa etária na amostra
 

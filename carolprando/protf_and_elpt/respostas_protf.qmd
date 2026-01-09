@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2025/12/31
+date-modified: 2026/01/09
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -297,16 +297,7 @@ summary(proxy$Intervalo_meses)
 
 ```
 
-146 pacientes vieram a óbito (18.29%), com um tempo médio de sobrevida de 190 dias (6.3 meses) - mediana de 38 dias (1.2 meses). 
-
-**Atenção**! Temos dois pacientes com tempo negativo.
-
-```{r}
-
-proxy |>
-  dplyr::filter(Intervalo_dias < 0 | Intervalo_meses < 0)
-
-```
+146 pacientes vieram a óbito (18.29%), com um tempo médio de sobrevida de 193 dias (6.3 meses) - mediana de 40 dias (1.3 meses). 
 
 # 2. Análise de indivíduos com dosagem de IgG
 
