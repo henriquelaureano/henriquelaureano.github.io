@@ -186,7 +186,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 9, 2026</p>
+      <p class="date-modified">January 12, 2026</p>
     </div>
   </div>
     
@@ -318,12 +318,11 @@ window.Quarto = {
 <span id="cb7-2"><a href="#cb7-2"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(protf))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
-  `4 - Sexo`                                                        n Percentual
-  &lt;chr&gt;                                                         &lt;int&gt;      &lt;dbl&gt;
-1 Feminino                                                        341    0.427  
-2 Masculino                                                       456    0.571  
-3 Paciente XX no PEP (e primeira evolução, e única, consta T21…     1    0.00125</code></pre>
+<pre><code># A tibble: 2 × 3
+  `4 - Sexo`     n Percentual
+  &lt;chr&gt;      &lt;int&gt;      &lt;dbl&gt;
+1 Feminino     341      0.427
+2 Masculino    457      0.573</code></pre>
 </div>
 </div>
 </section>
@@ -754,7 +753,7 @@ window.Quarto = {
 <span id="cb36-17"><a href="#cb36-17"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 117 × 2
+<pre><code># A tibble: 119 × 2
      IgG PROTF
    &lt;dbl&gt; &lt;dbl&gt;
  1  1010   1.8
@@ -762,12 +761,12 @@ window.Quarto = {
  3   790   2.4
  4   412   2.4
  5   947   2.4
- 6  1097   1.7
- 7  1423   2.1
- 8   454   1.9
- 9  1194   2.4
-10   423   2.4
-# ℹ 107 more rows</code></pre>
+ 6   510   2  
+ 7   616   2.4
+ 8  1097   1.7
+ 9  1423   2.1
+10   454   1.9
+# ℹ 109 more rows</code></pre>
 </div>
 </div>
 <p>Correlação linear de Pearson de 0.43 (forte e estatísticamente significativa, 1.7e-06 = 0.0000017).</p>
@@ -815,10 +814,10 @@ window.Quarto = {
 <pre><code># A tibble: 4 × 2
   `18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica`     n
   &lt;chr&gt;                                                               &lt;int&gt;
-1 Abaixo do valor de referência                                          65
+1 Abaixo do valor de referência                                          66
 2 Acima do valor de referência                                            1
-3 NA                                                                    673
-4 Normal                                                                 59</code></pre>
+3 NA                                                                    670
+4 Normal                                                                 61</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -840,7 +839,7 @@ window.Quarto = {
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.200   1.600   1.700   1.749   1.900   2.400 </code></pre>
+  1.200   1.600   1.700   1.759   1.900   2.400 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -918,7 +917,7 @@ window.Quarto = {
   &lt;chr&gt;                                                          &lt;int&gt;
 1 Não                                                                3
 2 Sem informação                                                     1
-3 Sim                                                               61</code></pre>
+3 Sim                                                               62</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1057,20 +1056,20 @@ window.Quarto = {
 <span id="cb56-14"><a href="#cb56-14"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 125 × 3
-     IgG PROTF IgG_Referência
-   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;         
- 1  1010   1.8 Normal        
- 2   486   1.8 Normal        
- 3   790   2.4 Normal        
- 4   412   2.4 Normal        
- 5   947   2.4 Normal        
- 6  1097   1.7 Normal        
- 7  1423   2.1 Normal        
- 8   454   1.9 Normal        
- 9  1194   2.4 Normal        
-10   423   2.4 Normal        
-# ℹ 115 more rows</code></pre>
+<pre><code># A tibble: 128 × 3
+     IgG PROTF IgG_Referência               
+   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                        
+ 1  1010   1.8 Normal                       
+ 2   486   1.8 Normal                       
+ 3   790   2.4 Normal                       
+ 4   412   2.4 Normal                       
+ 5   729   2.4 Normal                       
+ 6   947   2.4 Normal                       
+ 7   510   2   Normal                       
+ 8   616   2.4 Abaixo do valor de referência
+ 9  1097   1.7 Normal                       
+10  1423   2.1 Normal                       
+# ℹ 118 more rows</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1080,9 +1079,9 @@ window.Quarto = {
 <pre><code># A tibble: 3 × 2
   IgG_Referência                    n
   &lt;chr&gt;                         &lt;int&gt;
-1 Abaixo do valor de referência    65
+1 Abaixo do valor de referência    66
 2 Acima do valor de referência      1
-3 Normal                           59</code></pre>
+3 Normal                           61</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1128,7 +1127,7 @@ window.Quarto = {
 <pre><code># A tibble: 1 × 4
   mean_protf sd_protf upper_ref lower_ref
        &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1       2.02    0.262      2.54      1.50</code></pre>
+1       2.03    0.262      2.55      1.50</code></pre>
 </div>
 </div>
 <p>Valor de referência: 2.02 (95% CI 1.50, 2.54).</p>
@@ -1201,22 +1200,22 @@ Call:
 segmented.lm(obj = lin_mod, seg.Z = ~IgG, psi = 600)
 
 Estimated Break-Point(s):
-             Est. St.Err
-psi1.IgG 422.999 82.569
+          Est. St.Err
+psi1.IgG  613  99.38
 
 Coefficients of the linear terms:
               Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  1.5506649  0.0638694  24.279  &lt; 2e-16 ***
-IgG          0.0010504  0.0002629   3.996 0.000112 ***
-U1.IgG      -0.0009517  0.0002942  -3.235       NA    
+(Intercept)  1.5865473  0.0523913  30.283  &lt; 2e-16 ***
+IgG          0.0008523  0.0001537   5.544 1.72e-07 ***
+U1.IgG      -0.0009449  0.0002566  -3.682       NA    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.2531 on 120 degrees of freedom
-Multiple R-Squared: 0.2698,  Adjusted R-squared: 0.2515 
+Residual standard error: 0.2541 on 123 degrees of freedom
+Multiple R-Squared: 0.2831,  Adjusted R-squared: 0.2657 
 
-Boot restarting based on 8 samples. Last fit:
-Convergence attained in 2 iterations (rel. change 3.703e-06)</code></pre>
+Boot restarting based on 6 samples. Last fit:
+Convergence attained in 2 iterations (rel. change 2.0512e-08)</code></pre>
 </div>
 </div>
 <p>Aqui é apenas para “comprovar” que o grupo “Normal” não tem inclinação estatísticamente significativa. Neste grupo, independente do valor de IgG se espera o mesmo valor de PROTF.</p>
@@ -1233,10 +1232,10 @@ Convergence attained in 2 iterations (rel. change 3.703e-06)</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 6
 # Groups:   IgG_Referência [2]
-  IgG_Referência                 estimate std.error p.value  conf.low conf.high
-  &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 Abaixo do valor de referência 0.000828   0.000264 0.00257  0.000301  0.00135 
-2 Normal                        0.0000827  0.000128 0.521   -0.000174  0.000339</code></pre>
+  IgG_Referência                 estimate std.error  p.value  conf.low conf.high
+  &lt;chr&gt;                             &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 Abaixo do valor de referência 0.000951   0.000241 0.000200  0.000470  0.00143 
+2 Normal                        0.0000915  0.000128 0.476    -0.000164  0.000347</code></pre>
 </div>
 </div>
 </section>
@@ -1349,7 +1348,7 @@ Convergence attained in 2 iterations (rel. change 3.703e-06)</code></pre>
 <td style="text-align: left;">…1</td>
 <td style="text-align: left;">Max Specificity (100%)</td>
 <td style="text-align: right;">1.45</td>
-<td style="text-align: right;">0.108</td>
+<td style="text-align: right;">0.106</td>
 <td style="text-align: right;">1.000</td>
 <td style="text-align: right;">1.000</td>
 </tr>
@@ -1357,17 +1356,17 @@ Convergence attained in 2 iterations (rel. change 3.703e-06)</code></pre>
 <td style="text-align: left;">…2</td>
 <td style="text-align: left;">High Specificity (&gt;90%)</td>
 <td style="text-align: right;">1.65</td>
-<td style="text-align: right;">0.308</td>
-<td style="text-align: right;">0.932</td>
+<td style="text-align: right;">0.303</td>
+<td style="text-align: right;">0.934</td>
 <td style="text-align: right;">0.833</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">threshold</td>
 <td style="text-align: left;">Balanced (Youden’s Index)</td>
 <td style="text-align: right;">2.05</td>
-<td style="text-align: right;">0.877</td>
-<td style="text-align: right;">0.542</td>
-<td style="text-align: right;">0.679</td>
+<td style="text-align: right;">0.864</td>
+<td style="text-align: right;">0.541</td>
+<td style="text-align: right;">0.671</td>
 </tr>
 </tbody>
 </table>
