@@ -888,7 +888,7 @@ final_results |>
   scale_x_log10() + 
   scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
   labs(
-    title = "Clinical Impact of Low ELPT (< 0.41 g/L)",
+    title = "Clinical Impact of Low ELPT (< 0.41 g/dL)",
     subtitle = "Odds Ratio of Infection Risk (High Risk vs. Low Risk Group)",
     x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low ELPT group",
     y = NULL,
