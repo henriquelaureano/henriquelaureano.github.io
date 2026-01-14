@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/01/09
+date-modified: 2026/01/13
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -292,7 +292,7 @@ Oito pacientes vieram a óbito (5%), com um tempo médio de sobrevida de 246 dia
 
 ## a) A partir dos valores de dosagem de IgG, verificar se existe correlação com os valores de ELPT; Não considerar na estatistica os pacientes que fazem reposição de IgG - pois é um tratamento, logo não é um dado basal
 
-63 pacientes (38.9%) tem registro do valor de IgG e não fizeram reposição.
+68 pacientes (41.2%) tem registro do valor de IgG e não fizeram reposição.
 
 ```{r}
 
@@ -316,7 +316,7 @@ NA = não se aplica` != "NA"
 
 ```
 
-Correlação linear de Pearson de 0.52 (forte e estatísticamente significativa, 1e-05 = 0.00001).
+Correlação linear de Pearson de 0.55 (forte e estatísticamente significativa, 1.1e-06 = 0.0000011).
 
 Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear até um igG ao redor de 600 e a partir dali uma queda, mas temos pouquíssimos pacientes passando desse valor.
 
@@ -334,7 +334,7 @@ proxy |>
   ggpubr::stat_cor(method = "pearson", label.x = 1000, label.y = 0.575) + 
   labs(title = "Correlação entre IgG e ELPT",
        subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "ELPT (g/L)") +
+       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.05))
 
@@ -378,40 +378,21 @@ proxy |>
   ggpubr::stat_cor(method = "pearson") + 
   labs(title = "Correlação entre IgG e ELPT",
        subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "ELPT (g/L)") +
+       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
   scale_x_continuous(breaks = seq(0, 700, by = 50)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.05))
   
 ```
 
-ELPT médio de 0.367, min 0.06 e máx 0.6.
+ELPT médio de 0.366, min 0.06 e máx 0.6.
 
 ## c)  Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de ELPT?
 
-Apenas um paciente com IgG acima do valor de referência (ele também não fez reposição de IgG).
-
-```{r}
-
-elpt |>
-    dplyr::filter(
-    `18.1 - Como se encontra o resultado de IgG?
-
-NA = não se aplica` == "Acima do valor de referência" &
-  `19 - Fez reposições de Imunoglobulinas durante os 30 dias que antecederam a realização do exame ELPT?`
-    != "Sim"
-    )  |> 
-    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
-
--Responder com NA em caso de não realização do exame`) |>
-    dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
-    dplyr::select(IgG, ELPT) |>
-    tidyr::unnest(IgG) 
-
-```
+Nenhum paciente com IgG acima do valor de referência.
 
 ## d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?
 
-19 pacientes.
+22 pacientes.
 
 ```{r}
 
@@ -456,7 +437,7 @@ elpt |>
 
 ## b) Levando em consideração pacientes que fizeram os exames ELPT + IgG, definir um valor de referência para ELPT levando como referência a dosagem de IgG
 
-67 pacientes, descartaremos da análise aquele único paciente com IgG acima do valor de referência.
+72 pacientes.
 
 ```{r fig.width=8.5}
 
@@ -491,7 +472,7 @@ proxy |>
   labs(title = "Correlação entre IgG e ELPT",
        subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
        fill = "Referência: ", color = "Referência: ",
-       x = "IgG (mg/dL)", y = "ELPT (g/L)") +
+       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
   scale_y_continuous(breaks = seq(0, 0.6, by = 0.05))
 
@@ -508,7 +489,7 @@ proxy |>
 
 ```
 
-Valor de referência: 0.47 (95% CI 0.35, 0.59).
+Valor de referência: 0.47 (95% CI 0.35, 0.58).
 
 ```{r fig.width=9, fig.height=6}
 
@@ -550,7 +531,7 @@ proxy |>
     title = "Baseline de ELPT Baseado no Platô de IgG (Grupo Normal)",
     subtitle = "Linhas de tendência com Intervalo de Confiança de 95% (sombreado)",
     x = "IgG (mg/dL)", 
-    y = "ELPT (g/L)",
+    y = "ELPT (g/dL)",
     fill = "Classificação IgG: ", color = "Classificação IgG: "
   ) +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
@@ -674,7 +655,7 @@ proxy |>
   labs(
     title = "Clinical Decision Threshold",
     subtitle = "Overlap of ELPT distributions with optimal screening cutoff",
-    x = "ELPT (g/L)", y = "Density", fill = "IgG Status"
+    x = "ELPT (g/dL)", y = "Density", fill = "IgG Status"
   ) +
   scale_x_continuous(breaks = seq(0, 1, by = 0.1))
 
@@ -692,14 +673,14 @@ The table above summarizes the performance of the potential thresholds:
 
 1.  **Max Specificity Strategy (Cutoff 0.250):**
     * **Pros:** Perfect Specificity (100%) and PPV (100%). If a patient falls below this level, they are certainly deficient.
-    * **Cons:** Sensitivity is critically low (26.1%). This threshold is too conservative for screening, as it misses nearly three-quarters of the target population.
+    * **Cons:** Sensitivity is critically low (25%). This threshold is too conservative for screening, as it misses nearly three-quarters of the target population.
 
 2.  **High Specificity Strategy (Cutoff 0.395):**
-    * **Performance:** This threshold provides strong specificity (90.7%) with a Positive Predictive Value of 77.8%.
-    * **Trade-off:** Sensitivity increases to 60.9%, capturing a majority of cases while maintaining a low false-positive rate.
+    * **Performance:** This threshold provides strong specificity (91%) with a Positive Predictive Value of 81%.
+    * **Trade-off:** Sensitivity increases to 60.7%, capturing a majority of cases while maintaining a low false-positive rate.
 
 3.  **Balanced "Youden" Strategy (Cutoff 0.410):**
-    * **Pros:** Optimizes the overall accuracy. It offers the highest **Sensitivity (65.2%)** among the viable options while maintaining a robust **Specificity (88.4%)**.
+    * **Pros:** Optimizes the overall accuracy. It offers the highest **Sensitivity (64.3%)** among the viable options while maintaining a robust **Specificity (88.6%)**.
     * **Clinical Context:** Unlike PROTF, which prioritized sensitivity at the cost of specificity, ELPT demonstrates naturally higher specificity. The values for the "High Specificity" and "Balanced" strategies are numerically very close (0.395 vs. 0.410), indicating a stable diagnostic zone.
 
 ### Conclusion and Recommendation
@@ -709,7 +690,7 @@ We recommend the **Balanced Strategy** as the clinical standard for ELPT.
 **Recommendation:** An ELPT value below **0.410** should trigger a follow-up IgG test.
 
 * **Performance:** At this threshold, the test detects approximately **65%** of IgG-deficient patients (Sensitivity).
-* **Precision:** Crucially, it generates very few false alarms (Specificity **88.4%**), meaning that patients flagged by ELPT have a high probability (PPV **75.0%**) of actually requiring intervention.
+* **Precision:** Crucially, it generates very few false alarms (Specificity **88.6%**), meaning that patients flagged by ELPT have a high probability (PPV **78.3%**) of actually requiring intervention.
 
 ## Advanced Strategy: The "Indeterminate Zone" Approach
 
@@ -778,7 +759,7 @@ proxy |>
   scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
   labs(title = "Traffic Light System: Managing Clinical Overlap",
        subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
-       x = "ELPT (g/L)", y = "Density", fill = "IgG Status") +
+       x = "ELPT (g/dL)", y = "Density", fill = "IgG Status") +
   scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
   scale_y_continuous(breaks = seq(0, 10, by = 1))
 

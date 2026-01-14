@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/01/12
+date-modified: 2026/01/13
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -303,7 +303,7 @@ summary(proxy$Intervalo_meses)
 
 ## a) A partir dos valores de dosagem de IgG, verificar se existe correlação com os valores de PROTF; Não considerar na estatistica os pacientes que fazem reposição de IgG - pois é um tratamento, logo não é um dado basal
 
-117 pacientes (14.7%) tem registro do valor de IgG e não fizeram reposição.
+138 pacientes (17.3%) tem registro do valor de IgG e não fizeram reposição.
 
 ```{r}
 
@@ -327,7 +327,7 @@ NA = não se aplica` != "NA"
 
 ```
 
-Correlação linear de Pearson de 0.43 (forte e estatísticamente significativa, 1.7e-06 = 0.0000017).
+Correlação linear de Pearson de 0.47 (forte e estatísticamente significativa, 6.6e-09 = 0.0000000066).
 
 Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear (não tão forte) até um igG ao redor de 600 e a partir dali uma curva descendente, mas temos poucos pacientes passando desse valor.
 
@@ -344,7 +344,7 @@ proxy |>
   ggpubr::stat_cor(method = "pearson", label.x = 1100, label.y = 1.3) + 
   labs(title = "Correlação entre IgG e PROTF",
        subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "PROTF (g/L)") +
+       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(0, 3, by = 0.1))
 
@@ -388,40 +388,21 @@ proxy |>
   ggpubr::stat_cor(method = "pearson", label.x = 400, label.y = 1.3) + 
   labs(title = "Correlação entre IgG e PROTF",
        subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "PROTF (g/L)") +
+       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
   scale_x_continuous(breaks = seq(0, 550, by = 50)) +
   scale_y_continuous(breaks = seq(0, 3, by = 0.1))
   
 ```
 
-PROTF médio de 1.749, min 1.2 e máx 2.4.
+PROTF médio de 1.744, min 1.2 e máx 2.4.
 
 ## c) Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de PROTF?
 
-Apenas um paciente com IgG acima do valor de referência (ele também não fez reposição de IgG).
-
-```{r}
-
-protf |>
-    dplyr::filter(
-    `18.1 - Como se encontra o resultado de IgG?
-
-NA = não se aplica` == "Acima do valor de referência" &
-  `19 - Fez reposições de Imunoglobulinas durante os 30 dias que antecederam a realização do exame PROTF  ?`
-    != "Sim"
-    )  |> 
-    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
-
--Responder com NA em caso de não realização do exame`) |>
-    dplyr::rename(protf = `16 - Resultado do Primeiro exame`) |>
-    dplyr::select(IgG, protf) |>
-    tidyr::unnest(IgG) 
-
-```
+Nenhum paciente com IgG acima do valor de referência.
 
 ## d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?
 
-61 pacientes, 31 diferentes combinações de comorbidades - apenas 5 ocorrendo em ao menos dois pacientes.
+72 pacientes, 38 diferentes combinações de comorbidades - apenas 5 ocorrendo em ao menos dois pacientes.
 
 ```{r}
 
@@ -489,7 +470,7 @@ Destas 77, 20 apresentam "Prematuridade".
 
 ## b) Levando em consideração pacientes que fizeram os exames PROTF + IgG, definir um valor de referência para PROTF levando como referência a dosagem de IgG
 
-125 pacientes, descartaremos da análise aquele único paciente com IgG acima do valor de referência.
+147 pacientes.
 
 ```{r fig.width=8.5}
 
@@ -524,7 +505,7 @@ proxy |>
   labs(title = "Correlação entre IgG e PROTF",
        subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
        fill = "Referência: ", color = "Referência: ",
-       x = "IgG (mg/dL)", y = "PROTF (g/L)") +
+       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(1, 3, by = 0.1))
 
@@ -541,14 +522,11 @@ proxy |>
 
 ```
 
-Valor de referência: 2.02 (95% CI 1.50, 2.54).
+Valor de referência: 2.02 (95% CI 1.49, 2.55).
 
 ```{r fig.width=9, fig.height=6}
 
-lin_mod <- lm(
-  PROTF ~ IgG, 
-  data = proxy |> dplyr::filter(IgG_Referência != "Acima do valor de referência")
-)
+lin_mod <- lm(PROTF ~ IgG, data = proxy)
 
 # Fit a segmented model (it estimates where the 'plateau' starts)
 # You provide an initial guess for the breakpoint (e.g., IgG = 600)
@@ -557,7 +535,6 @@ seg_mod <- segmented(lin_mod, seg.Z = ~IgG, psi = 600)
 # seg_mod$psi[, "Est."] + c(-1.95, 1.96) * seg_mod$psi[, "St.Err"]
 
 proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
   ggplot(aes(x = IgG, y = PROTF)) +
   annotate("rect", xmin = -Inf, xmax = Inf, 
            ymin = ref_stats$lower_ref, ymax = ref_stats$upper_ref, 
@@ -583,7 +560,7 @@ proxy |>
     title = "Baseline de PROTF Baseado no Platô de IgG (Grupo Normal)",
     subtitle = "Linhas de tendência com Intervalo de Confiança de 95% (sombreado)",
     x = "IgG (mg/dL)", 
-    y = "PROTF (g/L)",
+    y = "PROTF (g/dL)",
     fill = "Classificação IgG: ", color = "Classificação IgG: "
   ) +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
@@ -591,7 +568,7 @@ proxy |>
 
 ```
 
-Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de PROTF médio em relação ao IgG, é em 423.
+Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de PROTF médio em relação ao IgG, é em 616.
 
 ```{r}
 
@@ -705,7 +682,7 @@ proxy |>
   labs(
     title = "Clinical Decision Threshold",
     subtitle = "Overlap of PROTF distributions with optimal screening cutoff",
-    x = "PROTF (g/L)", y = "Density", fill = "IgG Status"
+    x = "PROTF (g/dL)", y = "Density", fill = "IgG Status"
   ) +
   scale_x_continuous(breaks = seq(1, 2.5, by = 0.1))
 
@@ -723,21 +700,21 @@ The table above summarizes the performance of three potential thresholds:
 
 1.  **Max Specificity Strategy (Cutoff ~1.45):**
     * **Pros:** Zero false positives (PPV = 100%).
-    * **Cons:** Extremely low sensitivity (~10%). This threshold misses 9 out of 10 deficient patients, rendering it useless for screening.
+    * **Cons:** Extremely low sensitivity (~11%). This threshold misses 9 out of 10 deficient patients, rendering it useless for screening.
 
 2.  **High Specificity Strategy (Cutoff ~1.65):**
     * **Pros:** High precision (PPV > 80%).
-    * **Cons:** Sensitivity remains poor (~31%). Using this cutoff would still fail to identify the majority of patients with hypogammaglobulinemia.
+    * **Cons:** Sensitivity remains poor (~32%). Using this cutoff would still fail to identify the majority of patients with hypogammaglobulinemia.
 
 3.  **Balanced "Youden" Strategy (Cutoff ~2.05):**
-    * **Pros:** Optimizes the sum of sensitivity and specificity. It achieves a **Sensitivity of ~88%**, ensuring that the vast majority of deficient patients are flagged.
-    * **Cons:** Lower specificity (~53%), implying that roughly 1 in 3 positive screens will result in a normal IgG upon confirmation (False Positives).
+    * **Pros:** Optimizes the sum of sensitivity and specificity. It achieves a **Sensitivity of ~87%**, ensuring that the vast majority of deficient patients are flagged.
+    * **Cons:** Lower specificity (~54%), implying that roughly 1 in 3 positive screens will result in a normal IgG upon confirmation (False Positives).
 
 ### Conclusion and Recommendation
 
 Based on the analysis, strictly minimizing false positives results in an unacceptable loss of diagnostic sensitivity. Therefore, we recommend the **Balanced Strategy** as the clinical standard.
 
-**Recommendation:** A PROTF value below **2.05 g/L** should trigger a follow-up IgG test. This threshold prioritizes patient safety by maintaining high detection rates (Sensitivity ~88%), accepting a moderate rate of confirmatory testing as a necessary trade-off for an effective screening tool.
+**Recommendation:** A PROTF value below **2.05 g/L** should trigger a follow-up IgG test. This threshold prioritizes patient safety by maintaining high detection rates (Sensitivity ~87%), accepting a moderate rate of confirmatory testing as a necessary trade-off for an effective screening tool.
 
 ### Advanced Strategy: The "Indeterminate Zone" Approach
 
@@ -810,7 +787,7 @@ proxy |>
   scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
   labs(title = "Traffic Light System: Managing Clinical Overlap",
        subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
-       x = "PROTF (g/L)", y = "Density", fill = "IgG Status") +
+       x = "PROTF (g/dL)", y = "Density", fill = "IgG Status") +
   scale_x_continuous(breaks = seq(1, 2.5, by = 0.1)) +
   scale_y_continuous(breaks = seq(0, 2, by = 0.25))
 
@@ -926,7 +903,7 @@ knitr::kable(
 
 ```
 
-Odds Ratio: Normal (>= 2.05) vs. Low (< 2.05). 0.31 means que o grupo normal tem menos chances.
+Odds Ratio: Normal (>= 2.05) vs. Low (< 2.05). 0.3 means que o grupo normal tem menos chances.
 
 ```{r fig.width=8, fig.height=4}
 
@@ -939,7 +916,7 @@ final_results |>
   scale_x_log10() + 
   scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
   labs(
-    title = "Clinical Impact of Low PROTF (< 2.05 g/L)",
+    title = "Clinical Impact of Low PROTF (< 2.05 g/dL)",
     subtitle = "Odds Ratio of Infection Risk (High Risk vs. Low Risk Group)",
     x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low PROTF group",
     y = NULL,
@@ -956,9 +933,9 @@ To validate the clinical relevance of the established cutoff (**2.05 g/L**), we 
 
 * **Results:**
 
-    * **Severe Systemic Vulnerability (Sepsis):** The most critical finding was observed for Sepsis. The "High Risk" (Low PROTF) cohort exhibited a dramatically higher prevalence of sepsis (**42.39%**) compared to the "Low Risk" cohort (**18.42%**). The Odds Ratio of **0.31** (for the Low Risk group) confirms that maintaining PROTF levels above the cutoff is a significant protective factor against life-threatening systemic infections ($p < 0.001$).
+    * **Severe Systemic Vulnerability (Sepsis):** The most critical finding was observed for Sepsis. The "High Risk" (Low PROTF) cohort exhibited a dramatically higher prevalence of sepsis (**42.62%**) compared to the "Low Risk" cohort (**18.42%**). The Odds Ratio of **0.3** (for the Low Risk group) confirms that maintaining PROTF levels above the cutoff is a significant protective factor against life-threatening systemic infections ($p < 0.001$).
 
-    * **Distinct Phenotypes (Mucosal Infections):** Interestingly, the "Low Risk" (Normal PROTF) group reported significantly higher rates of common mucosal infections compared to the deficient group. This included **Upper Respiratory Tract Infections** (40.53% vs 18.48%, $p < 0.001$) and **Gastrointestinal Infections** (21.05% vs 4.35%, $p < 0.001$). This suggests distinct clinical phenotypes: patients with low PROTF are prone to severe complications (Sepsis), whereas those with normal levels present with more frequent, but likely less lethal, common community-acquired infections.
+    * **Distinct Phenotypes (Mucosal Infections):** Interestingly, the "Low Risk" (Normal PROTF) group reported significantly higher rates of common mucosal infections compared to the deficient group. This included **Upper Respiratory Tract Infections** (40.53% vs 18.58%, $p < 0.001$) and **Gastrointestinal Infections** (21.05% vs 4.37%, $p < 0.001$). This suggests distinct clinical phenotypes: patients with low PROTF are prone to severe complications (Sepsis), whereas those with normal levels present with more frequent, but likely less lethal, common community-acquired infections.
 
     * **Neutral Associations:** No statistically significant difference was found for Skin, CNS, Urinary, or Lower Respiratory infections ($p > 0.05$), indicating that the cutoff is highly specific to the risk of Sepsis rather than a generalized increase in all infection types.
 
