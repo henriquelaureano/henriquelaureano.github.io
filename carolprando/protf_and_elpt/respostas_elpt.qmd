@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/01/13
+date-modified: 2026/01/25
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -909,6 +909,288 @@ To determine if the ELPT cutoff (**0.410**) translates into a functional clinica
     * **Urinary Tract Trend:** A non-significant trend was observed for **Urinary System Infections**, which were more frequent in the "High Risk" group (27.27%) compared to the "Low Risk" group (13.73%). However, this difference did not reach statistical significance ($p = 0.19$).
 
 **Conclusion:** While the ELPT cutoff of 0.410 is statistically valid for screening IgG deficiency (as shown in the ROC analysis), it does not appear to independently stratify patients by specific infectious history in this dataset. This suggests that ELPT should be utilized primarily as a biochemical screening tool for IgG levels rather than a direct predictor of clinical infection phenotypes.
+
+## By Age Interval
+
+```{r fig.width=9.5, fig.height=4.5}
+
+# elpt |> 
+#   dplyr::filter(`3 - Insira Faixa etária do paciente` != "< 1 ano") |>
+#   dplyr::count(`3 - Insira Faixa etária do paciente`)
+
+proxy <- 
+    elpt |>
+    dplyr::rename(IgG_Referência = `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica`) |>
+    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`) |>
+    dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
+    dplyr::rename(Age_Group = `3 - Insira Faixa etária do paciente`) |>
+    dplyr::filter(IgG_Referência != "NA") |> 
+    dplyr::select(IgG, ELPT, IgG_Referência, Age_Group) |>
+    tidyr::unnest(IgG)  
+
+# 1. Prepare Data
+age_analysis_data <- proxy |>
+  dplyr::filter(
+    IgG_Referência != "Acima do valor de referência",
+    Age_Group != "< 1 ano" 
+  ) |>
+  dplyr::mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+
+# 2. Define a function to calculate scenarios for a single group
+calc_roc_scenarios <- function(data) {
+  # Safety check: Need both 0s and 1s to make an ROC curve
+  if(n_distinct(data$low_igg_flag) < 2) return(NULL)
+  
+  # Generate ROC
+  roc_obj <- roc(data$low_igg_flag, data$ELPT, quiet = TRUE)
+  
+  # A. Max Specificity
+  s1 <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+    dplyr::filter(specificity == 1) |> 
+    dplyr::slice(1) |> 
+    dplyr::mutate(Strategy = "Max Spec (100%)")
+  
+  # B. High Specificity
+  s2 <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+    dplyr::filter(specificity >= 0.90) |> 
+    dplyr::arrange(desc(sensitivity)) |> 
+    dplyr::slice(1) |> 
+    dplyr::mutate(Strategy = "High Spec (>90%)")
+  
+  # C. Balanced (Youden)
+  s3 <- coords(roc_obj, "best", best.method = "youden", 
+               ret = c("threshold", "specificity", "sensitivity", "ppv")) |> 
+    dplyr::mutate(Strategy = "Balanced (Youden)")
+  
+  dplyr::bind_rows(s1, s2, s3)
+}
+
+# 3. Apply function to each Age Group
+stratified_results <- age_analysis_data |>
+  dplyr::group_by(Age_Group) |>
+  tidyr::nest() |>
+  dplyr::mutate(roc_stats = map(data, calc_roc_scenarios)) |>
+  tidyr::unnest(roc_stats) |>
+  dplyr::select(
+    Age_Group, Strategy, 
+    Threshold = threshold, 
+    Sensitivity = sensitivity, Specificity = specificity, PPV = ppv
+  ) |>
+  dplyr::arrange(Age_Group, Strategy)
+
+# Display Table
+kable(
+  stratified_results |>
+  dplyr::inner_join(proxy |> dplyr::count(Age_Group), by = "Age_Group") |>
+  dplyr::relocate(n, .after = Age_Group), 
+  digits = 3, caption = "Optimal ELPT Cutoffs by Age Group"
+)
+
+# 4. Visualization: Faceted Density Plot
+# First, extract the "Balanced" cutoff for each group to draw the lines
+balanced_cutoffs <- stratified_results |>
+  dplyr::filter(Strategy == "Balanced (Youden)") |>
+  dplyr::select(Age_Group, cutoff = Threshold)
+
+age_analysis_data |>
+  ggplot(aes(x = ELPT, fill = IgG_Referência)) +
+  geom_density(alpha = 0.4) +
+  # Add the specific cutoff line for each facet
+  geom_vline(data = balanced_cutoffs, aes(xintercept = cutoff), 
+             linetype = "dashed", color = "black", linewidth = 0.8) +
+  # Add text label for the cutoff
+  geom_text(data = balanced_cutoffs, aes(x = cutoff, y = 0, label = round(cutoff, 3)), 
+            inherit.aes = FALSE, vjust = -1, hjust = -0.25, angle = 0, fontface = "bold") +
+  facet_wrap(~Age_Group, scales = "free_y") + # Create separate panels
+  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  labs(
+    title = "ELPT Diagnostic Thresholds by Age Group",
+    subtitle = "Distribution and Optimal Cutoff (Youden) per cohort",
+    x = "ELPT (g/dL)", y = "Density", fill = "IgG Status"
+  ) +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1))
+
+```
+
+## Age-Stratified Analysis: Defining Precision Thresholds for ELPT
+
+Recognizing that immunological profiles evolve with age, we performed a stratified ROC analysis to determine if the optimal ELPT cutoff varies across different pediatric life stages.
+
+### Methodology
+The dataset was segmented into three age cohorts: **1 to 3 years**, **4 to 9 years**, and **10 to 17 years**. For each group, we calculated the optimal "Balanced" threshold (Youden's Index) to maximize diagnostic accuracy.
+
+### Results by Age Cohort
+
+The analysis revealed a clear distinction between pre-pubertal children and adolescents:
+
+1.  **Early Childhood (1 to 3 years):**
+    * **Optimal Cutoff:** **0.375**
+    * **Performance:** The test performs robustly, achieving **90.0% Sensitivity** and **95.8% Specificity**.
+    * *Interpretation:* The clear separation between groups allows for high-confidence screening in toddlers.
+
+2.  **Middle Childhood (4 to 9 years):**
+    * **Optimal Cutoff:** **0.380**
+    * **Performance:** In this cohort, the model achieved perfect classification (**100% Sensitivity and Specificity**).
+    * *Interpretation:* The optimal threshold (0.380) is virtually identical to the toddler group (0.375), suggesting a highly stable physiological baseline for ELPT throughout the first decade of life.
+
+3.  **Adolescence (10 to 17 years):**
+    * **Optimal Cutoff:** **0.475**
+    * **Performance:** Diagnostic difficulty increases significantly. Sensitivity drops to **53.3%** and Specificity to **75.0%**.
+    * *Interpretation:* The optimal cutoff shifts upward by nearly 0.1 g/dL compared to younger children. The significant distributional overlap (visible in the density plots) suggests that ELPT becomes a less binary marker during adolescent immune maturation, requiring more careful clinical interpretation.
+
+### Clinical Implication
+
+The results support a **Two-Tiered Reference Approach**:
+
+* **For Children < 10 Years:** A unified cutoff of **0.38 g/dL** is recommended. This threshold is stable and highly accurate across both the 1-3 and 4-9 age groups.
+* **For Adolescents (10-17 Years):** A higher cutoff of **0.475 g/dL** is indicated. However, clinicians should be advised that ELPT has lower sensitivity in this age group, and borderline results should almost always trigger confirmatory IgG testing.
+
+```{r warning=FALSE, fig.width=9.75, fig.height=4.5}
+
+# 1. Define Age-Specific Cutoffs (Based on your previous ROC results)
+# We create a small lookup table to map each age group to its Youden cutoff
+cutoff_map <- tibble(
+  Age_Group = c("1 ano a 3 anos", "4 anos a 9 anos", "10 anos a 17 anos"),
+  Age_Specific_Cutoff = c(0.375, 0.380, 0.475)
+)
+
+# 2. Prepare Data & Apply Cutoffs
+infection_analysis_age <- elpt |>
+  dplyr::rename(
+    ELPT = `16 - Resultado do Primeiro exame`,
+    Age_Group = `3 - Insira Faixa etária do paciente`
+  ) |>
+  # Filter to keep only the groups we analyzed
+  dplyr::filter(Age_Group %in% cutoff_map$Age_Group) |>
+  dplyr::left_join(cutoff_map, by = "Age_Group") |>
+  
+  # Create Risk Group based on the SPECIFIC cutoff for that age
+  dplyr::mutate(Risk_Group = ifelse(ELPT < Age_Specific_Cutoff, "High_Risk", "Low_Risk")) |>
+  
+  # Select Columns
+  dplyr::select(
+    Age_Group,
+    Risk_Group,
+    matches("^8 -|^9 -|^10 -|^11 -|^12 -|^13 -|^14 -")
+  ) |>
+  
+  # Pivot Longer
+  tidyr::pivot_longer(
+    cols = matches("^(8|9|10|11|12|13|14) -"), # Selects all infection columns
+    names_to = "Infection_Type",
+    values_to = "Status"
+  ) |>
+  
+  # Clean Names & Force Binary
+  dplyr::mutate(
+    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
+    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
+    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
+    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Is_Infected = ifelse(Status == "Sim", 1, 0)
+  ) |>
+  dplyr::filter(!is.na(Is_Infected))
+
+# 3. Calculate Rates (Stratified by Age AND Infection)
+rates_table_age <- infection_analysis_age |>
+  dplyr::group_by(Age_Group, Infection_Type, Risk_Group) |>
+  dplyr::summarise(
+    Total_Patients = n(),
+    Infected_Count = sum(Is_Infected),
+    Rate_Pct = (Infected_Count / Total_Patients) * 100,
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_wider(
+    names_from = Risk_Group,
+    values_from = c(Total_Patients, Infected_Count, Rate_Pct)
+  )
+
+# 4. Calculate Stats (Fisher Test within each Age/Infection combo)
+stats_table_age <- infection_analysis_age |>
+  dplyr::group_by(Age_Group, Infection_Type) |>
+  tidyr::nest() |>
+  dplyr::mutate(
+    model = map(data, function(df) {
+      tbl <- table(df$Risk_Group, df$Is_Infected)
+      
+      # Safety Check: Fisher test needs 2x2 dimensions
+      tryCatch({
+        broom::tidy(fisher.test(tbl))
+      }, error = function(e) NULL)
+    })
+  ) |>
+  tidyr::unnest(model) |>
+  dplyr::select(Age_Group, Infection_Type, estimate, p.value, conf.low, conf.high)
+
+# 5. Join and Finalize
+final_results_age <- rates_table_age |>
+  dplyr::left_join(stats_table_age, by = c("Age_Group", "Infection_Type")) |>
+  dplyr::mutate(
+    Odds_Ratio = estimate,
+    Significant = ifelse(p.value < 0.05, "Yes", "No")
+  ) |>
+  dplyr::select(
+    Age_Group,
+    Infection_Type,
+    Rate_High = Rate_Pct_High_Risk,
+    Rate_Low = Rate_Pct_Low_Risk,
+    Odds_Ratio,
+    conf.low,
+    conf.high,
+    p.value,
+    Significant
+  ) |>
+  dplyr::arrange(Age_Group, Infection_Type)
+
+# Display Table
+kable(final_results_age, digits = 2, caption = "Impact of Low ELPT on Infections (Stratified by Age)")
+
+final_results_age |>
+  filter(!is.na(Odds_Ratio)) |> # Hide rows where test failed (e.g. 0 infections)
+  ggplot(aes(x = Odds_Ratio, y = reorder(Infection_Type, Odds_Ratio), color = Significant)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), width = 0.3) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray50") +
+  
+  # Creates a separate panel for each age group
+  facet_wrap(~Age_Group, scales = "free_x") + 
+  
+  scale_x_log10() +
+  scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
+  labs(
+    title = "ELPT Infection Risk by Age Cohort",
+    subtitle = "Odds Ratio (High Risk vs Low Risk) using age-specific cutoffs",
+    x = "Odds Ratio (Log Scale)",
+    y = NULL
+  )
+
+```
+
+### Age-Specific Clinical Validation: Infection Risk
+
+To ensure biological accuracy, we assessed the clinical impact of ELPT deficiency using the specific thresholds derived for each age cohort (**0.375** for 1-3y, **0.380** for 4-9y, and **0.475** for 10-17y).
+
+* **Methodology:** Patients were stratified by age, and "High Risk" status was defined individually for each group based on their specific optimal cutoff. We compared infection prevalence rates between the "High Risk" (Low ELPT) and "Low Risk" (Normal ELPT) groups.
+
+* **Results by Cohort:**
+
+    1.  **Adolescents (10 to 17 years): A Distinct Clinical Signal**
+        * **Lower Respiratory Vulnerability:** This age group presented the only statistically significant finding in the analysis ($p = 0.03$).
+        * **The Data:** **50.0%** of adolescents in the "High Risk" group suffered from Lower Respiratory Infections (e.g., Pneumonia/Bronchitis), compared to **0.0%** in the "Low Risk" group.
+        * **Implication:** For adolescents, an ELPT value below 0.475 is a strong specific predictor for lower respiratory susceptibility.
+
+    2.  **Early Childhood (1 to 3 years): Clinical Trends vs. Statistical Power**
+        * **Sepsis:** A clinically relevant trend was observed where "High Risk" toddlers had a higher rate of Sepsis (**42.86%**) compared to the "Low Risk" group (**27.59%**). However, due to sample size limitations, this did not reach statistical significance ($p = 0.65$).
+        * **Urinary Infections:** Similarly, urinary infections were more frequent in the risk group (42.86% vs 24.14%), though statistically non-significant ($p = 0.37$).
+
+    3.  **Middle Childhood (4 to 9 years):**
+        * **No Clear Association:** In this intermediate age range, infection rates were variable, with no clear pattern identifying the "High Risk" group as more susceptible to specific infections. For example, lower respiratory infections were actually more common in the "Low Risk" group for this specific cohort.
+
+**Conclusion:** The age-stratified analysis demonstrates that the clinical utility of ELPT varies by developmental stage. While it serves as a broad biochemical screen for all ages, it functions as a **phenotypic predictor for lower respiratory infections specifically in adolescents**. In toddlers (1-3 years), it may flag a general susceptibility to systemic (Sepsis) and urinary infections, though larger sample sizes would be required to confirm this statistically.
 
 # Methodology & References
 

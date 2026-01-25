@@ -156,6 +156,13 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#clinical-validation-association-with-infection-history" id="toc-clinical-validation-association-with-infection-history" class="nav-link" data-scroll-target="#clinical-validation-association-with-infection-history">Clinical Validation: Association with Infection History</a></li>
   </ul></li>
+  <li><a href="#by-age-interval" id="toc-by-age-interval" class="nav-link" data-scroll-target="#by-age-interval">By Age Interval</a></li>
+  <li><a href="#age-stratified-analysis-defining-precision-thresholds-for-protf" id="toc-age-stratified-analysis-defining-precision-thresholds-for-protf" class="nav-link" data-scroll-target="#age-stratified-analysis-defining-precision-thresholds-for-protf">Age-Stratified Analysis: Defining Precision Thresholds for PROTF</a>
+  <ul class="collapse">
+  <li><a href="#results-by-age-cohort" id="toc-results-by-age-cohort" class="nav-link" data-scroll-target="#results-by-age-cohort">Results by Age Cohort</a></li>
+  <li><a href="#clinical-recommendation" id="toc-clinical-recommendation" class="nav-link" data-scroll-target="#clinical-recommendation">Clinical Recommendation</a></li>
+  <li><a href="#age-specific-clinical-validation-infection-risk" id="toc-age-specific-clinical-validation-infection-risk" class="nav-link" data-scroll-target="#age-specific-clinical-validation-infection-risk">Age-Specific Clinical Validation: Infection Risk</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#methodology-references" id="toc-methodology-references" class="nav-link" data-scroll-target="#methodology-references">Methodology &amp; References</a>
   <ul class="collapse">
@@ -186,7 +193,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 13, 2026</p>
+      <p class="date-modified">January 25, 2026</p>
     </div>
   </div>
     
@@ -1742,6 +1749,793 @@ Convergence attained in 2 iterations (rel. change 1.1437e-07)</code></pre>
 </ul></li>
 </ul>
 <p><strong>Conclusion:</strong> The PROTF cutoff of 2.05 g/L successfully identifies a patient subset with critical immunological vulnerability. While patients above this threshold frequently report common mucosal conditions, those falling below it are disproportionately susceptible to severe sepsis, validating the threshold as a vital marker for systemic risk stratification.</p>
+</section>
+</section>
+<section id="by-age-interval" class="level2">
+<h2 class="anchored" data-anchor-id="by-age-interval">By Age Interval</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1"></a><span class="co"># protf |&gt;</span></span>
+<span id="cb73-2"><a href="#cb73-2"></a><span class="co">#   dplyr::filter(`3 - Insira Faixa etária do paciente` != "&gt; 18 anos") |&gt;</span></span>
+<span id="cb73-3"><a href="#cb73-3"></a><span class="co">#   dplyr::count(`3 - Insira Faixa etária do paciente`)</span></span>
+<span id="cb73-4"><a href="#cb73-4"></a></span>
+<span id="cb73-5"><a href="#cb73-5"></a>proxy <span class="ot">&lt;-</span> </span>
+<span id="cb73-6"><a href="#cb73-6"></a>    protf <span class="sc">|&gt;</span></span>
+<span id="cb73-7"><a href="#cb73-7"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(IgG_Referência <span class="ot">=</span> <span class="st">`</span><span class="at">18.1 - Como se encontra o resultado de IgG?</span></span>
+<span id="cb73-8"><a href="#cb73-8"></a></span>
+<span id="cb73-9"><a href="#cb73-9"></a><span class="at">NA = não se aplica</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb73-10"><a href="#cb73-10"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">IgG =</span> <span class="st">`</span><span class="at">18.2 - Qual resultado da dosagem? Colocar apenas número</span></span>
+<span id="cb73-11"><a href="#cb73-11"></a></span>
+<span id="cb73-12"><a href="#cb73-12"></a><span class="at">-Responder com NA em caso de não realização do exame</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb73-13"><a href="#cb73-13"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">PROTF =</span> <span class="st">`</span><span class="at">16 - Resultado do Primeiro exame</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb73-14"><a href="#cb73-14"></a>    dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">Age_Group =</span> <span class="st">`</span><span class="at">3 - Insira Faixa etária do paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb73-15"><a href="#cb73-15"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(IgG_Referência <span class="sc">!=</span> <span class="st">"NA"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb73-16"><a href="#cb73-16"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(IgG, PROTF, IgG_Referência, Age_Group) <span class="sc">|&gt;</span></span>
+<span id="cb73-17"><a href="#cb73-17"></a>    tidyr<span class="sc">::</span><span class="fu">unnest</span>(IgG)  </span>
+<span id="cb73-18"><a href="#cb73-18"></a></span>
+<span id="cb73-19"><a href="#cb73-19"></a><span class="co"># 1. Prepare Data</span></span>
+<span id="cb73-20"><a href="#cb73-20"></a>age_analysis_data <span class="ot">&lt;-</span> proxy <span class="sc">|&gt;</span></span>
+<span id="cb73-21"><a href="#cb73-21"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb73-22"><a href="#cb73-22"></a>    IgG_Referência <span class="sc">!=</span> <span class="st">"Acima do valor de referência"</span>,</span>
+<span id="cb73-23"><a href="#cb73-23"></a>    Age_Group <span class="sc">!=</span> <span class="st">"&gt; 18 anos"</span> </span>
+<span id="cb73-24"><a href="#cb73-24"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb73-25"><a href="#cb73-25"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">low_igg_flag =</span> <span class="fu">ifelse</span>(IgG_Referência <span class="sc">==</span> <span class="st">"Abaixo do valor de referência"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb73-26"><a href="#cb73-26"></a></span>
+<span id="cb73-27"><a href="#cb73-27"></a><span class="co"># 2. Define a function to calculate scenarios for a single group</span></span>
+<span id="cb73-28"><a href="#cb73-28"></a>calc_roc_scenarios <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb73-29"><a href="#cb73-29"></a>  <span class="co"># Safety check: Need both 0s and 1s to make an ROC curve</span></span>
+<span id="cb73-30"><a href="#cb73-30"></a>  <span class="cf">if</span>(<span class="fu">n_distinct</span>(data<span class="sc">$</span>low_igg_flag) <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb73-31"><a href="#cb73-31"></a>  </span>
+<span id="cb73-32"><a href="#cb73-32"></a>  <span class="co"># Generate ROC</span></span>
+<span id="cb73-33"><a href="#cb73-33"></a>  roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(data<span class="sc">$</span>low_igg_flag, data<span class="sc">$</span>PROTF, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb73-34"><a href="#cb73-34"></a>  </span>
+<span id="cb73-35"><a href="#cb73-35"></a>  <span class="co"># A. Max Specificity</span></span>
+<span id="cb73-36"><a href="#cb73-36"></a>  s1 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb73-37"><a href="#cb73-37"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(specificity <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb73-38"><a href="#cb73-38"></a>    dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb73-39"><a href="#cb73-39"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Max Spec (100%)"</span>)</span>
+<span id="cb73-40"><a href="#cb73-40"></a>  </span>
+<span id="cb73-41"><a href="#cb73-41"></a>  <span class="co"># B. High Specificity</span></span>
+<span id="cb73-42"><a href="#cb73-42"></a>  s2 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb73-43"><a href="#cb73-43"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(specificity <span class="sc">&gt;=</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb73-44"><a href="#cb73-44"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(sensitivity)) <span class="sc">|&gt;</span> </span>
+<span id="cb73-45"><a href="#cb73-45"></a>    dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb73-46"><a href="#cb73-46"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"High Spec (&gt;90%)"</span>)</span>
+<span id="cb73-47"><a href="#cb73-47"></a>  </span>
+<span id="cb73-48"><a href="#cb73-48"></a>  <span class="co"># C. Balanced (Youden)</span></span>
+<span id="cb73-49"><a href="#cb73-49"></a>  s3 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>, </span>
+<span id="cb73-50"><a href="#cb73-50"></a>               <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb73-51"><a href="#cb73-51"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Balanced (Youden)"</span>)</span>
+<span id="cb73-52"><a href="#cb73-52"></a>  </span>
+<span id="cb73-53"><a href="#cb73-53"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(s1, s2, s3)</span>
+<span id="cb73-54"><a href="#cb73-54"></a>}</span>
+<span id="cb73-55"><a href="#cb73-55"></a></span>
+<span id="cb73-56"><a href="#cb73-56"></a><span class="co"># 3. Apply function to each Age Group</span></span>
+<span id="cb73-57"><a href="#cb73-57"></a>stratified_results <span class="ot">&lt;-</span> age_analysis_data <span class="sc">|&gt;</span></span>
+<span id="cb73-58"><a href="#cb73-58"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(Age_Group) <span class="sc">|&gt;</span></span>
+<span id="cb73-59"><a href="#cb73-59"></a>  tidyr<span class="sc">::</span><span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb73-60"><a href="#cb73-60"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">roc_stats =</span> <span class="fu">map</span>(data, calc_roc_scenarios)) <span class="sc">|&gt;</span></span>
+<span id="cb73-61"><a href="#cb73-61"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(roc_stats) <span class="sc">|&gt;</span></span>
+<span id="cb73-62"><a href="#cb73-62"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb73-63"><a href="#cb73-63"></a>    Age_Group, Strategy, </span>
+<span id="cb73-64"><a href="#cb73-64"></a>    <span class="at">Threshold =</span> threshold, </span>
+<span id="cb73-65"><a href="#cb73-65"></a>    <span class="at">Sensitivity =</span> sensitivity, <span class="at">Specificity =</span> specificity, <span class="at">PPV =</span> ppv</span>
+<span id="cb73-66"><a href="#cb73-66"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb73-67"><a href="#cb73-67"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(Age_Group, Strategy)</span>
+<span id="cb73-68"><a href="#cb73-68"></a></span>
+<span id="cb73-69"><a href="#cb73-69"></a><span class="co"># Display Table</span></span>
+<span id="cb73-70"><a href="#cb73-70"></a><span class="fu">kable</span>(</span>
+<span id="cb73-71"><a href="#cb73-71"></a>  stratified_results <span class="sc">|&gt;</span></span>
+<span id="cb73-72"><a href="#cb73-72"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(proxy <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">count</span>(Age_Group), <span class="at">by =</span> <span class="st">"Age_Group"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb73-73"><a href="#cb73-73"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(n, <span class="at">.after =</span> Age_Group), </span>
+<span id="cb73-74"><a href="#cb73-74"></a>  <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Optimal PROTF Cutoffs by Age Group"</span></span>
+<span id="cb73-75"><a href="#cb73-75"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Optimal PROTF Cutoffs by Age Group</caption>
+<colgroup>
+<col style="width: 22%">
+<col style="width: 3%">
+<col style="width: 22%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 15%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Age_Group</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: left;">Strategy</th>
+<th style="text-align: right;">Threshold</th>
+<th style="text-align: right;">Sensitivity</th>
+<th style="text-align: right;">Specificity</th>
+<th style="text-align: right;">PPV</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: left;">Balanced (Youden)</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">0.615</td>
+<td style="text-align: right;">0.667</td>
+<td style="text-align: right;">0.533</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: left;">High Spec (&gt;90%)</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">0.154</td>
+<td style="text-align: right;">0.905</td>
+<td style="text-align: right;">0.500</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: left;">Max Spec (100%)</td>
+<td style="text-align: right;">-Inf</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Balanced (Youden)</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">0.571</td>
+<td style="text-align: right;">0.857</td>
+<td style="text-align: right;">0.800</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">High Spec (&gt;90%)</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">0.143</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Max Spec (100%)</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">0.143</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: left;">Balanced (Youden)</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">0.750</td>
+<td style="text-align: right;">0.625</td>
+<td style="text-align: right;">0.250</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: left;">High Spec (&gt;90%)</td>
+<td style="text-align: right;">1.75</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">0.958</td>
+<td style="text-align: right;">0.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: left;">Max Spec (100%)</td>
+<td style="text-align: right;">-Inf</td>
+<td style="text-align: right;">0.000</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: left;">Balanced (Youden)</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: left;">High Spec (&gt;90%)</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: right;">71</td>
+<td style="text-align: left;">Max Spec (100%)</td>
+<td style="text-align: right;">1.85</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1"></a><span class="co"># 4. Visualization: Faceted Density Plot</span></span>
+<span id="cb74-2"><a href="#cb74-2"></a><span class="co"># First, extract the "Balanced" cutoff for each group to draw the lines</span></span>
+<span id="cb74-3"><a href="#cb74-3"></a>balanced_cutoffs <span class="ot">&lt;-</span> stratified_results <span class="sc">|&gt;</span></span>
+<span id="cb74-4"><a href="#cb74-4"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Strategy <span class="sc">==</span> <span class="st">"Balanced (Youden)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb74-5"><a href="#cb74-5"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Age_Group, <span class="at">cutoff =</span> Threshold)</span>
+<span id="cb74-6"><a href="#cb74-6"></a></span>
+<span id="cb74-7"><a href="#cb74-7"></a>age_analysis_data <span class="sc">|&gt;</span></span>
+<span id="cb74-8"><a href="#cb74-8"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PROTF, <span class="at">fill =</span> IgG_Referência)) <span class="sc">+</span></span>
+<span id="cb74-9"><a href="#cb74-9"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb74-10"><a href="#cb74-10"></a>  <span class="co"># Add the specific cutoff line for each facet</span></span>
+<span id="cb74-11"><a href="#cb74-11"></a>  <span class="fu">geom_vline</span>(<span class="at">data =</span> balanced_cutoffs, <span class="fu">aes</span>(<span class="at">xintercept =</span> cutoff), </span>
+<span id="cb74-12"><a href="#cb74-12"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb74-13"><a href="#cb74-13"></a>  <span class="co"># Add text label for the cutoff</span></span>
+<span id="cb74-14"><a href="#cb74-14"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> balanced_cutoffs, <span class="fu">aes</span>(<span class="at">x =</span> cutoff, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="fu">round</span>(cutoff, <span class="dv">3</span>)), </span>
+<span id="cb74-15"><a href="#cb74-15"></a>            <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.25</span>, <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb74-16"><a href="#cb74-16"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Age_Group, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span> <span class="co"># Create separate panels</span></span>
+<span id="cb74-17"><a href="#cb74-17"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Normal"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Abaixo do valor de referência"</span> <span class="ot">=</span> <span class="st">"orange"</span>)) <span class="sc">+</span></span>
+<span id="cb74-18"><a href="#cb74-18"></a>  <span class="fu">labs</span>(</span>
+<span id="cb74-19"><a href="#cb74-19"></a>    <span class="at">title =</span> <span class="st">"PROTF Diagnostic Thresholds by Age Group"</span>,</span>
+<span id="cb74-20"><a href="#cb74-20"></a>    <span class="at">subtitle =</span> <span class="st">"Distribution and Optimal Cutoff (Youden) per cohort"</span>,</span>
+<span id="cb74-21"><a href="#cb74-21"></a>    <span class="at">x =</span> <span class="st">"PROTF (g/dL)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="st">"IgG Status"</span></span>
+<span id="cb74-22"><a href="#cb74-22"></a>  ) <span class="sc">+</span></span>
+<span id="cb74-23"><a href="#cb74-23"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="at">by =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="936"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="age-stratified-analysis-defining-precision-thresholds-for-protf" class="level2">
+<h2 class="anchored" data-anchor-id="age-stratified-analysis-defining-precision-thresholds-for-protf">Age-Stratified Analysis: Defining Precision Thresholds for PROTF</h2>
+<p>To determine if the global PROTF cutoff (2.05 g/L) is valid across all developmental stages, we performed a stratified ROC analysis. The results reveal critical variations in diagnostic utility, particularly regarding the test’s inability to screen infants effectively.</p>
+<section id="results-by-age-cohort" class="level3">
+<h3 class="anchored" data-anchor-id="results-by-age-cohort">Results by Age Cohort</h3>
+<ol type="1">
+<li><strong>Infants (&lt; 1 year): A Diagnostic Limitation</strong>
+<ul>
+<li><strong>Optimal Cutoff:</strong> 1.85 g/L (Statistical artifact).</li>
+<li><strong>Performance:</strong> The test demonstrates a <strong>Sensitivity of only 3.7%</strong>.</li>
+<li><strong>Interpretation:</strong> The analysis indicates that PROTF levels in IgG-deficient infants are virtually indistinguishable from healthy infants in this dataset. Consequently, <strong>PROTF cannot be used to screen for IgG deficiency in the first year of life</strong>, as it fails to detect &gt;96% of cases.</li>
+</ul></li>
+<li><strong>Toddlers (1 to 3 years) &amp; Adolescents (10 to 17 years):</strong>
+<ul>
+<li><strong>Optimal Cutoff:</strong> <strong>2.05 g/L</strong>.</li>
+<li><strong>Performance:</strong>
+<ul>
+<li><em>Toddlers:</em> Sensitivity 61.5%, Specificity 66.7%.</li>
+<li><em>Adolescents:</em> Sensitivity 57.1%, Specificity 85.7%.</li>
+</ul></li>
+<li><strong>Interpretation:</strong> In these groups, the optimal threshold aligns perfectly with the global cutoff (2.05). However, diagnostic sensitivity is moderate (~60%), suggesting that while specific, the test may miss approximately 40% of deficient patients in these age ranges.</li>
+</ul></li>
+<li><strong>Children (4 to 9 years):</strong>
+<ul>
+<li><strong>Optimal Cutoff:</strong> <strong>2.15 g/L</strong>.</li>
+<li><strong>Performance:</strong> This group achieved the highest sensitivity (<strong>75.0%</strong>) among all cohorts.</li>
+<li><strong>Interpretation:</strong> The optimal threshold shifts slightly higher to 2.15 g/L. While detection rates improve in this demographic, the Positive Predictive Value (PPV) remains low (25.0%), indicating a higher rate of false positives compared to adolescents.</li>
+</ul></li>
+</ol>
+</section>
+<section id="clinical-recommendation" class="level3">
+<h3 class="anchored" data-anchor-id="clinical-recommendation">Clinical Recommendation</h3>
+<p>Based on the age-stratified data, we propose the following protocols:</p>
+<ul>
+<li><strong>Contraindication (&lt; 1 Year):</strong> PROTF should <strong>not</strong> be used as a screening tool for infants under 1 year of age due to insufficient sensitivity.</li>
+<li><strong>Standard Cutoff (&gt; 1 Year):</strong> For all other age groups, a baseline cutoff of <strong>2.05 g/L</strong> is statistically supported.</li>
+<li><strong>Optimization (4-9 Years):</strong> For children aged 4 to 9, clinicians may consider raising the threshold to <strong>2.15 g/L</strong> to maximize sensitivity (75%), though this comes with a trade-off of increased confirmatory testing (lower PPV).</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1"></a><span class="co"># 1. Define Age-Specific Cutoffs for PROTF</span></span>
+<span id="cb75-2"><a href="#cb75-2"></a><span class="co"># Based on your ROC results table</span></span>
+<span id="cb75-3"><a href="#cb75-3"></a>cutoff_map <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb75-4"><a href="#cb75-4"></a>  <span class="at">Age_Group =</span> <span class="fu">c</span>(<span class="st">"&lt; 1 ano"</span>, <span class="st">"1 ano a 3 anos"</span>, <span class="st">"4 anos a 9 anos"</span>, <span class="st">"10 anos a 17 anos"</span>),</span>
+<span id="cb75-5"><a href="#cb75-5"></a>  <span class="at">Age_Specific_Cutoff =</span> <span class="fu">c</span>(<span class="fl">1.85</span>, <span class="fl">2.05</span>, <span class="fl">2.15</span>, <span class="fl">2.05</span>)</span>
+<span id="cb75-6"><a href="#cb75-6"></a>)</span>
+<span id="cb75-7"><a href="#cb75-7"></a></span>
+<span id="cb75-8"><a href="#cb75-8"></a><span class="co"># 2. Prepare Data &amp; Apply Cutoffs</span></span>
+<span id="cb75-9"><a href="#cb75-9"></a>infection_analysis_age <span class="ot">&lt;-</span> protf <span class="sc">|&gt;</span></span>
+<span id="cb75-10"><a href="#cb75-10"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(</span>
+<span id="cb75-11"><a href="#cb75-11"></a>    <span class="at">PROTF =</span> <span class="st">`</span><span class="at">16 - Resultado do Primeiro exame</span><span class="st">`</span>,</span>
+<span id="cb75-12"><a href="#cb75-12"></a>    <span class="at">Age_Group =</span> <span class="st">`</span><span class="at">3 - Insira Faixa etária do paciente</span><span class="st">`</span></span>
+<span id="cb75-13"><a href="#cb75-13"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-14"><a href="#cb75-14"></a>  <span class="co"># Filter to keep only the groups in our map</span></span>
+<span id="cb75-15"><a href="#cb75-15"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Age_Group <span class="sc">%in%</span> cutoff_map<span class="sc">$</span>Age_Group) <span class="sc">|&gt;</span></span>
+<span id="cb75-16"><a href="#cb75-16"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(cutoff_map, <span class="at">by =</span> <span class="st">"Age_Group"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb75-17"><a href="#cb75-17"></a>  </span>
+<span id="cb75-18"><a href="#cb75-18"></a>  <span class="co"># Create Risk Group based on the SPECIFIC cutoff for that age</span></span>
+<span id="cb75-19"><a href="#cb75-19"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Risk_Group =</span> <span class="fu">ifelse</span>(PROTF <span class="sc">&lt;</span> Age_Specific_Cutoff, <span class="st">"High_Risk"</span>, <span class="st">"Low_Risk"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb75-20"><a href="#cb75-20"></a>  </span>
+<span id="cb75-21"><a href="#cb75-21"></a>  <span class="co"># Select Infection Columns (8 to 14)</span></span>
+<span id="cb75-22"><a href="#cb75-22"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb75-23"><a href="#cb75-23"></a>    Age_Group,</span>
+<span id="cb75-24"><a href="#cb75-24"></a>    Risk_Group,</span>
+<span id="cb75-25"><a href="#cb75-25"></a>    <span class="fu">matches</span>(<span class="st">"^(8|9|10|11|12|13|14) -"</span>)</span>
+<span id="cb75-26"><a href="#cb75-26"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-27"><a href="#cb75-27"></a>  </span>
+<span id="cb75-28"><a href="#cb75-28"></a>  <span class="co"># Pivot Longer</span></span>
+<span id="cb75-29"><a href="#cb75-29"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
+<span id="cb75-30"><a href="#cb75-30"></a>    <span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"^(8|9|10|11|12|13|14) -"</span>), </span>
+<span id="cb75-31"><a href="#cb75-31"></a>    <span class="at">names_to =</span> <span class="st">"Infection_Type"</span>,</span>
+<span id="cb75-32"><a href="#cb75-32"></a>    <span class="at">values_to =</span> <span class="st">"Status"</span></span>
+<span id="cb75-33"><a href="#cb75-33"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-34"><a href="#cb75-34"></a>  </span>
+<span id="cb75-35"><a href="#cb75-35"></a>  <span class="co"># Clean Names &amp; Force Binary</span></span>
+<span id="cb75-36"><a href="#cb75-36"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb75-37"><a href="#cb75-37"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^</span><span class="sc">\\</span><span class="st">d+ - "</span>),</span>
+<span id="cb75-38"><a href="#cb75-38"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>),</span>
+<span id="cb75-39"><a href="#cb75-39"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^Infecção (de|em) "</span>),</span>
+<span id="cb75-40"><a href="#cb75-40"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Infection_Type),</span>
+<span id="cb75-41"><a href="#cb75-41"></a>    <span class="at">Is_Infected =</span> <span class="fu">ifelse</span>(Status <span class="sc">==</span> <span class="st">"Sim"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb75-42"><a href="#cb75-42"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-43"><a href="#cb75-43"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Is_Infected))</span>
+<span id="cb75-44"><a href="#cb75-44"></a></span>
+<span id="cb75-45"><a href="#cb75-45"></a><span class="co"># 3. Calculate Rates (Stratified by Age AND Infection)</span></span>
+<span id="cb75-46"><a href="#cb75-46"></a>rates_table_age <span class="ot">&lt;-</span> infection_analysis_age <span class="sc">|&gt;</span></span>
+<span id="cb75-47"><a href="#cb75-47"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(Age_Group, Infection_Type, Risk_Group) <span class="sc">|&gt;</span></span>
+<span id="cb75-48"><a href="#cb75-48"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<span id="cb75-49"><a href="#cb75-49"></a>    <span class="at">Total_Patients =</span> <span class="fu">n</span>(),</span>
+<span id="cb75-50"><a href="#cb75-50"></a>    <span class="at">Infected_Count =</span> <span class="fu">sum</span>(Is_Infected),</span>
+<span id="cb75-51"><a href="#cb75-51"></a>    <span class="at">Rate_Pct =</span> (Infected_Count <span class="sc">/</span> Total_Patients) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb75-52"><a href="#cb75-52"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb75-53"><a href="#cb75-53"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-54"><a href="#cb75-54"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(</span>
+<span id="cb75-55"><a href="#cb75-55"></a>    <span class="at">names_from =</span> Risk_Group,</span>
+<span id="cb75-56"><a href="#cb75-56"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(Total_Patients, Infected_Count, Rate_Pct)</span>
+<span id="cb75-57"><a href="#cb75-57"></a>  )</span>
+<span id="cb75-58"><a href="#cb75-58"></a></span>
+<span id="cb75-59"><a href="#cb75-59"></a><span class="co"># 4. Calculate Stats (Fisher Test within each Age/Infection combo)</span></span>
+<span id="cb75-60"><a href="#cb75-60"></a>stats_table_age <span class="ot">&lt;-</span> infection_analysis_age <span class="sc">|&gt;</span></span>
+<span id="cb75-61"><a href="#cb75-61"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(Age_Group, Infection_Type) <span class="sc">|&gt;</span></span>
+<span id="cb75-62"><a href="#cb75-62"></a>  tidyr<span class="sc">::</span><span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb75-63"><a href="#cb75-63"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb75-64"><a href="#cb75-64"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="cf">function</span>(df) {</span>
+<span id="cb75-65"><a href="#cb75-65"></a>      tbl <span class="ot">&lt;-</span> <span class="fu">table</span>(df<span class="sc">$</span>Risk_Group, df<span class="sc">$</span>Is_Infected)</span>
+<span id="cb75-66"><a href="#cb75-66"></a>      </span>
+<span id="cb75-67"><a href="#cb75-67"></a>      <span class="co"># Safety Check: Fisher test needs 2x2 dimensions</span></span>
+<span id="cb75-68"><a href="#cb75-68"></a>      <span class="fu">tryCatch</span>({</span>
+<span id="cb75-69"><a href="#cb75-69"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">fisher.test</span>(tbl))</span>
+<span id="cb75-70"><a href="#cb75-70"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
+<span id="cb75-71"><a href="#cb75-71"></a>    })</span>
+<span id="cb75-72"><a href="#cb75-72"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-73"><a href="#cb75-73"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(model) <span class="sc">|&gt;</span></span>
+<span id="cb75-74"><a href="#cb75-74"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Age_Group, Infection_Type, estimate, p.value, conf.low, conf.high)</span>
+<span id="cb75-75"><a href="#cb75-75"></a></span>
+<span id="cb75-76"><a href="#cb75-76"></a><span class="co"># 5. Join and Finalize</span></span>
+<span id="cb75-77"><a href="#cb75-77"></a>final_results_age <span class="ot">&lt;-</span> rates_table_age <span class="sc">|&gt;</span></span>
+<span id="cb75-78"><a href="#cb75-78"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(stats_table_age, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Age_Group"</span>, <span class="st">"Infection_Type"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb75-79"><a href="#cb75-79"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb75-80"><a href="#cb75-80"></a>    <span class="at">Odds_Ratio =</span> estimate,</span>
+<span id="cb75-81"><a href="#cb75-81"></a>    <span class="at">Significant =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>)</span>
+<span id="cb75-82"><a href="#cb75-82"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-83"><a href="#cb75-83"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb75-84"><a href="#cb75-84"></a>    Age_Group,</span>
+<span id="cb75-85"><a href="#cb75-85"></a>    Infection_Type,</span>
+<span id="cb75-86"><a href="#cb75-86"></a>    <span class="at">Rate_High =</span> Rate_Pct_High_Risk,</span>
+<span id="cb75-87"><a href="#cb75-87"></a>    <span class="at">Rate_Low =</span> Rate_Pct_Low_Risk,</span>
+<span id="cb75-88"><a href="#cb75-88"></a>    Odds_Ratio,</span>
+<span id="cb75-89"><a href="#cb75-89"></a>    conf.low,</span>
+<span id="cb75-90"><a href="#cb75-90"></a>    conf.high,</span>
+<span id="cb75-91"><a href="#cb75-91"></a>    p.value,</span>
+<span id="cb75-92"><a href="#cb75-92"></a>    Significant</span>
+<span id="cb75-93"><a href="#cb75-93"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-94"><a href="#cb75-94"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(Age_Group, Infection_Type)</span>
+<span id="cb75-95"><a href="#cb75-95"></a></span>
+<span id="cb75-96"><a href="#cb75-96"></a><span class="co"># Display Table</span></span>
+<span id="cb75-97"><a href="#cb75-97"></a><span class="fu">kable</span>(final_results_age, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Impact of Low PROTF on Infections (Stratified by Age)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Impact of Low PROTF on Infections (Stratified by Age)</caption>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 22%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Age_Group</th>
+<th style="text-align: left;">Infection_Type</th>
+<th style="text-align: right;">Rate_High</th>
+<th style="text-align: right;">Rate_Low</th>
+<th style="text-align: right;">Odds_Ratio</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: left;">Significant</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Pele</td>
+<td style="text-align: right;">8.33</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">6.97</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Sepse</td>
+<td style="text-align: right;">22.22</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">2.91</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Sistema gastrointestinal</td>
+<td style="text-align: right;">11.11</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: right;">2.24</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">10.57</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Sistema nervoso central</td>
+<td style="text-align: right;">2.78</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">1.45</td>
+<td style="text-align: right;">0.07</td>
+<td style="text-align: right;">88.42</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Sistema urinário</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">18.00</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2.15</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Vias áreas inferiores</td>
+<td style="text-align: right;">44.44</td>
+<td style="text-align: right;">34.00</td>
+<td style="text-align: right;">0.65</td>
+<td style="text-align: right;">0.24</td>
+<td style="text-align: right;">1.70</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Vias áreas superiores</td>
+<td style="text-align: right;">30.56</td>
+<td style="text-align: right;">42.00</td>
+<td style="text-align: right;">1.64</td>
+<td style="text-align: right;">0.61</td>
+<td style="text-align: right;">4.54</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Pele</td>
+<td style="text-align: right;">15.38</td>
+<td style="text-align: right;">19.23</td>
+<td style="text-align: right;">1.30</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">13.96</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Sepse</td>
+<td style="text-align: right;">23.08</td>
+<td style="text-align: right;">17.31</td>
+<td style="text-align: right;">0.70</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">4.75</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Sistema gastrointestinal</td>
+<td style="text-align: right;">7.69</td>
+<td style="text-align: right;">19.23</td>
+<td style="text-align: right;">2.82</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">134.10</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Sistema nervoso central</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.92</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Sistema urinário</td>
+<td style="text-align: right;">7.69</td>
+<td style="text-align: right;">21.15</td>
+<td style="text-align: right;">3.17</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">149.86</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Vias áreas inferiores</td>
+<td style="text-align: right;">30.77</td>
+<td style="text-align: right;">28.85</td>
+<td style="text-align: right;">0.91</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">4.69</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Vias áreas superiores</td>
+<td style="text-align: right;">38.46</td>
+<td style="text-align: right;">38.46</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">4.46</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Pele</td>
+<td style="text-align: right;">14.71</td>
+<td style="text-align: right;">5.26</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">1.63</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Sepse</td>
+<td style="text-align: right;">11.76</td>
+<td style="text-align: right;">19.74</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">8.26</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Sistema gastrointestinal</td>
+<td style="text-align: right;">8.82</td>
+<td style="text-align: right;">22.37</td>
+<td style="text-align: right;">2.95</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">16.92</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Sistema nervoso central</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">3.95</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">Inf</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Sistema urinário</td>
+<td style="text-align: right;">11.76</td>
+<td style="text-align: right;">19.74</td>
+<td style="text-align: right;">1.83</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">8.26</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Vias áreas inferiores</td>
+<td style="text-align: right;">41.18</td>
+<td style="text-align: right;">38.16</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">2.20</td>
+<td style="text-align: right;">0.83</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Vias áreas superiores</td>
+<td style="text-align: right;">55.88</td>
+<td style="text-align: right;">39.47</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">1.26</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: left;">Pele</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1035.97</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: left;">Sepse</td>
+<td style="text-align: right;">57.66</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">29.25</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: left;">Sistema gastrointestinal</td>
+<td style="text-align: right;">1.80</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2075.47</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: left;">Sistema nervoso central</td>
+<td style="text-align: right;">2.70</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1386.33</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: left;">Sistema urinário</td>
+<td style="text-align: right;">17.12</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">190.33</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: left;">Vias áreas inferiores</td>
+<td style="text-align: right;">23.42</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">128.74</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 ano</td>
+<td style="text-align: left;">Vias áreas superiores</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">823.87</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1"></a>final_results_age <span class="sc">|&gt;</span></span>
+<span id="cb76-2"><a href="#cb76-2"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Odds_Ratio)) <span class="sc">|&gt;</span> <span class="co"># Hide rows where test failed (e.g. 0 infections)</span></span>
+<span id="cb76-3"><a href="#cb76-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Odds_Ratio, <span class="at">y =</span> <span class="fu">reorder</span>(Infection_Type, Odds_Ratio), <span class="at">color =</span> Significant)) <span class="sc">+</span></span>
+<span id="cb76-4"><a href="#cb76-4"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb76-5"><a href="#cb76-5"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> conf.low, <span class="at">xmax =</span> conf.high), <span class="at">width =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb76-6"><a href="#cb76-6"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb76-7"><a href="#cb76-7"></a>  </span>
+<span id="cb76-8"><a href="#cb76-8"></a>  <span class="co"># Creates a separate panel for each age group</span></span>
+<span id="cb76-9"><a href="#cb76-9"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Age_Group, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span> </span>
+<span id="cb76-10"><a href="#cb76-10"></a>  </span>
+<span id="cb76-11"><a href="#cb76-11"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb76-12"><a href="#cb76-12"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Yes"</span> <span class="ot">=</span> <span class="st">"#D55E00"</span>, <span class="st">"No"</span> <span class="ot">=</span> <span class="st">"gray60"</span>)) <span class="sc">+</span></span>
+<span id="cb76-13"><a href="#cb76-13"></a>  <span class="fu">labs</span>(</span>
+<span id="cb76-14"><a href="#cb76-14"></a>    <span class="at">title =</span> <span class="st">"PROTF Infection Risk by Age Cohort"</span>,</span>
+<span id="cb76-15"><a href="#cb76-15"></a>    <span class="at">subtitle =</span> <span class="st">"Odds Ratio (High Risk vs Low Risk) using age-specific cutoffs"</span>,</span>
+<span id="cb76-16"><a href="#cb76-16"></a>    <span class="at">x =</span> <span class="st">"Odds Ratio (Log Scale)"</span>,</span>
+<span id="cb76-17"><a href="#cb76-17"></a>    <span class="at">y =</span> <span class="cn">NULL</span></span>
+<span id="cb76-18"><a href="#cb76-18"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="respostas_protf_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="age-specific-clinical-validation-infection-risk" class="level3">
+<h3 class="anchored" data-anchor-id="age-specific-clinical-validation-infection-risk">Age-Specific Clinical Validation: Infection Risk</h3>
+<p>To determine if the PROTF cutoffs serve as functional predictors of infection risk within specific age groups, we compared infection prevalence between “High Risk” (Below Cutoff) and “Low Risk” (Above Cutoff) patients.</p>
+<ul>
+<li><p><strong>Methodology:</strong> Patients were stratified by age, applying the specific cutoffs: <strong>1.85</strong> (&lt;1y), <strong>2.05</strong> (1-3y &amp; 10-17y), and <strong>2.15</strong> (4-9y).</p></li>
+<li><p><strong>Results by Cohort:</strong></p>
+<ol type="1">
+<li><strong>Infants (&lt; 1 year): Statistical Confirmation of Inutility</strong>
+<ul>
+<li><strong>Observation:</strong> The analysis yielded extremely wide confidence intervals (e.g., 0.00 to 1035.97) and p-values of 1.00 for most categories.</li>
+<li><strong>The Cause:</strong> The “Low Risk” (Control) group had <strong>0.00%</strong> infection rates across almost all categories. This is likely because the cutoff of 1.85 is statistically artificial for this group, failing to create a valid “healthy” control group for comparison.</li>
+<li><strong>Conclusion:</strong> This mathematically confirms the ROC conclusion: PROTF fails to discriminate between sick and healthy infants, rendering it useless as a clinical predictor for this age group.</li>
+</ul></li>
+<li><strong>Children (4 to 9 years): Trends in Respiratory Health</strong>
+<ul>
+<li><strong>Trend:</strong> A visible clinical trend was observed for <strong>Upper Respiratory Infections</strong>. The “High Risk” group had a prevalence of <strong>55.88%</strong> compared to <strong>39.47%</strong> in the “Low Risk” group.</li>
+<li><strong>Significance:</strong> Despite the ~16% difference in raw rates, this did not reach statistical significance (<span class="math inline">\(p = 0.15\)</span>), suggesting that while PROTF might correlate with respiratory susceptibility, a larger sample size is needed to confirm it.</li>
+</ul></li>
+<li><strong>Toddlers (1-3y) and Adolescents (10-17y): Absence of Signal</strong>
+<ul>
+<li><strong>Results:</strong> No statistically significant associations were found. P-values for all infection types were &gt; 0.05.</li>
+<li><strong>Contrast with Global Analysis:</strong> While the global analysis showed a strong link to Sepsis, this signal is lost in the subgroups. This suggests that the association with Sepsis is a “cumulative” signal that requires the statistical power of the full cohort to detect.</li>
+</ul></li>
+</ol></li>
+</ul>
+<p><strong>Conclusion:</strong> The age-stratified infection analysis reinforces the limitation of PROTF. It validates the exclusion of infants from screening. For older children, while trends exist (particularly for respiratory infections in the 4-9y group), PROTF should be viewed primarily as a biochemical marker for IgG deficiency rather than a standalone predictor of specific infection phenotypes.</p>
 </section>
 </section>
 </section>

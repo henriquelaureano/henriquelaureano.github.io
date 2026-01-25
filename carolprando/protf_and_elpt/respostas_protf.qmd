@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/01/13
+date-modified: 2026/01/25
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -940,6 +940,287 @@ To validate the clinical relevance of the established cutoff (**2.05 g/L**), we 
     * **Neutral Associations:** No statistically significant difference was found for Skin, CNS, Urinary, or Lower Respiratory infections ($p > 0.05$), indicating that the cutoff is highly specific to the risk of Sepsis rather than a generalized increase in all infection types.
 
 **Conclusion:** The PROTF cutoff of 2.05 g/L successfully identifies a patient subset with critical immunological vulnerability. While patients above this threshold frequently report common mucosal conditions, those falling below it are disproportionately susceptible to severe sepsis, validating the threshold as a vital marker for systemic risk stratification.
+
+## By Age Interval
+
+```{r fig.width=9.75, fig.height=7}
+
+# protf |>
+#   dplyr::filter(`3 - Insira Faixa etária do paciente` != "> 18 anos") |>
+#   dplyr::count(`3 - Insira Faixa etária do paciente`)
+
+proxy <- 
+    protf |>
+    dplyr::rename(IgG_Referência = `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica`) |>
+    dplyr::rename(IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`) |>
+    dplyr::rename(PROTF = `16 - Resultado do Primeiro exame`) |>
+    dplyr::rename(Age_Group = `3 - Insira Faixa etária do paciente`) |>
+    dplyr::filter(IgG_Referência != "NA") |> 
+    dplyr::select(IgG, PROTF, IgG_Referência, Age_Group) |>
+    tidyr::unnest(IgG)  
+
+# 1. Prepare Data
+age_analysis_data <- proxy |>
+  dplyr::filter(
+    IgG_Referência != "Acima do valor de referência",
+    Age_Group != "> 18 anos" 
+  ) |>
+  dplyr::mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+
+# 2. Define a function to calculate scenarios for a single group
+calc_roc_scenarios <- function(data) {
+  # Safety check: Need both 0s and 1s to make an ROC curve
+  if(n_distinct(data$low_igg_flag) < 2) return(NULL)
+  
+  # Generate ROC
+  roc_obj <- roc(data$low_igg_flag, data$PROTF, quiet = TRUE)
+  
+  # A. Max Specificity
+  s1 <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+    dplyr::filter(specificity == 1) |> 
+    dplyr::slice(1) |> 
+    dplyr::mutate(Strategy = "Max Spec (100%)")
+  
+  # B. High Specificity
+  s2 <- coords(roc_obj, "all", ret = c("threshold", "specificity", "sensitivity", "ppv")) |>
+    dplyr::filter(specificity >= 0.90) |> 
+    dplyr::arrange(desc(sensitivity)) |> 
+    dplyr::slice(1) |> 
+    dplyr::mutate(Strategy = "High Spec (>90%)")
+  
+  # C. Balanced (Youden)
+  s3 <- coords(roc_obj, "best", best.method = "youden", 
+               ret = c("threshold", "specificity", "sensitivity", "ppv")) |> 
+    dplyr::mutate(Strategy = "Balanced (Youden)")
+  
+  dplyr::bind_rows(s1, s2, s3)
+}
+
+# 3. Apply function to each Age Group
+stratified_results <- age_analysis_data |>
+  dplyr::group_by(Age_Group) |>
+  tidyr::nest() |>
+  dplyr::mutate(roc_stats = map(data, calc_roc_scenarios)) |>
+  tidyr::unnest(roc_stats) |>
+  dplyr::select(
+    Age_Group, Strategy, 
+    Threshold = threshold, 
+    Sensitivity = sensitivity, Specificity = specificity, PPV = ppv
+  ) |>
+  dplyr::arrange(Age_Group, Strategy)
+
+# Display Table
+kable(
+  stratified_results |>
+  dplyr::inner_join(proxy |> dplyr::count(Age_Group), by = "Age_Group") |>
+  dplyr::relocate(n, .after = Age_Group), 
+  digits = 3, caption = "Optimal PROTF Cutoffs by Age Group"
+)
+
+# 4. Visualization: Faceted Density Plot
+# First, extract the "Balanced" cutoff for each group to draw the lines
+balanced_cutoffs <- stratified_results |>
+  dplyr::filter(Strategy == "Balanced (Youden)") |>
+  dplyr::select(Age_Group, cutoff = Threshold)
+
+age_analysis_data |>
+  ggplot(aes(x = PROTF, fill = IgG_Referência)) +
+  geom_density(alpha = 0.4) +
+  # Add the specific cutoff line for each facet
+  geom_vline(data = balanced_cutoffs, aes(xintercept = cutoff), 
+             linetype = "dashed", color = "black", linewidth = 0.8) +
+  # Add text label for the cutoff
+  geom_text(data = balanced_cutoffs, aes(x = cutoff, y = 0, label = round(cutoff, 3)), 
+            inherit.aes = FALSE, vjust = -1, hjust = -0.25, angle = 0, fontface = "bold") +
+  facet_wrap(~Age_Group, scales = "free_y") + # Create separate panels
+  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  labs(
+    title = "PROTF Diagnostic Thresholds by Age Group",
+    subtitle = "Distribution and Optimal Cutoff (Youden) per cohort",
+    x = "PROTF (g/dL)", y = "Density", fill = "IgG Status"
+  ) +
+  scale_x_continuous(breaks = seq(1, 3, by = 0.1))
+
+```
+
+## Age-Stratified Analysis: Defining Precision Thresholds for PROTF
+
+To determine if the global PROTF cutoff (2.05 g/L) is valid across all developmental stages, we performed a stratified ROC analysis. The results reveal critical variations in diagnostic utility, particularly regarding the test's inability to screen infants effectively.
+
+### Results by Age Cohort
+
+1.  **Infants (< 1 year): A Diagnostic Limitation**
+    * **Optimal Cutoff:** 1.85 g/L (Statistical artifact).
+    * **Performance:** The test demonstrates a **Sensitivity of only 3.7%**.
+    * **Interpretation:** The analysis indicates that PROTF levels in IgG-deficient infants are virtually indistinguishable from healthy infants in this dataset. Consequently, **PROTF cannot be used to screen for IgG deficiency in the first year of life**, as it fails to detect >96% of cases.
+
+2.  **Toddlers (1 to 3 years) & Adolescents (10 to 17 years):**
+    * **Optimal Cutoff:** **2.05 g/L**.
+    * **Performance:**
+        * *Toddlers:* Sensitivity 61.5%, Specificity 66.7%.
+        * *Adolescents:* Sensitivity 57.1%, Specificity 85.7%.
+    * **Interpretation:** In these groups, the optimal threshold aligns perfectly with the global cutoff (2.05). However, diagnostic sensitivity is moderate (~60%), suggesting that while specific, the test may miss approximately 40% of deficient patients in these age ranges.
+
+3.  **Children (4 to 9 years):**
+    * **Optimal Cutoff:** **2.15 g/L**.
+    * **Performance:** This group achieved the highest sensitivity (**75.0%**) among all cohorts.
+    * **Interpretation:** The optimal threshold shifts slightly higher to 2.15 g/L. While detection rates improve in this demographic, the Positive Predictive Value (PPV) remains low (25.0%), indicating a higher rate of false positives compared to adolescents.
+
+### Clinical Recommendation
+
+Based on the age-stratified data, we propose the following protocols:
+
+* **Contraindication (< 1 Year):** PROTF should **not** be used as a screening tool for infants under 1 year of age due to insufficient sensitivity.
+* **Standard Cutoff (> 1 Year):** For all other age groups, a baseline cutoff of **2.05 g/L** is statistically supported.
+* **Optimization (4-9 Years):** For children aged 4 to 9, clinicians may consider raising the threshold to **2.15 g/L** to maximize sensitivity (75%), though this comes with a trade-off of increased confirmatory testing (lower PPV).
+
+```{r warning=FALSE, fig.width=9, fig.height=7}
+
+# 1. Define Age-Specific Cutoffs for PROTF
+# Based on your ROC results table
+cutoff_map <- tibble(
+  Age_Group = c("< 1 ano", "1 ano a 3 anos", "4 anos a 9 anos", "10 anos a 17 anos"),
+  Age_Specific_Cutoff = c(1.85, 2.05, 2.15, 2.05)
+)
+
+# 2. Prepare Data & Apply Cutoffs
+infection_analysis_age <- protf |>
+  dplyr::rename(
+    PROTF = `16 - Resultado do Primeiro exame`,
+    Age_Group = `3 - Insira Faixa etária do paciente`
+  ) |>
+  # Filter to keep only the groups in our map
+  dplyr::filter(Age_Group %in% cutoff_map$Age_Group) |>
+  dplyr::left_join(cutoff_map, by = "Age_Group") |>
+  
+  # Create Risk Group based on the SPECIFIC cutoff for that age
+  dplyr::mutate(Risk_Group = ifelse(PROTF < Age_Specific_Cutoff, "High_Risk", "Low_Risk")) |>
+  
+  # Select Infection Columns (8 to 14)
+  dplyr::select(
+    Age_Group,
+    Risk_Group,
+    matches("^(8|9|10|11|12|13|14) -")
+  ) |>
+  
+  # Pivot Longer
+  tidyr::pivot_longer(
+    cols = matches("^(8|9|10|11|12|13|14) -"), 
+    names_to = "Infection_Type",
+    values_to = "Status"
+  ) |>
+  
+  # Clean Names & Force Binary
+  dplyr::mutate(
+    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
+    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
+    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
+    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Is_Infected = ifelse(Status == "Sim", 1, 0)
+  ) |>
+  dplyr::filter(!is.na(Is_Infected))
+
+# 3. Calculate Rates (Stratified by Age AND Infection)
+rates_table_age <- infection_analysis_age |>
+  dplyr::group_by(Age_Group, Infection_Type, Risk_Group) |>
+  dplyr::summarise(
+    Total_Patients = n(),
+    Infected_Count = sum(Is_Infected),
+    Rate_Pct = (Infected_Count / Total_Patients) * 100,
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_wider(
+    names_from = Risk_Group,
+    values_from = c(Total_Patients, Infected_Count, Rate_Pct)
+  )
+
+# 4. Calculate Stats (Fisher Test within each Age/Infection combo)
+stats_table_age <- infection_analysis_age |>
+  dplyr::group_by(Age_Group, Infection_Type) |>
+  tidyr::nest() |>
+  dplyr::mutate(
+    model = map(data, function(df) {
+      tbl <- table(df$Risk_Group, df$Is_Infected)
+      
+      # Safety Check: Fisher test needs 2x2 dimensions
+      tryCatch({
+        broom::tidy(fisher.test(tbl))
+      }, error = function(e) NULL)
+    })
+  ) |>
+  tidyr::unnest(model) |>
+  dplyr::select(Age_Group, Infection_Type, estimate, p.value, conf.low, conf.high)
+
+# 5. Join and Finalize
+final_results_age <- rates_table_age |>
+  dplyr::left_join(stats_table_age, by = c("Age_Group", "Infection_Type")) |>
+  dplyr::mutate(
+    Odds_Ratio = estimate,
+    Significant = ifelse(p.value < 0.05, "Yes", "No")
+  ) |>
+  dplyr::select(
+    Age_Group,
+    Infection_Type,
+    Rate_High = Rate_Pct_High_Risk,
+    Rate_Low = Rate_Pct_Low_Risk,
+    Odds_Ratio,
+    conf.low,
+    conf.high,
+    p.value,
+    Significant
+  ) |>
+  dplyr::arrange(Age_Group, Infection_Type)
+
+# Display Table
+kable(final_results_age, digits = 2, caption = "Impact of Low PROTF on Infections (Stratified by Age)")
+
+final_results_age |>
+  filter(!is.na(Odds_Ratio)) |> # Hide rows where test failed (e.g. 0 infections)
+  ggplot(aes(x = Odds_Ratio, y = reorder(Infection_Type, Odds_Ratio), color = Significant)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(xmin = conf.low, xmax = conf.high), width = 0.3) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray50") +
+  
+  # Creates a separate panel for each age group
+  facet_wrap(~Age_Group, scales = "free_x") + 
+  
+  scale_x_log10() +
+  scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
+  labs(
+    title = "PROTF Infection Risk by Age Cohort",
+    subtitle = "Odds Ratio (High Risk vs Low Risk) using age-specific cutoffs",
+    x = "Odds Ratio (Log Scale)",
+    y = NULL
+  )
+
+```
+
+### Age-Specific Clinical Validation: Infection Risk
+
+To determine if the PROTF cutoffs serve as functional predictors of infection risk within specific age groups, we compared infection prevalence between "High Risk" (Below Cutoff) and "Low Risk" (Above Cutoff) patients.
+
+* **Methodology:** Patients were stratified by age, applying the specific cutoffs: **1.85** (<1y), **2.05** (1-3y & 10-17y), and **2.15** (4-9y).
+
+* **Results by Cohort:**
+
+    1.  **Infants (< 1 year): Statistical Confirmation of Inutility**
+        * **Observation:** The analysis yielded extremely wide confidence intervals (e.g., 0.00 to 1035.97) and p-values of 1.00 for most categories.
+        * **The Cause:** The "Low Risk" (Control) group had **0.00%** infection rates across almost all categories. This is likely because the cutoff of 1.85 is statistically artificial for this group, failing to create a valid "healthy" control group for comparison.
+        * **Conclusion:** This mathematically confirms the ROC conclusion: PROTF fails to discriminate between sick and healthy infants, rendering it useless as a clinical predictor for this age group.
+
+    2.  **Children (4 to 9 years): Trends in Respiratory Health**
+        * **Trend:** A visible clinical trend was observed for **Upper Respiratory Infections**. The "High Risk" group had a prevalence of **55.88%** compared to **39.47%** in the "Low Risk" group.
+        * **Significance:** Despite the ~16% difference in raw rates, this did not reach statistical significance ($p = 0.15$), suggesting that while PROTF might correlate with respiratory susceptibility, a larger sample size is needed to confirm it.
+
+    3.  **Toddlers (1-3y) and Adolescents (10-17y): Absence of Signal**
+        * **Results:** No statistically significant associations were found. P-values for all infection types were > 0.05.
+        * **Contrast with Global Analysis:** While the global analysis showed a strong link to Sepsis, this signal is lost in the subgroups. This suggests that the association with Sepsis is a "cumulative" signal that requires the statistical power of the full cohort to detect.
+
+**Conclusion:** The age-stratified infection analysis reinforces the limitation of PROTF. It validates the exclusion of infants from screening. For older children, while trends exist (particularly for respiratory infections in the 4-9y group), PROTF should be viewed primarily as a biochemical marker for IgG deficiency rather than a standalone predictor of specific infection phenotypes.
 
 # Methodology & References
 
