@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/01/25
+date-modified: 2026/03/07
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -20,7 +20,7 @@ if (!requireNamespace("pacman", quietly = TRUE))
 pacman::p_load(
   ggplot2, googlesheets4, 
   dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, 
-  knitr, purrr
+  knitr, purrr, patchwork
 )
 ggplot2::theme_set(
   theme_classic(base_size = 14) +
@@ -217,7 +217,34 @@ protf |>
   
 ```
 
-Entre os 641 pacientes com comorbidade, 195 diferentes combinações de comorbidade são observadas - mas 50 aparecem em ao menos dois pacientes.
+Entre os 641 pacientes com comorbidade, 195 diferentes combinações de comorbidade são observadas - mas 49 aparecem em ao menos dois pacientes.
+
+Mesma coisa mas agora reunindo todos os resultados similares em um único grupo de soma.
+
+97 diferentes, 40 aparecendo ao menos duas vezes.
+
+```{r}
+
+protf |> 
+  dplyr::filter(
+    `20 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
+  ) |>
+  dplyr::select(Comorbidades = `20.1 -  Qual comorbidade o paciente possui?
+
+-Em caso negativo responder com NA`) |>
+  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  dplyr::mutate(
+    Comorbidades = stringr::str_trim(Comorbidades),
+    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
+    Comorbidades = stringr::str_to_sentence(Comorbidades)
+  ) |>
+  dplyr::count(Comorbidades) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  dplyr::filter(n > 1) |>
+  print(n = 50)
+  
+```
+
 
 ## f) Porcentagem de pacientes que realizam hemodiálise
 
@@ -1221,6 +1248,268 @@ To determine if the PROTF cutoffs serve as functional predictors of infection ri
         * **Contrast with Global Analysis:** While the global analysis showed a strong link to Sepsis, this signal is lost in the subgroups. This suggests that the association with Sepsis is a "cumulative" signal that requires the statistical power of the full cohort to detect.
 
 **Conclusion:** The age-stratified infection analysis reinforces the limitation of PROTF. It validates the exclusion of infants from screening. For older children, while trends exist (particularly for respiratory infections in the 4-9y group), PROTF should be viewed primarily as a biochemical marker for IgG deficiency rather than a standalone predictor of specific infection phenotypes.
+
+# Medicações vs PROTF e IgG
+
+62 diferentes combinações.
+
+
+
+medicações utilizadas, 16 com ao menos duas ocorrências.
+
+Reunindo os resultados similares em um único grupo de soma, ficamos com 48. 27 aparecendo ao menos duas vezes.
+
+```{r}
+
+protf |>
+  tidyr::separate_longer_delim(
+    cols = `34 -  Medicações Utilizadas`, delim = ";"
+  ) |>
+  dplyr::mutate(
+    Medicações = stringi::stri_trans_general(
+      `34 -  Medicações Utilizadas`, "Latin-ASCII"
+    ),
+    Medicações = stringr::str_trim(Medicações),    
+    Medicações = stringr::str_to_sentence(Medicações)
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  dplyr::count(Medicações) |>
+  dplyr::arrange(dplyr::desc(n)) |> 
+  dplyr::filter(n >= 2) |> print(n = 30)
+
+```
+
+Medidas descritivas de PROTF e IgG pelo uso de medicação. Aparentemente não vemos diferença significativa.
+
+```{r}
+
+protf |>
+  dplyr::select(
+    `34 -  Medicações Utilizadas`, 
+    PROTF = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 -  Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  dplyr::summarise(
+    n_patients = dplyr::n(),
+    dplyr::across(
+      c(PROTF, IgG),
+      list(
+        Min = ~ min(.x, na.rm = TRUE),
+        Q1 = ~ quantile(.x, 0.25, na.rm = TRUE),
+        Median = ~ median(.x, na.rm = TRUE),
+        Mean = ~ mean(.x, na.rm = TRUE),
+        Q3 = ~ quantile(.x, 0.75, na.rm = TRUE),
+        Max = ~ max(.x, na.rm = TRUE),
+        NAs = ~ sum(is.na(.x))
+      ),
+      .names = "{.col}_{.fn}"
+    ),
+    .by = Medicação
+  ) |>
+  tidyr::pivot_longer(
+    cols = -Medicação, 
+    names_to = "Metric", 
+    values_to = "Value"
+  ) |>
+  tidyr::pivot_wider(names_from = Medicação, values_from = Value
+  )
+
+```
+
+Graficamente fica claro que o fato de usar ou não medicamente não impacta nos valores de PROTF e nem de IgG, não existe influência / associação.
+
+```{r fig.width=9, fig.height=6}
+
+protf |>
+  dplyr::select(
+    `34 -  Medicações Utilizadas`, 
+    PROTF = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 -  Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, y = PROTF, fill = Medicação, color = Medicação) +
+  geom_point(size = 3, shape = 21, alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 1), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", 
+                   label.x.npc = 0.7,   # 70% across the x-axis
+                   label.y.npc = "bottom") + 
+  labs(title = "Correlação entre IgG e PROTF",
+       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
+       fill = "Medicação: ", color = "Medicação: ",
+       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
+  scale_y_continuous(breaks = seq(1, 2.6, by = 0.1))
+
+```
+
+```{r fig.width=9, fig.height=4.5}
+
+p1 <- protf |>
+  dplyr::select(
+    `34 -  Medicações Utilizadas`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 -  Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, fill = Medicação) +
+  geom_histogram(alpha = 0.8, binwidth = 50) +
+  labs(title = "Histograma de IgG",
+       subtitle = "Binwidth: 50",
+       fill = "Medicação: ",
+       x = "IgG (mg/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
+  scale_y_continuous(breaks = seq(0, 30, by = 5))
+  
+p2 <- protf |>
+  dplyr::select(
+    `34 -  Medicações Utilizadas`, 
+    PROTF = `16 - Resultado do Primeiro exame`
+  ) |>
+  dplyr::mutate(
+    Medicação = ifelse(
+      is.na(`34 -  Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  ggplot() +
+  aes(x = PROTF, fill = Medicação) +
+  geom_histogram(alpha = 0.8, binwidth = 0.1) +
+  labs(title = "Histograma de PROTF",
+       subtitle = "Binwidth: 0.1",
+       fill = "Medicação: ",
+       x = "PROTF (g/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(1, 2.5, by = 0.2)) +
+  scale_y_continuous(breaks = seq(0, 150, by = 15))
+
+p1 + p2 + patchwork::plot_layout(guides = "collect")
+
+```
+
+Ajustamos também um modelo linear para entender melhor a associação entre IgG e o uso de medicação - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos um valor-p de 0.3392, indicando que realmente não existe associação entre o valor de IgG e o fato de utilizar ou não um medicamento.
+
+```{r}
+
+lm(
+  IgG ~ Medicação,
+  data = protf |>
+  dplyr::select(
+    `34 -  Medicações Utilizadas`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 -  Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  tidyr::drop_na(IgG)
+) |>
+  anova()
+
+```
+
+# Medicações mais prevalentes por Idade e Sexo
+
+130 diferentes combinações - separando as que aparecem em combinações no mesmo paciente, já que as combinações são sempre únicas (todos os resultados similares em um único grupo de soma, conforme exemplificado e solicitado por e-mail).
+
+Abaixo mostramos - por Sexo, apenas as que aparecem ao menos duas vezes.
+
+```{r}
+
+t1 <- protf |>
+  dplyr::select(
+    Medicações = `34 -  Medicações Utilizadas`,
+    Idade = `3 - Insira Faixa etária do paciente`,
+    Sexo = `4 - Sexo`
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
+  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
+  dplyr::count(Medicações, Idade, Sexo) |>
+  dplyr::arrange(dplyr::desc(n), Medicações) |>
+  dplyr::filter(n > 1) |>
+  dplyr::group_split(Sexo) 
+
+t1[[1]] |> print(n = 30)
+t1[[2]] |> print(n = 30)
+
+```
+
+Mesma coisa pro faixa etária.
+
+```{r}
+
+protf |>
+  dplyr::select(
+    Medicações = `34 -  Medicações Utilizadas`,
+    Idade = `3 - Insira Faixa etária do paciente`,
+    Sexo = `4 - Sexo`
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
+  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
+  dplyr::count(Medicações, Idade, Sexo) |>
+  dplyr::arrange(dplyr::desc(n), Medicações, Sexo) |>
+  dplyr::filter(n > 1) |>
+  dplyr::group_split(Idade)
+  
+```
+
+E para finalizar, todas as medicações.
+
+```{r}
+
+protf |>
+  dplyr::select(
+    Medicações = `34 -  Medicações Utilizadas`
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
+  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
+  dplyr::count(Medicações) |>
+  dplyr::arrange(dplyr::desc(n)) |>
+  print(n = 100)
+
+```
+
 
 # Methodology & References
 
