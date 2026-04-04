@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/01/25
+date-modified: 2026/04/03
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -108,17 +108,18 @@ elpt |> dplyr::filter(
                 `11 - Infecção de sistema urinário?`,
                 `12 - Infecção de sistema gastrointestinal?`,
                 `13 - Infecção de pele?`,
-                `14 - Sepse?`) |>
-  tidyr::pivot_longer(`8 - Infecção em sistema nervoso central?`:`14 - Sepse?`) |>
+                `14 - Sepse?`,
+                `15 - Outros?`) |>
+  tidyr::pivot_longer(`8 - Infecção em sistema nervoso central?`:`15 - Outros?`) |>
   dplyr::filter(value == "Sim") |>
   dplyr::count(name) |>
-  dplyr::mutate(Percentual = n / sum(n)) |> dplyr::arrange(dplyr::desc(n))
+  dplyr::mutate(Percentual = n / 73) |> dplyr::arrange(dplyr::desc(n))
 
 ```
 
-Dos 73 pacientes com quadro infeccioso, 22 apresentaram em mais de um sistema (ao menos em dois). 30.14%.
+Dos 73 pacientes com quadro infeccioso, 32 apresentaram em mais de um sistema (ao menos em dois). 43.84%.
 
-Nestes 22, estes são os sintomas que aparecem e em quantos dos 22 pacientes.
+Nestes 32, estes são os sintomas que aparecem e em quantos dos 32 pacientes.
 
 ```{r}
 
@@ -133,7 +134,8 @@ proxy <-
                 `11 - Infecção de sistema urinário?`,
                 `12 - Infecção de sistema gastrointestinal?`,
                 `13 - Infecção de pele?`,
-                `14 - Sepse?`) |>
+                `14 - Sepse?`,
+                `15 - Outros?`) |>
   tidyr::pivot_longer(!`1 - Insira o Prontuário do Paciente`) |>
   dplyr::filter(value == "Sim") |>
   dplyr::group_by(`1 - Insira o Prontuário do Paciente`) |>
@@ -141,6 +143,8 @@ proxy <-
   dplyr::ungroup() |>
   dplyr::filter(n > 1) |>
   dplyr::arrange(dplyr::desc(n), `1 - Insira o Prontuário do Paciente`) 
+
+# proxy |> dplyr::distinct(`1 - Insira o Prontuário do Paciente`)
 
 (
   proxy2 <- 
@@ -152,14 +156,14 @@ proxy <-
            name = stringr::str_to_sentence(name)) |>
     dplyr::count(name) |> 
     dplyr::arrange(dplyr::desc(n)) |>
-    dplyr::mutate(Percentual = n / 22) 
+    dplyr::mutate(Percentual = n / 32) 
 )
 
 ```
 
-O máximo de infecções que um paciente apresenta são 4, e 5 pacientes ficaram em tal situação.
+O máximo de infecções que um paciente apresenta são 5, e 3 pacientes ficaram em tal situação.
 
-```{r fig.height=7.25}
+```{r fig.height=9}
 
 proxy |>
   dplyr::mutate(value = ifelse(value == "Sim", 1, 0)) |>
@@ -172,6 +176,8 @@ proxy |>
          Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
          Infection_Type = stringr::str_remove(Infection_Type, "Infecção (de|em) "),
          Infection_Type = stringr::str_to_sentence(Infection_Type)) |>
+  # dplyr::filter(Present == 1) |>
+  # dplyr::count(`1 - Insira o Prontuário do Paciente`) |> dplyr::arrange(dplyr::desc(n))
   ggplot() +
   aes(x = factor(Infection_Type, levels = unique(proxy2$name)), 
       y = factor(`1 - Insira o Prontuário do Paciente`, 
@@ -802,7 +808,8 @@ infection_analysis <- elpt |>
     `11 - Infecção de sistema urinário?`,
     `12 - Infecção de sistema gastrointestinal?`,
     `13 - Infecção de pele?`,
-    `14 - Sepse?`
+    `14 - Sepse?`,
+    `15 - Outros?`
   ) |>
   pivot_longer(
     cols = !Risk_Group,
@@ -1075,12 +1082,12 @@ infection_analysis_age <- elpt |>
   dplyr::select(
     Age_Group,
     Risk_Group,
-    matches("^8 -|^9 -|^10 -|^11 -|^12 -|^13 -|^14 -")
+    matches("^8 -|^9 -|^10 -|^11 -|^12 -|^13 -|^14 -|^15 -")
   ) |>
   
   # Pivot Longer
   tidyr::pivot_longer(
-    cols = matches("^(8|9|10|11|12|13|14) -"), # Selects all infection columns
+    cols = matches("^(8|9|10|11|12|13|14|15) -"), # Selects all infection columns
     names_to = "Infection_Type",
     values_to = "Status"
   ) |>

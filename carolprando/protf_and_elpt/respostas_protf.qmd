@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/03/07
+date-modified: 2026/04/03
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -109,17 +109,18 @@ protf |> dplyr::filter(
                 `11 - Infecção de sistema urinário?`,
                 `12 - Infecção de sistema gastrointestinal?`,
                 `13 - Infecção de pele?`,
-                `14 - Sepse?`) |>
-  tidyr::pivot_longer(`8 - Infecção em sistema nervoso central?`:`14 - Sepse?`) |>
+                `14 - Sepse?`,
+                `15 - Outros?`) |>
+  tidyr::pivot_longer(`8 - Infecção em sistema nervoso central?`:`15 - Outros?`) |>
   dplyr::filter(value == "Sim") |>
   dplyr::count(name) |>
-  dplyr::mutate(Percentual = n / sum(n)) |> dplyr::arrange(dplyr::desc(n))
+  dplyr::mutate(Percentual = n / 373) |> dplyr::arrange(dplyr::desc(n))
 
 ```
 
-Dos 373 pacientes com quadro infeccioso, 301 apresentaram em mais de um sistema (ao menos em dois). 80.7%.
+Dos 373 pacientes com quadro infeccioso, 154 apresentaram em mais de um sistema (ao menos em dois). 41.29%.
 
-Nestes 301, estes são os sintomas que aparecem e em quantos dos 301 pacientes.
+Nestes 154, estes são os sintomas que aparecem e em quantos dos 154 pacientes.
 
 ```{r}
 
@@ -134,7 +135,8 @@ proxy <-
                 `11 - Infecção de sistema urinário?`,
                 `12 - Infecção de sistema gastrointestinal?`,
                 `13 - Infecção de pele?`,
-                `14 - Sepse?`) |>
+                `14 - Sepse?`,
+                `15 - Outros?`) |>
   tidyr::pivot_longer(!`1 - Insira o Prontuário do Paciente`) |>
   dplyr::filter(value == "Sim") |>
   dplyr::group_by(`1 - Insira o Prontuário do Paciente`) |>
@@ -142,6 +144,8 @@ proxy <-
   dplyr::ungroup() |>
   dplyr::filter(n > 1) |>
   dplyr::arrange(dplyr::desc(n), `1 - Insira o Prontuário do Paciente`) 
+
+# proxy |> dplyr::distinct(`1 - Insira o Prontuário do Paciente`)
 
 (
   proxy2 <- 
@@ -153,12 +157,12 @@ proxy <-
            name = stringr::str_to_sentence(name)) |>
     dplyr::count(name) |> 
     dplyr::arrange(dplyr::desc(n)) |>
-    dplyr::mutate(Percentual = n / nrow(proxy)) 
+    dplyr::mutate(Percentual = n / 154) 
 )
 
 ```
 
-O máximo de infecções que um paciente apresenta são 5, e 5 pacientes ficaram em tal situação.
+O máximo de infecções que um paciente apresenta são 6, apenas 1 paciente se apresenta em tal situação. Com 5 temos 3 pacientes.
 
 ```{r fig.height=10}
 
@@ -173,6 +177,8 @@ proxy |>
          Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
          Infection_Type = stringr::str_remove(Infection_Type, "Infecção (de|em) "),
          Infection_Type = stringr::str_to_sentence(Infection_Type)) |>
+  # dplyr::filter(Present == 1) |>
+  # dplyr::count(`1 - Insira o Prontuário do Paciente`) |> dplyr::arrange(dplyr::desc(n))
   ggplot() +
   aes(
     x = factor(Infection_Type, levels = unique(proxy2$name)), 
@@ -210,18 +216,18 @@ protf |>
   dplyr::count(`20.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |> 
-  dplyr::mutate(Percentual = n / 642) |>
+  dplyr::mutate(Percentual = n / 632) |>
   dplyr::arrange(dplyr::desc(n)) |> 
   dplyr::filter(n > 1) |>
   print(n = 50)
   
 ```
 
-Entre os 641 pacientes com comorbidade, 195 diferentes combinações de comorbidade são observadas - mas 49 aparecem em ao menos dois pacientes.
+Entre os 632 pacientes com comorbidade, 187 diferentes combinações de comorbidade são observadas - mas 47 aparecem em ao menos dois pacientes.
 
 Mesma coisa mas agora reunindo todos os resultados similares em um único grupo de soma.
 
-97 diferentes, 40 aparecendo ao menos duas vezes.
+92 diferentes, 37 aparecendo ao menos duas vezes.
 
 ```{r}
 
@@ -240,8 +246,8 @@ protf |>
   ) |>
   dplyr::count(Comorbidades) |> 
   dplyr::arrange(dplyr::desc(n)) |> 
-  dplyr::filter(n > 1) |>
-  print(n = 50)
+  # dplyr::filter(n > 1) |>
+  print(n = 100)
   
 ```
 
@@ -429,7 +435,7 @@ Nenhum paciente com IgG acima do valor de referência.
 
 ## d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?
 
-72 pacientes, 38 diferentes combinações de comorbidades - apenas 5 ocorrendo em ao menos dois pacientes.
+71 pacientes, 35 diferentes combinações de comorbidades - apenas 5 ocorrendo em ao menos dois pacientes.
 
 ```{r}
 
@@ -456,11 +462,37 @@ NA = não se aplica` == "Abaixo do valor de referência" &
 
 ```
 
+Reunindo os resultados similares em um único grupo, temos 25 diferentes.
+
+```{r}
+
+protf |> 
+  dplyr::filter(
+        `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica` == "Abaixo do valor de referência" &
+    `20 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
+  ) |>
+  dplyr::select(Comorbidades = `20.1 -  Qual comorbidade o paciente possui?
+
+-Em caso negativo responder com NA`) |>
+  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  dplyr::mutate(
+    Comorbidades = stringr::str_trim(Comorbidades),
+    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
+    Comorbidades = stringr::str_to_sentence(Comorbidades)
+  ) |>
+  dplyr::count(Comorbidades) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  print(n = 30)
+  
+```
+
 # 3. Análise dos menores de 1 ano
 
-## a) Entre os menores de 1 ano, quantos apresentavam a comorbidade "Prematuridade"?
+> Entre os menores de 1 ano, quantos apresentavam a comorbidade "Prematuridade"?
 
-Dentre os 201 pacientes menores de 1 ano e com comorbidade, temos 77 diferentes combinações de comorbidades.
+Dentre os 198 pacientes menores de 1 ano e com comorbidade, temos 78 diferentes combinações de comorbidades.
 
 ```{r}
 
@@ -493,9 +525,33 @@ protf |>
 
 ```
 
-Destas 77, 20 apresentam "Prematuridade".
+Destas 78, 20 apresentam "Prematuridade".
 
-## b) Levando em consideração pacientes que fizeram os exames PROTF + IgG, definir um valor de referência para PROTF levando como referência a dosagem de IgG
+Somados:
+
+```{r}
+
+protf |> 
+  dplyr::filter(
+    `3 - Insira Faixa etária do paciente` == "< 1 ano" &
+    `20 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
+  ) |>
+  dplyr::select(Comorbidades = `20.1 -  Qual comorbidade o paciente possui?
+
+-Em caso negativo responder com NA`) |>
+  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  dplyr::mutate(
+    Comorbidades = stringr::str_trim(Comorbidades),
+    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
+    Comorbidades = stringr::str_to_sentence(Comorbidades)
+  ) |>
+  dplyr::count(Comorbidades) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  dplyr::filter(Comorbidades == "Prematuridade")
+  
+```
+
+# Levando em consideração pacientes que fizeram os exames PROTF + IgG, definir um valor de referência para PROTF levando como referência a dosagem de IgG
 
 147 pacientes.
 
@@ -857,7 +913,8 @@ infection_analysis <- protf |>
     `11 - Infecção de sistema urinário?`,
     `12 - Infecção de sistema gastrointestinal?`,
     `13 - Infecção de pele?`,
-    `14 - Sepse?`
+    `14 - Sepse?`,
+    `15 - Outros?`
   ) |>
   pivot_longer(
     cols = !Risk_Group,
@@ -1131,12 +1188,12 @@ infection_analysis_age <- protf |>
   dplyr::select(
     Age_Group,
     Risk_Group,
-    matches("^(8|9|10|11|12|13|14) -")
+    matches("^(8|9|10|11|12|13|14|15) -")
   ) |>
   
   # Pivot Longer
   tidyr::pivot_longer(
-    cols = matches("^(8|9|10|11|12|13|14) -"), 
+    cols = matches("^(8|9|10|11|12|13|14|15) -"), 
     names_to = "Infection_Type",
     values_to = "Status"
   ) |>
@@ -1251,15 +1308,11 @@ To determine if the PROTF cutoffs serve as functional predictors of infection ri
 
 # Medicações vs PROTF e IgG
 
-62 diferentes combinações.
-
-
-
-medicações utilizadas, 16 com ao menos duas ocorrências.
-
-Reunindo os resultados similares em um único grupo de soma, ficamos com 48. 27 aparecendo ao menos duas vezes.
-
 ```{r}
+
+protf |> 
+  dplyr::count(`34 -  Medicações Utilizadas`) |>
+  dplyr::mutate(Percentual = n / nrow(protf)) |> dplyr::arrange(dplyr::desc(n))
 
 protf |>
   tidyr::separate_longer_delim(
@@ -1274,8 +1327,7 @@ protf |>
   ) |>
   tidyr::drop_na(Medicações) |>
   dplyr::count(Medicações) |>
-  dplyr::arrange(dplyr::desc(n)) |> 
-  dplyr::filter(n >= 2) |> print(n = 30)
+  dplyr::arrange(dplyr::desc(n))
 
 ```
 
@@ -1448,9 +1500,7 @@ lm(
 
 # Medicações mais prevalentes por Idade e Sexo
 
-130 diferentes combinações - separando as que aparecem em combinações no mesmo paciente, já que as combinações são sempre únicas (todos os resultados similares em um único grupo de soma, conforme exemplificado e solicitado por e-mail).
-
-Abaixo mostramos - por Sexo, apenas as que aparecem ao menos duas vezes.
+Abaixo mostramos - por Sexo.
 
 ```{r}
 
@@ -1465,7 +1515,7 @@ t1 <- protf |>
   dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
   dplyr::count(Medicações, Idade, Sexo) |>
   dplyr::arrange(dplyr::desc(n), Medicações) |>
-  dplyr::filter(n > 1) |>
+  # dplyr::filter(n > 1) |>
   dplyr::group_split(Sexo) 
 
 t1[[1]] |> print(n = 30)
@@ -1488,7 +1538,7 @@ protf |>
   dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
   dplyr::count(Medicações, Idade, Sexo) |>
   dplyr::arrange(dplyr::desc(n), Medicações, Sexo) |>
-  dplyr::filter(n > 1) |>
+  # dplyr::filter(n > 1) |>
   dplyr::group_split(Idade)
   
 ```
@@ -1510,6 +1560,165 @@ protf |>
 
 ```
 
+# Perda proteica na urina (PPU)
+
+> Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?
+
+```{r}
+
+protf |>
+  dplyr::select(
+    PPU=`24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`
+  ) |>
+  dplyr::count(PPU) |>
+  dplyr::mutate(Percentual = n / nrow(protf))
+
+```
+
+Medidas descritivas.
+
+```{r}
+
+protf |>
+  dplyr::select(
+    PPU=`24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`,
+    PROTF = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  dplyr::summarise(
+    n_patients = dplyr::n(),
+    dplyr::across(
+      c(PROTF, IgG),
+      list(
+        Min = ~ min(.x, na.rm = TRUE),
+        Q1 = ~ quantile(.x, 0.25, na.rm = TRUE),
+        Median = ~ median(.x, na.rm = TRUE),
+        Mean = ~ mean(.x, na.rm = TRUE),
+        Q3 = ~ quantile(.x, 0.75, na.rm = TRUE),
+        Max = ~ max(.x, na.rm = TRUE),
+        NAs = ~ sum(is.na(.x))
+      ),
+      .names = "{.col}_{.fn}"
+    ),
+    .by = PPU
+  ) |>
+  tidyr::pivot_longer(
+    cols = -PPU, 
+    names_to = "Metric", 
+    values_to = "Value"
+  ) |>
+  tidyr::pivot_wider(names_from = PPU, values_from = Value
+  )
+
+```
+
+Tanto pelas medidas quanto visualmente não aparenta ter diferença significativa tanto de PROTF quanto de IgG pelo fato de ter tido perda proteica na urina ou não.
+
+```{r fig.width=9, fig.height=6}
+
+protf |>
+  dplyr::select(
+    PPU=`24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`, 
+    PROTF = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, y = PROTF, fill = PPU, color = PPU) +
+  geom_point(size = 3, shape = 21, alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 1), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", 
+                   label.x.npc = 0.7,   # 70% across the x-axis
+                   label.y.npc = "bottom") + 
+  labs(title = "Correlação entre IgG e PROTF",
+       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
+       fill = "Perda proteica na urina: ", color = "Perda proteica na urina: ",
+       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
+  scale_y_continuous(breaks = seq(1, 2.6, by = 0.1))
+
+```
+
+```{r fig.width=9, fig.height=4.5}
+
+p1 <- protf |>
+  dplyr::select(
+    PPU=`24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, fill = PPU) +
+  geom_histogram(alpha = 0.8, binwidth = 50) +
+  labs(title = "Histograma de IgG",
+       subtitle = "Binwidth: 50",
+       fill = "Perda proteica na urina: ",
+       x = "IgG (mg/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
+  scale_y_continuous(breaks = seq(0, 30, by = 5))
+  
+p2 <- protf |>
+  dplyr::select(
+    PPU = `24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`, 
+    PROTF = `16 - Resultado do Primeiro exame`
+  ) |>
+  ggplot() +
+  aes(x = PROTF, fill = PPU) +
+  geom_histogram(alpha = 0.8, binwidth = 0.1) +
+  labs(title = "Histograma de PROTF",
+       subtitle = "Binwidth: 0.1",
+       fill = "Perda proteica na urina: ",
+       x = "PROTF (g/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(1, 2.5, by = 0.2)) +
+  scale_y_continuous(breaks = seq(0, 150, by = 15))
+
+p1 + p2 + patchwork::plot_layout(guides = "collect")
+
+```
+
+Ajustamos também um modelo linear para entender melhor a associação entre IgG e a perda proteica de urina - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos um valor-p de 0.7344, indicando que realmente não existe associação entre o valor de IgG e o fato de ter tido perda proteica na urina.
+
+```{r}
+
+lm(
+  IgG ~ PPU,
+  data = protf |>
+  dplyr::select(
+    PPU = `24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  tidyr::drop_na(IgG)
+) |>
+  anova()
+
+```
 
 # Methodology & References
 

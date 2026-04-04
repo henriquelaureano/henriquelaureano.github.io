@@ -194,7 +194,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 25, 2026</p>
+      <p class="date-modified">April 3, 2026</p>
     </div>
   </div>
     
@@ -335,12 +335,11 @@ window.Quarto = {
 <span id="cb9-2"><a href="#cb9-2"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
+<pre><code># A tibble: 2 × 3
   `7 - Quadros infecciosos até o momento da coleta?`     n Percentual
   &lt;chr&gt;                                              &lt;int&gt;      &lt;dbl&gt;
-1 Não                                                   45      0.278
-2 Sem informação                                        44      0.272
-3 Sim                                                   73      0.451</code></pre>
+1 Não                                                   89      0.549
+2 Sim                                                   73      0.451</code></pre>
 </div>
 </div>
 <p>Em quem tem caso positivo para quadro infeccioso</p>
@@ -356,27 +355,29 @@ window.Quarto = {
 <span id="cb11-7"><a href="#cb11-7"></a>                <span class="st">`</span><span class="at">11 - Infecção de sistema urinário?</span><span class="st">`</span>,</span>
 <span id="cb11-8"><a href="#cb11-8"></a>                <span class="st">`</span><span class="at">12 - Infecção de sistema gastrointestinal?</span><span class="st">`</span>,</span>
 <span id="cb11-9"><a href="#cb11-9"></a>                <span class="st">`</span><span class="at">13 - Infecção de pele?</span><span class="st">`</span>,</span>
-<span id="cb11-10"><a href="#cb11-10"></a>                <span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-11"><a href="#cb11-11"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="st">`</span><span class="at">8 - Infecção em sistema nervoso central?</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-12"><a href="#cb11-12"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(value <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-13"><a href="#cb11-13"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(name) <span class="sc">|&gt;</span></span>
-<span id="cb11-14"><a href="#cb11-14"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-10"><a href="#cb11-10"></a>                <span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span>,</span>
+<span id="cb11-11"><a href="#cb11-11"></a>                <span class="st">`</span><span class="at">15 - Outros?</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-12"><a href="#cb11-12"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="st">`</span><span class="at">8 - Infecção em sistema nervoso central?</span><span class="st">`</span><span class="sc">:</span><span class="st">`</span><span class="at">15 - Outros?</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-13"><a href="#cb11-13"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(value <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(name) <span class="sc">|&gt;</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="dv">73</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 3
+<pre><code># A tibble: 8 × 3
   name                                           n Percentual
   &lt;chr&gt;                                      &lt;int&gt;      &lt;dbl&gt;
-1 10 - Infecção de vias áreas inferiores?       24     0.255 
-2 9 - Infecção de vias áreas superioras?        18     0.191 
-3 14 - Sepse?                                   14     0.149 
-4 11 - Infecção de sistema urinário?            13     0.138 
-5 13 - Infecção de pele?                        10     0.106 
-6 12 - Infecção de sistema gastrointestinal?     9     0.0957
-7 8 - Infecção em sistema nervoso central?       6     0.0638</code></pre>
+1 15 - Outros?                                  38     0.521 
+2 10 - Infecção de vias áreas inferiores?       24     0.329 
+3 9 - Infecção de vias áreas superioras?        18     0.247 
+4 14 - Sepse?                                   14     0.192 
+5 11 - Infecção de sistema urinário?            13     0.178 
+6 13 - Infecção de pele?                        10     0.137 
+7 12 - Infecção de sistema gastrointestinal?     9     0.123 
+8 8 - Infecção em sistema nervoso central?       6     0.0822</code></pre>
 </div>
 </div>
-<p>Dos 73 pacientes com quadro infeccioso, 22 apresentaram em mais de um sistema (ao menos em dois). 30.14%.</p>
-<p>Nestes 22, estes são os sintomas que aparecem e em quantos dos 22 pacientes.</p>
+<p>Dos 73 pacientes com quadro infeccioso, 32 apresentaram em mais de um sistema (ao menos em dois). 43.84%.</p>
+<p>Nestes 32, estes são os sintomas que aparecem e em quantos dos 32 pacientes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -391,42 +392,46 @@ window.Quarto = {
 <span id="cb13-9"><a href="#cb13-9"></a>                <span class="st">`</span><span class="at">11 - Infecção de sistema urinário?</span><span class="st">`</span>,</span>
 <span id="cb13-10"><a href="#cb13-10"></a>                <span class="st">`</span><span class="at">12 - Infecção de sistema gastrointestinal?</span><span class="st">`</span>,</span>
 <span id="cb13-11"><a href="#cb13-11"></a>                <span class="st">`</span><span class="at">13 - Infecção de pele?</span><span class="st">`</span>,</span>
-<span id="cb13-12"><a href="#cb13-12"></a>                <span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-13"><a href="#cb13-13"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="sc">!</span><span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-14"><a href="#cb13-14"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(value <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-15"><a href="#cb13-15"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-16"><a href="#cb13-16"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb13-17"><a href="#cb13-17"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb13-18"><a href="#cb13-18"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-19"><a href="#cb13-19"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n), <span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) </span>
-<span id="cb13-20"><a href="#cb13-20"></a></span>
-<span id="cb13-21"><a href="#cb13-21"></a>(</span>
-<span id="cb13-22"><a href="#cb13-22"></a>  proxy2 <span class="ot">&lt;-</span> </span>
-<span id="cb13-23"><a href="#cb13-23"></a>    proxy <span class="sc">|&gt;</span></span>
-<span id="cb13-24"><a href="#cb13-24"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(value, n)) <span class="sc">|&gt;</span> </span>
-<span id="cb13-25"><a href="#cb13-25"></a>    <span class="fu">mutate</span>(<span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(name, <span class="st">"^[0-9]+ - "</span>),</span>
-<span id="cb13-26"><a href="#cb13-26"></a>           <span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(name, <span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>),</span>
-<span id="cb13-27"><a href="#cb13-27"></a>           <span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(name, <span class="st">"Infecção (de|em) "</span>),</span>
-<span id="cb13-28"><a href="#cb13-28"></a>           <span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(name)) <span class="sc">|&gt;</span></span>
-<span id="cb13-29"><a href="#cb13-29"></a>    dplyr<span class="sc">::</span><span class="fu">count</span>(name) <span class="sc">|&gt;</span> </span>
-<span id="cb13-30"><a href="#cb13-30"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span></span>
-<span id="cb13-31"><a href="#cb13-31"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="dv">22</span>) </span>
-<span id="cb13-32"><a href="#cb13-32"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-12"><a href="#cb13-12"></a>                <span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span>,</span>
+<span id="cb13-13"><a href="#cb13-13"></a>                <span class="st">`</span><span class="at">15 - Outros?</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="sc">!</span><span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(value <span class="sc">==</span> <span class="st">"Sim"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb13-18"><a href="#cb13-18"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-19"><a href="#cb13-19"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n), <span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) </span>
+<span id="cb13-21"><a href="#cb13-21"></a></span>
+<span id="cb13-22"><a href="#cb13-22"></a><span class="co"># proxy |&gt; dplyr::distinct(`1 - Insira o Prontuário do Paciente`)</span></span>
+<span id="cb13-23"><a href="#cb13-23"></a></span>
+<span id="cb13-24"><a href="#cb13-24"></a>(</span>
+<span id="cb13-25"><a href="#cb13-25"></a>  proxy2 <span class="ot">&lt;-</span> </span>
+<span id="cb13-26"><a href="#cb13-26"></a>    proxy <span class="sc">|&gt;</span></span>
+<span id="cb13-27"><a href="#cb13-27"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(value, n)) <span class="sc">|&gt;</span> </span>
+<span id="cb13-28"><a href="#cb13-28"></a>    <span class="fu">mutate</span>(<span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(name, <span class="st">"^[0-9]+ - "</span>),</span>
+<span id="cb13-29"><a href="#cb13-29"></a>           <span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(name, <span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>),</span>
+<span id="cb13-30"><a href="#cb13-30"></a>           <span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(name, <span class="st">"Infecção (de|em) "</span>),</span>
+<span id="cb13-31"><a href="#cb13-31"></a>           <span class="at">name =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(name)) <span class="sc">|&gt;</span></span>
+<span id="cb13-32"><a href="#cb13-32"></a>    dplyr<span class="sc">::</span><span class="fu">count</span>(name) <span class="sc">|&gt;</span> </span>
+<span id="cb13-33"><a href="#cb13-33"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb13-34"><a href="#cb13-34"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="dv">32</span>) </span>
+<span id="cb13-35"><a href="#cb13-35"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 3
+<pre><code># A tibble: 8 × 3
   name                         n Percentual
   &lt;chr&gt;                    &lt;int&gt;      &lt;dbl&gt;
-1 Vias áreas inferiores       15      0.682
-2 Vias áreas superioras       13      0.591
-3 Sepse                        8      0.364
-4 Pele                         7      0.318
-5 Sistema urinário             6      0.273
-6 Sistema gastrointestinal     5      0.227
-7 Sistema nervoso central      4      0.182</code></pre>
+1 Outros                      23      0.719
+2 Vias áreas inferiores       19      0.594
+3 Vias áreas superioras       14      0.438
+4 Sepse                        9      0.281
+5 Pele                         8      0.25 
+6 Sistema gastrointestinal     7      0.219
+7 Sistema urinário             7      0.219
+8 Sistema nervoso central      4      0.125</code></pre>
 </div>
 </div>
-<p>O máximo de infecções que um paciente apresenta são 4, e 5 pacientes ficaram em tal situação.</p>
+<p>O máximo de infecções que um paciente apresenta são 5, e 3 pacientes ficaram em tal situação.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -441,19 +446,21 @@ window.Quarto = {
 <span id="cb15-9"><a href="#cb15-9"></a>         <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>),</span>
 <span id="cb15-10"><a href="#cb15-10"></a>         <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"Infecção (de|em) "</span>),</span>
 <span id="cb15-11"><a href="#cb15-11"></a>         <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Infection_Type)) <span class="sc">|&gt;</span></span>
-<span id="cb15-12"><a href="#cb15-12"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb15-13"><a href="#cb15-13"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Infection_Type, <span class="at">levels =</span> <span class="fu">unique</span>(proxy2<span class="sc">$</span>name)), </span>
-<span id="cb15-14"><a href="#cb15-14"></a>      <span class="at">y =</span> <span class="fu">factor</span>(<span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>, </span>
-<span id="cb15-15"><a href="#cb15-15"></a>                 <span class="at">levels =</span> <span class="fu">unique</span>(proxy<span class="sc">$</span><span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span> <span class="fu">rev</span>()), </span>
-<span id="cb15-16"><a href="#cb15-16"></a>      <span class="at">fill =</span> <span class="fu">as.factor</span>(Present)) <span class="sc">+</span></span>
-<span id="cb15-17"><a href="#cb15-17"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span> <span class="co"># Adds a grid line effect</span></span>
-<span id="cb15-18"><a href="#cb15-18"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"0"</span> <span class="ot">=</span> <span class="st">"grey95"</span>, <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>),</span>
-<span id="cb15-19"><a href="#cb15-19"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Não"</span>, <span class="st">"Sim"</span>),</span>
-<span id="cb15-20"><a href="#cb15-20"></a>                    <span class="at">name =</span> <span class="st">"Presença: "</span>) <span class="sc">+</span></span>
-<span id="cb15-21"><a href="#cb15-21"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Tipo de Infecção"</span>, <span class="at">y =</span> <span class="st">"Paciente"</span>,</span>
-<span id="cb15-22"><a href="#cb15-22"></a>       <span class="at">title =</span> <span class="st">"Mapa de Calor de Infecções por Paciente"</span>,</span>
-<span id="cb15-23"><a href="#cb15-23"></a>       <span class="at">subtitle =</span> <span class="st">"Apenas pacientes com ao menos dois tipos de infecção"</span>) <span class="sc">+</span></span>
-<span id="cb15-24"><a href="#cb15-24"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span> , <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-12"><a href="#cb15-12"></a>  <span class="co"># dplyr::filter(Present == 1) |&gt;</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a>  <span class="co"># dplyr::count(`1 - Insira o Prontuário do Paciente`) |&gt; dplyr::arrange(dplyr::desc(n))</span></span>
+<span id="cb15-14"><a href="#cb15-14"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(Infection_Type, <span class="at">levels =</span> <span class="fu">unique</span>(proxy2<span class="sc">$</span>name)), </span>
+<span id="cb15-16"><a href="#cb15-16"></a>      <span class="at">y =</span> <span class="fu">factor</span>(<span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>, </span>
+<span id="cb15-17"><a href="#cb15-17"></a>                 <span class="at">levels =</span> <span class="fu">unique</span>(proxy<span class="sc">$</span><span class="st">`</span><span class="at">1 - Insira o Prontuário do Paciente</span><span class="st">`</span>) <span class="sc">|&gt;</span> <span class="fu">rev</span>()), </span>
+<span id="cb15-18"><a href="#cb15-18"></a>      <span class="at">fill =</span> <span class="fu">as.factor</span>(Present)) <span class="sc">+</span></span>
+<span id="cb15-19"><a href="#cb15-19"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span> <span class="co"># Adds a grid line effect</span></span>
+<span id="cb15-20"><a href="#cb15-20"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"0"</span> <span class="ot">=</span> <span class="st">"grey95"</span>, <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>),</span>
+<span id="cb15-21"><a href="#cb15-21"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Não"</span>, <span class="st">"Sim"</span>),</span>
+<span id="cb15-22"><a href="#cb15-22"></a>                    <span class="at">name =</span> <span class="st">"Presença: "</span>) <span class="sc">+</span></span>
+<span id="cb15-23"><a href="#cb15-23"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Tipo de Infecção"</span>, <span class="at">y =</span> <span class="st">"Paciente"</span>,</span>
+<span id="cb15-24"><a href="#cb15-24"></a>       <span class="at">title =</span> <span class="st">"Mapa de Calor de Infecções por Paciente"</span>,</span>
+<span id="cb15-25"><a href="#cb15-25"></a>       <span class="at">subtitle =</span> <span class="st">"Apenas pacientes com ao menos dois tipos de infecção"</span>) <span class="sc">+</span></span>
+<span id="cb15-26"><a href="#cb15-26"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span> , <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -474,12 +481,11 @@ window.Quarto = {
 <span id="cb16-3"><a href="#cb16-3"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
+<pre><code># A tibble: 2 × 3
   21 - Paciente possui alguma comorbidade/diagnostico de base…¹     n Percentual
   &lt;chr&gt;                                                         &lt;int&gt;      &lt;dbl&gt;
-1 Não                                                              19      0.117
-2 Sem informação                                                   29      0.179
-3 Sim                                                             114      0.704
+1 Não                                                              48      0.296
+2 Sim                                                             114      0.704
 # ℹ abbreviated name:
 #   ¹​`21 - Paciente possui alguma comorbidade/diagnostico de base?`</code></pre>
 </div>
@@ -495,21 +501,23 @@ window.Quarto = {
 <span id="cb18-8"><a href="#cb18-8"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 12 × 2
+<pre><code># A tibble: 14 × 2
    21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo resp…¹     n
    &lt;chr&gt;                                                                   &lt;int&gt;
  1 Síndrome genética                                                           6
  2 Alergia                                                                     5
  3 Diabetes tipo I ou II                                                       4
  4 Hepatopatia                                                                 4
- 5 Síndrome nefrótica                                                          4
- 6 Deformidade óssea congênita                                                 3
- 7 Neurologica                                                                 3
- 8 Alergia; Lúpus Eritematoso Sistêmico                                        2
- 9 Anemia; TMO                                                                 2
-10 Artrite Idiopática Juvenil                                                  2
-11 Cardiopatia                                                                 2
-12 Neurologica; Prematuridade                                                  2
+ 5 Nefropatia                                                                  4
+ 6 Síndrome nefrótica                                                          4
+ 7 Deformidade óssea congênita                                                 3
+ 8 Neurologica                                                                 3
+ 9 Alergia; Lúpus Eritematoso Sistêmico                                        2
+10 Alergia; Nefropatia; Pneumopatia                                            2
+11 Anemia; TMO                                                                 2
+12 Artrite Idiopática Juvenil                                                  2
+13 Cardiopatia                                                                 2
+14 Neurologica; Prematuridade                                                  2
 # ℹ abbreviated name:
 #   ¹​`21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo responder com NA`</code></pre>
 </div>
@@ -526,12 +534,11 @@ window.Quarto = {
 <span id="cb20-3"><a href="#cb20-3"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
+<pre><code># A tibble: 2 × 3
   `22 - Paciente realiza hemodiálise?`     n Percentual
   &lt;chr&gt;                                &lt;int&gt;      &lt;dbl&gt;
-1 Não                                     94     0.580 
-2 Sem informação                          60     0.370 
-3 Sim                                      8     0.0494</code></pre>
+1 Não                                    154     0.951 
+2 Sim                                      8     0.0494</code></pre>
 </div>
 </div>
 </section>
@@ -547,12 +554,11 @@ window.Quarto = {
 <span id="cb22-5"><a href="#cb22-5"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
+<pre><code># A tibble: 2 × 3
   23 - Paciente passou por cirurgia nos 30 dias que anteceder…¹     n Percentual
   &lt;chr&gt;                                                         &lt;int&gt;      &lt;dbl&gt;
-1 Não                                                              88     0.543 
-2 Sem informação                                                   68     0.420 
-3 Sim                                                               6     0.0370
+1 Não                                                             156     0.963 
+2 Sim                                                               6     0.0370
 # ℹ abbreviated name:
 #   ¹​`23 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame ELPT?`</code></pre>
 </div>
@@ -570,12 +576,11 @@ window.Quarto = {
 <span id="cb24-5"><a href="#cb24-5"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
+<pre><code># A tibble: 2 × 3
   24 - Paciente passou por tratamento oncológico nos 30 dias …¹     n Percentual
   &lt;chr&gt;                                                         &lt;int&gt;      &lt;dbl&gt;
-1 Não                                                              93     0.574 
-2 Sem informação                                                   63     0.389 
-3 Sim                                                               6     0.0370
+1 Não                                                             156     0.963 
+2 Sim                                                               6     0.0370
 # ℹ abbreviated name:
 #   ¹​`24 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame ELPT?`</code></pre>
 </div>
@@ -593,12 +598,11 @@ window.Quarto = {
 <span id="cb26-5"><a href="#cb26-5"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
+<pre><code># A tibble: 2 × 3
   27 - Paciente faz uso de medicação que pode causar imunodef…¹     n Percentual
   &lt;chr&gt;                                                         &lt;int&gt;      &lt;dbl&gt;
-1 Não                                                              53      0.327
-2 Sem informação                                                   68      0.420
-3 Sim                                                              41      0.253
+1 Não                                                             130      0.802
+2 Sim                                                              32      0.198
 # ℹ abbreviated name:
 #   ¹​`27 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame ELPT?`</code></pre>
 </div>
@@ -614,12 +618,11 @@ window.Quarto = {
 <span id="cb28-3"><a href="#cb28-3"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentual =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
+<pre><code># A tibble: 2 × 3
   `33 - Paciente possui registro de óbito?`     n Percentual
   &lt;chr&gt;                                     &lt;int&gt;      &lt;dbl&gt;
-1 Não                                         152     0.938 
-2 Sem informação                                2     0.0123
-3 Sim                                           8     0.0494</code></pre>
+1 Não                                         154     0.951 
+2 Sim                                           8     0.0494</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -835,12 +838,11 @@ window.Quarto = {
 <span id="cb44-7"><a href="#cb44-7"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(<span class="st">`</span><span class="at">21 - Paciente possui alguma comorbidade/diagnostico de base?</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 2
+<pre><code># A tibble: 2 × 2
   `21 - Paciente possui alguma comorbidade/diagnostico de base?`     n
   &lt;chr&gt;                                                          &lt;int&gt;
-1 Não                                                                4
-2 Sem informação                                                     2
-3 Sim                                                               22</code></pre>
+1 Não                                                                6
+2 Sim                                                               22</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -857,20 +859,29 @@ window.Quarto = {
 <span id="cb46-11"><a href="#cb46-11"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 21 × 2
+<pre><code># A tibble: 20 × 2
    21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo resp…¹     n
    &lt;chr&gt;                                                                   &lt;int&gt;
  1 Anemia; TMO                                                                 2
- 2 Acidemia propiônica                                                         1
- 3 Alergia; Cardiopatia; Hepatopatia; Hipotireoidismo; Deficiência de GH       1
- 4 Alergia; Insuficiência renal; Síndrome genética; Lúpus Eritematoso Sis…     1
- 5 Anemia; Síndrome de Evans                                                   1
- 6 Cardiopatia; Doença renal                                                   1
+ 2 Nefropatia                                                                  2
+ 3 Acidemia propiônica                                                         1
+ 4 Alergia; Cardiopatia; Hepatopatia; Hipotireoidismo; Deficiência de GH       1
+ 5 Alergia; Nefropatia; Síndrome genética; Lúpus Eritematoso Sistêmico         1
+ 6 Anemia; Síndrome de Evans                                                   1
  7 Cardiopatia; Hepatopatia; Pneumopatia; Síndrome genética; Hipogamaglob…     1
- 8 Cardiopatia; Pneumopatia; Transplante cardíaco                              1
- 9 Deformidade óssea congênita; Insuficiência renal                            1
-10 Diabetes tipo I ou II                                                       1
-# ℹ 11 more rows
+ 8 Cardiopatia; Nefropatia                                                     1
+ 9 Cardiopatia; Pneumopatia; Transplante cardíaco                              1
+10 Deformidade óssea congênita; Nefropatia                                     1
+11 Diabetes tipo I ou II                                                       1
+12 Doença de via biliar; Doença intestinal; Nefropatia; Hepatopatia            1
+13 Doença de via biliar; Hepatopatia; Coagulopatia                             1
+14 Hepatopatia; Neurologica                                                    1
+15 Hepatopatia; Neurologica; Lúpus Eritematoso Sistêmico                       1
+16 Hipogamaglobulinemia transitória da infância; Dermatite atópica             1
+17 Neuropatia em investigação                                                  1
+18 Púrpura Trombocitopênica Imune                                              1
+19 Síndrome da amplificação dolorosa                                           1
+20 Síndrome nefrótica                                                          1
 # ℹ abbreviated name:
 #   ¹​`21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo responder com NA`</code></pre>
 </div>
@@ -907,7 +918,7 @@ window.Quarto = {
 <pre><code># A tibble: 1 × 2
   `21 - Paciente possui alguma comorbidade/diagnostico de base?`     n
   &lt;chr&gt;                                                          &lt;int&gt;
-1 Sem informação                                                     1</code></pre>
+1 Não                                                                1</code></pre>
 </div>
 </div>
 </section>
@@ -1091,7 +1102,7 @@ Residual standard error: 0.04372 on 68 degrees of freedom
 Multiple R-Squared: 0.8623,  Adjusted R-squared: 0.8562 
 
 Boot restarting based on 6 samples. Last fit:
-Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
+Convergence attained in 2 iterations (rel. change 3.9268e-11)</code></pre>
 </div>
 </div>
 <p>Aqui é apenas para “comprovar” que o grupo “Normal” não tem inclinação estatísticamente significativa. Neste grupo, independente do valor de IgG se espera o mesmo valor de ELPT.</p>
@@ -1438,76 +1449,77 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <span id="cb69-13"><a href="#cb69-13"></a>    <span class="st">`</span><span class="at">11 - Infecção de sistema urinário?</span><span class="st">`</span>,</span>
 <span id="cb69-14"><a href="#cb69-14"></a>    <span class="st">`</span><span class="at">12 - Infecção de sistema gastrointestinal?</span><span class="st">`</span>,</span>
 <span id="cb69-15"><a href="#cb69-15"></a>    <span class="st">`</span><span class="at">13 - Infecção de pele?</span><span class="st">`</span>,</span>
-<span id="cb69-16"><a href="#cb69-16"></a>    <span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span></span>
-<span id="cb69-17"><a href="#cb69-17"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb69-18"><a href="#cb69-18"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb69-19"><a href="#cb69-19"></a>    <span class="at">cols =</span> <span class="sc">!</span>Risk_Group,</span>
-<span id="cb69-20"><a href="#cb69-20"></a>    <span class="at">names_to =</span> <span class="st">"Infection_Type"</span>,</span>
-<span id="cb69-21"><a href="#cb69-21"></a>    <span class="at">values_to =</span> <span class="st">"Status"</span></span>
-<span id="cb69-22"><a href="#cb69-22"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb69-23"><a href="#cb69-23"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb69-24"><a href="#cb69-24"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^</span><span class="sc">\\</span><span class="st">d+ - "</span>),</span>
-<span id="cb69-25"><a href="#cb69-25"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>),</span>
-<span id="cb69-26"><a href="#cb69-26"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^Infecção (de|em) "</span>),</span>
-<span id="cb69-27"><a href="#cb69-27"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Infection_Type),</span>
-<span id="cb69-28"><a href="#cb69-28"></a>    <span class="at">Is_Infected =</span> <span class="fu">ifelse</span>(Status <span class="sc">==</span> <span class="st">"Sim"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb69-29"><a href="#cb69-29"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb69-30"><a href="#cb69-30"></a>  <span class="co"># Remove NAs if any exist in Status/Risk_Group</span></span>
-<span id="cb69-31"><a href="#cb69-31"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Is_Infected))</span>
-<span id="cb69-32"><a href="#cb69-32"></a></span>
-<span id="cb69-33"><a href="#cb69-33"></a>rates_table <span class="ot">&lt;-</span> infection_analysis <span class="sc">|&gt;</span></span>
-<span id="cb69-34"><a href="#cb69-34"></a>  <span class="fu">group_by</span>(Infection_Type, Risk_Group) <span class="sc">|&gt;</span></span>
-<span id="cb69-35"><a href="#cb69-35"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb69-36"><a href="#cb69-36"></a>    <span class="at">Total_Patients =</span> <span class="fu">n</span>(),</span>
-<span id="cb69-37"><a href="#cb69-37"></a>    <span class="at">Infected_Count =</span> <span class="fu">sum</span>(Is_Infected),</span>
-<span id="cb69-38"><a href="#cb69-38"></a>    <span class="at">Rate_Pct =</span> (Infected_Count <span class="sc">/</span> Total_Patients) <span class="sc">*</span> <span class="dv">100</span>, <span class="co"># Em porcentagem</span></span>
-<span id="cb69-39"><a href="#cb69-39"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb69-40"><a href="#cb69-40"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb69-41"><a href="#cb69-41"></a>  <span class="co"># Coloca High_Risk e Low_Risk lado a lado</span></span>
-<span id="cb69-42"><a href="#cb69-42"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb69-43"><a href="#cb69-43"></a>    <span class="at">names_from =</span> Risk_Group,</span>
-<span id="cb69-44"><a href="#cb69-44"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(Total_Patients, Infected_Count, Rate_Pct)</span>
-<span id="cb69-45"><a href="#cb69-45"></a>  )</span>
-<span id="cb69-46"><a href="#cb69-46"></a></span>
-<span id="cb69-47"><a href="#cb69-47"></a>stats_table <span class="ot">&lt;-</span> infection_analysis <span class="sc">|&gt;</span></span>
-<span id="cb69-48"><a href="#cb69-48"></a>  <span class="fu">group_by</span>(Infection_Type) <span class="sc">|&gt;</span></span>
-<span id="cb69-49"><a href="#cb69-49"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
-<span id="cb69-50"><a href="#cb69-50"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb69-51"><a href="#cb69-51"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="cf">function</span>(df) {</span>
-<span id="cb69-52"><a href="#cb69-52"></a>      <span class="co"># Tabela cruzada 2x2</span></span>
-<span id="cb69-53"><a href="#cb69-53"></a>      tbl <span class="ot">&lt;-</span> <span class="fu">table</span>(df<span class="sc">$</span>Risk_Group, df<span class="sc">$</span>Is_Infected)</span>
-<span id="cb69-54"><a href="#cb69-54"></a>      </span>
-<span id="cb69-55"><a href="#cb69-55"></a>      <span class="co"># Verifica se a tabela é válida (tem 2 grupos de risco e pelo menos infectados e não infectados no geral)</span></span>
-<span id="cb69-56"><a href="#cb69-56"></a>      <span class="co"># Se for muito esparsa, fisher.test pode falhar ou retornar NULL</span></span>
-<span id="cb69-57"><a href="#cb69-57"></a>      <span class="fu">tryCatch</span>({</span>
-<span id="cb69-58"><a href="#cb69-58"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">fisher.test</span>(tbl))</span>
-<span id="cb69-59"><a href="#cb69-59"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
-<span id="cb69-60"><a href="#cb69-60"></a>    })</span>
-<span id="cb69-61"><a href="#cb69-61"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb69-62"><a href="#cb69-62"></a>  <span class="fu">unnest</span>(model) <span class="sc">|&gt;</span></span>
-<span id="cb69-63"><a href="#cb69-63"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Infection_Type, estimate, p.value, conf.low, conf.high)</span>
-<span id="cb69-64"><a href="#cb69-64"></a></span>
-<span id="cb69-65"><a href="#cb69-65"></a>final_results <span class="ot">&lt;-</span> rates_table <span class="sc">|&gt;</span></span>
-<span id="cb69-66"><a href="#cb69-66"></a>  <span class="fu">left_join</span>(stats_table, <span class="at">by =</span> <span class="st">"Infection_Type"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb69-67"><a href="#cb69-67"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb69-68"><a href="#cb69-68"></a>    <span class="at">Odds_Ratio =</span> estimate,</span>
-<span id="cb69-69"><a href="#cb69-69"></a>    <span class="at">Significant =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>)</span>
-<span id="cb69-70"><a href="#cb69-70"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb69-71"><a href="#cb69-71"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb69-72"><a href="#cb69-72"></a>    Infection_Type, </span>
-<span id="cb69-73"><a href="#cb69-73"></a>    <span class="at">Rate_High =</span> Rate_Pct_High_Risk, </span>
-<span id="cb69-74"><a href="#cb69-74"></a>    <span class="at">Rate_Low =</span> Rate_Pct_Low_Risk,</span>
-<span id="cb69-75"><a href="#cb69-75"></a>    Odds_Ratio, </span>
-<span id="cb69-76"><a href="#cb69-76"></a>    conf.low, </span>
-<span id="cb69-77"><a href="#cb69-77"></a>    conf.high,</span>
-<span id="cb69-78"><a href="#cb69-78"></a>    p.value, </span>
-<span id="cb69-79"><a href="#cb69-79"></a>    Significant</span>
-<span id="cb69-80"><a href="#cb69-80"></a>  )</span>
-<span id="cb69-81"><a href="#cb69-81"></a></span>
-<span id="cb69-82"><a href="#cb69-82"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
-<span id="cb69-83"><a href="#cb69-83"></a>  final_results, <span class="at">digits =</span> <span class="dv">2</span>, </span>
-<span id="cb69-84"><a href="#cb69-84"></a>  <span class="at">caption =</span> <span class="st">"Prevalência de Infecções por Grupo de Risco (ELPT &lt; 0.41)"</span></span>
-<span id="cb69-85"><a href="#cb69-85"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb69-16"><a href="#cb69-16"></a>    <span class="st">`</span><span class="at">14 - Sepse?</span><span class="st">`</span>,</span>
+<span id="cb69-17"><a href="#cb69-17"></a>    <span class="st">`</span><span class="at">15 - Outros?</span><span class="st">`</span></span>
+<span id="cb69-18"><a href="#cb69-18"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb69-19"><a href="#cb69-19"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb69-20"><a href="#cb69-20"></a>    <span class="at">cols =</span> <span class="sc">!</span>Risk_Group,</span>
+<span id="cb69-21"><a href="#cb69-21"></a>    <span class="at">names_to =</span> <span class="st">"Infection_Type"</span>,</span>
+<span id="cb69-22"><a href="#cb69-22"></a>    <span class="at">values_to =</span> <span class="st">"Status"</span></span>
+<span id="cb69-23"><a href="#cb69-23"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb69-24"><a href="#cb69-24"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb69-25"><a href="#cb69-25"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^</span><span class="sc">\\</span><span class="st">d+ - "</span>),</span>
+<span id="cb69-26"><a href="#cb69-26"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"</span><span class="sc">\\</span><span class="st">?"</span>),</span>
+<span id="cb69-27"><a href="#cb69-27"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(Infection_Type, <span class="st">"^Infecção (de|em) "</span>),</span>
+<span id="cb69-28"><a href="#cb69-28"></a>    <span class="at">Infection_Type =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Infection_Type),</span>
+<span id="cb69-29"><a href="#cb69-29"></a>    <span class="at">Is_Infected =</span> <span class="fu">ifelse</span>(Status <span class="sc">==</span> <span class="st">"Sim"</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb69-30"><a href="#cb69-30"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb69-31"><a href="#cb69-31"></a>  <span class="co"># Remove NAs if any exist in Status/Risk_Group</span></span>
+<span id="cb69-32"><a href="#cb69-32"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Is_Infected))</span>
+<span id="cb69-33"><a href="#cb69-33"></a></span>
+<span id="cb69-34"><a href="#cb69-34"></a>rates_table <span class="ot">&lt;-</span> infection_analysis <span class="sc">|&gt;</span></span>
+<span id="cb69-35"><a href="#cb69-35"></a>  <span class="fu">group_by</span>(Infection_Type, Risk_Group) <span class="sc">|&gt;</span></span>
+<span id="cb69-36"><a href="#cb69-36"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb69-37"><a href="#cb69-37"></a>    <span class="at">Total_Patients =</span> <span class="fu">n</span>(),</span>
+<span id="cb69-38"><a href="#cb69-38"></a>    <span class="at">Infected_Count =</span> <span class="fu">sum</span>(Is_Infected),</span>
+<span id="cb69-39"><a href="#cb69-39"></a>    <span class="at">Rate_Pct =</span> (Infected_Count <span class="sc">/</span> Total_Patients) <span class="sc">*</span> <span class="dv">100</span>, <span class="co"># Em porcentagem</span></span>
+<span id="cb69-40"><a href="#cb69-40"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb69-41"><a href="#cb69-41"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb69-42"><a href="#cb69-42"></a>  <span class="co"># Coloca High_Risk e Low_Risk lado a lado</span></span>
+<span id="cb69-43"><a href="#cb69-43"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb69-44"><a href="#cb69-44"></a>    <span class="at">names_from =</span> Risk_Group,</span>
+<span id="cb69-45"><a href="#cb69-45"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(Total_Patients, Infected_Count, Rate_Pct)</span>
+<span id="cb69-46"><a href="#cb69-46"></a>  )</span>
+<span id="cb69-47"><a href="#cb69-47"></a></span>
+<span id="cb69-48"><a href="#cb69-48"></a>stats_table <span class="ot">&lt;-</span> infection_analysis <span class="sc">|&gt;</span></span>
+<span id="cb69-49"><a href="#cb69-49"></a>  <span class="fu">group_by</span>(Infection_Type) <span class="sc">|&gt;</span></span>
+<span id="cb69-50"><a href="#cb69-50"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb69-51"><a href="#cb69-51"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb69-52"><a href="#cb69-52"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="cf">function</span>(df) {</span>
+<span id="cb69-53"><a href="#cb69-53"></a>      <span class="co"># Tabela cruzada 2x2</span></span>
+<span id="cb69-54"><a href="#cb69-54"></a>      tbl <span class="ot">&lt;-</span> <span class="fu">table</span>(df<span class="sc">$</span>Risk_Group, df<span class="sc">$</span>Is_Infected)</span>
+<span id="cb69-55"><a href="#cb69-55"></a>      </span>
+<span id="cb69-56"><a href="#cb69-56"></a>      <span class="co"># Verifica se a tabela é válida (tem 2 grupos de risco e pelo menos infectados e não infectados no geral)</span></span>
+<span id="cb69-57"><a href="#cb69-57"></a>      <span class="co"># Se for muito esparsa, fisher.test pode falhar ou retornar NULL</span></span>
+<span id="cb69-58"><a href="#cb69-58"></a>      <span class="fu">tryCatch</span>({</span>
+<span id="cb69-59"><a href="#cb69-59"></a>        broom<span class="sc">::</span><span class="fu">tidy</span>(<span class="fu">fisher.test</span>(tbl))</span>
+<span id="cb69-60"><a href="#cb69-60"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
+<span id="cb69-61"><a href="#cb69-61"></a>    })</span>
+<span id="cb69-62"><a href="#cb69-62"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb69-63"><a href="#cb69-63"></a>  <span class="fu">unnest</span>(model) <span class="sc">|&gt;</span></span>
+<span id="cb69-64"><a href="#cb69-64"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Infection_Type, estimate, p.value, conf.low, conf.high)</span>
+<span id="cb69-65"><a href="#cb69-65"></a></span>
+<span id="cb69-66"><a href="#cb69-66"></a>final_results <span class="ot">&lt;-</span> rates_table <span class="sc">|&gt;</span></span>
+<span id="cb69-67"><a href="#cb69-67"></a>  <span class="fu">left_join</span>(stats_table, <span class="at">by =</span> <span class="st">"Infection_Type"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb69-68"><a href="#cb69-68"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb69-69"><a href="#cb69-69"></a>    <span class="at">Odds_Ratio =</span> estimate,</span>
+<span id="cb69-70"><a href="#cb69-70"></a>    <span class="at">Significant =</span> <span class="fu">ifelse</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="st">"Yes"</span>, <span class="st">"No"</span>)</span>
+<span id="cb69-71"><a href="#cb69-71"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb69-72"><a href="#cb69-72"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb69-73"><a href="#cb69-73"></a>    Infection_Type, </span>
+<span id="cb69-74"><a href="#cb69-74"></a>    <span class="at">Rate_High =</span> Rate_Pct_High_Risk, </span>
+<span id="cb69-75"><a href="#cb69-75"></a>    <span class="at">Rate_Low =</span> Rate_Pct_Low_Risk,</span>
+<span id="cb69-76"><a href="#cb69-76"></a>    Odds_Ratio, </span>
+<span id="cb69-77"><a href="#cb69-77"></a>    conf.low, </span>
+<span id="cb69-78"><a href="#cb69-78"></a>    conf.high,</span>
+<span id="cb69-79"><a href="#cb69-79"></a>    p.value, </span>
+<span id="cb69-80"><a href="#cb69-80"></a>    Significant</span>
+<span id="cb69-81"><a href="#cb69-81"></a>  )</span>
+<span id="cb69-82"><a href="#cb69-82"></a></span>
+<span id="cb69-83"><a href="#cb69-83"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb69-84"><a href="#cb69-84"></a>  final_results, <span class="at">digits =</span> <span class="dv">2</span>, </span>
+<span id="cb69-85"><a href="#cb69-85"></a>  <span class="at">caption =</span> <span class="st">"Prevalência de Infecções por Grupo de Risco (ELPT &lt; 0.41)"</span></span>
+<span id="cb69-86"><a href="#cb69-86"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -1536,6 +1548,16 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: left;">Outros</td>
+<td style="text-align: right;">59.09</td>
+<td style="text-align: right;">49.02</td>
+<td style="text-align: right;">0.67</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Pele</td>
 <td style="text-align: right;">13.64</td>
 <td style="text-align: right;">13.73</td>
@@ -1545,7 +1567,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Sepse</td>
 <td style="text-align: right;">18.18</td>
 <td style="text-align: right;">19.61</td>
@@ -1555,7 +1577,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Sistema gastrointestinal</td>
 <td style="text-align: right;">13.64</td>
 <td style="text-align: right;">11.76</td>
@@ -1565,7 +1587,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Sistema nervoso central</td>
 <td style="text-align: right;">9.09</td>
 <td style="text-align: right;">7.84</td>
@@ -1575,7 +1597,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Sistema urinário</td>
 <td style="text-align: right;">27.27</td>
 <td style="text-align: right;">13.73</td>
@@ -1585,7 +1607,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.19</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Vias áreas inferiores</td>
 <td style="text-align: right;">31.82</td>
 <td style="text-align: right;">33.33</td>
@@ -1595,7 +1617,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Vias áreas superioras</td>
 <td style="text-align: right;">27.27</td>
 <td style="text-align: right;">23.53</td>
@@ -1941,12 +1963,12 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <span id="cb73-22"><a href="#cb73-22"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
 <span id="cb73-23"><a href="#cb73-23"></a>    Age_Group,</span>
 <span id="cb73-24"><a href="#cb73-24"></a>    Risk_Group,</span>
-<span id="cb73-25"><a href="#cb73-25"></a>    <span class="fu">matches</span>(<span class="st">"^8 -|^9 -|^10 -|^11 -|^12 -|^13 -|^14 -"</span>)</span>
+<span id="cb73-25"><a href="#cb73-25"></a>    <span class="fu">matches</span>(<span class="st">"^8 -|^9 -|^10 -|^11 -|^12 -|^13 -|^14 -|^15 -"</span>)</span>
 <span id="cb73-26"><a href="#cb73-26"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb73-27"><a href="#cb73-27"></a>  </span>
 <span id="cb73-28"><a href="#cb73-28"></a>  <span class="co"># Pivot Longer</span></span>
 <span id="cb73-29"><a href="#cb73-29"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(</span>
-<span id="cb73-30"><a href="#cb73-30"></a>    <span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"^(8|9|10|11|12|13|14) -"</span>), <span class="co"># Selects all infection columns</span></span>
+<span id="cb73-30"><a href="#cb73-30"></a>    <span class="at">cols =</span> <span class="fu">matches</span>(<span class="st">"^(8|9|10|11|12|13|14|15) -"</span>), <span class="co"># Selects all infection columns</span></span>
 <span id="cb73-31"><a href="#cb73-31"></a>    <span class="at">names_to =</span> <span class="st">"Infection_Type"</span>,</span>
 <span id="cb73-32"><a href="#cb73-32"></a>    <span class="at">values_to =</span> <span class="st">"Status"</span></span>
 <span id="cb73-33"><a href="#cb73-33"></a>  ) <span class="sc">|&gt;</span></span>
@@ -2045,6 +2067,17 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">1 ano a 3 anos</td>
+<td style="text-align: left;">Outros</td>
+<td style="text-align: right;">14.29</td>
+<td style="text-align: right;">41.38</td>
+<td style="text-align: right;">4.09</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">210.52</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 ano a 3 anos</td>
 <td style="text-align: left;">Pele</td>
 <td style="text-align: right;">14.29</td>
 <td style="text-align: right;">10.34</td>
@@ -2054,7 +2087,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">1 ano a 3 anos</td>
 <td style="text-align: left;">Sepse</td>
 <td style="text-align: right;">42.86</td>
@@ -2065,7 +2098,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.65</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">1 ano a 3 anos</td>
 <td style="text-align: left;">Sistema gastrointestinal</td>
 <td style="text-align: right;">14.29</td>
@@ -2076,7 +2109,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">1 ano a 3 anos</td>
 <td style="text-align: left;">Sistema nervoso central</td>
 <td style="text-align: right;">14.29</td>
@@ -2087,7 +2120,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">1 ano a 3 anos</td>
 <td style="text-align: left;">Sistema urinário</td>
 <td style="text-align: right;">42.86</td>
@@ -2098,7 +2131,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.37</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">1 ano a 3 anos</td>
 <td style="text-align: left;">Vias áreas inferiores</td>
 <td style="text-align: right;">0.00</td>
@@ -2109,7 +2142,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.16</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">1 ano a 3 anos</td>
 <td style="text-align: left;">Vias áreas superioras</td>
 <td style="text-align: right;">28.57</td>
@@ -2118,6 +2151,17 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.12</td>
 <td style="text-align: right;">11.95</td>
 <td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10 anos a 17 anos</td>
+<td style="text-align: left;">Outros</td>
+<td style="text-align: right;">40.00</td>
+<td style="text-align: right;">55.56</td>
+<td style="text-align: right;">1.81</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">16.64</td>
+<td style="text-align: right;">0.66</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="even">
@@ -2199,6 +2243,17 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">4 anos a 9 anos</td>
+<td style="text-align: left;">Outros</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">84.62</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">14.49</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4 anos a 9 anos</td>
 <td style="text-align: left;">Pele</td>
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">15.38</td>
@@ -2208,7 +2263,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">4 anos a 9 anos</td>
 <td style="text-align: left;">Sepse</td>
 <td style="text-align: right;">0.00</td>
@@ -2219,7 +2274,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">4 anos a 9 anos</td>
 <td style="text-align: left;">Sistema gastrointestinal</td>
 <td style="text-align: right;">40.00</td>
@@ -2230,7 +2285,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.17</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">4 anos a 9 anos</td>
 <td style="text-align: left;">Sistema nervoso central</td>
 <td style="text-align: right;">0.00</td>
@@ -2241,7 +2296,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">4 anos a 9 anos</td>
 <td style="text-align: left;">Sistema urinário</td>
 <td style="text-align: right;">20.00</td>
@@ -2252,7 +2307,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.28</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">4 anos a 9 anos</td>
 <td style="text-align: left;">Vias áreas inferiores</td>
 <td style="text-align: right;">40.00</td>
@@ -2263,7 +2318,7 @@ Convergence attained in 2 iterations (rel. change 6.5927e-13)</code></pre>
 <td style="text-align: right;">0.61</td>
 <td style="text-align: left;">No</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">4 anos a 9 anos</td>
 <td style="text-align: left;">Vias áreas superioras</td>
 <td style="text-align: right;">40.00</td>
