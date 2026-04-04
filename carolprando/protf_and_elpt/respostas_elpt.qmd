@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/04/03
+date-modified: 2026/04/04
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -19,7 +19,8 @@ if (!requireNamespace("pacman", quietly = TRUE))
 
 pacman::p_load(
   ggplot2, googlesheets4, 
-  dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, knitr, purrr
+  dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, 
+  knitr, purrr, patchwork
 )
 ggplot2::theme_set(
   theme_classic(base_size = 14) +
@@ -209,11 +210,38 @@ elpt |>
   dplyr::count(`21.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |> 
+  dplyr::mutate(Percentual = n / 114) |>
   dplyr::arrange(dplyr::desc(n)) |> dplyr::filter(n > 1)
   
 ```
 
-Entre os 114 pacientes com comorbidade, 87 diferentes combinações de comorbidade são observadas - mas apenas 12 aparecem em ao menos dois pacientes.
+Entre os 114 pacientes com comorbidade, 83 diferentes combinações de comorbidade são observadas - mas apenas 14 aparecem em ao menos dois pacientes.
+
+Mesma coisa mas agora reunindo todos os resultados similares em um único grupo de soma.
+
+55 diferentes, 27 aparecendo ao menos duas vezes.
+
+```{r}
+
+elpt |> 
+  dplyr::filter(
+    `21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
+  ) |>
+  dplyr::select(Comorbidades = `21.1 -  Qual comorbidade o paciente possui?
+
+-Em caso negativo responder com NA`) |>
+  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  dplyr::mutate(
+    Comorbidades = stringr::str_trim(Comorbidades),
+    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
+    Comorbidades = stringr::str_to_sentence(Comorbidades)
+  ) |>
+  dplyr::count(Comorbidades) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  # dplyr::filter(n > 1) |>
+  print(n = 100)
+  
+```
 
 ## f) Porcentagem de pacientes que realizam hemodiálise
 
@@ -326,7 +354,6 @@ Correlação linear de Pearson de 0.55 (forte e estatísticamente significativa,
 
 Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear até um igG ao redor de 600 e a partir dali uma queda, mas temos pouquíssimos pacientes passando desse valor.
 
-
 ```{r fig.width=8}
 
 proxy |>
@@ -392,13 +419,13 @@ proxy |>
 
 ELPT médio de 0.366, min 0.06 e máx 0.6.
 
-## c)  Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de ELPT?
+## c) Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de ELPT?
 
 Nenhum paciente com IgG acima do valor de referência.
 
 ## d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?
 
-22 pacientes.
+22 pacientes, 20 diferentes combinações de comorbidades - apenas 2 ocorrendo em ao menos dois pacientes.
 
 ```{r}
 
@@ -420,13 +447,40 @@ NA = não se aplica` == "Abaixo do valor de referência" &
   dplyr::count(`21.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |>
-  dplyr::arrange(dplyr::desc(n))
+  dplyr::arrange(dplyr::desc(n)) |>
+  dplyr::filter(n > 1)
 
+```
+
+Reunindo os resultados similares em um único grupo, temos 27 diferentes.
+
+```{r}
+
+elpt |> 
+  dplyr::filter(
+        `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica` == "Abaixo do valor de referência" &
+    `21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
+  ) |>
+  dplyr::select(Comorbidades = `21.1 -  Qual comorbidade o paciente possui?
+
+-Em caso negativo responder com NA`) |>
+  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  dplyr::mutate(
+    Comorbidades = stringr::str_trim(Comorbidades),
+    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
+    Comorbidades = stringr::str_to_sentence(Comorbidades)
+  ) |>
+  dplyr::count(Comorbidades) |> 
+  dplyr::arrange(dplyr::desc(n)) |> 
+  print(n = 30)
+  
 ```
 
 # 3. Análise dos menores de 1 ano
 
-## a) Entre os menores de 1 ano, quantos apresentavam a comorbidade "Prematuridade"?
+> Entre os menores de 1 ano, quantos apresentavam a comorbidade "Prematuridade"?
 
 Apenas um paciente menor de 1 ano. Paciente sem informação de comorbidades.
 
@@ -441,7 +495,7 @@ elpt |>
 
 ```
 
-## b) Levando em consideração pacientes que fizeram os exames ELPT + IgG, definir um valor de referência para ELPT levando como referência a dosagem de IgG
+# Levando em consideração pacientes que fizeram os exames ELPT + IgG, definir um valor de referência para ELPT levando como referência a dosagem de IgG
 
 72 pacientes.
 
@@ -572,39 +626,39 @@ proxy |>
 
 To define a physiological ELPT baseline, the Normal Group (patients with IgG within the reference range) was used as the normative standard.
 
-* **Process:** We calculated the mean and standard deviation (SD) for the Normal group. The shaded area in the visualization represents the Mean ± 2 SD, covering approximately 95% of the expected physiological variation.
+-   **Process:** We calculated the mean and standard deviation (SD) for the Normal group. The shaded area in the visualization represents the Mean ± 2 SD, covering approximately 95% of the expected physiological variation.
 
-* **Interpretation:** ELPT values falling below this band indicate a pathological deficit relative to the established biological baseline.
+-   **Interpretation:** ELPT values falling below this band indicate a pathological deficit relative to the established biological baseline.
 
 ### 2. Group Dynamics: The "Rise vs. Attenuation" Effect
 
 The relationship was modeled separately for each group to identify how IgG deficiency impacts ELPT measurements.
 
-* **Below Reference Group:** This group exhibits a significant positive slope ($p < 0.05$). This demonstrates that in patients with low IgG, ELPT is "coupled" to IgG levels—as IgG increases, ELPT rises proportionally toward the baseline.
+-   **Below Reference Group:** This group exhibits a significant positive slope ($p < 0.05$). This demonstrates that in patients with low IgG, ELPT is "coupled" to IgG levels—as IgG increases, ELPT rises proportionally toward the baseline.
 
-* **Normal Group:** This group shows a significant change in trajectory. While the steep recovery phase ends, the group exhibits an attenuation of the slope ($p > 0.05$ for a flat plateau or a very weak negative trend), representing the transition to a physiological steady state.
+-   **Normal Group:** This group shows a significant change in trajectory. While the steep recovery phase ends, the group exhibits an attenuation of the slope ($p > 0.05$ for a flat plateau or a very weak negative trend), representing the transition to a physiological steady state.
 
 ### 3. Segmented Regression (Inflection Point)
 
 A Segmented (Broken-stick) Regression was applied to mathematically determine the threshold of stabilization.
 
-* **The Breakpoint:** The model identifies the specific IgG coordinate where the linear recovery phase ends and the stabilization phase begins. 
+-   **The Breakpoint:** The model identifies the specific IgG coordinate where the linear recovery phase ends and the stabilization phase begins.
 
-* **Clinical Utility:** This point defines the "Critical IgG Threshold" required for an ELPT measurement to be considered stable and diagnostically reliable, independent of hypogammaglobulinemia interference.
+-   **Clinical Utility:** This point defines the "Critical IgG Threshold" required for an ELPT measurement to be considered stable and diagnostically reliable, independent of hypogammaglobulinemia interference.
 
----
+------------------------------------------------------------------------
 
 ### Summary of Statistical Findings
 
 A positive linear dependency was observed between ELPT and IgG strictly within the deficient group ($p < 0.05$). Conversely, the normal group exhibited a stabilization phase, establishing a stable reference baseline for clinical interpretation¹.
 
-¹ *Note: While the second segment in the ELPT model shows a statistically significant negative trend (p < 0.05), the effect size is minimal compared to the recovery phase, indicating a gradual attenuation rather than a flat plateau.*
+¹ *Note: While the second segment in the ELPT model shows a statistically significant negative trend (p \< 0.05), the effect size is minimal compared to the recovery phase, indicating a gradual attenuation rather than a flat plateau.*
 
 # How to use ELPT to predict IgG deficiency
 
 > Minimizing false positives, prioritizing Specificity and Positive Predictive Value (PPV).
 >
-> - Catch fewer sick people (lower sensitivity), but almost everyone catched will actually be sick.
+> -   Catch fewer sick people (lower sensitivity), but almost everyone catched will actually be sick.
 
 ```{r}
 
@@ -678,16 +732,14 @@ We compared three cutoff strategies to determine the optimal balance between min
 The table above summarizes the performance of the potential thresholds:
 
 1.  **Max Specificity Strategy (Cutoff 0.250):**
-    * **Pros:** Perfect Specificity (100%) and PPV (100%). If a patient falls below this level, they are certainly deficient.
-    * **Cons:** Sensitivity is critically low (25%). This threshold is too conservative for screening, as it misses nearly three-quarters of the target population.
-
+    -   **Pros:** Perfect Specificity (100%) and PPV (100%). If a patient falls below this level, they are certainly deficient.
+    -   **Cons:** Sensitivity is critically low (25%). This threshold is too conservative for screening, as it misses nearly three-quarters of the target population.
 2.  **High Specificity Strategy (Cutoff 0.395):**
-    * **Performance:** This threshold provides strong specificity (91%) with a Positive Predictive Value of 81%.
-    * **Trade-off:** Sensitivity increases to 60.7%, capturing a majority of cases while maintaining a low false-positive rate.
-
+    -   **Performance:** This threshold provides strong specificity (91%) with a Positive Predictive Value of 81%.
+    -   **Trade-off:** Sensitivity increases to 60.7%, capturing a majority of cases while maintaining a low false-positive rate.
 3.  **Balanced "Youden" Strategy (Cutoff 0.410):**
-    * **Pros:** Optimizes the overall accuracy. It offers the highest **Sensitivity (64.3%)** among the viable options while maintaining a robust **Specificity (88.6%)**.
-    * **Clinical Context:** Unlike PROTF, which prioritized sensitivity at the cost of specificity, ELPT demonstrates naturally higher specificity. The values for the "High Specificity" and "Balanced" strategies are numerically very close (0.395 vs. 0.410), indicating a stable diagnostic zone.
+    -   **Pros:** Optimizes the overall accuracy. It offers the highest **Sensitivity (64.3%)** among the viable options while maintaining a robust **Specificity (88.6%)**.
+    -   **Clinical Context:** Unlike PROTF, which prioritized sensitivity at the cost of specificity, ELPT demonstrates naturally higher specificity. The values for the "High Specificity" and "Balanced" strategies are numerically very close (0.395 vs. 0.410), indicating a stable diagnostic zone.
 
 ### Conclusion and Recommendation
 
@@ -695,8 +747,8 @@ We recommend the **Balanced Strategy** as the clinical standard for ELPT.
 
 **Recommendation:** An ELPT value below **0.410** should trigger a follow-up IgG test.
 
-* **Performance:** At this threshold, the test detects approximately **65%** of IgG-deficient patients (Sensitivity).
-* **Precision:** Crucially, it generates very few false alarms (Specificity **88.6%**), meaning that patients flagged by ELPT have a high probability (PPV **78.3%**) of actually requiring intervention.
+-   **Performance:** At this threshold, the test detects approximately **65%** of IgG-deficient patients (Sensitivity).
+-   **Precision:** Crucially, it generates very few false alarms (Specificity **88.6%**), meaning that patients flagged by ELPT have a high probability (PPV **78.3%**) of actually requiring intervention.
 
 ## Advanced Strategy: The "Indeterminate Zone" Approach
 
@@ -775,17 +827,15 @@ Given the distributional overlap observed in the ELPT data, a single binary cuto
 
 We defined three clinical zones based on strict statistical safety margins:
 
-1.  **Deficiency Zone (< 0.38):**
-    * **Definition:** Threshold established at **≥95% Specificity**.
-    * **Implication:** ELPT values below **0.38** are highly indicative of IgG deficiency. The probability of a false positive in this range is minimal, warranting immediate clinical action or substitution therapy consideration.
-
-2.  **Safety Zone (> 0.60):**
-    * **Definition:** Threshold established at **≥95% Sensitivity**.
-    * **Implication:** ELPT values above **0.60** effectively rule out deficiency with high confidence. The risk of missing a true deficient case in this range is negligible.
-
+1.  **Deficiency Zone (\< 0.38):**
+    -   **Definition:** Threshold established at **≥95% Specificity**.
+    -   **Implication:** ELPT values below **0.38** are highly indicative of IgG deficiency. The probability of a false positive in this range is minimal, warranting immediate clinical action or substitution therapy consideration.
+2.  **Safety Zone (\> 0.60):**
+    -   **Definition:** Threshold established at **≥95% Sensitivity**.
+    -   **Implication:** ELPT values above **0.60** effectively rule out deficiency with high confidence. The risk of missing a true deficient case in this range is negligible.
 3.  **Indeterminate "Grey" Zone (0.38 – 0.60):**
-    * **Definition:** The interval between the high-specificity and high-sensitivity thresholds.
-    * **Implication:** Patients falling within this range (0.38 to 0.60) represent a diagnostic challenge where ELPT alone is inconclusive due to biological overlap. For these individuals, **mandatory IgG quantification** is recommended to resolve the diagnosis.
+    -   **Definition:** The interval between the high-specificity and high-sensitivity thresholds.
+    -   **Implication:** Patients falling within this range (0.38 to 0.60) represent a diagnostic challenge where ELPT alone is inconclusive due to biological overlap. For these individuals, **mandatory IgG quantification** is recommended to resolve the diagnosis.
 
 **Conclusion:** By defining 0.38 and 0.60 as the critical boundaries, we enhance diagnostic precision for patients at the extremes while clearly identifying the subset of patients requiring confirmatory testing.
 
@@ -882,7 +932,7 @@ knitr::kable(
 
 ```
 
-Odds Ratio: Normal (>= 0.41) vs. Low (< 0.41). 0.43 means que o grupo normal tem menos chances.
+Odds Ratio: Normal (\>= 0.41) vs. Low (\< 0.41). 0.43 means que o grupo normal tem menos chances.
 
 ```{r fig.width=8, fig.height=4}
 
@@ -904,16 +954,17 @@ final_results |>
 
 ```
 
-### Clinical Validation: Association with Infection History (ELPT)
+### Clinical Validation: Association with Infection History
 
 To determine if the ELPT cutoff (**0.410**) translates into a functional clinical marker, we assessed whether patients falling below this threshold exhibited a higher prevalence of infections compared to those above it.
 
-* **Methodology:** Patients were stratified into "High Risk" (ELPT < 0.410) and "Low Risk" (ELPT ≥ 0.410) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher's Exact Test.
+-   **Methodology:** Patients were stratified into "High Risk" (ELPT \< 0.410) and "Low Risk" (ELPT ≥ 0.410) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher's Exact Test.
 
-* **Results:**
-    * **Absence of Phenotypic Correlation:** Unlike the PROTF marker, the ELPT cutoff did not demonstrate a statistically significant association with any specific infection type. P-values for all categories exceeded the significance threshold ($p > 0.05$).
-    * **Uniform Infection Rates:** Infection rates were remarkably similar between the high-risk and low-risk groups across most categories. For example, **Sepsis** prevalence was nearly identical (18.18% in the Low ELPT group vs. 19.61% in the Normal ELPT group, $p = 1.00$).
-    * **Urinary Tract Trend:** A non-significant trend was observed for **Urinary System Infections**, which were more frequent in the "High Risk" group (27.27%) compared to the "Low Risk" group (13.73%). However, this difference did not reach statistical significance ($p = 0.19$).
+-   **Results:**
+
+    -   **Absence of Phenotypic Correlation:** Unlike the PROTF marker, the ELPT cutoff did not demonstrate a statistically significant association with any specific infection type. P-values for all categories exceeded the significance threshold ($p > 0.05$).
+    -   **Uniform Infection Rates:** Infection rates were remarkably similar between the high-risk and low-risk groups across most categories. For example, **Sepsis** prevalence was nearly identical (18.18% in the Low ELPT group vs. 19.61% in the Normal ELPT group, $p = 1.00$).
+    -   **Urinary Tract Trend:** A non-significant trend was observed for **Urinary System Infections**, which were more frequent in the "High Risk" group (27.27%) compared to the "Low Risk" group (13.73%). However, this difference did not reach statistical significance ($p = 0.19$).
 
 **Conclusion:** While the ELPT cutoff of 0.410 is statistically valid for screening IgG deficiency (as shown in the ROC analysis), it does not appear to independently stratify patients by specific infectious history in this dataset. This suggests that ELPT should be utilized primarily as a biochemical screening tool for IgG levels rather than a direct predictor of clinical infection phenotypes.
 
@@ -1028,6 +1079,7 @@ age_analysis_data |>
 Recognizing that immunological profiles evolve with age, we performed a stratified ROC analysis to determine if the optimal ELPT cutoff varies across different pediatric life stages.
 
 ### Methodology
+
 The dataset was segmented into three age cohorts: **1 to 3 years**, **4 to 9 years**, and **10 to 17 years**. For each group, we calculated the optimal "Balanced" threshold (Youden's Index) to maximize diagnostic accuracy.
 
 ### Results by Age Cohort
@@ -1035,26 +1087,24 @@ The dataset was segmented into three age cohorts: **1 to 3 years**, **4 to 9 yea
 The analysis revealed a clear distinction between pre-pubertal children and adolescents:
 
 1.  **Early Childhood (1 to 3 years):**
-    * **Optimal Cutoff:** **0.375**
-    * **Performance:** The test performs robustly, achieving **90.0% Sensitivity** and **95.8% Specificity**.
-    * *Interpretation:* The clear separation between groups allows for high-confidence screening in toddlers.
-
+    -   **Optimal Cutoff:** **0.375**
+    -   **Performance:** The test performs robustly, achieving **90.0% Sensitivity** and **95.8% Specificity**.
+    -   *Interpretation:* The clear separation between groups allows for high-confidence screening in toddlers.
 2.  **Middle Childhood (4 to 9 years):**
-    * **Optimal Cutoff:** **0.380**
-    * **Performance:** In this cohort, the model achieved perfect classification (**100% Sensitivity and Specificity**).
-    * *Interpretation:* The optimal threshold (0.380) is virtually identical to the toddler group (0.375), suggesting a highly stable physiological baseline for ELPT throughout the first decade of life.
-
+    -   **Optimal Cutoff:** **0.380**
+    -   **Performance:** In this cohort, the model achieved perfect classification (**100% Sensitivity and Specificity**).
+    -   *Interpretation:* The optimal threshold (0.380) is virtually identical to the toddler group (0.375), suggesting a highly stable physiological baseline for ELPT throughout the first decade of life.
 3.  **Adolescence (10 to 17 years):**
-    * **Optimal Cutoff:** **0.475**
-    * **Performance:** Diagnostic difficulty increases significantly. Sensitivity drops to **53.3%** and Specificity to **75.0%**.
-    * *Interpretation:* The optimal cutoff shifts upward by nearly 0.1 g/dL compared to younger children. The significant distributional overlap (visible in the density plots) suggests that ELPT becomes a less binary marker during adolescent immune maturation, requiring more careful clinical interpretation.
+    -   **Optimal Cutoff:** **0.475**
+    -   **Performance:** Diagnostic difficulty increases significantly. Sensitivity drops to **53.3%** and Specificity to **75.0%**.
+    -   *Interpretation:* The optimal cutoff shifts upward by nearly 0.1 g/dL compared to younger children. The significant distributional overlap (visible in the density plots) suggests that ELPT becomes a less binary marker during adolescent immune maturation, requiring more careful clinical interpretation.
 
 ### Clinical Implication
 
 The results support a **Two-Tiered Reference Approach**:
 
-* **For Children < 10 Years:** A unified cutoff of **0.38 g/dL** is recommended. This threshold is stable and highly accurate across both the 1-3 and 4-9 age groups.
-* **For Adolescents (10-17 Years):** A higher cutoff of **0.475 g/dL** is indicated. However, clinicians should be advised that ELPT has lower sensitivity in this age group, and borderline results should almost always trigger confirmatory IgG testing.
+-   **For Children \< 10 Years:** A unified cutoff of **0.38 g/dL** is recommended. This threshold is stable and highly accurate across both the 1-3 and 4-9 age groups.
+-   **For Adolescents (10-17 Years):** A higher cutoff of **0.475 g/dL** is indicated. However, clinicians should be advised that ELPT has lower sensitivity in this age group, and borderline results should almost always trigger confirmatory IgG testing.
 
 ```{r warning=FALSE, fig.width=9.75, fig.height=4.5}
 
@@ -1181,23 +1231,469 @@ final_results_age |>
 
 To ensure biological accuracy, we assessed the clinical impact of ELPT deficiency using the specific thresholds derived for each age cohort (**0.375** for 1-3y, **0.380** for 4-9y, and **0.475** for 10-17y).
 
-* **Methodology:** Patients were stratified by age, and "High Risk" status was defined individually for each group based on their specific optimal cutoff. We compared infection prevalence rates between the "High Risk" (Low ELPT) and "Low Risk" (Normal ELPT) groups.
+-   **Methodology:** Patients were stratified by age, and "High Risk" status was defined individually for each group based on their specific optimal cutoff. We compared infection prevalence rates between the "High Risk" (Low ELPT) and "Low Risk" (Normal ELPT) groups.
 
-* **Results by Cohort:**
+-   **Results by Cohort:**
 
     1.  **Adolescents (10 to 17 years): A Distinct Clinical Signal**
-        * **Lower Respiratory Vulnerability:** This age group presented the only statistically significant finding in the analysis ($p = 0.03$).
-        * **The Data:** **50.0%** of adolescents in the "High Risk" group suffered from Lower Respiratory Infections (e.g., Pneumonia/Bronchitis), compared to **0.0%** in the "Low Risk" group.
-        * **Implication:** For adolescents, an ELPT value below 0.475 is a strong specific predictor for lower respiratory susceptibility.
-
+        -   **Lower Respiratory Vulnerability:** This age group presented the only statistically significant finding in the analysis ($p = 0.03$).
+        -   **The Data:** **50.0%** of adolescents in the "High Risk" group suffered from Lower Respiratory Infections (e.g., Pneumonia/Bronchitis), compared to **0.0%** in the "Low Risk" group.
+        -   **Implication:** For adolescents, an ELPT value below 0.475 is a strong specific predictor for lower respiratory susceptibility.
     2.  **Early Childhood (1 to 3 years): Clinical Trends vs. Statistical Power**
-        * **Sepsis:** A clinically relevant trend was observed where "High Risk" toddlers had a higher rate of Sepsis (**42.86%**) compared to the "Low Risk" group (**27.59%**). However, due to sample size limitations, this did not reach statistical significance ($p = 0.65$).
-        * **Urinary Infections:** Similarly, urinary infections were more frequent in the risk group (42.86% vs 24.14%), though statistically non-significant ($p = 0.37$).
-
+        -   **Sepsis:** A clinically relevant trend was observed where "High Risk" toddlers had a higher rate of Sepsis (**42.86%**) compared to the "Low Risk" group (**27.59%**). However, due to sample size limitations, this did not reach statistical significance ($p = 0.65$).
+        -   **Urinary Infections:** Similarly, urinary infections were more frequent in the risk group (42.86% vs 24.14%), though statistically non-significant ($p = 0.37$).
     3.  **Middle Childhood (4 to 9 years):**
-        * **No Clear Association:** In this intermediate age range, infection rates were variable, with no clear pattern identifying the "High Risk" group as more susceptible to specific infections. For example, lower respiratory infections were actually more common in the "Low Risk" group for this specific cohort.
+        -   **No Clear Association:** In this intermediate age range, infection rates were variable, with no clear pattern identifying the "High Risk" group as more susceptible to specific infections. For example, lower respiratory infections were actually more common in the "Low Risk" group for this specific cohort.
 
 **Conclusion:** The age-stratified analysis demonstrates that the clinical utility of ELPT varies by developmental stage. While it serves as a broad biochemical screen for all ages, it functions as a **phenotypic predictor for lower respiratory infections specifically in adolescents**. In toddlers (1-3 years), it may flag a general susceptibility to systemic (Sepsis) and urinary infections, though larger sample sizes would be required to confirm this statistically.
+
+# Medicações vs ELPT e IgG
+
+```{r}
+
+elpt |> 
+  dplyr::count(`34 - Medicações Utilizadas`) |>
+  dplyr::mutate(Percentual = n / nrow(elpt)) |> dplyr::arrange(dplyr::desc(n))
+
+elpt |>
+  tidyr::separate_longer_delim(
+    cols = `34 - Medicações Utilizadas`, delim = ";"
+  ) |>
+  dplyr::mutate(
+    Medicações = stringi::stri_trans_general(
+      `34 - Medicações Utilizadas`, "Latin-ASCII"
+    ),
+    Medicações = stringr::str_trim(Medicações),    
+    Medicações = stringr::str_to_sentence(Medicações)
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  dplyr::count(Medicações) |>
+  dplyr::arrange(dplyr::desc(n))
+
+```
+
+Medidas descritivas de ELPT e IgG pelo uso de medicação.
+
+```{r}
+
+elpt |>
+  dplyr::select(
+    `34 - Medicações Utilizadas`, 
+    ELPT = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 - Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  dplyr::summarise(
+    n_patients = dplyr::n(),
+    dplyr::across(
+      c(ELPT, IgG),
+      list(
+        Min = ~ min(.x, na.rm = TRUE),
+        Q1 = ~ quantile(.x, 0.25, na.rm = TRUE),
+        Median = ~ median(.x, na.rm = TRUE),
+        Mean = ~ mean(.x, na.rm = TRUE),
+        Q3 = ~ quantile(.x, 0.75, na.rm = TRUE),
+        Max = ~ max(.x, na.rm = TRUE),
+        NAs = ~ sum(is.na(.x))
+      ),
+      .names = "{.col}_{.fn}"
+    ),
+    .by = Medicação
+  ) |>
+  tidyr::pivot_longer(
+    cols = -Medicação, 
+    names_to = "Metric", 
+    values_to = "Value"
+  ) |>
+  tidyr::pivot_wider(names_from = Medicação, values_from = Value
+  )
+
+```
+
+Graficamente os valores de ELPT não parecerem diferir muito pelo fato do uso de medicação, mas o paciente outlier no valor de IgG distorce muito a visualização.
+
+```{r fig.width=9, fig.height=6}
+
+elpt |>
+  dplyr::select(
+    `34 - Medicações Utilizadas`, 
+    ELPT = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 - Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, y = ELPT, fill = Medicação, color = Medicação) +
+  geom_point(size = 3, shape = 21, alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 1), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", 
+                   label.x.npc = 0.7,   # 70% across the x-axis
+                   label.y.npc = "bottom") + 
+  labs(title = "Correlação entre IgG e ELPT",
+       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
+       fill = "Medicação: ", color = "Medicação: ",
+       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1))
+
+```
+
+```{r fig.width=9, fig.height=4.5}
+
+p1 <- elpt |>
+  dplyr::select(
+    `34 - Medicações Utilizadas`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 - Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, fill = Medicação) +
+  geom_histogram(alpha = 0.8, binwidth = 50) +
+  labs(title = "Histograma de IgG",
+       subtitle = "Binwidth: 50",
+       fill = "Medicação: ",
+       x = "IgG (mg/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
+  scale_y_continuous(breaks = seq(0, 12, by = 2))
+  
+p2 <- elpt |>
+  dplyr::select(
+    `34 - Medicações Utilizadas`, 
+    ELPT = `16 - Resultado do Primeiro exame`
+  ) |>
+  dplyr::mutate(
+    Medicação = ifelse(
+      is.na(`34 - Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  ggplot() +
+  aes(x = ELPT, fill = Medicação) +
+  geom_histogram(alpha = 0.8, binwidth = 0.025) +
+  labs(title = "Histograma de ELPT",
+       subtitle = "Binwidth: 0.025",
+       fill = "Medicação: ",
+       x = "ELPT (g/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
+  scale_y_continuous(breaks = seq(0, 21, by = 3))
+
+p1 + p2 + patchwork::plot_layout(guides = "collect")
+
+```
+
+Ajustamos também um modelo linear para entender melhor as associações com o uso de medicação - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos:
+
+-   um valor-p de 0.3649, indicando que realmente não existe associação entre o valor de IgG e o fato de utilizar ou não um medicamento. Apesar da presençã do outlier, mesmo assim a associação não é significativa.
+
+-   Para ELPT obtivemos um valor-p de 0.08675, pelo critério de 5%, não se trata duma associação estatísticamente significativa entre o valor de ELPT e o fato de utilizar ou não um medicamento.
+
+```{r}
+
+lm(
+  IgG ~ Medicação,
+  data = elpt |>
+  dplyr::select(
+    `34 - Medicações Utilizadas`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Medicação = ifelse(
+      is.na(`34 - Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  ) |>
+  tidyr::drop_na(IgG)
+) |>
+  anova()
+
+lm(
+  ELPT ~ Medicação,
+  data = elpt |>
+  dplyr::select(
+    `34 - Medicações Utilizadas`, 
+    ELPT = `16 - Resultado do Primeiro exame`
+  ) |>
+  dplyr::mutate(
+    Medicação = ifelse(
+      is.na(`34 - Medicações Utilizadas`), 
+      "Com medicação", "Sem medicação"
+    )
+  )
+) |>
+  anova()
+
+```
+
+# Medicações mais prevalentes por Idade e Sexo
+
+Abaixo mostramos - por Sexo.
+
+```{r}
+
+t1 <- elpt |>
+  dplyr::select(
+    Medicações = `34 - Medicações Utilizadas`,
+    Idade = `3 - Insira Faixa etária do paciente`,
+    Sexo = `4 - Sexo`
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
+  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
+  dplyr::count(Medicações, Idade, Sexo) |>
+  dplyr::arrange(dplyr::desc(n), Medicações) |>
+  # dplyr::filter(n > 1) |>
+  dplyr::group_split(Sexo) 
+
+t1[[1]] |> print(n = 30)
+t1[[2]] |> print(n = 30)
+
+```
+
+Mesma coisa pro faixa etária.
+
+```{r}
+
+elpt |>
+  dplyr::select(
+    Medicações = `34 - Medicações Utilizadas`,
+    Idade = `3 - Insira Faixa etária do paciente`,
+    Sexo = `4 - Sexo`
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
+  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
+  dplyr::count(Medicações, Idade, Sexo) |>
+  dplyr::arrange(dplyr::desc(n), Medicações, Sexo) |>
+  # dplyr::filter(n > 1) |>
+  dplyr::group_split(Idade)
+  
+```
+
+E para finalizar, todas as medicações.
+
+```{r}
+
+elpt |>
+  dplyr::select(
+    Medicações = `34 - Medicações Utilizadas`
+  ) |>
+  tidyr::drop_na(Medicações) |>
+  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
+  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
+  dplyr::count(Medicações) |>
+  dplyr::arrange(dplyr::desc(n)) |>
+  print(n = 100)
+
+```
+
+# Perda proteica na urina (PPU)
+
+> Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?
+
+```{r}
+
+elpt |>
+  dplyr::select(
+    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`
+  ) |>
+  dplyr::count(PPU) |>
+  dplyr::mutate(Percentual = n / nrow(elpt))
+
+```
+
+Medidas descritivas.
+
+```{r}
+
+elpt |>
+  dplyr::select(
+    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`,
+    ELPT = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  dplyr::summarise(
+    n_patients = dplyr::n(),
+    dplyr::across(
+      c(ELPT, IgG),
+      list(
+        Min = ~ min(.x, na.rm = TRUE),
+        Q1 = ~ quantile(.x, 0.25, na.rm = TRUE),
+        Median = ~ median(.x, na.rm = TRUE),
+        Mean = ~ mean(.x, na.rm = TRUE),
+        Q3 = ~ quantile(.x, 0.75, na.rm = TRUE),
+        Max = ~ max(.x, na.rm = TRUE),
+        NAs = ~ sum(is.na(.x))
+      ),
+      .names = "{.col}_{.fn}"
+    ),
+    .by = PPU
+  ) |>
+  tidyr::pivot_longer(
+    cols = -PPU, 
+    names_to = "Metric", 
+    values_to = "Value"
+  ) |>
+  tidyr::pivot_wider(names_from = PPU, values_from = Value
+  )
+
+```
+
+Tanto pelas medidas quanto visualmente não aparenta ter diferença significativa tanto de ELPT quanto de IgG pelo fato de ter tido perda proteica na urina ou não - apesar do outlier.
+
+```{r fig.width=9, fig.height=6}
+
+elpt |>
+  dplyr::select(
+    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
+    ELPT = `16 - Resultado do Primeiro exame`,
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, y = ELPT, fill = PPU, color = PPU) +
+  geom_point(size = 3, shape = 21, alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 1), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", 
+                   label.x.npc = 0.7,   # 70% across the x-axis
+                   label.y.npc = "bottom") + 
+  labs(title = "Correlação entre IgG e ELPT",
+       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
+       fill = "Perda proteica na urina: ", color = "Perda proteica na urina: ",
+       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.1))
+
+```
+
+```{r fig.width=9, fig.height=4.5}
+
+p1 <- elpt |>
+  dplyr::select(
+    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  tidyr::drop_na(IgG) |>
+  ggplot() +
+  aes(x = IgG, fill = PPU) +
+  geom_histogram(alpha = 0.8, binwidth = 50) +
+  labs(title = "Histograma de IgG",
+       subtitle = "Binwidth: 50",
+       fill = "Perda proteica na urina: ",
+       x = "IgG (mg/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
+  scale_y_continuous(breaks = seq(0, 14, by = 2))
+  
+p2 <- elpt |>
+  dplyr::select(
+    PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
+    ELPT = `16 - Resultado do Primeiro exame`
+  ) |>
+  ggplot() +
+  aes(x = ELPT, fill = PPU) +
+  geom_histogram(alpha = 0.8, binwidth = 0.025) +
+  labs(title = "Histograma de ELPT",
+       subtitle = "Binwidth: 0.025",
+       fill = "Perda proteica na urina: ",
+       x = "ELPT (g/dL)", y = "n") +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
+  scale_y_continuous(breaks = seq(0, 21, by = 3))
+
+p1 + p2 + patchwork::plot_layout(guides = "collect")
+
+```
+
+Ajustamos também um modelo linear para entender melhor as associações com a perda proteica de urina - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos:
+
+-   um valor-p de 0.3748, indicando que realmente não existe associação entre o valor de IgG e a perda proteica de urina.
+
+-   Para ELPT obtivemos um valor-p de 0.04959, uma associação no limite de ser considerada estatísticamente significativa - significatica mas fraca, levando em consideração também o desbalanceamento de classes aqui com apenas 15% dos pacientes tendo perda proteica de urina.
+
+```{r}
+
+lm(
+  IgG ~ PPU,
+  data = elpt |>
+  dplyr::select(
+    PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
+    IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
+
+-Responder com NA em caso de não realização do exame`
+  ) |>
+  dplyr::mutate(
+    IgG = unlist(IgG),
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+  ) |>
+  tidyr::drop_na(IgG)
+) |>
+  anova()
+
+lm(
+  ELPT ~ PPU,
+  data = elpt |>
+  dplyr::select(
+    PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
+    ELPT = `16 - Resultado do Primeiro exame`
+  )
+) |>
+  anova()
+
+```
 
 # Methodology & References
 
@@ -1205,8 +1701,8 @@ All analyses were conducted using the `R` language and environment for statistic
 
 To date, the study has focused on data cleaning, feature engineering, and advanced visualization using `ggplot2` (Wickham, 2016). A key objective was the identification of biological cutoff points for ELPT where existing references were unknown or required validation. To achieve this, we utilized a two-step modeling approach:
 
-1. **Reference Interval Modeling:** We established biological baselines by calculating the mean and standard deviation (± 2 SD) of the "Normal" IgG cohort, treating this group as a stable physiological standard.
-2. **Threshold Discovery via Segmented Regression:** To identify the specific IgG level at which ELPT stabilizes, we implemented segmented (broken-stick) regression (Muggeo, 2008). This allowed us to mathematically determine the "inflection point" between the rising deficient phase and the steady-state phase.
+1.  **Reference Interval Modeling:** We established biological baselines by calculating the mean and standard deviation (± 2 SD) of the "Normal" IgG cohort, treating this group as a stable physiological standard.
+2.  **Threshold Discovery via Segmented Regression:** To identify the specific IgG level at which ELPT stabilizes, we implemented segmented (broken-stick) regression (Muggeo, 2008). This allowed us to mathematically determine the "inflection point" between the rising deficient phase and the steady-state phase.
 
 Statistical significance of the observed slopes and the fit of the resulting models were verified using tidied coefficients extracted via `broom` (Robinson et al., 2024).
 
@@ -1225,13 +1721,7 @@ Statistical significance of the observed slopes and the fit of the resulting mod
 > Wickham, H. (2023). *stringr: Simple, Consistent Wrappers for Common String Operations*. R package version 1.5.1.
 >
 > Robinson, D., Hayes, A., & Couch, S. (2024). *broom: Glance, Tidy, and Augment Regression Models*. R package version 1.0.6.
-> 
+>
 > Muggeo, V. M. R. (2008). *segmented: an R Package to Fit Regression Models with Broken-Line Relationships*. R News, 8/1, 20-25.
 >
-> Garrett Grolemund, Hadley Wickham (2011). *Dates and Times Made Easy with lubridate*. Journal of Statistical Software, 40(3), 1-25.
-<!-- > -->
-<!-- > McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall. -->
-<!-- > -->
-<!-- > Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall. -->
-<!-- > -->
-<!-- > Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press. -->
+> Garrett Grolemund, Hadley Wickham (2011). *Dates and Times Made Easy with lubridate*. Journal of Statistical Software, 40(3), 1-25. <!-- > --> <!-- > McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall. --> <!-- > --> <!-- > Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall. --> <!-- > --> <!-- > Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press. -->
