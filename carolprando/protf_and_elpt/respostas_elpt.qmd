@@ -6,10 +6,13 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/04/04
+date-modified: 2026/08/30
 editor_options: 
   chunk_output_type: console
 toc: true
+execute:
+  warning: false
+  message: false
 ---
 
 ```{r pkgs}
@@ -22,6 +25,7 @@ pacman::p_load(
   dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, 
   knitr, purrr, patchwork
 )
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ggplot2::theme_set(
   theme_classic(base_size = 14) +
     theme(plot.title           = element_text(size = 14, face = "bold"),
@@ -46,6 +50,7 @@ elpt_url <-
     "1FHy8nsW_WfEiWfWXdk7atQlaChNAkJIrAkuNxfOuECg/",
     "edit?gid=1057715313#gid=1057715313"
 )
+googlesheets4::gs4_deauth()
 elpt <- googlesheets4::read_sheet(elpt_url) |> dplyr::distinct()
 
 elpt <- elpt |> 
@@ -63,8 +68,23 @@ elpt <- elpt |>
 
 ```{r}
 
-elpt |> dplyr::count(`3 - Insira Faixa etária do paciente`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+elpt |> 
+  dplyr::mutate(
+    `Age Group` = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    )
+  ) |>
+  dplyr::count(`Age Group`) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 ```
 
@@ -72,8 +92,10 @@ elpt |> dplyr::count(`3 - Insira Faixa etária do paciente`) |>
 
 ```{r}
 
-elpt |> dplyr::count(`2 - Insira o Setor de Solicitação do exame`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt)) |>
+elpt |> 
+  dplyr::rename(Sector = `2 - Insira o Setor de Solicitação do exame`) |>
+  dplyr::count(Sector) |>
+  dplyr::mutate(Percentage = n / nrow(elpt)) |>
   dplyr::arrange(dplyr::desc(n)) |> print(n = 22)
 
 ```
@@ -82,8 +104,17 @@ elpt |> dplyr::count(`2 - Insira o Setor de Solicitação do exame`) |>
 
 ```{r}
 
-elpt |> dplyr::count(`4 - Sexo`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+elpt |> 
+  dplyr::mutate(
+    Sex = dplyr::case_match(
+      `4 - Sexo`,
+      "Feminino" ~ "Female",
+      "Masculino" ~ "Male",
+      .default = `4 - Sexo`
+    )
+  ) |>
+  dplyr::count(Sex) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 ```
 
@@ -91,8 +122,17 @@ elpt |> dplyr::count(`4 - Sexo`) |>
 
 ```{r}
 
-elpt |> dplyr::count(`7 - Quadros infecciosos até o momento da coleta?`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+elpt |> 
+  dplyr::mutate(
+    `Infectious Condition` = dplyr::case_match(
+      `7 - Quadros infecciosos até o momento da coleta?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `7 - Quadros infecciosos até o momento da coleta?`
+    )
+  ) |>
+  dplyr::count(`Infectious Condition`) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 ```
 
@@ -113,8 +153,22 @@ elpt |> dplyr::filter(
                 `15 - Outros?`) |>
   tidyr::pivot_longer(`8 - Infecção em sistema nervoso central?`:`15 - Outros?`) |>
   dplyr::filter(value == "Sim") |>
-  dplyr::count(name) |>
-  dplyr::mutate(Percentual = n / 73) |> dplyr::arrange(dplyr::desc(n))
+  dplyr::mutate(
+    Infection_Type = dplyr::case_match(
+      name,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superioras?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = name
+    )
+  ) |>
+  dplyr::count(Infection_Type) |>
+  dplyr::mutate(Percentage = n / 73) |> dplyr::arrange(dplyr::desc(n))
 
 ```
 
@@ -151,13 +205,23 @@ proxy <-
   proxy2 <- 
     proxy |>
     dplyr::select(!c(value, n)) |> 
-    mutate(name = stringr::str_remove(name, "^[0-9]+ - "),
-           name = stringr::str_remove(name, "\\?"),
-           name = stringr::str_remove(name, "Infecção (de|em) "),
-           name = stringr::str_to_sentence(name)) |>
+    dplyr::mutate(
+      name = dplyr::case_match(
+        name,
+        "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+        "9 - Infecção de vias áreas superioras?" ~ "Upper respiratory tract",
+        "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+        "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+        "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+        "13 - Infecção de pele?" ~ "Skin",
+        "14 - Sepse?" ~ "Sepsis",
+        "15 - Outros?" ~ "Other",
+        .default = name
+      )
+    ) |>
     dplyr::count(name) |> 
     dplyr::arrange(dplyr::desc(n)) |>
-    dplyr::mutate(Percentual = n / 32) 
+    dplyr::mutate(Percentage = n / 32) 
 )
 
 ```
@@ -167,18 +231,26 @@ O máximo de infecções que um paciente apresenta são 5, e 3 pacientes ficaram
 ```{r fig.height=9}
 
 proxy |>
-  dplyr::mutate(value = ifelse(value == "Sim", 1, 0)) |>
+  dplyr::mutate(
+    value = ifelse(value == "Sim", 1, 0),
+    name = dplyr::case_match(
+      name,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superioras?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = name
+    )
+  ) |>
   tidyr::pivot_wider(names_from = name, values_from = value, values_fill = 0) |>
   dplyr::select(-n) |> 
   tidyr::pivot_longer(-`1 - Insira o Prontuário do Paciente`, 
                       names_to = "Infection_Type", 
                       values_to = "Present") |>
-  mutate(Infection_Type = stringr::str_remove(Infection_Type, "^[0-9]+ - "),
-         Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
-         Infection_Type = stringr::str_remove(Infection_Type, "Infecção (de|em) "),
-         Infection_Type = stringr::str_to_sentence(Infection_Type)) |>
-  # dplyr::filter(Present == 1) |>
-  # dplyr::count(`1 - Insira o Prontuário do Paciente`) |> dplyr::arrange(dplyr::desc(n))
   ggplot() +
   aes(x = factor(Infection_Type, levels = unique(proxy2$name)), 
       y = factor(`1 - Insira o Prontuário do Paciente`, 
@@ -186,11 +258,11 @@ proxy |>
       fill = as.factor(Present)) +
   geom_tile(color = "white") + # Adds a grid line effect
   scale_fill_manual(values = c("0" = "grey95", "1" = "steelblue"),
-                    labels = c("Não", "Sim"),
-                    name = "Presença: ") +
-  labs(x = "Tipo de Infecção", y = "Paciente",
-       title = "Mapa de Calor de Infecções por Paciente",
-       subtitle = "Apenas pacientes com ao menos dois tipos de infecção") +
+                    labels = c("No", "Yes"),
+                    name = "Presence: ") +
+  labs(x = "Infection Type", y = "Patient",
+       title = "Heatmap of Infections per Patient",
+       subtitle = "Only patients with at least two infection types") +
   theme(axis.text.x = element_text(angle = 30 , hjust = 1))
 
 ```
@@ -200,17 +272,28 @@ proxy |>
 ```{r}
 
 elpt |> 
-  dplyr::count(`21 - Paciente possui alguma comorbidade/diagnostico de base?`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+  dplyr::mutate(
+    Comorbidity = dplyr::case_match(
+      `21 - Paciente possui alguma comorbidade/diagnostico de base?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `21 - Paciente possui alguma comorbidade/diagnostico de base?`
+    )
+  ) |>
+  dplyr::count(Comorbidity) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 elpt |> 
   dplyr::filter(
     `21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
   ) |>
-  dplyr::count(`21.1 -  Qual comorbidade o paciente possui?
+  dplyr::rename(
+    Comorbidity = `21.1 -  Qual comorbidade o paciente possui?
 
--Em caso negativo responder com NA`) |> 
-  dplyr::mutate(Percentual = n / 114) |>
+-Em caso negativo responder com NA`
+  ) |>
+  dplyr::count(Comorbidity) |> 
+  dplyr::mutate(Percentage = n / 114) |>
   dplyr::arrange(dplyr::desc(n)) |> dplyr::filter(n > 1)
   
 ```
@@ -227,16 +310,16 @@ elpt |>
   dplyr::filter(
     `21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
   ) |>
-  dplyr::select(Comorbidades = `21.1 -  Qual comorbidade o paciente possui?
+  dplyr::select(Comorbidities = `21.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |>
-  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  tidyr::separate_longer_delim(cols = Comorbidities, delim = ";") |>
   dplyr::mutate(
-    Comorbidades = stringr::str_trim(Comorbidades),
-    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
-    Comorbidades = stringr::str_to_sentence(Comorbidades)
+    Comorbidities = stringr::str_trim(Comorbidities),
+    Comorbidities = stringi::stri_trans_general(Comorbidities, "Latin-ASCII"),
+    Comorbidities = stringr::str_to_sentence(Comorbidities)
   ) |>
-  dplyr::count(Comorbidades) |> 
+  dplyr::count(Comorbidities) |> 
   dplyr::arrange(dplyr::desc(n)) |> 
   # dplyr::filter(n > 1) |>
   print(n = 100)
@@ -248,8 +331,16 @@ elpt |>
 ```{r}
 
 elpt |> 
-  dplyr::count(`22 - Paciente realiza hemodiálise?`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+  dplyr::mutate(
+    Hemodialysis = dplyr::case_match(
+      `22 - Paciente realiza hemodiálise?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `22 - Paciente realiza hemodiálise?`
+    )
+  ) |>
+  dplyr::count(Hemodialysis) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
   
 ```
 
@@ -258,10 +349,16 @@ elpt |>
 ```{r}
 
 elpt |> 
-  dplyr::count(
-    `23 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame ELPT?`
+  dplyr::mutate(
+    `Surgery in last 30 days` = dplyr::case_match(
+      `23 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame ELPT?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `23 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame ELPT?`
+    )
   ) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+  dplyr::count(`Surgery in last 30 days`) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 ```
 
@@ -270,10 +367,16 @@ elpt |>
 ```{r}
 
 elpt |> 
-  dplyr::count(
-    `24 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame ELPT?`
+  dplyr::mutate(
+    `Oncological treatment in last 30 days` = dplyr::case_match(
+      `24 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame ELPT?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `24 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame ELPT?`
+    )
   ) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+  dplyr::count(`Oncological treatment in last 30 days`) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 ```
 
@@ -282,10 +385,16 @@ elpt |>
 ```{r}
 
 elpt |> 
-  dplyr::count(
-    `27 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame ELPT?`
+  dplyr::mutate(
+    `Medication in last 30 days` = dplyr::case_match(
+      `27 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame ELPT?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `27 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame ELPT?`
+    )
   ) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+  dplyr::count(`Medication in last 30 days`) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 ```
 
@@ -294,8 +403,16 @@ elpt |>
 ```{r}
 
 elpt |> 
-  dplyr::count(`33 - Paciente possui registro de óbito?`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+  dplyr::mutate(
+    Death = dplyr::case_match(
+      `33 - Paciente possui registro de óbito?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `33 - Paciente possui registro de óbito?`
+    )
+  ) |>
+  dplyr::count(Death) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 (
   proxy <- 
@@ -304,19 +421,19 @@ elpt |>
     dplyr::select(`5 - Data de Cadastro do Exame`, 
                   `33.2 - Data de óbito`) |>
     dplyr::mutate(
-      Intervalo_dias = lubridate::time_length(
+      Interval_days = lubridate::time_length(
         lubridate::interval(`5 - Data de Cadastro do Exame`, `33.2 - Data de óbito`), 
         "days"
       ),
-      Intervalo_meses = lubridate::time_length(
+      Interval_months = lubridate::time_length(
         lubridate::interval(`5 - Data de Cadastro do Exame`, `33.2 - Data de óbito`), 
         "months"
       )
     )
 )
 
-summary(proxy$Intervalo_dias)
-summary(proxy$Intervalo_meses)
+summary(proxy$Interval_days)
+summary(proxy$Interval_months)
 
 ```
 
@@ -365,9 +482,9 @@ proxy |>
               color = "red", 
               se = TRUE) + 
   ggpubr::stat_cor(method = "pearson", label.x = 1000, label.y = 0.575) + 
-  labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
+  labs(title = "Correlation between IgG and Gamma fraction",
+       subtitle = "Quadratic Linear Model (y ~ x²) with 95% confidence interval",
+       x = "IgG (mg/dL)", y = "Gamma (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.05))
 
@@ -378,11 +495,20 @@ proxy |>
 ```{r}
 
 elpt |>
-  dplyr::count(
-    `18.1 - Como se encontra o resultado de IgG?
+  dplyr::mutate(
+    IgG_Reference = dplyr::case_match(
+      `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica`,
+      "Abaixo do valor de referência" ~ "Below reference",
+      "Normal" ~ "Normal",
+      "Acima do valor de referência" ~ "Above reference",
+      .default = `18.1 - Como se encontra o resultado de IgG?
 
 NA = não se aplica`
-    ) 
+    )
+  ) |>
+  dplyr::count(IgG_Reference) 
 
 proxy <- 
   elpt |>
@@ -409,9 +535,9 @@ proxy |>
               color = "red", 
               se = TRUE) + 
   ggpubr::stat_cor(method = "pearson") + 
-  labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
+  labs(title = "Correlation between IgG and Gamma fraction",
+       subtitle = "Linear Model (y ~ x) with 95% confidence interval",
+       x = "IgG (mg/dL)", y = "Gamma (g/dL)") +
   scale_x_continuous(breaks = seq(0, 700, by = 50)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.05))
   
@@ -463,16 +589,16 @@ elpt |>
 NA = não se aplica` == "Abaixo do valor de referência" &
     `21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
   ) |>
-  dplyr::select(Comorbidades = `21.1 -  Qual comorbidade o paciente possui?
+  dplyr::select(Comorbidities = `21.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |>
-  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  tidyr::separate_longer_delim(cols = Comorbidities, delim = ";") |>
   dplyr::mutate(
-    Comorbidades = stringr::str_trim(Comorbidades),
-    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
-    Comorbidades = stringr::str_to_sentence(Comorbidades)
+    Comorbidities = stringr::str_trim(Comorbidities),
+    Comorbidities = stringi::stri_trans_general(Comorbidities, "Latin-ASCII"),
+    Comorbidities = stringr::str_to_sentence(Comorbidities)
   ) |>
-  dplyr::count(Comorbidades) |> 
+  dplyr::count(Comorbidities) |> 
   dplyr::arrange(dplyr::desc(n)) |> 
   print(n = 30)
   
@@ -487,7 +613,21 @@ Apenas um paciente menor de 1 ano. Paciente sem informação de comorbidades.
 ```{r}
 
 elpt |>
-  dplyr::count(`3 - Insira Faixa etária do paciente`)
+  dplyr::mutate(
+    `Age Group` = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    )
+  ) |>
+  dplyr::count(`Age Group`)
 
 elpt |>
   dplyr::filter(`3 - Insira Faixa etária do paciente` == "< 1 ano") |>
@@ -511,16 +651,25 @@ NA = não se aplica`) |>
 
 -Responder com NA em caso de não realização do exame`) |>
     dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
+    dplyr::mutate(
+      IgG_Reference = dplyr::case_match(
+        IgG_Referência,
+        "Abaixo do valor de referência" ~ "Below reference",
+        "Normal" ~ "Normal",
+        "Acima do valor de referência" ~ "Above reference",
+        .default = IgG_Referência
+      )
+    ) |>
     dplyr::filter(IgG_Referência != "NA") |> 
-    dplyr::select(IgG, ELPT, IgG_Referência) |>
+    dplyr::select(IgG, ELPT, IgG_Referência, IgG_Reference) |>
     tidyr::unnest(IgG)  
 )
 
-proxy |> dplyr::count(IgG_Referência)
+proxy |> dplyr::count(IgG_Reference)
 
 proxy |>
   ggplot() +
-  aes(x = IgG, y = ELPT, fill =IgG_Referência, color = IgG_Referência) +
+  aes(x = IgG, y = ELPT, fill = IgG_Reference, color = IgG_Reference) +
   geom_point(size = 3, shape = 21, alpha = 0.6) +
   geom_smooth(method = "lm", 
               formula = y ~ poly(x, 1), 
@@ -529,16 +678,16 @@ proxy |>
   ggpubr::stat_cor(method = "pearson", 
                    label.x.npc = 0.6,   # 60% across the x-axis
                    label.y.npc = "bottom") + 
-  labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       fill = "Referência: ", color = "Referência: ",
-       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
+  labs(title = "Correlation between IgG and Gamma fraction",
+       subtitle = "Linear Model (y ~ x) with 95% confidence interval",
+       fill = "Reference: ", color = "Reference: ",
+       x = "IgG (mg/dL)", y = "Gamma (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
   scale_y_continuous(breaks = seq(0, 0.6, by = 0.05))
 
 (
   ref_stats <- proxy |>
-    filter(IgG_Referência == "Normal") |>
+    filter(IgG_Reference == "Normal") |>
     summarise(
       mean_elpt = mean(ELPT),
       sd_elpt = sd(ELPT),
@@ -555,7 +704,7 @@ Valor de referência: 0.47 (95% CI 0.35, 0.58).
 
 lin_mod <- lm(
   ELPT ~ IgG, 
-  data = proxy |> dplyr::filter(IgG_Referência != "Acima do valor de referência")
+  data = proxy |> dplyr::filter(IgG_Reference != "Above reference")
 )
 
 # Fit a segmented model (it estimates where the 'plateau' starts)
@@ -565,7 +714,7 @@ seg_mod <- segmented(lin_mod, seg.Z = ~IgG, psi = 600)
 # seg_mod$psi[, "Est."] + c(-1.95, 1.96) * seg_mod$psi[, "St.Err"]
 
 proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
+  filter(IgG_Reference != "Above reference") |>
   ggplot(aes(x = IgG, y = ELPT)) +
   annotate("rect", xmin = -Inf, xmax = Inf, 
            ymin = ref_stats$lower_ref, ymax = ref_stats$upper_ref, 
@@ -573,26 +722,26 @@ proxy |>
   annotate("segment", x = -Inf, xend = Inf, 
            y = ref_stats$mean_elpt, yend = ref_stats$mean_elpt, 
            color = "steelblue", linetype = "dashed", linewidth = 1) +
-  geom_point(aes(fill = IgG_Referência), shape = 21, size = 3, alpha = 0.8) +
+  geom_point(aes(fill = IgG_Reference), shape = 21, size = 3, alpha = 0.8) +
   geom_smooth(
-    aes(color = IgG_Referência), 
+    aes(color = IgG_Reference), 
     method = "lm", formula = y ~ poly(x, 1), se = TRUE, linewidth = 1
   ) +
   geom_vline(xintercept = seg_mod$psi[, "Est."], linetype = "dashed", alpha = 0.7) +
   scale_fill_manual(
-    values = c("Normal" = "white", "Abaixo do valor de referência" = "orange"),
-    labels = c("Abaixo da Referência", "Normal")
+    values = c("Normal" = "white", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
   ) +
   scale_color_manual(
-    values = c("Normal" = "darkblue", "Abaixo do valor de referência" = "darkorange"),
-    labels = c("Abaixo da Referência", "Normal")
+    values = c("Normal" = "darkblue", "Below reference" = "darkorange"),
+    labels = c("Below reference", "Normal")
   ) +
   labs(
-    title = "Baseline de ELPT Baseado no Platô de IgG (Grupo Normal)",
-    subtitle = "Linhas de tendência com Intervalo de Confiança de 95% (sombreado)",
+    title = "Gamma fraction Baseline Based on IgG Plateau (Normal Group)",
+    subtitle = "Trend lines with 95% Confidence Interval (shaded)",
     x = "IgG (mg/dL)", 
-    y = "ELPT (g/dL)",
-    fill = "Classificação IgG: ", color = "Classificação IgG: "
+    y = "Gamma (g/dL)",
+    fill = "IgG Classification: ", color = "IgG Classification: "
   ) +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(0, 0.6, by = 0.05))
@@ -612,11 +761,11 @@ Aqui é apenas para "comprovar" que o grupo "Normal" não tem inclinação estat
 ```{r}
 
 proxy |>
-  dplyr::filter(IgG_Referência != "Acima do valor de referência") |>
-  dplyr::group_by(IgG_Referência) |>
+  dplyr::filter(IgG_Reference != "Above reference") |>
+  dplyr::group_by(IgG_Reference) |>
   dplyr::group_modify(~ broom::tidy(lm(ELPT ~ IgG, data = .x), conf.int = TRUE)) |>
   dplyr::filter(term == "IgG") |>
-  dplyr::select(IgG_Referência, estimate, std.error, p.value, conf.low, conf.high)
+  dplyr::select(IgG_Reference, estimate, std.error, p.value, conf.low, conf.high)
 
 ```
 
@@ -664,8 +813,8 @@ A positive linear dependency was observed between ELPT and IgG strictly within t
 
 # 1. Prepare Data
 proxy_roc <- proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+  filter(IgG_Reference != "Above reference") |>
+  mutate(low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0))
 
 # 2. Generate ROC Object
 roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$ELPT, quiet = TRUE)
@@ -705,17 +854,20 @@ kable(roc_summary, digits = 3, caption = "Comparison of Cutoff Strategies")
 optimal_cutoff <- scen_balanced$threshold
 
 proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  ggplot(aes(x = ELPT, fill = IgG_Referência)) +
+  filter(IgG_Reference != "Above reference") |>
+  ggplot(aes(x = ELPT, fill = IgG_Reference)) +
   geom_density(alpha = 0.4) +
   geom_vline(xintercept = optimal_cutoff, linetype = "dashed", color = "black", linewidth = 1) +
   annotate("text", x = optimal_cutoff, y = 0, label = paste(" Optimal Cutoff:", round(optimal_cutoff, 2)), 
            hjust = 1.05, vjust = -2, angle = 0, fontface = "bold") +
-  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
   labs(
     title = "Clinical Decision Threshold",
-    subtitle = "Overlap of ELPT distributions with optimal screening cutoff",
-    x = "ELPT (g/dL)", y = "Density", fill = "IgG Status"
+    subtitle = "Overlap of Gamma fraction distributions with optimal screening cutoff",
+    x = "Gamma (g/dL)", y = "Density", fill = "IgG Status"
   ) +
   scale_x_continuous(breaks = seq(0, 1, by = 0.1))
 
@@ -756,8 +908,8 @@ We recommend the **Balanced Strategy** as the clinical standard for ELPT.
 
 # 1. Prepare Data & ROC
 proxy_roc <- proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+  filter(IgG_Reference != "Above reference") |>
+  mutate(low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0))
 
 roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$ELPT, quiet = TRUE)
 
@@ -797,8 +949,8 @@ rbind(
 
 # 2. Visualize the Zones
 proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  ggplot(aes(x = ELPT, fill = IgG_Referência)) +
+  filter(IgG_Reference != "Above reference") |>
+  ggplot(aes(x = ELPT, fill = IgG_Reference)) +
   geom_density(alpha = 0.4) +
   # Red Zone
   annotate("rect", xmin = -Inf, xmax = cutoff_red, ymin = 0, ymax = Inf, 
@@ -814,10 +966,13 @@ proxy |>
            hjust = 1.1, vjust = -10, angle = 0, color = "firebrick") +
   annotate("text", x = cutoff_green, y = 0, label = paste("Green >", round(cutoff_green, 2)), 
            hjust = 1.1, vjust = -10, angle = 0, color = "forestgreen") +
-  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
   labs(title = "Traffic Light System: Managing Clinical Overlap",
        subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
-       x = "ELPT (g/dL)", y = "Density", fill = "IgG Status") +
+       x = "Gamma (g/dL)", y = "Density", fill = "IgG Status") +
   scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
   scale_y_continuous(breaks = seq(0, 10, by = 1))
 
@@ -867,10 +1022,18 @@ infection_analysis <- elpt |>
     values_to = "Status"
   ) |>
   mutate(
-    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
-    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
-    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
-    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Infection_Type = dplyr::case_match(
+      Infection_Type,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superioras?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = Infection_Type
+    ),
     Is_Infected = ifelse(Status == "Sim", 1, 0)
   ) |>
   # Remove NAs if any exist in Status/Risk_Group
@@ -927,7 +1090,7 @@ final_results <- rates_table |>
 
 knitr::kable(
   final_results, digits = 2, 
-  caption = "Prevalência de Infecções por Grupo de Risco (ELPT < 0.41)"
+  caption = "Prevalence of Infections by Risk Group (Gamma fraction < 0.41)"
 )
 
 ```
@@ -945,9 +1108,9 @@ final_results |>
   scale_x_log10() + 
   scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
   labs(
-    title = "Clinical Impact of Low ELPT (< 0.41 g/dL)",
+    title = "Clinical Impact of Low Gamma fraction (< 0.41 g/dL)",
     subtitle = "Odds Ratio of Infection Risk (High Risk vs. Low Risk Group)",
-    x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low ELPT group",
+    x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low Gamma group",
     y = NULL,
     color = "Significant (p < 0.05)?"
   )
@@ -972,10 +1135,6 @@ To determine if the ELPT cutoff (**0.410**) translates into a functional clinica
 
 ```{r fig.width=9.5, fig.height=4.5}
 
-# elpt |> 
-#   dplyr::filter(`3 - Insira Faixa etária do paciente` != "< 1 ano") |>
-#   dplyr::count(`3 - Insira Faixa etária do paciente`)
-
 proxy <- 
     elpt |>
     dplyr::rename(IgG_Referência = `18.1 - Como se encontra o resultado de IgG?
@@ -985,18 +1144,38 @@ NA = não se aplica`) |>
 
 -Responder com NA em caso de não realização do exame`) |>
     dplyr::rename(ELPT = `16 - Resultado do Primeiro exame`) |>
-    dplyr::rename(Age_Group = `3 - Insira Faixa etária do paciente`) |>
+    dplyr::mutate(
+      Age_Group = factor(
+        dplyr::case_match(
+          `3 - Insira Faixa etária do paciente`,
+          "< 1 ano" ~ "< 1 year",
+          "1 ano a 3 anos" ~ "1 to 3 years",
+          "4 anos a 9 anos" ~ "4 to 9 years",
+          "10 anos a 17 anos" ~ "10 to 17 years",
+          "> 18 anos" ~ "> 18 years",
+          .default = `3 - Insira Faixa etária do paciente`
+        ),
+        levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+      ),
+      IgG_Reference = dplyr::case_match(
+        IgG_Referência,
+        "Abaixo do valor de referência" ~ "Below reference",
+        "Normal" ~ "Normal",
+        "Acima do valor de referência" ~ "Above reference",
+        .default = IgG_Referência
+      )
+    ) |>
     dplyr::filter(IgG_Referência != "NA") |> 
-    dplyr::select(IgG, ELPT, IgG_Referência, Age_Group) |>
+    dplyr::select(IgG, ELPT, IgG_Reference, Age_Group) |>
     tidyr::unnest(IgG)  
 
 # 1. Prepare Data
 age_analysis_data <- proxy |>
   dplyr::filter(
-    IgG_Referência != "Acima do valor de referência",
-    Age_Group != "< 1 ano" 
+    IgG_Reference != "Above reference",
+    Age_Group != "< 1 year" 
   ) |>
-  dplyr::mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+  dplyr::mutate(low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0))
 
 # 2. Define a function to calculate scenarios for a single group
 calc_roc_scenarios <- function(data) {
@@ -1045,7 +1224,7 @@ kable(
   stratified_results |>
   dplyr::inner_join(proxy |> dplyr::count(Age_Group), by = "Age_Group") |>
   dplyr::relocate(n, .after = Age_Group), 
-  digits = 3, caption = "Optimal ELPT Cutoffs by Age Group"
+  digits = 3, caption = "Optimal Gamma fraction Cutoffs by Age Group"
 )
 
 # 4. Visualization: Faceted Density Plot
@@ -1055,7 +1234,7 @@ balanced_cutoffs <- stratified_results |>
   dplyr::select(Age_Group, cutoff = Threshold)
 
 age_analysis_data |>
-  ggplot(aes(x = ELPT, fill = IgG_Referência)) +
+  ggplot(aes(x = ELPT, fill = IgG_Reference)) +
   geom_density(alpha = 0.4) +
   # Add the specific cutoff line for each facet
   geom_vline(data = balanced_cutoffs, aes(xintercept = cutoff), 
@@ -1064,11 +1243,14 @@ age_analysis_data |>
   geom_text(data = balanced_cutoffs, aes(x = cutoff, y = 0, label = round(cutoff, 3)), 
             inherit.aes = FALSE, vjust = -1, hjust = -0.25, angle = 0, fontface = "bold") +
   facet_wrap(~Age_Group, scales = "free_y") + # Create separate panels
-  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
   labs(
-    title = "ELPT Diagnostic Thresholds by Age Group",
+    title = "Gamma fraction Diagnostic Thresholds by Age Group",
     subtitle = "Distribution and Optimal Cutoff (Youden) per cohort",
-    x = "ELPT (g/dL)", y = "Density", fill = "IgG Status"
+    x = "Gamma (g/dL)", y = "Density", fill = "IgG Status"
   ) +
   scale_x_continuous(breaks = seq(0, 1, by = 0.1))
 
@@ -1111,15 +1293,29 @@ The results support a **Two-Tiered Reference Approach**:
 # 1. Define Age-Specific Cutoffs (Based on your previous ROC results)
 # We create a small lookup table to map each age group to its Youden cutoff
 cutoff_map <- tibble(
-  Age_Group = c("1 ano a 3 anos", "4 anos a 9 anos", "10 anos a 17 anos"),
+  Age_Group = factor(c("1 to 3 years", "4 to 9 years", "10 to 17 years"),
+                     levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years")),
   Age_Specific_Cutoff = c(0.375, 0.380, 0.475)
 )
 
 # 2. Prepare Data & Apply Cutoffs
 infection_analysis_age <- elpt |>
   dplyr::rename(
-    ELPT = `16 - Resultado do Primeiro exame`,
-    Age_Group = `3 - Insira Faixa etária do paciente`
+    ELPT = `16 - Resultado do Primeiro exame`
+  ) |>
+  dplyr::mutate(
+    Age_Group = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    )
   ) |>
   # Filter to keep only the groups we analyzed
   dplyr::filter(Age_Group %in% cutoff_map$Age_Group) |>
@@ -1144,10 +1340,18 @@ infection_analysis_age <- elpt |>
   
   # Clean Names & Force Binary
   dplyr::mutate(
-    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
-    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
-    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
-    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Infection_Type = dplyr::case_match(
+      Infection_Type,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superioras?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = Infection_Type
+    ),
     Is_Infected = ifelse(Status == "Sim", 1, 0)
   ) |>
   dplyr::filter(!is.na(Is_Infected))
@@ -1204,7 +1408,7 @@ final_results_age <- rates_table_age |>
   dplyr::arrange(Age_Group, Infection_Type)
 
 # Display Table
-kable(final_results_age, digits = 2, caption = "Impact of Low ELPT on Infections (Stratified by Age)")
+kable(final_results_age, digits = 2, caption = "Impact of Low Gamma fraction on Infections (Stratified by Age)")
 
 final_results_age |>
   filter(!is.na(Odds_Ratio)) |> # Hide rows where test failed (e.g. 0 infections)
@@ -1219,10 +1423,11 @@ final_results_age |>
   scale_x_log10() +
   scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
   labs(
-    title = "ELPT Infection Risk by Age Cohort",
+    title = "Gamma fraction Infection Risk by Age Cohort",
     subtitle = "Odds Ratio (High Risk vs Low Risk) using age-specific cutoffs",
     x = "Odds Ratio (Log Scale)",
-    y = NULL
+    y = NULL,
+    color = "Significant (p < 0.05)?"
   )
 
 ```
@@ -1252,22 +1457,23 @@ To ensure biological accuracy, we assessed the clinical impact of ELPT deficienc
 ```{r}
 
 elpt |> 
-  dplyr::count(`34 - Medicações Utilizadas`) |>
-  dplyr::mutate(Percentual = n / nrow(elpt)) |> dplyr::arrange(dplyr::desc(n))
+  dplyr::rename(Medications = `34 - Medicações Utilizadas`) |>
+  dplyr::count(Medications) |>
+  dplyr::mutate(Percentage = n / nrow(elpt)) |> dplyr::arrange(dplyr::desc(n))
 
 elpt |>
   tidyr::separate_longer_delim(
     cols = `34 - Medicações Utilizadas`, delim = ";"
   ) |>
   dplyr::mutate(
-    Medicações = stringi::stri_trans_general(
+    Medications = stringi::stri_trans_general(
       `34 - Medicações Utilizadas`, "Latin-ASCII"
     ),
-    Medicações = stringr::str_trim(Medicações),    
-    Medicações = stringr::str_to_sentence(Medicações)
+    Medications = stringr::str_trim(Medications),    
+    Medications = stringr::str_to_sentence(Medications)
   ) |>
-  tidyr::drop_na(Medicações) |>
-  dplyr::count(Medicações) |>
+  tidyr::drop_na(Medications) |>
+  dplyr::count(Medications) |>
   dplyr::arrange(dplyr::desc(n))
 
 ```
@@ -1287,9 +1493,9 @@ elpt |>
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 - Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   dplyr::summarise(
@@ -1307,14 +1513,14 @@ elpt |>
       ),
       .names = "{.col}_{.fn}"
     ),
-    .by = Medicação
+    .by = Medication
   ) |>
   tidyr::pivot_longer(
-    cols = -Medicação, 
+    cols = -Medication, 
     names_to = "Metric", 
     values_to = "Value"
   ) |>
-  tidyr::pivot_wider(names_from = Medicação, values_from = Value
+  tidyr::pivot_wider(names_from = Medication, values_from = Value
   )
 
 ```
@@ -1334,14 +1540,14 @@ elpt |>
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 - Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, y = ELPT, fill = Medicação, color = Medicação) +
+  aes(x = IgG, y = ELPT, fill = Medication, color = Medication) +
   geom_point(size = 3, shape = 21, alpha = 0.6) +
   geom_smooth(method = "lm", 
               formula = y ~ poly(x, 1), 
@@ -1350,10 +1556,10 @@ elpt |>
   ggpubr::stat_cor(method = "pearson", 
                    label.x.npc = 0.7,   # 70% across the x-axis
                    label.y.npc = "bottom") + 
-  labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       fill = "Medicação: ", color = "Medicação: ",
-       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
+  labs(title = "Correlation between IgG and Gamma fraction",
+       subtitle = "Linear Model (y ~ x) with 95% confidence band",
+       fill = "Medication: ", color = "Medication: ",
+       x = "IgG (mg/dL)", y = "Gamma (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.1))
 
@@ -1371,18 +1577,18 @@ p1 <- elpt |>
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 - Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, fill = Medicação) +
+  aes(x = IgG, fill = Medication) +
   geom_histogram(alpha = 0.8, binwidth = 50) +
-  labs(title = "Histograma de IgG",
+  labs(title = "IgG Histogram",
        subtitle = "Binwidth: 50",
-       fill = "Medicação: ",
+       fill = "Medication: ",
        x = "IgG (mg/dL)", y = "n") +
   scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
   scale_y_continuous(breaks = seq(0, 12, by = 2))
@@ -1393,18 +1599,18 @@ p2 <- elpt |>
     ELPT = `16 - Resultado do Primeiro exame`
   ) |>
   dplyr::mutate(
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 - Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   ggplot() +
-  aes(x = ELPT, fill = Medicação) +
+  aes(x = ELPT, fill = Medication) +
   geom_histogram(alpha = 0.8, binwidth = 0.025) +
-  labs(title = "Histograma de ELPT",
+  labs(title = "Gamma fraction Histogram",
        subtitle = "Binwidth: 0.025",
-       fill = "Medicação: ",
-       x = "ELPT (g/dL)", y = "n") +
+       fill = "Medication: ",
+       x = "Gamma (g/dL)", y = "n") +
   scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
   scale_y_continuous(breaks = seq(0, 21, by = 3))
 
@@ -1421,7 +1627,7 @@ Ajustamos também um modelo linear para entender melhor as associações com o u
 ```{r}
 
 lm(
-  IgG ~ Medicação,
+  IgG ~ Medication,
   data = elpt |>
   dplyr::select(
     `34 - Medicações Utilizadas`, 
@@ -1432,9 +1638,9 @@ lm(
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 - Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   tidyr::drop_na(IgG)
@@ -1442,16 +1648,16 @@ lm(
   anova()
 
 lm(
-  ELPT ~ Medicação,
+  ELPT ~ Medication,
   data = elpt |>
   dplyr::select(
     `34 - Medicações Utilizadas`, 
     ELPT = `16 - Resultado do Primeiro exame`
   ) |>
   dplyr::mutate(
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 - Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   )
 ) |>
@@ -1466,18 +1672,35 @@ Abaixo mostramos - por Sexo.
 ```{r}
 
 t1 <- elpt |>
-  dplyr::select(
-    Medicações = `34 - Medicações Utilizadas`,
-    Idade = `3 - Insira Faixa etária do paciente`,
-    Sexo = `4 - Sexo`
+  dplyr::mutate(
+    Medications = `34 - Medicações Utilizadas`,
+    Age_Group = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    ),
+    Sex = dplyr::case_match(
+      `4 - Sexo`,
+      "Feminino" ~ "Female",
+      "Masculino" ~ "Male",
+      .default = `4 - Sexo`
+    )
   ) |>
-  tidyr::drop_na(Medicações) |>
-  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
-  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
-  dplyr::count(Medicações, Idade, Sexo) |>
-  dplyr::arrange(dplyr::desc(n), Medicações) |>
+  dplyr::select(Medications, Age_Group, Sex) |>
+  tidyr::drop_na(Medications) |>
+  tidyr::separate_longer_delim(cols = Medications, delim = ";") |>
+  dplyr::mutate(Medications = stringr::str_trim(Medications)) |>
+  dplyr::count(Medications, Age_Group, Sex) |>
+  dplyr::arrange(dplyr::desc(n), Medications) |>
   # dplyr::filter(n > 1) |>
-  dplyr::group_split(Sexo) 
+  dplyr::group_split(Sex) 
 
 t1[[1]] |> print(n = 30)
 t1[[2]] |> print(n = 30)
@@ -1489,18 +1712,35 @@ Mesma coisa pro faixa etária.
 ```{r}
 
 elpt |>
-  dplyr::select(
-    Medicações = `34 - Medicações Utilizadas`,
-    Idade = `3 - Insira Faixa etária do paciente`,
-    Sexo = `4 - Sexo`
+  dplyr::mutate(
+    Medications = `34 - Medicações Utilizadas`,
+    Age_Group = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    ),
+    Sex = dplyr::case_match(
+      `4 - Sexo`,
+      "Feminino" ~ "Female",
+      "Masculino" ~ "Male",
+      .default = `4 - Sexo`
+    )
   ) |>
-  tidyr::drop_na(Medicações) |>
-  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
-  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
-  dplyr::count(Medicações, Idade, Sexo) |>
-  dplyr::arrange(dplyr::desc(n), Medicações, Sexo) |>
+  dplyr::select(Medications, Age_Group, Sex) |>
+  tidyr::drop_na(Medications) |>
+  tidyr::separate_longer_delim(cols = Medications, delim = ";") |>
+  dplyr::mutate(Medications = stringr::str_trim(Medications)) |>
+  dplyr::count(Medications, Age_Group, Sex) |>
+  dplyr::arrange(dplyr::desc(n), Medications, Sex) |>
   # dplyr::filter(n > 1) |>
-  dplyr::group_split(Idade)
+  dplyr::group_split(Age_Group)
   
 ```
 
@@ -1510,12 +1750,12 @@ E para finalizar, todas as medicações.
 
 elpt |>
   dplyr::select(
-    Medicações = `34 - Medicações Utilizadas`
+    Medications = `34 - Medicações Utilizadas`
   ) |>
-  tidyr::drop_na(Medicações) |>
-  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
-  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
-  dplyr::count(Medicações) |>
+  tidyr::drop_na(Medications) |>
+  tidyr::separate_longer_delim(cols = Medications, delim = ";") |>
+  dplyr::mutate(Medications = stringr::str_trim(Medications)) |>
+  dplyr::count(Medications) |>
   dplyr::arrange(dplyr::desc(n)) |>
   print(n = 100)
 
@@ -1528,11 +1768,16 @@ elpt |>
 ```{r}
 
 elpt |>
-  dplyr::select(
-    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`
+  dplyr::mutate(
+    Proteinuria = dplyr::case_match(
+      `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`
+    )
   ) |>
-  dplyr::count(PPU) |>
-  dplyr::mutate(Percentual = n / nrow(elpt))
+  dplyr::count(Proteinuria) |>
+  dplyr::mutate(Percentage = n / nrow(elpt))
 
 ```
 
@@ -1542,7 +1787,7 @@ Medidas descritivas.
 
 elpt |>
   dplyr::select(
-    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`,
+    PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`,
     ELPT = `16 - Resultado do Primeiro exame`,
     IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
 
@@ -1550,7 +1795,13 @@ elpt |>
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   dplyr::summarise(
     n_patients = dplyr::n(),
@@ -1567,14 +1818,14 @@ elpt |>
       ),
       .names = "{.col}_{.fn}"
     ),
-    .by = PPU
+    .by = Proteinuria
   ) |>
   tidyr::pivot_longer(
-    cols = -PPU, 
+    cols = -Proteinuria, 
     names_to = "Metric", 
     values_to = "Value"
   ) |>
-  tidyr::pivot_wider(names_from = PPU, values_from = Value
+  tidyr::pivot_wider(names_from = Proteinuria, values_from = Value
   )
 
 ```
@@ -1585,7 +1836,7 @@ Tanto pelas medidas quanto visualmente não aparenta ter diferença significativ
 
 elpt |>
   dplyr::select(
-    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
+    PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
     ELPT = `16 - Resultado do Primeiro exame`,
     IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
 
@@ -1593,11 +1844,17 @@ elpt |>
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, y = ELPT, fill = PPU, color = PPU) +
+  aes(x = IgG, y = ELPT, fill = Proteinuria, color = Proteinuria) +
   geom_point(size = 3, shape = 21, alpha = 0.6) +
   geom_smooth(method = "lm", 
               formula = y ~ poly(x, 1), 
@@ -1606,10 +1863,10 @@ elpt |>
   ggpubr::stat_cor(method = "pearson", 
                    label.x.npc = 0.7,   # 70% across the x-axis
                    label.y.npc = "bottom") + 
-  labs(title = "Correlação entre IgG e ELPT",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       fill = "Perda proteica na urina: ", color = "Perda proteica na urina: ",
-       x = "IgG (mg/dL)", y = "ELPT (g/dL)") +
+  labs(title = "Correlation between IgG and Gamma fraction",
+       subtitle = "Linear Model (y ~ x) with 95% confidence band",
+       fill = "Proteinuria: ", color = "Proteinuria: ",
+       x = "IgG (mg/dL)", y = "Gamma (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(0, 1, by = 0.1))
 
@@ -1619,22 +1876,28 @@ elpt |>
 
 p1 <- elpt |>
   dplyr::select(
-    PPU=`25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
+    PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
     IgG = `18.2 - Qual resultado da dosagem? Colocar apenas número
 
 -Responder com NA em caso de não realização do exame`
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, fill = PPU) +
+  aes(x = IgG, fill = Proteinuria) +
   geom_histogram(alpha = 0.8, binwidth = 50) +
-  labs(title = "Histograma de IgG",
+  labs(title = "IgG Histogram",
        subtitle = "Binwidth: 50",
-       fill = "Perda proteica na urina: ",
+       fill = "Proteinuria: ",
        x = "IgG (mg/dL)", y = "n") +
   scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
   scale_y_continuous(breaks = seq(0, 14, by = 2))
@@ -1644,13 +1907,21 @@ p2 <- elpt |>
     PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
     ELPT = `16 - Resultado do Primeiro exame`
   ) |>
+  dplyr::mutate(
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
+  ) |>
   ggplot() +
-  aes(x = ELPT, fill = PPU) +
+  aes(x = ELPT, fill = Proteinuria) +
   geom_histogram(alpha = 0.8, binwidth = 0.025) +
-  labs(title = "Histograma de ELPT",
+  labs(title = "Gamma fraction Histogram",
        subtitle = "Binwidth: 0.025",
-       fill = "Perda proteica na urina: ",
-       x = "ELPT (g/dL)", y = "n") +
+       fill = "Proteinuria: ",
+       x = "Gamma (g/dL)", y = "n") +
   scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
   scale_y_continuous(breaks = seq(0, 21, by = 3))
 
@@ -1667,7 +1938,7 @@ Ajustamos também um modelo linear para entender melhor as associações com a p
 ```{r}
 
 lm(
-  IgG ~ PPU,
+  IgG ~ Proteinuria,
   data = elpt |>
   dplyr::select(
     PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
@@ -1677,18 +1948,32 @@ lm(
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   tidyr::drop_na(IgG)
 ) |>
   anova()
 
 lm(
-  ELPT ~ PPU,
+  ELPT ~ Proteinuria,
   data = elpt |>
   dplyr::select(
     PPU = `25 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame ELPT?`, 
     ELPT = `16 - Resultado do Primeiro exame`
+  ) |>
+  dplyr::mutate(
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   )
 ) |>
   anova()

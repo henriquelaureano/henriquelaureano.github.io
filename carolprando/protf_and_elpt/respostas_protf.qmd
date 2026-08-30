@@ -6,10 +6,13 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/04/04
+date-modified: 2026/08/30
 editor_options: 
   chunk_output_type: console
 toc: true
+execute:
+  warning: false
+  message: false
 ---
 
 ```{r pkgs}
@@ -22,6 +25,7 @@ pacman::p_load(
   dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, 
   knitr, purrr, patchwork
 )
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ggplot2::theme_set(
   theme_classic(base_size = 14) +
     theme(plot.title           = element_text(size = 14, face = "bold"),
@@ -46,6 +50,7 @@ protf_url <-
     "1k3vlSk4e4mHMwTHZVnDpSTXyMReXLTGsgk82rHVILgQ/",
     "edit?gid=402323031#gid=402323031"
 )
+googlesheets4::gs4_deauth()
 protf <- googlesheets4::read_sheet(protf_url) |> dplyr::distinct()
 
 protf <- protf |> 
@@ -63,8 +68,23 @@ protf <- protf |>
 
 ```{r}
 
-protf |> dplyr::count(`3 - Insira Faixa etária do paciente`) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+protf |> 
+  dplyr::mutate(
+    `Age Group` = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    )
+  ) |>
+  dplyr::count(`Age Group`) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 ```
 
@@ -72,8 +92,10 @@ protf |> dplyr::count(`3 - Insira Faixa etária do paciente`) |>
 
 ```{r}
 
-protf |> dplyr::count(`2 - Insira o Setor de Solicitação do exame`) |>
-  dplyr::mutate(Percentual = n / nrow(protf)) |>
+protf |> 
+  dplyr::rename(Sector = `2 - Insira o Setor de Solicitação do exame`) |>
+  dplyr::count(Sector) |>
+  dplyr::mutate(Percentage = n / nrow(protf)) |>
   dplyr::arrange(dplyr::desc(n)) |> print(n = 28)
 
 ```
@@ -82,8 +104,17 @@ protf |> dplyr::count(`2 - Insira o Setor de Solicitação do exame`) |>
 
 ```{r}
 
-protf |> dplyr::count(`4 - Sexo`) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+protf |> 
+  dplyr::mutate(
+    Sex = dplyr::case_match(
+      `4 - Sexo`,
+      "Feminino" ~ "Female",
+      "Masculino" ~ "Male",
+      .default = `4 - Sexo`
+    )
+  ) |>
+  dplyr::count(Sex) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 ```
 
@@ -91,8 +122,17 @@ protf |> dplyr::count(`4 - Sexo`) |>
 
 ```{r}
 
-protf |> dplyr::count(`7 - Quadros infecciosos até o momento da coleta?`) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+protf |> 
+  dplyr::mutate(
+    `Infectious Condition` = dplyr::case_match(
+      `7 - Quadros infecciosos até o momento da coleta?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `7 - Quadros infecciosos até o momento da coleta?`
+    )
+  ) |>
+  dplyr::count(`Infectious Condition`) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 ```
 
@@ -113,8 +153,22 @@ protf |> dplyr::filter(
                 `15 - Outros?`) |>
   tidyr::pivot_longer(`8 - Infecção em sistema nervoso central?`:`15 - Outros?`) |>
   dplyr::filter(value == "Sim") |>
-  dplyr::count(name) |>
-  dplyr::mutate(Percentual = n / 373) |> dplyr::arrange(dplyr::desc(n))
+  dplyr::mutate(
+    Infection_Type = dplyr::case_match(
+      name,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superiores?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = name
+    )
+  ) |>
+  dplyr::count(Infection_Type) |>
+  dplyr::mutate(Percentage = n / 373) |> dplyr::arrange(dplyr::desc(n))
 
 ```
 
@@ -151,13 +205,23 @@ proxy <-
   proxy2 <- 
     proxy |>
     dplyr::select(!c(value, n)) |> 
-    mutate(name = stringr::str_remove(name, "^[0-9]+ - "),
-           name = stringr::str_remove(name, "\\?"),
-           name = stringr::str_remove(name, "Infecção (de|em) "),
-           name = stringr::str_to_sentence(name)) |>
+    dplyr::mutate(
+      name = dplyr::case_match(
+        name,
+        "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+        "9 - Infecção de vias áreas superiores?" ~ "Upper respiratory tract",
+        "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+        "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+        "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+        "13 - Infecção de pele?" ~ "Skin",
+        "14 - Sepse?" ~ "Sepsis",
+        "15 - Outros?" ~ "Other",
+        .default = name
+      )
+    ) |>
     dplyr::count(name) |> 
     dplyr::arrange(dplyr::desc(n)) |>
-    dplyr::mutate(Percentual = n / 154) 
+    dplyr::mutate(Percentage = n / 154) 
 )
 
 ```
@@ -167,18 +231,26 @@ O máximo de infecções que um paciente apresenta são 6, apenas 1 paciente se 
 ```{r fig.height=10}
 
 proxy |>
-  dplyr::mutate(value = ifelse(value == "Sim", 1, 0)) |>
+  dplyr::mutate(
+    value = ifelse(value == "Sim", 1, 0),
+    name = dplyr::case_match(
+      name,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superiores?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = name
+    )
+  ) |>
   tidyr::pivot_wider(names_from = name, values_from = value, values_fill = 0) |>
   dplyr::select(-n) |> 
   tidyr::pivot_longer(-`1 - Insira o Prontuário do Paciente`, 
                       names_to = "Infection_Type", 
                       values_to = "Present") |>
-  mutate(Infection_Type = stringr::str_remove(Infection_Type, "^[0-9]+ - "),
-         Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
-         Infection_Type = stringr::str_remove(Infection_Type, "Infecção (de|em) "),
-         Infection_Type = stringr::str_to_sentence(Infection_Type)) |>
-  # dplyr::filter(Present == 1) |>
-  # dplyr::count(`1 - Insira o Prontuário do Paciente`) |> dplyr::arrange(dplyr::desc(n))
   ggplot() +
   aes(
     x = factor(Infection_Type, levels = unique(proxy2$name)), 
@@ -190,12 +262,12 @@ proxy |>
   ) +
   geom_tile(color = "white") + # Adds a grid line effect
   scale_fill_manual(values = c("0" = "grey95", "1" = "steelblue"),
-                    labels = c("Não", "Sim"),
-                    name = "Presença: ") +
-  labs(x = "Tipo de Infecção", 
-       y = "Paciente",
-       title = "Mapa de Calor de Infecções por Paciente",
-       subtitle = "Apenas pacientes com ao menos dois tipos de infecção") +
+                    labels = c("No", "Yes"),
+                    name = "Presence: ") +
+  labs(x = "Infection Type", 
+       y = "Patient",
+       title = "Heatmap of Infections per Patient",
+       subtitle = "Only patients with at least two infection types") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_y_discrete(labels = NULL)
 
@@ -206,17 +278,28 @@ proxy |>
 ```{r}
 
 protf |> 
-  dplyr::count(`20 - Paciente possui alguma comorbidade/diagnostico de base?`) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+  dplyr::mutate(
+    Comorbidity = dplyr::case_match(
+      `20 - Paciente possui alguma comorbidade/diagnostico de base?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `20 - Paciente possui alguma comorbidade/diagnostico de base?`
+    )
+  ) |>
+  dplyr::count(Comorbidity) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 protf |> 
   dplyr::filter(
     `20 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
   ) |>
-  dplyr::count(`20.1 -  Qual comorbidade o paciente possui?
+  dplyr::rename(
+    Comorbidity = `20.1 -  Qual comorbidade o paciente possui?
 
--Em caso negativo responder com NA`) |> 
-  dplyr::mutate(Percentual = n / 632) |>
+-Em caso negativo responder com NA`
+  ) |>
+  dplyr::count(Comorbidity) |> 
+  dplyr::mutate(Percentage = n / 632) |>
   dplyr::arrange(dplyr::desc(n)) |> 
   dplyr::filter(n > 1) |>
   print(n = 50)
@@ -235,16 +318,16 @@ protf |>
   dplyr::filter(
     `20 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
   ) |>
-  dplyr::select(Comorbidades = `20.1 -  Qual comorbidade o paciente possui?
+  dplyr::select(Comorbidities = `20.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |>
-  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  tidyr::separate_longer_delim(cols = Comorbidities, delim = ";") |>
   dplyr::mutate(
-    Comorbidades = stringr::str_trim(Comorbidades),
-    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
-    Comorbidades = stringr::str_to_sentence(Comorbidades)
+    Comorbidities = stringr::str_trim(Comorbidities),
+    Comorbidities = stringi::stri_trans_general(Comorbidities, "Latin-ASCII"),
+    Comorbidities = stringr::str_to_sentence(Comorbidities)
   ) |>
-  dplyr::count(Comorbidades) |> 
+  dplyr::count(Comorbidities) |> 
   dplyr::arrange(dplyr::desc(n)) |> 
   # dplyr::filter(n > 1) |>
   print(n = 100)
@@ -256,8 +339,16 @@ protf |>
 ```{r}
 
 protf |> 
-  dplyr::count(`21 - Paciente realiza hemodiálise?`) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+  dplyr::mutate(
+    Hemodialysis = dplyr::case_match(
+      `21 - Paciente realiza hemodiálise?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `21 - Paciente realiza hemodiálise?`
+    )
+  ) |>
+  dplyr::count(Hemodialysis) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
   
 ```
 
@@ -266,10 +357,16 @@ protf |>
 ```{r}
 
 protf |> 
-  dplyr::count(
-    `22 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame PROTF?`
+  dplyr::mutate(
+    `Surgery in last 30 days` = dplyr::case_match(
+      `22 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame PROTF?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `22 - Paciente passou por cirurgia nos 30 dias que antecederam a realização do exame PROTF?`
+    )
   ) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+  dplyr::count(`Surgery in last 30 days`) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 ```
 
@@ -278,10 +375,16 @@ protf |>
 ```{r}
 
 protf |> 
-  dplyr::count(
-    `23 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame PROTF?`
+  dplyr::mutate(
+    `Oncological treatment in last 30 days` = dplyr::case_match(
+      `23 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame PROTF?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `23 - Paciente passou por tratamento oncológico nos 30 dias que antecederam a realização do exame PROTF?`
+    )
   ) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+  dplyr::count(`Oncological treatment in last 30 days`) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 ```
 
@@ -290,10 +393,16 @@ protf |>
 ```{r}
 
 protf |> 
-  dplyr::count(
-    `26 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame PROTF?`
+  dplyr::mutate(
+    `Medication in last 30 days` = dplyr::case_match(
+      `26 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame PROTF?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `26 - Paciente faz uso de medicação que pode causar imunodeficiência nos 30 dias que antecederam a realização do exame PROTF?`
+    )
   ) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+  dplyr::count(`Medication in last 30 days`) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 ```
 
@@ -302,8 +411,16 @@ protf |>
 ```{r}
 
 protf |> 
-  dplyr::count(`33 - Paciente possui registro de óbito?`) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+  dplyr::mutate(
+    Death = dplyr::case_match(
+      `33 - Paciente possui registro de óbito?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `33 - Paciente possui registro de óbito?`
+    )
+  ) |>
+  dplyr::count(Death) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 proxy <- 
   protf |> 
@@ -312,11 +429,11 @@ proxy <-
                 `5 - Data de Cadastro do Exame`, 
                 `33.2 - Data de óbito`) |>
   dplyr::mutate(
-    Intervalo_dias = lubridate::time_length(
+    Interval_days = lubridate::time_length(
       lubridate::interval(`5 - Data de Cadastro do Exame`, `33.2 - Data de óbito`), 
       "days"
     ),
-    Intervalo_meses = lubridate::time_length(
+    Interval_months = lubridate::time_length(
       lubridate::interval(`5 - Data de Cadastro do Exame`, `33.2 - Data de óbito`), 
       "months"
     )
@@ -324,12 +441,12 @@ proxy <-
 
 proxy |> dplyr::select(-`1 - Insira o Prontuário do Paciente`)
 
-summary(proxy$Intervalo_dias)
-summary(proxy$Intervalo_meses)
+summary(proxy$Interval_days)
+summary(proxy$Interval_months)
 
 ```
 
-146 pacientes vieram a óbito (18.29%), com um tempo médio de sobrevida de 193 dias (6.3 meses) - mediana de 40 dias (1.3 meses). 
+146 pacientes vieram a óbito (18.29%), com um tempo médio de sobrevida de 193 dias (6.3 meses) - mediana de 40 dias (1.3 meses).
 
 # 2. Análise de indivíduos com dosagem de IgG
 
@@ -374,9 +491,9 @@ proxy |>
               color = "red", 
               se = TRUE) + 
   ggpubr::stat_cor(method = "pearson", label.x = 1100, label.y = 1.3) + 
-  labs(title = "Correlação entre IgG e PROTF",
-       subtitle = "Modelo Linear Quadrático (y ~ x²) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
+  labs(title = "Correlation between IgG and Calculated globulin",
+       subtitle = "Quadratic Linear Model (y ~ x²) with 95% confidence band",
+       x = "IgG (mg/dL)", y = "CG (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(0, 3, by = 0.1))
 
@@ -387,11 +504,20 @@ proxy |>
 ```{r fig.width=8}
 
 protf |>
-  dplyr::count(
-    `18.1 - Como se encontra o resultado de IgG?
+  dplyr::mutate(
+    IgG_Reference = dplyr::case_match(
+      `18.1 - Como se encontra o resultado de IgG?
+
+NA = não se aplica`,
+      "Abaixo do valor de referência" ~ "Below reference",
+      "Normal" ~ "Normal",
+      "Acima do valor de referência" ~ "Above reference",
+      .default = `18.1 - Como se encontra o resultado de IgG?
 
 NA = não se aplica`
-    ) 
+    )
+  ) |>
+  dplyr::count(IgG_Reference) 
 
 proxy <- 
   protf |>
@@ -418,9 +544,9 @@ proxy |>
               color = "red", 
               se = TRUE) + 
   ggpubr::stat_cor(method = "pearson", label.x = 400, label.y = 1.3) + 
-  labs(title = "Correlação entre IgG e PROTF",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
+  labs(title = "Correlation between IgG and Calculated globulin",
+       subtitle = "Linear Model (y ~ x) with 95% confidence band",
+       x = "IgG (mg/dL)", y = "CG (g/dL)") +
   scale_x_continuous(breaks = seq(0, 550, by = 50)) +
   scale_y_continuous(breaks = seq(0, 3, by = 0.1))
   
@@ -472,16 +598,16 @@ protf |>
 NA = não se aplica` == "Abaixo do valor de referência" &
     `20 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
   ) |>
-  dplyr::select(Comorbidades = `20.1 -  Qual comorbidade o paciente possui?
+  dplyr::select(Comorbidities = `20.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |>
-  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  tidyr::separate_longer_delim(cols = Comorbidities, delim = ";") |>
   dplyr::mutate(
-    Comorbidades = stringr::str_trim(Comorbidades),
-    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
-    Comorbidades = stringr::str_to_sentence(Comorbidades)
+    Comorbidities = stringr::str_trim(Comorbidities),
+    Comorbidities = stringi::stri_trans_general(Comorbidities, "Latin-ASCII"),
+    Comorbidities = stringr::str_to_sentence(Comorbidities)
   ) |>
-  dplyr::count(Comorbidades) |> 
+  dplyr::count(Comorbidities) |> 
   dplyr::arrange(dplyr::desc(n)) |> 
   print(n = 30)
   
@@ -496,7 +622,21 @@ Dentre os 198 pacientes menores de 1 ano e com comorbidade, temos 78 diferentes 
 ```{r}
 
 protf |>
-  dplyr::count(`3 - Insira Faixa etária do paciente`)
+  dplyr::mutate(
+    `Age Group` = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    )
+  ) |>
+  dplyr::count(`Age Group`)
 
 protf |>
   dplyr::filter(`3 - Insira Faixa etária do paciente` == "< 1 ano") |>
@@ -535,18 +675,18 @@ protf |>
     `3 - Insira Faixa etária do paciente` == "< 1 ano" &
     `20 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim"
   ) |>
-  dplyr::select(Comorbidades = `20.1 -  Qual comorbidade o paciente possui?
+  dplyr::select(Comorbidities = `20.1 -  Qual comorbidade o paciente possui?
 
 -Em caso negativo responder com NA`) |>
-  tidyr::separate_longer_delim(cols = Comorbidades, delim = ";") |>
+  tidyr::separate_longer_delim(cols = Comorbidities, delim = ";") |>
   dplyr::mutate(
-    Comorbidades = stringr::str_trim(Comorbidades),
-    Comorbidades = stringi::stri_trans_general(Comorbidades, "Latin-ASCII"),
-    Comorbidades = stringr::str_to_sentence(Comorbidades)
+    Comorbidities = stringr::str_trim(Comorbidities),
+    Comorbidities = stringi::stri_trans_general(Comorbidities, "Latin-ASCII"),
+    Comorbidities = stringr::str_to_sentence(Comorbidities)
   ) |>
-  dplyr::count(Comorbidades) |> 
+  dplyr::count(Comorbidities) |> 
   dplyr::arrange(dplyr::desc(n)) |> 
-  dplyr::filter(Comorbidades == "Prematuridade")
+  dplyr::filter(Comorbidities == "Prematuridade")
   
 ```
 
@@ -566,16 +706,25 @@ NA = não se aplica`) |>
 
 -Responder com NA em caso de não realização do exame`) |>
     dplyr::rename(PROTF = `16 - Resultado do Primeiro exame`) |>
+    dplyr::mutate(
+      IgG_Reference = dplyr::case_match(
+        IgG_Referência,
+        "Abaixo do valor de referência" ~ "Below reference",
+        "Normal" ~ "Normal",
+        "Acima do valor de referência" ~ "Above reference",
+        .default = IgG_Referência
+      )
+    ) |>
     dplyr::filter(IgG_Referência != "NA") |> 
-    dplyr::select(IgG, PROTF, IgG_Referência) |>
+    dplyr::select(IgG, PROTF, IgG_Referência, IgG_Reference) |>
     tidyr::unnest(IgG)  
 )
 
-proxy |> dplyr::count(IgG_Referência)
+proxy |> dplyr::count(IgG_Reference)
 
 proxy |>
   ggplot() +
-  aes(x = IgG, y = PROTF, fill =IgG_Referência, color = IgG_Referência) +
+  aes(x = IgG, y = PROTF, fill = IgG_Reference, color = IgG_Reference) +
   geom_point(size = 3, shape = 21, alpha = 0.6) +
   geom_smooth(method = "lm", 
               formula = y ~ poly(x, 1), 
@@ -584,16 +733,16 @@ proxy |>
   ggpubr::stat_cor(method = "pearson", 
                    label.x.npc = 0.7,   # 70% across the x-axis
                    label.y.npc = "bottom") + 
-  labs(title = "Correlação entre IgG e PROTF",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       fill = "Referência: ", color = "Referência: ",
-       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
+  labs(title = "Correlation between IgG and Calculated globulin",
+       subtitle = "Linear Model (y ~ x) with 95% confidence band",
+       fill = "Reference: ", color = "Reference: ",
+       x = "IgG (mg/dL)", y = "CG (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(1, 3, by = 0.1))
 
 (
   ref_stats <- proxy |>
-    filter(IgG_Referência == "Normal") |>
+    filter(IgG_Reference == "Normal") |>
     summarise(
       mean_protf = mean(PROTF),
       sd_protf = sd(PROTF),
@@ -624,26 +773,26 @@ proxy |>
   annotate("segment", x = -Inf, xend = Inf, 
            y = ref_stats$mean_protf, yend = ref_stats$mean_protf, 
            color = "steelblue", linetype = "dashed", linewidth = 1) +
-  geom_point(aes(fill = IgG_Referência), shape = 21, size = 3, alpha = 0.8) +
+  geom_point(aes(fill = IgG_Reference), shape = 21, size = 3, alpha = 0.8) +
   geom_smooth(
-    aes(color = IgG_Referência), 
+    aes(color = IgG_Reference), 
     method = "lm", formula = y ~ poly(x, 1), se = TRUE, linewidth = 1
   ) +
   geom_vline(xintercept = seg_mod$psi[, "Est."], linetype = "dashed", alpha = 0.7) +
   scale_fill_manual(
-    values = c("Normal" = "white", "Abaixo do valor de referência" = "orange"),
-    labels = c("Abaixo da Referência", "Normal")
+    values = c("Normal" = "white", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
   ) +
   scale_color_manual(
-    values = c("Normal" = "darkblue", "Abaixo do valor de referência" = "darkorange"),
-    labels = c("Abaixo da Referência", "Normal")
+    values = c("Normal" = "darkblue", "Below reference" = "darkorange"),
+    labels = c("Below reference", "Normal")
   ) +
   labs(
-    title = "Baseline de PROTF Baseado no Platô de IgG (Grupo Normal)",
-    subtitle = "Linhas de tendência com Intervalo de Confiança de 95% (sombreado)",
+    title = "Calculated globulin Baseline Based on IgG Plateau (Normal Group)",
+    subtitle = "Trend lines with 95% Confidence Interval (shaded)",
     x = "IgG (mg/dL)", 
-    y = "PROTF (g/dL)",
-    fill = "Classificação IgG: ", color = "Classificação IgG: "
+    y = "CG (g/dL)",
+    fill = "IgG Classification: ", color = "IgG Classification: "
   ) +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(1, 2.5, by = 0.1))
@@ -663,11 +812,11 @@ Aqui é apenas para "comprovar" que o grupo "Normal" não tem inclinação estat
 ```{r}
 
 proxy |>
-  dplyr::filter(IgG_Referência != "Acima do valor de referência") |>
-  dplyr::group_by(IgG_Referência) |>
+  dplyr::filter(IgG_Reference != "Above reference") |>
+  dplyr::group_by(IgG_Reference) |>
   dplyr::group_modify(~ broom::tidy(lm(PROTF ~ IgG, data = .x), conf.int = TRUE)) |>
   dplyr::filter(term == "IgG") |>
-  dplyr::select(IgG_Referência, estimate, std.error, p.value, conf.low, conf.high)
+  dplyr::select(IgG_Reference, estimate, std.error, p.value, conf.low, conf.high)
 
 ```
 
@@ -677,44 +826,44 @@ proxy |>
 
 To define a physiological PROTF baseline, the Normal Group (patients with IgG within the reference range) was used as the normative standard.
 
-* **Process:** We calculated the mean and standard deviation (SD) for the Normal group. The shaded area in the visualization represents the Mean ± 2 SD, covering approximately 95% of the expected physiological variation.
+-   **Process:** We calculated the mean and standard deviation (SD) for the Normal group. The shaded area in the visualization represents the Mean ± 2 SD, covering approximately 95% of the expected physiological variation.
 
-* **Interpretation:** PROTF values falling below this band indicate a pathological deficit relative to the established biological baseline.
+-   **Interpretation:** PROTF values falling below this band indicate a pathological deficit relative to the established biological baseline.
 
 ### 2. Group Dynamics: The "Rise vs. Plateau" Effect
 
 The relationship was modeled separately for each group to identify how IgG deficiency impacts PROTF measurements.
 
-* **Below Reference Group:** This group exhibits a significant positive slope (p < 0.05). This demonstrates that in patients with low IgG, PROTF is "coupled" to IgG levels—as IgG increases, PROTF rises proportionally.
+-   **Below Reference Group:** This group exhibits a significant positive slope (p \< 0.05). This demonstrates that in patients with low IgG, PROTF is "coupled" to IgG levels—as IgG increases, PROTF rises proportionally.
 
-* **Normal Group:** This group shows a slope near zero (the confidence interval includes zero). This confirms a Plateau effect, where PROTF reaches a steady state and no longer responds to further IgG increases, representing the true biological baseline.
+-   **Normal Group:** This group shows a slope near zero (the confidence interval includes zero). This confirms a Plateau effect, where PROTF reaches a steady state and no longer responds to further IgG increases, representing the true biological baseline.
 
 ### 3. Segmented Regression (Inflection Point)
 
 A Segmented (Broken-stick) Regression was applied to mathematically determine the threshold of stabilization.
 
-* **The Breakpoint:** The model identifies the specific IgG coordinate where the linear rise ends and the plateau begins. 
+-   **The Breakpoint:** The model identifies the specific IgG coordinate where the linear rise ends and the plateau begins.
 
-* **Clinical Utility:** This point defines the "Critical IgG Threshold" required for a PROTF measurement to be considered stable and diagnostically reliable, independent of hypogammaglobulinemia interference.
+-   **Clinical Utility:** This point defines the "Critical IgG Threshold" required for a PROTF measurement to be considered stable and diagnostically reliable, independent of hypogammaglobulinemia interference.
 
----
+------------------------------------------------------------------------
 
 ### Summary of Statistical Findings
 
-A positive linear dependency was observed between PROTF and IgG strictly within the deficient group (p < 0.05). Conversely, the normal group exhibited a plateau (p > 0.05), establishing a stable reference baseline.
+A positive linear dependency was observed between PROTF and IgG strictly within the deficient group (p \< 0.05). Conversely, the normal group exhibited a plateau (p \> 0.05), establishing a stable reference baseline.
 
 # How to use PROTF to predict IgG deficiency
 
 > Minimizing false positives, prioritizing Specificity and Positive Predictive Value (PPV).
 >
-> - Catch fewer sick people (lower sensitivity), but almost everyone catched will actually be sick.
+> -   Catch fewer sick people (lower sensitivity), but almost everyone catched will actually be sick.
 
-```{r}
+```{r fig.width=8}
 
 # 1. Prepare Data
 proxy_roc <- proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+  filter(IgG_Reference != "Above reference") |>
+  mutate(low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0))
 
 # 2. Generate ROC Object
 roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$PROTF, quiet = TRUE)
@@ -754,17 +903,20 @@ kable(roc_summary, digits = 3, caption = "Comparison of Cutoff Strategies")
 optimal_cutoff <- scen_balanced$threshold
 
 proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  ggplot(aes(x = PROTF, fill = IgG_Referência)) +
+  filter(IgG_Reference != "Above reference") |>
+  ggplot(aes(x = PROTF, fill = IgG_Reference)) +
   geom_density(alpha = 0.4) +
   geom_vline(xintercept = optimal_cutoff, linetype = "dashed", color = "black", linewidth = 1) +
   annotate("text", x = optimal_cutoff, y = 0, label = paste(" Optimal Cutoff:", round(optimal_cutoff, 2)), 
            hjust = 1.05, vjust = -2, angle = 0, fontface = "bold") +
-  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
   labs(
     title = "Clinical Decision Threshold",
-    subtitle = "Overlap of PROTF distributions with optimal screening cutoff",
-    x = "PROTF (g/dL)", y = "Density", fill = "IgG Status"
+    subtitle = "Overlap of Calculated globulin distributions with optimal screening cutoff",
+    x = "CG (g/dL)", y = "Density", fill = "IgG Status"
   ) +
   scale_x_continuous(breaks = seq(1, 2.5, by = 0.1))
 
@@ -780,23 +932,21 @@ To determine this threshold, we performed a Receiver Operating Characteristic (R
 
 The table above summarizes the performance of three potential thresholds:
 
-1.  **Max Specificity Strategy (Cutoff ~1.45):**
-    * **Pros:** Zero false positives (PPV = 100%).
-    * **Cons:** Extremely low sensitivity (~11%). This threshold misses 9 out of 10 deficient patients, rendering it useless for screening.
-
-2.  **High Specificity Strategy (Cutoff ~1.65):**
-    * **Pros:** High precision (PPV > 80%).
-    * **Cons:** Sensitivity remains poor (~32%). Using this cutoff would still fail to identify the majority of patients with hypogammaglobulinemia.
-
-3.  **Balanced "Youden" Strategy (Cutoff ~2.05):**
-    * **Pros:** Optimizes the sum of sensitivity and specificity. It achieves a **Sensitivity of ~87%**, ensuring that the vast majority of deficient patients are flagged.
-    * **Cons:** Lower specificity (~54%), implying that roughly 1 in 3 positive screens will result in a normal IgG upon confirmation (False Positives).
+1.  **Max Specificity Strategy (Cutoff \~1.45):**
+    -   **Pros:** Zero false positives (PPV = 100%).
+    -   **Cons:** Extremely low sensitivity (\~11%). This threshold misses 9 out of 10 deficient patients, rendering it useless for screening.
+2.  **High Specificity Strategy (Cutoff \~1.65):**
+    -   **Pros:** High precision (PPV \> 80%).
+    -   **Cons:** Sensitivity remains poor (\~32%). Using this cutoff would still fail to identify the majority of patients with hypogammaglobulinemia.
+3.  **Balanced "Youden" Strategy (Cutoff \~2.05):**
+    -   **Pros:** Optimizes the sum of sensitivity and specificity. It achieves a **Sensitivity of \~87%**, ensuring that the vast majority of deficient patients are flagged.
+    -   **Cons:** Lower specificity (\~54%), implying that roughly 1 in 3 positive screens will result in a normal IgG upon confirmation (False Positives).
 
 ### Conclusion and Recommendation
 
 Based on the analysis, strictly minimizing false positives results in an unacceptable loss of diagnostic sensitivity. Therefore, we recommend the **Balanced Strategy** as the clinical standard.
 
-**Recommendation:** A PROTF value below **2.05 g/L** should trigger a follow-up IgG test. This threshold prioritizes patient safety by maintaining high detection rates (Sensitivity ~87%), accepting a moderate rate of confirmatory testing as a necessary trade-off for an effective screening tool.
+**Recommendation:** A PROTF value below **2.05 g/L** should trigger a follow-up IgG test. This threshold prioritizes patient safety by maintaining high detection rates (Sensitivity \~87%), accepting a moderate rate of confirmatory testing as a necessary trade-off for an effective screening tool.
 
 ### Advanced Strategy: The "Indeterminate Zone" Approach
 
@@ -804,8 +954,8 @@ Based on the analysis, strictly minimizing false positives results in an unaccep
 
 # 1. Prepare Data & ROC
 proxy_roc <- proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+  filter(IgG_Reference != "Above reference") |>
+  mutate(low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0))
 
 roc_obj <- roc(proxy_roc$low_igg_flag, proxy_roc$PROTF, quiet = TRUE)
 
@@ -849,8 +999,8 @@ rbind(
 
 # 2. Visualize the Zones
 proxy |>
-  filter(IgG_Referência != "Acima do valor de referência") |>
-  ggplot(aes(x = PROTF, fill = IgG_Referência)) +
+  filter(IgG_Reference != "Above reference") |>
+  ggplot(aes(x = PROTF, fill = IgG_Reference)) +
   geom_density(alpha = 0.4) +
   # Red Zone
   annotate("rect", xmin = -Inf, xmax = cutoff_red, ymin = 0, ymax = Inf, 
@@ -866,10 +1016,13 @@ proxy |>
            hjust = 1.1, vjust = -2, angle = 0, color = "firebrick") +
   annotate("text", x = cutoff_green, y = 0, label = paste("Green >", round(cutoff_green, 2)), 
            hjust = 1.1, vjust = -2, angle = 0, color = "forestgreen") +
-  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
   labs(title = "Traffic Light System: Managing Clinical Overlap",
        subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
-       x = "PROTF (g/dL)", y = "Density", fill = "IgG Status") +
+       x = "CG (g/dL)", y = "Density", fill = "IgG Status") +
   scale_x_continuous(breaks = seq(1, 2.5, by = 0.1)) +
   scale_y_continuous(breaks = seq(0, 2, by = 0.25))
 
@@ -879,17 +1032,15 @@ Given the significant distributional overlap between the IgG groups, a single bi
 
 We defined three clinical zones based on strict statistical safety margins:
 
-1.  **Deficiency Zone (< 1.55 g/L):**
-    * **Definition:** Threshold established at **≥95% Specificity**.
-    * **Implication:** Results in this range are highly indicative of IgG deficiency. The probability of a false positive is minimal (<5%), warranting immediate clinical action.
-
-2.  **Safety Zone (> 2.3 g/L):**
-    * **Definition:** Threshold established at **≥95% Sensitivity**.
-    * **Implication:** Results in this range effectively rule out deficiency with high confidence. The risk of missing a true deficient case is minimal (<5%).
-
+1.  **Deficiency Zone (\< 1.55 g/L):**
+    -   **Definition:** Threshold established at **≥95% Specificity**.
+    -   **Implication:** Results in this range are highly indicative of IgG deficiency. The probability of a false positive is minimal (\<5%), warranting immediate clinical action.
+2.  **Safety Zone (\> 2.3 g/L):**
+    -   **Definition:** Threshold established at **≥95% Sensitivity**.
+    -   **Implication:** Results in this range effectively rule out deficiency with high confidence. The risk of missing a true deficient case is minimal (\<5%).
 3.  **Indeterminate "Grey" Zone (1.55 – 2.3 g/L):**
-    * **Definition:** The interval between the high-specificity and high-sensitivity thresholds.
-    * **Implication:** This range captures the patients whose PROTF values are inconclusive due to biological overlap. For these individuals, PROTF alone is insufficient, and **mandatory IgG quantification** is recommended to resolve the diagnosis.
+    -   **Definition:** The interval between the high-specificity and high-sensitivity thresholds.
+    -   **Implication:** This range captures the patients whose PROTF values are inconclusive due to biological overlap. For these individuals, PROTF alone is insufficient, and **mandatory IgG quantification** is recommended to resolve the diagnosis.
 
 **Conclusion:** By utilizing this tiered approach, we increase the diagnostic accuracy for patients at the extremes while clearly identifying the subset of patients for whom confirmatory testing is strictly necessary.
 
@@ -921,10 +1072,18 @@ infection_analysis <- protf |>
     values_to = "Status"
   ) |>
   mutate(
-    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
-    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
-    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
-    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Infection_Type = dplyr::case_match(
+      Infection_Type,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superiores?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = Infection_Type
+    ),
     Is_Infected = ifelse(Status == "Sim", 1, 0)
   ) |>
   # Remove NAs if any exist in Status/Risk_Group
@@ -981,12 +1140,12 @@ final_results <- rates_table |>
 
 knitr::kable(
   final_results, digits = 2, 
-  caption = "Prevalência de Infecções por Grupo de Risco (PROTF < 2.05)"
+  caption = "Prevalence of Infections by Risk Group (CG < 2.05)"
 )
 
 ```
 
-Odds Ratio: Normal (>= 2.05) vs. Low (< 2.05). 0.3 means que o grupo normal tem menos chances.
+Odds Ratio: Normal (\>= 2.05) vs. Low (\< 2.05). 0.3 means que o grupo normal tem menos chances.
 
 ```{r fig.width=8, fig.height=4}
 
@@ -999,9 +1158,9 @@ final_results |>
   scale_x_log10() + 
   scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
   labs(
-    title = "Clinical Impact of Low PROTF (< 2.05 g/dL)",
+    title = "Clinical Impact of Low Calculated globulin (< 2.05 g/dL)",
     subtitle = "Odds Ratio of Infection Risk (High Risk vs. Low Risk Group)",
-    x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low PROTF group",
+    x = "Odds Ratio (Log Scale) \n >1 indicates higher risk in Low CG group",
     y = NULL,
     color = "Significant (p < 0.05)?"
   )
@@ -1012,25 +1171,21 @@ final_results |>
 
 To validate the clinical relevance of the established cutoff (**2.05 g/L**), we assessed whether patients falling below this threshold exhibited a distinct profile of infectious history compared to those above it.
 
-* **Methodology:** Patients were stratified into "High Risk" (PROTF < 2.05) and "Low Risk" (PROTF ≥ 2.05) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher's Exact Test.
+-   **Methodology:** Patients were stratified into "High Risk" (PROTF \< 2.05) and "Low Risk" (PROTF ≥ 2.05) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher's Exact Test.
 
-* **Results:**
+-   **Results:**
 
-    * **Severe Systemic Vulnerability (Sepsis):** The most critical finding was observed for Sepsis. The "High Risk" (Low PROTF) cohort exhibited a dramatically higher prevalence of sepsis (**42.62%**) compared to the "Low Risk" cohort (**18.42%**). The Odds Ratio of **0.3** (for the Low Risk group) confirms that maintaining PROTF levels above the cutoff is a significant protective factor against life-threatening systemic infections ($p < 0.001$).
+    -   **Severe Systemic Vulnerability (Sepsis):** The most critical finding was observed for Sepsis. The "High Risk" (Low PROTF) cohort exhibited a dramatically higher prevalence of sepsis (**42.62%**) compared to the "Low Risk" cohort (**18.42%**). The Odds Ratio of **0.3** (for the Low Risk group) confirms that maintaining PROTF levels above the cutoff is a significant protective factor against life-threatening systemic infections ($p < 0.001$).
 
-    * **Distinct Phenotypes (Mucosal Infections):** Interestingly, the "Low Risk" (Normal PROTF) group reported significantly higher rates of common mucosal infections compared to the deficient group. This included **Upper Respiratory Tract Infections** (40.53% vs 18.58%, $p < 0.001$) and **Gastrointestinal Infections** (21.05% vs 4.37%, $p < 0.001$). This suggests distinct clinical phenotypes: patients with low PROTF are prone to severe complications (Sepsis), whereas those with normal levels present with more frequent, but likely less lethal, common community-acquired infections.
+    -   **Distinct Phenotypes (Mucosal Infections):** Interestingly, the "Low Risk" (Normal PROTF) group reported significantly higher rates of common mucosal infections compared to the deficient group. This included **Upper Respiratory Tract Infections** (40.53% vs 18.58%, $p < 0.001$) and **Gastrointestinal Infections** (21.05% vs 4.37%, $p < 0.001$). This suggests distinct clinical phenotypes: patients with low PROTF are prone to severe complications (Sepsis), whereas those with normal levels present with more frequent, but likely less lethal, common community-acquired infections.
 
-    * **Neutral Associations:** No statistically significant difference was found for Skin, CNS, Urinary, or Lower Respiratory infections ($p > 0.05$), indicating that the cutoff is highly specific to the risk of Sepsis rather than a generalized increase in all infection types.
+    -   **Neutral Associations:** No statistically significant difference was found for Skin, CNS, Urinary, or Lower Respiratory infections ($p > 0.05$), indicating that the cutoff is highly specific to the risk of Sepsis rather than a generalized increase in all infection types.
 
 **Conclusion:** The PROTF cutoff of 2.05 g/L successfully identifies a patient subset with critical immunological vulnerability. While patients above this threshold frequently report common mucosal conditions, those falling below it are disproportionately susceptible to severe sepsis, validating the threshold as a vital marker for systemic risk stratification.
 
 ## By Age Interval
 
 ```{r fig.width=9.75, fig.height=7}
-
-# protf |>
-#   dplyr::filter(`3 - Insira Faixa etária do paciente` != "> 18 anos") |>
-#   dplyr::count(`3 - Insira Faixa etária do paciente`)
 
 proxy <- 
     protf |>
@@ -1041,18 +1196,38 @@ NA = não se aplica`) |>
 
 -Responder com NA em caso de não realização do exame`) |>
     dplyr::rename(PROTF = `16 - Resultado do Primeiro exame`) |>
-    dplyr::rename(Age_Group = `3 - Insira Faixa etária do paciente`) |>
+    dplyr::mutate(
+      Age_Group = factor(
+        dplyr::case_match(
+          `3 - Insira Faixa etária do paciente`,
+          "< 1 ano" ~ "< 1 year",
+          "1 ano a 3 anos" ~ "1 to 3 years",
+          "4 anos a 9 anos" ~ "4 to 9 years",
+          "10 anos a 17 anos" ~ "10 to 17 years",
+          "> 18 anos" ~ "> 18 years",
+          .default = `3 - Insira Faixa etária do paciente`
+        ),
+        levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+      ),
+      IgG_Reference = dplyr::case_match(
+        IgG_Referência,
+        "Abaixo do valor de referência" ~ "Below reference",
+        "Normal" ~ "Normal",
+        "Acima do valor de referência" ~ "Above reference",
+        .default = IgG_Referência
+      )
+    ) |>
     dplyr::filter(IgG_Referência != "NA") |> 
-    dplyr::select(IgG, PROTF, IgG_Referência, Age_Group) |>
+    dplyr::select(IgG, PROTF, IgG_Reference, Age_Group) |>
     tidyr::unnest(IgG)  
 
 # 1. Prepare Data
 age_analysis_data <- proxy |>
   dplyr::filter(
-    IgG_Referência != "Acima do valor de referência",
-    Age_Group != "> 18 anos" 
+    IgG_Reference != "Above reference",
+    Age_Group != "> 18 years" 
   ) |>
-  dplyr::mutate(low_igg_flag = ifelse(IgG_Referência == "Abaixo do valor de referência", 1, 0))
+  dplyr::mutate(low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0))
 
 # 2. Define a function to calculate scenarios for a single group
 calc_roc_scenarios <- function(data) {
@@ -1101,7 +1276,7 @@ kable(
   stratified_results |>
   dplyr::inner_join(proxy |> dplyr::count(Age_Group), by = "Age_Group") |>
   dplyr::relocate(n, .after = Age_Group), 
-  digits = 3, caption = "Optimal PROTF Cutoffs by Age Group"
+  digits = 3, caption = "Optimal Calculated globulin Cutoffs by Age Group"
 )
 
 # 4. Visualization: Faceted Density Plot
@@ -1111,7 +1286,7 @@ balanced_cutoffs <- stratified_results |>
   dplyr::select(Age_Group, cutoff = Threshold)
 
 age_analysis_data |>
-  ggplot(aes(x = PROTF, fill = IgG_Referência)) +
+  ggplot(aes(x = PROTF, fill = IgG_Reference)) +
   geom_density(alpha = 0.4) +
   # Add the specific cutoff line for each facet
   geom_vline(data = balanced_cutoffs, aes(xintercept = cutoff), 
@@ -1120,11 +1295,14 @@ age_analysis_data |>
   geom_text(data = balanced_cutoffs, aes(x = cutoff, y = 0, label = round(cutoff, 3)), 
             inherit.aes = FALSE, vjust = -1, hjust = -0.25, angle = 0, fontface = "bold") +
   facet_wrap(~Age_Group, scales = "free_y") + # Create separate panels
-  scale_fill_manual(values = c("Normal" = "steelblue", "Abaixo do valor de referência" = "orange")) +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
   labs(
-    title = "PROTF Diagnostic Thresholds by Age Group",
+    title = "Calculated globulin Diagnostic Thresholds by Age Group",
     subtitle = "Distribution and Optimal Cutoff (Youden) per cohort",
-    x = "PROTF (g/dL)", y = "Density", fill = "IgG Status"
+    x = "CG (g/dL)", y = "Density", fill = "IgG Status"
   ) +
   scale_x_continuous(breaks = seq(1, 3, by = 0.1))
 
@@ -1136,45 +1314,57 @@ To determine if the global PROTF cutoff (2.05 g/L) is valid across all developme
 
 ### Results by Age Cohort
 
-1.  **Infants (< 1 year): A Diagnostic Limitation**
-    * **Optimal Cutoff:** 1.85 g/L (Statistical artifact).
-    * **Performance:** The test demonstrates a **Sensitivity of only 3.7%**.
-    * **Interpretation:** The analysis indicates that PROTF levels in IgG-deficient infants are virtually indistinguishable from healthy infants in this dataset. Consequently, **PROTF cannot be used to screen for IgG deficiency in the first year of life**, as it fails to detect >96% of cases.
-
+1.  **Infants (\< 1 year): A Diagnostic Limitation**
+    -   **Optimal Cutoff:** 1.85 g/L (Statistical artifact).
+    -   **Performance:** The test demonstrates a **Sensitivity of only 3.7%**.
+    -   **Interpretation:** The analysis indicates that PROTF levels in IgG-deficient infants are virtually indistinguishable from healthy infants in this dataset. Consequently, **PROTF cannot be used to screen for IgG deficiency in the first year of life**, as it fails to detect \>96% of cases.
 2.  **Toddlers (1 to 3 years) & Adolescents (10 to 17 years):**
-    * **Optimal Cutoff:** **2.05 g/L**.
-    * **Performance:**
-        * *Toddlers:* Sensitivity 61.5%, Specificity 66.7%.
-        * *Adolescents:* Sensitivity 57.1%, Specificity 85.7%.
-    * **Interpretation:** In these groups, the optimal threshold aligns perfectly with the global cutoff (2.05). However, diagnostic sensitivity is moderate (~60%), suggesting that while specific, the test may miss approximately 40% of deficient patients in these age ranges.
-
+    -   **Optimal Cutoff:** **2.05 g/L**.
+    -   **Performance:**
+        -   *Toddlers:* Sensitivity 61.5%, Specificity 66.7%.
+        -   *Adolescents:* Sensitivity 57.1%, Specificity 85.7%.
+    -   **Interpretation:** In these groups, the optimal threshold aligns perfectly with the global cutoff (2.05). However, diagnostic sensitivity is moderate (\~60%), suggesting that while specific, the test may miss approximately 40% of deficient patients in these age ranges.
 3.  **Children (4 to 9 years):**
-    * **Optimal Cutoff:** **2.15 g/L**.
-    * **Performance:** This group achieved the highest sensitivity (**75.0%**) among all cohorts.
-    * **Interpretation:** The optimal threshold shifts slightly higher to 2.15 g/L. While detection rates improve in this demographic, the Positive Predictive Value (PPV) remains low (25.0%), indicating a higher rate of false positives compared to adolescents.
+    -   **Optimal Cutoff:** **2.15 g/L**.
+    -   **Performance:** This group achieved the highest sensitivity (**75.0%**) among all cohorts.
+    -   **Interpretation:** The optimal threshold shifts slightly higher to 2.15 g/L. While detection rates improve in this demographic, the Positive Predictive Value (PPV) remains low (25.0%), indicating a higher rate of false positives compared to adolescents.
 
 ### Clinical Recommendation
 
 Based on the age-stratified data, we propose the following protocols:
 
-* **Contraindication (< 1 Year):** PROTF should **not** be used as a screening tool for infants under 1 year of age due to insufficient sensitivity.
-* **Standard Cutoff (> 1 Year):** For all other age groups, a baseline cutoff of **2.05 g/L** is statistically supported.
-* **Optimization (4-9 Years):** For children aged 4 to 9, clinicians may consider raising the threshold to **2.15 g/L** to maximize sensitivity (75%), though this comes with a trade-off of increased confirmatory testing (lower PPV).
+-   **Contraindication (\< 1 Year):** PROTF should **not** be used as a screening tool for infants under 1 year of age due to insufficient sensitivity.
+-   **Standard Cutoff (\> 1 Year):** For all other age groups, a baseline cutoff of **2.05 g/L** is statistically supported.
+-   **Optimization (4-9 Years):** For children aged 4 to 9, clinicians may consider raising the threshold to **2.15 g/L** to maximize sensitivity (75%), though this comes with a trade-off of increased confirmatory testing (lower PPV).
 
 ```{r warning=FALSE, fig.width=9, fig.height=7}
 
 # 1. Define Age-Specific Cutoffs for PROTF
 # Based on your ROC results table
 cutoff_map <- tibble(
-  Age_Group = c("< 1 ano", "1 ano a 3 anos", "4 anos a 9 anos", "10 anos a 17 anos"),
+  Age_Group = factor(c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years"),
+                     levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years")),
   Age_Specific_Cutoff = c(1.85, 2.05, 2.15, 2.05)
 )
 
 # 2. Prepare Data & Apply Cutoffs
 infection_analysis_age <- protf |>
   dplyr::rename(
-    PROTF = `16 - Resultado do Primeiro exame`,
-    Age_Group = `3 - Insira Faixa etária do paciente`
+    PROTF = `16 - Resultado do Primeiro exame`
+  ) |>
+  dplyr::mutate(
+    Age_Group = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    )
   ) |>
   # Filter to keep only the groups in our map
   dplyr::filter(Age_Group %in% cutoff_map$Age_Group) |>
@@ -1199,10 +1389,18 @@ infection_analysis_age <- protf |>
   
   # Clean Names & Force Binary
   dplyr::mutate(
-    Infection_Type = stringr::str_remove(Infection_Type, "^\\d+ - "),
-    Infection_Type = stringr::str_remove(Infection_Type, "\\?"),
-    Infection_Type = stringr::str_remove(Infection_Type, "^Infecção (de|em) "),
-    Infection_Type = stringr::str_to_sentence(Infection_Type),
+    Infection_Type = dplyr::case_match(
+      Infection_Type,
+      "8 - Infecção em sistema nervoso central?" ~ "Central nervous system",
+      "9 - Infecção de vias áreas superiores?" ~ "Upper respiratory tract",
+      "10 - Infecção de vias áreas inferiores?" ~ "Lower respiratory tract",
+      "11 - Infecção de sistema urinário?" ~ "Urinary tract",
+      "12 - Infecção de sistema gastrointestinal?" ~ "Gastrointestinal tract",
+      "13 - Infecção de pele?" ~ "Skin",
+      "14 - Sepse?" ~ "Sepsis",
+      "15 - Outros?" ~ "Other",
+      .default = Infection_Type
+    ),
     Is_Infected = ifelse(Status == "Sim", 1, 0)
   ) |>
   dplyr::filter(!is.na(Is_Infected))
@@ -1259,7 +1457,7 @@ final_results_age <- rates_table_age |>
   dplyr::arrange(Age_Group, Infection_Type)
 
 # Display Table
-kable(final_results_age, digits = 2, caption = "Impact of Low PROTF on Infections (Stratified by Age)")
+kable(final_results_age, digits = 2, caption = "Impact of Low Calculated globulin on Infections (Stratified by Age)")
 
 final_results_age |>
   filter(!is.na(Odds_Ratio)) |> # Hide rows where test failed (e.g. 0 infections)
@@ -1274,10 +1472,11 @@ final_results_age |>
   scale_x_log10() +
   scale_color_manual(values = c("Yes" = "#D55E00", "No" = "gray60")) +
   labs(
-    title = "PROTF Infection Risk by Age Cohort",
+    title = "Calculated globulin Infection Risk by Age Cohort",
     subtitle = "Odds Ratio (High Risk vs Low Risk) using age-specific cutoffs",
     x = "Odds Ratio (Log Scale)",
-    y = NULL
+    y = NULL,
+    color = "Significant (p < 0.05)?"
   )
 
 ```
@@ -1286,22 +1485,20 @@ final_results_age |>
 
 To determine if the PROTF cutoffs serve as functional predictors of infection risk within specific age groups, we compared infection prevalence between "High Risk" (Below Cutoff) and "Low Risk" (Above Cutoff) patients.
 
-* **Methodology:** Patients were stratified by age, applying the specific cutoffs: **1.85** (<1y), **2.05** (1-3y & 10-17y), and **2.15** (4-9y).
+-   **Methodology:** Patients were stratified by age, applying the specific cutoffs: **1.85** (\<1y), **2.05** (1-3y & 10-17y), and **2.15** (4-9y).
 
-* **Results by Cohort:**
+-   **Results by Cohort:**
 
-    1.  **Infants (< 1 year): Statistical Confirmation of Inutility**
-        * **Observation:** The analysis yielded extremely wide confidence intervals (e.g., 0.00 to 1035.97) and p-values of 1.00 for most categories.
-        * **The Cause:** The "Low Risk" (Control) group had **0.00%** infection rates across almost all categories. This is likely because the cutoff of 1.85 is statistically artificial for this group, failing to create a valid "healthy" control group for comparison.
-        * **Conclusion:** This mathematically confirms the ROC conclusion: PROTF fails to discriminate between sick and healthy infants, rendering it useless as a clinical predictor for this age group.
-
+    1.  **Infants (\< 1 year): Statistical Confirmation of Inutility**
+        -   **Observation:** The analysis yielded extremely wide confidence intervals (e.g., 0.00 to 1035.97) and p-values of 1.00 for most categories.
+        -   **The Cause:** The "Low Risk" (Control) group had **0.00%** infection rates across almost all categories. This is likely because the cutoff of 1.85 is statistically artificial for this group, failing to create a valid "healthy" control group for comparison.
+        -   **Conclusion:** This mathematically confirms the ROC conclusion: PROTF fails to discriminate between sick and healthy infants, rendering it useless as a clinical predictor for this age group.
     2.  **Children (4 to 9 years): Trends in Respiratory Health**
-        * **Trend:** A visible clinical trend was observed for **Upper Respiratory Infections**. The "High Risk" group had a prevalence of **55.88%** compared to **39.47%** in the "Low Risk" group.
-        * **Significance:** Despite the ~16% difference in raw rates, this did not reach statistical significance ($p = 0.15$), suggesting that while PROTF might correlate with respiratory susceptibility, a larger sample size is needed to confirm it.
-
+        -   **Trend:** A visible clinical trend was observed for **Upper Respiratory Infections**. The "High Risk" group had a prevalence of **55.88%** compared to **39.47%** in the "Low Risk" group.
+        -   **Significance:** Despite the \~16% difference in raw rates, this did not reach statistical significance ($p = 0.15$), suggesting that while PROTF might correlate with respiratory susceptibility, a larger sample size is needed to confirm it.
     3.  **Toddlers (1-3y) and Adolescents (10-17y): Absence of Signal**
-        * **Results:** No statistically significant associations were found. P-values for all infection types were > 0.05.
-        * **Contrast with Global Analysis:** While the global analysis showed a strong link to Sepsis, this signal is lost in the subgroups. This suggests that the association with Sepsis is a "cumulative" signal that requires the statistical power of the full cohort to detect.
+        -   **Results:** No statistically significant associations were found. P-values for all infection types were \> 0.05.
+        -   **Contrast with Global Analysis:** While the global analysis showed a strong link to Sepsis, this signal is lost in the subgroups. This suggests that the association with Sepsis is a "cumulative" signal that requires the statistical power of the full cohort to detect.
 
 **Conclusion:** The age-stratified infection analysis reinforces the limitation of PROTF. It validates the exclusion of infants from screening. For older children, while trends exist (particularly for respiratory infections in the 4-9y group), PROTF should be viewed primarily as a biochemical marker for IgG deficiency rather than a standalone predictor of specific infection phenotypes.
 
@@ -1310,22 +1507,23 @@ To determine if the PROTF cutoffs serve as functional predictors of infection ri
 ```{r}
 
 protf |> 
-  dplyr::count(`34 -  Medicações Utilizadas`) |>
-  dplyr::mutate(Percentual = n / nrow(protf)) |> dplyr::arrange(dplyr::desc(n))
+  dplyr::rename(Medications = `34 -  Medicações Utilizadas`) |>
+  dplyr::count(Medications) |>
+  dplyr::mutate(Percentage = n / nrow(protf)) |> dplyr::arrange(dplyr::desc(n))
 
 protf |>
   tidyr::separate_longer_delim(
     cols = `34 -  Medicações Utilizadas`, delim = ";"
   ) |>
   dplyr::mutate(
-    Medicações = stringi::stri_trans_general(
+    Medications = stringi::stri_trans_general(
       `34 -  Medicações Utilizadas`, "Latin-ASCII"
     ),
-    Medicações = stringr::str_trim(Medicações),    
-    Medicações = stringr::str_to_sentence(Medicações)
+    Medications = stringr::str_trim(Medications),    
+    Medications = stringr::str_to_sentence(Medications)
   ) |>
-  tidyr::drop_na(Medicações) |>
-  dplyr::count(Medicações) |>
+  tidyr::drop_na(Medications) |>
+  dplyr::count(Medications) |>
   dplyr::arrange(dplyr::desc(n))
 
 ```
@@ -1345,9 +1543,9 @@ protf |>
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 -  Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   dplyr::summarise(
@@ -1365,14 +1563,14 @@ protf |>
       ),
       .names = "{.col}_{.fn}"
     ),
-    .by = Medicação
+    .by = Medication
   ) |>
   tidyr::pivot_longer(
-    cols = -Medicação, 
+    cols = -Medication, 
     names_to = "Metric", 
     values_to = "Value"
   ) |>
-  tidyr::pivot_wider(names_from = Medicação, values_from = Value
+  tidyr::pivot_wider(names_from = Medication, values_from = Value
   )
 
 ```
@@ -1392,14 +1590,14 @@ protf |>
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 -  Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, y = PROTF, fill = Medicação, color = Medicação) +
+  aes(x = IgG, y = PROTF, fill = Medication, color = Medication) +
   geom_point(size = 3, shape = 21, alpha = 0.6) +
   geom_smooth(method = "lm", 
               formula = y ~ poly(x, 1), 
@@ -1408,10 +1606,10 @@ protf |>
   ggpubr::stat_cor(method = "pearson", 
                    label.x.npc = 0.7,   # 70% across the x-axis
                    label.y.npc = "bottom") + 
-  labs(title = "Correlação entre IgG e PROTF",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       fill = "Medicação: ", color = "Medicação: ",
-       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
+  labs(title = "Correlation between IgG and Calculated globulin",
+       subtitle = "Linear Model (y ~ x) with 95% confidence band",
+       fill = "Medication: ", color = "Medication: ",
+       x = "IgG (mg/dL)", y = "CG (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(1, 2.6, by = 0.1))
 
@@ -1429,18 +1627,18 @@ p1 <- protf |>
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 -  Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, fill = Medicação) +
+  aes(x = IgG, fill = Medication) +
   geom_histogram(alpha = 0.8, binwidth = 50) +
-  labs(title = "Histograma de IgG",
+  labs(title = "IgG Histogram",
        subtitle = "Binwidth: 50",
-       fill = "Medicação: ",
+       fill = "Medication: ",
        x = "IgG (mg/dL)", y = "n") +
   scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
   scale_y_continuous(breaks = seq(0, 30, by = 5))
@@ -1451,18 +1649,18 @@ p2 <- protf |>
     PROTF = `16 - Resultado do Primeiro exame`
   ) |>
   dplyr::mutate(
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 -  Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   ggplot() +
-  aes(x = PROTF, fill = Medicação) +
+  aes(x = PROTF, fill = Medication) +
   geom_histogram(alpha = 0.8, binwidth = 0.1) +
-  labs(title = "Histograma de PROTF",
+  labs(title = "Calculated globulin Histogram",
        subtitle = "Binwidth: 0.1",
-       fill = "Medicação: ",
-       x = "PROTF (g/dL)", y = "n") +
+       fill = "Medication: ",
+       x = "CG (g/dL)", y = "n") +
   scale_x_continuous(breaks = seq(1, 2.5, by = 0.2)) +
   scale_y_continuous(breaks = seq(0, 150, by = 15))
 
@@ -1475,7 +1673,7 @@ Ajustamos também um modelo linear para entender melhor a associação entre IgG
 ```{r}
 
 lm(
-  IgG ~ Medicação,
+  IgG ~ Medication,
   data = protf |>
   dplyr::select(
     `34 -  Medicações Utilizadas`, 
@@ -1486,9 +1684,9 @@ lm(
   dplyr::mutate(
     IgG = unlist(IgG),
     IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
-    Medicação = ifelse(
+    Medication = ifelse(
       is.na(`34 -  Medicações Utilizadas`), 
-      "Com medicação", "Sem medicação"
+      "With medication", "Without medication"
     )
   ) |>
   tidyr::drop_na(IgG)
@@ -1504,18 +1702,35 @@ Abaixo mostramos - por Sexo.
 ```{r}
 
 t1 <- protf |>
-  dplyr::select(
-    Medicações = `34 -  Medicações Utilizadas`,
-    Idade = `3 - Insira Faixa etária do paciente`,
-    Sexo = `4 - Sexo`
+  dplyr::mutate(
+    Medications = `34 -  Medicações Utilizadas`,
+    Age_Group = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    ),
+    Sex = dplyr::case_match(
+      `4 - Sexo`,
+      "Feminino" ~ "Female",
+      "Masculino" ~ "Male",
+      .default = `4 - Sexo`
+    )
   ) |>
-  tidyr::drop_na(Medicações) |>
-  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
-  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
-  dplyr::count(Medicações, Idade, Sexo) |>
-  dplyr::arrange(dplyr::desc(n), Medicações) |>
+  dplyr::select(Medications, Age_Group, Sex) |>
+  tidyr::drop_na(Medications) |>
+  tidyr::separate_longer_delim(cols = Medications, delim = ";") |>
+  dplyr::mutate(Medications = stringr::str_trim(Medications)) |>
+  dplyr::count(Medications, Age_Group, Sex) |>
+  dplyr::arrange(dplyr::desc(n), Medications) |>
   # dplyr::filter(n > 1) |>
-  dplyr::group_split(Sexo) 
+  dplyr::group_split(Sex) 
 
 t1[[1]] |> print(n = 30)
 t1[[2]] |> print(n = 30)
@@ -1527,18 +1742,35 @@ Mesma coisa pro faixa etária.
 ```{r}
 
 protf |>
-  dplyr::select(
-    Medicações = `34 -  Medicações Utilizadas`,
-    Idade = `3 - Insira Faixa etária do paciente`,
-    Sexo = `4 - Sexo`
+  dplyr::mutate(
+    Medications = `34 -  Medicações Utilizadas`,
+    Age_Group = factor(
+      dplyr::case_match(
+        `3 - Insira Faixa etária do paciente`,
+        "< 1 ano" ~ "< 1 year",
+        "1 ano a 3 anos" ~ "1 to 3 years",
+        "4 anos a 9 anos" ~ "4 to 9 years",
+        "10 anos a 17 anos" ~ "10 to 17 years",
+        "> 18 anos" ~ "> 18 years",
+        .default = `3 - Insira Faixa etária do paciente`
+      ),
+      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years", "> 18 years")
+    ),
+    Sex = dplyr::case_match(
+      `4 - Sexo`,
+      "Feminino" ~ "Female",
+      "Masculino" ~ "Male",
+      .default = `4 - Sexo`
+    )
   ) |>
-  tidyr::drop_na(Medicações) |>
-  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
-  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
-  dplyr::count(Medicações, Idade, Sexo) |>
-  dplyr::arrange(dplyr::desc(n), Medicações, Sexo) |>
+  dplyr::select(Medications, Age_Group, Sex) |>
+  tidyr::drop_na(Medications) |>
+  tidyr::separate_longer_delim(cols = Medications, delim = ";") |>
+  dplyr::mutate(Medications = stringr::str_trim(Medications)) |>
+  dplyr::count(Medications, Age_Group, Sex) |>
+  dplyr::arrange(dplyr::desc(n), Medications, Sex) |>
   # dplyr::filter(n > 1) |>
-  dplyr::group_split(Idade)
+  dplyr::group_split(Age_Group)
   
 ```
 
@@ -1548,12 +1780,12 @@ E para finalizar, todas as medicações.
 
 protf |>
   dplyr::select(
-    Medicações = `34 -  Medicações Utilizadas`
+    Medications = `34 -  Medicações Utilizadas`
   ) |>
-  tidyr::drop_na(Medicações) |>
-  tidyr::separate_longer_delim(cols = Medicações, delim = ";") |>
-  dplyr::mutate(Medicações = stringr::str_trim(Medicações)) |>
-  dplyr::count(Medicações) |>
+  tidyr::drop_na(Medications) |>
+  tidyr::separate_longer_delim(cols = Medications, delim = ";") |>
+  dplyr::mutate(Medications = stringr::str_trim(Medications)) |>
+  dplyr::count(Medications) |>
   dplyr::arrange(dplyr::desc(n)) |>
   print(n = 100)
 
@@ -1566,11 +1798,16 @@ protf |>
 ```{r}
 
 protf |>
-  dplyr::select(
-    PPU=`24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`
+  dplyr::mutate(
+    Proteinuria = dplyr::case_match(
+      `24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`
+    )
   ) |>
-  dplyr::count(PPU) |>
-  dplyr::mutate(Percentual = n / nrow(protf))
+  dplyr::count(Proteinuria) |>
+  dplyr::mutate(Percentage = n / nrow(protf))
 
 ```
 
@@ -1588,7 +1825,13 @@ protf |>
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   dplyr::summarise(
     n_patients = dplyr::n(),
@@ -1605,14 +1848,14 @@ protf |>
       ),
       .names = "{.col}_{.fn}"
     ),
-    .by = PPU
+    .by = Proteinuria
   ) |>
   tidyr::pivot_longer(
-    cols = -PPU, 
+    cols = -Proteinuria, 
     names_to = "Metric", 
     values_to = "Value"
   ) |>
-  tidyr::pivot_wider(names_from = PPU, values_from = Value
+  tidyr::pivot_wider(names_from = Proteinuria, values_from = Value
   )
 
 ```
@@ -1631,11 +1874,17 @@ protf |>
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, y = PROTF, fill = PPU, color = PPU) +
+  aes(x = IgG, y = PROTF, fill = Proteinuria, color = Proteinuria) +
   geom_point(size = 3, shape = 21, alpha = 0.6) +
   geom_smooth(method = "lm", 
               formula = y ~ poly(x, 1), 
@@ -1644,10 +1893,10 @@ protf |>
   ggpubr::stat_cor(method = "pearson", 
                    label.x.npc = 0.7,   # 70% across the x-axis
                    label.y.npc = "bottom") + 
-  labs(title = "Correlação entre IgG e PROTF",
-       subtitle = "Modelo Linear (y ~ x) com banda de confiança de 95%",
-       fill = "Perda proteica na urina: ", color = "Perda proteica na urina: ",
-       x = "IgG (mg/dL)", y = "PROTF (g/dL)") +
+  labs(title = "Correlation between IgG and Calculated globulin",
+       subtitle = "Linear Model (y ~ x) with 95% confidence band",
+       fill = "Proteinuria: ", color = "Proteinuria: ",
+       x = "IgG (mg/dL)", y = "CG (g/dL)") +
   scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
   scale_y_continuous(breaks = seq(1, 2.6, by = 0.1))
 
@@ -1664,15 +1913,21 @@ p1 <- protf |>
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   tidyr::drop_na(IgG) |>
   ggplot() +
-  aes(x = IgG, fill = PPU) +
+  aes(x = IgG, fill = Proteinuria) +
   geom_histogram(alpha = 0.8, binwidth = 50) +
-  labs(title = "Histograma de IgG",
+  labs(title = "IgG Histogram",
        subtitle = "Binwidth: 50",
-       fill = "Perda proteica na urina: ",
+       fill = "Proteinuria: ",
        x = "IgG (mg/dL)", y = "n") +
   scale_x_continuous(breaks = seq(0, 1500, by = 200)) +
   scale_y_continuous(breaks = seq(0, 30, by = 5))
@@ -1682,13 +1937,21 @@ p2 <- protf |>
     PPU = `24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`, 
     PROTF = `16 - Resultado do Primeiro exame`
   ) |>
+  dplyr::mutate(
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
+  ) |>
   ggplot() +
-  aes(x = PROTF, fill = PPU) +
+  aes(x = PROTF, fill = Proteinuria) +
   geom_histogram(alpha = 0.8, binwidth = 0.1) +
-  labs(title = "Histograma de PROTF",
+  labs(title = "Calculated globulin Histogram",
        subtitle = "Binwidth: 0.1",
-       fill = "Perda proteica na urina: ",
-       x = "PROTF (g/dL)", y = "n") +
+       fill = "Proteinuria: ",
+       x = "CG (g/dL)", y = "n") +
   scale_x_continuous(breaks = seq(1, 2.5, by = 0.2)) +
   scale_y_continuous(breaks = seq(0, 150, by = 15))
 
@@ -1701,7 +1964,7 @@ Ajustamos também um modelo linear para entender melhor a associação entre IgG
 ```{r}
 
 lm(
-  IgG ~ PPU,
+  IgG ~ Proteinuria,
   data = protf |>
   dplyr::select(
     PPU = `24 - Paciente apresenta perda proteica na urina nos 30 dias que antecederam a realização do exame PROTF?`, 
@@ -1711,7 +1974,13 @@ lm(
   ) |>
   dplyr::mutate(
     IgG = unlist(IgG),
-    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA")))
+    IgG = suppressWarnings(as.numeric(dplyr::na_if(IgG, "NA"))),
+    Proteinuria = dplyr::case_match(
+      PPU,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = PPU
+    )
   ) |>
   tidyr::drop_na(IgG)
 ) |>
@@ -1725,8 +1994,8 @@ All analyses were conducted using the `R` language and environment for statistic
 
 To date, the study has focused on data cleaning, feature engineering, and advanced visualization using `ggplot2` (Wickham, 2016). A key objective was the identification of biological cutoff points for PROTF where existing references were unknown or required validation. To achieve this, we utilized a two-step modeling approach:
 
-1. **Reference Interval Modeling:** We established biological baselines by calculating the mean and standard deviation (± 2 SD) of the "Normal" IgG cohort, treating this group as a stable physiological standard.
-2. **Threshold Discovery via Segmented Regression:** To identify the specific IgG level at which PROTF stabilize, we implemented segmented (broken-stick) regression (Muggeo, 2008). This allowed us to mathematically determine the "inflection point" between the rising deficient phase and the steady-state plateau phase.
+1.  **Reference Interval Modeling:** We established biological baselines by calculating the mean and standard deviation (± 2 SD) of the "Normal" IgG cohort, treating this group as a stable physiological standard.
+2.  **Threshold Discovery via Segmented Regression:** To identify the specific IgG level at which PROTF stabilize, we implemented segmented (broken-stick) regression (Muggeo, 2008). This allowed us to mathematically determine the "inflection point" between the rising deficient phase and the steady-state plateau phase.
 
 Statistical significance of the observed slopes and the fit of the resulting plateaus were verified using tidied coefficients extracted via `broom` (Robinson et al., 2024).
 
@@ -1745,13 +2014,7 @@ Statistical significance of the observed slopes and the fit of the resulting pla
 > Wickham, H. (2023). *stringr: Simple, Consistent Wrappers for Common String Operations*. R package version 1.5.1.
 >
 > Robinson, D., Hayes, A., & Couch, S. (2024). *broom: Glance, Tidy, and Augment Regression Models*. R package version 1.0.6.
-> 
+>
 > Muggeo, V. M. R. (2008). *segmented: an R Package to Fit Regression Models with Broken-Line Relationships*. R News, 8/1, 20-25.
 >
-> Garrett Grolemund, Hadley Wickham (2011). *Dates and Times Made Easy with lubridate*. Journal of Statistical Software, 40(3), 1-25.
-<!-- > -->
-<!-- > McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall. -->
-<!-- > -->
-<!-- > Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall. -->
-<!-- > -->
-<!-- > Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press. -->
+> Garrett Grolemund, Hadley Wickham (2011). *Dates and Times Made Easy with lubridate*. Journal of Statistical Software, 40(3), 1-25. <!-- > --> <!-- > McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall. --> <!-- > --> <!-- > Hastie, T., & Tibshirani, R. (1990). *Generalized Additive Models*. Chapman & Hall. --> <!-- > --> <!-- > Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R* (2nd ed.). CRC Press. -->
