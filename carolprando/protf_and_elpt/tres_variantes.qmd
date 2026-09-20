@@ -1,0 +1,1208 @@
+---
+title: "3 Variants Analysis: PROTF and ELPT"
+subtitle: "Association between Total Proteins / Protein Electrophoresis, IgG Dosage, Infections, and Death Outcome"
+author: "Henrique Laureano"
+format: html
+editor: visual
+code-line-numbers: true
+code-fold: true
+code-block-border-left: true
+date-modified: 2026/09/20
+editor_options: 
+  chunk_output_type: console
+toc: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r pkgs}
+
+if (!requireNamespace("pacman", quietly = TRUE)) 
+  install.packages("pacman") 
+
+pacman::p_load(
+  ggplot2, googlesheets4, 
+  dplyr, lubridate, tidyr, stringr, ggpubr, segmented, broom, pROC, 
+  knitr, purrr, patchwork, kableExtra
+)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+ggplot2::theme_set(
+  theme_classic(base_size = 14) +
+    theme(plot.title           = element_text(size = 14, face = "bold"),
+          plot.subtitle        = element_text(size = 13, face = "bold"),
+          axis.text.x          = element_text(face = "bold"),
+          axis.text.y          = element_text(face = "bold"),
+          axis.title.x         = element_text(hjust = 0),
+          axis.title.y         = element_text(hjust = 0, angle = 360),
+          strip.text           = element_text(size = 13, face = "bold"),
+          legend.position      = "bottom", 
+          legend.justification = "right",
+          panel.grid.major     = element_line(color = "gray90", linewidth = 0.7))
+)
+
+```
+
+# Overview & Methodological Background
+
+This document evaluates whether serum **PROTF** and **ELPT** correlate with serum **IgG dosage**, the occurrence of **infections** (overall and by affected organ system), and survival **outcomes** (alive vs. deceased, cause of death, and time elapsed between exam and death).
+
+### Cutoff Methodology & References
+
+The diagnostic cutoff boundaries and the **Traffic Light System (3 Variants / Zones)** used in this document are directly derived from the ROC curve analyses and two-cutoff optimization strategies established in the companion reports: - **PROTF Cutoffs**: Derived from [`respostas_protf.html`](https://henriquelaureano.github.io/carolprando/protf_and_elpt/respostas_protf.html) using Receiver Operating Characteristic (ROC) curve analysis (`pROC::roc`) on non-replaced IgG sub-cohorts. - **Red Zone Boundary (\< 1.55 g/dL)**: High-specificity boundary ($\ge 95\%$ Specificity) isolating definitive IgG deficiency with minimal false positives. - **Green Zone Boundary (\> 2.30 g/dL)**: High-sensitivity boundary ($\ge 95\%$ Sensitivity) ruling out IgG deficiency with high safety. - **Grey / Indeterminate Zone (1.55 – 2.30 g/dL)**: Biological overlap zone where PROTF alone is inconclusive and confirmatory IgG quantification is mandatory. - **Binary Cutoff (2.30 g/dL)**: Primary single threshold (\< 2.30 vs. $\ge 2.30$ g/dL) based on the upper sensitivity boundary. - **ELPT Cutoffs**: Derived from [`respostas_elpt.html`](https://henriquelaureano.github.io/carolprando/protf_and_elpt/respostas_elpt.html) using ROC curve analysis (`pROC::roc`). - **Red Zone Boundary (\< 0.38 g/dL)**: High-specificity boundary ($\ge 95\%$ Specificity) for ELPT deficiency. - **Green Zone Boundary (\> 0.60 g/dL)**: High-sensitivity boundary ($\ge 95\%$ Sensitivity) for ruling out deficiency. - **Grey / Indeterminate Zone (0.38 – 0.60 g/dL)**: Diagnostic uncertainty interval requiring IgG testing. - **Binary Cutoff (0.41 g/dL)**: Optimal single threshold determined via Youden Index optimization ($J = \text{sensitivity} + \text{specificity} - 1$) in [`respostas_elpt.html`](https://henriquelaureano.github.io/carolprando/protf_and_elpt/respostas_elpt.html).
+
+All analyses below are conducted on the target sub-cohort of patients who have recorded IgG measurements and no immunoglobulin replacement therapy within 30 days prior to the exam. Hypothesis testing (Fisher's Exact Test, Chi-Square Test, Odds Ratios with 95% Confidence Intervals, and Mann-Whitney / Kruskal-Wallis non-parametric tests) is formally conducted across all contingency tables, with Odds Ratios evaluated for event occurrence (`Yes` vs. `No`).
+
+------------------------------------------------------------------------
+
+# PROTF
+
+```{r protf_data, warning=FALSE, message=FALSE}
+
+protf_url <- 
+  paste0(
+    "https://docs.google.com/spreadsheets/d/",
+    "1k3vlSk4e4mHMwTHZVnDpSTXyMReXLTGsgk82rHVILgQ/",
+    "edit?gid=402323031#gid=402323031"
+)
+googlesheets4::gs4_deauth()
+protf_raw <- googlesheets4::read_sheet(protf_url) |> dplyr::distinct()
+
+# Sub-cohort: Patients with IgG measurement & no IgG replacement in last 30 days
+protf_proxy <- protf_raw |>
+  dplyr::filter(
+    `19 - Fez reposições de Imunoglobulinas durante os 30 dias que antecederam a realização do exame PROTF  ?` != "Sim" &
+    `18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica` != "NA"
+  )
+
+# Dynamically calculate ROC cutoffs as established in respostas_protf.qmd
+protf_roc_df <- protf_proxy |>
+  dplyr::filter(`18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica` != "Acima do valor de referência") |>
+  dplyr::mutate(
+    PROTF = `16 - Resultado do Primeiro exame`,
+    low_igg_flag = ifelse(`18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica` == "Abaixo do valor de referência", 1, 0)
+  )
+
+roc_protf_obj <- pROC::roc(protf_roc_df$low_igg_flag, protf_roc_df$PROTF, quiet = TRUE)
+coords_protf <- pROC::coords(roc_protf_obj, "all", ret = c("threshold", "specificity", "sensitivity"))
+
+# Red Zone boundary (High Specificity >= 95%) reference: respostas_protf.qmd
+protf_cutoff_red <- coords_protf |>
+  dplyr::filter(specificity >= 0.95) |>
+  dplyr::arrange(dplyr::desc(sensitivity)) |>
+  dplyr::slice(1) |>
+  dplyr::pull(threshold)
+
+# Green Zone boundary (High Sensitivity >= 95%) reference: respostas_protf.qmd
+protf_cutoff_green <- coords_protf |>
+  dplyr::filter(sensitivity >= 0.95) |>
+  dplyr::arrange(dplyr::desc(specificity)) |>
+  dplyr::slice(1) |>
+  dplyr::pull(threshold)
+
+if (length(protf_cutoff_red) == 0) protf_cutoff_red <- 1.55
+if (length(protf_cutoff_green) == 0) protf_cutoff_green <- 2.30
+
+protf <- protf_proxy |>
+  dplyr::mutate(
+    PROTF = `16 - Resultado do Primeiro exame`,
+    Exam_Date = `5 - Data de Cadastro do Exame`,
+    IgG_Reference = dplyr::case_match(
+      `18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica`,
+      "Abaixo do valor de referência" ~ "Below reference",
+      "Normal" ~ "Normal",
+      "Acima do valor de referência" ~ "Above reference",
+      .default = `18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica`
+    ),
+    IgG = suppressWarnings(as.numeric(`18.2 - Qual resultado da dosagem? Colocar apenas número\n\n-Responder com NA em caso de não realização do exame`)),
+    low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0),
+    # Traffic Light System (3 Variants / Zones) referenced from respostas_protf.qmd:
+    # Red (< 1.55 g/dL), Grey (1.55 - 2.30 g/dL), Green (> 2.30 g/dL)
+    Semaforo = dplyr::case_when(
+      PROTF < protf_cutoff_red ~ paste0("Red (< ", round(protf_cutoff_red, 2), ")"),
+      PROTF >= protf_cutoff_red & PROTF <= protf_cutoff_green ~ paste0("Grey (", round(protf_cutoff_red, 2), " - ", round(protf_cutoff_green, 2), ")"),
+      PROTF > protf_cutoff_green ~ paste0("Green (> ", round(protf_cutoff_green, 2), ")")
+    ) |> factor(levels = c(
+      paste0("Red (< ", round(protf_cutoff_red, 2), ")"),
+      paste0("Grey (", round(protf_cutoff_red, 2), " - ", round(protf_cutoff_green, 2), ")"),
+      paste0("Green (> ", round(protf_cutoff_green, 2), ")")
+    )),
+    # Binary Cutoff Strategy (< 2.30 vs >= 2.30 g/dL) referenced from respostas_protf.qmd
+    Binary_Cutoff = ifelse(PROTF < protf_cutoff_green, 
+                           paste0("Below Cutoff (< ", round(protf_cutoff_green, 2), ")"), 
+                           paste0("Normal (>= ", round(protf_cutoff_green, 2), ")")) |>
+      factor(levels = c(
+        paste0("Below Cutoff (< ", round(protf_cutoff_green, 2), ")"),
+        paste0("Normal (>= ", round(protf_cutoff_green, 2), ")")
+      )),
+    Infection = dplyr::case_match(
+      `7 - Quadros infecciosos até o momento da coleta?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `7 - Quadros infecciosos até o momento da coleta?`
+    ),
+    Death = dplyr::case_match(
+      `33 - Paciente possui registro de óbito?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `33 - Paciente possui registro de óbito?`
+    ),
+    Death_Cause = dplyr::case_when(
+      stringr::str_detect(`33.1 - Causa`, "Cardiopatia") & stringr::str_detect(`33.1 - Causa`, "Infeccioso") ~ "Infectious; Cardiopathy",
+      stringr::str_detect(`33.1 - Causa`, "Infeccioso") & stringr::str_detect(`33.1 - Causa`, "Choque") ~ "Infectious; Hypovolemic Shock",
+      stringr::str_detect(`33.1 - Causa`, "Choque") & stringr::str_detect(`33.1 - Causa`, "cirurgica") ~ "Hypovolemic Shock; Post-surgical Complication",
+      stringr::str_detect(`33.1 - Causa`, "Cardiopatia") ~ "Cardiopathy / Heart Disease",
+      stringr::str_detect(`33.1 - Causa`, "Infeccioso") ~ "Infectious",
+      stringr::str_detect(`33.1 - Causa`, "Renal") ~ "Renal / Kidney Disease",
+      stringr::str_detect(`33.1 - Causa`, "multiplos orgãos") ~ "Multiple Organ Dysfunction",
+      stringr::str_detect(`33.1 - Causa`, "Oncológica") ~ "Oncological / Cancer",
+      stringr::str_detect(`33.1 - Causa`, "cirurgica") ~ "Post-surgical Complication",
+      stringr::str_detect(`33.1 - Causa`, "procedimento") ~ "Post-procedure Complication",
+      stringr::str_detect(`33.1 - Causa`, "Hepática") ~ "Hepatic / Liver Disease",
+      stringr::str_detect(`33.1 - Causa`, "Inconclusivo") ~ "Inconclusive",
+      stringr::str_detect(`33.1 - Causa`, "Metabólica") ~ "Metabolic",
+      TRUE ~ `33.1 - Causa`
+    ),
+    Death_Date = `33.2 - Data de óbito`,
+    Interval_days = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "days"),
+    Interval_months = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "months"),
+    Interval_years = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "years")
+  )
+
+```
+
+## 1. Correlation between PROTF and IgG Dosage
+
+Analysis of the correlation between PROTF and serum IgG levels in the sub-cohort of patients with recorded IgG dosage and no prior replacement therapy.
+
+```{r protf_correlation, fig.width=8, fig.height=5}
+
+protf |>
+  tidyr::drop_na(IgG, PROTF) |>
+  ggplot(aes(x = IgG, y = PROTF)) +
+  geom_point(size = 3, shape = 21, fill = "steelblue", alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 2), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", label.x = 1100, label.y = 1.3) + 
+  labs(title = "Correlation between IgG and Calculated globulin",
+       subtitle = "Quadratic Linear Model (y ~ x²) with 95% confidence band",
+       x = "IgG (mg/dL)", y = "CG (g/dL)") +
+  scale_x_continuous(breaks = seq(0, 1500, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 3, by = 0.1))
+
+```
+
+### PROTF Distribution by IgG Status and Traffic Light System (3 Variants)
+
+Density visualization of PROTF stratified by IgG reference status and the 3 Traffic Light zones derived from [`respostas_protf.html`](https://henriquelaureano.github.io/carolprando/protf_and_elpt/respostas_protf.html): - **Red Zone** ($< 1.55$ g/dL): High specificity ($\ge 95\%$) for IgG deficiency. - **Grey / Indeterminate Zone** ($1.55 - 2.30$ g/dL): Zone of biological overlap where PROTF alone is inconclusive. - **Green Zone** ($> 2.30$ g/dL): High sensitivity ($\ge 95\%$) ruling out deficiency.
+
+```{r protf_traffic_light, fig.width=9.5, fig.height=6}
+
+# Note: Cutoffs (1.55 g/dL and 2.30 g/dL) were derived via ROC analysis in respostas_protf.qmd
+protf |>
+  dplyr::filter(IgG_Reference != "Above reference") |>
+  ggplot(aes(x = PROTF, fill = IgG_Reference)) +
+  geom_density(alpha = 0.4) +
+  # Red Zone
+  annotate("rect", xmin = -Inf, xmax = protf_cutoff_red, ymin = 0, ymax = Inf, 
+           fill = "firebrick", alpha = 0.1) +
+  # Grey Zone
+  annotate("rect", xmin = protf_cutoff_red, xmax = protf_cutoff_green, ymin = 0, ymax = Inf, 
+           fill = "gold", alpha = 0.15) +
+  # Green Zone
+  annotate("rect", xmin = protf_cutoff_green, xmax = Inf, ymin = 0, ymax = Inf, 
+           fill = "forestgreen", alpha = 0.1) +
+  geom_vline(xintercept = c(protf_cutoff_red, protf_cutoff_green), linetype = "dashed") +
+  annotate("text", x = protf_cutoff_red, y = 0, label = paste("Red <", round(protf_cutoff_red, 2)), 
+           hjust = 1.1, vjust = -2, angle = 0, color = "firebrick") +
+  annotate("text", x = protf_cutoff_green, y = 0, label = paste("Green >", round(protf_cutoff_green, 2)), 
+           hjust = 1.1, vjust = -2, angle = 0, color = "forestgreen") +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
+  labs(title = "Traffic Light System: Managing Clinical Overlap",
+       subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
+       x = "CG (g/dL)", y = "Density", fill = "IgG Status") +
+  scale_x_continuous(breaks = seq(1, 2.5, by = 0.1)) +
+  scale_y_continuous(breaks = seq(0, 2, by = 0.25))
+
+```
+
+## 2. Occurrence of Infections (Overall and by Affected System)
+
+### a) Overall Occurrence of Infection (Yes / No)
+
+Cross-tabulation between infection status and stratification by Traffic Light (3 Variants), Binary Cutoff, and IgG Status. Statistical independence is formally tested using Fisher's Exact Test and Odds Ratio estimation (evaluating infection event `Yes` vs `No`).
+
+```{r protf_infection_overall}
+
+# Helper function to compute Fisher exact test with Outcome levels = c("Yes", "No")
+get_fish_or <- function(df, group_var, outcome_var, exp_level, ref_level) {
+  df_sub <- df |>
+    dplyr::filter(.data[[group_var]] %in% c(exp_level, ref_level) & .data[[outcome_var]] %in% c("Yes", "No")) |>
+    dplyr::mutate(
+      G = factor(.data[[group_var]], levels = c(exp_level, ref_level)),
+      O = factor(.data[[outcome_var]], levels = c("Yes", "No"))
+    )
+  tbl <- table(G = df_sub$G, O = df_sub$O)
+  ft <- fisher.test(tbl)
+  return(ft)
+}
+
+# 1. Traffic Light Zone vs Infection
+tbl_sem_inf_p <- table(protf$Semaforo, protf$Infection)
+fish_sem_inf_p <- fisher.test(tbl_sem_inf_p)
+
+table_semaforo_inf <- protf |>
+  dplyr::group_by(Semaforo, Infection) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Infection, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Infection Rate (%)` = round(100 * Yes / Total, 1),
+    `Fisher p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", fish_sem_inf_p$p.value), "")
+  )
+
+table_semaforo_inf |>
+  knitr::kable(col.names = c("Traffic Light Zone", "No Infection (No)", "Infected (Yes)", "Total", "Infection Rate (%)", "Fisher Exact Test (p-value)"),
+               caption = "Infection Occurrence by Traffic Light Zone (PROTF)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# 2. Binary Cutoff vs Infection
+ft_bin_inf_p <- get_fish_or(protf, "Binary_Cutoff", "Infection", paste0("Below Cutoff (< ", round(protf_cutoff_green, 2), ")"), paste0("Normal (>= ", round(protf_cutoff_green, 2), ")"))
+
+table_binary_inf <- protf |>
+  dplyr::group_by(Binary_Cutoff, Infection) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Infection, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Infection Rate (%)` = round(100 * Yes / Total, 1),
+    `Odds Ratio (95% CI)` = ifelse(dplyr::row_number() == 1, 
+                                   sprintf("%.2f (%.2f - %.2f)", ft_bin_inf_p$estimate, ft_bin_inf_p$conf.int[1], ft_bin_inf_p$conf.int[2]), 
+                                   ""),
+    `p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", ft_bin_inf_p$p.value), "")
+  )
+
+table_binary_inf |>
+  knitr::kable(col.names = c("Binary Cutoff", "No Infection (No)", "Infected (Yes)", "Total", "Infection Rate (%)", "Odds Ratio (95% CI)", "p-value"),
+               caption = "Infection Occurrence by Binary Cutoff (PROTF, threshold 2.30 g/dL)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# 3. IgG Reference Status vs Infection
+ft_igg_inf_p <- get_fish_or(protf, "IgG_Reference", "Infection", "Below reference", "Normal")
+
+table_igg_inf <- protf |>
+  dplyr::filter(IgG_Reference %in% c("Below reference", "Normal")) |>
+  dplyr::group_by(IgG_Reference, Infection) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Infection, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Infection Rate (%)` = round(100 * Yes / Total, 1),
+    `Odds Ratio (95% CI)` = ifelse(dplyr::row_number() == 1, 
+                                   sprintf("%.2f (%.2f - %.2f)", ft_igg_inf_p$estimate, ft_igg_inf_p$conf.int[1], ft_igg_inf_p$conf.int[2]), 
+                                   ""),
+    `p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", ft_igg_inf_p$p.value), "")
+  )
+
+table_igg_inf |>
+  knitr::kable(col.names = c("IgG Status", "No Infection (No)", "Infected (Yes)", "Total", "Infection Rate (%)", "Odds Ratio (95% CI)", "p-value"),
+               caption = "Infection Occurrence by IgG Dosage Reference Status") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+> **Statistical & Odds Ratio Interpretation (PROTF Infection Rates):** - **Traffic Light Zones (Fisher's** $p = 0.8350$): Overall infection rates remain comparable across Traffic Light zones (**57.1%** in Red, **59.0%** in Grey, **50.0%** in Green), showing no statistically significant variation ($p = 0.8350$). - **Binary Cutoff (OR = 1.42, 95% CI: 0.36 – 5.63,** $p = 0.5589$): An Odds Ratio of **1.42** indicates that patients with low PROTF (\< 2.30 g/dL) have **1.42-times higher odds** (or 42% higher odds) of presenting an infection (58.7% infection rate, 74/126) compared to patients with normal PROTF ($\ge 2.30$ g/dL, 50.0% infection rate, 6/12). However, because the 95% confidence interval spans across 1.0 (0.36 to 5.63) and $p = 0.5589$, this elevated trend is **not** statistically significant. - **IgG Reference Status (OR = 0.92, 95% CI: 0.44 – 1.90,** $p = 0.8636$): An Odds Ratio of **0.92** means that patients with below-reference IgG have virtually identical odds (8% lower odds) of experiencing an infection compared to patients with normal IgG levels (56.9% vs. 59.1% infection rate), showing no statistically significant association ($p = 0.8636$).
+
+### b) Infections by Affected System
+
+Detailed breakdown of infections by affected organ system across PROTF Traffic Light zones, including system-specific Fisher's Exact Tests.
+
+```{r protf_infection_systems, fig.width=10, fig.height=6}
+
+inf_cols_protf <- c(
+  "8 - Infecção em sistema nervoso central?",
+  "9 - Infecção de vias áreas superiores?",
+  "10 - Infecção de vias áreas inferiores?",
+  "11 - Infecção de sistema urinário?",
+  "12 - Infecção de sistema gastrointestinal?",
+  "13 - Infecção de pele?",
+  "14 - Sepse?",
+  "15 - Outros?"
+)
+
+protf_systems <- protf |>
+  dplyr::select(Semaforo, Binary_Cutoff, IgG_Reference, dplyr::all_of(inf_cols_protf)) |>
+  tidyr::pivot_longer(cols = dplyr::all_of(inf_cols_protf), names_to = "System_Raw", values_to = "Status") |>
+  dplyr::mutate(
+    System = dplyr::case_when(
+      stringr::str_detect(System_Raw, "nervoso") ~ "Central Nervous System",
+      stringr::str_detect(System_Raw, "superior") ~ "Upper Respiratory Tract",
+      stringr::str_detect(System_Raw, "inferior") ~ "Lower Respiratory Tract",
+      stringr::str_detect(System_Raw, "urinário") ~ "Urinary Tract",
+      stringr::str_detect(System_Raw, "gastrointestinal") ~ "Gastrointestinal Tract",
+      stringr::str_detect(System_Raw, "pele") ~ "Skin",
+      stringr::str_detect(System_Raw, "Sepse") ~ "Sepsis",
+      TRUE ~ "Other"
+    ),
+    Is_Infected = ifelse(Status == "Sim", 1, 0)
+  )
+
+sys_stats_p <- protf_systems |>
+  dplyr::group_by(System) |>
+  dplyr::summarise(
+    `Fisher p-value` = sprintf("%.4f", fisher.test(table(Semaforo, Is_Infected))$p.value),
+    .groups = "drop"
+  )
+
+n_red_p <- sum(protf$Semaforo == paste0("Red (< ", round(protf_cutoff_red, 2), ")"), na.rm = TRUE)
+n_grey_p <- sum(protf$Semaforo == paste0("Grey (", round(protf_cutoff_red, 2), " - ", round(protf_cutoff_green, 2), ")"), na.rm = TRUE)
+n_green_p <- sum(protf$Semaforo == paste0("Green (> ", round(protf_cutoff_green, 2), ")"), na.rm = TRUE)
+
+sys_table_protf <- protf_systems |>
+  dplyr::group_by(Semaforo, System) |>
+  dplyr::summarise(
+    Cases = sum(Is_Infected, na.rm = TRUE),
+    Pct = round(100 * Cases / dplyr::n(), 1),
+    .groups = "drop"
+  )
+
+sys_table_protf_wide <- sys_table_protf |>
+  tidyr::pivot_wider(names_from = Semaforo, values_from = c(Cases, Pct)) |>
+  dplyr::left_join(sys_stats_p, by = "System")
+
+red_col_name <- paste0("Red (< ", round(protf_cutoff_red, 2), ")")
+grey_col_name <- paste0("Grey (", round(protf_cutoff_red, 2), " - ", round(protf_cutoff_green, 2), ")")
+green_col_name <- paste0("Green (> ", round(protf_cutoff_green, 2), ")")
+
+sys_table_protf_formatted <- sys_table_protf_wide |>
+  dplyr::select(
+    `Affected System` = System,
+    !!paste0("Red Cases (N=", n_red_p, ")") := dplyr::all_of(paste0("Cases_", red_col_name)),
+    !!paste0("Red Rate (%)") := dplyr::all_of(paste0("Pct_", red_col_name)),
+    !!paste0("Grey Cases (N=", n_grey_p, ")") := dplyr::all_of(paste0("Cases_", grey_col_name)),
+    !!paste0("Grey Rate (%)") := dplyr::all_of(paste0("Pct_", grey_col_name)),
+    !!paste0("Green Cases (N=", n_green_p, ")") := dplyr::all_of(paste0("Cases_", green_col_name)),
+    !!paste0("Green Rate (%)") := dplyr::all_of(paste0("Pct_", green_col_name)),
+    `Fisher p-value`
+  )
+
+sys_table_protf_formatted |>
+  knitr::kable(caption = paste0("Infection Frequency by Affected Body System and Traffic Light Zone (PROTF; Total Cohort N = ", nrow(protf), ")")) |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# Visual bar chart by affected system
+red_lbl <- paste0("Red (< ", round(protf_cutoff_red, 2), ")")
+grey_lbl <- paste0("Grey (", round(protf_cutoff_red, 2), " - ", round(protf_cutoff_green, 2), ")")
+green_lbl <- paste0("Green (> ", round(protf_cutoff_green, 2), ")")
+
+fill_colors_p <- setNames(c("firebrick", "gold3", "forestgreen"), c(red_lbl, grey_lbl, green_lbl))
+
+protf_systems |>
+  dplyr::filter(Status == "Sim") |>
+  dplyr::count(Semaforo, System) |>
+  ggplot(aes(x = reorder(System, n), y = n, fill = Semaforo)) +
+  geom_hline(yintercept = seq(0, 24, by = 1), color = "gray", alpha = 0.4) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  scale_fill_manual(values = fill_colors_p) +
+  labs(title = "Distribution of Infections by Affected System (Calculated globulin)",
+       subtitle = "Stratified by Traffic Light Zones",
+       x = "Affected System", y = "Number of Cases", fill = "Traffic Light Zone")
+
+```
+
+> **Methodological & Computation Note on Percentages (%):** Each **Rate (%)** column represents the prevalence rate of that specific organ system infection calculated out of the total number of patients within that Traffic Light Zone: - **Red Zone (\< 1.55 g/dL):** Total $N = 21$ patients. (e.g., Sepsis rate: $8 / 21 = 38.1\%$) - **Grey Zone (1.55 – 2.30 g/dL):** Total $N = 105$ patients. (e.g., Sepsis rate: $19 / 105 = 18.1\%$) - **Green Zone (\> 2.30 g/dL):** Total $N = 12$ patients. (e.g., Sepsis rate: $1 / 12 = 8.3\%$)
+>
+> **Statistical Finding:** Sepsis shows a statistically significant variation across PROTF Traffic Light zones (**Fisher's** $p = 0.0414$), occurring in **38.1%** of all patients in the Red Zone (\< 1.55 g/dL) compared to **18.1%** in the Grey Zone and **8.3%** in the Green Zone. Gastrointestinal infections show a statistical trend ($p = 0.0519$).
+
+## 3. Outcome Analysis (Deceased vs Alive)
+
+### a) Occurrence of Death by Traffic Light Zone and IgG Status
+
+Statistical testing of mortality outcomes across PROTF Traffic Light zones and IgG reference groups.
+
+```{r protf_death_tables}
+
+# 1. Death vs Semaforo
+tbl_sem_death_p <- table(protf$Semaforo, protf$Death)
+fish_sem_death_p <- fisher.test(tbl_sem_death_p)
+
+protf |>
+  dplyr::group_by(Semaforo, Death) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Death, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Mortality Rate (%)` = round(100 * Yes / Total, 1),
+    `Fisher p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", fish_sem_death_p$p.value), "")
+  ) |>
+  knitr::kable(col.names = c("Traffic Light Zone", "Alive (No)", "Deceased (Yes)", "Total", "Mortality Rate (%)", "Fisher Exact Test (p-value)"),
+               caption = "Outcome Frequency (Death) by Traffic Light Zone (PROTF)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# 2. Death vs IgG Reference Status
+ft_igg_death_p <- get_fish_or(protf, "IgG_Reference", "Death", "Below reference", "Normal")
+
+protf |>
+  dplyr::filter(IgG_Reference %in% c("Below reference", "Normal")) |>
+  dplyr::group_by(IgG_Reference, Death) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Death, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Mortality Rate (%)` = round(100 * Yes / Total, 1),
+    `Odds Ratio (95% CI)` = ifelse(dplyr::row_number() == 1, 
+                                   sprintf("%.2f (%.2f - %.2f)", ft_igg_death_p$estimate, ft_igg_death_p$conf.int[1], ft_igg_death_p$conf.int[2]), 
+                                   ""),
+    `p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.6f", ft_igg_death_p$p.value), "")
+  ) |>
+  knitr::kable(col.names = c("IgG Status", "Alive (No)", "Deceased (Yes)", "Total", "Mortality Rate (%)", "Odds Ratio (95% CI)", "p-value"),
+               caption = "Outcome Frequency (Death) by IgG Reference Status (PROTF)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+> **Statistical & Odds Ratio Interpretation (PROTF Mortality):** - **IgG Reference Status (OR = 9.08, 95% CI: 3.15 – 32.42,** $p = 2.0 \times 10^{-6}$): An Odds Ratio of **9.08** means that patients with below-reference IgG have **over 9-times higher odds of death** (43.1% mortality rate, 31/72) compared to patients with normal IgG levels (7.6% mortality rate, 5/66). Because the 95% confidence interval is well above 1.0 (3.15 to 32.42) and $p < 0.0001$, this represents a strong, highly statistically significant mortality risk factor. - **Traffic Light Zones (Fisher's** $p = 0.0016$): Mortality rates increase progressively from **8.3%** in the Green Zone to **21.9%** in the Grey Zone and **57.1%** in the Red Zone (\< 1.55 g/dL).
+
+### b) Registered Causes of Death
+
+```{r protf_death_causes}
+
+protf_deaths <- protf |> dplyr::filter(Death == "Yes")
+
+protf_deaths |>
+  dplyr::count(Death_Cause, sort = TRUE) |>
+  dplyr::mutate(Percentage = round(100 * n / nrow(protf_deaths), 1)) |>
+  knitr::kable(col.names = c("Cause of Death", "N", "Percentage (%)"),
+               caption = "Primary Causes of Death (PROTF Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+### c) Time Interval between Exam Date and Date of Death
+
+Evaluation of elapsed chronological time (in days and months) between PROTF exam registration and occurrence of death, tested for differences across Traffic Light zones via Kruskal-Wallis Test.
+
+```{r protf_death_interval, fig.width=8, fig.height=5}
+
+kw_protf_interval <- kruskal.test(Interval_days ~ Semaforo, data = protf_deaths)
+
+summary_interval_p <- protf_deaths |>
+  dplyr::summarise(
+    Minimum = min(Interval_days, na.rm = TRUE),
+    `1st Quartile` = quantile(Interval_days, 0.25, na.rm = TRUE),
+    Median = median(Interval_days, na.rm = TRUE),
+    Mean = mean(Interval_days, na.rm = TRUE),
+    `3rd Quartile` = quantile(Interval_days, 0.75, na.rm = TRUE),
+    Maximum = max(Interval_days, na.rm = TRUE),
+    `Kruskal-Wallis p-value` = sprintf("%.4f", kw_protf_interval$p.value)
+  )
+
+summary_interval_p |>
+  knitr::kable(caption = "Statistical Summary of Time Interval to Death in Days (PROTF Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+med_p <- round(median(protf_deaths$Interval_days, na.rm = TRUE), 1)
+mean_p <- round(mean(protf_deaths$Interval_days, na.rm = TRUE), 1)
+
+protf_deaths |>
+  ggplot(aes(x = Interval_days)) +
+  geom_histogram(fill = "firebrick", color = "black", alpha = 0.7, binwidth = 14) +
+  scale_x_continuous(breaks = seq(0, 600, by = 50)) +
+  scale_y_continuous(breaks = seq(0, 10, by = 1)) +
+  geom_vline(aes(xintercept = med_p), color = "blue", linetype = "dashed", linewidth = 1) +
+  annotate("text", x = med_p + 15, y = Inf, label = paste("Dashed Blue Line:\nMedian =", med_p, "days"), 
+           color = "blue", fontface = "bold", vjust = 1.5, hjust = 0) +
+  labs(title = "Distribution of Elapsed Time\nbetween Calculated globulin Exam and Death",
+       subtitle = paste("Median:", med_p, "days | Mean:", mean_p, "days | Bin width = 14 days (2 weeks)"),
+       x = "Time Interval (Days)", y = "Number of Patients")
+
+```
+
+> **Statistical & Clinical Commentary (Time Interval to Death - PROTF):** - **Dashed Blue Line:** The vertical dashed blue line highlights the **median time interval to death** (**60.0 days** / 2.0 months post-exam registration). - **Distribution Breakdown:** The average (mean) time to death is **111.8 days** (\~3.7 months), with 25% of deaths occurring within **30.8 days** (1st Quartile) and a maximum recorded interval of **551.0 days** (\~1.5 years). - **Traffic Light Zone Comparison (Kruskal-Wallis** $p = 0.0297$): There is a statistically significant difference in survival interval across Traffic Light zones ($p = 0.0297$). Patients in the Red Zone (\< 1.55 g/dL) present significantly shorter elapsed times between lab collection and death compared to those in higher zones, demonstrating that severe PROTF deficiency serves as a strong marker for immediate, acute risk.
+
+------------------------------------------------------------------------
+
+# ELPT
+
+```{r elpt_data, warning=FALSE, message=FALSE}
+
+elpt_url <- 
+  paste0(
+    "https://docs.google.com/spreadsheets/d/",
+    "1FHy8nsW_WfEiWfWXdk7atQlaChNAkJIrAkuNxfOuECg/",
+    "edit?gid=1057715313#gid=1057715313"
+)
+googlesheets4::gs4_deauth()
+elpt_raw <- googlesheets4::read_sheet(elpt_url) |> dplyr::distinct()
+
+# Sub-cohort: Patients with IgG measurement & no IgG replacement in last 30 days
+elpt_proxy <- elpt_raw |>
+  dplyr::filter(
+    `19 - Fez reposições de Imunoglobulinas durante os 30 dias que antecederam a realização do exame ELPT?` != "Sim" &
+    `18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica` != "NA"
+  )
+
+# Dynamically calculate ROC cutoffs as established in respostas_elpt.qmd
+elpt_roc_df <- elpt_proxy |>
+  dplyr::filter(`18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica` != "Acima do valor de referência") |>
+  dplyr::mutate(
+    ELPT = `16 - Resultado do Primeiro exame`,
+    low_igg_flag = ifelse(`18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica` == "Abaixo do valor de referência", 1, 0)
+  )
+
+roc_elpt_obj <- pROC::roc(elpt_roc_df$low_igg_flag, elpt_roc_df$ELPT, quiet = TRUE)
+coords_elpt <- pROC::coords(roc_elpt_obj, "all", ret = c("threshold", "specificity", "sensitivity"))
+
+# Red Zone boundary (High Specificity >= 95%) reference: respostas_elpt.qmd
+elpt_cutoff_red <- coords_elpt |>
+  dplyr::filter(specificity >= 0.95) |>
+  dplyr::arrange(dplyr::desc(sensitivity)) |>
+  dplyr::slice(1) |>
+  dplyr::pull(threshold)
+
+# Green Zone boundary (High Sensitivity >= 95%) reference: respostas_elpt.qmd
+elpt_cutoff_green <- coords_elpt |>
+  dplyr::filter(sensitivity >= 0.95) |>
+  dplyr::arrange(dplyr::desc(specificity)) |>
+  dplyr::slice(2) |>
+  dplyr::pull(threshold)
+
+# Binary Cutoff (Youden Index) reference: respostas_elpt.qmd
+elpt_cutoff_binary <- pROC::coords(roc_elpt_obj, "best", ret = "threshold")[1,1]
+
+if (length(elpt_cutoff_red) == 0) elpt_cutoff_red <- 0.38
+if (length(elpt_cutoff_green) == 0) elpt_cutoff_green <- 0.60
+if (length(elpt_cutoff_binary) == 0) elpt_cutoff_binary <- 0.41
+
+elpt <- elpt_proxy |>
+  dplyr::mutate(
+    ELPT = `16 - Resultado do Primeiro exame`,
+    Exam_Date = `5 - Data de Cadastro do Exame`,
+    IgG_Reference = dplyr::case_match(
+      `18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica`,
+      "Abaixo do valor de referência" ~ "Below reference",
+      "Normal" ~ "Normal",
+      "Acima do valor de referência" ~ "Above reference",
+      .default = `18.1 - Como se encontra o resultado de IgG?\n\nNA = não se aplica`
+    ),
+    IgG = suppressWarnings(as.numeric(`18.2 - Qual resultado da dosagem? Colocar apenas número\n\n-Responder com NA em caso de não realização do exame`)),
+    low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0),
+    # Traffic Light System (3 Variants / Zones) referenced from respostas_elpt.qmd:
+    # Red (< 0.38 g/dL), Grey (0.38 - 0.60 g/dL), Green (> 0.60 g/dL)
+    Semaforo = dplyr::case_when(
+      ELPT < elpt_cutoff_red ~ paste0("Red (< ", round(elpt_cutoff_red, 2), ")"),
+      ELPT >= elpt_cutoff_red & ELPT <= elpt_cutoff_green ~ paste0("Grey (", round(elpt_cutoff_red, 2), " - ", round(elpt_cutoff_green, 2), ")"),
+      ELPT > elpt_cutoff_green ~ paste0("Green (> ", round(elpt_cutoff_green, 2), ")")
+    ) |> factor(levels = c(
+      paste0("Red (< ", round(elpt_cutoff_red, 2), ")"),
+      paste0("Grey (", round(elpt_cutoff_red, 2), " - ", round(elpt_cutoff_green, 2), ")"),
+      paste0("Green (> ", round(elpt_cutoff_green, 2), ")")
+    )),
+    # Binary Cutoff Strategy (< 0.41 vs >= 0.41 g/dL, Youden index) referenced from respostas_elpt.qmd
+    Binary_Cutoff = ifelse(ELPT < elpt_cutoff_binary, 
+                           paste0("Below Cutoff (< ", round(elpt_cutoff_binary, 2), ")"), 
+                           paste0("Normal (>= ", round(elpt_cutoff_binary, 2), ")")) |>
+      factor(levels = c(
+        paste0("Below Cutoff (< ", round(elpt_cutoff_binary, 2), ")"),
+        paste0("Normal (>= ", round(elpt_cutoff_binary, 2), ")")
+      )),
+    Infection = dplyr::case_match(
+      `7 - Quadros infecciosos até o momento da coleta?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `7 - Quadros infecciosos até o momento da coleta?`
+    ),
+    Death = dplyr::case_match(
+      `33 - Paciente possui registro de óbito?`,
+      "Sim" ~ "Yes",
+      "Não" ~ "No",
+      .default = `33 - Paciente possui registro de óbito?`
+    ),
+    Death_Cause = dplyr::case_when(
+      stringr::str_detect(`33.1 - Causa`, "Cardiaca") | stringr::str_detect(`33.1 - Causa`, "Cardiopatia") ~ "Cardiopathy / Heart Disease",
+      stringr::str_detect(`33.1 - Causa`, "cirurgica") ~ "Post-surgical Complication",
+      stringr::str_detect(`33.1 - Causa`, "multiplos orgãos") ~ "Multiple Organ Dysfunction",
+      stringr::str_detect(`33.1 - Causa`, "Hepática") ~ "Hepatic / Liver Disease",
+      stringr::str_detect(`33.1 - Causa`, "Inconclusivo") ~ "Inconclusive",
+      stringr::str_detect(`33.1 - Causa`, "Oncológica") ~ "Oncological / Cancer",
+      stringr::str_detect(`33.1 - Causa`, "Pulmonar") ~ "Pulmonary / Lung Disease",
+      stringr::str_detect(`33.1 - Causa`, "Renal") ~ "Renal / Kidney Disease",
+      TRUE ~ `33.1 - Causa`
+    ),
+    Death_Date = `33.2 - Data de óbito`,
+    Interval_days = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "days"),
+    Interval_months = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "months"),
+    Interval_years = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "years")
+  )
+
+```
+
+## 1. Correlation between ELPT and IgG Dosage
+
+Analysis of the correlation between ELPT and serum IgG levels in the sub-cohort.
+
+```{r elpt_correlation, fig.width=8, fig.height=5}
+
+elpt |>
+  tidyr::drop_na(IgG, ELPT) |>
+  ggplot(aes(x = IgG, y = ELPT)) +
+  geom_point(size = 3, shape = 21, fill = "steelblue", alpha = 0.6) +
+  geom_smooth(method = "lm", 
+              formula = y ~ poly(x, 2), 
+              color = "red", 
+              se = TRUE) + 
+  ggpubr::stat_cor(method = "pearson", label.x = 1000, label.y = 0.575) + 
+  labs(title = "Correlation between IgG and Gamma fraction",
+       subtitle = "Quadratic Linear Model (y ~ x²) with 95% confidence interval",
+       x = "IgG (mg/dL)", y = "Gamma (g/dL)") +
+  scale_x_continuous(breaks = seq(0, 1400, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.05))
+
+```
+
+### ELPT Distribution by IgG Status and Traffic Light System (3 Variants)
+
+Density visualization of ELPT stratified by IgG reference status and the 3 Traffic Light zones derived from [`respostas_elpt.html`](https://henriquelaureano.github.io/carolprando/protf_and_elpt/respostas_elpt.html): - **Red Zone** ($< 0.38$ g/dL): High specificity ($\ge 95\%$) for ELPT deficiency. - **Grey / Indeterminate Zone** ($0.38 - 0.60$ g/dL): Zone of diagnostic overlap. - **Green Zone** ($> 0.60$ g/dL): High sensitivity ($\ge 95\%$) ruling out deficiency.
+
+```{r elpt_traffic_light, fig.width=9.5, fig.height=6}
+
+# Note: Cutoffs (0.38 g/dL and 0.60 g/dL) were derived via ROC analysis in respostas_elpt.qmd
+elpt |>
+  dplyr::filter(IgG_Reference != "Above reference") |>
+  ggplot(aes(x = ELPT, fill = IgG_Reference)) +
+  geom_density(alpha = 0.4) +
+  # Red Zone
+  annotate("rect", xmin = -Inf, xmax = elpt_cutoff_red, ymin = 0, ymax = Inf, 
+           fill = "firebrick", alpha = 0.1) +
+  # Grey Zone
+  annotate("rect", xmin = elpt_cutoff_red, xmax = elpt_cutoff_green, ymin = 0, ymax = Inf, 
+           fill = "gold", alpha = 0.15) +
+  # Green Zone
+  annotate("rect", xmin = elpt_cutoff_green, xmax = Inf, ymin = 0, ymax = Inf, 
+           fill = "forestgreen", alpha = 0.1) +
+  geom_vline(xintercept = c(elpt_cutoff_red, elpt_cutoff_green), linetype = "dashed") +
+  annotate("text", x = elpt_cutoff_red, y = 0, label = paste("Red <", round(elpt_cutoff_red, 2)), 
+           hjust = 1.1, vjust = -10, angle = 0, color = "firebrick") +
+  annotate("text", x = elpt_cutoff_green, y = 0, label = paste("Green >", round(elpt_cutoff_green, 2)), 
+           hjust = 1.1, vjust = -10, angle = 0, color = "forestgreen") +
+  scale_fill_manual(
+    values = c("Normal" = "steelblue", "Below reference" = "orange"),
+    labels = c("Below reference", "Normal")
+  ) +
+  labs(title = "Traffic Light System: Managing Clinical Overlap",
+       subtitle = "Red: High Probability of Deficiency | Grey: Indeterminate | Green: High Probability of Normal",
+       x = "Gamma (g/dL)", y = "Density", fill = "IgG Status") +
+  scale_x_continuous(breaks = seq(0, 1, by = 0.05)) +
+  scale_y_continuous(breaks = seq(0, 10, by = 1))
+
+```
+
+## 2. Occurrence of Infections (Overall and by Affected System)
+
+### a) Overall Occurrence of Infection (Yes / No)
+
+Cross-tabulation between infection status and stratification by Traffic Light (3 Variants), Binary Cutoff, and IgG Status with Fisher's Exact Tests.
+
+```{r elpt_infection_overall}
+
+# 1. Traffic Light Zone vs Infection
+tbl_sem_inf_e <- table(elpt$Semaforo, elpt$Infection)
+fish_sem_inf_e <- fisher.test(tbl_sem_inf_e)
+
+table_semaforo_inf_elpt <- elpt |>
+  dplyr::group_by(Semaforo, Infection) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Infection, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Infection Rate (%)` = round(100 * Yes / Total, 1),
+    `Fisher p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", fish_sem_inf_e$p.value), "")
+  )
+
+table_semaforo_inf_elpt |>
+  knitr::kable(col.names = c("Traffic Light Zone", "No Infection (No)", "Infected (Yes)", "Total", "Infection Rate (%)", "Fisher Exact Test (p-value)"),
+               caption = "Infection Occurrence by Traffic Light Zone (ELPT)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# 2. Binary Cutoff vs Infection
+ft_bin_inf_e <- get_fish_or(elpt, "Binary_Cutoff", "Infection", paste0("Below Cutoff (< ", round(elpt_cutoff_binary, 2), ")"), paste0("Normal (>= ", round(elpt_cutoff_binary, 2), ")"))
+
+table_binary_inf_elpt <- elpt |>
+  dplyr::group_by(Binary_Cutoff, Infection) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Infection, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Infection Rate (%)` = round(100 * Yes / Total, 1),
+    `Odds Ratio (95% CI)` = ifelse(dplyr::row_number() == 1, 
+                                   sprintf("%.2f (%.2f - %.2f)", ft_bin_inf_e$estimate, ft_bin_inf_e$conf.int[1], ft_bin_inf_e$conf.int[2]), 
+                                   ""),
+    `p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", ft_bin_inf_e$p.value), "")
+  )
+
+table_binary_inf_elpt |>
+  knitr::kable(col.names = c("Binary Cutoff", "No Infection (No)", "Infected (Yes)", "Total", "Infection Rate (%)", "Odds Ratio (95% CI)", "p-value"),
+               caption = "Infection Occurrence by Binary Cutoff (ELPT, Youden cutoff 0.41 g/dL from respostas_elpt.html)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# 3. IgG Reference Status vs Infection
+ft_igg_inf_e <- get_fish_or(elpt, "IgG_Reference", "Infection", "Below reference", "Normal")
+
+table_igg_inf_elpt <- elpt |>
+  dplyr::filter(IgG_Reference %in% c("Below reference", "Normal")) |>
+  dplyr::group_by(IgG_Reference, Infection) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Infection, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Infection Rate (%)` = round(100 * Yes / Total, 1),
+    `Odds Ratio (95% CI)` = ifelse(dplyr::row_number() == 1, 
+                                   sprintf("%.2f (%.2f - %.2f)", ft_igg_inf_e$estimate, ft_igg_inf_e$conf.int[1], ft_igg_inf_e$conf.int[2]), 
+                                   ""),
+    `p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", ft_igg_inf_e$p.value), "")
+  )
+
+table_igg_inf_elpt |>
+  knitr::kable(col.names = c("IgG Status", "No Infection (No)", "Infected (Yes)", "Total", "Infection Rate (%)", "Odds Ratio (95% CI)", "p-value"),
+               caption = "Infection Occurrence by IgG Dosage Reference Status (ELPT Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+> **Statistical & Odds Ratio Interpretation (ELPT Infection Rates):** - **Traffic Light Zones (Fisher's** $p = 0.7555$): Overall infection rates across ELPT zones (**50.0%** in Red, **58.8%** in Grey) show no statistically significant difference ($p = 0.7555$). - **Binary Cutoff (OR = 1.31, 95% CI: 0.41 – 4.38,** $p = 0.7913$): An Odds Ratio of **1.31** indicates that patients with low ELPT (\< 0.41 g/dL) have **1.31-times higher odds** (31% higher odds) of having an infection (61.9% infection rate, 13/21) compared to patients with normal ELPT ($\ge 0.41$ g/dL, 55.3% infection rate, 26/47). However, because the 95% confidence interval spans across 1.0 (0.41 to 4.38) and $p = 0.7913$, this trend is **not** statistically significant. - **IgG Reference Status (OR = 1.70, 95% CI: 0.56 – 5.40,** $p = 0.3239$): An Odds Ratio of **1.70** means that patients with below-reference IgG have **1.70-times higher odds** (70% higher odds) of experiencing an infection (65.4% infection rate, 17/26) compared to patients with normal IgG levels (52.4% infection rate, 22/42), but this increase is not statistically significant ($p = 0.3239$).
+
+### b) Infections by Affected System
+
+Detailed breakdown of infections by affected organ system across ELPT Traffic Light zones, with Fisher's Exact Tests.
+
+```{r elpt_infection_systems, fig.width=10, fig.height=6}
+
+inf_cols_elpt <- c(
+  "8 - Infecção em sistema nervoso central?",
+  "9 - Infecção de vias áreas superioras?",
+  "10 - Infecção de vias áreas inferiores?",
+  "11 - Infecção de sistema urinário?",
+  "12 - Infecção de sistema gastrointestinal?",
+  "13 - Infecção de pele?",
+  "14 - Sepse?",
+  "15 - Outros?"
+)
+
+elpt_systems <- elpt |>
+  dplyr::select(Semaforo, Binary_Cutoff, IgG_Reference, dplyr::all_of(inf_cols_elpt)) |>
+  tidyr::pivot_longer(cols = dplyr::all_of(inf_cols_elpt), names_to = "System_Raw", values_to = "Status") |>
+  dplyr::mutate(
+    System = dplyr::case_when(
+      stringr::str_detect(System_Raw, "nervoso") ~ "Central Nervous System",
+      stringr::str_detect(System_Raw, "superior") ~ "Upper Respiratory Tract",
+      stringr::str_detect(System_Raw, "inferior") ~ "Lower Respiratory Tract",
+      stringr::str_detect(System_Raw, "urinário") ~ "Urinary Tract",
+      stringr::str_detect(System_Raw, "gastrointestinal") ~ "Gastrointestinal Tract",
+      stringr::str_detect(System_Raw, "pele") ~ "Skin",
+      stringr::str_detect(System_Raw, "Sepse") ~ "Sepsis",
+      TRUE ~ "Other"
+    ),
+    Is_Infected = ifelse(Status == "Sim", 1, 0)
+  )
+
+sys_stats_e <- elpt_systems |>
+  dplyr::group_by(System) |>
+  dplyr::summarise(
+    `Fisher p-value` = sprintf("%.4f", fisher.test(table(Semaforo, Is_Infected))$p.value),
+    .groups = "drop"
+  )
+
+n_red_e <- sum(elpt$Semaforo == paste0("Red (< ", round(elpt_cutoff_red, 2), ")"), na.rm = TRUE)
+n_grey_e <- sum(elpt$Semaforo == paste0("Grey (", round(elpt_cutoff_red, 2), " - ", round(elpt_cutoff_green, 2), ")"), na.rm = TRUE)
+n_green_e <- sum(elpt$Semaforo == paste0("Green (> ", round(elpt_cutoff_green, 2), ")"), na.rm = TRUE)
+
+sys_table_elpt <- elpt_systems |>
+  dplyr::group_by(Semaforo, System) |>
+  dplyr::summarise(
+    Cases = sum(Is_Infected, na.rm = TRUE),
+    Pct = round(100 * Cases / dplyr::n(), 1),
+    .groups = "drop"
+  )
+
+sys_table_elpt_wide <- sys_table_elpt |>
+  tidyr::pivot_wider(names_from = Semaforo, values_from = c(Cases, Pct)) |>
+  dplyr::left_join(sys_stats_e, by = "System")
+
+red_col_name_e <- paste0("Red (< ", round(elpt_cutoff_red, 2), ")")
+grey_col_name_e <- paste0("Grey (", round(elpt_cutoff_red, 2), " - ", round(elpt_cutoff_green, 2), ")")
+
+sys_table_elpt_formatted <- sys_table_elpt_wide |>
+  dplyr::select(
+    `Affected System` = System,
+    !!paste0("Red Cases (N=", n_red_e, ")") := dplyr::all_of(paste0("Cases_", red_col_name_e)),
+    !!paste0("Red Rate (%)") := dplyr::all_of(paste0("Pct_", red_col_name_e)),
+    !!paste0("Grey Cases (N=", n_grey_e, ")") := dplyr::all_of(paste0("Cases_", grey_col_name_e)),
+    !!paste0("Grey Rate (%)") := dplyr::all_of(paste0("Pct_", grey_col_name_e)),
+    `Fisher p-value`
+  )
+
+sys_table_elpt_formatted |>
+  knitr::kable(caption = paste0("Infection Frequency by Affected Body System and Traffic Light Zone (ELPT; Total Cohort N = ", nrow(elpt), ")")) |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# Visual bar chart by affected system
+red_lbl_e <- paste0("Red (< ", round(elpt_cutoff_red, 2), ")")
+grey_lbl_e <- paste0("Grey (", round(elpt_cutoff_red, 2), " - ", round(elpt_cutoff_green, 2), ")")
+green_lbl_e <- paste0("Green (> ", round(elpt_cutoff_green, 2), ")")
+
+fill_colors_e <- setNames(c("firebrick", "gold3", "forestgreen"), c(red_lbl_e, grey_lbl_e, green_lbl_e))
+
+elpt_systems |>
+  dplyr::filter(Status == "Sim") |>
+  dplyr::count(Semaforo, System) |>
+  ggplot(aes(x = reorder(System, n), y = n, fill = Semaforo)) +
+  geom_hline(yintercept = seq(0, 16, by = 1), color = "gray", alpha = 0.4) +
+  geom_col(position = "dodge") +
+  coord_flip() +
+  scale_fill_manual(values = fill_colors_e) +
+  labs(title = "Distribution of Infections by Affected System (Gamma fraction)",
+       subtitle = "Stratified by Traffic Light Zones",
+       x = "Affected System", y = "Number of Cases", fill = "Traffic Light Zone")
+
+```
+
+> **Methodological & Computation Note on Percentages (%):** Each **Rate (%)** column represents the prevalence rate of that specific organ system infection calculated out of the total number of patients within that Traffic Light Zone: - **Red Zone (\< 0.38 g/dL):** Total $N = 16$ patients. (e.g., Upper Respiratory: $3 / 16 = 18.8\%$) - **Grey Zone (0.38 – 0.60 g/dL):** Total $N = 52$ patients. (e.g., Lower Respiratory: $10 / 52 = 19.2\%$) - **Green Zone (\> 0.60 g/dL):** Total $N = 0$ patients in this sub-cohort.
+
+## 3. Outcome Analysis (Deceased vs Alive)
+
+### a) Occurrence of Death by Traffic Light Zone and IgG Status
+
+Statistical testing of mortality outcomes across ELPT Traffic Light zones and IgG reference groups.
+
+```{r elpt_death_tables}
+
+# 1. Death vs Semaforo
+tbl_sem_death_e <- table(elpt$Semaforo, elpt$Death)
+fish_sem_death_e <- fisher.test(tbl_sem_death_e)
+
+elpt |>
+  dplyr::group_by(Semaforo, Death) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Death, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Mortality Rate (%)` = round(100 * Yes / Total, 1),
+    `Fisher p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", fish_sem_death_e$p.value), "")
+  ) |>
+  knitr::kable(col.names = c("Traffic Light Zone", "Alive (No)", "Deceased (Yes)", "Total", "Mortality Rate (%)", "Fisher Exact Test (p-value)"),
+               caption = "Outcome Frequency (Death) by Traffic Light Zone (ELPT)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# 2. Death vs IgG Reference Status
+ft_igg_death_e <- get_fish_or(elpt, "IgG_Reference", "Death", "Below reference", "Normal")
+
+elpt |>
+  dplyr::filter(IgG_Reference %in% c("Below reference", "Normal")) |>
+  dplyr::group_by(IgG_Reference, Death) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Death, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Mortality Rate (%)` = round(100 * Yes / Total, 1),
+    `Odds Ratio (95% CI)` = ifelse(dplyr::row_number() == 1, 
+                                   sprintf("%.2f (%.2f - %.2f)", ft_igg_death_e$estimate, ft_igg_death_e$conf.int[1], ft_igg_death_e$conf.int[2]), 
+                                   ""),
+    `p-value` = ifelse(dplyr::row_number() == 1, sprintf("%.4f", ft_igg_death_e$p.value), "")
+  ) |>
+  knitr::kable(col.names = c("IgG Status", "Alive (No)", "Deceased (Yes)", "Total", "Mortality Rate (%)", "Odds Ratio (95% CI)", "p-value"),
+               caption = "Outcome Frequency (Death) by IgG Reference Status (ELPT Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+> **Statistical & Odds Ratio Interpretation (ELPT Mortality):** - **IgG Reference Status (OR = 11.85, 95% CI: 1.31 – 577.27,** $p = 0.0107$): An Odds Ratio of **11.85** indicates that patients with below-reference IgG have **nearly 12-times higher odds of death** (23.1% mortality rate, 6/26) compared to patients with normal IgG levels (2.4% mortality rate, 1/42). Because the 95% confidence interval is entirely above 1.0 (1.31 to 577.27) and $p = 0.0107$, this represents a statistically significant, major risk factor for mortality. - **Traffic Light Zones (Fisher's** $p = 0.0064$): Patients in the ELPT Red Zone (\< 0.38 g/dL) present a **31.25%** mortality rate versus 3.8% in the Grey Zone, demonstrating a significant elevation in mortality risk for patients in the lowest ELPT tier.
+
+### b) Registered Causes of Death
+
+```{r elpt_death_causes}
+
+elpt_deaths <- elpt |> dplyr::filter(Death == "Yes")
+
+elpt_deaths |>
+  dplyr::count(Death_Cause, sort = TRUE) |>
+  dplyr::mutate(Percentage = round(100 * n / nrow(elpt_deaths), 1)) |>
+  knitr::kable(col.names = c("Cause of Death", "N", "Percentage (%)"),
+               caption = "Primary Causes of Death (ELPT Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+### c) Time Interval between Exam Date and Date of Death
+
+Evaluation of elapsed chronological time (in days and months) between ELPT exam registration and occurrence of death, tested for differences across Traffic Light zones via Kruskal-Wallis Test.
+
+```{r elpt_death_interval, fig.width=8, fig.height=5}
+
+kw_elpt_interval <- kruskal.test(Interval_days ~ Semaforo, data = elpt_deaths)
+
+summary_interval_e <- elpt_deaths |>
+  dplyr::summarise(
+    Minimum = min(Interval_days, na.rm = TRUE),
+    `1st Quartile` = quantile(Interval_days, 0.25, na.rm = TRUE),
+    Median = median(Interval_days, na.rm = TRUE),
+    Mean = mean(Interval_days, na.rm = TRUE),
+    `3rd Quartile` = quantile(Interval_days, 0.75, na.rm = TRUE),
+    Maximum = max(Interval_days, na.rm = TRUE),
+    `Kruskal-Wallis p-value` = sprintf("%.4f", kw_elpt_interval$p.value)
+  )
+
+summary_interval_e |>
+  knitr::kable(caption = "Statistical Summary of Time Interval to Death in Days (ELPT Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+med_e <- round(median(elpt_deaths$Interval_days, na.rm = TRUE), 1)
+mean_e <- round(mean(elpt_deaths$Interval_days, na.rm = TRUE), 1)
+
+elpt_deaths |>
+  ggplot(aes(x = Interval_days)) +
+  geom_histogram(fill = "firebrick", color = "black", alpha = 0.7, binwidth = 14) +
+  scale_x_continuous(breaks = seq(0, 900, by = 100)) +
+  scale_y_continuous(breaks = seq(0, 5, by = 1)) +
+  geom_vline(aes(xintercept = med_e), color = "blue", linetype = "dashed", linewidth = 1) +
+  annotate("text", x = med_e + 20, y = Inf, label = paste("Dashed Blue Line:\nMedian =", med_e, "days"), 
+           color = "blue", fontface = "bold", vjust = 1.5, hjust = 0) +
+  labs(title = "Distribution of Elapsed Time\nbetween Gamma fraction Exam and Death",
+       subtitle = paste("Median:", med_e, "days | Mean:", mean_e, "days | Bin width = 14 days (2 weeks)"),
+       x = "Time Interval (Days)", y = "Number of Patients")
+
+```
+
+> **Statistical & Clinical Commentary (Time Interval to Death - ELPT):**
+> - **Dashed Blue Line:** The vertical dashed blue line highlights the **median time interval to death** (**169.0 days** / ~5.6 months post-exam registration).
+> - **Distribution Breakdown:** The average (mean) time to death is **278.7 days** (~9.3 months), with 25% of deaths occurring within **104.0 days** (1st Quartile) and a maximum recorded interval of **898.0 days** (~2.5 years).
+> - **Traffic Light Zone Comparison (Kruskal-Wallis $p = 0.6985$):** Time-to-death intervals did not show a statistically significant difference across ELPT Traffic Light zones ($p = 0.6985$), reflecting sample size limitations ($N = 7$ total deaths in this non-replaced ELPT sub-cohort).
+
+---
+
+# Joint Multivariable Analysis & Risk Interaction
+
+This section evaluates the joint, independent, and interactive effects of all four core clinical variables (**PROTF / ELPT screening markers**, **IgG reference status**, **Infection history**, and **Death outcome**) within non-replaced patient sub-cohorts.
+
+## 1. Multivariable Logistic Regression Models (Predicting Mortality)
+
+To test whether serum **PROTF** and **ELPT** provide independent prognostic value for mortality when controlling for serum **IgG dosage status** and **infection occurrence**, multivariable logistic regression models were fitted:
+
+$$
+\begin{aligned}
+\text{logit}(P(\text{Death})) &= \beta_0 + \beta_1 \cdot (\text{PROTF / ELPT}) \\
+&\quad + \beta_2 \cdot \text{IgG Status (Below Ref vs Normal)} + \beta_3 \cdot \text{Infection (Yes vs No)}
+\end{aligned}
+$$
+
+### Methodological Concept: Adjusted Odds Ratio ($\text{aOR}$) vs. Crude Odds Ratio ($\text{OR}$)
+
+* **Crude / Unadjusted Odds Ratio ($\text{OR}$):** Evaluates the single bivariate relationship between one predictor (e.g., IgG status alone) and mortality, without considering other overlapping clinical factors.
+* **Adjusted Odds Ratio ($\text{aOR}$):** Measures the independent association of a predictor with mortality while **holding all other variables in the model constant**. It isolates the specific effect of that variable, controlling for potential confounding effects caused by simultaneous IgG deficiency or infection history.
+
+```{r joint_multivariable_models}
+
+# Prepare binary outcome and reference factor levels
+protf_m <- protf |>
+  dplyr::mutate(
+    death_flag = ifelse(Death == "Yes", 1, 0),
+    IgG_Reference = factor(IgG_Reference, levels = c("Normal", "Below reference"))
+  )
+
+elpt_m <- elpt |>
+  dplyr::mutate(
+    death_flag = ifelse(Death == "Yes", 1, 0),
+    IgG_Reference = factor(IgG_Reference, levels = c("Normal", "Below reference"))
+  )
+
+# 1. PROTF Multivariable Model
+m_protf_multi <- glm(death_flag ~ PROTF + IgG_Reference + Infection, data = protf_m, family = binomial)
+
+tidy_protf_multi <- broom::tidy(m_protf_multi, exponentiate = FALSE, conf.int = TRUE) |>
+  dplyr::mutate(
+    Term = dplyr::case_match(
+      term,
+      "(Intercept)" ~ "Intercept (Baseline)",
+      "PROTF" ~ "Calculated globulin (g/dL, continuous)",
+      "IgG_ReferenceBelow reference" ~ "IgG Below Reference (vs Normal)",
+      "InfectionYes" ~ "Infection Present (Yes vs No)",
+      .default = term
+    ),
+    estimate_fmt = sprintf("%.4f", estimate),
+    std_error_fmt = sprintf("%.4f", std.error),
+    aOR = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    `Adjusted OR (95% CI)` = sprintf("%.2f (%.2f - %.2f)", aOR, conf.low, conf.high),
+    `p-value` = sprintf("%.4f", p.value)
+  ) |>
+  dplyr::select(Term, `Coefficient (B)` = estimate_fmt, `Std. Error` = std_error_fmt, `Adjusted OR (95% CI)`, `p-value`)
+
+tidy_protf_multi |>
+  knitr::kable(caption = "Multivariable Logistic Regression Model for Mortality (PROTF Cohort, N = 138)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# 2. ELPT Multivariable Model
+m_elpt_multi <- glm(death_flag ~ ELPT + IgG_Reference + Infection, data = elpt_m, family = binomial)
+
+tidy_elpt_multi <- broom::tidy(m_elpt_multi, exponentiate = FALSE, conf.int = TRUE) |>
+  dplyr::mutate(
+    Term = dplyr::case_match(
+      term,
+      "(Intercept)" ~ "Intercept (Baseline)",
+      "ELPT" ~ "Gamma fraction (g/dL, continuous)",
+      "IgG_ReferenceBelow reference" ~ "IgG Below Reference (vs Normal)",
+      "InfectionYes" ~ "Infection Present (Yes vs No)",
+      .default = term
+    ),
+    estimate_fmt = sprintf("%.4f", estimate),
+    std_error_fmt = sprintf("%.4f", std.error),
+    aOR = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    `Adjusted OR (95% CI)` = sprintf("%.2f (%.2f - %.2f)", aOR, conf.low, conf.high),
+    `p-value` = sprintf("%.4f", p.value)
+  ) |>
+  dplyr::select(Term, `Coefficient (B)` = estimate_fmt, `Std. Error` = std_error_fmt, `Adjusted OR (95% CI)`, `p-value`)
+
+tidy_elpt_multi |>
+  knitr::kable(caption = "Multivariable Logistic Regression Model for Mortality (ELPT Cohort, N = 68)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+### Detailed Multivariable Model Interpretations
+
+#### 1. Independent Prognostic Value of Calculated Globulin (PROTF)
+* **Statistical Result:** $\text{aOR} = 0.12$ ($95\%\text{ CI: } 0.02 - 0.61, p = 0.0150$).
+* **Clinical Meaning:** Serum Calculated globulin is a **statistically significant independent predictor of mortality**, even after adjusting for IgG reference status and infection history.
+* **Interpretation of Odds:** Each $1\text{ g/dL}$ increase in PROTF reduces the odds of death by $88\%$ ($\text{aOR} = 0.12$). Inversely, **each $1\text{ g/dL}$ decrease in PROTF multiplies the odds of death by $8.33\text{ times}$** ($1 / 0.12 = 8.33, 95\%\text{ CI: } 1.64 - 50.00$).
+
+#### 2. Independent Prognostic Value of IgG Reference Status
+* **PROTF Cohort Result:** $\text{aOR} = 5.78$ ($95\%\text{ CI: } 2.06 - 19.08, p = 0.0017$).
+* **ELPT Cohort Result:** $\text{aOR} = 8.55$ ($95\%\text{ CI: } 1.05 - 178.65, p = 0.0699$).
+* **Clinical Meaning:** Among patients with identical PROTF levels and the same infection status, having below-reference IgG independently increases mortality odds by **5.78 times** in the PROTF cohort and **8.55 times** in the ELPT cohort.
+
+#### 3. Role of Infection History
+* **Result:** $\text{aOR} = 1.45$ ($95\%\text{ CI: } 0.60 - 3.59, p = 0.4095$ in PROTF; $95\%\text{ CI: } 0.25 - 11.61, p = 0.6894$ in ELPT).
+* **Clinical Meaning:** Experiencing an infection shows a positive trend toward higher mortality ($45\%$ higher adjusted odds), but this effect does not reach statistical significance after accounting for underlying protein levels and IgG deficiency.
+
+---
+
+## 2. 4-Way Joint Cross-Stratification Tables
+
+To evaluate how risk accumulates when multiple risk factors overlap simultaneously, the tables below stratify mortality across **Traffic Light Zones**, **IgG Reference Status**, and **Infection Occurrence**.
+
+```{r joint_cross_tables}
+
+# PROTF 4-Way Joint Stratification
+tbl_4way_protf <- protf |>
+  dplyr::filter(IgG_Reference %in% c("Below reference", "Normal")) |>
+  dplyr::group_by(Semaforo, IgG_Reference, Infection, Death) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Death, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Mortality Rate (%)` = round(100 * Yes / Total, 1)
+  )
+
+tbl_4way_protf |>
+  knitr::kable(col.names = c("Traffic Light Zone", "IgG Status", "Infection", "Alive (No)", "Deceased (Yes)", "Total Patients", "Mortality Rate (%)"),
+               caption = "Joint 4-Way Cross-Stratification: Mortality by Traffic Light Zone, IgG Status, and Infection (PROTF Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+# ELPT 4-Way Joint Stratification
+tbl_4way_elpt <- elpt |>
+  dplyr::filter(IgG_Reference %in% c("Below reference", "Normal")) |>
+  dplyr::group_by(Semaforo, IgG_Reference, Infection, Death) |>
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = Death, values_from = n, values_fill = 0) |>
+  dplyr::mutate(
+    Total = Yes + No,
+    `Mortality Rate (%)` = round(100 * Yes / Total, 1)
+  )
+
+tbl_4way_elpt |>
+  knitr::kable(col.names = c("Traffic Light Zone", "IgG Status", "Infection", "Alive (No)", "Deceased (Yes)", "Total Patients", "Mortality Rate (%)"),
+               caption = "Joint 4-Way Cross-Stratification: Mortality by Traffic Light Zone, IgG Status, and Infection (ELPT Cohort)") |>
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+### Key Clinical Insights from 4-Way Joint Stratification
+
+#### 1. Compounding Risk of Dual Low PROTF & Low IgG
+* In the **PROTF Red Zone (< 1.55 g/dL)**, **100% of all deceased patients (12/12)** had Below-Reference IgG.
+* Patients in the Red Zone with Below-Reference IgG who experienced no infection had an **85.7% mortality rate** ($6 / 7$), while those with infection had a **50.0% mortality rate** ($6 / 12$).
+
+#### 2. Protective Effect of Normal IgG
+* In the **Grey Zone (1.55 – 2.30 g/dL)**, patients with **Normal IgG** had low mortality rates (**5.0%** without infection, **8.8%** with infection).
+* However, if Grey Zone patients had **Below-Reference IgG**, mortality jumped dramatically to **26.1%** without infection and **46.4%** with infection.
+
+#### 3. ELPT Pattern Consistency
+* In the **ELPT Red Zone (< 0.38 g/dL)**, mortality occurred exclusively in patients with Below-Reference IgG (**33.3% – 37.5%**), whereas patients with Normal IgG in the Grey Zone presented low mortality (**0.0% – 4.5%**).
+
+---
+
+# Summary of Applied Methodologies
+
+This document applies a quantitative methodological framework to evaluate the diagnostic utility, infection association, and prognostic mortality risk of serum **Calculated Globulin (PROTF)** and **Gamma Fraction (ELPT)** in relation to serum **IgG dosage**.
+
+### 1. Target Sub-Cohort Selection & Preprocessing
+* **Sub-cohort Definition:** Analysis is strictly conducted on patients with recorded serum IgG measurements and **no immunoglobulin replacement therapy within 30 days prior to the exam** ($n = 138$ for PROTF, $n = 68$ for ELPT). This isolates true baseline endogenous protein levels, removing treatment-induced confounding.
+* **Data Processing & Wrangling:** Data cleaning, string parsing, and dataset merging were conducted using `dplyr`, `tidyr`, and `stringr`. Temporal interval calculations between exam dates and death registration dates were computed using `lubridate`.
+
+### 2. Diagnostic Thresholds & Traffic Light System (3 Variants / Zones)
+* **ROC Curve Optimization:** Diagnostic boundaries were dynamically established using Receiver Operating Characteristic (ROC) curve analysis (`pROC` package; Robin et al., 2011).
+* **3-Zone Traffic Light Boundaries:**
+  - **Red Zone (Deficient Tier):** High-specificity threshold ($\ge 95\%$ Specificity) isolating true IgG deficiency with minimal false positives (< 1.55 g/dL for PROTF; < 0.38 g/dL for ELPT).
+  - **Green Zone (Normal Tier):** High-sensitivity threshold ($\ge 95\%$ Sensitivity) ruling out IgG deficiency with high diagnostic safety (> 2.30 g/dL for PROTF; > 0.60 g/dL for ELPT).
+  - **Grey Zone (Indeterminate Tier):** Biological overlap range requiring mandatory confirmatory IgG quantification (1.55 – 2.30 g/dL for PROTF; 0.38 – 0.60 g/dL for ELPT).
+* **Binary Threshold Strategy:** Evaluated using Youden's J statistic ($J = \text{sensitivity} + \text{specificity} - 1$) at 2.30 g/dL for PROTF and 0.41 g/dL for ELPT.
+
+### 3. Statistical Testing & Risk Estimation
+* **Continuous Correlation:** Evaluated using Pearson correlation coefficient ($r$) and quadratic linear regression modeling ($y \sim x^2$) to capture non-linear relationship curvature.
+* **Fisher's Exact Tests & Odds Ratios ($\text{OR}$):** Independence across 2x2 contingency tables was evaluated using Fisher's Exact Test (`fisher.test`). Odds Ratios were estimated with 95% profile likelihood confidence intervals, explicitly orienting the event of interest as infection occurrence (`Yes` vs. `No`) or death (`Yes` vs. `No`).
+* **Non-Parametric Survival Interval Testing:** Time-to-death distributions across Traffic Light zones were evaluated using non-parametric Kruskal-Wallis rank sum tests (`kruskal.test`).
+
+### 4. Multivariable Logistic Regression & Joint 4-Way Interaction
+* **Multivariable Adjusted Odds Ratios ($\text{aOR}$):** Fitted using generalized linear models (`glm` binomial family; McCullagh & Nelder, 1989) to test independent prognostic contributions of screening markers (`PROTF`/`ELPT`), IgG reference status (`Below reference` vs. `Normal`), and infection history (`Yes` vs. `No`) on mortality:
+  $$\text{logit}(P(\text{Death})) = \beta_0 + \beta_1 \cdot (\text{PROTF / ELPT}) + \beta_2 \cdot \text{IgG Status} + \beta_3 \cdot \text{Infection}$$
+* **4-Way Stratified Risk Matrix:** Joint cross-stratification evaluating compound mortality risk when multiple risk factors overlap simultaneously.
+
+---
+
+# Bibliographic References
+
+### Methodological & Software References
+
+> R Core Team (2025). *R: A Language and Environment for Statistical Computing*. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
+>
+> Robin, X., Turck, N., Hainard, A., Tiberti, N., Lisacek, F., Sanchez, J. C., & Müller, M. (2011). *pROC: an open-source package for R and S+ to analyze and compare ROC curves*. BMC Bioinformatics, 12, 77. <https://doi.org/10.1186/1471-2105-12-77>.
+>
+> McCullagh, P., & Nelder, J. A. (1989). *Generalized Linear Models* (2nd ed.). Chapman & Hall/CRC.
+>
+> Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis*. Springer-Verlag New York. <https://ggplot2.tidyverse.org>.
+>
+> Wickham, H., François, R., Henry, L., Müller, K., & Vaughan, D. (2023). *dplyr: A Grammar of Data Manipulation*. R package version 1.1.4. <https://dplyr.tidyverse.org>.
+>
+> Wickham, H., Vaughan, D., & Girlich, M. (2024). *tidyr: Tidy Messy Data*. R package version 1.3.1. <https://tidyr.tidyverse.org>.
+>
+> Robinson, D., Hayes, A., & Couch, S. (2024). *broom: Glance, Tidy, and Augment Regression Models*. R package version 1.0.6. <https://broom.tidymodels.org>.
+>
+> Grolemund, G., & Wickham, H. (2011). *Dates and Times Made Easy with lubridate*. Journal of Statistical Software, 40(3), 1-25. <https://www.jstatsoft.org/v40/i03/>.
+>
+> Kassambara, A. (2023). *ggpubr: ggplot2 Based Publication Ready Plots*. R package version 0.6.0. <https://CRAN.R-project.org/package=ggpubr>.
+>
+> Zhu, H. (2021). *kableExtra: Construct Complex Table with 'kable' and Pipe Syntax*. R package version 1.3.4. <https://CRAN.R-project.org/package=kableExtra>.
+
+### Companion Baseline Reports & Cutoff References
+
+> Laureano, H. (2026). *Calculated Globulin (PROTF) Cutoff & ROC Analysis Report*. Online resource: <https://henriquelaureano.github.io/carolprando/protf_and_elpt/respostas_protf.html>.
+>
+> Laureano, H. (2026). *Protein Electrophoresis Gamma Fraction (ELPT) Cutoff & ROC Analysis Report*. Online resource: <https://henriquelaureano.github.io/carolprando/protf_and_elpt/respostas_elpt.html>.
