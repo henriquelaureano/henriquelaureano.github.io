@@ -6,7 +6,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/08/30
+date-modified: 2026/09/27
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -1172,8 +1172,7 @@ NA = não se aplica`) |>
 # 1. Prepare Data
 age_analysis_data <- proxy |>
   dplyr::filter(
-    IgG_Reference != "Above reference",
-    Age_Group != "< 1 year" 
+    IgG_Reference != "Above reference"
   ) |>
   dplyr::mutate(low_igg_flag = ifelse(IgG_Reference == "Below reference", 1, 0))
 
@@ -1258,44 +1257,49 @@ age_analysis_data |>
 
 ## Age-Stratified Analysis: Defining Precision Thresholds for ELPT
 
-Recognizing that immunological profiles evolve with age, we performed a stratified ROC analysis to determine if the optimal ELPT cutoff varies across different pediatric life stages.
+Recognizing that immunological profiles evolve with age, we performed a stratified ROC analysis across pediatric life stages, including the newly collected sub-cohort of infants under 1 year of age (< 1 year).
 
 ### Methodology
 
-The dataset was segmented into three age cohorts: **1 to 3 years**, **4 to 9 years**, and **10 to 17 years**. For each group, we calculated the optimal "Balanced" threshold (Youden's Index) to maximize diagnostic accuracy.
+The dataset was segmented into four age cohorts: **< 1 year**, **1 to 3 years**, **4 to 9 years**, and **10 to 17 years**. For each group, we calculated the optimal "Balanced" threshold (Youden's Index) to maximize diagnostic accuracy.
 
 ### Results by Age Cohort
 
-The analysis revealed a clear distinction between pre-pubertal children and adolescents:
+The analysis revealed distinct diagnostic cutoffs across pediatric development stages:
 
-1.  **Early Childhood (1 to 3 years):**
-    -   **Optimal Cutoff:** **0.375**
-    -   **Performance:** The test performs robustly, achieving **90.0% Sensitivity** and **95.8% Specificity**.
+1.  **Infants (< 1 year):**
+    -   **Optimal Cutoff:** **0.455 g/dL**
+    -   **Performance:** Perfect classification (**100% Sensitivity, 100% Specificity, 100% PPV** across $N = 14$ patients with recorded IgG).
+    -   *Interpretation:* All 13 infants with below-reference IgG presented ELPT values $\le 0.39$ g/dL (range: 0.08 – 0.39 g/dL), whereas the infant with normal IgG presented ELPT = 0.52 g/dL. A threshold of **0.455 g/dL** provides complete discrimination of IgG deficiency in infants (< 1 year).
+2.  **Early Childhood (1 to 3 years):**
+    -   **Optimal Cutoff:** **0.375 g/dL**
+    -   **Performance:** The test performs robustly, achieving **90.0% Sensitivity** and **95.8% Specificity** (PPV = 90.0%).
     -   *Interpretation:* The clear separation between groups allows for high-confidence screening in toddlers.
-2.  **Middle Childhood (4 to 9 years):**
-    -   **Optimal Cutoff:** **0.380**
+3.  **Middle Childhood (4 to 9 years):**
+    -   **Optimal Cutoff:** **0.380 g/dL**
     -   **Performance:** In this cohort, the model achieved perfect classification (**100% Sensitivity and Specificity**).
-    -   *Interpretation:* The optimal threshold (0.380) is virtually identical to the toddler group (0.375), suggesting a highly stable physiological baseline for ELPT throughout the first decade of life.
-3.  **Adolescence (10 to 17 years):**
-    -   **Optimal Cutoff:** **0.475**
+    -   *Interpretation:* The optimal threshold (0.380) is virtually identical to the toddler group (0.375), demonstrating a highly stable physiological baseline for ELPT throughout the first decade of life after infancy.
+4.  **Adolescence (10 to 17 years):**
+    -   **Optimal Cutoff:** **0.475 g/dL**
     -   **Performance:** Diagnostic difficulty increases significantly. Sensitivity drops to **53.3%** and Specificity to **75.0%**.
-    -   *Interpretation:* The optimal cutoff shifts upward by nearly 0.1 g/dL compared to younger children. The significant distributional overlap (visible in the density plots) suggests that ELPT becomes a less binary marker during adolescent immune maturation, requiring more careful clinical interpretation.
+    -   *Interpretation:* The optimal cutoff shifts upward to 0.475 g/dL compared to younger children. The significant distributional overlap suggests that ELPT becomes a less binary marker during adolescent immune maturation, requiring confirmatory IgG testing.
 
 ### Clinical Implication
 
-The results support a **Two-Tiered Reference Approach**:
+The results support a **Three-Tiered Reference Approach**:
 
--   **For Children \< 10 Years:** A unified cutoff of **0.38 g/dL** is recommended. This threshold is stable and highly accurate across both the 1-3 and 4-9 age groups.
--   **For Adolescents (10-17 Years):** A higher cutoff of **0.475 g/dL** is indicated. However, clinicians should be advised that ELPT has lower sensitivity in this age group, and borderline results should almost always trigger confirmatory IgG testing.
+-   **For Infants (< 1 Year):** A higher cutoff of **0.455 g/dL** (or **0.45 g/dL**) is indicated to capture early-life IgG deficiency.
+-   **For Children (1 to 9 Years):** A unified cutoff of **0.38 g/dL** is recommended (0.375 for 1-3 years, 0.380 for 4-9 years), offering high stability and diagnostic safety.
+-   **For Adolescents (10 to 17 Years):** A higher cutoff of **0.475 g/dL** is indicated, with borderline results triggering mandatory confirmatory IgG quantification.
 
 ```{r warning=FALSE, fig.width=9.75, fig.height=4.5}
 
-# 1. Define Age-Specific Cutoffs (Based on your previous ROC results)
-# We create a small lookup table to map each age group to its Youden cutoff
+# 1. Define Age-Specific Cutoffs (Based on ROC results)
+# We create a lookup table to map each age group to its Youden cutoff
 cutoff_map <- tibble(
-  Age_Group = factor(c("1 to 3 years", "4 to 9 years", "10 to 17 years"),
+  Age_Group = factor(c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years"),
                      levels = c("< 1 year", "1 to 3 years", "4 to 9 years", "10 to 17 years")),
-  Age_Specific_Cutoff = c(0.375, 0.380, 0.475)
+  Age_Specific_Cutoff = c(0.455, 0.375, 0.380, 0.475)
 )
 
 # 2. Prepare Data & Apply Cutoffs

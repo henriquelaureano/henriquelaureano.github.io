@@ -196,7 +196,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 30, 2026</p>
+      <p class="date-modified">September 27, 2026</p>
     </div>
   </div>
     
@@ -284,10 +284,10 @@ window.Quarto = {
 <pre><code># A tibble: 4 × 3
   `Age Group`        n Percentage
   &lt;fct&gt;          &lt;int&gt;      &lt;dbl&gt;
-1 &lt; 1 year           1    0.00617
-2 1 to 3 years      85    0.525  
-3 4 to 9 years      33    0.204  
-4 10 to 17 years    43    0.265  </code></pre>
+1 &lt; 1 year          63      0.281
+2 1 to 3 years      85      0.379
+3 4 to 9 years      33      0.147
+4 10 to 17 years    43      0.192</code></pre>
 </div>
 </div>
 </section>
@@ -303,31 +303,32 @@ window.Quarto = {
 <span id="cb5-5"><a href="#cb5-5"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">22</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 22 × 3
+<pre><code># A tibble: 24 × 3
    Sector                               n Percentage
    &lt;chr&gt;                            &lt;int&gt;      &lt;dbl&gt;
- 1 Laboratório de Analises Clinicas    80    0.494  
- 2 Posto 52                             9    0.0556 
- 3 UTI Geral                            8    0.0494 
- 4 UTI Cirúrgica                        7    0.0432 
- 5 Emergência Convenio                  6    0.0370 
- 6 Emergência SUS Interno               6    0.0370 
- 7 Posto 51                             6    0.0370 
- 8 Ambulatório Hemato-Oncologia         4    0.0247 
- 9 Infectologia                         4    0.0247 
-10 Posto 11 Nefrologia                  4    0.0247 
-11 Posto 21                             4    0.0247 
-12 Posto 23                             4    0.0247 
-13 Emergência SUS                       3    0.0185 
-14 Posto 41                             3    0.0185 
-15 UTI Cardiologia                      3    0.0185 
-16 HD Posto 12                          2    0.0123 
-17 Posto 31                             2    0.0123 
-18 Posto 33                             2    0.0123 
-19 Posto 42                             2    0.0123 
-20 Posto 34                             1    0.00617
-21 Posto 43                             1    0.00617
-22 U.I 4º Andar - Posto 40              1    0.00617</code></pre>
+ 1 Laboratório de Analises Clinicas   122    0.545  
+ 2 UTI Geral                           11    0.0491 
+ 3 Posto 52                             9    0.0402 
+ 4 Emergência Convenio                  7    0.0312 
+ 5 UTI Cirúrgica                        7    0.0312 
+ 6 UTI Neonatal                         7    0.0312 
+ 7 Emergência SUS Interno               6    0.0268 
+ 8 Infectologia                         6    0.0268 
+ 9 Posto 51                             6    0.0268 
+10 Posto 23                             5    0.0223 
+11 Posto 41                             5    0.0223 
+12 UTI Cardiologia                      5    0.0223 
+13 Ambulatório Hemato-Oncologia         4    0.0179 
+14 Emergência SUS                       4    0.0179 
+15 Posto 11 Nefrologia                  4    0.0179 
+16 Posto 21                             4    0.0179 
+17 HD Posto 12                          2    0.00893
+18 Posto 31                             2    0.00893
+19 Posto 33                             2    0.00893
+20 Posto 42                             2    0.00893
+21 Emergência Convenio Externo          1    0.00446
+22 Posto 34                             1    0.00446
+# ℹ 2 more rows</code></pre>
 </div>
 </div>
 </section>
@@ -352,8 +353,8 @@ window.Quarto = {
 <pre><code># A tibble: 2 × 3
   Sex        n Percentage
   &lt;chr&gt;  &lt;int&gt;      &lt;dbl&gt;
-1 Female    63      0.389
-2 Male      99      0.611</code></pre>
+1 Female    95      0.424
+2 Male     129      0.576</code></pre>
 </div>
 </div>
 </section>
@@ -375,11 +376,12 @@ window.Quarto = {
 <span id="cb9-11"><a href="#cb9-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
+<pre><code># A tibble: 3 × 3
   `Infectious Condition`     n Percentage
   &lt;chr&gt;                  &lt;int&gt;      &lt;dbl&gt;
-1 No                        89      0.549
-2 Yes                       73      0.451</code></pre>
+1 No                       122     0.545 
+2 Sem informação             9     0.0402
+3 Yes                       93     0.415 </code></pre>
 </div>
 </div>
 <p>Em quem tem caso positivo para quadro infeccioso</p>
@@ -420,14 +422,14 @@ window.Quarto = {
 <pre><code># A tibble: 8 × 3
   Infection_Type              n Percentage
   &lt;chr&gt;                   &lt;int&gt;      &lt;dbl&gt;
-1 Other                      38     0.521 
-2 Lower respiratory tract    24     0.329 
-3 Upper respiratory tract    18     0.247 
-4 Sepsis                     14     0.192 
-5 Urinary tract              13     0.178 
-6 Skin                       10     0.137 
-7 Gastrointestinal tract      9     0.123 
-8 Central nervous system      6     0.0822</code></pre>
+1 Other                      46      0.630
+2 Lower respiratory tract    27      0.370
+3 Urinary tract              22      0.301
+4 Sepsis                     20      0.274
+5 Upper respiratory tract    20      0.274
+6 Gastrointestinal tract     12      0.164
+7 Skin                       10      0.137
+8 Central nervous system      9      0.123</code></pre>
 </div>
 </div>
 <p>Dos 73 pacientes com quadro infeccioso, 32 apresentaram em mais de um sistema (ao menos em dois). 43.84%.</p>
@@ -485,14 +487,14 @@ window.Quarto = {
 <pre><code># A tibble: 8 × 3
   name                        n Percentage
   &lt;chr&gt;                   &lt;int&gt;      &lt;dbl&gt;
-1 Other                      23      0.719
-2 Lower respiratory tract    19      0.594
-3 Upper respiratory tract    14      0.438
-4 Sepsis                      9      0.281
-5 Skin                        8      0.25 
-6 Gastrointestinal tract      7      0.219
-7 Urinary tract               7      0.219
-8 Central nervous system      4      0.125</code></pre>
+1 Other                      29      0.906
+2 Lower respiratory tract    22      0.688
+3 Upper respiratory tract    15      0.469
+4 Urinary tract              15      0.469
+5 Sepsis                     13      0.406
+6 Gastrointestinal tract      9      0.281
+7 Skin                        8      0.25 
+8 Central nervous system      7      0.219</code></pre>
 </div>
 </div>
 <p>O máximo de infecções que um paciente apresenta são 5, e 3 pacientes ficaram em tal situação.</p>
@@ -561,11 +563,12 @@ window.Quarto = {
 <span id="cb16-11"><a href="#cb16-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  Comorbidity     n Percentage
-  &lt;chr&gt;       &lt;int&gt;      &lt;dbl&gt;
-1 No             48      0.296
-2 Yes           114      0.704</code></pre>
+<pre><code># A tibble: 3 × 3
+  Comorbidity        n Percentage
+  &lt;chr&gt;          &lt;int&gt;      &lt;dbl&gt;
+1 No                80     0.357 
+2 Sem informação     7     0.0312
+3 Yes              137     0.612 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -583,23 +586,24 @@ window.Quarto = {
 <span id="cb18-12"><a href="#cb18-12"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 14 × 3
+<pre><code># A tibble: 15 × 3
    Comorbidity                              n Percentage
    &lt;chr&gt;                                &lt;int&gt;      &lt;dbl&gt;
- 1 Síndrome genética                        6     0.0526
- 2 Alergia                                  5     0.0439
- 3 Diabetes tipo I ou II                    4     0.0351
- 4 Hepatopatia                              4     0.0351
- 5 Nefropatia                               4     0.0351
- 6 Síndrome nefrótica                       4     0.0351
- 7 Deformidade óssea congênita              3     0.0263
- 8 Neurologica                              3     0.0263
- 9 Alergia; Lúpus Eritematoso Sistêmico     2     0.0175
-10 Alergia; Nefropatia; Pneumopatia         2     0.0175
-11 Anemia; TMO                              2     0.0175
-12 Artrite Idiopática Juvenil               2     0.0175
-13 Cardiopatia                              2     0.0175
-14 Neurologica; Prematuridade               2     0.0175</code></pre>
+ 1 Neurologica                              7     0.0614
+ 2 Cardiopatia                              6     0.0526
+ 3 Síndrome genética                        6     0.0526
+ 4 Alergia                                  5     0.0439
+ 5 Diabetes tipo I ou II                    4     0.0351
+ 6 Hepatopatia                              4     0.0351
+ 7 Nefropatia                               4     0.0351
+ 8 Síndrome nefrótica                       4     0.0351
+ 9 Deformidade óssea congênita              3     0.0263
+10 Alergia; Lúpus Eritematoso Sistêmico     2     0.0175
+11 Alergia; Nefropatia; Pneumopatia         2     0.0175
+12 Anemia; TMO                              2     0.0175
+13 Artrite Idiopática Juvenil               2     0.0175
+14 NA                                       2     0.0175
+15 Neurologica; Prematuridade               2     0.0175</code></pre>
 </div>
 </div>
 <p>Entre os 114 pacientes com comorbidade, 83 diferentes combinações de comorbidade são observadas - mas apenas 14 aparecem em ao menos dois pacientes.</p>
@@ -627,64 +631,77 @@ window.Quarto = {
 <span id="cb20-17"><a href="#cb20-17"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 55 × 2
-   Comorbidities                                    n
-   &lt;chr&gt;                                        &lt;int&gt;
- 1 Nefropatia                                      23
- 2 Alergia                                         21
- 3 Hepatopatia                                     16
- 4 Neurologica                                     16
- 5 Sindrome genetica                               14
- 6 Cardiopatia                                     13
- 7 Pneumopatia                                     13
- 8 Anemia                                          11
- 9 Prematuridade                                    8
-10 Deformidade ossea congenita                      6
-11 Lupus eritematoso sistemico                      6
-12 Oncologica                                       6
-13 Doenca de via biliar                             5
-14 Sindrome nefrotica                               5
-15 Tmo                                              5
-16 Artrite idiopatica juvenil                       4
-17 Diabetes tipo i ou ii                            4
-18 Doenca intestinal                                4
-19 Hipertensao                                      4
-20 Sindrome de down                                 3
-21 Esclerodermia sistemica                          2
-22 Hipotireoidismo                                  2
-23 Imunodeficiencia                                 2
-24 Obesidade                                        2
-25 Sindrome de evans                                2
-26 Transplante cardiaco                             2
-27 Transplante hepatico                             2
-28 Acidemia propionica                              1
-29 Artrite                                          1
-30 Artrite psoriaca                                 1
-31 Artrite reumatoide juvenil                       1
-32 Coagulopatia                                     1
-33 Deficiencia de gh                                1
-34 Dermatite atopica                                1
-35 Dermatopolimiosite                               1
-36 Desnutricao                                      1
-37 Distrofia simpatica reflexa                      1
-38 Doenca de behcet                                 1
-39 Doenca de kawasaki                               1
-40 Doenca do enxerto contra o hospedeiro            1
-41 Doenca reumatologica                             1
-42 Esclerose sistemica                              1
-43 Fistula enteral de alto debito                   1
-44 Hematoncologica                                  1
-45 Hipertensao arterial                             1
-46 Hipogamaglobulinemia                             1
-47 Hipogamaglobulinemia transitoria da infancia     1
-48 Infeccoes congenitas                             1
-49 Neuropatia em investigacao                       1
-50 Poliarterite nodosa                              1
-51 Poliartrite                                      1
-52 Purpura trombocitopenica imune                   1
-53 Sindrome da amplificacao dolorosa                1
-54 Sindrome de kawasaki                             1
-55 Sindrome hemolitico-uremica                      1</code></pre>
+<pre><code># A tibble: 68 × 2
+   Comorbidities                                                  n
+   &lt;chr&gt;                                                      &lt;int&gt;
+ 1 Nefropatia                                                    23
+ 2 Alergia                                                       21
+ 3 Neurologica                                                   20
+ 4 Cardiopatia                                                   17
+ 5 Hepatopatia                                                   16
+ 6 Sindrome genetica                                             14
+ 7 Pneumopatia                                                   13
+ 8 Anemia                                                        11
+ 9 Prematuridade                                                  8
+10 Oncologica                                                     7
+11 Deformidade ossea congenita                                    6
+12 Lupus eritematoso sistemico                                    6
+13 Doenca de via biliar                                           5
+14 Sindrome nefrotica                                             5
+15 Tmo                                                            5
+16 Artrite idiopatica juvenil                                     4
+17 Diabetes tipo i ou ii                                          4
+18 Doenca intestinal                                              4
+19 Hipertensao                                                    4
+20 Sindrome de down                                               3
+21 Esclerodermia sistemica                                        2
+22 Hipotireoidismo                                                2
+23 Imunodeficiencia                                               2
+24 Na                                                             2
+25 Obesidade                                                      2
+26 Sindrome de evans                                              2
+27 Transplante cardiaco                                           2
+28 Transplante hepatico                                           2
+29 Acidemia propionica                                            1
+30 Alergia, cardiopatia, oncologica                               1
+31 Artrite                                                        1
+32 Artrite psoriaca                                               1
+33 Artrite reumatoide juvenil                                     1
+34 Cardiopatia, deformidade ossea congenita                       1
+35 Cardiopatia, doenca renal, pneumopatia, acidose metabolica     1
+36 Coagulopatia                                                   1
+37 Deficiencia de gh                                              1
+38 Deformidade ossea congenita, neurologica                       1
+39 Dermatite atopica                                              1
+40 Dermatopolimiosite                                             1
+41 Desnutricao                                                    1
+42 Distrofia simpatica reflexa                                    1
+43 Doenca de behcet                                               1
+44 Doenca de kawasaki                                             1
+45 Doenca do enxerto contra o hospedeiro                          1
+46 Doenca renal                                                   1
+47 Doenca renal, hepatopatia                                      1
+48 Doenca reumatologica                                           1
+49 Esclerose sistemica                                            1
+50 Fistula enteral de alto debito                                 1
+51 Hematoncologica                                                1
+52 Hipertensao arterial                                           1
+53 Hipogamaglobulinemia                                           1
+54 Hipogamaglobulinemia transitoria da infancia                   1
+55 Infeccoes congenitas                                           1
+56 Insuficiencia renal                                            1
+57 Insuficiencia renal, pneumopatia, hipertensao arterial         1
+58 Insuficiencia renal, sindrome de down                          1
+59 Insuficiencia renal, sindrome genetica                         1
+60 Neurologica, pancitopenia                                      1
+61 Neurologica, sindrome genetica                                 1
+62 Neuropatia em investigacao                                     1
+63 Poliarterite nodosa                                            1
+64 Poliartrite                                                    1
+65 Purpura trombocitopenica imune                                 1
+66 Sindrome da amplificacao dolorosa                              1
+67 Sindrome de kawasaki                                           1
+68 Sindrome hemolitico-uremica                                    1</code></pre>
 </div>
 </div>
 </section>
@@ -706,11 +723,12 @@ window.Quarto = {
 <span id="cb22-11"><a href="#cb22-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  Hemodialysis     n Percentage
-  &lt;chr&gt;        &lt;int&gt;      &lt;dbl&gt;
-1 No             154     0.951 
-2 Yes              8     0.0494</code></pre>
+<pre><code># A tibble: 3 × 3
+  Hemodialysis       n Percentage
+  &lt;chr&gt;          &lt;int&gt;      &lt;dbl&gt;
+1 No               208     0.929 
+2 Sem informação     7     0.0312
+3 Yes                9     0.0402</code></pre>
 </div>
 </div>
 </section>
@@ -732,11 +750,12 @@ window.Quarto = {
 <span id="cb24-11"><a href="#cb24-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
+<pre><code># A tibble: 3 × 3
   `Surgery in last 30 days`     n Percentage
   &lt;chr&gt;                     &lt;int&gt;      &lt;dbl&gt;
-1 No                          156     0.963 
-2 Yes                           6     0.0370</code></pre>
+1 No                          205     0.915 
+2 Sem informação                8     0.0357
+3 Yes                          11     0.0491</code></pre>
 </div>
 </div>
 </section>
@@ -758,11 +777,12 @@ window.Quarto = {
 <span id="cb26-11"><a href="#cb26-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
+<pre><code># A tibble: 3 × 3
   `Oncological treatment in last 30 days`     n Percentage
   &lt;chr&gt;                                   &lt;int&gt;      &lt;dbl&gt;
-1 No                                        156     0.963 
-2 Yes                                         6     0.0370</code></pre>
+1 No                                        209     0.933 
+2 Sem informação                              8     0.0357
+3 Yes                                         7     0.0312</code></pre>
 </div>
 </div>
 </section>
@@ -784,11 +804,12 @@ window.Quarto = {
 <span id="cb28-11"><a href="#cb28-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
+<pre><code># A tibble: 3 × 3
   `Medication in last 30 days`     n Percentage
   &lt;chr&gt;                        &lt;int&gt;      &lt;dbl&gt;
-1 No                             130      0.802
-2 Yes                             32      0.198</code></pre>
+1 No                             175     0.781 
+2 Sem informação                   7     0.0312
+3 Yes                             42     0.188 </code></pre>
 </div>
 </div>
 </section>
@@ -810,11 +831,12 @@ window.Quarto = {
 <span id="cb30-11"><a href="#cb30-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  Death     n Percentage
-  &lt;chr&gt; &lt;int&gt;      &lt;dbl&gt;
-1 No      154     0.951 
-2 Yes       8     0.0494</code></pre>
+<pre><code># A tibble: 3 × 3
+  Death              n Percentage
+  &lt;chr&gt;          &lt;int&gt;      &lt;dbl&gt;
+1 No               211    0.942  
+2 Sem informação     1    0.00446
+3 Yes               12    0.0536 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -837,17 +859,21 @@ window.Quarto = {
 <span id="cb32-17"><a href="#cb32-17"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 4
-  5 - Data de Cadastro do…¹ `33.2 - Data de óbito` Interval_days Interval_months
-  &lt;dttm&gt;                    &lt;dttm&gt;                         &lt;dbl&gt;           &lt;dbl&gt;
-1 2021-10-19 00:00:00       2022-01-26 00:00:00               99           3.23 
-2 2019-04-29 00:00:00       2019-08-16 00:00:00              109           3.58 
-3 2019-05-06 00:00:00       2020-05-12 00:00:00              372          12.2  
-4 2020-10-19 00:00:00       2023-04-05 00:00:00              898          29.5  
-5 2021-08-01 00:00:00       2022-04-24 00:00:00              266           8.77 
-6 2024-04-21 00:00:00       2024-05-07 00:00:00               16           0.533
-7 2019-06-07 00:00:00       2019-07-15 00:00:00               38           1.26 
-8 2023-01-18 00:00:00       2023-07-06 00:00:00              169           5.6  
+<pre><code># A tibble: 12 × 4
+   5 - Data de Cadastro d…¹ `33.2 - Data de óbito` Interval_days Interval_months
+   &lt;dttm&gt;                   &lt;dttm&gt;                         &lt;dbl&gt;           &lt;dbl&gt;
+ 1 2021-10-19 00:00:00      2022-01-26 00:00:00               99           3.23 
+ 2 2019-04-29 00:00:00      2019-08-16 00:00:00              109           3.58 
+ 3 2019-05-06 00:00:00      2020-05-12 00:00:00              372          12.2  
+ 4 2020-10-19 00:00:00      2023-04-05 00:00:00              898          29.5  
+ 5 2021-08-01 00:00:00      2022-04-24 00:00:00              266           8.77 
+ 6 2024-04-21 00:00:00      2024-05-07 00:00:00               16           0.533
+ 7 2019-06-07 00:00:00      2019-07-15 00:00:00               38           1.26 
+ 8 2023-01-18 00:00:00      2023-07-06 00:00:00              169           5.6  
+ 9 2017-06-27 00:00:00      2017-07-31 00:00:00               34           1.13 
+10 2020-08-18 00:00:00      2020-11-18 00:00:00               92           3    
+11 2024-06-03 00:00:00      2024-08-01 00:00:00               59           1.94 
+12 2024-09-02 00:00:00      2024-09-05 00:00:00                3           0.1  
 # ℹ abbreviated name: ¹​`5 - Data de Cadastro do Exame`</code></pre>
 </div>
 <details class="code-fold">
@@ -856,7 +882,7 @@ window.Quarto = {
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  16.00   83.75  139.00  245.88  292.50  898.00 </code></pre>
+    3.0    37.0    95.5   179.6   193.2   898.0 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -864,7 +890,7 @@ window.Quarto = {
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.5333  2.7339  4.5903  8.0883  9.6234 29.5484 </code></pre>
+  0.100   1.226   3.113   5.906   6.392  29.548 </code></pre>
 </div>
 </div>
 <p>Oito pacientes vieram a óbito (5%), com um tempo médio de sobrevida de 246 dias (8.1 meses) - mediana de 139 dias (4.6 meses).</p>
@@ -897,7 +923,7 @@ window.Quarto = {
 <span id="cb38-17"><a href="#cb38-17"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 68 × 2
+<pre><code># A tibble: 81 × 2
      IgG  ELPT
    &lt;dbl&gt; &lt;dbl&gt;
  1   412  0.39
@@ -910,7 +936,7 @@ window.Quarto = {
  8   507  0.48
  9   552  0.54
 10   415  0.47
-# ℹ 58 more rows</code></pre>
+# ℹ 71 more rows</code></pre>
 </div>
 </div>
 <p>Correlação linear de Pearson de 0.55 (forte e estatísticamente significativa, 1.1e-06 = 0.0000011).</p>
@@ -967,8 +993,8 @@ window.Quarto = {
 <pre><code># A tibble: 3 × 2
   IgG_Reference       n
   &lt;chr&gt;           &lt;int&gt;
-1 Below reference    28
-2 NA                 90
+1 Below reference    41
+2 NA                139
 3 Normal             44</code></pre>
 </div>
 <details class="code-fold">
@@ -991,7 +1017,7 @@ window.Quarto = {
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.0600  0.2550  0.3450  0.3657  0.4900  0.6000 </code></pre>
+  0.060   0.220   0.310   0.328   0.400   0.600 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1042,8 +1068,8 @@ window.Quarto = {
 <pre><code># A tibble: 2 × 2
   `21 - Paciente possui alguma comorbidade/diagnostico de base?`     n
   &lt;chr&gt;                                                          &lt;int&gt;
-1 Não                                                                6
-2 Sim                                                               22</code></pre>
+1 Não                                                                8
+2 Sim                                                               33</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1061,11 +1087,12 @@ window.Quarto = {
 <span id="cb48-12"><a href="#cb48-12"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 2
+<pre><code># A tibble: 3 × 2
   21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo respo…¹     n
   &lt;chr&gt;                                                                    &lt;int&gt;
-1 Anemia; TMO                                                                  2
-2 Nefropatia                                                                   2
+1 Cardiopatia                                                                  3
+2 Anemia; TMO                                                                  2
+3 Nefropatia                                                                   2
 # ℹ abbreviated name:
 #   ¹​`21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo responder com NA`</code></pre>
 </div>
@@ -1095,12 +1122,12 @@ window.Quarto = {
 <span id="cb50-19"><a href="#cb50-19"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 27 × 2
+<pre><code># A tibble: 35 × 2
    Comorbidities                                    n
    &lt;chr&gt;                                        &lt;int&gt;
- 1 Hepatopatia                                      6
- 2 Nefropatia                                       6
- 3 Cardiopatia                                      4
+ 1 Cardiopatia                                      7
+ 2 Hepatopatia                                      6
+ 3 Nefropatia                                       6
  4 Anemia                                           3
  5 Alergia                                          2
  6 Doenca de via biliar                             2
@@ -1113,18 +1140,22 @@ window.Quarto = {
 13 Coagulopatia                                     1
 14 Deficiencia de gh                                1
 15 Deformidade ossea congenita                      1
-16 Dermatite atopica                                1
-17 Diabetes tipo i ou ii                            1
-18 Doenca intestinal                                1
-19 Hipogamaglobulinemia                             1
-20 Hipogamaglobulinemia transitoria da infancia     1
-21 Hipotireoidismo                                  1
-22 Neuropatia em investigacao                       1
-23 Purpura trombocitopenica imune                   1
-24 Sindrome da amplificacao dolorosa                1
-25 Sindrome de evans                                1
-26 Sindrome nefrotica                               1
-27 Transplante cardiaco                             1</code></pre>
+16 Deformidade ossea congenita, neurologica         1
+17 Dermatite atopica                                1
+18 Diabetes tipo i ou ii                            1
+19 Doenca intestinal                                1
+20 Doenca renal                                     1
+21 Hipogamaglobulinemia                             1
+22 Hipogamaglobulinemia transitoria da infancia     1
+23 Hipotireoidismo                                  1
+24 Insuficiencia renal                              1
+25 Insuficiencia renal, sindrome de down            1
+26 Insuficiencia renal, sindrome genetica           1
+27 Na                                               1
+28 Neurologica, pancitopenia                        1
+29 Neurologica, sindrome genetica                   1
+30 Neuropatia em investigacao                       1
+# ℹ 5 more rows</code></pre>
 </div>
 </div>
 </section>
@@ -1159,7 +1190,7 @@ window.Quarto = {
 <pre><code># A tibble: 4 × 2
   `Age Group`        n
   &lt;fct&gt;          &lt;int&gt;
-1 &lt; 1 year           1
+1 &lt; 1 year          63
 2 1 to 3 years      85
 3 4 to 9 years      33
 4 10 to 17 years    43</code></pre>
@@ -1171,10 +1202,12 @@ window.Quarto = {
 <span id="cb54-3"><a href="#cb54-3"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(<span class="st">`</span><span class="at">21 - Paciente possui alguma comorbidade/diagnostico de base?</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 2
+<pre><code># A tibble: 3 × 2
   `21 - Paciente possui alguma comorbidade/diagnostico de base?`     n
   &lt;chr&gt;                                                          &lt;int&gt;
-1 Não                                                                1</code></pre>
+1 Não                                                               33
+2 Sem informação                                                     7
+3 Sim                                                               23</code></pre>
 </div>
 </div>
 </section>
@@ -1209,7 +1242,7 @@ window.Quarto = {
 <span id="cb56-23"><a href="#cb56-23"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 72 × 4
+<pre><code># A tibble: 85 × 4
      IgG  ELPT IgG_Referência                IgG_Reference  
    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                         &lt;chr&gt;          
  1   412  0.39 Normal                        Normal         
@@ -1222,7 +1255,7 @@ window.Quarto = {
  8   507  0.48 Normal                        Normal         
  9   552  0.54 Normal                        Normal         
 10   415  0.47 Normal                        Normal         
-# ℹ 62 more rows</code></pre>
+# ℹ 75 more rows</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1232,7 +1265,7 @@ window.Quarto = {
 <pre><code># A tibble: 2 × 2
   IgG_Reference       n
   &lt;chr&gt;           &lt;int&gt;
-1 Below reference    28
+1 Below reference    41
 2 Normal             44</code></pre>
 </div>
 <details class="code-fold">
@@ -1353,21 +1386,21 @@ segmented.lm(obj = lin_mod, seg.Z = ~IgG, psi = 600)
 
 Estimated Break-Point(s):
              Est. St.Err
-psi1.IgG 588.442 17.276
+psi1.IgG 584.952 17.357
 
 Coefficients of the linear terms:
               Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)  9.757e-02  1.766e-02   5.524 5.65e-07 ***
-IgG          7.855e-04  4.118e-05  19.076  &lt; 2e-16 ***
-U1.IgG      -1.165e-03  7.392e-05 -15.759       NA    
+(Intercept)  7.904e-02  1.458e-02   5.422 5.95e-07 ***
+IgG          8.241e-04  3.628e-05  22.712  &lt; 2e-16 ***
+U1.IgG      -1.204e-03  7.350e-05 -16.374       NA    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 0.04372 on 68 degrees of freedom
-Multiple R-Squared: 0.8623,  Adjusted R-squared: 0.8562 
+Residual standard error: 0.04552 on 81 degrees of freedom
+Multiple R-Squared: 0.8803,  Adjusted R-squared: 0.8758 
 
 Boot restarting based on 6 samples. Last fit:
-Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
+Convergence attained in 2 iterations (rel. change 7.6656e-13)</code></pre>
 </div>
 </div>
 <p>Aqui é apenas para “comprovar” que o grupo “Normal” não tem inclinação estatísticamente significativa. Neste grupo, independente do valor de IgG se espera o mesmo valor de ELPT.</p>
@@ -1386,7 +1419,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 # Groups:   IgG_Reference [2]
   IgG_Reference     estimate std.error  p.value  conf.low conf.high
   &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-1 Below reference  0.000882  0.0000553 6.16e-15  0.000768 0.000996 
+1 Below reference  0.000915  0.0000517 3.20e-20  0.000810 0.00102  
 2 Normal          -0.0000677 0.0000508 1.90e- 1 -0.000170 0.0000348</code></pre>
 </div>
 </div>
@@ -1499,8 +1532,8 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <tr class="odd">
 <td style="text-align: left;">…1</td>
 <td style="text-align: left;">Max Specificity (100%)</td>
-<td style="text-align: right;">0.250</td>
-<td style="text-align: right;">0.250</td>
+<td style="text-align: right;">0.255</td>
+<td style="text-align: right;">0.366</td>
 <td style="text-align: right;">1.000</td>
 <td style="text-align: right;">1.000</td>
 </tr>
@@ -1508,17 +1541,17 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: left;">…2</td>
 <td style="text-align: left;">High Specificity (&gt;90%)</td>
 <td style="text-align: right;">0.395</td>
-<td style="text-align: right;">0.607</td>
+<td style="text-align: right;">0.732</td>
 <td style="text-align: right;">0.909</td>
-<td style="text-align: right;">0.810</td>
+<td style="text-align: right;">0.882</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">threshold</td>
 <td style="text-align: left;">Balanced (Youden’s Index)</td>
 <td style="text-align: right;">0.410</td>
-<td style="text-align: right;">0.643</td>
+<td style="text-align: right;">0.756</td>
 <td style="text-align: right;">0.886</td>
-<td style="text-align: right;">0.783</td>
+<td style="text-align: right;">0.861</td>
 </tr>
 </tbody>
 </table>
@@ -1827,83 +1860,83 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Central nervous system</td>
-<td style="text-align: right;">9.09</td>
+<td style="text-align: right;">11.90</td>
 <td style="text-align: right;">7.84</td>
-<td style="text-align: right;">0.85</td>
-<td style="text-align: right;">0.11</td>
-<td style="text-align: right;">10.14</td>
-<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">3.17</td>
+<td style="text-align: right;">0.73</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Gastrointestinal tract</td>
-<td style="text-align: right;">13.64</td>
+<td style="text-align: right;">14.29</td>
 <td style="text-align: right;">11.76</td>
-<td style="text-align: right;">0.85</td>
-<td style="text-align: right;">0.16</td>
-<td style="text-align: right;">5.77</td>
-<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">3.28</td>
+<td style="text-align: right;">0.76</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Lower respiratory tract</td>
-<td style="text-align: right;">31.82</td>
+<td style="text-align: right;">23.81</td>
 <td style="text-align: right;">33.33</td>
-<td style="text-align: right;">1.07</td>
-<td style="text-align: right;">0.33</td>
-<td style="text-align: right;">3.72</td>
-<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.59</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">4.51</td>
+<td style="text-align: right;">0.36</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Other</td>
-<td style="text-align: right;">59.09</td>
+<td style="text-align: right;">50.00</td>
 <td style="text-align: right;">49.02</td>
-<td style="text-align: right;">0.67</td>
-<td style="text-align: right;">0.21</td>
-<td style="text-align: right;">2.05</td>
-<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">2.35</td>
+<td style="text-align: right;">1.00</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Sepsis</td>
-<td style="text-align: right;">18.18</td>
+<td style="text-align: right;">23.81</td>
 <td style="text-align: right;">19.61</td>
-<td style="text-align: right;">1.10</td>
-<td style="text-align: right;">0.27</td>
-<td style="text-align: right;">5.43</td>
-<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">2.38</td>
+<td style="text-align: right;">0.80</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Skin</td>
-<td style="text-align: right;">13.64</td>
+<td style="text-align: right;">7.14</td>
 <td style="text-align: right;">13.73</td>
-<td style="text-align: right;">1.01</td>
-<td style="text-align: right;">0.20</td>
-<td style="text-align: right;">6.68</td>
-<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.05</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">13.14</td>
+<td style="text-align: right;">0.50</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Upper respiratory tract</td>
-<td style="text-align: right;">27.27</td>
+<td style="text-align: right;">19.05</td>
 <td style="text-align: right;">23.53</td>
-<td style="text-align: right;">0.82</td>
-<td style="text-align: right;">0.23</td>
-<td style="text-align: right;">3.15</td>
-<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">1.30</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">4.15</td>
+<td style="text-align: right;">0.62</td>
 <td style="text-align: left;">No</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Urinary tract</td>
-<td style="text-align: right;">27.27</td>
+<td style="text-align: right;">35.71</td>
 <td style="text-align: right;">13.73</td>
-<td style="text-align: right;">0.43</td>
-<td style="text-align: right;">0.10</td>
-<td style="text-align: right;">1.80</td>
-<td style="text-align: right;">0.19</td>
-<td style="text-align: left;">No</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: left;">Yes</td>
 </tr>
 </tbody>
 </table>
@@ -1994,60 +2027,59 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <span id="cb75-35"><a href="#cb75-35"></a><span class="co"># 1. Prepare Data</span></span>
 <span id="cb75-36"><a href="#cb75-36"></a>age_analysis_data <span class="ot">&lt;-</span> proxy <span class="sc">|&gt;</span></span>
 <span id="cb75-37"><a href="#cb75-37"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
-<span id="cb75-38"><a href="#cb75-38"></a>    IgG_Reference <span class="sc">!=</span> <span class="st">"Above reference"</span>,</span>
-<span id="cb75-39"><a href="#cb75-39"></a>    Age_Group <span class="sc">!=</span> <span class="st">"&lt; 1 year"</span> </span>
-<span id="cb75-40"><a href="#cb75-40"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb75-41"><a href="#cb75-41"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">low_igg_flag =</span> <span class="fu">ifelse</span>(IgG_Reference <span class="sc">==</span> <span class="st">"Below reference"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
-<span id="cb75-42"><a href="#cb75-42"></a></span>
-<span id="cb75-43"><a href="#cb75-43"></a><span class="co"># 2. Define a function to calculate scenarios for a single group</span></span>
-<span id="cb75-44"><a href="#cb75-44"></a>calc_roc_scenarios <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb75-45"><a href="#cb75-45"></a>  <span class="co"># Safety check: Need both 0s and 1s to make an ROC curve</span></span>
-<span id="cb75-46"><a href="#cb75-46"></a>  <span class="cf">if</span>(<span class="fu">n_distinct</span>(data<span class="sc">$</span>low_igg_flag) <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
-<span id="cb75-47"><a href="#cb75-47"></a>  </span>
-<span id="cb75-48"><a href="#cb75-48"></a>  <span class="co"># Generate ROC</span></span>
-<span id="cb75-49"><a href="#cb75-49"></a>  roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(data<span class="sc">$</span>low_igg_flag, data<span class="sc">$</span>ELPT, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb75-50"><a href="#cb75-50"></a>  </span>
-<span id="cb75-51"><a href="#cb75-51"></a>  <span class="co"># A. Max Specificity</span></span>
-<span id="cb75-52"><a href="#cb75-52"></a>  s1 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb75-53"><a href="#cb75-53"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(specificity <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb75-54"><a href="#cb75-54"></a>    dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb75-55"><a href="#cb75-55"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Max Spec (100%)"</span>)</span>
-<span id="cb75-56"><a href="#cb75-56"></a>  </span>
-<span id="cb75-57"><a href="#cb75-57"></a>  <span class="co"># B. High Specificity</span></span>
-<span id="cb75-58"><a href="#cb75-58"></a>  s2 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb75-59"><a href="#cb75-59"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(specificity <span class="sc">&gt;=</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb75-60"><a href="#cb75-60"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(sensitivity)) <span class="sc">|&gt;</span> </span>
-<span id="cb75-61"><a href="#cb75-61"></a>    dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb75-62"><a href="#cb75-62"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"High Spec (&gt;90%)"</span>)</span>
-<span id="cb75-63"><a href="#cb75-63"></a>  </span>
-<span id="cb75-64"><a href="#cb75-64"></a>  <span class="co"># C. Balanced (Youden)</span></span>
-<span id="cb75-65"><a href="#cb75-65"></a>  s3 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>, </span>
-<span id="cb75-66"><a href="#cb75-66"></a>               <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb75-67"><a href="#cb75-67"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Balanced (Youden)"</span>)</span>
-<span id="cb75-68"><a href="#cb75-68"></a>  </span>
-<span id="cb75-69"><a href="#cb75-69"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(s1, s2, s3)</span>
-<span id="cb75-70"><a href="#cb75-70"></a>}</span>
-<span id="cb75-71"><a href="#cb75-71"></a></span>
-<span id="cb75-72"><a href="#cb75-72"></a><span class="co"># 3. Apply function to each Age Group</span></span>
-<span id="cb75-73"><a href="#cb75-73"></a>stratified_results <span class="ot">&lt;-</span> age_analysis_data <span class="sc">|&gt;</span></span>
-<span id="cb75-74"><a href="#cb75-74"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(Age_Group) <span class="sc">|&gt;</span></span>
-<span id="cb75-75"><a href="#cb75-75"></a>  tidyr<span class="sc">::</span><span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
-<span id="cb75-76"><a href="#cb75-76"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">roc_stats =</span> <span class="fu">map</span>(data, calc_roc_scenarios)) <span class="sc">|&gt;</span></span>
-<span id="cb75-77"><a href="#cb75-77"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(roc_stats) <span class="sc">|&gt;</span></span>
-<span id="cb75-78"><a href="#cb75-78"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
-<span id="cb75-79"><a href="#cb75-79"></a>    Age_Group, Strategy, </span>
-<span id="cb75-80"><a href="#cb75-80"></a>    <span class="at">Threshold =</span> threshold, </span>
-<span id="cb75-81"><a href="#cb75-81"></a>    <span class="at">Sensitivity =</span> sensitivity, <span class="at">Specificity =</span> specificity, <span class="at">PPV =</span> ppv</span>
-<span id="cb75-82"><a href="#cb75-82"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb75-83"><a href="#cb75-83"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(Age_Group, Strategy)</span>
-<span id="cb75-84"><a href="#cb75-84"></a></span>
-<span id="cb75-85"><a href="#cb75-85"></a><span class="co"># Display Table</span></span>
-<span id="cb75-86"><a href="#cb75-86"></a><span class="fu">kable</span>(</span>
-<span id="cb75-87"><a href="#cb75-87"></a>  stratified_results <span class="sc">|&gt;</span></span>
-<span id="cb75-88"><a href="#cb75-88"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(proxy <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">count</span>(Age_Group), <span class="at">by =</span> <span class="st">"Age_Group"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb75-89"><a href="#cb75-89"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(n, <span class="at">.after =</span> Age_Group), </span>
-<span id="cb75-90"><a href="#cb75-90"></a>  <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Optimal Gamma fraction Cutoffs by Age Group"</span></span>
-<span id="cb75-91"><a href="#cb75-91"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb75-38"><a href="#cb75-38"></a>    IgG_Reference <span class="sc">!=</span> <span class="st">"Above reference"</span></span>
+<span id="cb75-39"><a href="#cb75-39"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-40"><a href="#cb75-40"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">low_igg_flag =</span> <span class="fu">ifelse</span>(IgG_Reference <span class="sc">==</span> <span class="st">"Below reference"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb75-41"><a href="#cb75-41"></a></span>
+<span id="cb75-42"><a href="#cb75-42"></a><span class="co"># 2. Define a function to calculate scenarios for a single group</span></span>
+<span id="cb75-43"><a href="#cb75-43"></a>calc_roc_scenarios <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb75-44"><a href="#cb75-44"></a>  <span class="co"># Safety check: Need both 0s and 1s to make an ROC curve</span></span>
+<span id="cb75-45"><a href="#cb75-45"></a>  <span class="cf">if</span>(<span class="fu">n_distinct</span>(data<span class="sc">$</span>low_igg_flag) <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb75-46"><a href="#cb75-46"></a>  </span>
+<span id="cb75-47"><a href="#cb75-47"></a>  <span class="co"># Generate ROC</span></span>
+<span id="cb75-48"><a href="#cb75-48"></a>  roc_obj <span class="ot">&lt;-</span> <span class="fu">roc</span>(data<span class="sc">$</span>low_igg_flag, data<span class="sc">$</span>ELPT, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb75-49"><a href="#cb75-49"></a>  </span>
+<span id="cb75-50"><a href="#cb75-50"></a>  <span class="co"># A. Max Specificity</span></span>
+<span id="cb75-51"><a href="#cb75-51"></a>  s1 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb75-52"><a href="#cb75-52"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(specificity <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb75-53"><a href="#cb75-53"></a>    dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb75-54"><a href="#cb75-54"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Max Spec (100%)"</span>)</span>
+<span id="cb75-55"><a href="#cb75-55"></a>  </span>
+<span id="cb75-56"><a href="#cb75-56"></a>  <span class="co"># B. High Specificity</span></span>
+<span id="cb75-57"><a href="#cb75-57"></a>  s2 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"all"</span>, <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb75-58"><a href="#cb75-58"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(specificity <span class="sc">&gt;=</span> <span class="fl">0.90</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb75-59"><a href="#cb75-59"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(<span class="fu">desc</span>(sensitivity)) <span class="sc">|&gt;</span> </span>
+<span id="cb75-60"><a href="#cb75-60"></a>    dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb75-61"><a href="#cb75-61"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"High Spec (&gt;90%)"</span>)</span>
+<span id="cb75-62"><a href="#cb75-62"></a>  </span>
+<span id="cb75-63"><a href="#cb75-63"></a>  <span class="co"># C. Balanced (Youden)</span></span>
+<span id="cb75-64"><a href="#cb75-64"></a>  s3 <span class="ot">&lt;-</span> <span class="fu">coords</span>(roc_obj, <span class="st">"best"</span>, <span class="at">best.method =</span> <span class="st">"youden"</span>, </span>
+<span id="cb75-65"><a href="#cb75-65"></a>               <span class="at">ret =</span> <span class="fu">c</span>(<span class="st">"threshold"</span>, <span class="st">"specificity"</span>, <span class="st">"sensitivity"</span>, <span class="st">"ppv"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb75-66"><a href="#cb75-66"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Strategy =</span> <span class="st">"Balanced (Youden)"</span>)</span>
+<span id="cb75-67"><a href="#cb75-67"></a>  </span>
+<span id="cb75-68"><a href="#cb75-68"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(s1, s2, s3)</span>
+<span id="cb75-69"><a href="#cb75-69"></a>}</span>
+<span id="cb75-70"><a href="#cb75-70"></a></span>
+<span id="cb75-71"><a href="#cb75-71"></a><span class="co"># 3. Apply function to each Age Group</span></span>
+<span id="cb75-72"><a href="#cb75-72"></a>stratified_results <span class="ot">&lt;-</span> age_analysis_data <span class="sc">|&gt;</span></span>
+<span id="cb75-73"><a href="#cb75-73"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(Age_Group) <span class="sc">|&gt;</span></span>
+<span id="cb75-74"><a href="#cb75-74"></a>  tidyr<span class="sc">::</span><span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb75-75"><a href="#cb75-75"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">roc_stats =</span> <span class="fu">map</span>(data, calc_roc_scenarios)) <span class="sc">|&gt;</span></span>
+<span id="cb75-76"><a href="#cb75-76"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(roc_stats) <span class="sc">|&gt;</span></span>
+<span id="cb75-77"><a href="#cb75-77"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(</span>
+<span id="cb75-78"><a href="#cb75-78"></a>    Age_Group, Strategy, </span>
+<span id="cb75-79"><a href="#cb75-79"></a>    <span class="at">Threshold =</span> threshold, </span>
+<span id="cb75-80"><a href="#cb75-80"></a>    <span class="at">Sensitivity =</span> sensitivity, <span class="at">Specificity =</span> specificity, <span class="at">PPV =</span> ppv</span>
+<span id="cb75-81"><a href="#cb75-81"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb75-82"><a href="#cb75-82"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(Age_Group, Strategy)</span>
+<span id="cb75-83"><a href="#cb75-83"></a></span>
+<span id="cb75-84"><a href="#cb75-84"></a><span class="co"># Display Table</span></span>
+<span id="cb75-85"><a href="#cb75-85"></a><span class="fu">kable</span>(</span>
+<span id="cb75-86"><a href="#cb75-86"></a>  stratified_results <span class="sc">|&gt;</span></span>
+<span id="cb75-87"><a href="#cb75-87"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(proxy <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">count</span>(Age_Group), <span class="at">by =</span> <span class="st">"Age_Group"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb75-88"><a href="#cb75-88"></a>  dplyr<span class="sc">::</span><span class="fu">relocate</span>(n, <span class="at">.after =</span> Age_Group), </span>
+<span id="cb75-89"><a href="#cb75-89"></a>  <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">caption =</span> <span class="st">"Optimal Gamma fraction Cutoffs by Age Group"</span></span>
+<span id="cb75-90"><a href="#cb75-90"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -2074,6 +2106,33 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Balanced (Youden)</td>
+<td style="text-align: right;">0.455</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">High Spec (&gt;90%)</td>
+<td style="text-align: right;">0.455</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">Max Spec (100%)</td>
+<td style="text-align: right;">0.455</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">1 to 3 years</td>
 <td style="text-align: right;">34</td>
 <td style="text-align: left;">Balanced (Youden)</td>
@@ -2082,7 +2141,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">0.958</td>
 <td style="text-align: right;">0.900</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">1 to 3 years</td>
 <td style="text-align: right;">34</td>
 <td style="text-align: left;">High Spec (&gt;90%)</td>
@@ -2091,7 +2150,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">0.917</td>
 <td style="text-align: right;">0.818</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">1 to 3 years</td>
 <td style="text-align: right;">34</td>
 <td style="text-align: left;">Max Spec (100%)</td>
@@ -2100,7 +2159,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">1.000</td>
 <td style="text-align: right;">1.000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">4 to 9 years</td>
 <td style="text-align: right;">18</td>
 <td style="text-align: left;">Balanced (Youden)</td>
@@ -2109,7 +2168,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">1.000</td>
 <td style="text-align: right;">1.000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">4 to 9 years</td>
 <td style="text-align: right;">18</td>
 <td style="text-align: left;">High Spec (&gt;90%)</td>
@@ -2118,7 +2177,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">1.000</td>
 <td style="text-align: right;">1.000</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">4 to 9 years</td>
 <td style="text-align: right;">18</td>
 <td style="text-align: left;">Max Spec (100%)</td>
@@ -2127,7 +2186,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">1.000</td>
 <td style="text-align: right;">1.000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">10 to 17 years</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: left;">Balanced (Youden)</td>
@@ -2136,7 +2195,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">0.750</td>
 <td style="text-align: right;">0.889</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">10 to 17 years</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: left;">High Spec (&gt;90%)</td>
@@ -2145,7 +2204,7 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <td style="text-align: right;">1.000</td>
 <td style="text-align: right;">1.000</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">10 to 17 years</td>
 <td style="text-align: right;">19</td>
 <td style="text-align: left;">Max Spec (100%)</td>
@@ -2197,51 +2256,58 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 </section>
 <section id="age-stratified-analysis-defining-precision-thresholds-for-elpt" class="level2">
 <h2 class="anchored" data-anchor-id="age-stratified-analysis-defining-precision-thresholds-for-elpt">Age-Stratified Analysis: Defining Precision Thresholds for ELPT</h2>
-<p>Recognizing that immunological profiles evolve with age, we performed a stratified ROC analysis to determine if the optimal ELPT cutoff varies across different pediatric life stages.</p>
+<p>Recognizing that immunological profiles evolve with age, we performed a stratified ROC analysis across pediatric life stages, including the newly collected sub-cohort of infants under 1 year of age (&lt; 1 year).</p>
 <section id="methodology" class="level3">
 <h3 class="anchored" data-anchor-id="methodology">Methodology</h3>
-<p>The dataset was segmented into three age cohorts: <strong>1 to 3 years</strong>, <strong>4 to 9 years</strong>, and <strong>10 to 17 years</strong>. For each group, we calculated the optimal “Balanced” threshold (Youden’s Index) to maximize diagnostic accuracy.</p>
+<p>The dataset was segmented into four age cohorts: <strong>&lt; 1 year</strong>, <strong>1 to 3 years</strong>, <strong>4 to 9 years</strong>, and <strong>10 to 17 years</strong>. For each group, we calculated the optimal “Balanced” threshold (Youden’s Index) to maximize diagnostic accuracy.</p>
 </section>
 <section id="results-by-age-cohort" class="level3">
 <h3 class="anchored" data-anchor-id="results-by-age-cohort">Results by Age Cohort</h3>
-<p>The analysis revealed a clear distinction between pre-pubertal children and adolescents:</p>
+<p>The analysis revealed distinct diagnostic cutoffs across pediatric development stages:</p>
 <ol type="1">
+<li><strong>Infants (&lt; 1 year):</strong>
+<ul>
+<li><strong>Optimal Cutoff:</strong> <strong>0.455 g/dL</strong></li>
+<li><strong>Performance:</strong> Perfect classification (<strong>100% Sensitivity, 100% Specificity, 100% PPV</strong> across <span class="math inline">\(N = 14\)</span> patients with recorded IgG).</li>
+<li><em>Interpretation:</em> All 13 infants with below-reference IgG presented ELPT values <span class="math inline">\(\le 0.39\)</span> g/dL (range: 0.08 – 0.39 g/dL), whereas the infant with normal IgG presented ELPT = 0.52 g/dL. A threshold of <strong>0.455 g/dL</strong> provides complete discrimination of IgG deficiency in infants (&lt; 1 year).</li>
+</ul></li>
 <li><strong>Early Childhood (1 to 3 years):</strong>
 <ul>
-<li><strong>Optimal Cutoff:</strong> <strong>0.375</strong></li>
-<li><strong>Performance:</strong> The test performs robustly, achieving <strong>90.0% Sensitivity</strong> and <strong>95.8% Specificity</strong>.</li>
+<li><strong>Optimal Cutoff:</strong> <strong>0.375 g/dL</strong></li>
+<li><strong>Performance:</strong> The test performs robustly, achieving <strong>90.0% Sensitivity</strong> and <strong>95.8% Specificity</strong> (PPV = 90.0%).</li>
 <li><em>Interpretation:</em> The clear separation between groups allows for high-confidence screening in toddlers.</li>
 </ul></li>
 <li><strong>Middle Childhood (4 to 9 years):</strong>
 <ul>
-<li><strong>Optimal Cutoff:</strong> <strong>0.380</strong></li>
+<li><strong>Optimal Cutoff:</strong> <strong>0.380 g/dL</strong></li>
 <li><strong>Performance:</strong> In this cohort, the model achieved perfect classification (<strong>100% Sensitivity and Specificity</strong>).</li>
-<li><em>Interpretation:</em> The optimal threshold (0.380) is virtually identical to the toddler group (0.375), suggesting a highly stable physiological baseline for ELPT throughout the first decade of life.</li>
+<li><em>Interpretation:</em> The optimal threshold (0.380) is virtually identical to the toddler group (0.375), demonstrating a highly stable physiological baseline for ELPT throughout the first decade of life after infancy.</li>
 </ul></li>
 <li><strong>Adolescence (10 to 17 years):</strong>
 <ul>
-<li><strong>Optimal Cutoff:</strong> <strong>0.475</strong></li>
+<li><strong>Optimal Cutoff:</strong> <strong>0.475 g/dL</strong></li>
 <li><strong>Performance:</strong> Diagnostic difficulty increases significantly. Sensitivity drops to <strong>53.3%</strong> and Specificity to <strong>75.0%</strong>.</li>
-<li><em>Interpretation:</em> The optimal cutoff shifts upward by nearly 0.1 g/dL compared to younger children. The significant distributional overlap (visible in the density plots) suggests that ELPT becomes a less binary marker during adolescent immune maturation, requiring more careful clinical interpretation.</li>
+<li><em>Interpretation:</em> The optimal cutoff shifts upward to 0.475 g/dL compared to younger children. The significant distributional overlap suggests that ELPT becomes a less binary marker during adolescent immune maturation, requiring confirmatory IgG testing.</li>
 </ul></li>
 </ol>
 </section>
 <section id="clinical-implication" class="level3">
 <h3 class="anchored" data-anchor-id="clinical-implication">Clinical Implication</h3>
-<p>The results support a <strong>Two-Tiered Reference Approach</strong>:</p>
+<p>The results support a <strong>Three-Tiered Reference Approach</strong>:</p>
 <ul>
-<li><strong>For Children &lt; 10 Years:</strong> A unified cutoff of <strong>0.38 g/dL</strong> is recommended. This threshold is stable and highly accurate across both the 1-3 and 4-9 age groups.</li>
-<li><strong>For Adolescents (10-17 Years):</strong> A higher cutoff of <strong>0.475 g/dL</strong> is indicated. However, clinicians should be advised that ELPT has lower sensitivity in this age group, and borderline results should almost always trigger confirmatory IgG testing.</li>
+<li><strong>For Infants (&lt; 1 Year):</strong> A higher cutoff of <strong>0.455 g/dL</strong> (or <strong>0.45 g/dL</strong>) is indicated to capture early-life IgG deficiency.</li>
+<li><strong>For Children (1 to 9 Years):</strong> A unified cutoff of <strong>0.38 g/dL</strong> is recommended (0.375 for 1-3 years, 0.380 for 4-9 years), offering high stability and diagnostic safety.</li>
+<li><strong>For Adolescents (10 to 17 Years):</strong> A higher cutoff of <strong>0.475 g/dL</strong> is indicated, with borderline results triggering mandatory confirmatory IgG quantification.</li>
 </ul>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a><span class="co"># 1. Define Age-Specific Cutoffs (Based on your previous ROC results)</span></span>
-<span id="cb77-2"><a href="#cb77-2"></a><span class="co"># We create a small lookup table to map each age group to its Youden cutoff</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a><span class="co"># 1. Define Age-Specific Cutoffs (Based on ROC results)</span></span>
+<span id="cb77-2"><a href="#cb77-2"></a><span class="co"># We create a lookup table to map each age group to its Youden cutoff</span></span>
 <span id="cb77-3"><a href="#cb77-3"></a>cutoff_map <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb77-4"><a href="#cb77-4"></a>  <span class="at">Age_Group =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"1 to 3 years"</span>, <span class="st">"4 to 9 years"</span>, <span class="st">"10 to 17 years"</span>),</span>
+<span id="cb77-4"><a href="#cb77-4"></a>  <span class="at">Age_Group =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"&lt; 1 year"</span>, <span class="st">"1 to 3 years"</span>, <span class="st">"4 to 9 years"</span>, <span class="st">"10 to 17 years"</span>),</span>
 <span id="cb77-5"><a href="#cb77-5"></a>                     <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"&lt; 1 year"</span>, <span class="st">"1 to 3 years"</span>, <span class="st">"4 to 9 years"</span>, <span class="st">"10 to 17 years"</span>)),</span>
-<span id="cb77-6"><a href="#cb77-6"></a>  <span class="at">Age_Specific_Cutoff =</span> <span class="fu">c</span>(<span class="fl">0.375</span>, <span class="fl">0.380</span>, <span class="fl">0.475</span>)</span>
+<span id="cb77-6"><a href="#cb77-6"></a>  <span class="at">Age_Specific_Cutoff =</span> <span class="fu">c</span>(<span class="fl">0.455</span>, <span class="fl">0.375</span>, <span class="fl">0.380</span>, <span class="fl">0.475</span>)</span>
 <span id="cb77-7"><a href="#cb77-7"></a>)</span>
 <span id="cb77-8"><a href="#cb77-8"></a></span>
 <span id="cb77-9"><a href="#cb77-9"></a><span class="co"># 2. Prepare Data &amp; Apply Cutoffs</span></span>
@@ -2384,6 +2450,94 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Central nervous system</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Gastrointestinal tract</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Lower respiratory tract</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Other</td>
+<td style="text-align: right;">40.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Sepsis</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Skin</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Upper respiratory tract</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 1 year</td>
+<td style="text-align: left;">Urinary tract</td>
+<td style="text-align: right;">45.00</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
 <tr class="odd">
 <td style="text-align: left;">1 to 3 years</td>
 <td style="text-align: left;">Central nervous system</td>
@@ -2724,14 +2878,14 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <pre><code># A tibble: 8 × 3
   Medications                                                n Percentage
   &lt;chr&gt;                                                  &lt;int&gt;      &lt;dbl&gt;
-1 &lt;NA&gt;                                                     130    0.802  
-2 Imunossupresor                                            17    0.105  
-3 Anticonvulsivante                                          7    0.0432 
-4 Anticonvulsivante; Imunossupresor                          4    0.0247 
-5 Anticonvulsivante; Imunossupresor; Outros medicamentos     1    0.00617
-6 Imunobiológicos; Imunossupresor                            1    0.00617
-7 Imunossupresor; Outros medicamentos                        1    0.00617
-8 Outros medicamentos                                        1    0.00617</code></pre>
+1 &lt;NA&gt;                                                     192    0.857  
+2 Imunossupresor                                            17    0.0759 
+3 Anticonvulsivante                                          7    0.0312 
+4 Anticonvulsivante; Imunossupresor                          4    0.0179 
+5 Anticonvulsivante; Imunossupresor; Outros medicamentos     1    0.00446
+6 Imunobiológicos; Imunossupresor                            1    0.00446
+7 Imunossupresor; Outros medicamentos                        1    0.00446
+8 Outros medicamentos                                        1    0.00446</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2809,21 +2963,21 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 <pre><code># A tibble: 15 × 3
    Metric      `Without medication` `With medication`
    &lt;chr&gt;                      &lt;dbl&gt;             &lt;dbl&gt;
- 1 n_patients                32               130    
+ 1 n_patients                32               192    
  2 ELPT_Min                   0.15              0.06 
- 3 ELPT_Q1                    0.362             0.402
- 4 ELPT_Median                0.45              0.47 
- 5 ELPT_Mean                  0.41              0.446
- 6 ELPT_Q3                    0.475             0.52 
+ 3 ELPT_Q1                    0.362             0.31 
+ 4 ELPT_Median                0.45              0.41 
+ 5 ELPT_Mean                  0.41              0.397
+ 6 ELPT_Q3                    0.475             0.5  
  7 ELPT_Max                   0.59              0.6  
  8 ELPT_NAs                   0                 0    
  9 IgG_Min                   75                75    
-10 IgG_Q1                   376.              355    
-11 IgG_Median               438               475    
-12 IgG_Mean                 427.              473.   
-13 IgG_Q3                   532               551    
+10 IgG_Q1                   376.              260.   
+11 IgG_Median               438               414    
+12 IgG_Mean                 427.              420.   
+13 IgG_Q3                   532               524.   
 14 IgG_Max                  654              1376    
-15 IgG_NAs                    9                81    </code></pre>
+15 IgG_NAs                    9               130    </code></pre>
 </div>
 </div>
 <p>Graficamente os valores de ELPT não parecerem diferir muito pelo fato do uso de medicação, mas o paciente outlier no valor de IgG distorce muito a visualização.</p>
@@ -2966,8 +3120,8 @@ Convergence attained in 2 iterations (rel. change 2.1528e-12)</code></pre>
 
 Response: IgG
            Df  Sum Sq Mean Sq F value Pr(&gt;F)
-Medication  1   32668   32668  0.8318 0.3649
-Residuals  70 2749314   39276               </code></pre>
+Medication  1     889     889  0.0212 0.8845
+Residuals  83 3474473   41861               </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -2991,11 +3145,9 @@ Residuals  70 2749314   39276               </code></pre>
 <pre><code>Analysis of Variance Table
 
 Response: ELPT
-            Df  Sum Sq  Mean Sq F value  Pr(&gt;F)  
-Medication   1 0.03385 0.033851    2.97 0.08675 .
-Residuals  160 1.82363 0.011398                  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+            Df Sum Sq   Mean Sq F value Pr(&gt;F)
+Medication   1 0.0050 0.0049527  0.3468 0.5565
+Residuals  222 3.1703 0.0142808               </code></pre>
 </div>
 </div>
 </section>
@@ -3186,11 +3338,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb99-11"><a href="#cb99-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 3
-  Proteinuria     n Percentage
-  &lt;chr&gt;       &lt;int&gt;      &lt;dbl&gt;
-1 No            137      0.846
-2 Yes            25      0.154</code></pre>
+<pre><code># A tibble: 3 × 3
+  Proteinuria        n Percentage
+  &lt;chr&gt;          &lt;int&gt;      &lt;dbl&gt;
+1 No               184     0.821 
+2 Sem informação     7     0.0312
+3 Yes               33     0.147 </code></pre>
 </div>
 </div>
 <p>Medidas descritivas.</p>
@@ -3241,24 +3394,24 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <span id="cb101-42"><a href="#cb101-42"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 15 × 3
-   Metric            No     Yes
-   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
- 1 n_patients   137      25    
- 2 ELPT_Min       0.06    0.16 
- 3 ELPT_Q1        0.41    0.26 
- 4 ELPT_Median    0.47    0.43 
- 5 ELPT_Mean      0.446   0.400
- 6 ELPT_Q3        0.52    0.52 
- 7 ELPT_Max       0.6     0.59 
- 8 ELPT_NAs       0       0    
- 9 IgG_Min       75      75    
-10 IgG_Q1       398.    257    
-11 IgG_Median   475     424    
-12 IgG_Mean     468.    413.   
-13 IgG_Q3       546     541    
-14 IgG_Max     1376     862    
-15 IgG_NAs       78      12    </code></pre>
+<pre><code># A tibble: 15 × 4
+   Metric            No     Yes `Sem informação`
+   &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;            &lt;dbl&gt;
+ 1 n_patients   184      33                7    
+ 2 ELPT_Min       0.06    0.08             0.21 
+ 3 ELPT_Q1        0.33    0.23             0.235
+ 4 ELPT_Median    0.425   0.34             0.32 
+ 5 ELPT_Mean      0.410   0.354            0.301
+ 6 ELPT_Q3        0.5     0.5              0.355
+ 7 ELPT_Max       0.6     0.59             0.4  
+ 8 ELPT_NAs       0       0                0    
+ 9 IgG_Min       75      75              212    
+10 IgG_Q1       332.    196              212    
+11 IgG_Median   442     316              212    
+12 IgG_Mean     441.    356              212    
+13 IgG_Q3       526.    480              212    
+14 IgG_Max     1376     862              212    
+15 IgG_NAs      117      16                6    </code></pre>
 </div>
 </div>
 <p>Tanto pelas medidas quanto visualmente não aparenta ter diferença significativa tanto de ELPT quanto de IgG pelo fato de ter tido perda proteica na urina ou não - apesar do outlier.</p>
@@ -3409,8 +3562,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 
 Response: IgG
             Df  Sum Sq Mean Sq F value Pr(&gt;F)
-Proteinuria  1   31352   31352  0.7979 0.3748
-Residuals   70 2750629   39295               </code></pre>
+Proteinuria  2  143008   71504  1.7595 0.1786
+Residuals   82 3332353   40638               </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -3436,9 +3589,9 @@ Residuals   70 2750629   39295               </code></pre>
 <pre><code>Analysis of Variance Table
 
 Response: ELPT
-             Df  Sum Sq  Mean Sq F value  Pr(&gt;F)  
-Proteinuria   1 0.04436 0.044357  3.9143 0.04959 *
-Residuals   160 1.81312 0.011332                  
+             Df  Sum Sq  Mean Sq F value Pr(&gt;F)   
+Proteinuria   2 0.15764 0.078822  5.7726 0.0036 **
+Residuals   221 3.01764 0.013654                  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
