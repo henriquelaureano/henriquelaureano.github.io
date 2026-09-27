@@ -416,24 +416,24 @@ window.Quarto = {
 <span id="cb11-26"><a href="#cb11-26"></a>    )</span>
 <span id="cb11-27"><a href="#cb11-27"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb11-28"><a href="#cb11-28"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Infection_Type) <span class="sc">|&gt;</span></span>
-<span id="cb11-29"><a href="#cb11-29"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="dv">73</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-29"><a href="#cb11-29"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">sum</span>(elpt<span class="sc">$</span><span class="st">`</span><span class="at">7 - Quadros infecciosos até o momento da coleta?</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Sim"</span>)) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 3
   Infection_Type              n Percentage
   &lt;chr&gt;                   &lt;int&gt;      &lt;dbl&gt;
-1 Other                      46      0.630
-2 Lower respiratory tract    27      0.370
-3 Urinary tract              22      0.301
-4 Sepsis                     20      0.274
-5 Upper respiratory tract    20      0.274
-6 Gastrointestinal tract     12      0.164
-7 Skin                       10      0.137
-8 Central nervous system      9      0.123</code></pre>
+1 Other                      46     0.495 
+2 Lower respiratory tract    27     0.290 
+3 Urinary tract              22     0.237 
+4 Sepsis                     20     0.215 
+5 Upper respiratory tract    20     0.215 
+6 Gastrointestinal tract     12     0.129 
+7 Skin                       10     0.108 
+8 Central nervous system      9     0.0968</code></pre>
 </div>
 </div>
-<p>Dos 73 pacientes com quadro infeccioso, 32 apresentaram em mais de um sistema (ao menos em dois). 43.84%.</p>
-<p>Nestes 32, estes são os sintomas que aparecem e em quantos dos 32 pacientes.</p>
+<p>Dos 93 pacientes com quadro infeccioso, 43 apresentaram em mais de um sistema (ao menos em dois). 46.24%.</p>
+<p>Nestes 43, estes são os sintomas que aparecem e em quantos dos 43 pacientes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -480,21 +480,21 @@ window.Quarto = {
 <span id="cb13-41"><a href="#cb13-41"></a>    ) <span class="sc">|&gt;</span></span>
 <span id="cb13-42"><a href="#cb13-42"></a>    dplyr<span class="sc">::</span><span class="fu">count</span>(name) <span class="sc">|&gt;</span> </span>
 <span id="cb13-43"><a href="#cb13-43"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span></span>
-<span id="cb13-44"><a href="#cb13-44"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="dv">32</span>) </span>
+<span id="cb13-44"><a href="#cb13-44"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="dv">43</span>) </span>
 <span id="cb13-45"><a href="#cb13-45"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 3
   name                        n Percentage
   &lt;chr&gt;                   &lt;int&gt;      &lt;dbl&gt;
-1 Other                      29      0.906
-2 Lower respiratory tract    22      0.688
-3 Upper respiratory tract    15      0.469
-4 Urinary tract              15      0.469
-5 Sepsis                     13      0.406
-6 Gastrointestinal tract      9      0.281
-7 Skin                        8      0.25 
-8 Central nervous system      7      0.219</code></pre>
+1 Other                      29      0.674
+2 Lower respiratory tract    22      0.512
+3 Upper respiratory tract    15      0.349
+4 Urinary tract              15      0.349
+5 Sepsis                     13      0.302
+6 Gastrointestinal tract      9      0.209
+7 Skin                        8      0.186
+8 Central nervous system      7      0.163</code></pre>
 </div>
 </div>
 <p>O máximo de infecções que um paciente apresenta são 5, e 3 pacientes ficaram em tal situação.</p>
@@ -582,33 +582,33 @@ window.Quarto = {
 <span id="cb18-8"><a href="#cb18-8"></a><span class="at">-Em caso negativo responder com NA</span><span class="st">`</span></span>
 <span id="cb18-9"><a href="#cb18-9"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb18-10"><a href="#cb18-10"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Comorbidity) <span class="sc">|&gt;</span> </span>
-<span id="cb18-11"><a href="#cb18-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="dv">114</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-11"><a href="#cb18-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> n <span class="sc">/</span> <span class="fu">sum</span>(elpt<span class="sc">$</span><span class="st">`</span><span class="at">21 - Paciente possui alguma comorbidade/diagnostico de base?</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Sim"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb18-12"><a href="#cb18-12"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 15 × 3
    Comorbidity                              n Percentage
    &lt;chr&gt;                                &lt;int&gt;      &lt;dbl&gt;
- 1 Neurologica                              7     0.0614
- 2 Cardiopatia                              6     0.0526
- 3 Síndrome genética                        6     0.0526
- 4 Alergia                                  5     0.0439
- 5 Diabetes tipo I ou II                    4     0.0351
- 6 Hepatopatia                              4     0.0351
- 7 Nefropatia                               4     0.0351
- 8 Síndrome nefrótica                       4     0.0351
- 9 Deformidade óssea congênita              3     0.0263
-10 Alergia; Lúpus Eritematoso Sistêmico     2     0.0175
-11 Alergia; Nefropatia; Pneumopatia         2     0.0175
-12 Anemia; TMO                              2     0.0175
-13 Artrite Idiopática Juvenil               2     0.0175
-14 NA                                       2     0.0175
-15 Neurologica; Prematuridade               2     0.0175</code></pre>
+ 1 Neurologica                              7     0.0511
+ 2 Cardiopatia                              6     0.0438
+ 3 Síndrome genética                        6     0.0438
+ 4 Alergia                                  5     0.0365
+ 5 Diabetes tipo I ou II                    4     0.0292
+ 6 Hepatopatia                              4     0.0292
+ 7 Nefropatia                               4     0.0292
+ 8 Síndrome nefrótica                       4     0.0292
+ 9 Deformidade óssea congênita              3     0.0219
+10 Alergia; Lúpus Eritematoso Sistêmico     2     0.0146
+11 Alergia; Nefropatia; Pneumopatia         2     0.0146
+12 Anemia; TMO                              2     0.0146
+13 Artrite Idiopática Juvenil               2     0.0146
+14 NA                                       2     0.0146
+15 Neurologica; Prematuridade               2     0.0146</code></pre>
 </div>
 </div>
-<p>Entre os 114 pacientes com comorbidade, 83 diferentes combinações de comorbidade são observadas - mas apenas 14 aparecem em ao menos dois pacientes.</p>
+<p>Entre os 137 pacientes com comorbidade, 97 diferentes combinações de comorbidade são observadas - mas apenas 15 aparecem em ao menos dois pacientes.</p>
 <p>Mesma coisa mas agora reunindo todos os resultados similares em um único grupo de soma.</p>
-<p>55 diferentes, 27 aparecendo ao menos duas vezes.</p>
+<p>68 diferentes, 28 aparecendo ao menos duas vezes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -893,14 +893,14 @@ window.Quarto = {
   0.100   1.226   3.113   5.906   6.392  29.548 </code></pre>
 </div>
 </div>
-<p>Oito pacientes vieram a óbito (5%), com um tempo médio de sobrevida de 246 dias (8.1 meses) - mediana de 139 dias (4.6 meses).</p>
+<p>Doze pacientes vieram a óbito (5.36%), com um tempo médio de sobrevida de 180 dias (5.9 meses) - mediana de 96 dias (3.1 meses).</p>
 </section>
 </section>
 <section id="análise-de-indivíduos-com-dosagem-de-igg" class="level1">
 <h1>2. Análise de indivíduos com dosagem de IgG</h1>
 <section id="a-a-partir-dos-valores-de-dosagem-de-igg-verificar-se-existe-correlação-com-os-valores-de-elpt-não-considerar-na-estatistica-os-pacientes-que-fazem-reposição-de-igg---pois-é-um-tratamento-logo-não-é-um-dado-basal" class="level2">
 <h2 class="anchored" data-anchor-id="a-a-partir-dos-valores-de-dosagem-de-igg-verificar-se-existe-correlação-com-os-valores-de-elpt-não-considerar-na-estatistica-os-pacientes-que-fazem-reposição-de-igg---pois-é-um-tratamento-logo-não-é-um-dado-basal">a) A partir dos valores de dosagem de IgG, verificar se existe correlação com os valores de ELPT; Não considerar na estatistica os pacientes que fazem reposição de IgG - pois é um tratamento, logo não é um dado basal</h2>
-<p>68 pacientes (41.2%) tem registro do valor de IgG e não fizeram reposição.</p>
+<p>81 pacientes (36.16%) têm registro do valor de IgG e não fizeram reposição.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -939,7 +939,7 @@ window.Quarto = {
 # ℹ 71 more rows</code></pre>
 </div>
 </div>
-<p>Correlação linear de Pearson de 0.55 (forte e estatísticamente significativa, 1.1e-06 = 0.0000011).</p>
+<p>Correlação linear de Pearson de 0.65 (forte e estatísticamente significativa, p = 3.5e-11).</p>
 <p>Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear até um igG ao redor de 600 e a partir dali uma queda, mas temos pouquíssimos pacientes passando desse valor.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1044,7 +1044,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>ELPT médio de 0.366, min 0.06 e máx 0.6.</p>
+<p>ELPT médio de 0.328, min 0.06 e máx 0.60.</p>
 </section>
 <section id="c-entre-os-indivíduos-com-dosagem-de-igg-acima-do-valor-de-referência-e-que-não-fazem-reposição-de-igg-qual-foi-o-valor-médio-mínimo-e-máximo-do-valor-de-elpt" class="level2">
 <h2 class="anchored" data-anchor-id="c-entre-os-indivíduos-com-dosagem-de-igg-acima-do-valor-de-referência-e-que-não-fazem-reposição-de-igg-qual-foi-o-valor-médio-mínimo-e-máximo-do-valor-de-elpt">c) Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de ELPT?</h2>
@@ -1052,7 +1052,7 @@ window.Quarto = {
 </section>
 <section id="d-entre-os-indivíduos-com-dosagem-de-igg-abaixo-do-valor-de-referência-quantos-possuíam-comorbidade-quais-eram-mais-frequentes" class="level2">
 <h2 class="anchored" data-anchor-id="d-entre-os-indivíduos-com-dosagem-de-igg-abaixo-do-valor-de-referência-quantos-possuíam-comorbidade-quais-eram-mais-frequentes">d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?</h2>
-<p>22 pacientes, 20 diferentes combinações de comorbidades - apenas 2 ocorrendo em ao menos dois pacientes.</p>
+<p>33 pacientes, 29 diferentes combinações de comorbidades - 3 ocorrendo em ao menos dois pacientes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1097,7 +1097,7 @@ window.Quarto = {
 #   ¹​`21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo responder com NA`</code></pre>
 </div>
 </div>
-<p>Reunindo os resultados similares em um único grupo, temos 27 diferentes.</p>
+<p>Reunindo os resultados similares em um único grupo, temos 35 diferentes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1162,10 +1162,7 @@ window.Quarto = {
 </section>
 <section id="análise-dos-menores-de-1-ano" class="level1">
 <h1>3. Análise dos menores de 1 ano</h1>
-<blockquote class="blockquote">
-<p>Entre os menores de 1 ano, quantos apresentavam a comorbidade “Prematuridade”?</p>
-</blockquote>
-<p>Apenas um paciente menor de 1 ano. Paciente sem informação de comorbidades.</p>
+<p>A amostragem de menores de 1 ano foi expandida para 63 pacientes. Destes, 23 possuem registro de comorbidades (com destaque para Cardiopatia [4] e Neurológica [4]), 33 não possuem e 7 sem informação. Nenhuma menção de “Prematuridade” foi registrada no campo de comorbidades.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1213,7 +1210,7 @@ window.Quarto = {
 </section>
 <section id="levando-em-consideração-pacientes-que-fizeram-os-exames-elpt-igg-definir-um-valor-de-referência-para-elpt-levando-como-referência-a-dosagem-de-igg" class="level1">
 <h1>Levando em consideração pacientes que fizeram os exames ELPT + IgG, definir um valor de referência para ELPT levando como referência a dosagem de IgG</h1>
-<p>72 pacientes.</p>
+<p>85 pacientes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1371,7 +1368,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de ELPT médio em relação ao IgG, é em 588.</p>
+<p>Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de ELPT médio em relação ao IgG, é em 585.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1595,19 +1592,19 @@ Convergence attained in 2 iterations (rel. change 7.6656e-13)</code></pre>
 <h3 class="anchored" data-anchor-id="analysis-of-cutoff-strategies">Analysis of Cutoff Strategies</h3>
 <p>The table above summarizes the performance of the potential thresholds:</p>
 <ol type="1">
-<li><strong>Max Specificity Strategy (Cutoff 0.250):</strong>
+<li><strong>Max Specificity Strategy (Cutoff 0.255):</strong>
 <ul>
 <li><strong>Pros:</strong> Perfect Specificity (100%) and PPV (100%). If a patient falls below this level, they are certainly deficient.</li>
-<li><strong>Cons:</strong> Sensitivity is critically low (25%). This threshold is too conservative for screening, as it misses nearly three-quarters of the target population.</li>
+<li><strong>Cons:</strong> Sensitivity is <strong>36.6%</strong> (capturing slightly over one-third of the target population).</li>
 </ul></li>
 <li><strong>High Specificity Strategy (Cutoff 0.395):</strong>
 <ul>
-<li><strong>Performance:</strong> This threshold provides strong specificity (91%) with a Positive Predictive Value of 81%.</li>
-<li><strong>Trade-off:</strong> Sensitivity increases to 60.7%, capturing a majority of cases while maintaining a low false-positive rate.</li>
+<li><strong>Performance:</strong> This threshold provides strong specificity (<strong>90.9%</strong>) with a Positive Predictive Value of <strong>88.2%</strong>.</li>
+<li><strong>Trade-off:</strong> Sensitivity increases to <strong>73.2%</strong>, capturing nearly three-quarters of cases while maintaining a low false-positive rate.</li>
 </ul></li>
 <li><strong>Balanced “Youden” Strategy (Cutoff 0.410):</strong>
 <ul>
-<li><strong>Pros:</strong> Optimizes the overall accuracy. It offers the highest <strong>Sensitivity (64.3%)</strong> among the viable options while maintaining a robust <strong>Specificity (88.6%)</strong>.</li>
+<li><strong>Pros:</strong> Optimizes overall accuracy. It offers the highest <strong>Sensitivity (75.6%)</strong> among the viable options while maintaining a robust <strong>Specificity (88.6%)</strong> and high <strong>PPV (86.1%)</strong>.</li>
 <li><strong>Clinical Context:</strong> Unlike PROTF, which prioritized sensitivity at the cost of specificity, ELPT demonstrates naturally higher specificity. The values for the “High Specificity” and “Balanced” strategies are numerically very close (0.395 vs.&nbsp;0.410), indicating a stable diagnostic zone.</li>
 </ul></li>
 </ol>
@@ -1617,8 +1614,8 @@ Convergence attained in 2 iterations (rel. change 7.6656e-13)</code></pre>
 <p>We recommend the <strong>Balanced Strategy</strong> as the clinical standard for ELPT.</p>
 <p><strong>Recommendation:</strong> An ELPT value below <strong>0.410</strong> should trigger a follow-up IgG test.</p>
 <ul>
-<li><strong>Performance:</strong> At this threshold, the test detects approximately <strong>65%</strong> of IgG-deficient patients (Sensitivity).</li>
-<li><strong>Precision:</strong> Crucially, it generates very few false alarms (Specificity <strong>88.6%</strong>), meaning that patients flagged by ELPT have a high probability (PPV <strong>78.3%</strong>) of actually requiring intervention.</li>
+<li><strong>Performance:</strong> At this threshold, the test detects approximately <strong>75.6%</strong> of IgG-deficient patients (Sensitivity).</li>
+<li><strong>Precision:</strong> Crucially, it generates very few false alarms (Specificity <strong>88.6%</strong>), meaning that patients flagged by ELPT have a high probability (PPV <strong>86.1%</strong>) of actually requiring intervention.</li>
 </ul>
 </section>
 </section>
@@ -3088,8 +3085,8 @@ Convergence attained in 2 iterations (rel. change 7.6656e-13)</code></pre>
 </div>
 <p>Ajustamos também um modelo linear para entender melhor as associações com o uso de medicação - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos:</p>
 <ul>
-<li><p>um valor-p de 0.3649, indicando que realmente não existe associação entre o valor de IgG e o fato de utilizar ou não um medicamento. Apesar da presençã do outlier, mesmo assim a associação não é significativa.</p></li>
-<li><p>Para ELPT obtivemos um valor-p de 0.08675, pelo critério de 5%, não se trata duma associação estatísticamente significativa entre o valor de ELPT e o fato de utilizar ou não um medicamento.</p></li>
+<li><p>um valor-p de 0.8845, indicando que realmente não existe associação entre o valor de IgG e o fato de utilizar ou não um medicamento. Apesar da presença do outlier, mesmo assim a associação não é significativa.</p></li>
+<li><p>Para ELPT obtivemos um valor-p de 0.5565, pelo critério de 5%, não se trata duma associação estatisticamente significativa entre o valor de ELPT e o fato de utilizar ou não um medicamento.</p></li>
 </ul>
 <div class="cell">
 <details class="code-fold">
@@ -3528,8 +3525,8 @@ Residuals  222 3.1703 0.0142808               </code></pre>
 </div>
 <p>Ajustamos também um modelo linear para entender melhor as associações com a perda proteica de urina - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos:</p>
 <ul>
-<li><p>um valor-p de 0.3748, indicando que realmente não existe associação entre o valor de IgG e a perda proteica de urina.</p></li>
-<li><p>Para ELPT obtivemos um valor-p de 0.04959, uma associação no limite de ser considerada estatísticamente significativa - significatica mas fraca, levando em consideração também o desbalanceamento de classes aqui com apenas 15% dos pacientes tendo perda proteica de urina.</p></li>
+<li><p>um valor-p de 0.1786, indicando que realmente não existe associação entre o valor de IgG e a perda proteica de urina.</p></li>
+<li><p>Para ELPT obtivemos um valor-p de 0.0036, demonstrando uma associação estatisticamente significativa entre o valor de ELPT e a perda proteica de urina.</p></li>
 </ul>
 <div class="cell">
 <details class="code-fold">

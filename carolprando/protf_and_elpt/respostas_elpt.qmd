@@ -168,13 +168,13 @@ elpt |> dplyr::filter(
     )
   ) |>
   dplyr::count(Infection_Type) |>
-  dplyr::mutate(Percentage = n / 73) |> dplyr::arrange(dplyr::desc(n))
+  dplyr::mutate(Percentage = n / sum(elpt$`7 - Quadros infecciosos até o momento da coleta?` == "Sim")) |> dplyr::arrange(dplyr::desc(n))
 
 ```
 
-Dos 73 pacientes com quadro infeccioso, 32 apresentaram em mais de um sistema (ao menos em dois). 43.84%.
+Dos 93 pacientes com quadro infeccioso, 43 apresentaram em mais de um sistema (ao menos em dois). 46.24%.
 
-Nestes 32, estes são os sintomas que aparecem e em quantos dos 32 pacientes.
+Nestes 43, estes são os sintomas que aparecem e em quantos dos 43 pacientes.
 
 ```{r}
 
@@ -221,7 +221,7 @@ proxy <-
     ) |>
     dplyr::count(name) |> 
     dplyr::arrange(dplyr::desc(n)) |>
-    dplyr::mutate(Percentage = n / 32) 
+    dplyr::mutate(Percentage = n / 43) 
 )
 
 ```
@@ -293,16 +293,16 @@ elpt |>
 -Em caso negativo responder com NA`
   ) |>
   dplyr::count(Comorbidity) |> 
-  dplyr::mutate(Percentage = n / 114) |>
+  dplyr::mutate(Percentage = n / sum(elpt$`21 - Paciente possui alguma comorbidade/diagnostico de base?` == "Sim")) |>
   dplyr::arrange(dplyr::desc(n)) |> dplyr::filter(n > 1)
   
 ```
 
-Entre os 114 pacientes com comorbidade, 83 diferentes combinações de comorbidade são observadas - mas apenas 14 aparecem em ao menos dois pacientes.
+Entre os 137 pacientes com comorbidade, 97 diferentes combinações de comorbidade são observadas - mas apenas 15 aparecem em ao menos dois pacientes.
 
 Mesma coisa mas agora reunindo todos os resultados similares em um único grupo de soma.
 
-55 diferentes, 27 aparecendo ao menos duas vezes.
+68 diferentes, 28 aparecendo ao menos duas vezes.
 
 ```{r}
 
@@ -437,13 +437,13 @@ summary(proxy$Interval_months)
 
 ```
 
-Oito pacientes vieram a óbito (5%), com um tempo médio de sobrevida de 246 dias (8.1 meses) - mediana de 139 dias (4.6 meses).
+Doze pacientes vieram a óbito (5.36%), com um tempo médio de sobrevida de 180 dias (5.9 meses) - mediana de 96 dias (3.1 meses).
 
 # 2. Análise de indivíduos com dosagem de IgG
 
 ## a) A partir dos valores de dosagem de IgG, verificar se existe correlação com os valores de ELPT; Não considerar na estatistica os pacientes que fazem reposição de IgG - pois é um tratamento, logo não é um dado basal
 
-68 pacientes (41.2%) tem registro do valor de IgG e não fizeram reposição.
+81 pacientes (36.16%) têm registro do valor de IgG e não fizeram reposição.
 
 ```{r}
 
@@ -467,7 +467,7 @@ NA = não se aplica` != "NA"
 
 ```
 
-Correlação linear de Pearson de 0.55 (forte e estatísticamente significativa, 1.1e-06 = 0.0000011).
+Correlação linear de Pearson de 0.65 (forte e estatísticamente significativa, p = 3.5e-11).
 
 Contudo, vemos que o que melhor se adequa aos dados é um comportamento quadrático - subida linear até um igG ao redor de 600 e a partir dali uma queda, mas temos pouquíssimos pacientes passando desse valor.
 
@@ -543,7 +543,7 @@ proxy |>
   
 ```
 
-ELPT médio de 0.366, min 0.06 e máx 0.6.
+ELPT médio de 0.328, min 0.06 e máx 0.60.
 
 ## c) Entre os indivíduos com dosagem de IgG acima do valor de referência e que NÃO fazem reposição de IgG, qual foi o valor médio, mínimo e máximo do valor de ELPT?
 
@@ -551,7 +551,7 @@ Nenhum paciente com IgG acima do valor de referência.
 
 ## d) Entre os indivíduos com dosagem de IgG abaixo do valor de referência, quantos possuíam comorbidade? Quais eram mais frequentes?
 
-22 pacientes, 20 diferentes combinações de comorbidades - apenas 2 ocorrendo em ao menos dois pacientes.
+33 pacientes, 29 diferentes combinações de comorbidades - 3 ocorrendo em ao menos dois pacientes.
 
 ```{r}
 
@@ -578,7 +578,7 @@ NA = não se aplica` == "Abaixo do valor de referência" &
 
 ```
 
-Reunindo os resultados similares em um único grupo, temos 27 diferentes.
+Reunindo os resultados similares em um único grupo, temos 35 diferentes.
 
 ```{r}
 
@@ -606,9 +606,7 @@ NA = não se aplica` == "Abaixo do valor de referência" &
 
 # 3. Análise dos menores de 1 ano
 
-> Entre os menores de 1 ano, quantos apresentavam a comorbidade "Prematuridade"?
-
-Apenas um paciente menor de 1 ano. Paciente sem informação de comorbidades.
+A amostragem de menores de 1 ano foi expandida para 63 pacientes. Destes, 23 possuem registro de comorbidades (com destaque para Cardiopatia [4] e Neurológica [4]), 33 não possuem e 7 sem informação. Nenhuma menção de "Prematuridade" foi registrada no campo de comorbidades.
 
 ```{r}
 
@@ -637,7 +635,7 @@ elpt |>
 
 # Levando em consideração pacientes que fizeram os exames ELPT + IgG, definir um valor de referência para ELPT levando como referência a dosagem de IgG
 
-72 pacientes.
+85 pacientes.
 
 ```{r fig.width=8.5}
 
@@ -748,7 +746,7 @@ proxy |>
 
 ```
 
-Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de ELPT médio em relação ao IgG, é em 588.
+Além disso, estimamos um ponto de corte para ver onde se inicia o platô - onde termina o padrão de crescimento e se inicia a estagnação de ELPT médio em relação ao IgG, é em 585.
 
 ```{r}
 
@@ -883,14 +881,14 @@ We compared three cutoff strategies to determine the optimal balance between min
 
 The table above summarizes the performance of the potential thresholds:
 
-1.  **Max Specificity Strategy (Cutoff 0.250):**
+1.  **Max Specificity Strategy (Cutoff 0.255):**
     -   **Pros:** Perfect Specificity (100%) and PPV (100%). If a patient falls below this level, they are certainly deficient.
-    -   **Cons:** Sensitivity is critically low (25%). This threshold is too conservative for screening, as it misses nearly three-quarters of the target population.
+    -   **Cons:** Sensitivity is **36.6%** (capturing slightly over one-third of the target population).
 2.  **High Specificity Strategy (Cutoff 0.395):**
-    -   **Performance:** This threshold provides strong specificity (91%) with a Positive Predictive Value of 81%.
-    -   **Trade-off:** Sensitivity increases to 60.7%, capturing a majority of cases while maintaining a low false-positive rate.
+    -   **Performance:** This threshold provides strong specificity (**90.9%**) with a Positive Predictive Value of **88.2%**.
+    -   **Trade-off:** Sensitivity increases to **73.2%**, capturing nearly three-quarters of cases while maintaining a low false-positive rate.
 3.  **Balanced "Youden" Strategy (Cutoff 0.410):**
-    -   **Pros:** Optimizes the overall accuracy. It offers the highest **Sensitivity (64.3%)** among the viable options while maintaining a robust **Specificity (88.6%)**.
+    -   **Pros:** Optimizes overall accuracy. It offers the highest **Sensitivity (75.6%)** among the viable options while maintaining a robust **Specificity (88.6%)** and high **PPV (86.1%)**.
     -   **Clinical Context:** Unlike PROTF, which prioritized sensitivity at the cost of specificity, ELPT demonstrates naturally higher specificity. The values for the "High Specificity" and "Balanced" strategies are numerically very close (0.395 vs. 0.410), indicating a stable diagnostic zone.
 
 ### Conclusion and Recommendation
@@ -899,8 +897,8 @@ We recommend the **Balanced Strategy** as the clinical standard for ELPT.
 
 **Recommendation:** An ELPT value below **0.410** should trigger a follow-up IgG test.
 
--   **Performance:** At this threshold, the test detects approximately **65%** of IgG-deficient patients (Sensitivity).
--   **Precision:** Crucially, it generates very few false alarms (Specificity **88.6%**), meaning that patients flagged by ELPT have a high probability (PPV **78.3%**) of actually requiring intervention.
+-   **Performance:** At this threshold, the test detects approximately **75.6%** of IgG-deficient patients (Sensitivity).
+-   **Precision:** Crucially, it generates very few false alarms (Specificity **88.6%**), meaning that patients flagged by ELPT have a high probability (PPV **86.1%**) of actually requiring intervention.
 
 ## Advanced Strategy: The "Indeterminate Zone" Approach
 
@@ -1624,9 +1622,9 @@ p1 + p2 + patchwork::plot_layout(guides = "collect")
 
 Ajustamos também um modelo linear para entender melhor as associações com o uso de medicação - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos:
 
--   um valor-p de 0.3649, indicando que realmente não existe associação entre o valor de IgG e o fato de utilizar ou não um medicamento. Apesar da presençã do outlier, mesmo assim a associação não é significativa.
+-   um valor-p de 0.8845, indicando que realmente não existe associação entre o valor de IgG e o fato de utilizar ou não um medicamento. Apesar da presença do outlier, mesmo assim a associação não é significativa.
 
--   Para ELPT obtivemos um valor-p de 0.08675, pelo critério de 5%, não se trata duma associação estatísticamente significativa entre o valor de ELPT e o fato de utilizar ou não um medicamento.
+-   Para ELPT obtivemos um valor-p de 0.5565, pelo critério de 5%, não se trata duma associação estatisticamente significativa entre o valor de ELPT e o fato de utilizar ou não um medicamento.
 
 ```{r}
 
@@ -1935,9 +1933,9 @@ p1 + p2 + patchwork::plot_layout(guides = "collect")
 
 Ajustamos também um modelo linear para entender melhor as associações com a perda proteica de urina - após verificar os resíduos e constatar que o ajuste estava adequado, performamos uma Análise de variância (ANOVA) e com base no teste F obtivemos:
 
--   um valor-p de 0.3748, indicando que realmente não existe associação entre o valor de IgG e a perda proteica de urina.
+-   um valor-p de 0.1786, indicando que realmente não existe associação entre o valor de IgG e a perda proteica de urina.
 
--   Para ELPT obtivemos um valor-p de 0.04959, uma associação no limite de ser considerada estatísticamente significativa - significatica mas fraca, levando em consideração também o desbalanceamento de classes aqui com apenas 15% dos pacientes tendo perda proteica de urina.
+-   Para ELPT obtivemos um valor-p de 0.0036, demonstrando uma associação estatisticamente significativa entre o valor de ELPT e a perda proteica de urina.
 
 ```{r}
 
