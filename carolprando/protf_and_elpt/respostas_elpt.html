@@ -608,7 +608,7 @@ window.Quarto = {
 </div>
 <p>Entre os 137 pacientes com comorbidade, 97 diferentes combinações de comorbidade são observadas - mas apenas 15 aparecem em ao menos dois pacientes.</p>
 <p>Mesma coisa mas agora reunindo todos os resultados similares em um único grupo de soma.</p>
-<p>68 diferentes, 28 aparecendo ao menos duas vezes.</p>
+<p>59 diferentes, 30 aparecendo ao menos duas vezes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -619,89 +619,83 @@ window.Quarto = {
 <span id="cb20-5"><a href="#cb20-5"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="at">Comorbidities =</span> <span class="st">`</span><span class="at">21.1 -  Qual comorbidade o paciente possui?</span></span>
 <span id="cb20-6"><a href="#cb20-6"></a></span>
 <span id="cb20-7"><a href="#cb20-7"></a><span class="at">-Em caso negativo responder com NA</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-8"><a href="#cb20-8"></a>  tidyr<span class="sc">::</span><span class="fu">separate_longer_delim</span>(<span class="at">cols =</span> Comorbidities, <span class="at">delim =</span> <span class="st">";"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb20-9"><a href="#cb20-9"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb20-10"><a href="#cb20-10"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_trim</span>(Comorbidities),</span>
-<span id="cb20-11"><a href="#cb20-11"></a>    <span class="at">Comorbidities =</span> stringi<span class="sc">::</span><span class="fu">stri_trans_general</span>(Comorbidities, <span class="st">"Latin-ASCII"</span>),</span>
-<span id="cb20-12"><a href="#cb20-12"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Comorbidities)</span>
-<span id="cb20-13"><a href="#cb20-13"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb20-14"><a href="#cb20-14"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Comorbidities) <span class="sc">|&gt;</span> </span>
-<span id="cb20-15"><a href="#cb20-15"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> </span>
-<span id="cb20-16"><a href="#cb20-16"></a>  <span class="co"># dplyr::filter(n &gt; 1) |&gt;</span></span>
-<span id="cb20-17"><a href="#cb20-17"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-8"><a href="#cb20-8"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(Comorbidities, <span class="st">","</span>, <span class="st">";"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a>  tidyr<span class="sc">::</span><span class="fu">separate_longer_delim</span>(<span class="at">cols =</span> Comorbidities, <span class="at">delim =</span> <span class="st">";"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-10"><a href="#cb20-10"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb20-11"><a href="#cb20-11"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_trim</span>(Comorbidities),</span>
+<span id="cb20-12"><a href="#cb20-12"></a>    <span class="at">Comorbidities =</span> stringi<span class="sc">::</span><span class="fu">stri_trans_general</span>(Comorbidities, <span class="st">"Latin-ASCII"</span>),</span>
+<span id="cb20-13"><a href="#cb20-13"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Comorbidities)</span>
+<span id="cb20-14"><a href="#cb20-14"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-15"><a href="#cb20-15"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Comorbidities <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-16"><a href="#cb20-16"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Comorbidities) <span class="sc">|&gt;</span> </span>
+<span id="cb20-17"><a href="#cb20-17"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> </span>
+<span id="cb20-18"><a href="#cb20-18"></a>  <span class="co"># dplyr::filter(n &gt; 1) |&gt;</span></span>
+<span id="cb20-19"><a href="#cb20-19"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 68 × 2
-   Comorbidities                                                  n
-   &lt;chr&gt;                                                      &lt;int&gt;
- 1 Nefropatia                                                    23
- 2 Alergia                                                       21
- 3 Neurologica                                                   20
- 4 Cardiopatia                                                   17
- 5 Hepatopatia                                                   16
- 6 Sindrome genetica                                             14
- 7 Pneumopatia                                                   13
- 8 Anemia                                                        11
- 9 Prematuridade                                                  8
-10 Oncologica                                                     7
-11 Deformidade ossea congenita                                    6
-12 Lupus eritematoso sistemico                                    6
-13 Doenca de via biliar                                           5
-14 Sindrome nefrotica                                             5
-15 Tmo                                                            5
-16 Artrite idiopatica juvenil                                     4
-17 Diabetes tipo i ou ii                                          4
-18 Doenca intestinal                                              4
-19 Hipertensao                                                    4
-20 Sindrome de down                                               3
-21 Esclerodermia sistemica                                        2
-22 Hipotireoidismo                                                2
-23 Imunodeficiencia                                               2
-24 Na                                                             2
-25 Obesidade                                                      2
-26 Sindrome de evans                                              2
-27 Transplante cardiaco                                           2
-28 Transplante hepatico                                           2
-29 Acidemia propionica                                            1
-30 Alergia, cardiopatia, oncologica                               1
-31 Artrite                                                        1
-32 Artrite psoriaca                                               1
-33 Artrite reumatoide juvenil                                     1
-34 Cardiopatia, deformidade ossea congenita                       1
-35 Cardiopatia, doenca renal, pneumopatia, acidose metabolica     1
-36 Coagulopatia                                                   1
-37 Deficiencia de gh                                              1
-38 Deformidade ossea congenita, neurologica                       1
-39 Dermatite atopica                                              1
-40 Dermatopolimiosite                                             1
-41 Desnutricao                                                    1
-42 Distrofia simpatica reflexa                                    1
-43 Doenca de behcet                                               1
-44 Doenca de kawasaki                                             1
-45 Doenca do enxerto contra o hospedeiro                          1
-46 Doenca renal                                                   1
-47 Doenca renal, hepatopatia                                      1
-48 Doenca reumatologica                                           1
-49 Esclerose sistemica                                            1
-50 Fistula enteral de alto debito                                 1
-51 Hematoncologica                                                1
-52 Hipertensao arterial                                           1
-53 Hipogamaglobulinemia                                           1
-54 Hipogamaglobulinemia transitoria da infancia                   1
-55 Infeccoes congenitas                                           1
-56 Insuficiencia renal                                            1
-57 Insuficiencia renal, pneumopatia, hipertensao arterial         1
-58 Insuficiencia renal, sindrome de down                          1
-59 Insuficiencia renal, sindrome genetica                         1
-60 Neurologica, pancitopenia                                      1
-61 Neurologica, sindrome genetica                                 1
-62 Neuropatia em investigacao                                     1
-63 Poliarterite nodosa                                            1
-64 Poliartrite                                                    1
-65 Purpura trombocitopenica imune                                 1
-66 Sindrome da amplificacao dolorosa                              1
-67 Sindrome de kawasaki                                           1
-68 Sindrome hemolitico-uremica                                    1</code></pre>
+<pre><code># A tibble: 60 × 2
+   Comorbidities                                    n
+   &lt;chr&gt;                                        &lt;int&gt;
+ 1 Nefropatia                                      23
+ 2 Neurologica                                     23
+ 3 Alergia                                         22
+ 4 Cardiopatia                                     20
+ 5 Hepatopatia                                     17
+ 6 Sindrome genetica                               16
+ 7 Pneumopatia                                     15
+ 8 Anemia                                          11
+ 9 Deformidade ossea congenita                      8
+10 Oncologica                                       8
+11 Prematuridade                                    8
+12 Lupus eritematoso sistemico                      6
+13 Doenca de via biliar                             5
+14 Sindrome nefrotica                               5
+15 Tmo                                              5
+16 Artrite idiopatica juvenil                       4
+17 Diabetes tipo i ou ii                            4
+18 Doenca intestinal                                4
+19 Hipertensao                                      4
+20 Insuficiencia renal                              4
+21 Sindrome de down                                 4
+22 Doenca renal                                     3
+23 Esclerodermia sistemica                          2
+24 Hipertensao arterial                             2
+25 Hipotireoidismo                                  2
+26 Imunodeficiencia                                 2
+27 Na                                               2
+28 Obesidade                                        2
+29 Sindrome de evans                                2
+30 Transplante cardiaco                             2
+31 Transplante hepatico                             2
+32 Acidemia propionica                              1
+33 Acidose metabolica                               1
+34 Artrite                                          1
+35 Artrite psoriaca                                 1
+36 Artrite reumatoide juvenil                       1
+37 Coagulopatia                                     1
+38 Deficiencia de gh                                1
+39 Dermatite atopica                                1
+40 Dermatopolimiosite                               1
+41 Desnutricao                                      1
+42 Distrofia simpatica reflexa                      1
+43 Doenca de behcet                                 1
+44 Doenca de kawasaki                               1
+45 Doenca do enxerto contra o hospedeiro            1
+46 Doenca reumatologica                             1
+47 Esclerose sistemica                              1
+48 Fistula enteral de alto debito                   1
+49 Hematoncologica                                  1
+50 Hipogamaglobulinemia                             1
+51 Hipogamaglobulinemia transitoria da infancia     1
+52 Infeccoes congenitas                             1
+53 Neuropatia em investigacao                       1
+54 Pancitopenia                                     1
+55 Poliarterite nodosa                              1
+56 Poliartrite                                      1
+57 Purpura trombocitopenica imune                   1
+58 Sindrome da amplificacao dolorosa                1
+59 Sindrome de kawasaki                             1
+60 Sindrome hemolitico-uremica                      1</code></pre>
 </div>
 </div>
 </section>
@@ -1097,7 +1091,7 @@ window.Quarto = {
 #   ¹​`21.1 -  Qual comorbidade o paciente possui?\n\n-Em caso negativo responder com NA`</code></pre>
 </div>
 </div>
-<p>Reunindo os resultados similares em um único grupo, temos 35 diferentes.</p>
+<p>Reunindo os resultados similares em um único grupo, temos 32 diferentes.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1111,36 +1105,38 @@ window.Quarto = {
 <span id="cb50-8"><a href="#cb50-8"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="at">Comorbidities =</span> <span class="st">`</span><span class="at">21.1 -  Qual comorbidade o paciente possui?</span></span>
 <span id="cb50-9"><a href="#cb50-9"></a></span>
 <span id="cb50-10"><a href="#cb50-10"></a><span class="at">-Em caso negativo responder com NA</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb50-11"><a href="#cb50-11"></a>  tidyr<span class="sc">::</span><span class="fu">separate_longer_delim</span>(<span class="at">cols =</span> Comorbidities, <span class="at">delim =</span> <span class="st">";"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb50-12"><a href="#cb50-12"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb50-13"><a href="#cb50-13"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_trim</span>(Comorbidities),</span>
-<span id="cb50-14"><a href="#cb50-14"></a>    <span class="at">Comorbidities =</span> stringi<span class="sc">::</span><span class="fu">stri_trans_general</span>(Comorbidities, <span class="st">"Latin-ASCII"</span>),</span>
-<span id="cb50-15"><a href="#cb50-15"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Comorbidities)</span>
-<span id="cb50-16"><a href="#cb50-16"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb50-17"><a href="#cb50-17"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Comorbidities) <span class="sc">|&gt;</span> </span>
-<span id="cb50-18"><a href="#cb50-18"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> </span>
-<span id="cb50-19"><a href="#cb50-19"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb50-11"><a href="#cb50-11"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_replace_all</span>(Comorbidities, <span class="st">","</span>, <span class="st">";"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb50-12"><a href="#cb50-12"></a>  tidyr<span class="sc">::</span><span class="fu">separate_longer_delim</span>(<span class="at">cols =</span> Comorbidities, <span class="at">delim =</span> <span class="st">";"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb50-13"><a href="#cb50-13"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb50-14"><a href="#cb50-14"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_trim</span>(Comorbidities),</span>
+<span id="cb50-15"><a href="#cb50-15"></a>    <span class="at">Comorbidities =</span> stringi<span class="sc">::</span><span class="fu">stri_trans_general</span>(Comorbidities, <span class="st">"Latin-ASCII"</span>),</span>
+<span id="cb50-16"><a href="#cb50-16"></a>    <span class="at">Comorbidities =</span> stringr<span class="sc">::</span><span class="fu">str_to_sentence</span>(Comorbidities)</span>
+<span id="cb50-17"><a href="#cb50-17"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb50-18"><a href="#cb50-18"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Comorbidities <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">|&gt;</span></span>
+<span id="cb50-19"><a href="#cb50-19"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Comorbidities) <span class="sc">|&gt;</span> </span>
+<span id="cb50-20"><a href="#cb50-20"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(n)) <span class="sc">|&gt;</span> </span>
+<span id="cb50-21"><a href="#cb50-21"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 35 × 2
+<pre><code># A tibble: 32 × 2
    Comorbidities                                    n
    &lt;chr&gt;                                        &lt;int&gt;
  1 Cardiopatia                                      7
  2 Hepatopatia                                      6
  3 Nefropatia                                       6
- 4 Anemia                                           3
- 5 Alergia                                          2
- 6 Doenca de via biliar                             2
- 7 Lupus eritematoso sistemico                      2
- 8 Neurologica                                      2
- 9 Pneumopatia                                      2
-10 Sindrome genetica                                2
-11 Tmo                                              2
-12 Acidemia propionica                              1
-13 Coagulopatia                                     1
-14 Deficiencia de gh                                1
-15 Deformidade ossea congenita                      1
-16 Deformidade ossea congenita, neurologica         1
+ 4 Neurologica                                      5
+ 5 Sindrome genetica                                4
+ 6 Anemia                                           3
+ 7 Insuficiencia renal                              3
+ 8 Alergia                                          2
+ 9 Deformidade ossea congenita                      2
+10 Doenca de via biliar                             2
+11 Lupus eritematoso sistemico                      2
+12 Pneumopatia                                      2
+13 Tmo                                              2
+14 Acidemia propionica                              1
+15 Coagulopatia                                     1
+16 Deficiencia de gh                                1
 17 Dermatite atopica                                1
 18 Diabetes tipo i ou ii                            1
 19 Doenca intestinal                                1
@@ -1148,21 +1144,21 @@ window.Quarto = {
 21 Hipogamaglobulinemia                             1
 22 Hipogamaglobulinemia transitoria da infancia     1
 23 Hipotireoidismo                                  1
-24 Insuficiencia renal                              1
-25 Insuficiencia renal, sindrome de down            1
-26 Insuficiencia renal, sindrome genetica           1
-27 Na                                               1
-28 Neurologica, pancitopenia                        1
-29 Neurologica, sindrome genetica                   1
-30 Neuropatia em investigacao                       1
-# ℹ 5 more rows</code></pre>
+24 Na                                               1
+25 Neuropatia em investigacao                       1
+26 Pancitopenia                                     1
+27 Purpura trombocitopenica imune                   1
+28 Sindrome da amplificacao dolorosa                1
+29 Sindrome de down                                 1
+30 Sindrome de evans                                1
+# ℹ 2 more rows</code></pre>
 </div>
 </div>
 </section>
 </section>
 <section id="análise-dos-menores-de-1-ano" class="level1">
 <h1>3. Análise dos menores de 1 ano</h1>
-<p>A amostragem de menores de 1 ano foi expandida para 63 pacientes. Destes, 23 possuem registro de comorbidades (com destaque para Cardiopatia [4] e Neurológica [4]), 33 não possuem e 7 sem informação. Nenhuma menção de “Prematuridade” foi registrada no campo de comorbidades.</p>
+<p>A amostragem de menores de 1 ano foi expandida para 63 pacientes. Destes, 23 possuem registro de comorbidades (com destaque para Cardiopatia [7] e Neurológica [7]), 33 não possuem e 7 sem informação. Nenhuma menção de “Prematuridade” foi registrada no campo de comorbidades.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
