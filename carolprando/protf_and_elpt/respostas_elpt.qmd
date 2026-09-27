@@ -1439,20 +1439,23 @@ final_results_age |>
 
 ### Age-Specific Clinical Validation: Infection Risk
 
-To ensure biological accuracy, we assessed the clinical impact of ELPT deficiency using the specific thresholds derived for each age cohort (**0.375** for 1-3y, **0.380** for 4-9y, and **0.475** for 10-17y).
+To ensure biological accuracy, we assessed the clinical impact of ELPT deficiency using the specific thresholds derived for each age cohort (**0.455** for < 1y, **0.375** for 1-3y, **0.380** for 4-9y, and **0.475** for 10-17y).
 
 -   **Methodology:** Patients were stratified by age, and "High Risk" status was defined individually for each group based on their specific optimal cutoff. We compared infection prevalence rates between the "High Risk" (Low ELPT) and "Low Risk" (Normal ELPT) groups.
 
 -   **Results by Cohort:**
 
-    1.  **Adolescents (10 to 17 years): A Distinct Clinical Signal**
-        -   **Lower Respiratory Vulnerability:** This age group presented the only statistically significant finding in the analysis ($p = 0.03$).
+    1.  **Infants (< 1 year): Uniform High Risk Distribution**
+        -   **100% High Risk:** All 20 infants with recorded infection history presented ELPT values below the age-specific cutoff of **0.455 g/dL** (range: 0.08 – 0.40 g/dL), placing 100% of them in the "High Risk" group.
+        -   **Methodological Note:** Because there are 0 patients in the "Low Risk" ($\ge 0.455$ g/dL) comparison group, Odds Ratios (OR) and Fisher's exact test cannot be computed mathematically (division by zero). Consequently, this cohort is displayed in the summary table but omitted from the comparative Odds Ratio forest plot.
+    2.  **Adolescents (10 to 17 years): A Distinct Clinical Signal**
+        -   **Lower Respiratory Vulnerability:** This age group presented a statistically significant finding in the analysis ($p = 0.03$).
         -   **The Data:** **50.0%** of adolescents in the "High Risk" group suffered from Lower Respiratory Infections (e.g., Pneumonia/Bronchitis), compared to **0.0%** in the "Low Risk" group.
         -   **Implication:** For adolescents, an ELPT value below 0.475 is a strong specific predictor for lower respiratory susceptibility.
-    2.  **Early Childhood (1 to 3 years): Clinical Trends vs. Statistical Power**
+    3.  **Early Childhood (1 to 3 years): Clinical Trends vs. Statistical Power**
         -   **Sepsis:** A clinically relevant trend was observed where "High Risk" toddlers had a higher rate of Sepsis (**42.86%**) compared to the "Low Risk" group (**27.59%**). However, due to sample size limitations, this did not reach statistical significance ($p = 0.65$).
         -   **Urinary Infections:** Similarly, urinary infections were more frequent in the risk group (42.86% vs 24.14%), though statistically non-significant ($p = 0.37$).
-    3.  **Middle Childhood (4 to 9 years):**
+    4.  **Middle Childhood (4 to 9 years):**
         -   **No Clear Association:** In this intermediate age range, infection rates were variable, with no clear pattern identifying the "High Risk" group as more susceptible to specific infections. For example, lower respiratory infections were actually more common in the "Low Risk" group for this specific cohort.
 
 **Conclusion:** The age-stratified analysis demonstrates that the clinical utility of ELPT varies by developmental stage. While it serves as a broad biochemical screen for all ages, it functions as a **phenotypic predictor for lower respiratory infections specifically in adolescents**. In toddlers (1-3 years), it may flag a general susceptibility to systemic (Sepsis) and urinary infections, though larger sample sizes would be required to confirm this statistically.
