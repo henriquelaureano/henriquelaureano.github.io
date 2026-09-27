@@ -7,7 +7,7 @@ editor: visual
 code-line-numbers: true
 code-fold: true
 code-block-border-left: true
-date-modified: 2026/09/20
+date-modified: 2026/09/27
 editor_options: 
   chunk_output_type: console
 toc: true
@@ -147,22 +147,7 @@ protf <- protf_proxy |>
       "Não" ~ "No",
       .default = `33 - Paciente possui registro de óbito?`
     ),
-    Death_Cause = dplyr::case_when(
-      stringr::str_detect(`33.1 - Causa`, "Cardiopatia") & stringr::str_detect(`33.1 - Causa`, "Infeccioso") ~ "Infectious; Cardiopathy",
-      stringr::str_detect(`33.1 - Causa`, "Infeccioso") & stringr::str_detect(`33.1 - Causa`, "Choque") ~ "Infectious; Hypovolemic Shock",
-      stringr::str_detect(`33.1 - Causa`, "Choque") & stringr::str_detect(`33.1 - Causa`, "cirurgica") ~ "Hypovolemic Shock; Post-surgical Complication",
-      stringr::str_detect(`33.1 - Causa`, "Cardiopatia") ~ "Cardiopathy / Heart Disease",
-      stringr::str_detect(`33.1 - Causa`, "Infeccioso") ~ "Infectious",
-      stringr::str_detect(`33.1 - Causa`, "Renal") ~ "Renal / Kidney Disease",
-      stringr::str_detect(`33.1 - Causa`, "multiplos orgãos") ~ "Multiple Organ Dysfunction",
-      stringr::str_detect(`33.1 - Causa`, "Oncológica") ~ "Oncological / Cancer",
-      stringr::str_detect(`33.1 - Causa`, "cirurgica") ~ "Post-surgical Complication",
-      stringr::str_detect(`33.1 - Causa`, "procedimento") ~ "Post-procedure Complication",
-      stringr::str_detect(`33.1 - Causa`, "Hepática") ~ "Hepatic / Liver Disease",
-      stringr::str_detect(`33.1 - Causa`, "Inconclusivo") ~ "Inconclusive",
-      stringr::str_detect(`33.1 - Causa`, "Metabólica") ~ "Metabolic",
-      TRUE ~ `33.1 - Causa`
-    ),
+    Death_Cause = `33.1 - Causa`,
     Death_Date = `33.2 - Data de óbito`,
     Interval_days = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "days"),
     Interval_months = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "months"),
@@ -476,6 +461,24 @@ protf |>
 protf_deaths <- protf |> dplyr::filter(Death == "Yes")
 
 protf_deaths |>
+  dplyr::mutate(Cause_Raw = `33.1 - Causa`) |>
+  tidyr::separate_rows(Cause_Raw, sep = ";[[:space:]]*") |>
+  dplyr::mutate(
+    Death_Cause = dplyr::case_when(
+      stringr::str_detect(Cause_Raw, "(?i)Cardi") ~ "Cardiopathy / Heart Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Infecc|Infecç") ~ "Infectious",
+      stringr::str_detect(Cause_Raw, "(?i)Choque") ~ "Hypovolemic Shock",
+      stringr::str_detect(Cause_Raw, "(?i)cirurg|procedimento") ~ "Post-surgical / Post-procedure Complication",
+      stringr::str_detect(Cause_Raw, "(?i)multiplos orgãos") ~ "Multiple Organ Dysfunction",
+      stringr::str_detect(Cause_Raw, "(?i)Hepát") ~ "Hepatic / Liver Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Oncológica") ~ "Oncological / Cancer",
+      stringr::str_detect(Cause_Raw, "(?i)Renal") ~ "Renal / Kidney Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Pulmonar") ~ "Pulmonary / Lung Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Inconclusivo") ~ "Inconclusive",
+      stringr::str_detect(Cause_Raw, "(?i)Metabólica") ~ "Metabolic",
+      TRUE ~ Cause_Raw
+    )
+  ) |>
   dplyr::count(Death_Cause, sort = TRUE) |>
   dplyr::mutate(Percentage = round(100 * n / nrow(protf_deaths), 1)) |>
   knitr::kable(col.names = c("Cause of Death", "N", "Percentage (%)"),
@@ -624,17 +627,7 @@ elpt <- elpt_proxy |>
       "Não" ~ "No",
       .default = `33 - Paciente possui registro de óbito?`
     ),
-    Death_Cause = dplyr::case_when(
-      stringr::str_detect(`33.1 - Causa`, "Cardiaca") | stringr::str_detect(`33.1 - Causa`, "Cardiopatia") ~ "Cardiopathy / Heart Disease",
-      stringr::str_detect(`33.1 - Causa`, "cirurgica") ~ "Post-surgical Complication",
-      stringr::str_detect(`33.1 - Causa`, "multiplos orgãos") ~ "Multiple Organ Dysfunction",
-      stringr::str_detect(`33.1 - Causa`, "Hepática") ~ "Hepatic / Liver Disease",
-      stringr::str_detect(`33.1 - Causa`, "Inconclusivo") ~ "Inconclusive",
-      stringr::str_detect(`33.1 - Causa`, "Oncológica") ~ "Oncological / Cancer",
-      stringr::str_detect(`33.1 - Causa`, "Pulmonar") ~ "Pulmonary / Lung Disease",
-      stringr::str_detect(`33.1 - Causa`, "Renal") ~ "Renal / Kidney Disease",
-      TRUE ~ `33.1 - Causa`
-    ),
+    Death_Cause = `33.1 - Causa`,
     Death_Date = `33.2 - Data de óbito`,
     Interval_days = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "days"),
     Interval_months = lubridate::time_length(lubridate::interval(Exam_Date, Death_Date), "months"),
@@ -775,7 +768,7 @@ table_igg_inf_elpt |>
 
 ```
 
-> **Statistical & Odds Ratio Interpretation (ELPT Infection Rates):** - **Traffic Light Zones (Fisher's** $p = 0.7555$): Overall infection rates across ELPT zones (**50.0%** in Red, **58.8%** in Grey) show no statistically significant difference ($p = 0.7555$). - **Binary Cutoff (OR = 1.31, 95% CI: 0.41 – 4.38,** $p = 0.7913$): An Odds Ratio of **1.31** indicates that patients with low ELPT (\< 0.41 g/dL) have **1.31-times higher odds** (31% higher odds) of having an infection (61.9% infection rate, 13/21) compared to patients with normal ELPT ($\ge 0.41$ g/dL, 55.3% infection rate, 26/47). However, because the 95% confidence interval spans across 1.0 (0.41 to 4.38) and $p = 0.7913$, this trend is **not** statistically significant. - **IgG Reference Status (OR = 1.70, 95% CI: 0.56 – 5.40,** $p = 0.3239$): An Odds Ratio of **1.70** means that patients with below-reference IgG have **1.70-times higher odds** (70% higher odds) of experiencing an infection (65.4% infection rate, 17/26) compared to patients with normal IgG levels (52.4% infection rate, 22/42), but this increase is not statistically significant ($p = 0.3239$).
+> **Statistical & Odds Ratio Interpretation (ELPT Infection Rates):** - **Traffic Light Zones (Fisher's** $p = 1.0000$): Overall infection rates across ELPT zones (**57.1%** in Red [16/28], **59.6%** in Grey [31/52], **100.0%** in Green [1/1]) show no statistically significant difference ($p = 1.0000$). - **Binary Cutoff (OR = 1.47, 95% CI: 0.55 – 4.09,** $p = 0.4934$): An Odds Ratio of **1.47** indicates that patients with low ELPT (\< 0.41 g/dL) have **1.47-times higher odds** (47% higher odds) of having an infection (64.7% infection rate, 22/34) compared to patients with normal ELPT ($\ge 0.41$ g/dL, 55.3% infection rate, 26/47). However, because the 95% confidence interval spans across 1.0 (0.55 to 4.09) and $p = 0.4934$, this trend is **not** statistically significant. - **IgG Reference Status (OR = 1.80, 95% CI: 0.68 – 4.95,** $p = 0.2584$): An Odds Ratio of **1.80** means that patients with below-reference IgG have **1.80-times higher odds** (80% higher odds) of experiencing an infection (66.7% infection rate, 26/39) compared to patients with normal IgG levels (52.4% infection rate, 22/42), but this increase is not statistically significant ($p = 0.2584$).
 
 ### b) Infections by Affected System
 
@@ -872,7 +865,9 @@ elpt_systems |>
 
 ```
 
-> **Methodological & Computation Note on Percentages (%):** Each **Rate (%)** column represents the prevalence rate of that specific organ system infection calculated out of the total number of patients within that Traffic Light Zone: - **Red Zone (\< 0.38 g/dL):** Total $N = 16$ patients. (e.g., Upper Respiratory: $3 / 16 = 18.8\%$) - **Grey Zone (0.38 – 0.60 g/dL):** Total $N = 52$ patients. (e.g., Lower Respiratory: $10 / 52 = 19.2\%$) - **Green Zone (\> 0.60 g/dL):** Total $N = 0$ patients in this sub-cohort.
+> **Methodological & Computation Note on Percentages (%):** Each **Rate (%)** column represents the prevalence rate of that specific organ system infection calculated out of the total number of patients within that Traffic Light Zone: - **Red Zone (\< 0.38 g/dL):** Total $N = 28$ patients. (e.g., Urinary Tract: $8 / 28 = 28.6\%$; Gastrointestinal: $5 / 28 = 17.9\%$) - **Grey Zone (0.38 – 0.60 g/dL):** Total $N = 52$ patients. (e.g., Lower Respiratory: $10 / 52 = 19.2\%$) - **Green Zone (\> 0.60 g/dL):** Total $N = 1$ patient.
+>
+> **Statistical Finding:** Gastrointestinal infections (**Fisher's** $p = 0.0070$) and Urinary Tract infections (**Fisher's** $p = 0.0347$) show statistically significant variations across ELPT Traffic Light zones, with Urinary Tract infections occurring in **28.6%** of patients in the Red Zone compared to **9.6%** in the Grey Zone.
 
 ## 3. Outcome Analysis (Deceased vs Alive)
 
@@ -921,7 +916,7 @@ elpt |>
 
 ```
 
-> **Statistical & Odds Ratio Interpretation (ELPT Mortality):** - **IgG Reference Status (OR = 11.85, 95% CI: 1.31 – 577.27,** $p = 0.0107$): An Odds Ratio of **11.85** indicates that patients with below-reference IgG have **nearly 12-times higher odds of death** (23.1% mortality rate, 6/26) compared to patients with normal IgG levels (2.4% mortality rate, 1/42). Because the 95% confidence interval is entirely above 1.0 (1.31 to 577.27) and $p = 0.0107$, this represents a statistically significant, major risk factor for mortality. - **Traffic Light Zones (Fisher's** $p = 0.0064$): Patients in the ELPT Red Zone (\< 0.38 g/dL) present a **31.25%** mortality rate versus 3.8% in the Grey Zone, demonstrating a significant elevation in mortality risk for patients in the lowest ELPT tier.
+> **Statistical & Odds Ratio Interpretation (ELPT Mortality):** - **IgG Reference Status (OR = 10.32, 95% CI: 1.27 – 479.48,** $p = 0.0124$): An Odds Ratio of **10.32** indicates that patients with below-reference IgG have **over 10-times higher odds of death** (20.5% mortality rate, 8/39) compared to patients with normal IgG levels (2.4% mortality rate, 1/42). Because the 95% confidence interval is entirely above 1.0 (1.27 to 479.48) and $p = 0.0124$, this represents a statistically significant, major risk factor for mortality. - **Traffic Light Zones (Fisher's** $p = 0.0117$): Patients in the ELPT Red Zone (\< 0.38 g/dL) present a **25.0%** mortality rate (7/28) versus 3.8% (2/52) in the Grey Zone, demonstrating a significant elevation in mortality risk for patients in the lowest ELPT tier ($p = 0.0117$).
 
 ### b) Registered Causes of Death
 
@@ -930,6 +925,24 @@ elpt |>
 elpt_deaths <- elpt |> dplyr::filter(Death == "Yes")
 
 elpt_deaths |>
+  dplyr::mutate(Cause_Raw = `33.1 - Causa`) |>
+  tidyr::separate_rows(Cause_Raw, sep = ";[[:space:]]*") |>
+  dplyr::mutate(
+    Death_Cause = dplyr::case_when(
+      stringr::str_detect(Cause_Raw, "(?i)Cardi") ~ "Cardiopathy / Heart Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Infecc|Infecç") ~ "Infectious",
+      stringr::str_detect(Cause_Raw, "(?i)Choque") ~ "Hypovolemic Shock",
+      stringr::str_detect(Cause_Raw, "(?i)cirurg|procedimento") ~ "Post-surgical / Post-procedure Complication",
+      stringr::str_detect(Cause_Raw, "(?i)multiplos orgãos") ~ "Multiple Organ Dysfunction",
+      stringr::str_detect(Cause_Raw, "(?i)Hepát") ~ "Hepatic / Liver Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Oncológica") ~ "Oncological / Cancer",
+      stringr::str_detect(Cause_Raw, "(?i)Renal") ~ "Renal / Kidney Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Pulmonar") ~ "Pulmonary / Lung Disease",
+      stringr::str_detect(Cause_Raw, "(?i)Inconclusivo") ~ "Inconclusive",
+      stringr::str_detect(Cause_Raw, "(?i)Metabólica") ~ "Metabolic",
+      TRUE ~ Cause_Raw
+    )
+  ) |>
   dplyr::count(Death_Cause, sort = TRUE) |>
   dplyr::mutate(Percentage = round(100 * n / nrow(elpt_deaths), 1)) |>
   knitr::kable(col.names = c("Cause of Death", "N", "Percentage (%)"),
@@ -979,9 +992,9 @@ elpt_deaths |>
 ```
 
 > **Statistical & Clinical Commentary (Time Interval to Death - ELPT):**
-> - **Dashed Blue Line:** The vertical dashed blue line highlights the **median time interval to death** (**169.0 days** / ~5.6 months post-exam registration).
-> - **Distribution Breakdown:** The average (mean) time to death is **278.7 days** (~9.3 months), with 25% of deaths occurring within **104.0 days** (1st Quartile) and a maximum recorded interval of **898.0 days** (~2.5 years).
-> - **Traffic Light Zone Comparison (Kruskal-Wallis $p = 0.6985$):** Time-to-death intervals did not show a statistically significant difference across ELPT Traffic Light zones ($p = 0.6985$), reflecting sample size limitations ($N = 7$ total deaths in this non-replaced ELPT sub-cohort).
+> - **Dashed Blue Line:** The vertical dashed blue line highlights the **median time interval to death** (**109.0 days** / ~3.6 months post-exam registration).
+> - **Distribution Breakdown:** The average (mean) time to death is **230.8 days** (~7.7 months), with 25% of deaths occurring within **92.0 days** (1st Quartile) and a maximum recorded interval of **898.0 days** (~2.5 years).
+> - **Traffic Light Zone Comparison (Kruskal-Wallis $p = 0.3798$):** Time-to-death intervals did not show a statistically significant difference across ELPT Traffic Light zones ($p = 0.3798$), reflecting sample size limitations ($N = 9$ total deaths in this non-replaced ELPT sub-cohort).
 
 ---
 
@@ -1071,7 +1084,7 @@ tidy_elpt_multi <- broom::tidy(m_elpt_multi, exponentiate = FALSE, conf.int = TR
   dplyr::select(Term, `Coefficient (B)` = estimate_fmt, `Std. Error` = std_error_fmt, `Adjusted OR (95% CI)`, `p-value`)
 
 tidy_elpt_multi |>
-  knitr::kable(caption = "Multivariable Logistic Regression Model for Mortality (ELPT Cohort, N = 68)") |>
+  knitr::kable(caption = "Multivariable Logistic Regression Model for Mortality (ELPT Cohort, N = 81)") |>
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
@@ -1081,16 +1094,16 @@ tidy_elpt_multi |>
 #### 1. Independent Prognostic Value of Calculated Globulin (PROTF)
 * **Statistical Result:** $\text{aOR} = 0.12$ ($95\%\text{ CI: } 0.02 - 0.61, p = 0.0150$).
 * **Clinical Meaning:** Serum Calculated globulin is a **statistically significant independent predictor of mortality**, even after adjusting for IgG reference status and infection history.
-* **Interpretation of Odds:** Each $1\text{ g/dL}$ increase in PROTF reduces the odds of death by $88\%$ ($\text{aOR} = 0.12$). Inversely, **each $1\text{ g/dL}$ decrease in PROTF multiplies the odds of death by $8.33\text{ times}$** ($1 / 0.12 = 8.33, 95\%\text{ CI: } 1.64 - 50.00$).
+* **Interpretation of Odds:** Each $1\text{ g/dL}$ increase in PROTF reduces the odds of death by $88\%$ ($\text{aOR} = 0.12$). Inversely, **each $1\text{ g/dL}$ decrease in PROTF multiplies the odds of death by $8.64\text{ times}$** ($1 / 0.12 = 8.64, 95\%\text{ CI: } 1.63 - 53.76$).
 
 #### 2. Independent Prognostic Value of IgG Reference Status
 * **PROTF Cohort Result:** $\text{aOR} = 5.78$ ($95\%\text{ CI: } 2.06 - 19.08, p = 0.0017$).
-* **ELPT Cohort Result:** $\text{aOR} = 8.55$ ($95\%\text{ CI: } 1.05 - 178.65, p = 0.0699$).
-* **Clinical Meaning:** Among patients with identical PROTF levels and the same infection status, having below-reference IgG independently increases mortality odds by **5.78 times** in the PROTF cohort and **8.55 times** in the ELPT cohort.
+* **ELPT Cohort Result:** $\text{aOR} = 6.62$ ($95\%\text{ CI: } 0.81 - 138.83, p = 0.1114$).
+* **Clinical Meaning:** Among patients with identical PROTF levels and the same infection status, having below-reference IgG independently increases mortality odds by **5.78 times** in the PROTF cohort and **6.62 times** in the ELPT cohort.
 
 #### 3. Role of Infection History
-* **Result:** $\text{aOR} = 1.45$ ($95\%\text{ CI: } 0.60 - 3.59, p = 0.4095$ in PROTF; $95\%\text{ CI: } 0.25 - 11.61, p = 0.6894$ in ELPT).
-* **Clinical Meaning:** Experiencing an infection shows a positive trend toward higher mortality ($45\%$ higher adjusted odds), but this effect does not reach statistical significance after accounting for underlying protein levels and IgG deficiency.
+* **Result:** $\text{aOR} = 1.45$ ($95\%\text{ CI: } 0.60 - 3.59, p = 0.4095$ in PROTF; $\text{aOR} = 1.87, 95\%\text{ CI: } 0.37 - 13.97, p = 0.4768$ in ELPT).
+* **Clinical Meaning:** Experiencing an infection shows a positive trend toward higher mortality ($45\%$ higher adjusted odds in PROTF; $87\%$ higher adjusted odds in ELPT), but this effect does not reach statistical significance after accounting for underlying protein levels and IgG deficiency.
 
 ---
 
@@ -1145,7 +1158,7 @@ tbl_4way_elpt |>
 * However, if Grey Zone patients had **Below-Reference IgG**, mortality jumped dramatically to **26.1%** without infection and **46.4%** with infection.
 
 #### 3. ELPT Pattern Consistency
-* In the **ELPT Red Zone (< 0.38 g/dL)**, mortality occurred exclusively in patients with Below-Reference IgG (**33.3% – 37.5%**), whereas patients with Normal IgG in the Grey Zone presented low mortality (**0.0% – 4.5%**).
+* In the **ELPT Red Zone (< 0.38 g/dL)**, mortality occurred exclusively in patients with Below-Reference IgG (**20.0%** without infection [$2/10$], **31.2%** with infection [$5/16$]), whereas patients with Normal IgG in the Red Zone presented **0.0%** mortality ($0/2$) and patients in the Grey Zone presented low mortality (**0.0% – 11.1%**).
 
 ---
 
@@ -1154,7 +1167,7 @@ tbl_4way_elpt |>
 This document applies a quantitative methodological framework to evaluate the diagnostic utility, infection association, and prognostic mortality risk of serum **Calculated Globulin (PROTF)** and **Gamma Fraction (ELPT)** in relation to serum **IgG dosage**.
 
 ### 1. Target Sub-Cohort Selection & Preprocessing
-* **Sub-cohort Definition:** Analysis is strictly conducted on patients with recorded serum IgG measurements and **no immunoglobulin replacement therapy within 30 days prior to the exam** ($n = 138$ for PROTF, $n = 68$ for ELPT). This isolates true baseline endogenous protein levels, removing treatment-induced confounding.
+* **Sub-cohort Definition:** Analysis is strictly conducted on patients with recorded serum IgG measurements and **no immunoglobulin replacement therapy within 30 days prior to the exam** ($n = 138$ for PROTF, $n = 81$ for ELPT). This isolates true baseline endogenous protein levels, removing treatment-induced confounding.
 * **Data Processing & Wrangling:** Data cleaning, string parsing, and dataset merging were conducted using `dplyr`, `tidyr`, and `stringr`. Temporal interval calculations between exam dates and death registration dates were computed using `lubridate`.
 
 ### 2. Diagnostic Thresholds & Traffic Light System (3 Variants / Zones)

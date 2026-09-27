@@ -204,7 +204,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">September 20, 2026</p>
+      <p class="date-modified">September 27, 2026</p>
     </div>
   </div>
     
@@ -345,27 +345,12 @@ window.Quarto = {
 <span id="cb2-86"><a href="#cb2-86"></a>      <span class="st">"Não"</span> <span class="sc">~</span> <span class="st">"No"</span>,</span>
 <span id="cb2-87"><a href="#cb2-87"></a>      <span class="at">.default =</span> <span class="st">`</span><span class="at">33 - Paciente possui registro de óbito?</span><span class="st">`</span></span>
 <span id="cb2-88"><a href="#cb2-88"></a>    ),</span>
-<span id="cb2-89"><a href="#cb2-89"></a>    <span class="at">Death_Cause =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb2-90"><a href="#cb2-90"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Cardiopatia"</span>) <span class="sc">&amp;</span> stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Infeccioso"</span>) <span class="sc">~</span> <span class="st">"Infectious; Cardiopathy"</span>,</span>
-<span id="cb2-91"><a href="#cb2-91"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Infeccioso"</span>) <span class="sc">&amp;</span> stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Choque"</span>) <span class="sc">~</span> <span class="st">"Infectious; Hypovolemic Shock"</span>,</span>
-<span id="cb2-92"><a href="#cb2-92"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Choque"</span>) <span class="sc">&amp;</span> stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"cirurgica"</span>) <span class="sc">~</span> <span class="st">"Hypovolemic Shock; Post-surgical Complication"</span>,</span>
-<span id="cb2-93"><a href="#cb2-93"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Cardiopatia"</span>) <span class="sc">~</span> <span class="st">"Cardiopathy / Heart Disease"</span>,</span>
-<span id="cb2-94"><a href="#cb2-94"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Infeccioso"</span>) <span class="sc">~</span> <span class="st">"Infectious"</span>,</span>
-<span id="cb2-95"><a href="#cb2-95"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Renal"</span>) <span class="sc">~</span> <span class="st">"Renal / Kidney Disease"</span>,</span>
-<span id="cb2-96"><a href="#cb2-96"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"multiplos orgãos"</span>) <span class="sc">~</span> <span class="st">"Multiple Organ Dysfunction"</span>,</span>
-<span id="cb2-97"><a href="#cb2-97"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Oncológica"</span>) <span class="sc">~</span> <span class="st">"Oncological / Cancer"</span>,</span>
-<span id="cb2-98"><a href="#cb2-98"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"cirurgica"</span>) <span class="sc">~</span> <span class="st">"Post-surgical Complication"</span>,</span>
-<span id="cb2-99"><a href="#cb2-99"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"procedimento"</span>) <span class="sc">~</span> <span class="st">"Post-procedure Complication"</span>,</span>
-<span id="cb2-100"><a href="#cb2-100"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Hepática"</span>) <span class="sc">~</span> <span class="st">"Hepatic / Liver Disease"</span>,</span>
-<span id="cb2-101"><a href="#cb2-101"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Inconclusivo"</span>) <span class="sc">~</span> <span class="st">"Inconclusive"</span>,</span>
-<span id="cb2-102"><a href="#cb2-102"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Metabólica"</span>) <span class="sc">~</span> <span class="st">"Metabolic"</span>,</span>
-<span id="cb2-103"><a href="#cb2-103"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span></span>
-<span id="cb2-104"><a href="#cb2-104"></a>    ),</span>
-<span id="cb2-105"><a href="#cb2-105"></a>    <span class="at">Death_Date =</span> <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>,</span>
-<span id="cb2-106"><a href="#cb2-106"></a>    <span class="at">Interval_days =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"days"</span>),</span>
-<span id="cb2-107"><a href="#cb2-107"></a>    <span class="at">Interval_months =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"months"</span>),</span>
-<span id="cb2-108"><a href="#cb2-108"></a>    <span class="at">Interval_years =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"years"</span>)</span>
-<span id="cb2-109"><a href="#cb2-109"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-89"><a href="#cb2-89"></a>    <span class="at">Death_Cause =</span> <span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>,</span>
+<span id="cb2-90"><a href="#cb2-90"></a>    <span class="at">Death_Date =</span> <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>,</span>
+<span id="cb2-91"><a href="#cb2-91"></a>    <span class="at">Interval_days =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"days"</span>),</span>
+<span id="cb2-92"><a href="#cb2-92"></a>    <span class="at">Interval_months =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"months"</span>),</span>
+<span id="cb2-93"><a href="#cb2-93"></a>    <span class="at">Interval_years =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"years"</span>)</span>
+<span id="cb2-94"><a href="#cb2-94"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="correlation-between-protf-and-igg-dosage" class="level2">
@@ -995,11 +980,29 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>protf_deaths <span class="ot">&lt;-</span> protf <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Death <span class="sc">==</span> <span class="st">"Yes"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2"></a></span>
 <span id="cb12-3"><a href="#cb12-3"></a>protf_deaths <span class="sc">|&gt;</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Death_Cause, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-5"><a href="#cb12-5"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">nrow</span>(protf_deaths), <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Cause of Death"</span>, <span class="st">"N"</span>, <span class="st">"Percentage (%)"</span>),</span>
-<span id="cb12-7"><a href="#cb12-7"></a>               <span class="at">caption =</span> <span class="st">"Primary Causes of Death (PROTF Cohort)"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-8"><a href="#cb12-8"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-4"><a href="#cb12-4"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Cause_Raw =</span> <span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a>  tidyr<span class="sc">::</span><span class="fu">separate_rows</span>(Cause_Raw, <span class="at">sep =</span> <span class="st">";[[:space:]]*"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb12-7"><a href="#cb12-7"></a>    <span class="at">Death_Cause =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb12-8"><a href="#cb12-8"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Cardi"</span>) <span class="sc">~</span> <span class="st">"Cardiopathy / Heart Disease"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Infecc|Infecç"</span>) <span class="sc">~</span> <span class="st">"Infectious"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Choque"</span>) <span class="sc">~</span> <span class="st">"Hypovolemic Shock"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)cirurg|procedimento"</span>) <span class="sc">~</span> <span class="st">"Post-surgical / Post-procedure Complication"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)multiplos orgãos"</span>) <span class="sc">~</span> <span class="st">"Multiple Organ Dysfunction"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Hepát"</span>) <span class="sc">~</span> <span class="st">"Hepatic / Liver Disease"</span>,</span>
+<span id="cb12-14"><a href="#cb12-14"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Oncológica"</span>) <span class="sc">~</span> <span class="st">"Oncological / Cancer"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Renal"</span>) <span class="sc">~</span> <span class="st">"Renal / Kidney Disease"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Pulmonar"</span>) <span class="sc">~</span> <span class="st">"Pulmonary / Lung Disease"</span>,</span>
+<span id="cb12-17"><a href="#cb12-17"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Inconclusivo"</span>) <span class="sc">~</span> <span class="st">"Inconclusive"</span>,</span>
+<span id="cb12-18"><a href="#cb12-18"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Metabólica"</span>) <span class="sc">~</span> <span class="st">"Metabolic"</span>,</span>
+<span id="cb12-19"><a href="#cb12-19"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> Cause_Raw</span>
+<span id="cb12-20"><a href="#cb12-20"></a>    )</span>
+<span id="cb12-21"><a href="#cb12-21"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb12-22"><a href="#cb12-22"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Death_Cause, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-23"><a href="#cb12-23"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">nrow</span>(protf_deaths), <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-24"><a href="#cb12-24"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Cause of Death"</span>, <span class="st">"N"</span>, <span class="st">"Percentage (%)"</span>),</span>
+<span id="cb12-25"><a href="#cb12-25"></a>               <span class="at">caption =</span> <span class="st">"Primary Causes of Death (PROTF Cohort)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-26"><a href="#cb12-26"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped table-hover table-condensed caption-top table-sm small">
@@ -1014,13 +1017,13 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Infectious</td>
-<td style="text-align: right;">12</td>
-<td style="text-align: right;">33.3</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">38.9</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Cardiopathy / Heart Disease</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">30.6</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">33.3</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Multiple Organ Dysfunction</td>
@@ -1028,41 +1031,26 @@ window.Quarto = {
 <td style="text-align: right;">11.1</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Post-surgical / Post-procedure Complication</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8.3</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Hepatic / Liver Disease</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">5.6</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">Hypovolemic Shock; Post-surgical Complication</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2.8</td>
-</tr>
 <tr class="even">
-<td style="text-align: left;">Infectious; Cardiopathy</td>
+<td style="text-align: left;">Hypovolemic Shock</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2.8</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Infectious; Hypovolemic Shock</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2.8</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">Oncological / Cancer</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2.8</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">Post-procedure Complication</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2.8</td>
-</tr>
 <tr class="even">
-<td style="text-align: left;">Post-surgical Complication</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2.8</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">Renal / Kidney Disease</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2.8</td>
@@ -1251,22 +1239,12 @@ window.Quarto = {
 <span id="cb15-90"><a href="#cb15-90"></a>      <span class="st">"Não"</span> <span class="sc">~</span> <span class="st">"No"</span>,</span>
 <span id="cb15-91"><a href="#cb15-91"></a>      <span class="at">.default =</span> <span class="st">`</span><span class="at">33 - Paciente possui registro de óbito?</span><span class="st">`</span></span>
 <span id="cb15-92"><a href="#cb15-92"></a>    ),</span>
-<span id="cb15-93"><a href="#cb15-93"></a>    <span class="at">Death_Cause =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb15-94"><a href="#cb15-94"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Cardiaca"</span>) <span class="sc">|</span> stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Cardiopatia"</span>) <span class="sc">~</span> <span class="st">"Cardiopathy / Heart Disease"</span>,</span>
-<span id="cb15-95"><a href="#cb15-95"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"cirurgica"</span>) <span class="sc">~</span> <span class="st">"Post-surgical Complication"</span>,</span>
-<span id="cb15-96"><a href="#cb15-96"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"multiplos orgãos"</span>) <span class="sc">~</span> <span class="st">"Multiple Organ Dysfunction"</span>,</span>
-<span id="cb15-97"><a href="#cb15-97"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Hepática"</span>) <span class="sc">~</span> <span class="st">"Hepatic / Liver Disease"</span>,</span>
-<span id="cb15-98"><a href="#cb15-98"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Inconclusivo"</span>) <span class="sc">~</span> <span class="st">"Inconclusive"</span>,</span>
-<span id="cb15-99"><a href="#cb15-99"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Oncológica"</span>) <span class="sc">~</span> <span class="st">"Oncological / Cancer"</span>,</span>
-<span id="cb15-100"><a href="#cb15-100"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Pulmonar"</span>) <span class="sc">~</span> <span class="st">"Pulmonary / Lung Disease"</span>,</span>
-<span id="cb15-101"><a href="#cb15-101"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(<span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>, <span class="st">"Renal"</span>) <span class="sc">~</span> <span class="st">"Renal / Kidney Disease"</span>,</span>
-<span id="cb15-102"><a href="#cb15-102"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span></span>
-<span id="cb15-103"><a href="#cb15-103"></a>    ),</span>
-<span id="cb15-104"><a href="#cb15-104"></a>    <span class="at">Death_Date =</span> <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>,</span>
-<span id="cb15-105"><a href="#cb15-105"></a>    <span class="at">Interval_days =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"days"</span>),</span>
-<span id="cb15-106"><a href="#cb15-106"></a>    <span class="at">Interval_months =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"months"</span>),</span>
-<span id="cb15-107"><a href="#cb15-107"></a>    <span class="at">Interval_years =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"years"</span>)</span>
-<span id="cb15-108"><a href="#cb15-108"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-93"><a href="#cb15-93"></a>    <span class="at">Death_Cause =</span> <span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>,</span>
+<span id="cb15-94"><a href="#cb15-94"></a>    <span class="at">Death_Date =</span> <span class="st">`</span><span class="at">33.2 - Data de óbito</span><span class="st">`</span>,</span>
+<span id="cb15-95"><a href="#cb15-95"></a>    <span class="at">Interval_days =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"days"</span>),</span>
+<span id="cb15-96"><a href="#cb15-96"></a>    <span class="at">Interval_months =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"months"</span>),</span>
+<span id="cb15-97"><a href="#cb15-97"></a>    <span class="at">Interval_years =</span> lubridate<span class="sc">::</span><span class="fu">time_length</span>(lubridate<span class="sc">::</span><span class="fu">interval</span>(Exam_Date, Death_Date), <span class="st">"years"</span>)</span>
+<span id="cb15-98"><a href="#cb15-98"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="correlation-between-elpt-and-igg-dosage" class="level2">
@@ -1386,18 +1364,18 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Red (&lt; 0.38)</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">8</td>
+<td style="text-align: right;">12</td>
 <td style="text-align: right;">16</td>
-<td style="text-align: right;">50.0</td>
-<td style="text-align: left;">0.7555</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">57.1</td>
+<td style="text-align: left;">1.0000</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Grey (0.38 - 0.6)</td>
 <td style="text-align: right;">21</td>
-<td style="text-align: right;">30</td>
-<td style="text-align: right;">51</td>
-<td style="text-align: right;">58.8</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">59.6</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
@@ -1451,12 +1429,12 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Below Cutoff (&lt; 0.41)</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">13</td>
-<td style="text-align: right;">21</td>
-<td style="text-align: right;">61.9</td>
-<td style="text-align: left;">1.31 (0.41 - 4.38)</td>
-<td style="text-align: left;">0.7913</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">64.7</td>
+<td style="text-align: left;">1.47 (0.55 - 4.09)</td>
+<td style="text-align: left;">0.4934</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Normal (&gt;= 0.41)</td>
@@ -1511,12 +1489,12 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Below reference</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">17</td>
+<td style="text-align: right;">13</td>
 <td style="text-align: right;">26</td>
-<td style="text-align: right;">65.4</td>
-<td style="text-align: left;">1.70 (0.56 - 5.40)</td>
-<td style="text-align: left;">0.3239</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">66.7</td>
+<td style="text-align: left;">1.80 (0.68 - 4.95)</td>
+<td style="text-align: left;">0.2584</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Normal</td>
@@ -1532,7 +1510,7 @@ window.Quarto = {
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Statistical &amp; Odds Ratio Interpretation (ELPT Infection Rates):</strong> - <strong>Traffic Light Zones (Fisher’s</strong> <span class="math inline">\(p = 0.7555\)</span>): Overall infection rates across ELPT zones (<strong>50.0%</strong> in Red, <strong>58.8%</strong> in Grey) show no statistically significant difference (<span class="math inline">\(p = 0.7555\)</span>). - <strong>Binary Cutoff (OR = 1.31, 95% CI: 0.41 – 4.38,</strong> <span class="math inline">\(p = 0.7913\)</span>): An Odds Ratio of <strong>1.31</strong> indicates that patients with low ELPT (&lt; 0.41 g/dL) have <strong>1.31-times higher odds</strong> (31% higher odds) of having an infection (61.9% infection rate, 13/21) compared to patients with normal ELPT (<span class="math inline">\(\ge 0.41\)</span> g/dL, 55.3% infection rate, 26/47). However, because the 95% confidence interval spans across 1.0 (0.41 to 4.38) and <span class="math inline">\(p = 0.7913\)</span>, this trend is <strong>not</strong> statistically significant. - <strong>IgG Reference Status (OR = 1.70, 95% CI: 0.56 – 5.40,</strong> <span class="math inline">\(p = 0.3239\)</span>): An Odds Ratio of <strong>1.70</strong> means that patients with below-reference IgG have <strong>1.70-times higher odds</strong> (70% higher odds) of experiencing an infection (65.4% infection rate, 17/26) compared to patients with normal IgG levels (52.4% infection rate, 22/42), but this increase is not statistically significant (<span class="math inline">\(p = 0.3239\)</span>).</p>
+<p><strong>Statistical &amp; Odds Ratio Interpretation (ELPT Infection Rates):</strong> - <strong>Traffic Light Zones (Fisher’s</strong> <span class="math inline">\(p = 1.0000\)</span>): Overall infection rates across ELPT zones (<strong>57.1%</strong> in Red [16/28], <strong>59.6%</strong> in Grey [31/52], <strong>100.0%</strong> in Green [1/1]) show no statistically significant difference (<span class="math inline">\(p = 1.0000\)</span>). - <strong>Binary Cutoff (OR = 1.47, 95% CI: 0.55 – 4.09,</strong> <span class="math inline">\(p = 0.4934\)</span>): An Odds Ratio of <strong>1.47</strong> indicates that patients with low ELPT (&lt; 0.41 g/dL) have <strong>1.47-times higher odds</strong> (47% higher odds) of having an infection (64.7% infection rate, 22/34) compared to patients with normal ELPT (<span class="math inline">\(\ge 0.41\)</span> g/dL, 55.3% infection rate, 26/47). However, because the 95% confidence interval spans across 1.0 (0.55 to 4.09) and <span class="math inline">\(p = 0.4934\)</span>, this trend is <strong>not</strong> statistically significant. - <strong>IgG Reference Status (OR = 1.80, 95% CI: 0.68 – 4.95,</strong> <span class="math inline">\(p = 0.2584\)</span>): An Odds Ratio of <strong>1.80</strong> means that patients with below-reference IgG have <strong>1.80-times higher odds</strong> (80% higher odds) of experiencing an infection (66.7% infection rate, 26/39) compared to patients with normal IgG levels (52.4% infection rate, 22/42), but this increase is not statistically significant (<span class="math inline">\(p = 0.2584\)</span>).</p>
 </blockquote>
 </section>
 <section id="b-infections-by-affected-system-1" class="level3">
@@ -1611,13 +1589,13 @@ window.Quarto = {
 </details>
 <div class="cell-output-display">
 <table class="table table-striped table-hover table-condensed caption-top table-sm small">
-<caption>Infection Frequency by Affected Body System and Traffic Light Zone (ELPT; Total Cohort N = 68)</caption>
+<caption>Infection Frequency by Affected Body System and Traffic Light Zone (ELPT; Total Cohort N = 81)</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Affected System</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Red Cases (N=16)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Red Cases (N=28)</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">Red Rate (%)</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Grey Cases (N=51)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Grey Cases (N=52)</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">Grey Rate (%)</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">Fisher p-value</th>
 </tr>
@@ -1625,67 +1603,67 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Central Nervous System</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">10.7</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">3.9</td>
-<td style="text-align: left;">0.5558</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: left;">0.3910</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Gastrointestinal Tract</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">17.9</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">12.5</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">3.9</td>
-<td style="text-align: left;">0.0279</td>
+<td style="text-align: right;">3.8</td>
+<td style="text-align: left;">0.0070</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Lower Respiratory Tract</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.6</td>
 <td style="text-align: right;">10</td>
-<td style="text-align: right;">19.6</td>
-<td style="text-align: left;">0.1019</td>
+<td style="text-align: right;">19.2</td>
+<td style="text-align: left;">0.0838</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Other</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">25.0</td>
-<td style="text-align: right;">16</td>
-<td style="text-align: right;">31.4</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">32.1</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">32.7</td>
 <td style="text-align: left;">1.0000</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Sepsis</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">10.7</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;">15.7</td>
-<td style="text-align: left;">1.0000</td>
+<td style="text-align: right;">15.4</td>
+<td style="text-align: left;">0.7882</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Skin</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">3.6</td>
 <td style="text-align: right;">5</td>
-<td style="text-align: right;">9.8</td>
-<td style="text-align: left;">1.0000</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: left;">0.6923</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Upper Respiratory Tract</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">18.8</td>
 <td style="text-align: right;">4</td>
-<td style="text-align: right;">7.8</td>
-<td style="text-align: left;">0.2994</td>
+<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">7.7</td>
+<td style="text-align: left;">0.5137</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Urinary Tract</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">18.8</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">28.6</td>
 <td style="text-align: right;">5</td>
-<td style="text-align: right;">9.8</td>
-<td style="text-align: left;">0.4651</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: left;">0.0347</td>
 </tr>
 </tbody>
 </table>
@@ -1720,7 +1698,8 @@ window.Quarto = {
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Methodological &amp; Computation Note on Percentages (%):</strong> Each <strong>Rate (%)</strong> column represents the prevalence rate of that specific organ system infection calculated out of the total number of patients within that Traffic Light Zone: - <strong>Red Zone (&lt; 0.38 g/dL):</strong> Total <span class="math inline">\(N = 16\)</span> patients. (e.g., Upper Respiratory: <span class="math inline">\(3 / 16 = 18.8\%\)</span>) - <strong>Grey Zone (0.38 – 0.60 g/dL):</strong> Total <span class="math inline">\(N = 52\)</span> patients. (e.g., Lower Respiratory: <span class="math inline">\(10 / 52 = 19.2\%\)</span>) - <strong>Green Zone (&gt; 0.60 g/dL):</strong> Total <span class="math inline">\(N = 0\)</span> patients in this sub-cohort.</p>
+<p><strong>Methodological &amp; Computation Note on Percentages (%):</strong> Each <strong>Rate (%)</strong> column represents the prevalence rate of that specific organ system infection calculated out of the total number of patients within that Traffic Light Zone: - <strong>Red Zone (&lt; 0.38 g/dL):</strong> Total <span class="math inline">\(N = 28\)</span> patients. (e.g., Urinary Tract: <span class="math inline">\(8 / 28 = 28.6\%\)</span>; Gastrointestinal: <span class="math inline">\(5 / 28 = 17.9\%\)</span>) - <strong>Grey Zone (0.38 – 0.60 g/dL):</strong> Total <span class="math inline">\(N = 52\)</span> patients. (e.g., Lower Respiratory: <span class="math inline">\(10 / 52 = 19.2\%\)</span>) - <strong>Green Zone (&gt; 0.60 g/dL):</strong> Total <span class="math inline">\(N = 1\)</span> patient.</p>
+<p><strong>Statistical Finding:</strong> Gastrointestinal infections (<strong>Fisher’s</strong> <span class="math inline">\(p = 0.0070\)</span>) and Urinary Tract infections (<strong>Fisher’s</strong> <span class="math inline">\(p = 0.0347\)</span>) show statistically significant variations across ELPT Traffic Light zones, with Urinary Tract infections occurring in <strong>28.6%</strong> of patients in the Red Zone compared to <strong>9.6%</strong> in the Grey Zone.</p>
 </blockquote>
 </section>
 </section>
@@ -1765,18 +1744,18 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Red (&lt; 0.38)</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">16</td>
-<td style="text-align: right;">31.2</td>
-<td style="text-align: left;">0.0088</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">25.0</td>
+<td style="text-align: left;">0.0117</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Grey (0.38 - 0.6)</td>
-<td style="text-align: right;">49</td>
+<td style="text-align: right;">50</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">51</td>
-<td style="text-align: right;">3.9</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">3.8</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
@@ -1829,12 +1808,12 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Below reference</td>
-<td style="text-align: right;">20</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">26</td>
-<td style="text-align: right;">23.1</td>
-<td style="text-align: left;">11.85 (1.31 - 577.27)</td>
-<td style="text-align: left;">0.0107</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">20.5</td>
+<td style="text-align: left;">10.32 (1.27 - 479.48)</td>
+<td style="text-align: left;">0.0124</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Normal</td>
@@ -1850,7 +1829,7 @@ window.Quarto = {
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Statistical &amp; Odds Ratio Interpretation (ELPT Mortality):</strong> - <strong>IgG Reference Status (OR = 11.85, 95% CI: 1.31 – 577.27,</strong> <span class="math inline">\(p = 0.0107\)</span>): An Odds Ratio of <strong>11.85</strong> indicates that patients with below-reference IgG have <strong>nearly 12-times higher odds of death</strong> (23.1% mortality rate, 6/26) compared to patients with normal IgG levels (2.4% mortality rate, 1/42). Because the 95% confidence interval is entirely above 1.0 (1.31 to 577.27) and <span class="math inline">\(p = 0.0107\)</span>, this represents a statistically significant, major risk factor for mortality. - <strong>Traffic Light Zones (Fisher’s</strong> <span class="math inline">\(p = 0.0064\)</span>): Patients in the ELPT Red Zone (&lt; 0.38 g/dL) present a <strong>31.25%</strong> mortality rate versus 3.8% in the Grey Zone, demonstrating a significant elevation in mortality risk for patients in the lowest ELPT tier.</p>
+<p><strong>Statistical &amp; Odds Ratio Interpretation (ELPT Mortality):</strong> - <strong>IgG Reference Status (OR = 10.32, 95% CI: 1.27 – 479.48,</strong> <span class="math inline">\(p = 0.0124\)</span>): An Odds Ratio of <strong>10.32</strong> indicates that patients with below-reference IgG have <strong>over 10-times higher odds of death</strong> (20.5% mortality rate, 8/39) compared to patients with normal IgG levels (2.4% mortality rate, 1/42). Because the 95% confidence interval is entirely above 1.0 (1.27 to 479.48) and <span class="math inline">\(p = 0.0124\)</span>, this represents a statistically significant, major risk factor for mortality. - <strong>Traffic Light Zones (Fisher’s</strong> <span class="math inline">\(p = 0.0117\)</span>): Patients in the ELPT Red Zone (&lt; 0.38 g/dL) present a <strong>25.0%</strong> mortality rate (7/28) versus 3.8% (2/52) in the Grey Zone, demonstrating a significant elevation in mortality risk for patients in the lowest ELPT tier (<span class="math inline">\(p = 0.0117\)</span>).</p>
 </blockquote>
 </section>
 <section id="b-registered-causes-of-death-1" class="level3">
@@ -1861,11 +1840,29 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>elpt_deaths <span class="ot">&lt;-</span> elpt <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Death <span class="sc">==</span> <span class="st">"Yes"</span>)</span>
 <span id="cb25-2"><a href="#cb25-2"></a></span>
 <span id="cb25-3"><a href="#cb25-3"></a>elpt_deaths <span class="sc">|&gt;</span></span>
-<span id="cb25-4"><a href="#cb25-4"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Death_Cause, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb25-5"><a href="#cb25-5"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt_deaths), <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb25-6"><a href="#cb25-6"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Cause of Death"</span>, <span class="st">"N"</span>, <span class="st">"Percentage (%)"</span>),</span>
-<span id="cb25-7"><a href="#cb25-7"></a>               <span class="at">caption =</span> <span class="st">"Primary Causes of Death (ELPT Cohort)"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb25-8"><a href="#cb25-8"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-4"><a href="#cb25-4"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Cause_Raw =</span> <span class="st">`</span><span class="at">33.1 - Causa</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a>  tidyr<span class="sc">::</span><span class="fu">separate_rows</span>(Cause_Raw, <span class="at">sep =</span> <span class="st">";[[:space:]]*"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb25-7"><a href="#cb25-7"></a>    <span class="at">Death_Cause =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb25-8"><a href="#cb25-8"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Cardi"</span>) <span class="sc">~</span> <span class="st">"Cardiopathy / Heart Disease"</span>,</span>
+<span id="cb25-9"><a href="#cb25-9"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Infecc|Infecç"</span>) <span class="sc">~</span> <span class="st">"Infectious"</span>,</span>
+<span id="cb25-10"><a href="#cb25-10"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Choque"</span>) <span class="sc">~</span> <span class="st">"Hypovolemic Shock"</span>,</span>
+<span id="cb25-11"><a href="#cb25-11"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)cirurg|procedimento"</span>) <span class="sc">~</span> <span class="st">"Post-surgical / Post-procedure Complication"</span>,</span>
+<span id="cb25-12"><a href="#cb25-12"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)multiplos orgãos"</span>) <span class="sc">~</span> <span class="st">"Multiple Organ Dysfunction"</span>,</span>
+<span id="cb25-13"><a href="#cb25-13"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Hepát"</span>) <span class="sc">~</span> <span class="st">"Hepatic / Liver Disease"</span>,</span>
+<span id="cb25-14"><a href="#cb25-14"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Oncológica"</span>) <span class="sc">~</span> <span class="st">"Oncological / Cancer"</span>,</span>
+<span id="cb25-15"><a href="#cb25-15"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Renal"</span>) <span class="sc">~</span> <span class="st">"Renal / Kidney Disease"</span>,</span>
+<span id="cb25-16"><a href="#cb25-16"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Pulmonar"</span>) <span class="sc">~</span> <span class="st">"Pulmonary / Lung Disease"</span>,</span>
+<span id="cb25-17"><a href="#cb25-17"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Inconclusivo"</span>) <span class="sc">~</span> <span class="st">"Inconclusive"</span>,</span>
+<span id="cb25-18"><a href="#cb25-18"></a>      stringr<span class="sc">::</span><span class="fu">str_detect</span>(Cause_Raw, <span class="st">"(?i)Metabólica"</span>) <span class="sc">~</span> <span class="st">"Metabolic"</span>,</span>
+<span id="cb25-19"><a href="#cb25-19"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> Cause_Raw</span>
+<span id="cb25-20"><a href="#cb25-20"></a>    )</span>
+<span id="cb25-21"><a href="#cb25-21"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb25-22"><a href="#cb25-22"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(Death_Cause, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-23"><a href="#cb25-23"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Percentage =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">nrow</span>(elpt_deaths), <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb25-24"><a href="#cb25-24"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Cause of Death"</span>, <span class="st">"N"</span>, <span class="st">"Percentage (%)"</span>),</span>
+<span id="cb25-25"><a href="#cb25-25"></a>               <span class="at">caption =</span> <span class="st">"Primary Causes of Death (ELPT Cohort)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-26"><a href="#cb25-26"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped table-hover table-condensed caption-top table-sm small">
@@ -1879,39 +1876,44 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: left;">Multiple Organ Dysfunction</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">22.2</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Hepatic / Liver Disease</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">11.1</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Inconclusive</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">14.3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Multiple Organ Dysfunction</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">11.1</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Infectious</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11.1</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Oncological / Cancer</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">14.3</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Post-surgical Complication</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">11.1</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Pulmonary / Lung Disease</td>
+<td style="text-align: left;">Post-surgical / Post-procedure Complication</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">11.1</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">Pulmonary / Lung Disease</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11.1</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Renal / Kidney Disease</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">14.3</td>
+<td style="text-align: right;">11.1</td>
 </tr>
 </tbody>
 </table>
@@ -1957,13 +1959,13 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">38</td>
-<td style="text-align: right;">104</td>
-<td style="text-align: right;">169</td>
-<td style="text-align: right;">278.7143</td>
-<td style="text-align: right;">319</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">230.7778</td>
+<td style="text-align: right;">266</td>
 <td style="text-align: right;">898</td>
-<td style="text-align: left;">0.6985</td>
+<td style="text-align: left;">0.3798</td>
 </tr>
 </tbody>
 </table>
@@ -1994,7 +1996,7 @@ window.Quarto = {
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Statistical &amp; Clinical Commentary (Time Interval to Death - ELPT):</strong> - <strong>Dashed Blue Line:</strong> The vertical dashed blue line highlights the <strong>median time interval to death</strong> (<strong>169.0 days</strong> / ~5.6 months post-exam registration). - <strong>Distribution Breakdown:</strong> The average (mean) time to death is <strong>278.7 days</strong> (~9.3 months), with 25% of deaths occurring within <strong>104.0 days</strong> (1st Quartile) and a maximum recorded interval of <strong>898.0 days</strong> (~2.5 years). - <strong>Traffic Light Zone Comparison (Kruskal-Wallis <span class="math inline">\(p = 0.6985\)</span>):</strong> Time-to-death intervals did not show a statistically significant difference across ELPT Traffic Light zones (<span class="math inline">\(p = 0.6985\)</span>), reflecting sample size limitations (<span class="math inline">\(N = 7\)</span> total deaths in this non-replaced ELPT sub-cohort).</p>
+<p><strong>Statistical &amp; Clinical Commentary (Time Interval to Death - ELPT):</strong> - <strong>Dashed Blue Line:</strong> The vertical dashed blue line highlights the <strong>median time interval to death</strong> (<strong>109.0 days</strong> / ~3.6 months post-exam registration). - <strong>Distribution Breakdown:</strong> The average (mean) time to death is <strong>230.8 days</strong> (~7.7 months), with 25% of deaths occurring within <strong>92.0 days</strong> (1st Quartile) and a maximum recorded interval of <strong>898.0 days</strong> (~2.5 years). - <strong>Traffic Light Zone Comparison (Kruskal-Wallis <span class="math inline">\(p = 0.3798\)</span>):</strong> Time-to-death intervals did not show a statistically significant difference across ELPT Traffic Light zones (<span class="math inline">\(p = 0.3798\)</span>), reflecting sample size limitations (<span class="math inline">\(N = 9\)</span> total deaths in this non-replaced ELPT sub-cohort).</p>
 </blockquote>
 <hr>
 </section>
@@ -2131,12 +2133,12 @@ window.Quarto = {
 <span id="cb29-22"><a href="#cb29-22"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Term, <span class="st">`</span><span class="at">Coefficient (B)</span><span class="st">`</span> <span class="ot">=</span> estimate_fmt, <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> std_error_fmt, <span class="st">`</span><span class="at">Adjusted OR (95% CI)</span><span class="st">`</span>, <span class="st">`</span><span class="at">p-value</span><span class="st">`</span>)</span>
 <span id="cb29-23"><a href="#cb29-23"></a></span>
 <span id="cb29-24"><a href="#cb29-24"></a>tidy_elpt_multi <span class="sc">|&gt;</span></span>
-<span id="cb29-25"><a href="#cb29-25"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Multivariable Logistic Regression Model for Mortality (ELPT Cohort, N = 68)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb29-25"><a href="#cb29-25"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Multivariable Logistic Regression Model for Mortality (ELPT Cohort, N = 81)"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb29-26"><a href="#cb29-26"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>, <span class="st">"condensed"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-striped table-hover table-condensed caption-top table-sm small">
-<caption>Multivariable Logistic Regression Model for Mortality (ELPT Cohort, N = 68)</caption>
+<caption>Multivariable Logistic Regression Model for Mortality (ELPT Cohort, N = 81)</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Term</th>
@@ -2149,31 +2151,31 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Intercept (Baseline)</td>
-<td style="text-align: left;">-2.5783</td>
-<td style="text-align: left;">1.8681</td>
-<td style="text-align: left;">0.08 (0.00 - 2.81)</td>
-<td style="text-align: left;">0.1675</td>
+<td style="text-align: left;">-2.8904</td>
+<td style="text-align: left;">1.8347</td>
+<td style="text-align: left;">0.06 (0.00 - 1.94)</td>
+<td style="text-align: left;">0.1152</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Gamma fraction (g/dL, continuous)</td>
-<td style="text-align: left;">-2.9220</td>
-<td style="text-align: left;">3.1024</td>
-<td style="text-align: left;">0.05 (0.00 - 19.76)</td>
-<td style="text-align: left;">0.3463</td>
+<td style="text-align: left;">-2.5914</td>
+<td style="text-align: left;">2.8765</td>
+<td style="text-align: left;">0.07 (0.00 - 15.67)</td>
+<td style="text-align: left;">0.3677</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">IgG Below Reference (vs Normal)</td>
-<td style="text-align: left;">2.1455</td>
-<td style="text-align: left;">1.1835</td>
-<td style="text-align: left;">8.55 (1.05 - 178.65)</td>
-<td style="text-align: left;">0.0699</td>
+<td style="text-align: left;">1.8905</td>
+<td style="text-align: left;">1.1877</td>
+<td style="text-align: left;">6.62 (0.81 - 138.99)</td>
+<td style="text-align: left;">0.1114</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Infection Present (Yes vs No)</td>
-<td style="text-align: left;">0.3744</td>
-<td style="text-align: left;">0.9369</td>
-<td style="text-align: left;">1.45 (0.25 - 11.61)</td>
-<td style="text-align: left;">0.6894</td>
+<td style="text-align: left;">0.6283</td>
+<td style="text-align: left;">0.8838</td>
+<td style="text-align: left;">1.87 (0.37 - 13.98)</td>
+<td style="text-align: left;">0.4771</td>
 </tr>
 </tbody>
 </table>
@@ -2187,22 +2189,22 @@ window.Quarto = {
 <ul>
 <li><strong>Statistical Result:</strong> <span class="math inline">\(\text{aOR} = 0.12\)</span> (<span class="math inline">\(95\%\text{ CI: } 0.02 - 0.61, p = 0.0150\)</span>).</li>
 <li><strong>Clinical Meaning:</strong> Serum Calculated globulin is a <strong>statistically significant independent predictor of mortality</strong>, even after adjusting for IgG reference status and infection history.</li>
-<li><strong>Interpretation of Odds:</strong> Each <span class="math inline">\(1\text{ g/dL}\)</span> increase in PROTF reduces the odds of death by <span class="math inline">\(88\%\)</span> (<span class="math inline">\(\text{aOR} = 0.12\)</span>). Inversely, <strong>each <span class="math inline">\(1\text{ g/dL}\)</span> decrease in PROTF multiplies the odds of death by <span class="math inline">\(8.33\text{ times}\)</span></strong> (<span class="math inline">\(1 / 0.12 = 8.33, 95\%\text{ CI: } 1.64 - 50.00\)</span>).</li>
+<li><strong>Interpretation of Odds:</strong> Each <span class="math inline">\(1\text{ g/dL}\)</span> increase in PROTF reduces the odds of death by <span class="math inline">\(88\%\)</span> (<span class="math inline">\(\text{aOR} = 0.12\)</span>). Inversely, <strong>each <span class="math inline">\(1\text{ g/dL}\)</span> decrease in PROTF multiplies the odds of death by <span class="math inline">\(8.64\text{ times}\)</span></strong> (<span class="math inline">\(1 / 0.12 = 8.64, 95\%\text{ CI: } 1.63 - 53.76\)</span>).</li>
 </ul>
 </section>
 <section id="independent-prognostic-value-of-igg-reference-status" class="level4">
 <h4 class="anchored" data-anchor-id="independent-prognostic-value-of-igg-reference-status">2. Independent Prognostic Value of IgG Reference Status</h4>
 <ul>
 <li><strong>PROTF Cohort Result:</strong> <span class="math inline">\(\text{aOR} = 5.78\)</span> (<span class="math inline">\(95\%\text{ CI: } 2.06 - 19.08, p = 0.0017\)</span>).</li>
-<li><strong>ELPT Cohort Result:</strong> <span class="math inline">\(\text{aOR} = 8.55\)</span> (<span class="math inline">\(95\%\text{ CI: } 1.05 - 178.65, p = 0.0699\)</span>).</li>
-<li><strong>Clinical Meaning:</strong> Among patients with identical PROTF levels and the same infection status, having below-reference IgG independently increases mortality odds by <strong>5.78 times</strong> in the PROTF cohort and <strong>8.55 times</strong> in the ELPT cohort.</li>
+<li><strong>ELPT Cohort Result:</strong> <span class="math inline">\(\text{aOR} = 6.62\)</span> (<span class="math inline">\(95\%\text{ CI: } 0.81 - 138.83, p = 0.1114\)</span>).</li>
+<li><strong>Clinical Meaning:</strong> Among patients with identical PROTF levels and the same infection status, having below-reference IgG independently increases mortality odds by <strong>5.78 times</strong> in the PROTF cohort and <strong>6.62 times</strong> in the ELPT cohort.</li>
 </ul>
 </section>
 <section id="role-of-infection-history" class="level4">
 <h4 class="anchored" data-anchor-id="role-of-infection-history">3. Role of Infection History</h4>
 <ul>
-<li><strong>Result:</strong> <span class="math inline">\(\text{aOR} = 1.45\)</span> (<span class="math inline">\(95\%\text{ CI: } 0.60 - 3.59, p = 0.4095\)</span> in PROTF; <span class="math inline">\(95\%\text{ CI: } 0.25 - 11.61, p = 0.6894\)</span> in ELPT).</li>
-<li><strong>Clinical Meaning:</strong> Experiencing an infection shows a positive trend toward higher mortality (<span class="math inline">\(45\%\)</span> higher adjusted odds), but this effect does not reach statistical significance after accounting for underlying protein levels and IgG deficiency.</li>
+<li><strong>Result:</strong> <span class="math inline">\(\text{aOR} = 1.45\)</span> (<span class="math inline">\(95\%\text{ CI: } 0.60 - 3.59, p = 0.4095\)</span> in PROTF; <span class="math inline">\(\text{aOR} = 1.87, 95\%\text{ CI: } 0.37 - 13.97, p = 0.4768\)</span> in ELPT).</li>
+<li><strong>Clinical Meaning:</strong> Experiencing an infection shows a positive trend toward higher mortality (<span class="math inline">\(45\%\)</span> higher adjusted odds in PROTF; <span class="math inline">\(87\%\)</span> higher adjusted odds in ELPT), but this effect does not reach statistical significance after accounting for underlying protein levels and IgG deficiency.</li>
 </ul>
 <hr>
 </section>
@@ -2384,19 +2386,19 @@ window.Quarto = {
 <td style="text-align: left;">Red (&lt; 0.38)</td>
 <td style="text-align: left;">Below reference</td>
 <td style="text-align: left;">No</td>
-<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">33.3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20.0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Red (&lt; 0.38)</td>
 <td style="text-align: left;">Below reference</td>
 <td style="text-align: left;">Yes</td>
+<td style="text-align: right;">11</td>
 <td style="text-align: right;">5</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">37.5</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">31.2</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Red (&lt; 0.38)</td>
@@ -2420,10 +2422,10 @@ window.Quarto = {
 <td style="text-align: left;">Grey (0.38 - 0.6)</td>
 <td style="text-align: left;">Below reference</td>
 <td style="text-align: left;">Yes</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">1</td>
 <td style="text-align: right;">8</td>
-<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">11.1</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Grey (0.38 - 0.6)</td>
@@ -2475,7 +2477,7 @@ window.Quarto = {
 <section id="elpt-pattern-consistency" class="level4">
 <h4 class="anchored" data-anchor-id="elpt-pattern-consistency">3. ELPT Pattern Consistency</h4>
 <ul>
-<li>In the <strong>ELPT Red Zone (&lt; 0.38 g/dL)</strong>, mortality occurred exclusively in patients with Below-Reference IgG (<strong>33.3% – 37.5%</strong>), whereas patients with Normal IgG in the Grey Zone presented low mortality (<strong>0.0% – 4.5%</strong>).</li>
+<li>In the <strong>ELPT Red Zone (&lt; 0.38 g/dL)</strong>, mortality occurred exclusively in patients with Below-Reference IgG (<strong>20.0%</strong> without infection [<span class="math inline">\(2/10\)</span>], <strong>31.2%</strong> with infection [<span class="math inline">\(5/16\)</span>]), whereas patients with Normal IgG in the Red Zone presented <strong>0.0%</strong> mortality (<span class="math inline">\(0/2\)</span>) and patients in the Grey Zone presented low mortality (<strong>0.0% – 11.1%</strong>).</li>
 </ul>
 <hr>
 </section>
@@ -2488,7 +2490,7 @@ window.Quarto = {
 <section id="target-sub-cohort-selection-preprocessing" class="level3">
 <h3 class="anchored" data-anchor-id="target-sub-cohort-selection-preprocessing">1. Target Sub-Cohort Selection &amp; Preprocessing</h3>
 <ul>
-<li><strong>Sub-cohort Definition:</strong> Analysis is strictly conducted on patients with recorded serum IgG measurements and <strong>no immunoglobulin replacement therapy within 30 days prior to the exam</strong> (<span class="math inline">\(n = 138\)</span> for PROTF, <span class="math inline">\(n = 68\)</span> for ELPT). This isolates true baseline endogenous protein levels, removing treatment-induced confounding.</li>
+<li><strong>Sub-cohort Definition:</strong> Analysis is strictly conducted on patients with recorded serum IgG measurements and <strong>no immunoglobulin replacement therapy within 30 days prior to the exam</strong> (<span class="math inline">\(n = 138\)</span> for PROTF, <span class="math inline">\(n = 81\)</span> for ELPT). This isolates true baseline endogenous protein levels, removing treatment-induced confounding.</li>
 <li><strong>Data Processing &amp; Wrangling:</strong> Data cleaning, string parsing, and dataset merging were conducted using <code>dplyr</code>, <code>tidyr</code>, and <code>stringr</code>. Temporal interval calculations between exam dates and death registration dates were computed using <code>lubridate</code>.</li>
 </ul>
 </section>
