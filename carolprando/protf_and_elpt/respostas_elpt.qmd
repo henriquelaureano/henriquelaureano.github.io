@@ -1123,18 +1123,18 @@ final_results |>
 
 To determine if the ELPT cutoff (**0.410**) translates into a functional clinical marker, we assessed whether patients falling below this threshold exhibited a higher prevalence of infections compared to those above it.
 
--   **Methodology:** Patients were stratified into "High Risk" (ELPT < 0.410) and "Low Risk" (ELPT ≥ 0.410) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for specific infection types using Fisher's Exact Test.
+-   **Methodology:** Patients were stratified into "High Risk" (ELPT \< 0.410) and "Low Risk" (ELPT ≥ 0.410) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for specific infection types using Fisher's Exact Test.
 
 -   **Results:**
 
-    -   **Statistically Significant Urinary Tract Risk:** Patients in the "High Risk" group (ELPT < 0.410) demonstrated a statistically significant higher rate of **Urinary System Infections** (**35.71%**, 15/42) compared to the "Low Risk" group (**13.73%**, 7/51), with an Odds Ratio of **3.44** ($p = 0.0156$).
+    -   **Statistically Significant Urinary Tract Risk:** Patients in the "High Risk" group (ELPT \< 0.410) demonstrated a statistically significant higher rate of **Urinary System Infections** (**35.71%**, 15/42) compared to the "Low Risk" group (**13.73%**, 7/51), with an Odds Ratio of **3.44** ($p = 0.0156$).
     -   **Uniform Rates Across Other Categories:** Infection rates for other infection categories were similar between groups without statistically significant differences. For example, **Sepsis** prevalence was **23.81%** (10/42) in the High Risk group vs. **19.61%** (10/51) in the Low Risk group ($p = 0.800$), and **Lower Respiratory Tract** infections occurred in **23.81%** vs. **33.33%** ($p = 0.364$).
 
 **Conclusion:** The ELPT cutoff of 0.410 is not only statistically valid for screening IgG deficiency (ROC AUC = 0.792), but also demonstrates a statistically significant association with **Urinary Tract Infections** ($p = 0.0156$).
 
 ## By Age Interval
 
-```{r fig.width=9.5, fig.height=4.5}
+```{r fig.width=9.5, fig.height=8}
 
 proxy <- 
     elpt |>
@@ -1252,7 +1252,8 @@ age_analysis_data |>
     subtitle = "Distribution and Optimal Cutoff (Youden) per cohort",
     x = "Gamma (g/dL)", y = "Density", fill = "IgG Status"
   ) +
-  scale_x_continuous(breaks = seq(0, 1, by = 0.1))
+  scale_x_continuous(breaks = seq(0, 1, by = 0.1)) +
+  scale_y_continuous(breaks = seq(0, 12, by = 1))
 
 ```
 
@@ -1439,13 +1440,13 @@ final_results_age |>
 
 ### Age-Specific Clinical Validation: Infection Risk
 
-To ensure biological accuracy, we assessed the clinical impact of ELPT deficiency using the specific thresholds derived for each age cohort (**0.455** for < 1y, **0.375** for 1-3y, **0.380** for 4-9y, and **0.475** for 10-17y).
+To ensure biological accuracy, we assessed the clinical impact of ELPT deficiency using the specific thresholds derived for each age cohort (**0.455** for \< 1y, **0.375** for 1-3y, **0.380** for 4-9y, and **0.475** for 10-17y).
 
 -   **Methodology:** Patients were stratified by age, and "High Risk" status was defined individually for each group based on their specific optimal cutoff. We compared infection prevalence rates between the "High Risk" (Low ELPT) and "Low Risk" (Normal ELPT) groups.
 
 -   **Results by Cohort:**
 
-    1.  **Infants (< 1 year): Uniform High Risk Distribution**
+    1.  **Infants (\< 1 year): Uniform High Risk Distribution**
         -   **100% High Risk:** All 20 infants with recorded infection history presented ELPT values below the age-specific cutoff of **0.455 g/dL** (range: 0.08 – 0.40 g/dL), placing 100% of them in the "High Risk" group.
         -   **Methodological Note:** Because there are 0 patients in the "Low Risk" ($\ge 0.455$ g/dL) comparison group, Odds Ratios (OR) and Fisher's exact test cannot be computed mathematically (division by zero). Consequently, this cohort is displayed in the summary table but omitted from the comparative Odds Ratio forest plot.
     2.  **Adolescents (10 to 17 years): A Distinct Clinical Signal**
@@ -1715,7 +1716,7 @@ t1[[2]] |> print(n = 30)
 
 ```
 
-Mesma coisa pro faixa etária.
+Mesma coisa por faixa etária (nota: a faixa etária `< 1 ano` não possui nenhum registro de medicação preenchido na planilha, sendo 100% de dados ausentes/NA neste campo).
 
 ```{r}
 
