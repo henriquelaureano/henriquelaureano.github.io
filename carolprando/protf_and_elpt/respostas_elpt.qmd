@@ -1123,15 +1123,14 @@ final_results |>
 
 To determine if the ELPT cutoff (**0.410**) translates into a functional clinical marker, we assessed whether patients falling below this threshold exhibited a higher prevalence of infections compared to those above it.
 
--   **Methodology:** Patients were stratified into "High Risk" (ELPT \< 0.410) and "Low Risk" (ELPT ≥ 0.410) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for seven specific infection types using Fisher's Exact Test.
+-   **Methodology:** Patients were stratified into "High Risk" (ELPT < 0.410) and "Low Risk" (ELPT ≥ 0.410) cohorts. We calculated the Prevalence Rate (%) and Odds Ratio (OR) for specific infection types using Fisher's Exact Test.
 
 -   **Results:**
 
-    -   **Absence of Phenotypic Correlation:** Unlike the PROTF marker, the ELPT cutoff did not demonstrate a statistically significant association with any specific infection type. P-values for all categories exceeded the significance threshold ($p > 0.05$).
-    -   **Uniform Infection Rates:** Infection rates were remarkably similar between the high-risk and low-risk groups across most categories. For example, **Sepsis** prevalence was nearly identical (18.18% in the Low ELPT group vs. 19.61% in the Normal ELPT group, $p = 1.00$).
-    -   **Urinary Tract Trend:** A non-significant trend was observed for **Urinary System Infections**, which were more frequent in the "High Risk" group (27.27%) compared to the "Low Risk" group (13.73%). However, this difference did not reach statistical significance ($p = 0.19$).
+    -   **Statistically Significant Urinary Tract Risk:** Patients in the "High Risk" group (ELPT < 0.410) demonstrated a statistically significant higher rate of **Urinary System Infections** (**35.71%**, 15/42) compared to the "Low Risk" group (**13.73%**, 7/51), with an Odds Ratio of **3.44** ($p = 0.0156$).
+    -   **Uniform Rates Across Other Categories:** Infection rates for other infection categories were similar between groups without statistically significant differences. For example, **Sepsis** prevalence was **23.81%** (10/42) in the High Risk group vs. **19.61%** (10/51) in the Low Risk group ($p = 0.800$), and **Lower Respiratory Tract** infections occurred in **23.81%** vs. **33.33%** ($p = 0.364$).
 
-**Conclusion:** While the ELPT cutoff of 0.410 is statistically valid for screening IgG deficiency (as shown in the ROC analysis), it does not appear to independently stratify patients by specific infectious history in this dataset. This suggests that ELPT should be utilized primarily as a biochemical screening tool for IgG levels rather than a direct predictor of clinical infection phenotypes.
+**Conclusion:** The ELPT cutoff of 0.410 is not only statistically valid for screening IgG deficiency (ROC AUC = 0.792), but also demonstrates a statistically significant association with **Urinary Tract Infections** ($p = 0.0156$).
 
 ## By Age Interval
 
